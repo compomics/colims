@@ -1,0 +1,53 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.compomics.colims.model;
+
+import java.util.List;
+import javax.persistence.*;
+
+/**
+ *
+ * @author Niels Hulstaert
+ */
+@Table(name = "search_and_validation_settings")
+@Entity
+public class SearchAndValidationSettings extends AbstractDatabaseEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Long id;
+    @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
+    @ManyToOne
+    private Experiment experiment;
+    @OneToMany(mappedBy="searchAndValidationSettings")
+    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
+    }
+
+    public List<SearchAndValSetHasSearchEngine> getSearchAndValSetHasSearchEngines() {
+        return searchAndValSetHasSearchEngines;
+    }
+
+    public void setSearchAndValSetHasSearchEngines(List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines) {
+        this.searchAndValSetHasSearchEngines = searchAndValSetHasSearchEngines;
+    }       
+        
+}

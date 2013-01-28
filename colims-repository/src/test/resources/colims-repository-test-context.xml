@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"  
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"     
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd       
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+        
+    <!-- Beans to override for unit testing-->
+    <bean id="colimsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+    </bean>
+ 
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="colimsDataSource"/>
+        <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
+        <property name="packagesToScan" value="com.compomics.colims.model"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${db.dialect}</prop> 
+                <prop key="hibernate.connection.autocommit">${db.autocommit}</prop>
+                <prop key="hibernate.show_sql">${db.show_sql}</prop>                         
+                <prop key="hibernate.format_sql">true</prop>                         
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>   
+                <prop key="hibernate.generate_statistics">true</prop>              
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>
+                <prop key="hibernate.cache.use_structured_entries">true</prop>                         
+                <prop key="hibernate.cache.use_query_cache">true</prop>                         
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>                                                 
+            </props>
+        </property>               
+    </bean>
+    
+</beans>

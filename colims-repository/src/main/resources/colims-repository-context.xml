@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       
+       xmlns:context="http://www.springframework.org/schema/context"       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    <context:annotation-config/>
+    
+    <!-- Property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="colims-repository.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+    
+    <!-- transaction beans -->
+    <bean id="colimsDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+        <property name="initialSize" value="${db.initial_pool_size}"/>
+        <property name="maxActive" value="${db.max_pool_size}"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="colimsDataSource"/>
+        <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
+        <property name="packagesToScan" value="com.compomics.colims.model"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${db.dialect}</prop> 
+                <prop key="hibernate.connection.autocommit">${db.autocommit}</prop>
+                <prop key="hibernate.show_sql">${db.show_sql}</prop>                         
+                <prop key="hibernate.format_sql">true</prop>                         
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop> 
+                <prop key="hibernate.generate_statistics">true</prop>                
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>
+                <prop key="hibernate.cache.use_structured_entries">true</prop>                         
+                <prop key="hibernate.cache.use_query_cache">true</prop>                         
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>                                                 
+            </props>
+        </property>               
+    </bean>
+            
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>                                                                              
+    
+    <!-- jasypt encryption beans -->
+    <bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
+        <property name="algorithm" value="PBEWithMD5AndDES"/>
+        <property name="password" value="${jasypt.password}"/>
+    </bean>
+
+    <bean id="hibernateEncryptor" class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor" lazy-init="false">
+        <!-- This property value must match "encryptorRegisteredName" used when defining hibernate user types -->
+        <property name="registeredName" value="jasyptHibernateEncryptor"/>
+        <property name="encryptor" ref="stringEncryptor"/>
+    </bean>                      
+    
+    <!-- repository beans -->
+    <context:component-scan base-package="com.compomics.colims.repository">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan> 
+    
+    <!-- component beans -->
+    <context:component-scan base-package="com.compomics.colims.repository">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>                                                                                            
+    
+</beans>
