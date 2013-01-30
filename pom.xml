@@ -104,7 +104,7 @@
 				<configuration>
 					<xmlOutput>true</xmlOutput>
 					<xmlOutputDirectory>target/site</xmlOutputDirectory>
-					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+					<!-- <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile> -->
 				</configuration>
 			</plugin>
 			<plugin>
