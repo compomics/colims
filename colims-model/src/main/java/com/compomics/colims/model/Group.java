@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -42,7 +44,8 @@ public class Group extends AbstractDatabaseEntity {
     @Column(name = "description")
     private String description;    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
-    @Fetch(FetchMode.JOIN)        
+    //@Fetch(FetchMode.JOIN)        
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GroupHasRole> groupHasRoles;
 
     public Long getId() {
