@@ -17,6 +17,8 @@ import javax.persistence.Table;
 @Entity
 public class ExperimentParam extends AbstractParamEntity {
     
+    private static final long serialVersionUID = 1L;
+    
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Experiment experiment;

@@ -14,6 +14,8 @@ import com.compomics.colims.repository.GroupRepository;
 import com.compomics.colims.repository.PermissionRepository;
 import com.compomics.colims.repository.RoleRepository;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.LockOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Niels Hulstaert
  */
-@Service("userManagementService")
+@Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
 
@@ -83,17 +85,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Group> findAllGroups() {
-        return groupRepository.findAll();
-    }
-
-    @Override
-    public List<Role> findAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    @Override
-    public List<Permission> findAllPermissions() {
-        return permissionRepository.findAll();
+    public void fetchAuthenticationRelations(User user) {
+        userRepository.lock(user, LockOptions.NONE);
+        if (!Hibernate.isInitialized(user.getUserHasGroups())) {
+            Hibernate.initialize(user.getUserHasGroups());            
+        }
     }
 }

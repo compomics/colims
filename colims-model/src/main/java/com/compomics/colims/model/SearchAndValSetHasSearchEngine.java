@@ -15,6 +15,8 @@ import javax.persistence.*;
 @Entity 
 public class SearchAndValSetHasSearchEngine extends AbstractDatabaseEntity {
     
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

@@ -19,6 +19,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class Permission extends AbstractDatabaseEntity {
     
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

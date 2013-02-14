@@ -59,7 +59,7 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
     public ExperimentMapper() {
         spectrumFactory = SpectrumFactory.getInstance();
         sequenceFactory = SequenceFactory.getInstance();
-        newProteins = new HashMap<String, Protein>();
+        newProteins = new HashMap<>();
     }
 
     public SpectrumMapper getSpectrumMapper() {
@@ -87,11 +87,11 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
     }
 
     @Override
-    public void map(PeptideShakerImport source, Experiment target) throws MappingException {
-        LOGGER.info("Start mapping PeptideShaker experiment " + source.getMsExperiment().getReference() + " on domain model Experiment");
+    public void map(PeptideShakerImport source, Experiment target) throws MappingException {        
         if (source == null || target == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
+        LOGGER.info("Start mapping PeptideShaker experiment " + source.getMsExperiment().getReference() + " on domain model Experiment");
 
         MsExperiment msExperiment = source.getMsExperiment();
         //set title
@@ -103,7 +103,7 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
         loadFastaFile(source.getFastaFile());
 
         //add samples
-        List<Sample> samples = new ArrayList<Sample>();
+        List<Sample> samples = new ArrayList<>();
         //iterate over samples
         for (com.compomics.util.experiment.biology.Sample sourceSample : msExperiment.getSamples().values()) {
             Sample sample = new Sample();
@@ -112,7 +112,7 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
 
             //add analytical runs
             //a replicate is mapped to an AnalyticalRun
-            List<AnalyticalRun> analyticalRuns = new ArrayList<AnalyticalRun>();
+            List<AnalyticalRun> analyticalRuns = new ArrayList<>();
             SampleAnalysisSet sampleAnalysisSet = msExperiment.getAnalysisSet(sourceSample);
             ArrayList<Integer> replicateNumbers = sampleAnalysisSet.getReplicateNumberList();
             //iterate over replicates/analytical runs
@@ -141,7 +141,7 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
                 //load protein matches
                 loadProteinMatches(ms2Identification);
 
-                List<Spectrum> spectrums = new ArrayList<Spectrum>();
+                List<Spectrum> spectrums = new ArrayList<>();
                 //iterate over spectrum files
                 for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
                     boolean loadedSuccessfully = loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
@@ -212,7 +212,7 @@ public class ExperimentMapper implements Mapper<PeptideShakerImport, Experiment>
 
             //get protein matches keys
             List<String> proteinKeys = sourcePeptide.getParentProteins();
-            List<PeptideHasProtein> peptideHasProteins = new ArrayList<PeptideHasProtein>();
+            List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
             //iterate over protein keys
             for (String proteinKey : proteinKeys) {
                 try {

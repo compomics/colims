@@ -6,6 +6,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -164,5 +166,10 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
         }
 
         return ((Number) (crit.list().get(0))).intValue();
+    }
+
+    @Override
+    public void lock(T entity, LockOptions lockOptions) {
+        getCurrentSession().buildLockRequest(lockOptions).lock(entity);
     }
 }

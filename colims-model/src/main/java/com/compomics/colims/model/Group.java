@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -21,7 +24,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "user_group")
 @Entity
 public class Group extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -30,13 +35,14 @@ public class Group extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 5, max = 100, message = "Group name length must be between 5 and 100 characters")
-    @Column(name = "title")
+    @Column(name = "name")
     private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Group description length must be less than 500 characters")
     @Column(name = "description")
-    private String description;
+    private String description;    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
+    @Fetch(FetchMode.JOIN)        
     private List<GroupHasRole> groupHasRoles;
 
     public Long getId() {
@@ -70,4 +76,31 @@ public class Group extends AbstractDatabaseEntity {
     public void setGroupHasRoles(List<GroupHasRole> groupHasRoles) {
         this.groupHasRoles = groupHasRoles;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.id);
+        hash = 17 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Group other = (Group) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

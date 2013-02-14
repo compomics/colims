@@ -14,7 +14,9 @@ import javax.persistence.*;
 @Table(name = "sample")
 @Entity
 public class Sample extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

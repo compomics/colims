@@ -5,7 +5,6 @@ import com.compomics.colims.repository.SessionBean;
 import java.util.Date;
 import org.apache.log4j.Logger;
 import org.hibernate.event.internal.DefaultSaveEventListener;
-import org.hibernate.event.internal.DefaultSaveOrUpdateEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("saveEventListener")
 public class CustomSaveEventListener extends DefaultSaveEventListener {
-
+    
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(CustomSaveEventListener.class);
     @Autowired
     private SessionBean sessionBean;

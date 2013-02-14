@@ -32,25 +32,12 @@ public interface UserService extends GenericService<User, Long> {
      * @return the found user
      */
     User findByName(String name);
-    
+
     /**
-     * Find all groups.
-     * 
-     * @return the found groups
+     * Fetch the user relations for authentication purposes; groups, roles and
+     * permissions.
+     *
+     * @param user the given user
      */
-    List<Group> findAllGroups();
-    
-    /**
-     * Find all roles.
-     * 
-     * @return the found roles
-     */
-    List<Role> findAllRoles();
-    
-    /**
-     * Find all permissions.
-     * 
-     * @return the found permissions
-     */
-    List<Permission> findAllPermissions();
+    void fetchAuthenticationRelations(User user);
 }

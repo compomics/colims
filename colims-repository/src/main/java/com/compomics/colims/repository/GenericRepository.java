@@ -7,6 +7,8 @@ package com.compomics.colims.repository;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -114,4 +116,12 @@ public interface GenericRepository<T, ID extends Serializable> {
      * @param entity the entity to delete
      */
     void delete(final T entity);
+    
+    /**
+     * reassociate the entity with the current session.
+     * 
+     * @param entity
+     * @param lockOptions
+     */
+    void lock(final T entity, LockOptions lockOptions);
 }

@@ -4,9 +4,12 @@
  */
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.UserRepository;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +30,13 @@ public class UserHibernateRepository extends GenericHibernateRepository<User, Lo
 
         return user;
     }
+
+//    @Override
+//    public void fetchAuthenticationRelations(User user) {
+//        Query namedQuery = getCurrentSession().getNamedQuery("User.fetchAuthenticationRelations");
+//        namedQuery.setParameter("userId", userId);
+//        List<User> resultList = namedQuery.list();
+//                
+//        return resultList.get(0);        
+//    }          
 }

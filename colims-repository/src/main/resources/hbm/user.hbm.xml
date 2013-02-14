@@ -3,13 +3,25 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
     "http://www.hibernate.org/dtd//hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping>    
-    <query name="Instrument.findByName">
-        SELECT 
-        instrument
+<!--<hibernate-mapping>    
+    <query name="User.findGroupsByUserId">
+        SELECT userGroup
         FROM 
-        Instrument instrument
-        WHERE
-        instrument.name = :name
+        User user
+        left join user.userHasGroups userHasGroup
+        left join userHasGroup.group userGroup
+        left join fetch userGroup.groupHasRoles groupHasRole
+        left join groupHasRole.role userRole
+        where user.id = :userId
+    </query>
+</hibernate-mapping>-->
+
+<hibernate-mapping>    
+    <query name="User.fetchAuthenticationRelations">
+        SELECT distinct user
+        FROM 
+        User user
+        left join fetch user.userHasGroups
+        where user.id = :userId                         
     </query>
 </hibernate-mapping>

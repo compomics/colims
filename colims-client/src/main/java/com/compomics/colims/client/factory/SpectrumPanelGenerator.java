@@ -91,11 +91,11 @@ public class SpectrumPanelGenerator {
     }
 
     private String getIonChargeString(int ionCharge) {
-        String ionChargeString = "";
+        StringBuilder ionChargeStringBuilder = new StringBuilder();
         for (int i = 0; i < ionCharge; i++) {
-            ionChargeString += "+";
+            ionChargeStringBuilder.append("+");
         }
 
-        return ionChargeString;
+        return ionChargeStringBuilder.toString();
     }
 }

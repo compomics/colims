@@ -17,6 +17,8 @@ import javax.persistence.Table;
 @Entity
 public class InstrumentParam extends AbstractParamEntity {
     
+    private static final long serialVersionUID = 1L;
+    
     @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Instrument instrument;

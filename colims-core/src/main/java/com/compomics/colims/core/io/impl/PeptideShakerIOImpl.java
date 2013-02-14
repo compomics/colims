@@ -33,72 +33,68 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 
     @Override
     public PeptideShakerImport importPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws PeptideShakerIOException {
-        PeptideShakerImport peptideShakerImport;
+        LOGGER.info("starting import peptideshaker file " + peptideShakerCpsArchive.getName());
+
         MsExperiment msExperiment;
         File tempFolder;
 
-        LOGGER.info("starting import peptideshaker file " + peptideShakerCpsArchive.getName());
         if (!peptideShakerCpsArchive.exists()) {
             throw new IllegalArgumentException("The PeptideShaker .cps file with name: " + peptideShakerCpsArchive.getName() + " doesn't exist.");
         }
-        try {
+
+        try (FileInputStream fileInputStream = new FileInputStream(peptideShakerCpsArchive);) {
+            //define buffer for BufferedInputStream
             final int buffer = PropertiesConfigurationHolder.getInstance().getInt("peptideshakerio.buffer_size");
             byte data[] = new byte[buffer];
-            FileInputStream fileInputStream = new FileInputStream(peptideShakerCpsArchive);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, buffer);
-            ArchiveInputStream tarInput = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);
 
-            long fileLength = peptideShakerCpsArchive.length();
+            try (ArchiveInputStream tarInput = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(fileInputStream, buffer));) {
+                long fileLength = peptideShakerCpsArchive.length();
 
-            //create temp folder to unzip to
-            tempFolder = Files.createTempDir();
+                //create temp folder to unzip to
+                tempFolder = Files.createTempDir();
 
-            ArchiveEntry archiveEntry = null;
-            while ((archiveEntry = tarInput.getNextEntry()) != null) {
-                //for each entry in the archive, make a new file
-                LOGGER.debug("making file for archive entry " + archiveEntry.getName());
-                File destinationFile = new File(tempFolder, archiveEntry.getName());
-                //make the necessary directories in the temp folder
-                destinationFile.getParentFile().mkdirs();
+                ArchiveEntry archiveEntry;
+                int progress;
+                while ((archiveEntry = tarInput.getNextEntry()) != null) {
+                    //for each entry in the archive, make a new file
+                    LOGGER.debug("making file for archive entry " + archiveEntry.getName());
+                    File destinationFile = new File(tempFolder, archiveEntry.getName());
 
-                FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
-                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                    //make the necessary directories in the temp folder
+                    boolean madeDirs = destinationFile.getParentFile().mkdirs();
+                    //check if directories have been made it they didn't exist yet
+                    if (!madeDirs && !destinationFile.getParentFile().exists()) {
+                        throw new IOException("Unable to create the necessary directories in " + destinationFile.getAbsolutePath());
+                    }
 
-                int count = 0;
-                while ((count = tarInput.read(data, 0, buffer)) != -1) {
-                    bufferedOutputStream.write(data, 0, count);
+                    try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(destinationFile))) {
+                        int count;
+                        while ((count = tarInput.read(data, 0, buffer)) != -1) {
+                            bufferedOutputStream.write(data, 0, count);
+                        }
+                    }
+                    //@todo do something with progress
+                    progress = (int) (100 * tarInput.getBytesRead() / fileLength);
                 }
-                //close output streams
-                bufferedOutputStream.close();
-                fileOutputStream.close();
-
-                //@todo do something with progress
-                int progress = (int) (100 * tarInput.getBytesRead() / fileLength);
             }
-            //close input streams
-            tarInput.close();
-            bufferedInputStream.close();
-            fileInputStream.close();
-
-            //get serialized experiment object file
-            File serializedExperimentFile = new File(tempFolder, PEPTIDESHAKER_SERIALIZATION_DIR + File.separator + PEPTIDESHAKER_SERIALIZIZED_EXP_NAME);
-            //deserialize the experiment
-            LOGGER.info("deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
-            msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
-
-            LOGGER.info("Finishing import peptideshaker file " + peptideShakerCpsArchive.getName());
-        } catch (ArchiveException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new PeptideShakerIOException(ex);
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new PeptideShakerIOException(ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (ArchiveException | IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new PeptideShakerIOException(ex);
         }
 
-        peptideShakerImport = new PeptideShakerImport(msExperiment, new File(tempFolder, PEPTIDESHAKER_SERIALIZATION_DIR));
+        //get serialized experiment object file
+        File serializedExperimentFile = new File(tempFolder, PEPTIDESHAKER_SERIALIZATION_DIR + File.separator + PEPTIDESHAKER_SERIALIZIZED_EXP_NAME);
+        try {
+            //deserialize the experiment
+            LOGGER.info("deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
+            msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
+        } catch (IOException | ClassNotFoundException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new PeptideShakerIOException(ex);
+        }
+
+        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(msExperiment, new File(tempFolder, PEPTIDESHAKER_SERIALIZATION_DIR));
+        LOGGER.info("Finishing import peptideshaker file " + peptideShakerCpsArchive.getName());
 
         return peptideShakerImport;
     }

@@ -6,5 +6,6 @@ import com.compomics.colims.model.Group;
  *
  * @author Niels Hulstaert
  */
-public interface GroupRepository extends GenericRepository<Group, Long> {
+public interface GroupRepository extends GenericRepository<Group, Long> {   
+    
 }

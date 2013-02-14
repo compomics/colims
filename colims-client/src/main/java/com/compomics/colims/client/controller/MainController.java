@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.event.InfoMessageEvent;
+import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.model.Role;
@@ -34,7 +35,8 @@ public class MainController implements ActionListener {
 
     private static final Logger LOGGER = Logger.getLogger(MainController.class);
     //model
-    private User currentUser;
+    @Autowired
+    private AuthenticationBean authenticationBean;
     //views
     private MainFrame mainFrame;
     private LoginDialog loginDialog;
@@ -50,10 +52,6 @@ public class MainController implements ActionListener {
     private UserService userService;
     @Autowired
     private EventBus eventBus;
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
 
     public MainFrame getMainFrame() {
         return mainFrame;
@@ -119,60 +117,25 @@ public class MainController implements ActionListener {
         loginDialog.setVisible(true);
     }
 
-    /**
-     * Shows a message dialog.
-     *
-     * @param title the dialog title
-     * @param message the dialog message
-     * @param messageType the dialog message type
-     */
-    public void showMessageDialog(String title, String message, int messageType) {
-        if (messageType == JOptionPane.ERROR_MESSAGE) {
-            //add message to JTextArea
-            JTextArea textArea = new JTextArea(message);
-            //put JTextArea in JScrollPane
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            scrollPane.setPreferredSize(new Dimension(600, 200));
-            textArea.setEditable(false);
-
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), scrollPane, title, messageType);
-        } else {
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), message, title, messageType);
-        }
-    }
-
-    /**
-     * Shows a message dialog.
-     *
-     * @param title the dialog title
-     * @param messages the dialog messages
-     * @param messageType the dialog message type
-     */
-    public void showMessageDialog(String title, List<String> messages, int messageType) {
-        Joiner joiner = Joiner.on("\n");
-        String concatenatedMessage = joiner.join(messages);
-        showMessageDialog(title, concatenatedMessage, messageType);
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
-        } else if (menuItemLabel.equals(mainFrame.getHomeMenuItem().getText())) {
         }
+        //else if (menuItemLabel.equals(mainFrame.getHomeMenuItem().getText())) {
+        //}
     }
 
     /**
-     * Listens to an InfoMesaggeEvent. Shows the info message on the info
-     * message panel.
+     * Listens to an MesaggeEvent. Shows the info message on the info message
+     * panel.
      *
-     * @param infoMessageEvent the info message event
+     * @param messageEvent the message event
      */
     @Subscribe
-    public void onInfoMessageEvent(InfoMessageEvent infoMessageEvent) {
-        //mainFrame.getInfoMessageLabel().setText(infoMessageEvent.getInfoMessage());
+    public void onMessageEvent(MessageEvent messageEvent) {
     }
 
     public void showUnexpectedErrorDialog(String message) {
@@ -184,7 +147,7 @@ public class MainController implements ActionListener {
     private void onLogin() {
         //check if a user with given user name and password is found in the db    
         LOGGER.info("Login attempt with user name: " + loginDialog.getUserNameTextField().getText());
-        currentUser = userService.findByLoginCredentials(loginDialog.getUserNameTextField().getText(), String.valueOf(loginDialog.getPasswordTextField().getPassword()));
+        User currentUser = userService.findByLoginCredentials(loginDialog.getUserNameTextField().getText(), String.valueOf(loginDialog.getPasswordTextField().getPassword()));
         if (currentUser != null) {
             LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
             loginDialog.setVisible(false);
@@ -193,17 +156,43 @@ public class MainController implements ActionListener {
             //check if the current user has Role.ADMIN.
             //If so, init the admin section
             //if (currentUser.getRole().equals(Role.ADMIN)) {
-                initAdminSection();
+            initAdminSection();
             //} else {
-                //set admin menu invisible
-                mainFrame.getAdminMenu().setVisible(false);
+            //set admin menu invisible
+            mainFrame.getAdminMenu().setVisible(false);
             //}
+
+            //set current user in authentication bean    
+            authenticationBean.setCurrentUser(currentUser);
+
             mainFrame.setLocationRelativeTo(null);
             mainFrame.setVisible(true);
         } else {
             showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
             loginDialog.getUserNameTextField().setText("");
             loginDialog.getPasswordTextField().setText("");
+        }
+    }
+
+    /**
+     * Shows a message dialog.
+     *
+     * @param title the dialog title
+     * @param message the dialog message
+     * @param messageType the dialog message type
+     */
+    private void showMessageDialog(String title, String message, int messageType) {
+        if (messageType == JOptionPane.ERROR_MESSAGE) {
+            //add message to JTextArea
+            JTextArea textArea = new JTextArea(message);
+            //put JTextArea in JScrollPane
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(600, 200));
+            textArea.setEditable(false);
+
+            JOptionPane.showMessageDialog(mainFrame.getContentPane(), scrollPane, title, messageType);
+        } else {
+            JOptionPane.showMessageDialog(mainFrame.getContentPane(), message, title, messageType);
         }
     }
 

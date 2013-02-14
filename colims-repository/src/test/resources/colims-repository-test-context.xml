@@ -29,7 +29,8 @@
                 <prop key="hibernate.connection.autocommit">${db.autocommit}</prop>
                 <prop key="hibernate.show_sql">${db.show_sql}</prop>                         
                 <prop key="hibernate.format_sql">true</prop>                         
-                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>   
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop> 
+                <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>  
                 <prop key="hibernate.generate_statistics">true</prop>              
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>

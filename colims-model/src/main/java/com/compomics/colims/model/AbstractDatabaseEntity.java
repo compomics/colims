@@ -16,6 +16,7 @@ import javax.persistence.*;
 public abstract class AbstractDatabaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Column(name = "username")
     @Basic(optional = false)
     protected String userName;

@@ -13,6 +13,8 @@ import javax.persistence.*;
 @MappedSuperclass
 public class AbstractParamEntity extends AbstractDatabaseEntity {
 
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

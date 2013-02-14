@@ -50,11 +50,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void update(Role entity) {
-        update(entity);
+        roleRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(Role entity) {
-        saveOrUpdate(entity);
+        roleRepository.saveOrUpdate(entity);
     }
 }
