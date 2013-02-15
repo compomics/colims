@@ -266,6 +266,7 @@ public class MzMLParserImpl implements MzMLParser {
                             case "MS:1000041":
                                 charge = new Integer(cvParam.getValue());
                                 break;
+                            default:
                         }
                     }
                 }
