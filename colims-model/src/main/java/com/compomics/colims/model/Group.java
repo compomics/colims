@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotBlank;
 // group is a reserved SQL keyword
 @Table(name = "user_group")
 @Entity
-public class Group extends AbstractDatabaseEntity {
+public class Group extends AbstractDatabaseEntity implements Comparable<Group>{
     
     private static final long serialVersionUID = 1L;
     
@@ -105,5 +105,15 @@ public class Group extends AbstractDatabaseEntity {
         }
         return true;
     }
+
+    @Override
+    public int compareTo(Group o) {
+        return name.compareToIgnoreCase(o.getName());
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }        
     
 }

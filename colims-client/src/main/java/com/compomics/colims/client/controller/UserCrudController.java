@@ -10,11 +10,14 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.UserHasGroup;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -65,7 +68,7 @@ public class UserCrudController {
 
         //register to event bus
         eventBus.register(this);
-        
+
         //load available groups
         availableGroups = groupService.findAll();
 
@@ -118,11 +121,15 @@ public class UserCrudController {
                         } else {
                             userManagementDialog.getDeleteUserButton().setEnabled(true);
                         }
+
                         //enable save button
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(true);
+
                         //check if the user is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingUser(getSelectedUser())) {
+                        if (isExistingUserName(getSelectedUser())) {
+                            userService.fetchAuthenticationRelations(getSelectedUser());
+
                             userManagementDialog.getUserNameTextField().setEnabled(false);
                             userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                             userManagementDialog.getUserStateInfoLabel().setText("");
@@ -131,10 +138,9 @@ public class UserCrudController {
                             userManagementDialog.getUserSaveOrUpdateButton().setText("save");
                             userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been saved to the database.");
                         }
-                        
-                        //fill dual list with roles
-                        userService.fetchAuthenticationRelations(getSelectedUser());
-                        //List<Group> currentGroups = getSelectedUser().getUserHasGroups().                                                        
+
+                        //populate dual list with groups                        
+                        userManagementDialog.getGroupDualList().populateLists(availableGroups, getSelectedUser().getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
                     }
@@ -176,16 +182,37 @@ public class UserCrudController {
                 //validate user
                 List<String> validationMessages = GuiUtils.validateEntity(getSelectedUser());
                 if (validationMessages.isEmpty()) {
-                    boolean isExistingUser = isExistingUser(getSelectedUser());
+                    User userToSaveOrUpdate = getSelectedUser();
+                    //boolean isExistingUserName = isExistingUserName(userToSaveOrUpdate);
 
-                    User userToSave = getSelectedUser();
-                    userService.saveOrUpdate(userToSave);
+                    //if modified, add groups to user
+                    List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
+                    List<Group> currentGroups = getSelectedUser().getGroups();
+                    for (Group addedGroup : addedGroups) {
+                        if (!currentGroups.contains(addedGroup)) {
+                            UserHasGroup userHasGroup = new UserHasGroup();
+                            userHasGroup.setGroup(addedGroup);
+                            userHasGroup.setUser(getSelectedUser());
+
+                            //userHasGroup.setCreationdate(new Date());
+                            //userHasGroup.setModificationdate(new Date());
+                            //userHasGroup.setUsername("test");
+
+                            userToSaveOrUpdate.getUserHasGroups().add(userHasGroup);
+                        }
+                    }
+
+                    if (userToSaveOrUpdate.getId() == null) {
+                        userService.save(userToSaveOrUpdate);
+                    } else {
+                        userService.update(userToSaveOrUpdate);
+                    }
                     userManagementDialog.getUserStateInfoLabel().setText("");
 
-                    UserChangeEvent.Type type = (isExistingUser) ? UserChangeEvent.Type.UPDATED : UserChangeEvent.Type.CREATED;
-                    eventBus.post(new UserChangeEvent(type, userToSave));
+                    UserChangeEvent.Type type = (userToSaveOrUpdate.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
+                    eventBus.post(new UserChangeEvent(type, userToSaveOrUpdate));
 
-                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + userToSave.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + userToSaveOrUpdate.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -201,14 +228,14 @@ public class UserCrudController {
      * @param user the selected user
      * @return the does exist boolean
      */
-    private boolean isExistingUser(User user) {
-        boolean isExistingUser = true;
+    private boolean isExistingUserName(User user) {
+        boolean isExistingUserName = true;
         User foundUser = userService.findByName(user.getName());
         if (foundUser == null) {
-            isExistingUser = false;
+            isExistingUserName = false;
         }
 
-        return isExistingUser;
+        return isExistingUserName;
     }
 
     /**

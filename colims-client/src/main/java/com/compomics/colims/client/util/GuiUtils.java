@@ -95,7 +95,7 @@ public class GuiUtils {
 
         if (!constraintViolations.isEmpty()) {
             for (ConstraintViolation<T> constraintViolation : constraintViolations) {
-                if(!constraintViolation.getInvalidValue().toString().isEmpty()){
+                if(constraintViolation.getInvalidValue() != null && !constraintViolation.getInvalidValue().toString().isEmpty()){
                     validationMessages.add(constraintViolation.getMessage() + ": " + constraintViolation.getInvalidValue());                
                 }
                 else{

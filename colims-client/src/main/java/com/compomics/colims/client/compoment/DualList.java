@@ -22,9 +22,10 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
     private BindingGroup bindingGroup;
     private ObservableList<T> availableItemBindingList;
     private ObservableList<T> addedItemBindingList;
+    private boolean isModified;
 
     /**
-     * Creates new form DualList
+     * Create new form DualList
      */
     public DualList() {
         initComponents();
@@ -32,26 +33,72 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         //init the component
         init();
     }
-    
+
+    /**
+     * Populate the available and added items lists. This method removes the
+     * added items from the availabe items
+     *
+     * @param availableItems the available items
+     * @param addedItems the added items
+     */
     public void populateLists(List<T> availableItems, List<T> addedItems) {
         availableItemBindingList.clear();
-        availableItemBindingList.addAll(availableItems);
+        //check for added items in the available items list
+        for (T availableItem : availableItems) {
+            if (!addedItems.contains(availableItem)) {
+                availableItemBindingList.add(availableItem);
+            }
+        }
+
         addedItemBindingList.clear();
         addedItemBindingList.addAll(addedItems);
+
+        //change modified flag
+        if (isModified) {
+            isModified = false;
+        }
     }
-    
+
+    /**
+     * Get the added items as a list
+     *
+     * @return the added items list
+     */
+    public List<T> getAddedItems() {
+        List<T> addedItems = new ArrayList<>();
+        for (T addedItem : addedItemBindingList) {
+            addedItems.add(addedItem);
+        }
+        return addedItems;
+    }
+
+    /**
+     * Return the modified flag; were items added or removed from the added
+     * items list?
+     *
+     * @return
+     */
+    public boolean isModified() {
+        return isModified;
+    }
+
+    /**
+     * Init the component.
+     */
     private void init() {
         //init bindings
         bindingGroup = new BindingGroup();
-        
+
+        isModified = false;
+
         availableItemBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding availableItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, availableItemBindingList, availableItemList);
         bindingGroup.addBinding(availableItemBinding);
-        
+
         addedItemBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding addedItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, addedItemBindingList, addedItemList);
         bindingGroup.addBinding(addedItemBinding);
-        
+
         bindingGroup.bind();
 
         //add action listeners
@@ -59,7 +106,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 List selectedItems = availableItemList.getSelectedValuesList();
-                
+
                 for (Object selectedObject : selectedItems) {
                     T selectedItem = (T) selectedObject;
 
@@ -72,17 +119,19 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
                     //check button states
                     checkButtonStates();
 
-                    //@todo maybe we need to take this into account
-                    //modificationsConfigDialog.getModifcationsTable().updateUI();
+                    //change modified flag
+                    if (!isModified) {
+                        isModified = true;
+                    }
                 }
             }
         });
-        
+
         removeItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 List selectedItems = addedItemList.getSelectedValuesList();
-                
+
                 for (Object selectedObject : selectedItems) {
                     T selectedItem = (T) selectedObject;
 
@@ -95,15 +144,17 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
                     //check button states
                     checkButtonStates();
 
-                    //@todo maybe we need to take this into account
-                    //modificationsConfigDialog.getModifcationsTable().updateUI();
+                    //change modified flag
+                    if (!isModified) {
+                        isModified = true;
+                    }
                 }
             }
         });
     }
 
     /**
-     * Changes the addItemButton and removeItemButton enabled states. If there
+     * Change the addItemButton and removeItemButton enabled states. If there
      * are no more available items, the addItemButton is disabled and if there
      * are no added items, the removeItemButton is disabled.
      */

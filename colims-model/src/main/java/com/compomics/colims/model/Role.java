@@ -1,7 +1,7 @@
-
 package com.compomics.colims.model;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,10 +24,9 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "group_role")
 @Entity
-public class Role extends AbstractDatabaseEntity {
-    
+public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -77,6 +76,41 @@ public class Role extends AbstractDatabaseEntity {
 
     public void setRoleHasPermissions(List<RoleHasPermission> roleHasPermissions) {
         this.roleHasPermissions = roleHasPermissions;
-    }    
-        
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Role other = (Role) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public int compareTo(Role o) {
+        return name.compareToIgnoreCase(o.getName());
+    }
 }

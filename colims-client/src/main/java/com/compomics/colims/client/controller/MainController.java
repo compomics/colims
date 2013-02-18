@@ -69,6 +69,9 @@ public class MainController implements ActionListener {
                 showUnexpectedErrorDialog(e.getMessage());
             }
         });
+        
+        //register to event bus
+        eventBus.register(this);
 
         //init login view       
         mainFrame = new MainFrame();
@@ -136,6 +139,7 @@ public class MainController implements ActionListener {
      */
     @Subscribe
     public void onMessageEvent(MessageEvent messageEvent) {
+        showMessageDialog(messageEvent.getMessageTitle(), messageEvent.getMessage(), messageEvent.getMessageType());
     }
 
     public void showUnexpectedErrorDialog(String message) {
@@ -159,7 +163,7 @@ public class MainController implements ActionListener {
             initAdminSection();
             //} else {
             //set admin menu invisible
-            mainFrame.getAdminMenu().setVisible(false);
+            //mainFrame.getAdminMenu().setVisible(false);
             //}
 
             //set current user in authentication bean    

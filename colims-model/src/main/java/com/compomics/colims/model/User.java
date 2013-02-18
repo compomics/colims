@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,11 +22,11 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
  * @author Niels Hulstaert
  */
 @Table(name = "user", uniqueConstraints =
-@UniqueConstraint(columnNames = {"name"}))
+        @UniqueConstraint(columnNames = {"name"}))
 @Entity
 @TypeDef(name = "encryptedString",
-typeClass = EncryptedStringType.class,
-parameters = {
+        typeClass = EncryptedStringType.class,
+        parameters = {
     @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
 })
 @XmlRootElement
@@ -40,9 +41,8 @@ parameters = {
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -77,10 +77,12 @@ public class User extends AbstractDatabaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Project> projects;
 
-    public User() {
+    public User() {       
+        userHasGroups = new ArrayList<>();
     }
 
     public User(String name) {
+        this();
         this.name = name;
     }
 
@@ -146,6 +148,14 @@ public class User extends AbstractDatabaseEntity {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Group> getGroups() {
+        List<Group> groups = new ArrayList<>();
+        for (UserHasGroup userHasGroup : userHasGroups) {
+            groups.add(userHasGroup.getGroup());
+        }
+        return groups;
     }
 
     @Override

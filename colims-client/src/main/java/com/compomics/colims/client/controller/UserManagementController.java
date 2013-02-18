@@ -21,24 +21,17 @@ import org.springframework.stereotype.Component;
 public class UserManagementController {
 
     //model    
-    private List<Role> availableRoles;
-    private List<Permission> availablePermissions;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
     private MainController mainController;
     //child controllers
+    @Autowired
     private UserCrudController userCrudController;
     @Autowired
     private EventBus eventBus;
     //services
-    @Autowired
-    private UserService userService;    
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private PermissionService permissionService;
     
     public UserManagementController() {
     }

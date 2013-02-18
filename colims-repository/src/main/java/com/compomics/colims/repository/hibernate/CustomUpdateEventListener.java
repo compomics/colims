@@ -38,8 +38,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
             entity.setUsername(sessionBean.getCurrentUser().getName());
 
             //set the modification date
-            //set the modification date
-            entity.setModificationdate(new Date());
+            entity.setModificationdate(new Date());                        
         }
     }
 }
