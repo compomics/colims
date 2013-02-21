@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import au.com.bytecode.opencsv.CSVReader;
-
 import com.google.common.io.LineReader;
 
 public class MaxQuantEvidenceParser {
@@ -17,37 +15,47 @@ public class MaxQuantEvidenceParser {
 	}
 
 	public void parse(final File evidenceFile) throws IOException {
-		for (Map<String, String> values : new EvidenceLineValuesIterator(evidenceFile)) {
-			;
-			;
+		for (Map<String, String> values : new EvidenceLineValuesIterator(evidenceFile))
 			System.out.println(values);
-		}
 
 		// Explore Apache Commons Lang Math NumberUtils to parse scientific values into numbers where appropriate
 	}
 }
 
 class EvidenceLineValuesIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
-	private FileReader	fileReader	= null;
-	private CSVReader	csvReader	= null;
-	private String[]	nextLine	= null;
-	private String[]	headers		= new String[0];
+	static final char	delimiter	= '\t';
+
+	FileReader			fileReader	= null;
+	LineReader			lineReader	= null;
+	String[]			nextLine	= null;
+	String[]			headers		= new String[0];
 
 	public EvidenceLineValuesIterator(final File evidenceFile) throws IOException {
-		fileReader = new FileReader(evidenceFile);
 		// Extract headers
-		LineReader lineReader = new LineReader(fileReader);
+		fileReader = new FileReader(evidenceFile);
+		lineReader = new LineReader(fileReader);
 		String readLine = lineReader.readLine();
-		char delimiter = '\t';
 
 		// Determine the headers for this particular file, so we can assign values to the right key in our map
 		headers = readLine.split("" + delimiter);
 
-		// Store the reference to the csvReader
-		csvReader = new CSVReader(fileReader, delimiter, '"', '\\', 0, false, false);
+		// Initialize the first line in the nextLine field
+		advanceLine();
+	}
 
-		// Store the reference to the next line used in hasNext
-		nextLine = csvReader.readNext();
+	void advanceLine() {
+		// Advance to the next line
+		try {
+			String readLine = lineReader.readLine();
+			if (readLine != null) {
+				nextLine = readLine.split("" + delimiter);
+				return;
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		nextLine = null;
 	}
 
 	@Override
@@ -70,14 +78,8 @@ class EvidenceLineValuesIterator implements Iterable<Map<String, String>>, Itera
 		for (int i = 0; i < nextLine.length; i++)
 			lineValues.put(headers[i], nextLine[i]);
 
-		// Advance csvReader to nextLine
-		try {
-			nextLine = csvReader.readNext();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			nextLine = null;
-		}
+		// Advance to the next line for the next invocation
+		advanceLine();
 
 		return lineValues;
 	}
