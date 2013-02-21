@@ -99,6 +99,13 @@
             <version>1.7</version>
         </dependency>
         
+        <!-- opencsv for parsing comma-separated values files -->
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
+        
         <!-- compomics dependencies -->
         <dependency>
             <groupId>com.compomics</groupId>
