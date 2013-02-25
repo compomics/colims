@@ -19,7 +19,7 @@ class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, It
     FileReader fileReader = null;
     LineReader lineReader = null;
     String[] nextLine = null;
-    String[] headers = new String[0];
+    private String[] headers = new String[0];
 
     public TabularFileLineValuesIterator(final File evidenceFile) throws IOException {
         // Extract headers
@@ -32,6 +32,10 @@ class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, It
 
         // Initialize the first line in the nextLine field
         advanceLine();
+    }
+
+    String[] getHeaders() {
+        return headers.clone();
     }
 
     void advanceLine() {

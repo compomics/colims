@@ -42,4 +42,21 @@ public class TabularFileLineValuesIteratorTest {
         Assert.assertEquals("0", last.get(EvidenceHeaders.PIF.column));
         Assert.assertEquals("1110", last.get(EvidenceHeaders.Protein_Group_IDs.column));
     }
+
+    @Test
+    public void testGetHeaders() throws IOException {
+        TabularFileLineValuesIterator tflvi = new TabularFileLineValuesIterator(getFile("testdata/msms_subset_1000.tsv"));
+
+        String[] headers = tflvi.getHeaders();
+        for (String header : headers) {
+            String safe = header.replaceAll(" |\\[|\\]|/|\\(|\\)|-|\\.", "_");
+            safe = safe.replace("__", "_").replace("__", "_");
+            safe = safe.replaceFirst("_$", "");
+            // Print headers safe for inclusion in an Enum
+            // System.out.println(String.format("%s(\"%s\"),", safe, header));
+        }
+
+        Assert.assertEquals("Protein Group IDs", headers[1]);
+        Assert.assertEquals("Neutral loss level", headers[53]);
+    }
 }
