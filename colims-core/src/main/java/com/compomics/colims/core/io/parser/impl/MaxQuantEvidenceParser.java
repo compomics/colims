@@ -9,13 +9,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.SearchEngine;
 
 public class MaxQuantEvidenceParser {
     public void parse(final File evidenceFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
 
-        // Create and persist objects for all lines in evidence file
+        // TODO Probably retrieve search engine from database instead
+        SearchEngine engine = new SearchEngine();
+
+        // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
             Peptide peptide = extractPeptide(values);
@@ -61,11 +65,7 @@ public class MaxQuantEvidenceParser {
 
         // Unfortunately, there are different formats in use for the accession codes, handle each case we find here
 
-        List<String> regexes = new ArrayList<>();
-        // gi|153807749|ref|ZP_01960417.1| hypothetical protein BACCAC_02032 [Bacteroides caccae ATCC 43185];
-        regexes.add("gi\\|\\d+\\|ref\\|(.+?)\\|");
-        // IPI:IPI00257882.7|SWISS-PROT:P12955|TREMBL:A8K3Z1;A8K416;A8K696;A8MX47|ENSEMBL:ENSP00000244137|REFSEQ:...
-        regexes.add("IPI:(.+?)\\|");
+        List<String> regexes = getProteinAccessioncodeMatchingRegexes();
 
         // Add all occurrences of any matches found in entireLine for any of the patterns
         List<String> accessionCodes = new ArrayList<>();
@@ -79,6 +79,15 @@ public class MaxQuantEvidenceParser {
         // If we're still missing accession codes, we probably should adjust or add our patterns
         assert !accessionCodes.isEmpty() : entireLine;
         return accessionCodes;
+    }
+
+    static List<String> getProteinAccessioncodeMatchingRegexes() {
+        List<String> regexes = new ArrayList<>();
+        // gi|153807749|ref|ZP_01960417.1| hypothetical protein BACCAC_02032 [Bacteroides caccae ATCC 43185];
+        regexes.add("gi\\|\\d+\\|ref\\|(.+?)\\|");
+        // IPI:IPI00257882.7|SWISS-PROT:P12955|TREMBL:A8K3Z1;A8K416;A8K696;A8MX47|ENSEMBL:ENSP00000244137|REFSEQ:...
+        regexes.add("IPI:(.+?)\\|");
+        return regexes;
     }
 }
 
