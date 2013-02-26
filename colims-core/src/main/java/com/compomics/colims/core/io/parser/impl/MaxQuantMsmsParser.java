@@ -2,11 +2,17 @@ package com.compomics.colims.core.io.parser.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.QuantificationGroup;
+import com.compomics.colims.model.Spectrum;
 
 public class MaxQuantMsmsParser {
     private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
@@ -17,26 +23,83 @@ public class MaxQuantMsmsParser {
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
-            // Get the id line value
+            //Create objects
+            Spectrum spectrum = createSpectrum(values);
+            Peptide peptide = createPeptide(values);
+            //Add peptide to spectrum
+            spectrum.getPeptides().add(peptide);
+
+            List<PeptideHasModification> modifications = createPeptideHasModifications(values);
+            peptide.setPeptideHasModifications(modifications);
+
+            //A unique (consecutive) identifier for each row in the msms
+            //table, which is used to cross-link the information in this file with
+            //the information stored in the other files.
             String id = values.get(MsmsHeaders.id.column);
 
-            //Get the protein accession codes
-            String proteinsLine = values.get(MsmsHeaders.Proteins.column);
-            List<String> accessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(proteinsLine);
-            log.trace(accessioncodes.toString());
+            // - Unannotated in documentation -
+            Double simpleMassError = Double.valueOf(values.get(MsmsHeaders.Simple_Mass_Error_ppm.column));
 
-            String sequence = values.get(MsmsHeaders.Sequence.column);
-            log.trace(sequence);
+            //Andromeda score for the best associated MS/MS spectrum.
+            Double score = Double.valueOf(values.get(MsmsHeaders.Score.column));
 
-            String modifiedSequence = values.get(MsmsHeaders.Modified_Sequence.column);
+            //Posterior Error Probability
+            Double pep = Double.valueOf(values.get(MsmsHeaders.PEP.column));
 
-            int charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));
+            //The type of precursor ion as identified by MaxQuant.
+            String type = values.get(MsmsHeaders.Type.column);
 
-            double m_z = Double.valueOf(values.get(MsmsHeaders.m_z.column));
-
-            double simpleMassError = Double.valueOf(values.get(MsmsHeaders.Simple_Mass_Error_ppm.column));
-
+            //TODO Create objects
+            QuantificationGroup quantificationGroup = new QuantificationGroup();
         }
+    }
+
+    Spectrum createSpectrum(final Map<String, String> values) {
+        //The charge-state of the precursor ion.
+        Integer charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));
+
+        //The mass-over-charge of the precursor ion.
+        Double m_z = Double.valueOf(values.get(MsmsHeaders.m_z.column));
+
+        //Set field values on Spectrum 
+        Spectrum spectrum = new Spectrum();
+        spectrum.setCharge(charge);
+        spectrum.setMzRatio(m_z);
+        spectrum.setPeptides(new ArrayList<Peptide>()); // XXX This line can go when this field is initialized in class
+        return spectrum;
+    }
+
+    Peptide createPeptide(final Map<String, String> values) {
+        //The identified AA sequence of the peptide.
+        String sequence = values.get(MsmsHeaders.Sequence.column);
+
+        //The charge corrected mass of the precursor ion.
+        Double massCorrected = Double.valueOf(values.get(MsmsHeaders.Mass.column));
+
+        //The mass analyzer used to record the MS/MS spectrum.
+        Double massAnalyzer = Double.valueOf(values.get(MsmsHeaders.Mass_analyzer.column));
+
+        //Create peptide
+        Peptide peptide = new Peptide();
+        peptide.setTheoreticalMass(massCorrected);
+        peptide.setExperimentalMass(massAnalyzer);
+        peptide.setSequence(sequence);
+        peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
+        return peptide;
+    }
+
+    List<PeptideHasModification> createPeptideHasModifications(final Map<String, String> values) {
+        //Sequence representation including the post-translational
+        //modifications (abbreviation of the modification in brackets
+        //before the modified AA). The sequence is always surrounded
+        //by underscore characters ('_').
+        String modifiedSequence = values.get(MsmsHeaders.Modified_Sequence.column);
+        String modifications = values.get(MsmsHeaders.Modifications.column);
+
+        List<PeptideHasModification> peptideModifications = new ArrayList<>();
+        //TODO parse modifications and add them to the above list
+
+        return peptideModifications;
     }
 }
 
