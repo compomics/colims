@@ -1,9 +1,10 @@
 
 package com.compomics.colims.model.comparator;
 
-import com.compomics.colims.model.Spectrum;
 import java.io.Serializable;
 import java.util.Comparator;
+
+import com.compomics.colims.model.Spectrum;
 
 /**
  *

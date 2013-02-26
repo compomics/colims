@@ -3,11 +3,28 @@
  */
 package com.compomics.colims.core.io.model;
 
-import com.compomics.mslims.util.mascot.MascotIdentifiedSpectrum;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+
 import org.apache.log4j.Logger;
+
+import com.compomics.mslims.util.mascot.MascotIdentifiedSpectrum;
 
 /*
  * CVS information:

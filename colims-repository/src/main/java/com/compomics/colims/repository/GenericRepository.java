@@ -7,7 +7,7 @@ package com.compomics.colims.repository;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import org.hibernate.LockMode;
+
 import org.hibernate.LockOptions;
 
 /**

@@ -3,12 +3,13 @@
  */
 package com.compomics.colims.core.io.model;
 
-import com.compomics.util.interfaces.SpectrumFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
+
+import com.compomics.util.interfaces.SpectrumFile;
 
 /*
  * CVS information:

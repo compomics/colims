@@ -4,21 +4,20 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.model.User;
-import com.compomics.colims.repository.UserRepository;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.repository.GroupRepository;
-import com.compomics.colims.repository.PermissionRepository;
-import com.compomics.colims.repository.RoleRepository;
 import java.util.List;
+
 import org.hibernate.Hibernate;
 import org.hibernate.LockOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.User;
+import com.compomics.colims.repository.GroupRepository;
+import com.compomics.colims.repository.PermissionRepository;
+import com.compomics.colims.repository.RoleRepository;
+import com.compomics.colims.repository.UserRepository;
 
 /**
  *

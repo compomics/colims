@@ -4,18 +4,17 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.model.Project;
-import com.compomics.colims.repository.ProjectRepository;
-import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Sample;
-import java.io.Serializable;
 import java.util.List;
-import org.hibernate.Hibernate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Sample;
+import com.compomics.colims.repository.ProjectRepository;
 
 /**
  *

@@ -1,19 +1,21 @@
 package com.compomics.colims.core.service.impl;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.compomics.colims.core.io.IOManager;
 import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *

@@ -1,6 +1,7 @@
 package com.compomics.colims.repository.hibernate;
 
 import javax.annotation.PostConstruct;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;

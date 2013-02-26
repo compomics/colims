@@ -1,5 +1,18 @@
 package com.compomics.colims.core.io.mapper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.io.model.PeptideShakerImport;
 import com.compomics.colims.core.service.ProteinService;
@@ -21,17 +34,8 @@ import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+
 import eu.isas.peptideshaker.myparameters.PSSettings;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.log4j.Logger;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
  *

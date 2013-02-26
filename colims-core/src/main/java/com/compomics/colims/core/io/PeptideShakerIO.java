@@ -1,8 +1,9 @@
 package com.compomics.colims.core.io;
 
+import java.io.File;
+
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.model.PeptideShakerImport;
-import java.io.File;
 
 /**
  *

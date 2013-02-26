@@ -4,17 +4,16 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.GroupService;
-import com.compomics.colims.core.service.RoleService;
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.repository.GroupRepository;
-import com.compomics.colims.repository.RoleRepository;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.core.service.RoleService;
+import com.compomics.colims.model.Role;
+import com.compomics.colims.repository.RoleRepository;
 
 /**
  *

@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Modification;
-import java.util.List;
 
 /**
  *

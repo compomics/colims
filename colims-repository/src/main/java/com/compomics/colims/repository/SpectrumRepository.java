@@ -1,8 +1,8 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.Spectrum;
 import java.util.List;
+
+import com.compomics.colims.model.Spectrum;
 
 /**
  *

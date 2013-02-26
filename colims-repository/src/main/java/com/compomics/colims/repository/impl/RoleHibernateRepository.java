@@ -4,9 +4,10 @@
  */
 package com.compomics.colims.repository.impl;
 
+import org.springframework.stereotype.Repository;
+
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.RoleRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  *

@@ -1,10 +1,6 @@
 
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +9,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.model.Group;
+import com.compomics.colims.model.Permission;
+import com.compomics.colims.model.Role;
+import com.compomics.colims.model.User;
 
 /**
  *

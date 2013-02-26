@@ -1,11 +1,12 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.repository.ModificationRepository;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.repository.ModificationRepository;
 
 /**
  *

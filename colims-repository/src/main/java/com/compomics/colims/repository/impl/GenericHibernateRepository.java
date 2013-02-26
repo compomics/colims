@@ -1,12 +1,11 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.repository.GenericRepository;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Criteria;
-import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -15,6 +14,8 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.compomics.colims.repository.GenericRepository;
 
 /**
  *

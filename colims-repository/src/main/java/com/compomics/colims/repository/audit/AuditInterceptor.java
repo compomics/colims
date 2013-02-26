@@ -1,11 +1,13 @@
 package com.compomics.colims.repository.audit;
 
-import com.compomics.colims.repository.SessionBean;
 import java.io.Serializable;
 import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
+
+import com.compomics.colims.repository.SessionBean;
 
 /**
  * Hibernate interceptor for auditing purposes. Fills in the field in the

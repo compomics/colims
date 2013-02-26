@@ -1,7 +1,8 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.User;
 import org.springframework.stereotype.Component;
+
+import com.compomics.colims.model.User;
 
 /**
  *

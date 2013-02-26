@@ -1,12 +1,14 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.ModificationService;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.repository.ModificationRepository;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.core.service.ModificationService;
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.repository.ModificationRepository;
 
 /**
  *
