@@ -1,10 +1,12 @@
 package com.compomics.colims.repository.impl;
 
+import java.util.List;
+
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
-import java.util.List;
-import org.hibernate.Query;
-import org.springframework.stereotype.Repository;
 
 /**
  *
@@ -14,14 +16,11 @@ import org.springframework.stereotype.Repository;
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
     @Override
-    public Protein findByAccession(String accession) {
-        Query namedQuery = getCurrentSession().getNamedQuery("Protein.findByAccession");
-        namedQuery.setParameter("accession", accession);
-        List<Protein> resultList = namedQuery.list();
-        if (!resultList.isEmpty()) {
-            return resultList.get(0);
-        } else {
-            return null;
-        }
+    public Protein findByAccession(final String accession) {
+        // XXX An alternative GHR method 'getByCriteria' that calls Criteria#uniqueResult() would make this a one-liner:
+        // return getByCriteria(...)
+        // TODO With this alternative implementation we can remove the hbm/protein.hbm.xml resource file entirely
+        List<Protein> list = findByCriteria(Restrictions.eq("accession", accession));
+        return list.isEmpty() ? null : list.get(0);
     }
 }
