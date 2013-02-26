@@ -6,10 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.PeptideHasProtein;
+import com.compomics.colims.model.Protein;
+import com.compomics.colims.repository.ProteinRepository;
+import com.compomics.util.protein.Header.DatabaseType;
 
+@Service
 public class MaxQuantEvidenceParser {
+    MaxQuantEvidenceParser() {/*Do not allow just anyone to instantiate this class, we need access to beans!*/
+    }
+
+    @Autowired
+    ProteinRepository proteinRepository;
+
     public void parse(final File evidenceFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
@@ -20,16 +34,36 @@ public class MaxQuantEvidenceParser {
             Peptide peptide = createPeptide(values);
             // TODO Persist the peptide
 
-            // Accession codes can be parsed from the lines stored in the Proteins column
-            String entireLine = values.get(EvidenceHeaders.Proteins.column);
-            List<String> proteinAccessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(entireLine);
-            System.out.println(proteinAccessioncodes);
-            // TODO Locate the corresponding proteins and link the peptide to those proteins
+            linkPeptideToProtein(peptide, values);
 
             //Create modifications
             List<PeptideHasModification> modifications = createPeptideHasModifications(values);
             peptide.setPeptideHasModifications(modifications);
         }
+    }
+
+    void linkPeptideToProtein(final Peptide peptide, final Map<String, String> values) {
+        // Accession codes can be parsed from the lines stored in the Proteins column
+        String entireLine = values.get(EvidenceHeaders.Proteins.column);
+        List<String> proteinAccessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(entireLine);
+
+        // Locate the first protein by accession and link the peptide to that protein through PeptideHasProtein
+        String firstAccession = proteinAccessioncodes.get(0);
+        Protein protein = proteinRepository.findByAccession(firstAccession);
+        if (protein == null) {
+            String sequence = values.get(EvidenceHeaders.Sequence.column);
+            DatabaseType databaseType = DatabaseType.Unknown;
+            protein = new Protein(firstAccession, sequence, databaseType);
+            //TODO Persist protein, probably, depending on the protein availability method decided on by Davy & users
+        }
+
+        // Create a PeptideHasProtein instance to link protein and peptide
+        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
+        peptideHasProtein.setProtein(protein);
+        peptideHasProtein.setPeptide(peptide);
+        // Store the reference between each of the two in either instance
+        protein.getPeptideHasProteins().add(peptideHasProtein);
+        peptide.getPeptideHasProteins().add(peptideHasProtein);
     }
 
     /**
@@ -50,6 +84,7 @@ public class MaxQuantEvidenceParser {
         peptide.setTheoreticalMass(massCorrected);
         peptide.setSequence(sequence);
         peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
+        peptide.setPeptideHasProteins(new ArrayList<PeptideHasProtein>()); // XXX This line can go when this field is initialized in class
         return peptide;
     }
 

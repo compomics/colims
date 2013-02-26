@@ -7,18 +7,27 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Peptide;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml" })
 public class MaxQuantEvidenceParserTest {
     File getFile(final String filename) {
         return new File(getClass().getClassLoader().getResource(filename).getFile());
     }
 
-    @Test
-    public void testMaxQuantEvidenceParser() throws IOException {
-        MaxQuantEvidenceParser parser = new MaxQuantEvidenceParser();
+    @Autowired
+    MaxQuantEvidenceParser parser;
 
+    @Test
+    @Transactional
+    public void testMaxQuantEvidenceParser() throws IOException {
         // Parse file
         parser.parse(getFile("testdata/evidence_subset_1000.tsv"));
 
