@@ -6,7 +6,12 @@ package com.compomics.colims.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -38,18 +43,18 @@ public abstract class AbstractDatabaseEntity implements Serializable {
     }
 
     public Date getCreationdate() {
-        return creationDate;
+        return new Date(creationDate.getTime());
     }
 
     public void setCreationdate(Date creationdate) {
-        this.creationDate = creationdate;
+        this.creationDate = new Date(creationdate.getTime());
     }
 
     public Date getModificationdate() {
-        return modificationDate;
+        return new Date(modificationDate.getTime());
     }
 
     public void setModificationdate(Date aModificationdate) {
-        modificationDate = aModificationdate;
+        modificationDate = new Date(aModificationdate.getTime());
     }
 }
