@@ -2,24 +2,22 @@ package com.compomics.colims.core.io.parser.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.SearchEngine;
+import com.compomics.colims.model.PeptideHasModification;
 
 public class MaxQuantEvidenceParser {
     public void parse(final File evidenceFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
 
-        // TODO Probably retrieve search engine from database instead
-        SearchEngine engine = new SearchEngine();
-
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
-            Peptide peptide = extractPeptide(values);
+            Peptide peptide = createPeptide(values);
             // TODO Persist the peptide
 
             // Accession codes can be parsed from the lines stored in the Proteins column
@@ -28,6 +26,9 @@ public class MaxQuantEvidenceParser {
             System.out.println(proteinAccessioncodes);
             // TODO Locate the corresponding proteins and link the peptide to those proteins
 
+            //Create modifications
+            List<PeptideHasModification> modifications = createPeptideHasModifications(values);
+            peptide.setPeptideHasModifications(modifications);
         }
     }
 
@@ -37,18 +38,35 @@ public class MaxQuantEvidenceParser {
      * @param values
      * @return
      */
-    static Peptide extractPeptide(final Map<String, String> values) {
-        // Extract relevant fields
+    static Peptide createPeptide(final Map<String, String> values) {
+        //The identified AA sequence of the peptide.
         String sequence = values.get(EvidenceHeaders.Sequence.column);
-        String theoreticalMassStr = values.get(EvidenceHeaders.Mass.column);
-        Double theoreticalMass = Double.valueOf(theoreticalMassStr);
 
-        // Create peptide
+        //The charge corrected mass of the precursor ion.
+        Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+
+        //Create peptide
         Peptide peptide = new Peptide();
+        peptide.setTheoreticalMass(massCorrected);
         peptide.setSequence(sequence);
-        peptide.setTheoreticalMass(theoreticalMass);
+        peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
         return peptide;
     }
+
+    List<PeptideHasModification> createPeptideHasModifications(final Map<String, String> values) {
+        //Sequence representation including the post-translational
+        //modifications (abbreviation of the modification in brackets
+        //before the modified AA). The sequence is always surrounded
+        //by underscore characters ('_').
+        String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
+        String modifications = values.get(EvidenceHeaders.Modifications.column);
+
+        List<PeptideHasModification> peptideModifications = new ArrayList<>();
+        //TODO parse modifications and add them to the above list
+
+        return peptideModifications;
+    }
+
 }
 
 /**

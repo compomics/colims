@@ -27,7 +27,7 @@ public class MaxQuantEvidenceParserTest {
     }
 
     @Test
-    public void testExtractPeptide() {
+    public void testCreatePeptide() {
         // Expected values
         String sequence = "ABCDEFG";
         double mass = 123.45;
@@ -38,7 +38,7 @@ public class MaxQuantEvidenceParserTest {
         values.put(EvidenceHeaders.Mass.column, Double.toString(mass));
 
         // Invoke tested method
-        Peptide peptide = MaxQuantEvidenceParser.extractPeptide(values);
+        Peptide peptide = MaxQuantEvidenceParser.createPeptide(values);
 
         // Compare values
         Assert.assertEquals(sequence, peptide.getSequence());
