@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 public abstract class AbstractDatabaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Column(name = "username")
     @Basic(optional = false)
     protected String userName;
@@ -43,7 +43,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
     }
 
     public Date getCreationdate() {
-        return new Date(creationDate.getTime());
+        return creationDate != null ? new Date(creationDate.getTime()) : null;
     }
 
     public void setCreationdate(Date creationdate) {
@@ -51,7 +51,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
     }
 
     public Date getModificationdate() {
-        return new Date(modificationDate.getTime());
+        return modificationDate != null ? new Date(modificationDate.getTime()) : null;
     }
 
     public void setModificationdate(Date aModificationdate) {

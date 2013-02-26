@@ -72,7 +72,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     }
 
     public Date getStartDate() {
-        return new Date(startDate.getTime());
+        return startDate != null? new Date(startDate.getTime()) : null;
     }
 
     public void setStartDate(Date startDate) {
