@@ -69,14 +69,11 @@ public class GuiUtils {
             throw new IllegalArgumentException("The layout of the parent container is no card layout.");
         }
 
-        JPanel card = null;
-        for (Component component : parentContainer.getComponents()) {
-            if (component.isVisible()) {
-                card = (JPanel) component;
-            }
-        }
+        for (Component component : parentContainer.getComponents())
+            if (component.isVisible())
+                return ((JPanel) component).getName();
 
-        return card.getName();
+        throw new IllegalStateException("None of the cards in parentContainer was visible; Could not getCurrentCardName");
     }
 
     /**
