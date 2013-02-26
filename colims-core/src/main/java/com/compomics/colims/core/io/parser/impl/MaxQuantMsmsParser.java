@@ -2,16 +2,40 @@ package com.compomics.colims.core.io.parser.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MaxQuantMsmsParser {
+    private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
+
     public void parse(final File msmsFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile);
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
-            // TODO
+            // Get the id line value
+            String id = values.get(MsmsHeaders.id.column);
+
+            //Get the protein accession codes
+            String proteinsLine = values.get(MsmsHeaders.Proteins.column);
+            List<String> accessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(proteinsLine);
+            log.trace(accessioncodes.toString());
+
+            String sequence = values.get(MsmsHeaders.Sequence.column);
+            log.trace(sequence);
+
+            String modifiedSequence = values.get(MsmsHeaders.Modified_Sequence.column);
+
+            int charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));
+
+            double m_z = Double.valueOf(values.get(MsmsHeaders.m_z.column));
+
+            double simpleMassError = Double.valueOf(values.get(MsmsHeaders.Simple_Mass_Error_ppm.column));
+
         }
     }
 }

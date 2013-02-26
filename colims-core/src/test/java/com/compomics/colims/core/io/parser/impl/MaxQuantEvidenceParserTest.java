@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.parser.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -44,18 +43,5 @@ public class MaxQuantEvidenceParserTest {
         // Compare values
         Assert.assertEquals(sequence, peptide.getSequence());
         Assert.assertEquals(mass, peptide.getTheoreticalMass(), 0.001);
-    }
-
-    @Test
-    public void testExtractProteinAccessioncodes() {
-        // Setup arguments
-        Map<String, String> values = new HashMap<>();
-        values.put(EvidenceHeaders.Proteins.column, "gi|150003706|ref|YP_001298450.1| rubrerythrin [Bacteroides vulgatus ATCC 8482];gi|294777471|ref|ZP_06742922.1| rubrerythrin [Bacteroides vulgatus PC510]");
-
-        // Invoke tested method
-        List<String> accessioncodes = MaxQuantEvidenceParser.extractProteinAccessioncodes(values);
-
-        // Compare values
-        Assert.assertArrayEquals(new String[] { "YP_001298450.1", "ZP_06742922.1" }, accessioncodes.toArray());
     }
 }
