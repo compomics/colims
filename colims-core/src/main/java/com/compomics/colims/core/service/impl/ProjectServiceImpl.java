@@ -50,12 +50,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void update(Project entity) {
-        update(entity);
+        projectRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(Project entity) {
-        saveOrUpdate(entity);
+        projectRepository.saveOrUpdate(entity);
     }
 
     @Override

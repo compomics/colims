@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 /*
  * CVS information:
@@ -181,4 +182,43 @@ public abstract class SpectrumFileAncestor implements SpectrumFile {
         BigDecimal bd = new BigDecimal(totalIntensity).setScale(2, RoundingMode.UP);
         return bd.doubleValue();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.filename);
+        hash = 17 * hash + Objects.hashCode(this.peaks);
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.precursorMz) ^ (Double.doubleToLongBits(this.precursorMz) >>> 32));
+        hash = 17 * hash + this.charge;
+        hash = 17 * hash + (int) (Double.doubleToLongBits(this.intensity) ^ (Double.doubleToLongBits(this.intensity) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SpectrumFileAncestor other = (SpectrumFileAncestor) obj;
+        if (!Objects.equals(this.filename, other.filename)) {
+            return false;
+        }
+        if (!Objects.equals(this.peaks, other.peaks)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.precursorMz) != Double.doubleToLongBits(other.precursorMz)) {
+            return false;
+        }
+        if (this.charge != other.charge) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.intensity) != Double.doubleToLongBits(other.intensity)) {
+            return false;
+        }
+        return true;
+    }
+        
 }

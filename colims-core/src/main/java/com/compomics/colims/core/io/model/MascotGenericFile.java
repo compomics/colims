@@ -1,8 +1,5 @@
 /**
- * Created by IntelliJ IDEA.
- * User: Lennart
- * Date: 20-jan-2004
- * Time: 10:07:23
+ * Created by IntelliJ IDEA. User: Lennart Date: 20-jan-2004 Time: 10:07:23
  */
 package com.compomics.colims.core.io.model;
 
@@ -18,83 +15,73 @@ import org.apache.log4j.Logger;
  * $Revision: 1.3 $
  * $Date: 2007/03/08 10:14:19 $
  */
-
 /**
- * This class maps a Mascot Generic File to memory. It allows for search ad retrieval as well as comparing
- * functionality.
+ * This class maps a Mascot Generic File to memory. It allows for search ad
+ * retrieval as well as comparing functionality.
  *
  * @author Lennart
  * @version $Id: MascotGenericFile.java,v 1.3 2007/03/08 10:14:19 kenny Exp $
  */
 public class MascotGenericFile extends SpectrumFileAncestor {
     // Class specific log4j logger for MascotGenericFile instances.
-    private static Logger logger = Logger.getLogger(MascotGenericFile.class);
 
+    private static Logger logger = Logger.getLogger(MascotGenericFile.class);
     /**
      * This variable holds the comments for this MascotGenericFile.
      */
     private String comments = null;
-
     /**
      * The title of the MascotGenericFile.
      */
     private String title = null;
-
     /**
-     * This HashMap will hold the charges for those ions for which a charge is known.
+     * This HashMap will hold the charges for those ions for which a charge is
+     * known.
      */
     private HashMap charges = new HashMap();
-
     /**
      * This constant defines the key in the spectrum header for the title.
      */
     private static final String TITLE = "TITLE";
-
     /**
-     * This constant defines the key in the spectrum header for the precursor M/Z and intensity.
+     * This constant defines the key in the spectrum header for the precursor
+     * M/Z and intensity.
      */
     private static final String PEPMASS = "PEPMASS";
-
     /**
-     * This constant defines the key in the spectrum header for the precursor charge. Note that this field can be
-     * omitted from a MascotGenericFile.
+     * This constant defines the key in the spectrum header for the precursor
+     * charge. Note that this field can be omitted from a MascotGenericFile.
      */
     private static final String CHARGE = "CHARGE";
-
     /**
      * This constant defines the start of a comment line.
      */
     private static final String COMMENT_START = "###";
-
     /**
      * This constant defines the start tag for the ions.
      */
     private static final String IONS_START = "BEGIN IONS";
-
     /**
      * This constant defines the ernd tag for the ions.
      */
     private static final String IONS_END = "END IONS";
-
     /**
      * This constant defines the retention time tag for the precursor ion.
      */
     private static final String RETENTION = "RTINSECONDS";
-
     /**
      * This constant defines the scan number tags for the Mascot generic file.
      */
     private static final String SCAN_NUMBERS = "SCANS";
-
     /**
-     * This Properties instance contains all the Embedded properties that are listed in a Mascot Generic File.
+     * This Properties instance contains all the Embedded properties that are
+     * listed in a Mascot Generic File.
      */
     private Properties extraEmbeddedParameters;
 
-
     /**
-     * This constructor takes the MGF File as a String as read from file or DB. The filename is specified separately
-     * here.
+     * This constructor takes the MGF File as a String as read from file or DB.
+     * The filename is specified separately here.
      *
      * @param filename String with the filename for the MGF File.
      * @param contents String with the contents of the MGF File.
@@ -105,14 +92,16 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This empty constructor enables the creation of a new MascotGenericFile via its setters.
+     * This empty constructor enables the creation of a new MascotGenericFile
+     * via its setters.
      */
     public MascotGenericFile() {
         // Empty constructor to create new file from scratch.
     }
 
     /**
-     * This constructor takes the filename of the MGF File as argument and loads it form the hard drive.
+     * This constructor takes the filename of the MGF File as argument and loads
+     * it form the hard drive.
      *
      * @param file File with the pointer to the MGF File.
      * @throws IOException when the file could not be read.
@@ -121,21 +110,23 @@ public class MascotGenericFile extends SpectrumFileAncestor {
         if (!file.exists()) {
             throw new IOException("MGF File '" + file.getCanonicalPath() + "' was not found!");
         } else {
-            StringBuilder lsb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                lsb.append(line).append("\n");
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                StringBuilder lsb = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    lsb.append(line).append("\n");
+                }
+
+                this.parseFromString(lsb.toString());
+                this.filename = file.getName();
             }
-            br.close();
-            this.parseFromString(lsb.toString());
-            this.filename = file.getName();
         }
     }
 
     /**
-     * This method checks whether the MascotIdentifiedSpectrum corresponds to this spectrum. The precise method for
-     * comparison is up to the individual implementations.
+     * This method checks whether the MascotIdentifiedSpectrum corresponds to
+     * this spectrum. The precise method for comparison is up to the individual
+     * implementations.
      *
      * @param mascotIdentifiedSpectrum MascotIdentifiedSpectrum to compare to.
      * @return boolean which indicates whether these objects correspond.
@@ -156,9 +147,11 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method allows to write the spectrum file to the specified OutputStream.
+     * This method allows to write the spectrum file to the specified
+     * OutputStream.
      *
-     * @param outputStream OutputStream to write the file to. This Stream will <b>NOT</b> be closed by this method.
+     * @param outputStream OutputStream to write the file to. This Stream will
+     * <b>NOT</b> be closed by this method.
      * @throws IOException when the write operation fails.
      */
     @Override
@@ -167,12 +160,14 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method allows to write the MascotGenericFile to the specified OutputStream.
+     * This method allows to write the MascotGenericFile to the specified
+     * OutputStream.
      *
-     * @param aOut                OutputStream to write the file to. This Stream will <b>NOT</b> be closed by this
-     *                            method.
-     * @param aSubstituteFilename if this boolean is true, the filename is set to be the title in the output header. If
-     *                            it is false, the title is set as the title.
+     * @param aOut OutputStream to write the file to. This Stream will
+     * <b>NOT</b> be closed by this method.
+     * @param aSubstituteFilename if this boolean is true, the filename is set
+     * to be the title in the output header. If it is false, the title is set as
+     * the title.
      * @throws IOException when the write operation fails.
      */
     public void writeToStream(OutputStream aOut, boolean aSubstituteFilename) throws IOException {
@@ -180,7 +175,8 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method allows the caller to write the spectrum file to the specified folder using its current filename.
+     * This method allows the caller to write the spectrum file to the specified
+     * folder using its current filename.
      *
      * @param parentDir File with the parent directory to put the file in.
      * @throws IOException whenever the write process failed.
@@ -191,10 +187,12 @@ public class MascotGenericFile extends SpectrumFileAncestor {
             throw new IOException("Parent '" + parentDir.getCanonicalPath() + "' does not exist or is not a directory!");
         }
         File output = new File(parentDir, this.filename);
-        FileOutputStream fos = new FileOutputStream(output);
-        this.writeToStream(fos);
-        fos.flush();
-        fos.close();
+        
+        //write to stream
+        try (FileOutputStream fos = new FileOutputStream(output)) {
+            this.writeToStream(fos);
+            fos.flush();
+        }
     }
 
     /**
@@ -233,12 +231,12 @@ public class MascotGenericFile extends SpectrumFileAncestor {
         title = aTitle;
     }
 
-
     /**
-     * This method returns the Value of the corresponding embedded parameter Key.
+     * This method returns the Value of the corresponding embedded parameter
+     * Key.
      *
      * @param aKey String with the Key of the embedded parameter.
-     * @return String   Value of the embedded parameter Key.
+     * @return String Value of the embedded parameter Key.
      */
     public String getExtraEmbeddedProperty(String aKey) {
         String lReturn = "NoSuchKey";
@@ -251,10 +249,10 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This private method can be called during the parsing of the aFileContents String to save embedded parameters in
-     * the Properties instance.
+     * This private method can be called during the parsing of the aFileContents
+     * String to save embedded parameters in the Properties instance.
      *
-     * @param aKey   Embedded Property Key.
+     * @param aKey Embedded Property Key.
      * @param aValue Embedded Property Value.
      */
     private void addExtraEmbeddedParameter(String aKey, String aValue) {
@@ -265,8 +263,9 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method compares two MascotGenericFiles and allows them to be sorted relative to each other. Sorting is done
-     * on the basis of precursor M/Z (we cannot always calculate mass due to the possible absence of charge
+     * This method compares two MascotGenericFiles and allows them to be sorted
+     * relative to each other. Sorting is done on the basis of precursor M/Z (we
+     * cannot always calculate mass due to the possible absence of charge
      * information).
      *
      * @param anObject MascotGenericFile to compare this instance to.
@@ -294,10 +293,12 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method checks for equality between this object and the specified object.
+     * This method checks for equality between this object and the specified
+     * object.
      *
      * @param anObject Object to test equality with.
-     * @return boolean indicating whether the presented objects are equal ('true') or not ('false').
+     * @return boolean indicating whether the presented objects are equal
+     * ('true') or not ('false').
      */
     @Override
     public boolean equals(Object anObject) {
@@ -305,9 +306,9 @@ public class MascotGenericFile extends SpectrumFileAncestor {
 
         if (anObject != null && anObject instanceof MascotGenericFile) {
             MascotGenericFile other = (MascotGenericFile) anObject;
-            if (this.filename.equals(other.filename) && this.charge == other.charge &&
-                    this.title.equals(other.title) && this.peaks.equals(other.peaks) &&
-                    this.charges.equals(other.charges)) {
+            if (this.filename.equals(other.filename) && this.charge == other.charge
+                    && this.title.equals(other.title) && this.peaks.equals(other.peaks)
+                    && this.charges.equals(other.charges)) {
                 result = true;
             }
         }
@@ -338,8 +339,9 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     /**
      * This method returns a String representation of this MGF file.
      *
-     * @param aSubstituteFilename if this boolean is true, the filename is set to be the title in the output header. If
-     *                            it is false, the title is set as the title.
+     * @param aSubstituteFilename if this boolean is true, the filename is set
+     * to be the title in the output header. If it is false, the title is set as
+     * the title.
      * @return String with the String representation of this object.
      */
     public String toString(boolean aSubstituteFilename) {
@@ -356,9 +358,9 @@ public class MascotGenericFile extends SpectrumFileAncestor {
         return result;
     }
 
-
     /**
-     * This method formats an integer to a charge String as used in a MascotGenericFile (eg., 1 to 1+).
+     * This method formats an integer to a charge String as used in a
+     * MascotGenericFile (eg., 1 to 1+).
      *
      * @param aCharge int with the charge to format.
      * @return String with the formatted charge (eg., 1+).
@@ -374,10 +376,13 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method extracts an integer from Mascot Generic File charge notation, eg., 1+. Remark that the charge can
-     * also be annotated as "+2,+3", in those rather cases the charge is also "not known." So we save a zero value.
+     * This method extracts an integer from Mascot Generic File charge notation,
+     * eg., 1+. Remark that the charge can also be annotated as "+2,+3", in
+     * those rather cases the charge is also "not known." So we save a zero
+     * value.
      *
-     * @param aCharge String with the Mascot Generic File charge notation (eg., 1+).
+     * @param aCharge String with the Mascot Generic File charge notation (eg.,
+     * 1+).
      * @return int with the corresponding integer.
      */
     private int extractCharge(String aCharge) {
@@ -418,7 +423,8 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method will parse the input String and read all the information present into a MascotGenericFile object.
+     * This method will parse the input String and read all the information
+     * present into a MascotGenericFile object.
      *
      * @param aFileContent String with the contents of the file.
      */
@@ -446,16 +452,13 @@ public class MascotGenericFile extends SpectrumFileAncestor {
                 // Read all starting comments.
                 if (line.startsWith("#")) {
                     comments.append(line).append("\n");
-                }
-                // BEGIN IONS marks the start of the real file.
+                } // BEGIN IONS marks the start of the real file.
                 else if (line.equals(IONS_START)) {
                     inSpectrum = true;
-                }
-                // END IONS marks the end.
+                } // END IONS marks the end.
                 else if (line.equals(IONS_END)) {
                     inSpectrum = false;
-                }
-                // Read embedded parameters. The most important parameters (such as TITLE, PEPMASS and optional CHARGE fields )
+                } // Read embedded parameters. The most important parameters (such as TITLE, PEPMASS and optional CHARGE fields )
                 // will be saved as instance variables as well as in the iEmbeddedParameter Properties instance.
                 else if (inSpectrum && (line.indexOf("=") >= 0)) {
                     // Find the starting location of the value (which is one beyond the location
@@ -488,8 +491,7 @@ public class MascotGenericFile extends SpectrumFileAncestor {
                         // Save the extra embedded parameter in iEmbeddedParameter
                         addExtraEmbeddedParameter(aKey, aValue);
                     }
-                }
-                // Read peaks, minding the possibility of charge present!
+                } // Read peaks, minding the possibility of charge present!
                 else if (inSpectrum) {
                     // We're inside the spectrum, with no '=' in the line, so it should be
                     // a peak line.
@@ -506,7 +508,7 @@ public class MascotGenericFile extends SpectrumFileAncestor {
                         this.peaks.put(mass, intensity);
                         if (st.hasMoreTokens()) {
                             int charge = this.extractCharge(st.nextToken());
-                            charges.put(mass, new Integer(charge));
+                            charges.put(mass, Integer.valueOf(charge));
                         }
                     } else {
                         logger.error("\n\nUnrecognized line at line number " + lineCount + ": '" + line + "'!\n");
@@ -524,11 +526,13 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method extracts the retention time from the RTINSECONDS key, or looks for 'min' in the TITLE.
+     * This method extracts the retention time from the RTINSECONDS key, or
+     * looks for 'min' in the TITLE.
      *
-     * @return The retention time as a double value.
-     *         If this MGF file is a sum of scans, the double[] consists of multiple retention times for each scan number.
-     *         And if neither the RTINSECONDS value, or the 'min' value in the title was found, the method returns NULL.
+     * @return The retention time as a double value. If this MGF file is a sum
+     * of scans, the double[] consists of multiple retention times for each scan
+     * number. And if neither the RTINSECONDS value, or the 'min' value in the
+     * title was found, the method returns NULL.
      */
     public double[] getRetentionInSeconds() {
         double[] lResult = null;
@@ -568,11 +572,13 @@ public class MascotGenericFile extends SpectrumFileAncestor {
     }
 
     /**
-     * This method extracts the retention time from the RTINSECONDS key, or looks for 'min' in the TITLE.
+     * This method extracts the retention time from the RTINSECONDS key, or
+     * looks for 'min' in the TITLE.
      *
-     * @return The retention time as a double value.
-     *         If this MGF file is a sum of scans, the double[] consists of multiple retention times for each scan number.
-     *         And if neither the RTINSECONDS value, or the 'min' value in the title was found, the method returns NULL.
+     * @return The retention time as a double value. If this MGF file is a sum
+     * of scans, the double[] consists of multiple retention times for each scan
+     * number. And if neither the RTINSECONDS value, or the 'min' value in the
+     * title was found, the method returns NULL.
      */
     public int[] getScanNumbers() {
         int[] lResult = null;
@@ -589,16 +595,15 @@ public class MascotGenericFile extends SpectrumFileAncestor {
         return lResult;
     }
 
-
     /**
      * This method writes the MGF object to the specified Writer.
      *
-     * @param aWriter             Writer to write a String representation of this class to.
-     * @param aSubstituteFilename if this boolean is true, the filename is set to be the title in the output header. If
-     *                            it is false, the title is set as the title.
+     * @param aWriter Writer to write a String representation of this class to.
+     * @param aSubstituteFilename if this boolean is true, the filename is set
+     * to be the title in the output header. If it is false, the title is set as
+     * the title.
      * @throws IOException when the writing failed.
      */
-
     private void writeToWriter(Writer aWriter, boolean aSubstituteFilename) throws IOException {
         BufferedWriter bw = new BufferedWriter(aWriter);
 

@@ -34,4 +34,5 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
 
         assertEquals(3, users.size());
     }
+        
 }

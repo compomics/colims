@@ -48,11 +48,11 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public void update(Permission entity) {
-        update(entity);
+        permissionRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(Permission entity) {
-        saveOrUpdate(entity);
+        permissionRepository.saveOrUpdate(entity);
     }
 }

@@ -16,6 +16,7 @@ import org.hibernate.type.Type;
 @Deprecated
 public class AuditInterceptor extends EmptyInterceptor {
 
+    private static final long serialVersionUID = 1L;
     private Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
     private SessionBean sessionBean;
 

@@ -11,6 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -21,6 +25,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "group_role")
 @Entity
 public class Role extends AbstractDatabaseEntity {
+    
+    private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +43,8 @@ public class Role extends AbstractDatabaseEntity {
     @Column(name = "description")
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
+    //@Fetch(FetchMode.JOIN)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<RoleHasPermission> roleHasPermissions;
 
     public Long getId() {

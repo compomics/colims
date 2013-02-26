@@ -47,11 +47,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void update(Group entity) {
-        update(entity);
+        groupRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(Group entity) {
-        saveOrUpdate(entity);
+        groupRepository.saveOrUpdate(entity);
     }
 }

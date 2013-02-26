@@ -78,7 +78,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.2</version>
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
         </dependency>
                                 
         <!-- db dependencies -->

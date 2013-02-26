@@ -17,7 +17,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "project")
 @Entity
 public class Project extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

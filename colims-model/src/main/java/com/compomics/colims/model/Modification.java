@@ -16,7 +16,9 @@ import javax.persistence.*;
 @Entity
 //@todo add modification_param class
 public class Modification extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

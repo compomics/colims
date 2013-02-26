@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Table(name = "quantification_file")
 @Entity
 public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

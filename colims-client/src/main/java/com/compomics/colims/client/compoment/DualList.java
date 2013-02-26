@@ -2,9 +2,15 @@ package com.compomics.colims.client.compoment;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  *
@@ -13,6 +19,7 @@ import org.jdesktop.observablecollections.ObservableList;
 public class DualList<T extends Comparable> extends javax.swing.JPanel {
 
     //model
+    private BindingGroup bindingGroup;
     private ObservableList<T> availableItemBindingList;
     private ObservableList<T> addedItemBindingList;
 
@@ -20,69 +27,91 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
      * Creates new form DualList
      */
     public DualList() {
-        initComponents();        
+        initComponents();
+
+        //init the component
+        init();
     }
-
+    
+    public void populateLists(List<T> availableItems, List<T> addedItems) {
+        availableItemBindingList.clear();
+        availableItemBindingList.addAll(availableItems);
+        addedItemBindingList.clear();
+        addedItemBindingList.addAll(addedItems);
+    }
+    
     private void init() {
-
+        //init bindings
+        bindingGroup = new BindingGroup();
+        
+        availableItemBindingList = ObservableCollections.observableList(new ArrayList());
+        JListBinding availableItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, availableItemBindingList, availableItemList);
+        bindingGroup.addBinding(availableItemBinding);
+        
+        addedItemBindingList = ObservableCollections.observableList(new ArrayList());
+        JListBinding addedItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, addedItemBindingList, addedItemList);
+        bindingGroup.addBinding(addedItemBinding);
+        
+        bindingGroup.bind();
 
         //add action listeners
         addItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-//                List selectedValues = availableItemList.getSelectedValuesList();
-//
-//                for (Object selectedObject : selectedValues) {
-//                    T selectedItem = (T) selectedObject;
-//                    addedItemBindingList.add(selectedItem);
-//                    Collections.sort(addedItemBindingList);
-//                    availableItemBindingList.remove(selectedItem);
-//                    selectedModification.getAffectedAminoAcids().add(aminoAcid);
-//
-//                    //enable remove button if there's more then one affected amino acid
-//                    changeRemoveAminoAcidButtonState(selectedModification);
-//
-//                    modificationsConfigDialog.getModifcationsTable().updateUI();
-//                }
+                List selectedItems = availableItemList.getSelectedValuesList();
+                
+                for (Object selectedObject : selectedItems) {
+                    T selectedItem = (T) selectedObject;
+
+                    //add to addedItemBindingList and sort
+                    addedItemBindingList.add(selectedItem);
+                    Collections.sort(addedItemBindingList);
+                    //remove from availableItemBindingList
+                    availableItemBindingList.remove(selectedItem);
+
+                    //check button states
+                    checkButtonStates();
+
+                    //@todo maybe we need to take this into account
+                    //modificationsConfigDialog.getModifcationsTable().updateUI();
+                }
             }
         });
-
+        
         removeItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-//                    Object[] selectedValues = modificationsConfigDialog.getAffectedAminoAcidsList().getSelectedValues();
-//
-//                    Modification selectedModification = modificationsBindingList.get(modificationsConfigDialog.getModifcationsTable().getSelectedRow());
-//
-//                    for (Object o : selectedValues) {
-//                        AminoAcid aminoAcid = (AminoAcid) o;
-//                        aminoAcidsBindingList.add(aminoAcid);
-//                        affectedAminoAcidsBindingList.remove(aminoAcid);
-//                        Collections.sort(aminoAcidsBindingList);
-//                        selectedModification.getAffectedAminoAcids().remove(aminoAcid);
-//
-//                        //disable remove button if there's only one affected amino acid
-//                        changeRemoveAminoAcidButtonState(selectedModification);
-//
-//                        modificationsConfigDialog.getModifcationsTable().updateUI();
-//                    }
+                List selectedItems = addedItemList.getSelectedValuesList();
+                
+                for (Object selectedObject : selectedItems) {
+                    T selectedItem = (T) selectedObject;
+
+                    //add to availableItemBindingList and sort
+                    availableItemBindingList.add(selectedItem);
+                    Collections.sort(availableItemBindingList);
+                    //remove from addedItemBindingList
+                    addedItemBindingList.remove(selectedItem);
+
+                    //check button states
+                    checkButtonStates();
+
+                    //@todo maybe we need to take this into account
+                    //modificationsConfigDialog.getModifcationsTable().updateUI();
+                }
             }
         });
     }
-    
+
     /**
-     * Changes the state of the removeAminoAcidButton (enable or disabled)
-     * depending on the size of the affected amino acids of the selected
-     * modification
-     *
-     * @param selectedModification the selected modification
+     * Changes the addItemButton and removeItemButton enabled states. If there
+     * are no more available items, the addItemButton is disabled and if there
+     * are no added items, the removeItemButton is disabled.
      */
-    private void changeRemoveAminoAcidButtonState() {
-//        if (selectedModification.getAffectedAminoAcids().size() == 1) {
-//            modificationsConfigDialog.getRemoveAminoAcidButton().setEnabled(Boolean.FALSE);
-//        } else {
-//            modificationsConfigDialog.getRemoveAminoAcidButton().setEnabled(true);
-//        }
+    private void checkButtonStates() {
+        boolean setAddButtonEnabled = (availableItemBindingList.isEmpty() ? false : true);
+        addItemButton.setEnabled(setAddButtonEnabled);
+        boolean setRemoveButtonEnabled = (addedItemBindingList.isEmpty() ? false : true);
+        removeItemButton.setEnabled(setRemoveButtonEnabled);
     }
 
     /**
@@ -106,6 +135,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
+        availableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Available"));
+
         availableScrollPane.setViewportView(availableItemList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -115,6 +146,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(availableScrollPane, gridBagConstraints);
+
+        addedScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Added"));
 
         addedScrollPane.setViewportView(addedItemList);
 

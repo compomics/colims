@@ -41,7 +41,7 @@ public class SpectrumMapperTest {
     @Test
     public void testMapSpectrum() throws MappingException, IOException{
         //create new MSnSpectrum
-        HashMap<Double, Peak> peaks = new HashMap<Double, Peak>();
+        HashMap<Double, Peak> peaks = new HashMap<>();
         peaks.put(123.3, new Peak(123.3, 100.0, 22.5));
         peaks.put(356.8, new Peak(356.8, 100.0, 22.5));
         peaks.put(452.1, new Peak(452.1, 100.0, 22.5));
@@ -53,7 +53,7 @@ public class SpectrumMapperTest {
         peaks.put(474.3, new Peak(474.3, 100.0, 22.5));
         peaks.put(142.3, new Peak(142.3, 100.0, 22.5));
                 
-        ArrayList<Charge> possibleCharges = new ArrayList<Charge>();
+        ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, 2));
         Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);
         

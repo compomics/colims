@@ -1,12 +1,15 @@
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.client.compoment.DualList;
 import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -41,6 +44,30 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return firstNameTextField;
     }
 
+    public JPanel getGroupCrudPanel() {
+        return groupCrudPanel;
+    }
+
+    public JTextArea getGroupDescriptionTextArea() {
+        return groupDescriptionTextArea;
+    }
+
+    public DualList getGroupDualList() {
+        return groupDualList;
+    }
+
+    public JTextField getGroupNameTextField() {
+        return groupNameTextField;
+    }
+
+    public JButton getGroupSaveOrUpdateButton() {
+        return groupSaveOrUpdateButton;
+    }
+
+    public JLabel getGroupStateInfoLabel() {
+        return groupStateInfoLabel;
+    }
+
     public JTextField getLastNameTextField() {
         return lastNameTextField;
     }
@@ -49,12 +76,12 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return passwordTextField;
     }
 
-    public JComboBox getRoleComboBox() {
-        return groupComboBox;
+    public DualList getRoleDualList() {
+        return roleDualList;
     }
 
-    public JButton getSaveOrUpdateButton() {
-        return saveOrUpdateButton;
+    public JPanel getUserCrudPanel() {
+        return userCrudPanel;
     }
 
     public JList getUserList() {
@@ -65,9 +92,17 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return userNameTextField;
     }
 
+    public JButton getUserSaveOrUpdateButton() {
+        return userSaveOrUpdateButton;
+    }
+
     public JLabel getUserStateInfoLabel() {
         return userStateInfoLabel;
-    }
+    } 
+
+    public JList getGroupList() {
+        return groupList;
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,37 +125,32 @@ public class UserManagementDialog extends javax.swing.JDialog {
         lastNameLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JLabel();
-        groupLabel = new javax.swing.JLabel();
         firstNameTextField = new javax.swing.JTextField();
         lastNameTextField = new javax.swing.JTextField();
         emailTextField = new javax.swing.JTextField();
-        groupComboBox = new javax.swing.JComboBox();
         passwordTextField = new javax.swing.JPasswordField();
         userNameLabel = new javax.swing.JLabel();
         userNameTextField = new javax.swing.JTextField();
-        saveOrUpdateButton = new javax.swing.JButton();
+        userSaveOrUpdateButton = new javax.swing.JButton();
         userStateInfoLabel = new javax.swing.JLabel();
+        groupDualList = new com.compomics.colims.client.compoment.DualList();
+        groupsLabel = new javax.swing.JLabel();
         groupCrudPanel = new javax.swing.JPanel();
         groupOverviewPanel = new javax.swing.JPanel();
         groupListScrollPane = new javax.swing.JScrollPane();
-        userList1 = new javax.swing.JList();
+        groupList = new javax.swing.JList();
         addGroupButton = new javax.swing.JButton();
         deleteGroupButton = new javax.swing.JButton();
         groupDetailPanel = new javax.swing.JPanel();
-        firstNameLabel1 = new javax.swing.JLabel();
-        lastNameLabel1 = new javax.swing.JLabel();
-        emailLabel1 = new javax.swing.JLabel();
-        passwordLabel1 = new javax.swing.JLabel();
-        groupLabel1 = new javax.swing.JLabel();
-        firstNameTextField1 = new javax.swing.JTextField();
-        lastNameTextField1 = new javax.swing.JTextField();
-        emailTextField1 = new javax.swing.JTextField();
-        groupComboBox1 = new javax.swing.JComboBox();
-        passwordTextField1 = new javax.swing.JPasswordField();
-        userNameLabel1 = new javax.swing.JLabel();
-        userNameTextField1 = new javax.swing.JTextField();
-        saveOrUpdateButton1 = new javax.swing.JButton();
-        userStateInfoLabel1 = new javax.swing.JLabel();
+        groupDescriptionLabel = new javax.swing.JLabel();
+        groupNameLabel = new javax.swing.JLabel();
+        groupNameTextField = new javax.swing.JTextField();
+        groupSaveOrUpdateButton = new javax.swing.JButton();
+        groupStateInfoLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        groupDescriptionTextArea = new javax.swing.JTextArea();
+        roleDualList = new com.compomics.colims.client.compoment.DualList();
+        rolesLabel = new javax.swing.JLabel();
         roleCrudPanel = new javax.swing.JPanel();
         roleOverviewPanel = new javax.swing.JPanel();
         roleListScrollPane = new javax.swing.JScrollPane();
@@ -190,12 +220,12 @@ public class UserManagementDialog extends javax.swing.JDialog {
             userOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(userOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(userListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
-                .addGroup(userOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deleteUserButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addUserButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addComponent(userListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(userOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         userOverviewPanelLayout.setVerticalGroup(
             userOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,9 +235,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addGroup(userOverviewPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(userListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                    .addComponent(userListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -223,15 +253,13 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         passwordLabel.setText("password");
 
-        groupLabel.setText("group");
-
         userNameLabel.setText("user name");
         userNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
-        saveOrUpdateButton.setText("save");
-        saveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        userSaveOrUpdateButton.setText("save");
+        userSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        userSaveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        userSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         userStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         userStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
@@ -240,6 +268,8 @@ public class UserManagementDialog extends javax.swing.JDialog {
         userStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
         userStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        groupsLabel.setText("group(s)");
+
         javax.swing.GroupLayout userDetailPanelLayout = new javax.swing.GroupLayout(userDetailPanel);
         userDetailPanel.setLayout(userDetailPanelLayout);
         userDetailPanelLayout.setHorizontalGroup(
@@ -247,74 +277,85 @@ public class UserManagementDialog extends javax.swing.JDialog {
             .addGroup(userDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(userDetailPanelLayout.createSequentialGroup()
+                        .addGap(0, 776, Short.MAX_VALUE)
+                        .addComponent(userSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, userDetailPanelLayout.createSequentialGroup()
                         .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(firstNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lastNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(groupLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(userNameTextField)
-                            .addComponent(firstNameTextField)
-                            .addComponent(lastNameTextField)
-                            .addComponent(emailTextField)
-                            .addComponent(passwordTextField)
-                            .addComponent(groupComboBox, 0, 267, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userDetailPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(userStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(userDetailPanelLayout.createSequentialGroup()
+                                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lastNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(firstNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(emailTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                                    .addComponent(lastNameTextField)
+                                    .addComponent(firstNameTextField)
+                                    .addComponent(userNameTextField)
+                                    .addComponent(passwordTextField)))
+                            .addComponent(userStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(userDetailPanelLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(groupDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addGroup(userDetailPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(groupsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(377, 377, 377)))))
                 .addContainerGap())
         );
         userDetailPanelLayout.setVerticalGroup(
             userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(userDetailPanelLayout.createSequentialGroup()
-                .addComponent(userStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(firstNameLabel)
-                    .addComponent(firstNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lastNameLabel)
-                    .addComponent(lastNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(emailLabel)
-                    .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordLabel)
-                    .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(groupLabel)
-                    .addComponent(groupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(groupsLabel)
+                    .addComponent(userStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userDetailPanelLayout.createSequentialGroup()
+                        .addComponent(groupDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(userSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(userDetailPanelLayout.createSequentialGroup()
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(firstNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(firstNameLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lastNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lastNameLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(emailLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordLabel)))))
         );
 
         javax.swing.GroupLayout userCrudPanelLayout = new javax.swing.GroupLayout(userCrudPanel);
         userCrudPanel.setLayout(userCrudPanelLayout);
         userCrudPanelLayout.setHorizontalGroup(
             userCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(userOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-            .addComponent(userDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(userOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
+            .addComponent(userDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
         );
         userCrudPanelLayout.setVerticalGroup(
             userCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userCrudPanelLayout.createSequentialGroup()
-                .addComponent(userOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(userOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(userDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         userManagementTabbedPane.addTab("Users", userCrudPanel);
@@ -323,7 +364,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         groupOverviewPanel.setOpaque(false);
         groupOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        groupListScrollPane.setViewportView(userList1);
+        groupListScrollPane.setViewportView(groupList);
 
         addGroupButton.setText("add");
         addGroupButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -341,12 +382,12 @@ public class UserManagementDialog extends javax.swing.JDialog {
             groupOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(groupOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(groupListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addComponent(groupListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(groupOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deleteGroupButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addGroupButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(deleteGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         groupOverviewPanelLayout.setVerticalGroup(
             groupOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,9 +397,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addGroup(groupOverviewPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(groupListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                    .addComponent(groupListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -366,30 +407,28 @@ public class UserManagementDialog extends javax.swing.JDialog {
         groupDetailPanel.setOpaque(false);
         groupDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        firstNameLabel1.setText("first name");
+        groupDescriptionLabel.setText("description");
 
-        lastNameLabel1.setText("last name");
+        groupNameLabel.setText("name");
+        groupNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
-        emailLabel1.setText("email");
+        groupSaveOrUpdateButton.setText("save");
+        groupSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        groupSaveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        groupSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        passwordLabel1.setText("password");
+        groupStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        groupStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
+        groupStateInfoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        groupStateInfoLabel.setMaximumSize(new java.awt.Dimension(100, 20));
+        groupStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
+        groupStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        groupLabel1.setText("group");
+        groupDescriptionTextArea.setColumns(20);
+        groupDescriptionTextArea.setRows(5);
+        jScrollPane1.setViewportView(groupDescriptionTextArea);
 
-        userNameLabel1.setText("user name");
-        userNameLabel1.setPreferredSize(new java.awt.Dimension(48, 14));
-
-        saveOrUpdateButton1.setText("save");
-        saveOrUpdateButton1.setMaximumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton1.setMinimumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton1.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        userStateInfoLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        userStateInfoLabel1.setForeground(new java.awt.Color(255, 0, 0));
-        userStateInfoLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        userStateInfoLabel1.setMaximumSize(new java.awt.Dimension(100, 20));
-        userStateInfoLabel1.setMinimumSize(new java.awt.Dimension(100, 20));
-        userStateInfoLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
+        rolesLabel.setText("group(s)");
 
         javax.swing.GroupLayout groupDetailPanelLayout = new javax.swing.GroupLayout(groupDetailPanel);
         groupDetailPanel.setLayout(groupDetailPanelLayout);
@@ -397,78 +436,69 @@ public class UserManagementDialog extends javax.swing.JDialog {
             groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(groupDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(saveOrUpdateButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(groupDetailPanelLayout.createSequentialGroup()
                         .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(firstNameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lastNameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(emailLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(groupLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(userNameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(userNameTextField1)
-                            .addComponent(firstNameTextField1)
-                            .addComponent(lastNameTextField1)
-                            .addComponent(emailTextField1)
-                            .addComponent(passwordTextField1)
-                            .addComponent(groupComboBox1, 0, 267, Short.MAX_VALUE))))
+                            .addGroup(groupDetailPanelLayout.createSequentialGroup()
+                                .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(groupNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(groupDetailPanelLayout.createSequentialGroup()
+                                .addComponent(groupDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(roleDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(groupDetailPanelLayout.createSequentialGroup()
+                        .addComponent(groupStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rolesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, groupDetailPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(userStateInfoLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(groupSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         groupDetailPanelLayout.setVerticalGroup(
             groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(groupDetailPanelLayout.createSequentialGroup()
-                .addComponent(userStateInfoLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(userNameTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userNameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(firstNameLabel1)
-                    .addComponent(firstNameTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lastNameLabel1)
-                    .addComponent(lastNameTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(emailLabel1)
-                    .addComponent(emailTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordLabel1)
-                    .addComponent(passwordTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(groupLabel1)
-                    .addComponent(groupComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(saveOrUpdateButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(groupStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rolesLabel))
+                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(groupDetailPanelLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(groupNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(groupDescriptionLabel)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, groupDetailPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(roleDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(groupSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout groupCrudPanelLayout = new javax.swing.GroupLayout(groupCrudPanel);
         groupCrudPanel.setLayout(groupCrudPanelLayout);
         groupCrudPanelLayout.setHorizontalGroup(
             groupCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(groupOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-            .addComponent(groupDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+            .addComponent(groupOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
+            .addComponent(groupDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
         );
         groupCrudPanelLayout.setVerticalGroup(
             groupCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, groupCrudPanelLayout.createSequentialGroup()
-                .addComponent(groupOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(groupOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(groupDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(groupDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        userManagementTabbedPane.addTab("Users", groupCrudPanel);
+        userManagementTabbedPane.addTab("Groups", groupCrudPanel);
 
         roleOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         roleOverviewPanel.setOpaque(false);
@@ -493,7 +523,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
             .addGroup(roleOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(roleListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 573, Short.MAX_VALUE)
                 .addGroup(roleOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(deleteRoleButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addRoleButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -509,7 +539,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addComponent(addRoleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteRoleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(roleListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                    .addComponent(roleListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -608,18 +638,18 @@ public class UserManagementDialog extends javax.swing.JDialog {
         roleCrudPanel.setLayout(roleCrudPanelLayout);
         roleCrudPanelLayout.setHorizontalGroup(
             roleCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(roleOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-            .addComponent(roleDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+            .addComponent(roleOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
+            .addComponent(roleDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
         );
         roleCrudPanelLayout.setVerticalGroup(
             roleCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roleCrudPanelLayout.createSequentialGroup()
-                .addComponent(roleOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(roleOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(roleDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        userManagementTabbedPane.addTab("Users", roleCrudPanel);
+        userManagementTabbedPane.addTab("Roles", roleCrudPanel);
 
         permissionOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         permissionOverviewPanel.setOpaque(false);
@@ -644,7 +674,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
             .addGroup(permissionOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(permissionListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 573, Short.MAX_VALUE)
                 .addGroup(permissionOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(deletePermissionButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addPermissionButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -660,7 +690,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addComponent(addPermissionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deletePermissionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(permissionListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                    .addComponent(permissionListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -759,18 +789,18 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionCrudPanel.setLayout(permissionCrudPanelLayout);
         permissionCrudPanelLayout.setHorizontalGroup(
             permissionCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(permissionOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-            .addComponent(permissionDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+            .addComponent(permissionOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
+            .addComponent(permissionDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
         );
         permissionCrudPanelLayout.setVerticalGroup(
             permissionCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, permissionCrudPanelLayout.createSequentialGroup()
-                .addComponent(permissionOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(permissionOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(permissionDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        userManagementTabbedPane.addTab("Users", permissionCrudPanel);
+        userManagementTabbedPane.addTab("Permissions", permissionCrudPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -795,47 +825,45 @@ public class UserManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteRoleButton;
     private javax.swing.JButton deleteUserButton;
     private javax.swing.JLabel emailLabel;
-    private javax.swing.JLabel emailLabel1;
     private javax.swing.JLabel emailLabel2;
     private javax.swing.JLabel emailLabel3;
     private javax.swing.JTextField emailTextField;
-    private javax.swing.JTextField emailTextField1;
     private javax.swing.JTextField emailTextField2;
     private javax.swing.JTextField emailTextField3;
     private javax.swing.JLabel firstNameLabel;
-    private javax.swing.JLabel firstNameLabel1;
     private javax.swing.JLabel firstNameLabel2;
     private javax.swing.JLabel firstNameLabel3;
     private javax.swing.JTextField firstNameTextField;
-    private javax.swing.JTextField firstNameTextField1;
     private javax.swing.JTextField firstNameTextField2;
     private javax.swing.JTextField firstNameTextField3;
-    private javax.swing.JComboBox groupComboBox;
-    private javax.swing.JComboBox groupComboBox1;
     private javax.swing.JComboBox groupComboBox2;
     private javax.swing.JComboBox groupComboBox3;
     private javax.swing.JPanel groupCrudPanel;
+    private javax.swing.JLabel groupDescriptionLabel;
+    private javax.swing.JTextArea groupDescriptionTextArea;
     private javax.swing.JPanel groupDetailPanel;
-    private javax.swing.JLabel groupLabel;
-    private javax.swing.JLabel groupLabel1;
+    private com.compomics.colims.client.compoment.DualList groupDualList;
     private javax.swing.JLabel groupLabel2;
     private javax.swing.JLabel groupLabel3;
+    private javax.swing.JList groupList;
     private javax.swing.JScrollPane groupListScrollPane;
+    private javax.swing.JLabel groupNameLabel;
+    private javax.swing.JTextField groupNameTextField;
     private javax.swing.JPanel groupOverviewPanel;
+    private javax.swing.JButton groupSaveOrUpdateButton;
+    private javax.swing.JLabel groupStateInfoLabel;
+    private javax.swing.JLabel groupsLabel;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lastNameLabel;
-    private javax.swing.JLabel lastNameLabel1;
     private javax.swing.JLabel lastNameLabel2;
     private javax.swing.JLabel lastNameLabel3;
     private javax.swing.JTextField lastNameTextField;
-    private javax.swing.JTextField lastNameTextField1;
     private javax.swing.JTextField lastNameTextField2;
     private javax.swing.JTextField lastNameTextField3;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JLabel passwordLabel1;
     private javax.swing.JLabel passwordLabel2;
     private javax.swing.JLabel passwordLabel3;
     private javax.swing.JPasswordField passwordTextField;
-    private javax.swing.JPasswordField passwordTextField1;
     private javax.swing.JPasswordField passwordTextField2;
     private javax.swing.JPasswordField passwordTextField3;
     private javax.swing.JPanel permissionCrudPanel;
@@ -844,31 +872,28 @@ public class UserManagementDialog extends javax.swing.JDialog {
     private javax.swing.JPanel permissionOverviewPanel;
     private javax.swing.JPanel roleCrudPanel;
     private javax.swing.JPanel roleDetailPanel;
+    private com.compomics.colims.client.compoment.DualList roleDualList;
     private javax.swing.JScrollPane roleListScrollPane;
     private javax.swing.JPanel roleOverviewPanel;
-    private javax.swing.JButton saveOrUpdateButton;
-    private javax.swing.JButton saveOrUpdateButton1;
+    private javax.swing.JLabel rolesLabel;
     private javax.swing.JButton saveOrUpdateButton2;
     private javax.swing.JButton saveOrUpdateButton3;
     private javax.swing.JPanel userCrudPanel;
     private javax.swing.JPanel userDetailPanel;
     private javax.swing.JList userList;
-    private javax.swing.JList userList1;
     private javax.swing.JList userList2;
     private javax.swing.JList userList3;
     private javax.swing.JScrollPane userListScrollPane;
     private javax.swing.JTabbedPane userManagementTabbedPane;
     private javax.swing.JLabel userNameLabel;
-    private javax.swing.JLabel userNameLabel1;
     private javax.swing.JLabel userNameLabel2;
     private javax.swing.JLabel userNameLabel3;
     private javax.swing.JTextField userNameTextField;
-    private javax.swing.JTextField userNameTextField1;
     private javax.swing.JTextField userNameTextField2;
     private javax.swing.JTextField userNameTextField3;
     private javax.swing.JPanel userOverviewPanel;
+    private javax.swing.JButton userSaveOrUpdateButton;
     private javax.swing.JLabel userStateInfoLabel;
-    private javax.swing.JLabel userStateInfoLabel1;
     private javax.swing.JLabel userStateInfoLabel2;
     private javax.swing.JLabel userStateInfoLabel3;
     // End of variables declaration//GEN-END:variables

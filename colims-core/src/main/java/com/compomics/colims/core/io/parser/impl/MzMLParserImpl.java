@@ -39,7 +39,7 @@ public class MzMLParserImpl implements MzMLParser {
     private Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
 
     public MzMLParserImpl() {
-        mzMLUnmarshallers = new HashMap<String, MzMLUnmarshaller>();
+        mzMLUnmarshallers = new HashMap<>();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MzMLParserImpl implements MzMLParser {
      */
     private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException {
         LOGGER.info("Start parsing samples");
-        List<Sample> samples = new ArrayList<Sample>();
+        List<Sample> samples = new ArrayList<>();
 
         //get sample list
         SampleList sampleList = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/sampleList", SampleList.class);
@@ -142,7 +142,7 @@ public class MzMLParserImpl implements MzMLParser {
         }
 
         //set relations
-        List<AnalyticalRun> analyticalRuns = new ArrayList<AnalyticalRun>();
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         analyticalRun.setSample(foundSample);
         analyticalRuns.add(analyticalRun);
         foundSample.setAnalyticalRuns(analyticalRuns);
@@ -168,7 +168,7 @@ public class MzMLParserImpl implements MzMLParser {
         InstrumentConfiguration instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration().get(0);
 
         Instrument instrument = new Instrument(instrumentConfiguration.getId());
-        List<InstrumentParam> instrumentParams = new ArrayList<InstrumentParam>();
+        List<InstrumentParam> instrumentParams = new ArrayList<>();
         //add cv params if available
         for (CVParam cVParam : instrumentConfiguration.getCvParam()) {
             InstrumentParam instrumentParam = new InstrumentParam();
@@ -182,7 +182,7 @@ public class MzMLParserImpl implements MzMLParser {
         }
 
         //set relations
-        List<AnalyticalRun> analyticalRuns = new ArrayList<AnalyticalRun>();
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         analyticalRuns.add(analyticalRun);
         instrument.setAnalyticalRuns(analyticalRuns);
         if (!instrumentParams.isEmpty()) {
@@ -200,7 +200,7 @@ public class MzMLParserImpl implements MzMLParser {
      */
     private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException {
         LOGGER.debug("Adding spectra to run: " + analyticalRun.getAccession());
-        List<Spectrum> spectrums = new ArrayList<Spectrum>();
+        List<Spectrum> spectrums = new ArrayList<>();
         Set<String> spectrumIds = mzMLUnmarshallers.get(mzMLFileName).getSpectrumIDs();
 
         for (String spectrumId : spectrumIds) {
@@ -258,10 +258,14 @@ public class MzMLParserImpl implements MzMLParser {
                 SelectedIonList sIonList = precursorList.getPrecursor().get(0).getSelectedIonList();
                 if (sIonList != null) {
                     for (CVParam cvParam : sIonList.getSelectedIon().get(0).getCvParam()) {
-                        if (cvParam.getAccession().equals("MS:1000744") || cvParam.getAccession().equals("MS:1000040")) {
-                            mzRatio = new Double(cvParam.getValue());
-                        } else if (cvParam.getAccession().equals("MS:1000041")) {
-                            charge = new Integer(cvParam.getValue());
+                        switch (cvParam.getAccession()) {
+                            case "MS:1000744":
+                            case "MS:1000040":
+                                mzRatio = new Double(cvParam.getValue());
+                                break;
+                            case "MS:1000041":
+                                charge = new Integer(cvParam.getValue());
+                                break;
                         }
                     }
                 }
@@ -303,7 +307,7 @@ public class MzMLParserImpl implements MzMLParser {
         Number[] mzNumbers = mzBinaryDataArray.getBinaryDataAsNumberArray();
         BinaryDataArray intBinaryDataArray = (BinaryDataArray) binaryDataArrayList.get(1);
         Number[] intNumbers = intBinaryDataArray.getBinaryDataAsNumberArray();
-        HashMap<Double, Double> peaks = new HashMap<Double, Double>();
+        HashMap<Double, Double> peaks = new HashMap<>();
         for (int i = 0; i < mzNumbers.length; i++) {
             peaks.put(mzNumbers[i].doubleValue(), intNumbers[i].doubleValue());
         }
@@ -326,7 +330,7 @@ public class MzMLParserImpl implements MzMLParser {
 
         //set relations
         spectrumFile.setSpectrum(spectrum);
-        List<SpectrumFile> spectrumFiles = new ArrayList<SpectrumFile>();
+        List<SpectrumFile> spectrumFiles = new ArrayList<>();
         spectrumFiles.add(spectrumFile);
         spectrum.setSpectrumFiles(spectrumFiles);
     }

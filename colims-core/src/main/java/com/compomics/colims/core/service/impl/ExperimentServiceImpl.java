@@ -82,11 +82,11 @@ public class ExperimentServiceImpl implements ExperimentService {
 
     @Override
     public void update(Experiment entity) {
-        update(entity);
+        experimentRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(Experiment entity) {
-        saveOrUpdate(entity);
+        experimentRepository.saveOrUpdate(entity);
     }
 }

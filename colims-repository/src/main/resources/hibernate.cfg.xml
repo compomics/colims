@@ -12,6 +12,7 @@
         <mapping resource="hbm/modification.hbm.xml"/>      
         <mapping resource="hbm/protein.hbm.xml"/>      
         <mapping resource="hbm/spectrum.hbm.xml"/>      
+        <mapping resource="hbm/user.hbm.xml"/>      
         
     </session-factory>
 

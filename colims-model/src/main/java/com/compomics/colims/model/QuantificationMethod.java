@@ -11,10 +11,12 @@ import javax.persistence.*;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quantification_methods")
+@Table(name = "quantification_method")
 @Entity
 public class QuantificationMethod extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

@@ -17,7 +17,9 @@ import javax.persistence.Table;
 @Table(name = "group_has_role")
 @Entity
 public class GroupHasRole extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

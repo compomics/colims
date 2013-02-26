@@ -17,6 +17,8 @@ import javax.persistence.Table;
 @Entity
 public class ProjectParam extends AbstractParamEntity {
     
+    private static final long serialVersionUID = 1L;
+    
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Project project;

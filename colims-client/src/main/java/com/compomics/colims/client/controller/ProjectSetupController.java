@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
@@ -137,15 +138,11 @@ public class ProjectSetupController {
 
                 int index = f.getName().lastIndexOf(".");
                 String extension = f.getName().substring(index + 1);
-                if (extension != null) {
-                    if (extension.equals("cps")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                if (extension.equals("cps")) {
+                    return true;
+                } else {
+                    return false;
                 }
-
-                return false;
             }
 
             @Override
@@ -171,15 +168,11 @@ public class ProjectSetupController {
 
                 int index = f.getName().lastIndexOf(".");
                 String extension = f.getName().substring(index + 1);
-                if (extension != null) {
-                    if (extension.equals("mgf")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                if (extension.equals("mgf")) {
+                    return true;
+                } else {
+                    return false;
                 }
-
-                return false;
             }
 
             @Override
@@ -205,15 +198,11 @@ public class ProjectSetupController {
 
                 int index = f.getName().lastIndexOf(".");
                 String extension = f.getName().substring(index + 1);
-                if (extension != null) {
-                    if (extension.equals("fasta")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                if (extension.equals("fasta")) {
+                    return true;
+                } else {
+                    return false;
                 }
-
-                return false;
             }
 
             @Override
@@ -242,7 +231,8 @@ public class ProjectSetupController {
                         getCardLayout().next(projectSetupPanel.getTopPanel());
                         onCardSwitch();
                     } else {
-                        mainController.showMessageDialog("Validation failed", validationMessages, JOptionPane.ERROR_MESSAGE);
+                        MessageEvent messageEvent = new MessageEvent("Validation warning", validationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
                     }
                 } else {
                     getCardLayout().next(projectSetupPanel.getTopPanel());
@@ -300,7 +290,8 @@ public class ProjectSetupController {
                     PersistProjectSwingWorker persistProjectSwingWorker = new PersistProjectSwingWorker();
                     persistProjectSwingWorker.execute();
                 } else {
-                    mainController.showMessageDialog("Files missing", "Please provide the necessary files (.csp, .mgf and .fasta)", JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Files missing", "Please provide the necessary files (.csp, .mgf and .fasta)", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
                 }
             }
         });
@@ -373,7 +364,7 @@ public class ProjectSetupController {
             experimentMapper.map(peptideShakerImport, experiment);
             LOGGER.info("Stop mapping experiment for MSexperiment " + peptideShakerImport.getMsExperiment().getReference());
 
-            LOGGER.info("Start persisting project " + project.getTitle());            
+            LOGGER.info("Start persisting project " + project.getTitle());
             project.getExperiments().add(experiment);
             //set entity relations
             experiment.setProject(project);
@@ -386,14 +377,9 @@ public class ProjectSetupController {
         protected void done() {
             try {
                 get();
-                mainController.showMessageDialog("Project save confirmation", "Project " + project.getTitle() + " was saved successfully", JOptionPane.INFORMATION_MESSAGE);
-            } catch (InterruptedException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                mainController.showUnexpectedErrorDialog(ex.getMessage());
-            } catch (ExecutionException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                mainController.showUnexpectedErrorDialog(ex.getMessage());
-            } catch (CancellationException ex) {
+                MessageEvent messageEvent = new MessageEvent("Project save confirmation", "Project " + project.getTitle() + " was saved successfully", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+            } catch (InterruptedException | ExecutionException | CancellationException ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 mainController.showUnexpectedErrorDialog(ex.getMessage());
             }

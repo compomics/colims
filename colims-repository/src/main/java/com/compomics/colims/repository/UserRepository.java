@@ -18,5 +18,5 @@ public interface UserRepository extends GenericRepository<User, Long> {
      * @param name the user name
      * @return the found user
      */
-    User findByName(String name);
+    User findByName(String name);        
 }

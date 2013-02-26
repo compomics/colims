@@ -15,7 +15,9 @@ import javax.persistence.*;
 @Table(name = "analytical_run")
 @Entity
 public class AnalyticalRun extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

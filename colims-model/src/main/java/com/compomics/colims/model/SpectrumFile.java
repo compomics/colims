@@ -22,7 +22,9 @@ import javax.persistence.Table;
 @Table(name = "spectrum_file")
 @Entity
 public class SpectrumFile extends AbstractDatabaseEntity {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
