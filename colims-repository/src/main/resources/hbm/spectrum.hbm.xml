@@ -3,16 +3,5 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
     "http://www.hibernate.org/dtd//hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping>    
-    <sql-query name="Spectrum.findByAnalyticalRunId">
-        <return alias="spectrum" class="com.compomics.colims.model.Spectrum"/>
-        <![CDATA[
-        SELECT 
-        *
-        FROM 
-        spectrum spectrum
-        WHERE
-        spectrum.l_analytical_run_id = :analyticalRunId
-        ]]>
-    </sql-query>
+<hibernate-mapping>
 </hibernate-mapping>
