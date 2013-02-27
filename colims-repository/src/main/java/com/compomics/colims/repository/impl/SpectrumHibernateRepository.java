@@ -18,8 +18,6 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     @Override
     public List<Spectrum> findSpectraByAnalyticalRunId(final Long analyticalRunId) {
         Criteria subCriteria = createCriteria().createCriteria("analyticalRun");
-        List<Spectrum> list = subCriteria.add(Restrictions.eq("id", analyticalRunId)).list();
-        //TODO This return signature stinks; It's a whole lot safer to just return the empty resulting collection
-        return list.isEmpty() ? null : list;
+        return subCriteria.add(Restrictions.eq("id", analyticalRunId)).list();
     }
 }
