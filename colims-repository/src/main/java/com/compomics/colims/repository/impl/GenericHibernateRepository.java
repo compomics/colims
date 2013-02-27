@@ -135,6 +135,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      */
+    protected T findUniqueByCriteria(final Criterion... criterion) {
+        return (T) createCriteria(criterion).uniqueResult();
+    }
+
+    /**
+     * Convenience method.
+     */
     protected List<T> findByCriteria(final Criterion... criterion) {
         return findByCriteria(-1, -1, criterion);
     }
