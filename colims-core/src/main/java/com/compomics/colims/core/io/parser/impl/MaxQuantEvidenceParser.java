@@ -9,10 +9,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.ProteinRepository;
 import com.compomics.util.protein.Header.DatabaseType;
 
@@ -23,6 +25,9 @@ public class MaxQuantEvidenceParser {
 
     @Autowired
     ProteinRepository proteinRepository;
+
+    @Autowired
+    ModificationRepository modificationRepository;
 
     public void parse(final File evidenceFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
@@ -35,11 +40,30 @@ public class MaxQuantEvidenceParser {
             // TODO Persist the peptide
 
             linkPeptideToProtein(peptide, values);
-
-            //Create modifications
-            List<PeptideHasModification> modifications = createPeptideHasModifications(values);
-            peptide.setPeptideHasModifications(modifications);
+            linkPeptideToModifications(peptide, values);
         }
+    }
+
+    /**
+     * Create a new peptide instance from the values contained in the map.
+     * 
+     * @param values
+     * @return
+     */
+    static Peptide createPeptide(final Map<String, String> values) {
+        //The identified AA sequence of the peptide.
+        String sequence = values.get(EvidenceHeaders.Sequence.column);
+
+        //The charge corrected mass of the precursor ion.
+        Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+
+        //Create peptide
+        Peptide peptide = new Peptide();
+        peptide.setTheoreticalMass(massCorrected);
+        peptide.setSequence(sequence);
+        peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
+        peptide.setPeptideHasProteins(new ArrayList<PeptideHasProtein>()); // XXX This line can go when this field is initialized in class
+        return peptide;
     }
 
     void linkPeptideToProtein(final Peptide peptide, final Map<String, String> values) {
@@ -66,42 +90,60 @@ public class MaxQuantEvidenceParser {
         peptide.getPeptideHasProteins().add(peptideHasProtein);
     }
 
-    /**
-     * Create a new peptide instance from the values contained in the map.
-     * 
-     * @param values
-     * @return
-     */
-    static Peptide createPeptide(final Map<String, String> values) {
-        //The identified AA sequence of the peptide.
-        String sequence = values.get(EvidenceHeaders.Sequence.column);
-
-        //The charge corrected mass of the precursor ion.
-        Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
-
-        //Create peptide
-        Peptide peptide = new Peptide();
-        peptide.setTheoreticalMass(massCorrected);
-        peptide.setSequence(sequence);
-        peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
-        peptide.setPeptideHasProteins(new ArrayList<PeptideHasProtein>()); // XXX This line can go when this field is initialized in class
-        return peptide;
-    }
-
-    List<PeptideHasModification> createPeptideHasModifications(final Map<String, String> values) {
+    void linkPeptideToModifications(final Peptide peptide, final Map<String, String> values) {
         //Sequence representation including the post-translational
         //modifications (abbreviation of the modification in brackets
         //before the modified AA). The sequence is always surrounded
         //by underscore characters ('_').
-        String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
         String modifications = values.get(EvidenceHeaders.Modifications.column);
+        if ("Unmodified".equalsIgnoreCase(modifications))
+            return;
 
-        List<PeptideHasModification> peptideModifications = new ArrayList<>();
-        //TODO parse modifications and add them to the above list
+        //Fields we need to create the PeptideHasModification
+        final int location;
+        final String modificationName;
 
-        return peptideModifications;
+        //Look for Oxidation (M) Probabilities
+        String oxidationProbabilities = values.get(EvidenceHeaders.Oxidation_M_Probabilities.column);
+        if (oxidationProbabilities != null && oxidationProbabilities.contains("(1)")) {
+            //Find precise location
+            location = oxidationProbabilities.indexOf("(1)") - 1;
+            modificationName = EvidenceHeaders.Oxidation_M_Probabilities.column;
+        }
+        else
+            //Look for Acetyl (Protein N-term)
+            if ("1".equals(values.get(EvidenceHeaders.Acetyl_Protein_N_term.column))) {
+                //N-term has position 0
+                location = 0;
+                modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
+            } else {
+                //Unexpected value: throw an exception
+                String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
+                String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
+                throw new IllegalStateException(message);
+            }
+
+        //Retrieve modification from database, or create a new one
+        Modification modification = modificationRepository.findByName(modificationName);
+        if (modification == null) {
+            modification = new Modification();
+            modification.setPeptideHasModifications(new ArrayList<PeptideHasModification>());
+            modification.setName(modificationName);
+            //TODO figure out where to get the missing field values from
+            //Persist modification 
+            modificationRepository.save(modification);
+        }
+
+        //Create PeptideHasModification
+        PeptideHasModification peptideHasModification = new PeptideHasModification();
+        peptideHasModification.setLocation(location);
+        peptideHasModification.setModification(modification);
+        peptideHasModification.setPeptide(peptide);
+
+        //Store the PeptideHasModification in both peptide and modification
+        peptide.getPeptideHasModifications().add(peptideHasModification);
+        modification.getPeptideHasModifications().add(peptideHasModification);
     }
-
 }
 
 /**
