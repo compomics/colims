@@ -19,7 +19,6 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     public Protein findByAccession(final String accession) {
         // XXX An alternative GHR method 'getByCriteria' that calls Criteria#uniqueResult() would make this a one-liner:
         // return getByCriteria(...)
-        // TODO With this alternative implementation we can remove the hbm/protein.hbm.xml resource file entirely
         List<Protein> list = findByCriteria(Restrictions.eq("accession", accession));
         return list.isEmpty() ? null : list.get(0);
     }

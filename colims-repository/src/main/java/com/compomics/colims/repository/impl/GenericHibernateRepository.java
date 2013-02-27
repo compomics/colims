@@ -1,12 +1,11 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.repository.GenericRepository;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Criteria;
-import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,7 +13,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
+import org.hibernate.metamodel.source.annotations.entity.EntityClass;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.compomics.colims.repository.GenericRepository;
 
 /**
  *
@@ -40,8 +42,19 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
         return entityClass;
     }
 
+    /**
+     * Internal method to quickly create a {@link Criteria} for the {@link EntityClass} with optional {@link Criterion}s. 
+     * @return
+     */
+    protected Criteria createCriteria(final Criterion... criterions) {
+        Criteria createCriteria = getCurrentSession().createCriteria(entityClass);
+        for (Criterion criterion : criterions)
+            createCriteria.add(criterion);
+        return createCriteria;
+    }
+
     @Override
-    public T findById(ID id) {
+    public T findById(final ID id) {
         return (T) getCurrentSession().get(entityClass, id);
     }
 
@@ -51,67 +64,62 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     @Override
-    public List<T> findByExample(T exampleInstance) {
-        Criteria crit = getCurrentSession().createCriteria(getEntityClass());
-        final List<T> result = crit.list();
+    public List<T> findByExample(final T exampleInstance) {
+        List<T> result = createCriteria(Example.create(exampleInstance)).list();
         return result;
     }
 
     @Override
-    public List<T> findByNamedQuery(String queryName, Object... params) {
+    public List<T> findByNamedQuery(final String queryName, final Object... params) {
         Query namedQuey = getCurrentSession().getNamedQuery(queryName);
 
-        for (int i = 0; i < params.length; i++) {
+        for (int i = 0; i < params.length; i++)
             namedQuey.setParameter(i + 1, params[i]);
-        }
 
-        final List<T> result = (List<T>) namedQuey.list();
+        final List<T> result = namedQuey.list();
         return result;
     }
 
     @Override
-    public List<T> findByNamedQueryAndNamedParams(String queryName, Map<String, ? extends Object> params) {
+    public List<T> findByNamedQueryAndNamedParams(final String queryName, final Map<String, ? extends Object> params) {
         Query namedQuey = getCurrentSession().getNamedQuery(queryName);
 
-        for (final Map.Entry<String, ? extends Object> param : params.entrySet()) {
+        for (final Map.Entry<String, ? extends Object> param : params.entrySet())
             namedQuey.setParameter(param.getKey(), param.getValue());
-        }
 
-        final List<T> result = (List<T>) namedQuey.list();
+        final List<T> result = namedQuey.list();
         return result;
     }
 
     @Override
-    public int countAll() {
+    public long countAll() {
         return countByCriteria();
     }
 
     @Override
-    public int countByExample(T exampleInstance) {
-        Criteria crit = getCurrentSession().createCriteria(getEntityClass());
+    public long countByExample(final T exampleInstance) {
+        Criteria crit = createCriteria(Example.create(exampleInstance));
         crit.setProjection(Projections.rowCount());
-        crit.add(Example.create(exampleInstance));
-
-        return (Integer) crit.list().get(0);
+        return (Long) crit.uniqueResult();
     }
 
     @Override
-    public void save(T entity) {
+    public void save(final T entity) {
         getCurrentSession().persist(entity);
     }
 
     @Override
-    public void update(T entity) {
+    public void update(final T entity) {
         getCurrentSession().update(entity);
     }
 
     @Override
-    public void saveOrUpdate(T entity) {
+    public void saveOrUpdate(final T entity) {
         getCurrentSession().saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(T entity) {
+    public void delete(final T entity) {
         getCurrentSession().delete(entity);
     }
 
@@ -136,19 +144,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
      */
     protected List<T> findByCriteria(final int firstResult,
             final int maxResults, final Criterion... criterion) {
-        Criteria crit = getCurrentSession().createCriteria(getEntityClass());
+        Criteria crit = createCriteria(criterion);
 
-        for (final Criterion c : criterion) {
-            crit.add(c);
-        }
-
-        if (firstResult > 0) {
+        if (firstResult > 0)
             crit.setFirstResult(firstResult);
-        }
 
-        if (maxResults > 0) {
+        if (maxResults > 0)
             crit.setMaxResults(maxResults);
-        }
 
         final List<T> result = crit.list();
         return result;
@@ -157,19 +159,14 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      */
-    protected int countByCriteria(Criterion... criterion) {
-        Criteria crit = getCurrentSession().createCriteria(getEntityClass());
+    protected long countByCriteria(final Criterion... criterion) {
+        Criteria crit = createCriteria(criterion);
         crit.setProjection(Projections.rowCount());
-
-        for (final Criterion c : criterion) {
-            crit.add(c);
-        }
-
-        return ((Number) (crit.list().get(0))).intValue();
+        return (Long) crit.uniqueResult();
     }
 
     @Override
-    public void lock(T entity, LockOptions lockOptions) {
+    public void lock(final T entity, final LockOptions lockOptions) {
         getCurrentSession().buildLockRequest(lockOptions).lock(entity);
     }
 }
