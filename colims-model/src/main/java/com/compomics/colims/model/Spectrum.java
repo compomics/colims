@@ -53,12 +53,11 @@ public class Spectrum extends AbstractDatabaseEntity {
     @ManyToOne
     private AnalyticalRun analyticalRun;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<Peptide> peptides;
+    private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<SpectrumFile> spectrumFiles;
+    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
     
     public Spectrum(){
-        peptides = new ArrayList<Peptide>();                
     }
     
     public Long getId() {

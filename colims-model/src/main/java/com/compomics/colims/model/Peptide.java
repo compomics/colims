@@ -40,15 +40,13 @@ public class Peptide extends AbstractDatabaseEntity {
     @ManyToOne
     private Spectrum spectrum;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<PeptideHasModification> peptideHasModifications;
+    private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<PeptideHasProtein> peptideHasProteins;
+    private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides;
+    private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides = new ArrayList<>();
 
     public Peptide() {
-        peptideHasModifications = new ArrayList<>();
-        peptideHasProteins = new ArrayList<>();
     }
 
     public Long getId() {

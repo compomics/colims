@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -26,7 +27,7 @@ public class SearchAndValidationSettings extends AbstractDatabaseEntity {
     @ManyToOne
     private Experiment experiment;
     @OneToMany(mappedBy="searchAndValidationSettings")
-    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines;
+    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines = new ArrayList<>();
 
     public Long getId() {
         return id;

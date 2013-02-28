@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -23,7 +24,7 @@ public class QuantificationEngine extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationEngine")
-    private List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines;
+    private List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines = new ArrayList<>();
 
     public Long getId() {
         return id;

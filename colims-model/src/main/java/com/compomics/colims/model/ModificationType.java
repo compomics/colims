@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class ModificationType extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "modificationType")
-    private List<PeptideHasModification> peptideHasModifications;
+    private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
     public Long getId() {
         return id;
