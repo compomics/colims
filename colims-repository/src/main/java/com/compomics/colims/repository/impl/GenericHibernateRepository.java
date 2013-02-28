@@ -98,9 +98,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public long countByExample(final T exampleInstance) {
-        Criteria crit = createCriteria(Example.create(exampleInstance));
-        crit.setProjection(Projections.rowCount());
-        return (Long) crit.uniqueResult();
+        return countByCriteria(Example.create(exampleInstance));
     }
 
     @Override
