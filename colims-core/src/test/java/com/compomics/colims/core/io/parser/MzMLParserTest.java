@@ -4,9 +4,9 @@
  */
 package com.compomics.colims.core.io.parser;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import com.compomics.colims.model.SpectrumFile;
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+@ContextConfiguration(locations = { "classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml" })
 public class MzMLParserTest {
 
     private static final Logger LOGGER = Logger.getLogger(MzMLParserTest.class);
