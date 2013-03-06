@@ -13,25 +13,12 @@
     </parent>
 
     <name>colims-core</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>        
-
-    <build>
-        <!-- Plugins -->
-        <plugins>           
-            <!-- Compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>  
+    </properties>
 
     <dependencies>
-        
         <!-- colims dependencies -->
         <dependency>
             <groupId>com.compomics.colims</groupId>
@@ -47,13 +34,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>${org.springframework.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${org.springframework.version}</version>
         </dependency>
                     
         <!-- aspectj dependencies -->

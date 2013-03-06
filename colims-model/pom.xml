@@ -13,44 +13,32 @@
     </parent>
 
     <name>colims-model</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
-    <build>
-        <!-- Plugins -->
-        <plugins>           
-            <!-- Compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>                
-            </plugin>
-        </plugins>
-    </build>        
 
     <dependencies>
-        <!-- hibernate dependencies -->        
+        <!-- hibernate dependencies -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.0.Final</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>4.1.7.Final</version>
         </dependency>
-                                                    
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
             <version>4.1.9.Final</version>
         </dependency>
         
-        <!-- jasypt encryption dependency -->             
+        <!-- jasypt encryption dependency -->
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt-hibernate4</artifactId>

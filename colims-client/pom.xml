@@ -13,22 +13,10 @@
     </parent>
 
     <name>colims-client</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
-    <build>
-        <!-- Plugins -->
-        <plugins>           
-            <!-- Compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>  
 
     <dependencies>
         <dependency>

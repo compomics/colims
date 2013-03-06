@@ -13,22 +13,10 @@
     </parent>
 
     <name>colims-repository</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
-    <build>
-        <!-- Plugins -->
-        <plugins>           
-            <!-- Compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>                
-            </plugin>
-        </plugins>
-    </build>  
 
     <dependencies>
         
@@ -42,22 +30,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${org.springframework.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${org.springframework.version}</version>
         </dependency>
-        
-        <!-- hibernate dependencies -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.1.7.Final</version>
-        </dependency>
-                
+
         <!-- junit dependency -->
         <dependency>
             <groupId>junit</groupId>
@@ -89,12 +68,5 @@
             <artifactId>ehcache-core</artifactId>
             <version>2.6.2</version>
         </dependency>              -->
-    
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>4.1.9.Final</version>
-        </dependency>
-    
     </dependencies>
 </project>
