@@ -1,8 +1,6 @@
 package com.compomics.colims.repository.impl;
 
-import java.util.List;
-
-import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Modification;
@@ -14,16 +12,8 @@ import com.compomics.colims.repository.ModificationRepository;
  */
 @Repository("modificationRepository")
 public class ModificationHibernateRepository extends GenericHibernateRepository<Modification, Long> implements ModificationRepository {
-
     @Override
-    public Modification findByName(String name) {
-        Query namedQuery = getCurrentSession().getNamedQuery("Modification.findByName");
-        namedQuery.setParameter("name", name);
-        List<Modification> resultList = namedQuery.list();
-        if (!resultList.isEmpty()) {
-            return resultList.get(0);
-        } else {
-            return null;
-        }
+    public Modification findByName(final String name) {
+        return findUniqueByCriteria(Restrictions.eq("name", name));
     }
 }

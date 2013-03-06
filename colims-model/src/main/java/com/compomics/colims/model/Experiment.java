@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -43,13 +44,13 @@ public class Experiment extends AbstractDatabaseEntity {
     @ManyToOne
     private Protocol protocol;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<ExperimentParam> experimentParams;
+    List<ExperimentParam> experimentParams = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<Sample> samples;
+    List<Sample> samples = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<BinaryFile> binaryFiles;
+    List<BinaryFile> binaryFiles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<SearchAndValidationSettings> searchAndValidationSettings;
+    List<SearchAndValidationSettings> searchAndValidationSettings = new ArrayList<>();
 
     public Long getId() {
         return id;

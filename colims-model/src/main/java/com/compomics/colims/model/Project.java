@@ -50,14 +50,13 @@ public class Project extends AbstractDatabaseEntity {
     @ManyToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<ProjectParam> projectParams;
+    private List<ProjectParam> projectParams = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Experiment> experiments;
+    private List<Experiment> experiments = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Material> materials;
+    private List<Material> materials = new ArrayList<>();
 
     public Project(){
-        experiments = new ArrayList<Experiment>();
     }
     
     public Long getId() {

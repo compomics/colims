@@ -1,5 +1,6 @@
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +47,7 @@ public class Group extends AbstractDatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     //@Fetch(FetchMode.JOIN)        
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<GroupHasRole> groupHasRoles;
+    private List<GroupHasRole> groupHasRoles = new ArrayList<>();
 
     public Long getId() {
         return id;

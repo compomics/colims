@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -87,9 +88,9 @@ public class User extends AbstractDatabaseEntity {
     @Type(type = "encryptedString")
     private String password;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<UserHasGroup> userHasGroups;
+    private List<UserHasGroup> userHasGroups = new ArrayList<>();
     @OneToMany(mappedBy = "user")
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
 
     public User() {
     }

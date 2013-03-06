@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     @ManyToOne
     private Instrument instrument;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
-    private List<Spectrum> spectrums;
+    private List<Spectrum> spectrums = new ArrayList<>();
 
     public Long getId() {
         return id;

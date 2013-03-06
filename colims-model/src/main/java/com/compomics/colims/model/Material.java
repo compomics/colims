@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -39,7 +40,7 @@ public class Material extends AbstractDatabaseEntity {
     @ManyToOne
     private Project project;
     @ManyToMany(mappedBy = "materials")
-    private List<Sample> samples;
+    private List<Sample> samples = new ArrayList<>();
 
     public String getDescription() {
         return description;

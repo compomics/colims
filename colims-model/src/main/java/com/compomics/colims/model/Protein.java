@@ -49,14 +49,12 @@ public class Protein extends AbstractDatabaseEntity {
     @Enumerated(EnumType.STRING)
     private Header.DatabaseType databaseType;
     @OneToMany(mappedBy = "protein")
-    private List<PeptideHasProtein> peptideHasProteins;
+    private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
 
     public Protein() {
-        peptideHasProteins = new ArrayList<PeptideHasProtein>();
     }
 
     public Protein(String accession, String sequence, DatabaseType databaseType) {
-        this();
         this.accession = accession;
         this.sequence = sequence;
         this.databaseType = databaseType;

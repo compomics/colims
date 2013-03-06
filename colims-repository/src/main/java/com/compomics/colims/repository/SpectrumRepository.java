@@ -14,7 +14,7 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * Find the spectra by analytical run id
      *
      * @param analyticalRunId the analytical run id
-     * @return the found spectra
+     * @return list of spectra for analyticalRun, that may be empty
      */
-    List<Spectrum> findSpectraByAnalyticalRunId(Long analyticalRunId);
+    List<Spectrum> findSpectraByAnalyticalRunId(final Long analyticalRunId);
 }

@@ -55,7 +55,7 @@ public interface GenericRepository<T, ID extends Serializable> {
      */
     List<T> findByNamedQuery(
             final String queryName,
-            Object... params);
+            final Object... params);
 
     /**
      * Find using a named query.
@@ -73,7 +73,7 @@ public interface GenericRepository<T, ID extends Serializable> {
      *
      * @return the number of entities
      */
-    int countAll();
+    long countAll();
 
     /**
      * Count entities based on an example.
@@ -81,7 +81,7 @@ public interface GenericRepository<T, ID extends Serializable> {
      * @param exampleInstance the search criteria
      * @return the number of entities
      */
-    int countByExample(final T exampleInstance);
+    long countByExample(final T exampleInstance);
 
     /**
      * save an entity. That means insert an entry if the identifier doesn’t
@@ -116,12 +116,12 @@ public interface GenericRepository<T, ID extends Serializable> {
      * @param entity the entity to delete
      */
     void delete(final T entity);
-    
+
     /**
      * reassociate the entity with the current session.
      * 
      * @param entity
      * @param lockOptions
      */
-    void lock(final T entity, LockOptions lockOptions);
+    void lock(final T entity, final LockOptions lockOptions);
 }

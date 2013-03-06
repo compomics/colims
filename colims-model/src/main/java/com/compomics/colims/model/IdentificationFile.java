@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -24,9 +25,9 @@ import javax.persistence.Table;
 @Table(name = "identification_file")
 @Entity
 public class IdentificationFile extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -36,7 +37,7 @@ public class IdentificationFile extends AbstractDatabaseEntity {
     @ManyToOne
     private SearchAndValidationSettings searchAndValidationSettings;
     @OneToMany(mappedBy = "identificationFile")
-    private List<Peptide> peptides;
+    private List<Peptide> peptides = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -44,7 +45,7 @@ public class IdentificationFile extends AbstractDatabaseEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }    
+    }
 
     public SearchAndValidationSettings getSearchAndValidationSettings() {
         return searchAndValidationSettings;

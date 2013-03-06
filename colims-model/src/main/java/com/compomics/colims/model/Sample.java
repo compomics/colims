@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -50,9 +51,9 @@ public class Sample extends AbstractDatabaseEntity {
     inverseJoinColumns = {
         @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     @ManyToMany
-    private List<Material> materials;
+    private List<Material> materials = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
-    private List<AnalyticalRun> analyticalRuns;
+    private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     public Sample() {
     }

@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -42,9 +43,9 @@ public class Modification extends AbstractDatabaseEntity {
     @Column(name = "average_mass")
     private double averageMass;
     @OneToMany(mappedBy = "modification")
-    private List<PeptideHasModification> peptideHasModifications;
+    private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
-    public Modification() {
+    public Modification() { 
     }
 
     public Modification(String name) {
