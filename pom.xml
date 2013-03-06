@@ -217,6 +217,9 @@
 				<configuration>
 					<targetJdk>1.7</targetJdk>
 					<ignoreAnnotations>false</ignoreAnnotations>
+					<excludes>
+						<exclude>**/view/*.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
