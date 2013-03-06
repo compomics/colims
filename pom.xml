@@ -92,17 +92,17 @@
 			<dependency>
 				<groupId>com.compomics.colims</groupId>
 				<artifactId>colims-model</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.compomics.colims</groupId>
 				<artifactId>colims-repository</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.compomics.colims</groupId>
 				<artifactId>colims-core</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.compomics</groupId>
