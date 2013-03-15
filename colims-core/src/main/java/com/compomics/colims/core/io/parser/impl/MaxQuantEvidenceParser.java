@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.parser.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -124,10 +123,8 @@ public class MaxQuantEvidenceParser {
         //Retrieve modification from database, or create a new one
         Modification modification = modificationRepository.findByName(modificationName);
         if (modification == null) {
-            modification = new Modification();
-            modification.setPeptideHasModifications(new ArrayList<PeptideHasModification>());
-            modification.setName(modificationName);
-            //TODO figure out where to get the missing field values from
+            modification = new Modification(modificationName);
+            //TODO figure out where to get values for: monoIsotopicMass, averageMass
             //Persist modification 
             modificationRepository.save(modification);
         }
