@@ -61,8 +61,6 @@ public class MaxQuantEvidenceParser {
         Peptide peptide = new Peptide();
         peptide.setTheoreticalMass(massCorrected);
         peptide.setSequence(sequence);
-        peptide.setPeptideHasModifications(new ArrayList<PeptideHasModification>()); // XXX This line can go when this field is initialized in class
-        peptide.setPeptideHasProteins(new ArrayList<PeptideHasProtein>()); // XXX This line can go when this field is initialized in class
         return peptide;
     }
 

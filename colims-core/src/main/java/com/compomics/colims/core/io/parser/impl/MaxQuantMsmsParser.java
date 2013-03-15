@@ -2,13 +2,11 @@ package com.compomics.colims.core.io.parser.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.Spectrum;
 
@@ -57,7 +55,6 @@ public class MaxQuantMsmsParser {
         Spectrum spectrum = new Spectrum();
         spectrum.setCharge(charge);
         spectrum.setMzRatio(m_z);
-        spectrum.setPeptides(new ArrayList<Peptide>()); // XXX This line can go when this field is initialized in class
         return spectrum;
     }
 }
