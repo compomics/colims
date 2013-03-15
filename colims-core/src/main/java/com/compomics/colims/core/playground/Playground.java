@@ -1,9 +1,10 @@
 package com.compomics.colims.core.playground;
 
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.User;
 
 /**
  *

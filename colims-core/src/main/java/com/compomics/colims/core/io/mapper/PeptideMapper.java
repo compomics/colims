@@ -1,5 +1,10 @@
 package com.compomics.colims.core.io.mapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
@@ -8,10 +13,6 @@ import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  *

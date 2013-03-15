@@ -4,9 +4,10 @@
  */
 package com.compomics.colims.repository.impl;
 
+import org.springframework.stereotype.Repository;
+
 import com.compomics.colims.model.Project;
 import com.compomics.colims.repository.ProjectRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  *

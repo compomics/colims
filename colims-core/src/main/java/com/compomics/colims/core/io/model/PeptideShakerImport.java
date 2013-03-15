@@ -1,8 +1,9 @@
 package com.compomics.colims.core.io.model;
 
-import com.compomics.util.experiment.MsExperiment;
 import java.io.File;
 import java.util.List;
+
+import com.compomics.util.experiment.MsExperiment;
 
 /**
  *

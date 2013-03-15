@@ -4,6 +4,30 @@
  */
 package com.compomics.colims.core.io.parser.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
+import uk.ac.ebi.jmzml.model.mzml.BinaryDataArray;
+import uk.ac.ebi.jmzml.model.mzml.CVParam;
+import uk.ac.ebi.jmzml.model.mzml.InstrumentConfiguration;
+import uk.ac.ebi.jmzml.model.mzml.InstrumentConfigurationList;
+import uk.ac.ebi.jmzml.model.mzml.PrecursorList;
+import uk.ac.ebi.jmzml.model.mzml.Run;
+import uk.ac.ebi.jmzml.model.mzml.SampleList;
+import uk.ac.ebi.jmzml.model.mzml.ScanList;
+import uk.ac.ebi.jmzml.model.mzml.SelectedIonList;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
 import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.core.io.parser.MzMLParser;
 import com.compomics.colims.model.AnalyticalRun;
@@ -13,19 +37,6 @@ import com.compomics.colims.model.InstrumentParam;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-import uk.ac.ebi.jmzml.model.mzml.*;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
  *

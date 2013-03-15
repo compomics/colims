@@ -6,7 +6,19 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -38,14 +50,13 @@ public class Project extends AbstractDatabaseEntity {
     @ManyToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<ProjectParam> projectParams;
+    private List<ProjectParam> projectParams = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Experiment> experiments;
+    private List<Experiment> experiments = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Material> materials;
+    private List<Material> materials = new ArrayList<>();
 
     public Project(){
-        experiments = new ArrayList<Experiment>();
     }
     
     public Long getId() {

@@ -4,16 +4,15 @@
  */
 package com.compomics.colims.core.io.parser;
 
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.SpectrumFile;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.Assert.*;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +20,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.SpectrumFile;
 
 /**
  *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+@ContextConfiguration(locations = { "classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml" })
 public class MzMLParserTest {
 
     private static final Logger LOGGER = Logger.getLogger(MzMLParserTest.class);

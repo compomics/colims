@@ -1,10 +1,12 @@
 package com.compomics.colims.core.io.parser;
 
-import com.compomics.colims.model.Experiment;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import com.compomics.colims.model.Experiment;
 
 /**
  *

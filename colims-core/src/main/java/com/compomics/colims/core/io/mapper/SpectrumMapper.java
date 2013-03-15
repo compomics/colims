@@ -1,5 +1,14 @@
 package com.compomics.colims.core.io.mapper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
+
+import org.apache.log4j.Logger;
+
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.model.Spectrum;
@@ -7,13 +16,6 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
-import org.apache.log4j.Logger;
 
 /**
  *
