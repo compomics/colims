@@ -16,14 +16,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -52,6 +56,8 @@ public class MainController implements ActionListener {
     private UserService userService;
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private LocalSessionFactoryBean sessionFactoryBean;
 
     public MainFrame getMainFrame() {
         return mainFrame;
@@ -61,6 +67,14 @@ public class MainController implements ActionListener {
      * Controller init method.
      */
     public void init() {
+//        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
+//        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
+//        schemaExport.setFormat(true);
+//        schemaExport.setDelimiter(";");
+//        schemaExport.execute(true, false, false, true);
+        
+        
+        
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
@@ -69,7 +83,7 @@ public class MainController implements ActionListener {
                 showUnexpectedErrorDialog(e.getMessage());
             }
         });
-        
+
         //register to event bus
         eventBus.register(this);
 
@@ -132,8 +146,7 @@ public class MainController implements ActionListener {
     }
 
     /**
-     * Listens to an MesaggeEvent. Shows the info message on the info message
-     * panel.
+     * Listen to an MesaggeEvent.
      *
      * @param messageEvent the message event
      */
@@ -142,6 +155,11 @@ public class MainController implements ActionListener {
         showMessageDialog(messageEvent.getMessageTitle(), messageEvent.getMessage(), messageEvent.getMessageType());
     }
 
+    /**
+     * In case of an unexpected error, show error dialog with the error message.
+     *
+     * @param message the error message
+     */
     public void showUnexpectedErrorDialog(String message) {
         showMessageDialog("Unexpected Error", "An expected error occured: "
                 + "\n" + message

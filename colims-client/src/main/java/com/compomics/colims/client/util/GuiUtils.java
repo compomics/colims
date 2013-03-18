@@ -27,7 +27,7 @@ import javax.validation.ValidatorFactory;
 public class GuiUtils {
 
     /**
-     * Centers the dialog on the parent frame.
+     * Center the dialog on the parent frame
      *
      * @param parentFrame the parent frame
      * @param dialog the dialog
@@ -57,7 +57,7 @@ public class GuiUtils {
     }
 
     /**
-     * Gets the name of the component currently visible in the card layout.
+     * Get the name of the component currently visible in the card layout
      *
      * @param parentContainer the parent container
      * @return the component name
@@ -80,7 +80,7 @@ public class GuiUtils {
     }
 
     /**
-     * Validates the entity validation annotations.
+     * Validate the entity validation annotations
      *
      * @param <T> the enity class
      * @param t the entity

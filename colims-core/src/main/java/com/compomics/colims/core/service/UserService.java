@@ -40,4 +40,22 @@ public interface UserService extends GenericService<User, Long> {
      * @param user the given user
      */
     void fetchAuthenticationRelations(User user);
+
+    /**
+     * Save the given user. Persist new UserHasGroups first if new groups
+     * were assigned to the user.
+     *
+     * @param user the user to save
+     * @param addedGroups the added groups
+     */
+    void saveUser(User user, List<Group> addedGroups);
+    
+    /**
+     * Update the given user. Persist new UserHasGroups first if new groups
+     * were assigned to the user.
+     *
+     * @param user the user to update
+     * @param addedGroups the added groups
+     */
+    void updateUser(User user, List<Group> addedGroups);
 }

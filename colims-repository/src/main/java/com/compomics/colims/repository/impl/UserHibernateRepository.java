@@ -6,6 +6,7 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.UserHasGroup;
 import com.compomics.colims.repository.UserRepository;
 import java.util.List;
 import org.hibernate.Hibernate;
@@ -38,5 +39,11 @@ public class UserHibernateRepository extends GenericHibernateRepository<User, Lo
 //        List<User> resultList = namedQuery.list();
 //                
 //        return resultList.get(0);        
-//    }          
+//    }     
+
+    @Override
+    public void saveUserHasGroup(UserHasGroup userHasGroup) {
+        getCurrentSession().persist(userHasGroup);
+    }
+        
 }

@@ -23,6 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -34,6 +36,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -62,7 +65,7 @@ public class UserCrudController {
     @Autowired
     private GroupService groupService;
 
-    public void init() {
+    public void init() {                
         //init view
         userManagementDialog = userManagementController.getUserManagementDialog();
 
@@ -113,7 +116,7 @@ public class UserCrudController {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedUserIndex() != -1) {
+                    if (getSelectedUserIndex() != -1) {                                                  
                         //check if the selected user is the current user.
                         //If so, disable the delete button
                         if (authenticationBean.getCurrentUser().equals(getSelectedUser())) {
@@ -179,12 +182,14 @@ public class UserCrudController {
         userManagementDialog.getUserSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                User selectedUser = getSelectedUser();
                 //validate user
                 List<String> validationMessages = GuiUtils.validateEntity(getSelectedUser());
+                //check for a new user if the user name already exists in the db                
+                if (!isExistingUser(selectedUser) && isExistingUserName(selectedUser)) {
+                    validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
+                }
                 if (validationMessages.isEmpty()) {
-                    User userToSaveOrUpdate = getSelectedUser();
-                    //boolean isExistingUserName = isExistingUserName(userToSaveOrUpdate);
-
                     //if modified, add groups to user
                     List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
                     List<Group> currentGroups = getSelectedUser().getGroups();
@@ -198,21 +203,21 @@ public class UserCrudController {
                             //userHasGroup.setModificationdate(new Date());
                             //userHasGroup.setUsername("test");
 
-                            userToSaveOrUpdate.getUserHasGroups().add(userHasGroup);
+                            selectedUser.getUserHasGroups().add(userHasGroup);
                         }
                     }
 
-                    if (userToSaveOrUpdate.getId() == null) {
-                        userService.save(userToSaveOrUpdate);
+                    if (isExistingUser(selectedUser)) {
+                        userService.save(selectedUser);
                     } else {
-                        userService.update(userToSaveOrUpdate);
+                        userService.update(selectedUser);
                     }
                     userManagementDialog.getUserStateInfoLabel().setText("");
 
-                    UserChangeEvent.Type type = (userToSaveOrUpdate.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
-                    eventBus.post(new UserChangeEvent(type, userToSaveOrUpdate));
+                    UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
+                    eventBus.post(new UserChangeEvent(type, selectedUser));
 
-                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + userToSaveOrUpdate.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -223,7 +228,17 @@ public class UserCrudController {
     }
 
     /**
-     * Checks if the user with the given user name exists in the database
+     * Check if the user exists in the database; i.e. does the user has an ID?
+     *
+     * @param user the given user
+     * @return
+     */
+    private boolean isExistingUser(User user) {
+        return user.getId() != null;
+    }
+
+    /**
+     * Check if the user with the given user name exists in the database
      *
      * @param user the selected user
      * @return the does exist boolean
@@ -239,7 +254,7 @@ public class UserCrudController {
     }
 
     /**
-     * Gets the selected user in the user JList.
+     * Get the selected user in the user JList.
      *
      * @return the selected user
      */
@@ -249,7 +264,7 @@ public class UserCrudController {
     }
 
     /**
-     * Gets the selected user index in the user JList.
+     * Get the selected user index in the user JList.
      *
      * @return the selected index
      */
