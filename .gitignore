@@ -1,4 +1,11 @@
+/target/
 /colims-client/target/
 /colims-repository/target/
 /colims-model/target/
 /colims-core/target/
+
+# Eclipse editor specific excludes
+.settings
+.project
+.classpath
+

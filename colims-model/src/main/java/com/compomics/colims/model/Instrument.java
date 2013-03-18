@@ -4,8 +4,18 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
@@ -29,9 +39,9 @@ public class Instrument extends AbstractDatabaseEntity {
     @Column(name = "description")
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "instrument")
-    private List<InstrumentParam> instrumentParams;
+    private List<InstrumentParam> instrumentParams = new ArrayList<>();
     @OneToMany(mappedBy = "instrument")
-    private List<AnalyticalRun> analyticalRuns;
+    private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     public Instrument() {
     }

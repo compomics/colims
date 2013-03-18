@@ -4,8 +4,18 @@
  */
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -34,7 +44,7 @@ public class Protocol extends AbstractDatabaseEntity {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "protocol")
-    private List<Experiment> experiments;
+    private List<Experiment> experiments = new ArrayList<>();
 
     public List<Experiment> getExperiments() {
         return experiments;

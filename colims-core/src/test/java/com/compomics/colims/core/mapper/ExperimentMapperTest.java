@@ -1,32 +1,18 @@
 package com.compomics.colims.core.mapper;
 
-import com.compomics.colims.core.io.mapper.ExperimentMapper;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.PeptideShakerIO;
-import com.compomics.colims.core.io.model.PeptideShakerImport;
-import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.Spectrum;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.PeptideShakerIO;
+import com.compomics.colims.core.io.mapper.ExperimentMapper;
+import com.compomics.colims.core.service.ProjectService;
 
 /**
  *

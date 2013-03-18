@@ -1,11 +1,13 @@
 package com.compomics.colims.core.config;
 
-import com.compomics.colims.core.util.ResourceUtils;
 import java.io.IOException;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.Resource;
+
+import com.compomics.colims.core.util.ResourceUtils;
 
 /**
  * Created by IntelliJ IDEA. User: niels Date: 9/11/11 Time: 13:41 To change

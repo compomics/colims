@@ -6,8 +6,22 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -73,9 +87,9 @@ public class User extends AbstractDatabaseEntity {
     @Type(type = "encryptedString")
     private String password;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<UserHasGroup> userHasGroups;
+    private List<UserHasGroup> userHasGroups = new ArrayList<>();
     @OneToMany(mappedBy = "user")
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
 
     public User() {       
         userHasGroups = new ArrayList<>();

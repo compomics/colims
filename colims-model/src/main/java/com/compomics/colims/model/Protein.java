@@ -4,11 +4,23 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.util.protein.Header;
-import com.compomics.util.protein.Header.DatabaseType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.compomics.util.protein.Header;
+import com.compomics.util.protein.Header.DatabaseType;
 
 /**
  *
@@ -37,14 +49,12 @@ public class Protein extends AbstractDatabaseEntity {
     @Enumerated(EnumType.STRING)
     private Header.DatabaseType databaseType;
     @OneToMany(mappedBy = "protein")
-    private List<PeptideHasProtein> peptideHasProteins;
+    private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
 
     public Protein() {
-        peptideHasProteins = new ArrayList<PeptideHasProtein>();
     }
 
     public Protein(String accession, String sequence, DatabaseType databaseType) {
-        this();
         this.accession = accession;
         this.sequence = sequence;
         this.databaseType = databaseType;

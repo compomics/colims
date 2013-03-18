@@ -1,5 +1,19 @@
 package com.compomics.colims.core.io.impl;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import com.compomics.colims.core.config.PropertiesConfigurationHolder;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.PeptideShakerIO;
@@ -7,18 +21,6 @@ import com.compomics.colims.core.io.model.PeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.io.Files;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  *

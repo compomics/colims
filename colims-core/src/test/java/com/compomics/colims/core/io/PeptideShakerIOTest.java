@@ -1,11 +1,8 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.model.PeptideShakerImport;
-import com.compomics.util.experiment.MsExperiment;
-import com.compomics.util.experiment.biology.Sample;
 import java.io.File;
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.model.PeptideShakerImport;
+import com.compomics.util.experiment.MsExperiment;
+import com.compomics.util.experiment.biology.Sample;
 
 /**
  *

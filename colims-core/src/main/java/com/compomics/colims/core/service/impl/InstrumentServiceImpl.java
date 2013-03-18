@@ -1,12 +1,14 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.repository.InstrumentRepository;
-import com.compomics.colims.core.service.InstrumentService;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.compomics.colims.core.service.InstrumentService;
+import com.compomics.colims.model.Instrument;
+import com.compomics.colims.repository.InstrumentRepository;
 
 /**
  *

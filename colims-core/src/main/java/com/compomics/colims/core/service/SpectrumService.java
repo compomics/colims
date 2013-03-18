@@ -1,8 +1,9 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.Spectrum;
 import java.util.List;
 import java.util.Map;
+
+import com.compomics.colims.model.Spectrum;
 
 /**
  *

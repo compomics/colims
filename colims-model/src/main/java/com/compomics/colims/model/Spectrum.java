@@ -6,7 +6,20 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -53,12 +66,11 @@ public class Spectrum extends AbstractDatabaseEntity {
     @ManyToOne
     private AnalyticalRun analyticalRun;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<Peptide> peptides;
+    private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<SpectrumFile> spectrumFiles;
+    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
     
     public Spectrum(){
-        peptides = new ArrayList<Peptide>();                
     }
     
     public Long getId() {

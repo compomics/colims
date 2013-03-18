@@ -1,11 +1,10 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.core.io.parser.MzMLParser;
-import com.compomics.colims.model.Experiment;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +14,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import com.compomics.colims.core.io.parser.MzMLParser;
+import com.compomics.colims.model.Experiment;
 
 /**
  *

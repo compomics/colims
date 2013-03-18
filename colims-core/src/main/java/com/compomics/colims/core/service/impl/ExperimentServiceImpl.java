@@ -4,21 +4,24 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.model.BinaryFile;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.repository.ExperimentRepository;
-import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.core.io.IOManager;
-import com.compomics.colims.core.io.parser.MzMLParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import com.compomics.colims.core.io.IOManager;
+import com.compomics.colims.core.io.parser.MzMLParser;
+import com.compomics.colims.core.service.ExperimentService;
+import com.compomics.colims.model.BinaryFile;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.repository.ExperimentRepository;
 
 /**
  *

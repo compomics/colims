@@ -1,15 +1,17 @@
 package com.compomics.colims.repository.hibernate;
 
-import com.compomics.colims.model.AbstractDatabaseEntity;
-import com.compomics.colims.repository.SessionBean;
 import java.util.Date;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.PersistEvent;
 import org.hibernate.event.spi.PersistEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.compomics.colims.model.AbstractDatabaseEntity;
+import com.compomics.colims.repository.SessionBean;
 
 /**
  *
