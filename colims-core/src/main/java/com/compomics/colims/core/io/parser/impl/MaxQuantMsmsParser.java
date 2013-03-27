@@ -40,6 +40,7 @@ public class MaxQuantMsmsParser {
             String type = values.get(MsmsHeaders.Type.column);
 
             //TODO Create objects
+            //XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
             QuantificationGroup quantificationGroup = new QuantificationGroup();
         }
     }
