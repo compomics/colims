@@ -1,8 +1,8 @@
-
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -26,9 +26,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "group_role")
 @Entity
 public class Role extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -47,6 +46,13 @@ public class Role extends AbstractDatabaseEntity {
     //@Fetch(FetchMode.JOIN)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<RoleHasPermission> roleHasPermissions = new ArrayList<>();
+
+    public Role() {
+    }
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -78,6 +84,62 @@ public class Role extends AbstractDatabaseEntity {
 
     public void setRoleHasPermissions(List<RoleHasPermission> roleHasPermissions) {
         this.roleHasPermissions = roleHasPermissions;
-    }    
-        
+    }
+
+    /**
+     * Get the rolehaspermission with the given permission. Return null if
+     * nothing was found.
+     *
+     * @param permission the permission
+     * @return the found rolehaspermission
+     */
+    public RoleHasPermission getRoleHasPermissionByPermission(Permission permission) {
+        RoleHasPermission foundRoleHasPermission = null;
+        for (RoleHasPermission roleHasPermission : roleHasPermissions) {
+            if (roleHasPermission.getPermission().equals(permission)) {
+                foundRoleHasPermission = roleHasPermission;
+                break;
+            }
+        }
+        return foundRoleHasPermission;
+    }
+
+    /**
+     * Convenience mehtod for getting the permissions of the role.
+     *
+     * @return the permission list
+     */
+    public List<Permission> getPermissions() {
+        List<Permission> permissions = new ArrayList<>();
+        for (RoleHasPermission roleHasPermission : roleHasPermissions) {
+            permissions.add(roleHasPermission.getPermission());
+        }
+        return permissions;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.id);
+        hash = 83 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Role other = (Role) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
 }

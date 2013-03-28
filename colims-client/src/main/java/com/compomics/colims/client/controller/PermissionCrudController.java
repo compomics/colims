@@ -1,8 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
@@ -14,7 +12,6 @@ import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserHasGroup;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -39,14 +36,15 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Niels Hulstaert
  */
-@Component("userCrudController")
-public class UserCrudController {
+@Component("permissionCrudController")
+public class PermissionCrudController {
 
     //model
     private ObservableList<User> userBindingList;
@@ -67,28 +65,7 @@ public class UserCrudController {
     @Autowired
     private GroupService groupService;
 
-    /**
-     * Listen to a GroupChangeEvent and update the available groups in the
-     * DualList.
-     *
-     * @param groupChangeEvent the GroupEvent
-     */
-    @Subscribe
-    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
-        switch (groupChangeEvent.getType()) {
-            case CREATED:
-            case UPDATED:
-                int index = availableGroups.indexOf(groupChangeEvent);
-                if (index != -1) {
-                    availableGroups.set(index, groupChangeEvent.getGroup());
-                }
-            case DELETED:
-                availableGroups.remove(groupChangeEvent.getGroup());
-            default:
-        }
-    }
-
-    public void init() {
+    public void init() {                
         //init view
         userManagementDialog = userManagementController.getUserManagementDialog();
 
@@ -139,9 +116,9 @@ public class UserCrudController {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedUserIndex() != -1) {
+                    if (getSelectedUserIndex() != -1) {  
                         User selectedUser = getSelectedUser();
-
+                        
                         //check if the selected user is the current user.
                         //If so, disable the delete button
                         if (authenticationBean.getCurrentUser().equals(selectedUser)) {
@@ -217,8 +194,8 @@ public class UserCrudController {
                 if (validationMessages.isEmpty()) {
                     //if modified, add groups to user
                     List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
-
-                    if (isExistingUser(selectedUser)) {
+                    
+                    if (isExistingUser(selectedUser)) {                        
                         userService.updateUser(selectedUser, addedGroups);
                     } else {
                         userService.saveUser(selectedUser, addedGroups);

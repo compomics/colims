@@ -11,4 +11,13 @@ import com.compomics.colims.model.Role;
  * @author Niels Hulstaert
  */
 public interface RoleService extends GenericService<Role, Long> {    
+    
+    /**
+     * Find the role by name.
+     *
+     * @param name the role name
+     * @return the found role
+     */
+    Role findByName(String name);
+    
 }

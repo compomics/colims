@@ -86,13 +86,12 @@ public class User extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert a password")
     @Type(type = "encryptedString")
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<UserHasGroup> userHasGroups = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Project> projects = new ArrayList<>();
 
-    public User() {       
-        userHasGroups = new ArrayList<>();
+    public User() {
     }
 
     public User(String name) {
@@ -164,6 +163,29 @@ public class User extends AbstractDatabaseEntity {
         this.projects = projects;
     }
 
+    /**
+     * Get the userhasgroup with the given group. Return null if nothing was
+     * found.
+     *
+     * @param group the group
+     * @return the found userhasgroup
+     */
+    public UserHasGroup getUserHasGroupByGroup(Group group) {
+        UserHasGroup foundUserHasGroup = null;
+        for (UserHasGroup userHasGroup : userHasGroups) {
+            if (userHasGroup.getGroup().equals(group)) {
+                foundUserHasGroup = userHasGroup;
+                break;
+            }
+        }
+        return foundUserHasGroup;
+    }
+
+    /**
+     * Convenience method for getting the groups of the user.
+     *
+     * @return the group list
+     */
     public List<Group> getGroups() {
         List<Group> groups = new ArrayList<>();
         for (UserHasGroup userHasGroup : userHasGroups) {

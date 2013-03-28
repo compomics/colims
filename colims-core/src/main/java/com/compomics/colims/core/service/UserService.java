@@ -4,7 +4,9 @@
  */
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
+import java.util.List;
 
 /**
  *

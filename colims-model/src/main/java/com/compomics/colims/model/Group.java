@@ -26,10 +26,9 @@ import org.hibernate.validator.constraints.NotBlank;
 // group is a reserved SQL keyword
 @Table(name = "user_group")
 @Entity
-public class Group extends AbstractDatabaseEntity implements Comparable<Group>{
-    
+public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -43,11 +42,18 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group>{
     @Basic(optional = true)
     @Length(max = 500, message = "Group description length must be less than 500 characters")
     @Column(name = "description")
-    private String description;    
+    private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     //@Fetch(FetchMode.JOIN)        
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<GroupHasRole> groupHasRoles = new ArrayList<>();
+
+    public Group() {
+    }
+
+    public Group(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -79,6 +85,37 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group>{
 
     public void setGroupHasRoles(List<GroupHasRole> groupHasRoles) {
         this.groupHasRoles = groupHasRoles;
+    }
+
+    /**
+     * Convenience method for getting the roles of the group.
+     *
+     * @return the role list
+     */
+    public List<Role> getRoles() {
+        List<Role> roles = new ArrayList<>();
+        for (GroupHasRole groupHasRole : groupHasRoles) {
+            roles.add(groupHasRole.getRole());
+        }
+        return roles;
+    }
+
+    /**
+     * Get the grouphasrole with the given role. Return null if nothing was
+     * found.
+     *
+     * @param role the role
+     * @return the found grouphasrole
+     */
+    public GroupHasRole getGroupHasRoleByRole(Role role) {
+        GroupHasRole foundGroupHasRole = null;
+        for (GroupHasRole groupHasRole : groupHasRoles) {
+            if (groupHasRole.getRole().equals(role)) {
+                foundGroupHasRole = groupHasRole;
+                break;
+            }
+        }
+        return foundGroupHasRole;
     }
 
     @Override
@@ -115,6 +152,5 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group>{
     @Override
     public String toString() {
         return name;
-    }        
-    
+    }
 }

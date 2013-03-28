@@ -500,7 +500,7 @@
                                       <Group type="102" attributes="0">
                                           <Component id="groupDescriptionLabel" min="-2" pref="108" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="jScrollPane1" min="-2" pref="267" max="-2" attributes="0"/>
+                                          <Component id="groupDescriptionScrollPane" min="-2" pref="267" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -538,7 +538,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="groupDescriptionLabel" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="groupDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
@@ -603,7 +603,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+                <Container class="javax.swing.JScrollPane" name="groupDescriptionScrollPane">
                   <AuxValues>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
@@ -648,9 +648,9 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="roleOverviewPanel" pref="146" max="32767" attributes="0"/>
+                      <Component id="roleOverviewPanel" pref="196" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="roleDetailPanel" min="-2" pref="260" max="-2" attributes="0"/>
+                      <Component id="roleDetailPanel" min="-2" pref="210" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -674,13 +674,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="roleListScrollPane" min="-2" pref="206" max="-2" attributes="0"/>
-                          <EmptySpace pref="573" max="32767" attributes="0"/>
+                          <Component id="roleListScrollPane" min="-2" pref="279" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="deleteRoleButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="addRoleButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteRoleButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="addRoleButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -692,10 +692,10 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addRoleButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="deleteRoleButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="roleListScrollPane" alignment="0" pref="101" max="32767" attributes="0"/>
+                              <Component id="roleListScrollPane" alignment="0" pref="151" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -710,7 +710,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JList" name="userList2">
+                    <Component class="javax.swing.JList" name="roleList">
                       <Properties>
                         <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                           <StringArray count="0"/>
@@ -767,33 +767,34 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="saveOrUpdateButton2" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="firstNameLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="lastNameLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="emailLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="passwordLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="groupLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="userNameLabel2" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="roleNameLabel" min="-2" pref="108" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="roleNameTextField" min="-2" pref="267" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="roleDescriptionLabel" min="-2" pref="108" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="roleDescriptionScrollPane" min="-2" pref="267" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="userNameTextField2" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="firstNameTextField2" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="lastNameTextField2" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="emailTextField2" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="passwordTextField2" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="groupComboBox2" alignment="1" pref="267" max="32767" attributes="0"/>
-                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="permissionDualList" min="-2" pref="462" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="roleStateInfoLabel" min="-2" pref="379" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="permissionsLabel" min="-2" pref="85" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="userStateInfoLabel2" min="-2" pref="379" max="-2" attributes="0"/>
+                          <Component id="roleSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -801,95 +802,52 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="userStateInfoLabel2" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="roleStateInfoLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="permissionsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="roleNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="roleNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="roleDescriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="roleDescriptionScrollPane" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="permissionDualList" min="-2" pref="127" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="roleSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="userNameTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="userNameLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="firstNameLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="firstNameTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lastNameLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lastNameTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="emailLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="emailTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="passwordLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="passwordTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="groupLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="groupComboBox2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="saveOrUpdateButton2" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="firstNameLabel2">
+                <Component class="javax.swing.JLabel" name="roleDescriptionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="first name"/>
+                    <Property name="text" type="java.lang.String" value="description"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="lastNameLabel2">
+                <Component class="javax.swing.JLabel" name="roleNameLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="last name"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="emailLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="email"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="passwordLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="password"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="groupLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="group"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="firstNameTextField2">
-                </Component>
-                <Component class="javax.swing.JTextField" name="lastNameTextField2">
-                </Component>
-                <Component class="javax.swing.JTextField" name="emailTextField2">
-                </Component>
-                <Component class="javax.swing.JComboBox" name="groupComboBox2">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="0"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JPasswordField" name="passwordTextField2">
-                </Component>
-                <Component class="javax.swing.JLabel" name="userNameLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="user name"/>
+                    <Property name="text" type="java.lang.String" value="name"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[48, 14]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="userNameTextField2">
+                <Component class="javax.swing.JTextField" name="roleNameTextField">
                 </Component>
-                <Component class="javax.swing.JButton" name="saveOrUpdateButton2">
+                <Component class="javax.swing.JButton" name="roleSaveOrUpdateButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="save"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -903,7 +861,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="userStateInfoLabel2">
+                <Component class="javax.swing.JLabel" name="roleStateInfoLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="11" style="1"/>
@@ -921,6 +879,28 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 20]"/>
                     </Property>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JScrollPane" name="roleDescriptionScrollPane">
+                  <AuxValues>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTextArea" name="roleDescriptionTextArea">
+                      <Properties>
+                        <Property name="columns" type="int" value="20"/>
+                        <Property name="rows" type="int" value="5"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="com.compomics.colims.client.compoment.DualList" name="permissionDualList">
+                </Component>
+                <Component class="javax.swing.JLabel" name="permissionsLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="group(s)"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -946,9 +926,9 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="permissionOverviewPanel" pref="146" max="32767" attributes="0"/>
+                      <Component id="permissionOverviewPanel" pref="196" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="permissionDetailPanel" min="-2" pref="260" max="-2" attributes="0"/>
+                      <Component id="permissionDetailPanel" min="-2" pref="210" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -972,13 +952,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="permissionListScrollPane" min="-2" pref="206" max="-2" attributes="0"/>
-                          <EmptySpace pref="573" max="32767" attributes="0"/>
+                          <Component id="permissionListScrollPane" min="-2" pref="279" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="deletePermissionButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="addPermissionButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="deletePermissionButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="addPermissionButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -990,10 +970,10 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addPermissionButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="deletePermissionButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="permissionListScrollPane" alignment="0" pref="101" max="32767" attributes="0"/>
+                              <Component id="permissionListScrollPane" alignment="0" pref="151" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -1008,7 +988,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JList" name="userList3">
+                    <Component class="javax.swing.JList" name="permissionList">
                       <Properties>
                         <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                           <StringArray count="0"/>
@@ -1065,33 +1045,24 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="saveOrUpdateButton3" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="firstNameLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="lastNameLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="emailLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="passwordLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="groupLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <Component id="userNameLabel3" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
-                                  </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="permissionNameLabel" min="-2" pref="108" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="userNameTextField3" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="firstNameTextField3" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="lastNameTextField3" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="emailTextField3" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="passwordTextField3" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="groupComboBox3" alignment="1" pref="267" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="permissionNameTextField" min="-2" pref="267" max="-2" attributes="0"/>
                               </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="permissionDescriptionLabel" min="-2" pref="108" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="permissionDescriptionScrollPane" min="-2" pref="267" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="permissionStateInfoLabel" alignment="0" min="-2" pref="379" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="490" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="userStateInfoLabel3" min="-2" pref="379" max="-2" attributes="0"/>
+                          <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -1099,95 +1070,41 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="userStateInfoLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="permissionStateInfoLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="permissionNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="permissionNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="permissionDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="permissionDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="userNameTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="userNameLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="firstNameLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="firstNameTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lastNameLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lastNameTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="emailLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="emailTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="passwordLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="passwordTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="groupLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="groupComboBox3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="saveOrUpdateButton3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="firstNameLabel3">
+                <Component class="javax.swing.JLabel" name="permissionDescriptionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="first name"/>
+                    <Property name="text" type="java.lang.String" value="description"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="lastNameLabel3">
+                <Component class="javax.swing.JLabel" name="permissionNameLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="last name"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="emailLabel3">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="email"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="passwordLabel3">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="password"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="groupLabel3">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="group"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="firstNameTextField3">
-                </Component>
-                <Component class="javax.swing.JTextField" name="lastNameTextField3">
-                </Component>
-                <Component class="javax.swing.JTextField" name="emailTextField3">
-                </Component>
-                <Component class="javax.swing.JComboBox" name="groupComboBox3">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="0"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JPasswordField" name="passwordTextField3">
-                </Component>
-                <Component class="javax.swing.JLabel" name="userNameLabel3">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="user name"/>
+                    <Property name="text" type="java.lang.String" value="name"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[48, 14]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="userNameTextField3">
+                <Component class="javax.swing.JTextField" name="permissionNameTextField">
                 </Component>
-                <Component class="javax.swing.JButton" name="saveOrUpdateButton3">
+                <Component class="javax.swing.JButton" name="permissionSaveOrUpdateButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="save"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1201,7 +1118,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="userStateInfoLabel3">
+                <Component class="javax.swing.JLabel" name="permissionStateInfoLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="11" style="1"/>
@@ -1221,6 +1138,21 @@
                     </Property>
                   </Properties>
                 </Component>
+                <Container class="javax.swing.JScrollPane" name="permissionDescriptionScrollPane">
+                  <AuxValues>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTextArea" name="permissionDescriptionTextArea">
+                      <Properties>
+                        <Property name="columns" type="int" value="20"/>
+                        <Property name="rows" type="int" value="5"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
               </SubComponents>
             </Container>
           </SubComponents>

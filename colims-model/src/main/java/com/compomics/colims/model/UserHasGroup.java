@@ -2,6 +2,7 @@
 package com.compomics.colims.model;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class UserHasGroup extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @JoinColumn(name = "l_user_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private User user;
     @JoinColumn(name = "l_group_id", referencedColumnName = "id")
     @ManyToOne

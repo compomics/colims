@@ -72,9 +72,7 @@ public class MainController implements ActionListener {
 //        schemaExport.setFormat(true);
 //        schemaExport.setDelimiter(";");
 //        schemaExport.execute(true, false, false, true);
-        
-        
-        
+                        
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
