@@ -8,6 +8,7 @@ import com.compomics.colims.model.Group;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Role;
+import com.compomics.colims.model.RoleHasPermission;
 import com.compomics.colims.repository.RoleRepository;
 import org.hibernate.criterion.Restrictions;
 
@@ -21,6 +22,11 @@ public class RoleHibernateRepository extends GenericHibernateRepository<Role, Lo
     @Override
     public Role findByName(String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
+    }
+
+    @Override
+    public void saveRoleHasPermission(RoleHasPermission roleHasPermission) {
+        getCurrentSession().persist(roleHasPermission);
     }
     
 }

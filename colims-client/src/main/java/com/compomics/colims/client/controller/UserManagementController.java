@@ -24,8 +24,14 @@ public class UserManagementController {
     @Autowired
     private UserCrudController userCrudController;
     @Autowired
-    private EventBus eventBus;
+    private GroupCrudController groupCrudController;
+    @Autowired
+    private RoleCrudController roleCrudController;
+    @Autowired
+    private PermissionCrudController permissionCrudController;    
     //services
+    @Autowired
+    private EventBus eventBus;
     
     public UserManagementController() {
     }
@@ -40,5 +46,8 @@ public class UserManagementController {
 
         //init child controllers
         userCrudController.init();               
+        groupCrudController.init();
+        roleCrudController.init();
+        permissionCrudController.init();
     }
 }

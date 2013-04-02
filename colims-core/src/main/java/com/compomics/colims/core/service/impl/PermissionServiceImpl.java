@@ -56,4 +56,10 @@ public class PermissionServiceImpl implements PermissionService {
     public void saveOrUpdate(Permission entity) {
         permissionRepository.saveOrUpdate(entity);
     }
+
+    @Override
+    public Permission findByName(String name) {
+        return permissionRepository.findByName(name);
+    }
+        
 }

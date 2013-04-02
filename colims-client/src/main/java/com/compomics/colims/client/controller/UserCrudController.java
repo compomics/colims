@@ -1,7 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
-import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
@@ -10,24 +9,17 @@ import com.compomics.colims.client.view.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -78,7 +70,7 @@ public class UserCrudController {
         switch (groupChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
-                int index = availableGroups.indexOf(groupChangeEvent);
+                int index = availableGroups.indexOf(groupChangeEvent.getGroup());
                 if (index != -1) {
                     availableGroups.set(index, groupChangeEvent.getGroup());
                 }
@@ -89,7 +81,7 @@ public class UserCrudController {
     }
 
     public void init() {
-        //init view
+        //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
 
         //register to event bus
@@ -109,7 +101,7 @@ public class UserCrudController {
         JListBinding userListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, userManagementDialog.getUserList());
         bindingGroup.addBinding(userListBinding);
 
-        //user bindingd
+        //user bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.name"), userManagementDialog.getUserNameTextField(), ELProperty.create("${text}"), "nameBinding");
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.firstName"), userManagementDialog.getFirstNameTextField(), ELProperty.create("${text}"), "firstNameBinding");
@@ -215,7 +207,6 @@ public class UserCrudController {
                     validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    //if modified, add groups to user
                     List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
 
                     if (isExistingUser(selectedUser)) {

@@ -484,7 +484,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         groupDescriptionTextArea.setRows(5);
         groupDescriptionScrollPane.setViewportView(groupDescriptionTextArea);
 
-        rolesLabel.setText("group(s)");
+        rolesLabel.setText("role(s)");
 
         javax.swing.GroupLayout groupDetailPanelLayout = new javax.swing.GroupLayout(groupDetailPanel);
         groupDetailPanel.setLayout(groupDetailPanelLayout);
@@ -624,7 +624,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         roleDescriptionTextArea.setRows(5);
         roleDescriptionScrollPane.setViewportView(roleDescriptionTextArea);
 
-        permissionsLabel.setText("group(s)");
+        permissionsLabel.setText("permission(s)");
 
         javax.swing.GroupLayout roleDetailPanelLayout = new javax.swing.GroupLayout(roleDetailPanel);
         roleDetailPanel.setLayout(roleDetailPanelLayout);

@@ -10,5 +10,14 @@ import com.compomics.colims.model.Permission;
  *
  * @author Niels Hulstaert
  */
-public interface PermissionService extends GenericService<Permission, Long> {    
+public interface PermissionService extends GenericService<Permission, Long> { 
+    
+    /**
+     * Find the permission by name.
+     *
+     * @param name the permission name
+     * @return the found permission
+     */
+    Permission findByName(String name);
+    
 }

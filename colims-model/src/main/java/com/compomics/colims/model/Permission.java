@@ -36,6 +36,13 @@ public class Permission extends AbstractDatabaseEntity implements Comparable<Per
     @Column(name = "description")
     private String description;
 
+    public Permission() {
+    }
+
+    public Permission(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

@@ -22,6 +22,6 @@ public interface RoleRepository extends GenericRepository<Role, Long> {
      * 
      * @param roleHasPermission the RoleHasPermission
      */
-    void saveGroupHasRole(RoleHasPermission roleHasPermission);
+    void saveRoleHasPermission(RoleHasPermission roleHasPermission);
     
 }

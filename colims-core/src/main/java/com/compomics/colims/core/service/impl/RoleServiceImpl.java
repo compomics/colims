@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.RoleService;
-import com.compomics.colims.model.Group;
 import com.compomics.colims.model.GroupHasRole;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
@@ -91,7 +90,7 @@ public class RoleServiceImpl implements RoleService {
      * @param addedPermissions the list of permissions to add
      */
     private void updateRoleHasPermissions(Role role, List<Permission> addedPermissions) {
-        //first, add roles if necessary
+        //first, add permissions if necessary
         for (Permission addedPermission : addedPermissions) {
             //check if the permission already belongs to the given role
             RoleHasPermission roleHasPermission = role.getRoleHasPermissionByPermission(addedPermission);
@@ -102,18 +101,17 @@ public class RoleServiceImpl implements RoleService {
                 roleHasPermission.setRole(role);                
 
                 //save the RoleHasPermission entity
-                roleRepository.saveRoleHasPermission(Permission permission);
-                group.getGroupHasRoles().add(groupHasRole);
+                roleRepository.saveRoleHasPermission(roleHasPermission);
+                role.getRoleHasPermissions().add(roleHasPermission);
             }
         }
 
-        //second, check for roles to remove
-        Iterator<GroupHasRole> iterator = group.getGroupHasRoles().iterator();
+        //second, check for permissions to remove
+        Iterator<RoleHasPermission> iterator = role.getRoleHasPermissions().iterator();
         while (iterator.hasNext()) {
-            GroupHasRole groupHasRole = iterator.next();
-            if (!addedRoles.contains(groupHasRole.getRole())) {
-                //userHasGroup.setUser(null);
-                //remove UserHasGroup from userHasGroups
+            RoleHasPermission roleHasPermission = iterator.next();
+            if (!addedPermissions.contains(roleHasPermission.getRole())) {                
+                //remove RoleHasPermission from roleHasPermissions
                 iterator.remove();
             }
         }

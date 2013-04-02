@@ -622,7 +622,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="rolesLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="group(s)"/>
+                    <Property name="text" type="java.lang.String" value="role(s)"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -900,7 +900,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="permissionsLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="group(s)"/>
+                    <Property name="text" type="java.lang.String" value="permission(s)"/>
                   </Properties>
                 </Component>
               </SubComponents>

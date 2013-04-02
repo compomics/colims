@@ -1,30 +1,21 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.UserChangeEvent;
+import com.compomics.colims.client.event.PermissionChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.UserManagementDialog;
-import com.compomics.colims.core.service.GroupService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
+import com.compomics.colims.core.service.PermissionService;
+import com.compomics.colims.model.Permission;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -36,7 +27,6 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,9 +37,8 @@ import org.springframework.stereotype.Component;
 public class PermissionCrudController {
 
     //model
-    private ObservableList<User> userBindingList;
+    private ObservableList<Permission> permissionBindingList;
     private BindingGroup bindingGroup;
-    private List<Group> availableGroups;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -57,155 +46,129 @@ public class PermissionCrudController {
     private UserManagementController userManagementController;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private AuthenticationBean authenticationBean;
     //services
     @Autowired
-    private UserService userService;
-    @Autowired
-    private GroupService groupService;
+    private PermissionService permissionService;
 
-    public void init() {                
-        //init view
+    public void init() {
+        //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-
+        
         //register to event bus
         eventBus.register(this);
 
-        //load available groups
-        availableGroups = groupService.findAll();
-
         //disable save and delete button
-        userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
-        userManagementDialog.getDeleteUserButton().setEnabled(false);
+        userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
+        userManagementDialog.getDeletePermissionButton().setEnabled(false);
 
         //init binding
         bindingGroup = new BindingGroup();
 
-        userBindingList = ObservableCollections.observableList(userService.findAll());
-        JListBinding userListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, userManagementDialog.getUserList());
-        bindingGroup.addBinding(userListBinding);
+        permissionBindingList = ObservableCollections.observableList(permissionService.findAll());
+        JListBinding permissionListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, permissionBindingList, userManagementDialog.getPermissionList());
+        bindingGroup.addBinding(permissionListBinding);
 
-        //user bindingd
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.name"), userManagementDialog.getUserNameTextField(), ELProperty.create("${text}"), "nameBinding");
+        //permission bindings
+        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getPermissionList(), BeanProperty.create("selectedElement.name"), userManagementDialog.getPermissionNameTextField(), ELProperty.create("${text}"), "nameBinding");
         bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.firstName"), userManagementDialog.getFirstNameTextField(), ELProperty.create("${text}"), "firstNameBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.lastName"), userManagementDialog.getLastNameTextField(), ELProperty.create("${text}"), "lastNameBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.email"), userManagementDialog.getEmailTextField(), ELProperty.create("${text}"), "emailBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getUserList(), BeanProperty.create("selectedElement.password"), userManagementDialog.getPasswordTextField(), ELProperty.create("${text}"), "passwordBinding");
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getPermissionList(), BeanProperty.create("selectedElement.description"), userManagementDialog.getPermissionDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
         bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
 
         //add listeners
-        userManagementDialog.getUserNameTextField().addFocusListener(new FocusListener() {
+        userManagementDialog.getRoleNameTextField().addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                userManagementDialog.getUserList().updateUI();
+                userManagementDialog.getRoleList().updateUI();
             }
         });
 
-        userManagementDialog.getUserList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        userManagementDialog.getPermissionList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedUserIndex() != -1) {  
-                        User selectedUser = getSelectedUser();
-                        
-                        //check if the selected user is the current user.
-                        //If so, disable the delete button
-                        if (authenticationBean.getCurrentUser().equals(selectedUser)) {
-                            userManagementDialog.getDeleteUserButton().setEnabled(false);
-                        } else {
-                            userManagementDialog.getDeleteUserButton().setEnabled(true);
-                        }
+                    if (getSelectedPermissionIndex() != -1) {
+                        Permission selectedPermission = getSelectedPermission();
 
-                        //enable save button
-                        userManagementDialog.getUserSaveOrUpdateButton().setEnabled(true);
+                        //enable save and delete button
+                        userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(true);
+                        userManagementDialog.getDeletePermissionButton().setEnabled(true);
 
-                        //check if the user is found in the db.
+                        //check if the permission is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingUserName(selectedUser)) {
-                            userService.fetchAuthenticationRelations(selectedUser);
+                        if (isExistingPermissionName(selectedPermission)) {
+                            //@todo see if we need to fetch the relations
+                            //permissionService.fetchAuthenticationRelations(selectedPermission);
 
-                            userManagementDialog.getUserNameTextField().setEnabled(false);
-                            userManagementDialog.getUserSaveOrUpdateButton().setText("update");
-                            userManagementDialog.getUserStateInfoLabel().setText("");
+                            userManagementDialog.getPermissionNameTextField().setEnabled(false);
+                            userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
+                            userManagementDialog.getPermissionStateInfoLabel().setText("");
                         } else {
-                            userManagementDialog.getUserNameTextField().setEnabled(true);
-                            userManagementDialog.getUserSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been saved to the database.");
+                            userManagementDialog.getPermissionNameTextField().setEnabled(true);
+                            userManagementDialog.getPermissionSaveOrUpdateButton().setText("save");
+                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been saved to the database.");
                         }
-
-                        //populate dual list with groups                        
-                        userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
-                        userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
+                        userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
                     }
                 }
             }
         });
 
-        userManagementDialog.getAddUserButton().addActionListener(new ActionListener() {
+        userManagementDialog.getAddPermissionButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                User newUser = new User("name");
-                newUser.setUsername(authenticationBean.getCurrentUser().getName());
-                userBindingList.add(newUser);
-                userManagementDialog.getUserNameTextField().setEnabled(true);
-                userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
+                Permission newPermission = new Permission("name");
+                permissionBindingList.add(newPermission);
+                userManagementDialog.getPermissionNameTextField().setEnabled(true);
+                userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
             }
         });
 
-        userManagementDialog.getDeleteUserButton().addActionListener(new ActionListener() {
+        userManagementDialog.getDeletePermissionButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSelectedUserIndex() != -1) {
-                    User userToDelete = getSelectedUser();
-                    //check if user is already has an id.
-                    //If so, delete the user from the db.
-                    if (userToDelete.getId() != null) {
-                        userService.delete(userToDelete);
-                        eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, userToDelete));
+                if (getSelectedPermissionIndex() != -1) {
+                    Permission permissionToDelete = getSelectedPermission();
+                    //check if permission is already has an id.
+                    //If so, delete the permission from the db.
+                    if (permissionToDelete.getId() != null) {
+                        permissionService.delete(permissionToDelete);
+                        eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, permissionToDelete));
                     }
-                    userBindingList.remove(getSelectedUserIndex());
-                    userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
+                    permissionBindingList.remove(getSelectedPermissionIndex());
+                    userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
                 }
             }
         });
 
-        userManagementDialog.getUserSaveOrUpdateButton().addActionListener(new ActionListener() {
+        userManagementDialog.getPermissionSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                User selectedUser = getSelectedUser();
-                //validate user
-                List<String> validationMessages = GuiUtils.validateEntity(getSelectedUser());
-                //check for a new user if the user name already exists in the db                
-                if (!isExistingUser(selectedUser) && isExistingUserName(selectedUser)) {
-                    validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
+                Permission selectedPermission = getSelectedPermission();
+                //validate permission
+                List<String> validationMessages = GuiUtils.validateEntity(getSelectedPermission());
+                //check for a new permission if the permission name already exists in the db                
+                if (!isExistingPermission(selectedPermission) && isExistingPermissionName(selectedPermission)) {
+                    validationMessages.add(selectedPermission.getName() + " already exists in the database, please choose another permission name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    //if modified, add groups to user
-                    List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
-                    
-                    if (isExistingUser(selectedUser)) {                        
-                        userService.updateUser(selectedUser, addedGroups);
+                    if (isExistingPermission(selectedPermission)) {
+                        permissionService.update(selectedPermission);
                     } else {
-                        userService.saveUser(selectedUser, addedGroups);
+                        permissionService.save(selectedPermission);
                     }
-                    userManagementDialog.getUserStateInfoLabel().setText("");
+                    userManagementDialog.getPermissionStateInfoLabel().setText("");
 
-                    UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
-                    eventBus.post(new UserChangeEvent(type, selectedUser));
+                    EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
+                    eventBus.post(new PermissionChangeEvent(type, selectedPermission));
 
-                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Permission save confirmation", "Permission " + selectedPermission.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -216,47 +179,49 @@ public class PermissionCrudController {
     }
 
     /**
-     * Check if the user exists in the database; i.e. does the user has an ID?
+     * Check if the permission exists in the database; i.e. does the permission
+     * has an ID?
      *
-     * @param user the given user
-     * @return
+     * @param permission the given permission
+     * @return does the permission exist
      */
-    private boolean isExistingUser(User user) {
-        return user.getId() != null;
+    private boolean isExistingPermission(Permission permission) {
+        return permission.getId() != null;
     }
 
     /**
-     * Check if the user with the given user name exists in the database
+     * Check if a permission with the given permission name exists in the
+     * database.
      *
-     * @param user the selected user
-     * @return the does exist boolean
+     * @param permission the selected permission
+     * @return does the permission name exist
      */
-    private boolean isExistingUserName(User user) {
-        boolean isExistingUserName = true;
-        User foundUser = userService.findByName(user.getName());
-        if (foundUser == null) {
-            isExistingUserName = false;
+    private boolean isExistingPermissionName(Permission permission) {
+        boolean isExistingPermissionName = true;
+        Permission foundPermission = permissionService.findByName(permission.getName());
+        if (foundPermission == null) {
+            isExistingPermissionName = false;
         }
 
-        return isExistingUserName;
+        return isExistingPermissionName;
     }
 
     /**
-     * Get the selected user in the user JList.
+     * Get the selected permission in the permission JList.
      *
-     * @return the selected user
+     * @return the selected permission
      */
-    private User getSelectedUser() {
-        User selectedUser = (getSelectedUserIndex() != -1) ? userBindingList.get(getSelectedUserIndex()) : null;
-        return selectedUser;
+    private Permission getSelectedPermission() {
+        Permission selectedPermission = (getSelectedPermissionIndex() != -1) ? permissionBindingList.get(getSelectedPermissionIndex()) : null;
+        return selectedPermission;
     }
 
     /**
-     * Get the selected user index in the user JList.
+     * Get the selected permission index in the permission JList.
      *
      * @return the selected index
      */
-    private int getSelectedUserIndex() {
-        return userManagementDialog.getUserList().getSelectedIndex();
+    private int getSelectedPermissionIndex() {
+        return userManagementDialog.getPermissionList().getSelectedIndex();
     }
 }
