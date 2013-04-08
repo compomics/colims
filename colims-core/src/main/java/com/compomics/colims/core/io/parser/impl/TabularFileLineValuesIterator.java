@@ -11,81 +11,92 @@ import com.google.common.io.LineReader;
 
 /**
  * Convert a tabular file into an {@link Iterable} that returns {@link Map}<String, String> instances per line that use
- * the values on the first line as keys.
+ * the values on the first line as keys and the values per line as value. Using this approach one does not have to read
+ * the entire file into memory first, providing some much needed relief when parsing large MaxQuant files.
  */
 class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
-    static final char delimiter = '\t';
+	static final char	delimiter	= '\t';
 
-    FileReader fileReader = null;
-    LineReader lineReader = null;
-    String[] nextLine = null;
-    private String[] headers = new String[0];
+	FileReader			fileReader	= null;
+	LineReader			lineReader	= null;
+	String[]			nextLine	= null;
+	private String[]	headers		= new String[0];
 
-    public TabularFileLineValuesIterator(final File evidenceFile) throws IOException {
-        // Extract headers
-        fileReader = new FileReader(evidenceFile);
-        lineReader = new LineReader(fileReader);
-        String readLine = lineReader.readLine();
+	/**
+	 * Parse the .tsv evidenceFile and return a Map<String,String> instance for each line that maps the keys found on
+	 * the first line to the values found the the values found on lines two and further until the end of the file.
+	 * 
+	 * @param evidenceFile
+	 *            tab separated values file
+	 * @throws IOException
+	 */
+	public TabularFileLineValuesIterator(final File evidenceFile) throws IOException {
+		// Extract headers
+		fileReader = new FileReader(evidenceFile);
+		lineReader = new LineReader(fileReader);
+		String readLine = lineReader.readLine();
 
-        // Determine the headers for this particular file, so we can assign values to the right key in our map
-        headers = readLine.split("" + delimiter);
+		// Determine the headers for this particular file, so we can assign values to the right key in our map
+		headers = readLine.split("" + delimiter);
 
-        // Initialize the first line in the nextLine field
-        advanceLine();
-    }
+		// Initialize the first line in the nextLine field
+		advanceLine();
+	}
 
-    String[] getHeaders() {
-        return headers.clone();
-    }
+	String[] getHeaders() {
+		return headers.clone();
+	}
 
-    void advanceLine() {
-        // Advance to the next line
-        try {
-            String readLine = lineReader.readLine();
-            if (readLine != null) {
-                nextLine = readLine.split("" + delimiter);
-                return;
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        nextLine = null;
-    }
+	void advanceLine() {
+		// Advance to the next line
+		try {
+			String readLine = lineReader.readLine();
+			if (readLine != null) {
+				nextLine = readLine.split("" + delimiter);
+				return;
+			}
+		}
+		catch (IOException e) {
+			// XXX Hmmm, just printing a stacktrace is a very poor way to handle an IOException at this point...
+			e.printStackTrace();
+		}
+		nextLine = null;
+	}
 
-    @Override
-    public boolean hasNext() {
-        if (nextLine == null)
-            try {
-                fileReader.close();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+	@Override
+	public boolean hasNext() {
+		if (nextLine == null)
+			try {
+				fileReader.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 
-        return nextLine != null;
-    }
+		return nextLine != null;
+	}
 
-    @Override
-    public Map<String, String> next() {
-        // nextLine[] is an array of values from the line
-        Map<String, String> lineValues = new HashMap<>();
-        for (int i = 0; i < nextLine.length; i++)
-            lineValues.put(headers[i], nextLine[i]);
+	@Override
+	public Map<String, String> next() {
+		// nextLine[] is an array of values from the line
+		Map<String, String> lineValues = new HashMap<>();
+		for (int i = 0; i < nextLine.length; i++)
+			lineValues.put(headers[i], nextLine[i]);
 
-        // Advance to the next line for the next invocation
-        advanceLine();
+		// Advance to the next line for the next invocation
+		advanceLine();
 
-        return lineValues;
-    }
+		return lineValues;
+	}
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("This parser does not support removing lines from a file.");
-    }
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException("This parser does not support removing lines from a file.");
+	}
 
-    @Override
-    public Iterator<Map<String, String>> iterator() {
-        return this;
-    }
+	@Override
+	public Iterator<Map<String, String>> iterator() {
+		// We want to be an iterable and an iterator at the same time
+		return this;
+	}
 }
