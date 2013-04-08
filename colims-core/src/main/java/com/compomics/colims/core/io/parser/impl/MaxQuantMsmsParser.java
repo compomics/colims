@@ -21,6 +21,14 @@ import com.compomics.colims.model.Spectrum;
 public class MaxQuantMsmsParser {
 	private static final Logger	log	= LoggerFactory.getLogger(MaxQuantMsmsParser.class);
 
+	/**
+	 * Parse the argument msms.txt file, and link all {@link Spectrum} instances and {@link Quantification}s found
+	 * within to the argument {@link QuantificationGroup}.
+	 * 
+	 * @param msmsFile
+	 * @param quantificationGroup
+	 * @throws IOException
+	 */
 	public void parse(final File msmsFile, final QuantificationGroup quantificationGroup) throws IOException {
 		// Convert file into some values we can loop over, without reading file in at once
 		TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile);
@@ -56,6 +64,13 @@ public class MaxQuantMsmsParser {
 		}
 	}
 
+	/**
+	 * Create a very sparsely populated {@link Spectrum} instance, as not all the desired information can be restrieved
+	 * from the file we are parsing. The misisng values will be supplied at a later point in time by other components.
+	 * 
+	 * @param values
+	 * @return the created spectrum
+	 */
 	Spectrum createSpectrum(final Map<String, String> values) {
 		// The charge-state of the precursor ion.
 		Integer charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));

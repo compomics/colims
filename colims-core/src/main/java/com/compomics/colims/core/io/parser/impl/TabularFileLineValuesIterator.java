@@ -43,10 +43,17 @@ class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, It
 		advanceLine();
 	}
 
+	/**
+	 * @return the headers identified for the currently parsed file
+	 */
 	String[] getHeaders() {
 		return headers.clone();
 	}
 
+	/**
+	 * Parse the next line and split its values by the configured delimiter. Also handles the end of file by setting
+	 * nextLine to null.
+	 */
 	void advanceLine() {
 		// Advance to the next line
 		try {

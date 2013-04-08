@@ -87,6 +87,13 @@ public class MaxQuantEvidenceParser {
 		return peptide;
 	}
 
+	/**
+	 * From values.get({@link EvidenceHeaders#Proteins}) extract {@link Protein} accessioncodes, retrieve or create the
+	 * Protein instance and link the two using a {@link PeptideHasProtein} instance.
+	 * 
+	 * @param peptide
+	 * @param values
+	 */
 	void linkPeptideToProtein(final Peptide peptide, final Map<String, String> values) {
 		// Accession codes can be parsed from the lines stored in the Proteins column
 		String entireLine = values.get(EvidenceHeaders.Proteins.column);
@@ -100,7 +107,7 @@ public class MaxQuantEvidenceParser {
 			DatabaseType databaseType = DatabaseType.Unknown;
 			protein = new Protein(firstAccession, sequence, databaseType);
 			// TODO Persist protein, probably, depending on the protein availability method decided on by Davy & users
-			// XXX proteinRepository.save(protein); // ???
+			// ??? proteinRepository.save(protein);
 		}
 
 		// Create a PeptideHasProtein instance to link protein and peptide
@@ -110,8 +117,16 @@ public class MaxQuantEvidenceParser {
 		// Store the reference between each of the two in either instance
 		protein.getPeptideHasProteins().add(peptideHasProtein);
 		peptide.getPeptideHasProteins().add(peptideHasProtein);
+		// TODO Persist PeptideHasProtein instance using a Hibernate Repository that still has to be created
 	}
 
+	/**
+	 * From values extract a variety of {@link Modification}s and link them to the {@link Peptide} instance using
+	 * {@link PeptideHasProtein} as appropriate.
+	 * 
+	 * @param peptide
+	 * @param values
+	 */
 	void linkPeptideToModifications(final Peptide peptide, final Map<String, String> values) {
 		// Sequence representation including the post-translational
 		// modifications (abbreviation of the modification in brackets
@@ -160,10 +175,12 @@ public class MaxQuantEvidenceParser {
 		peptideHasModification.setLocation(location);
 		peptideHasModification.setModification(modification);
 		peptideHasModification.setPeptide(peptide);
+		// TODO Persist the PeptideHasModification instance using a new to create Hibernate Repository
 
 		// Store the PeptideHasModification in both peptide and modification
 		peptide.getPeptideHasModifications().add(peptideHasModification);
 		modification.getPeptideHasModifications().add(peptideHasModification);
+		//
 	}
 }
 
