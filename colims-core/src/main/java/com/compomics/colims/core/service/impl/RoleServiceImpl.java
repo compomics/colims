@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.RoleService;
-import com.compomics.colims.model.GroupHasRole;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.RoleHasPermission;
 import com.compomics.colims.repository.RoleRepository;
 import java.util.Iterator;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -78,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
         //attach the role to the new session
         //roleRepository.lock(role, LockOptions.NONE);
         updateRoleHasPermissions(role, addedPermissions);
-        //roleRepository.update(role);
+        roleRepository.update(role);
     }
 
     /**

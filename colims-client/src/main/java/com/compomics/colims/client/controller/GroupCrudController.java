@@ -59,7 +59,7 @@ public class GroupCrudController {
     private GroupService groupService;
     @Autowired
     private RoleService roleService;
-    
+
     /**
      * Listen to a RoleChangeEvent and update the available roles in the
      * DualList.
@@ -68,19 +68,23 @@ public class GroupCrudController {
      */
     @Subscribe
     public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+        //set selected index to -1
+        userManagementDialog.getRoleList().setSelectedIndex(-1);
         switch (roleChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
                 int index = availableRoles.indexOf(roleChangeEvent.getRole());
                 if (index != -1) {
                     availableRoles.set(index, roleChangeEvent.getRole());
+                } else {
+                    availableRoles.add(roleChangeEvent.getRole());
                 }
-                else{
-                    
-                }
+                break;
             case DELETED:
                 availableRoles.remove(roleChangeEvent.getRole());
+                break;
             default:
+                break;
         }
     }
 

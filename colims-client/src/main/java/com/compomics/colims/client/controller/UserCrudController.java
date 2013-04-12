@@ -67,16 +67,23 @@ public class UserCrudController {
      */
     @Subscribe
     public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+        //set selected index to -1
+        userManagementDialog.getUserList().setSelectedIndex(-1);
         switch (groupChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
                 int index = availableGroups.indexOf(groupChangeEvent.getGroup());
                 if (index != -1) {
                     availableGroups.set(index, groupChangeEvent.getGroup());
+                } else {
+                    availableGroups.add(groupChangeEvent.getGroup());
                 }
+                break;
             case DELETED:
                 availableGroups.remove(groupChangeEvent.getGroup());
+                break;
             default:
+                break;
         }
     }
 

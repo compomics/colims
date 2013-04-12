@@ -59,28 +59,32 @@ public class RoleCrudController {
     private RoleService roleService;
     @Autowired
     private PermissionService permissionService;
-    
+
     /**
-     * Listen to a PermissionChangeEvent and update the available permissions in the
-     * DualList.
+     * Listen to a PermissionChangeEvent and update the available permissions in
+     * the DualList.
      *
      * @param permissionChangeEvent the PermissionChangeEvent
      */
     @Subscribe
     public void onPermissionChangeEvent(PermissionChangeEvent permissionChangeEvent) {
+        //set selected index to -1
+        userManagementDialog.getRoleList().setSelectedIndex(-1);
         switch (permissionChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
                 int index = availablePermissions.indexOf(permissionChangeEvent.getPermission());
-                if (index == -1) {
+                if (index != -1) {
                     availablePermissions.set(index, permissionChangeEvent.getPermission());
-                }
-                else{
+                } else {
                     availablePermissions.add(permissionChangeEvent.getPermission());
                 }
+                break;
             case DELETED:
                 availablePermissions.remove(permissionChangeEvent.getPermission());
+                break;
             default:
+                break;
         }
     }
 
@@ -197,7 +201,7 @@ public class RoleCrudController {
                 if (!isExistingRole(selectedRole) && isExistingRoleName(selectedRole)) {
                     validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");
                 }
-                if (validationMessages.isEmpty()) {                    
+                if (validationMessages.isEmpty()) {
                     List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
 
                     if (isExistingRole(selectedRole)) {
