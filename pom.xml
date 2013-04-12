@@ -177,7 +177,7 @@
 			<dependency>
 				<groupId>eu.isas.peptideshaker</groupId>
 				<artifactId>PeptideShaker</artifactId>
-				<version>0.19.1.3-beta</version>
+				<version>0.19.3</version>
 			</dependency>
 			<dependency>
 				<groupId>uk.ac.ebi.jmzml</groupId>
