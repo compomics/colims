@@ -14,10 +14,10 @@
          below. Because these properties are not defined in the no-test core properties file, 
          we need to explicitly load the test core properties file.    
     -->
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+    <!--bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="colims-core.properties"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
+    </bean-->
        
     <!-- Beans to override for unit testing -->        
     <bean id="colimsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -33,10 +33,10 @@
         <property name="packagesToScan" value="com.compomics.colims.model"/>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">${db.dialect}</prop> 
-                <prop key="hibernate.connection.autocommit">${db.autocommit}</prop>
-                <prop key="hibernate.show_sql">${db.show_sql}</prop>                         
-                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop> 
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop> 
+                <prop key="hibernate.connection.autocommit">false</prop>
+                <prop key="hibernate.show_sql">true</prop>                         
+                <prop key="hibernate.hbm2ddl.auto">create</prop> 
                 <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>

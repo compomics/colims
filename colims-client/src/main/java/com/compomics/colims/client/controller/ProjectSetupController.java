@@ -10,7 +10,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
 import com.compomics.colims.core.io.PeptideShakerIO;
 import com.compomics.colims.core.io.model.PeptideShakerImport;
-import com.compomics.colims.core.io.mapper.ExperimentMapper;
+import com.compomics.colims.core.io.mapper.UtilitiesExperimentMapper;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
@@ -69,7 +69,7 @@ public class ProjectSetupController {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
-    private ExperimentMapper experimentMapper;
+    private UtilitiesExperimentMapper utilitiesExperimentMapper;
     //services
     @Autowired
     private ProjectService projectService;
@@ -361,7 +361,7 @@ public class ProjectSetupController {
 
             LOGGER.info("Start mapping experiment for MSexperiment " + peptideShakerImport.getMsExperiment().getReference());
             Experiment experiment = new Experiment();
-            experimentMapper.map(peptideShakerImport, experiment);
+            utilitiesExperimentMapper.map(peptideShakerImport, experiment);
             LOGGER.info("Stop mapping experiment for MSexperiment " + peptideShakerImport.getMsExperiment().getReference());
 
             LOGGER.info("Start persisting project " + project.getTitle());
