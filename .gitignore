@@ -3,6 +3,7 @@
 /colims-repository/target/
 /colims-model/target/
 /colims-core/target/
+/colims-core/derby.log
 
 # Eclipse editor specific excludes
 .settings
