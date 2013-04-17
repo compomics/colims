@@ -67,11 +67,11 @@ public class MainController implements ActionListener {
      * Controller init method.
      */
     public void init() {
-//        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
-//        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
-//        schemaExport.setFormat(true);
-//        schemaExport.setDelimiter(";");
-//        schemaExport.execute(true, false, false, true);
+        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
+        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
+        schemaExport.setFormat(true);
+        schemaExport.setDelimiter(";");
+        schemaExport.execute(true, false, false, true);
                         
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

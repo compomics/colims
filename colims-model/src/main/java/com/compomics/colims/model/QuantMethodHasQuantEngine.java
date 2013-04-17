@@ -18,20 +18,19 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quantification_file")
+@Table(name = "quant_method_has_quant_engine")
 @Entity
 public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @JoinColumn(name = "l_quantification_group_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_quantification_method_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationGroup quantificationGroup;
+    private QuantificationMethod quantificationMethod;
     @JoinColumn(name = "l_quantification_engine_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationEngine quantificationEngine;
@@ -47,12 +46,12 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         this.id = id;
     }
 
-    public QuantificationGroup getQuantificationGroup() {
-        return quantificationGroup;
+    public QuantificationMethod getQuantificationMethod() {
+        return quantificationMethod;
     }
 
-    public void setQuantificationGroup(QuantificationGroup quantificationGroup) {
-        this.quantificationGroup = quantificationGroup;
+    public void setQuantificationMethod(QuantificationMethod quantificationMethod) {
+        this.quantificationMethod = quantificationMethod;
     }
 
     public QuantificationEngine getQuantificationEngine() {

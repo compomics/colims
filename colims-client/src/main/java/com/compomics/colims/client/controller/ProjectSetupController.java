@@ -9,6 +9,7 @@ import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
 import com.compomics.colims.core.io.PeptideShakerIO;
+import com.compomics.colims.core.io.mapper.Mapper;
 import com.compomics.colims.core.io.model.PeptideShakerImport;
 import com.compomics.colims.core.io.mapper.UtilitiesExperimentMapper;
 import com.compomics.colims.core.service.ProjectService;
@@ -69,7 +70,7 @@ public class ProjectSetupController {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
-    private UtilitiesExperimentMapper utilitiesExperimentMapper;
+    private Mapper utilitiesExperimentMapper;
     //services
     @Autowired
     private ProjectService projectService;

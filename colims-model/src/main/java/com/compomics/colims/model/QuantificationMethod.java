@@ -39,6 +39,8 @@ public class QuantificationMethod extends AbstractDatabaseEntity {
     private Experiment experiment;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationMethod")
     private List<QuantificationFile> quantificationFiles = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationMethod")
+    private List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -63,4 +65,13 @@ public class QuantificationMethod extends AbstractDatabaseEntity {
     public void setQuantificationFiles(List<QuantificationFile> quantificationFiles) {
         this.quantificationFiles = quantificationFiles;
     }
+
+    public List<QuantMethodHasQuantEngine> getQuantMethodHasQuantEngines() {
+        return quantMethodHasQuantEngines;
+    }
+
+    public void setQuantMethodHasQuantEngines(List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines) {
+        this.quantMethodHasQuantEngines = quantMethodHasQuantEngines;
+    }
+    
 }

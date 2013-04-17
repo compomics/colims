@@ -21,7 +21,7 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quantification_file")
+@Table(name = "quantification_engine")
 @Entity
 public class QuantificationEngine extends AbstractDatabaseEntity {
     
