@@ -8,6 +8,13 @@
     
     <import resource="classpath:colims-core-context.xml"/>
     
+    <!-- Property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="colims-client.properties"/>        
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+    
     <!-- component beans -->
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"

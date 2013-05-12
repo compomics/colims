@@ -10,7 +10,7 @@
     
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="colims-repository.properties"/>
+        <property name="location" value="colims-repository.properties"/>        
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
     
