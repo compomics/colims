@@ -19,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -42,6 +43,9 @@ public class Sample extends AbstractDatabaseEntity {
     @Basic(optional = true)
     @Column(name = "name")
     private String name;
+    @ManyToOne 
+    @JoinColumn(name = "l_species_cv_term_id", referencedColumnName = "id") 
+    private SpeciesCvTerm speciesCvTerm;
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
@@ -109,6 +113,14 @@ public class Sample extends AbstractDatabaseEntity {
     public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
         this.analyticalRuns = analyticalRuns;
     }
+
+    public SpeciesCvTerm getSpeciesCvTerm() {
+        return speciesCvTerm;
+    }
+
+    public void setSpeciesCvTerm(SpeciesCvTerm speciesCvTerm) {
+        this.speciesCvTerm = speciesCvTerm;
+    }        
 
     @Override
     public int hashCode() {
