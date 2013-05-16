@@ -85,6 +85,12 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>ms-lims</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>rover</artifactId>
+                    <groupId>com.compomics</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
