@@ -138,16 +138,16 @@
                 <version>7.7.7</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>rover</artifactId>
                         <groupId>com.compomics</groupId>
+                        <artifactId>rover</artifactId>                        
                     </exclusion>
                     <exclusion>
                         <groupId>org.xerial</groupId>
-                        <artifactId>sqlite-jdbc</artifactId>
+                        <artifactId>sqlite-jdbc</artifactId>                        
                     </exclusion>
                     <exclusion>
-                        <artifactId>xerces</artifactId>
                         <groupId>xerces</groupId>
+                        <artifactId>xerces</artifactId>                        
                     </exclusion>
                     <exclusion>
                         <artifactId>xxindex</artifactId>
