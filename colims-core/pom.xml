@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>colims-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.0.0</version>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
 
     <name>colims-core</name>
@@ -84,13 +84,7 @@
         <!-- compomics dependencies -->
         <dependency>
             <groupId>com.compomics</groupId>
-            <artifactId>ms-lims</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>rover</artifactId>
-                    <groupId>com.compomics</groupId>
-                </exclusion>
-            </exclusions>
+            <artifactId>ms-lims</artifactId>            
         </dependency>
 
         <dependency>
