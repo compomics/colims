@@ -141,6 +141,10 @@
                         <groupId>com.compomics</groupId>
                         <artifactId>rover</artifactId>                        
                     </exclusion>
+                    <exclusion>            
+                        <artifactId>peptizer</artifactId>
+                        <groupId>com.compomics</groupId>
+                    </exclusion>            
                     <exclusion>
                         <groupId>org.xerial</groupId>
                         <artifactId>sqlite-jdbc</artifactId>                        
