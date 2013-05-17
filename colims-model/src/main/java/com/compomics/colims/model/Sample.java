@@ -19,7 +19,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -49,12 +48,12 @@ public class Sample extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
+    @ManyToMany
     @JoinTable(name = "sample_has_material",
     joinColumns = {
         @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
     inverseJoinColumns = {
-        @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
-    @ManyToMany
+        @JoinColumn(name = "l_material_id", referencedColumnName = "id")})    
     private List<Material> materials = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();

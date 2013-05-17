@@ -6,6 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,9 +16,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -29,9 +34,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "project")
 @Entity
 public class Project extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -42,23 +46,34 @@ public class Project extends AbstractDatabaseEntity {
     @Length(min = 5, max = 100, message = "Title must be between 5 and 100 characters")
     @Column(name = "title")
     private String title;
+    @Basic(optional = false)
+    @NotBlank(message = "Please insert a project label")
+    @Length(min = 3, max = 20, message = "Title must be between 3 and 20 characters")
+    @Column(name = "label")
+    private String label;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than 500 characters")
     @Column(name = "description")
     private String description;
-    @JoinColumn(name = "l_user_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id")
     @ManyToOne
-    private User user;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<ProjectParam> projectParams = new ArrayList<>();
+    private User owner;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "project_has_user",
+            joinColumns = {
+        @JoinColumn(name = "l_project_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_user_id", referencedColumnName = "id")})
+    private List<User> users = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private List<Experiment> experiments = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private List<Material> materials = new ArrayList<>();
 
-    public Project(){
+    public Project() {
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -75,6 +90,14 @@ public class Project extends AbstractDatabaseEntity {
         this.title = title;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }        
+
     public String getDescription() {
         return description;
     }
@@ -83,17 +106,17 @@ public class Project extends AbstractDatabaseEntity {
         this.description = description;
     }
 
-    public List<ProjectParam> getProjectParams() {
-        return projectParams;
-    }
-
-    public void setProjectParams(List<ProjectParam> projectParams) {
-        this.projectParams = projectParams;
-    }
-
     public List<Experiment> getExperiments() {
         return experiments;
     }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }        
 
     public void setExperiments(List<Experiment> experiments) {
         this.experiments = experiments;
@@ -107,19 +130,20 @@ public class Project extends AbstractDatabaseEntity {
         this.materials = materials;
     }
 
-    public User getUser() {
-        return user;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + (this.title != null ? this.title.hashCode() : 0);
-        hash = 23 * hash + (this.description != null ? this.description.hashCode() : 0);
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.title);
+        hash = 97 * hash + Objects.hashCode(this.label);
         return hash;
     }
 
@@ -132,14 +156,19 @@ public class Project extends AbstractDatabaseEntity {
             return false;
         }
         final Project other = (Project) obj;
-        if ((this.title == null) ? (other.title != null) : !this.title.equals(other.title)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if ((this.description == null) ? (other.description != null) : !this.description.equals(other.description)) {
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.label, other.label)) {
             return false;
         }
         return true;
     }
+
+    
 
     @Override
     public String toString() {

@@ -13,13 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
-import com.compomics.colims.model.GroupHasRole;
 import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
 import com.compomics.colims.repository.GroupRepository;
-import java.util.Iterator;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -92,31 +87,31 @@ public class GroupServiceImpl implements GroupService {
      * @param addedRoles the list of roles to add
      */
     private void updateGroupHasRoles(Group group, List<Role> addedRoles) {
-        //first, add roles if necessary
-        for (Role addedRole : addedRoles) {
-            //check if the role already belongs to the given group
-            GroupHasRole groupHasRole = group.getGroupHasRoleByRole(addedRole);
-
-            if (groupHasRole == null) {
-                groupHasRole = new GroupHasRole();
-                groupHasRole.setRole(addedRole);
-                groupHasRole.setGroup(group);
-
-                //save the GroupHasRole entity
-                groupRepository.saveGroupHasRole(groupHasRole);
-                group.getGroupHasRoles().add(groupHasRole);
-            }
-        }
-
-        //second, check for roles to remove
-        Iterator<GroupHasRole> iterator = group.getGroupHasRoles().iterator();
-        while (iterator.hasNext()) {
-            GroupHasRole groupHasRole = iterator.next();
-            if (!addedRoles.contains(groupHasRole.getRole())) {
-                //userHasGroup.setUser(null);
-                //remove UserHasGroup from userHasGroups
-                iterator.remove();
-            }
-        }
+//        //first, add roles if necessary
+//        for (Role addedRole : addedRoles) {
+//            //check if the role already belongs to the given group
+//            GroupHasRole groupHasRole = group.getGroupHasRoleByRole(addedRole);
+//
+//            if (groupHasRole == null) {
+//                groupHasRole = new GroupHasRole();
+//                groupHasRole.setRole(addedRole);
+//                groupHasRole.setGroup(group);
+//
+//                //save the GroupHasRole entity
+//                groupRepository.saveGroupHasRole(groupHasRole);
+//                group.getGroupHasRoles().add(groupHasRole);
+//            }
+//        }
+//
+//        //second, check for roles to remove
+//        Iterator<GroupHasRole> iterator = group.getGroupHasRoles().iterator();
+//        while (iterator.hasNext()) {
+//            GroupHasRole groupHasRole = iterator.next();
+//            if (!addedRoles.contains(groupHasRole.getRole())) {
+//                //userHasGroup.setUser(null);
+//                //remove UserHasGroup from userHasGroups
+//                iterator.remove();
+//            }
+//        }
     }
 }

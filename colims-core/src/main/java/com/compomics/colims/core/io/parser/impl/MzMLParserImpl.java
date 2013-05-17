@@ -33,7 +33,6 @@ import com.compomics.colims.core.io.parser.MzMLParser;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentParam;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
@@ -179,28 +178,24 @@ public class MzMLParserImpl implements MzMLParser {
         InstrumentConfiguration instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration().get(0);
 
         Instrument instrument = new Instrument(instrumentConfiguration.getId());
-        List<InstrumentParam> instrumentParams = new ArrayList<>();
-        //add cv params if available
-        for (CVParam cVParam : instrumentConfiguration.getCvParam()) {
-            InstrumentParam instrumentParam = new InstrumentParam();
-            instrumentParam.setAccession(cVParam.getAccession());
-            instrumentParam.setValue(cVParam.getValue());
-//            instrumentParam.setCvLabel(cVParam.getCv().getId());
-            instrumentParam.setCvLabel(cVParam.getCvRef());
-            instrumentParam.setInstrument(instrument);
-
-            instrumentParams.add(instrumentParam);
-        }
+        //@todo look how to translate this map this onto the colims schema
+//        List<InstrumentParam> instrumentParams = new ArrayList<>();
+//        //add cv params if available
+//        for (CVParam cVParam : instrumentConfiguration.getCvParam()) {
+//            InstrumentParam instrumentParam = new InstrumentParam();
+//            instrumentParam.setAccession(cVParam.getAccession());
+//            instrumentParam.setValue(cVParam.getValue());
+////            instrumentParam.setCvLabel(cVParam.getCv().getId());
+//            instrumentParam.setCvLabel(cVParam.getCvRef());
+//            instrumentParam.setInstrument(instrument);
+//
+//            instrumentParams.add(instrumentParam);
+//        }
 
         //set relations
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         analyticalRuns.add(analyticalRun);
-        instrument.setAnalyticalRuns(analyticalRuns);
-        if (!instrumentParams.isEmpty()) {
-            instrument.setInstrumentParams(instrumentParams);
-        }
-
-
+        instrument.setAnalyticalRuns(analyticalRuns);        
     }
 
     /**

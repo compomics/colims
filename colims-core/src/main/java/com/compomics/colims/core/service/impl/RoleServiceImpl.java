@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
-import com.compomics.colims.model.RoleHasPermission;
 import com.compomics.colims.repository.RoleRepository;
-import java.util.Iterator;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -90,30 +87,30 @@ public class RoleServiceImpl implements RoleService {
      * @param addedPermissions the list of permissions to add
      */
     private void updateRoleHasPermissions(Role role, List<Permission> addedPermissions) {
-        //first, add permissions if necessary
-        for (Permission addedPermission : addedPermissions) {
-            //check if the permission already belongs to the given role
-            RoleHasPermission roleHasPermission = role.getRoleHasPermissionByPermission(addedPermission);
-
-            if (roleHasPermission == null) {
-                roleHasPermission = new RoleHasPermission();
-                roleHasPermission.setPermission(addedPermission);
-                roleHasPermission.setRole(role);                
-
-                //save the RoleHasPermission entity
-                roleRepository.saveRoleHasPermission(roleHasPermission);
-                role.getRoleHasPermissions().add(roleHasPermission);
-            }
-        }
-
-        //second, check for permissions to remove
-        Iterator<RoleHasPermission> iterator = role.getRoleHasPermissions().iterator();
-        while (iterator.hasNext()) {
-            RoleHasPermission roleHasPermission = iterator.next();
-            if (!addedPermissions.contains(roleHasPermission.getRole())) {                
-                //remove RoleHasPermission from roleHasPermissions
-                iterator.remove();
-            }
-        }
+//        //first, add permissions if necessary
+//        for (Permission addedPermission : addedPermissions) {
+//            //check if the permission already belongs to the given role
+//            RoleHasPermission roleHasPermission = role.getRoleHasPermissionByPermission(addedPermission);
+//
+//            if (roleHasPermission == null) {
+//                roleHasPermission = new RoleHasPermission();
+//                roleHasPermission.setPermission(addedPermission);
+//                roleHasPermission.setRole(role);                
+//
+//                //save the RoleHasPermission entity
+//                roleRepository.saveRoleHasPermission(roleHasPermission);
+//                role.getRoleHasPermissions().add(roleHasPermission);
+//            }
+//        }
+//
+//        //second, check for permissions to remove
+//        Iterator<RoleHasPermission> iterator = role.getRoleHasPermissions().iterator();
+//        while (iterator.hasNext()) {
+//            RoleHasPermission roleHasPermission = iterator.next();
+//            if (!addedPermissions.contains(roleHasPermission.getRole())) {                
+//                //remove RoleHasPermission from roleHasPermissions
+//                iterator.remove();
+//            }
+//        }
     }
 }

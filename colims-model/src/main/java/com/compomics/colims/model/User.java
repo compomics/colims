@@ -15,6 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -86,9 +89,14 @@ public class User extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert a password")
     @Type(type = "encryptedString")
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
-    private List<UserHasGroup> userHasGroups = new ArrayList<>();
-    @OneToMany(mappedBy = "user")
+    @ManyToMany
+    @JoinTable(name = "user_has_group",
+            joinColumns = {
+        @JoinColumn(name = "l_user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
+    private List<Group> groups = new ArrayList<>();
+    @OneToMany(mappedBy = "owner")
     private List<Project> projects = new ArrayList<>();
 
     public User() {
@@ -147,12 +155,12 @@ public class User extends AbstractDatabaseEntity {
         this.password = password;
     }
 
-    public List<UserHasGroup> getUserHasGroups() {
-        return userHasGroups;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setUserHasGroups(List<UserHasGroup> userHasGroups) {
-        this.userHasGroups = userHasGroups;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public List<Project> getProjects() {
@@ -161,37 +169,6 @@ public class User extends AbstractDatabaseEntity {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
-    }
-
-    /**
-     * Get the userhasgroup with the given group. Return null if nothing was
-     * found.
-     *
-     * @param group the group
-     * @return the found userhasgroup
-     */
-    public UserHasGroup getUserHasGroupByGroup(Group group) {
-        UserHasGroup foundUserHasGroup = null;
-        for (UserHasGroup userHasGroup : userHasGroups) {
-            if (userHasGroup.getGroup().equals(group)) {
-                foundUserHasGroup = userHasGroup;
-                break;
-            }
-        }
-        return foundUserHasGroup;
-    }
-
-    /**
-     * Convenience method for getting the groups of the user.
-     *
-     * @return the group list
-     */
-    public List<Group> getGroups() {
-        List<Group> groups = new ArrayList<>();
-        for (UserHasGroup userHasGroup : userHasGroups) {
-            groups.add(userHasGroup.getGroup());
-        }
-        return groups;
     }
 
     @Override

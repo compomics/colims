@@ -42,9 +42,7 @@ public class Experiment extends AbstractDatabaseEntity {
     private Project project;
     @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")
     @ManyToOne
-    private Protocol protocol;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<ExperimentParam> experimentParams = new ArrayList<>();
+    private Protocol protocol;    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
@@ -74,15 +72,7 @@ public class Experiment extends AbstractDatabaseEntity {
 
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
-    }        
-
-    public List<ExperimentParam> getExperimentParams() {
-        return experimentParams;
-    }
-
-    public void setExperimentParams(List<ExperimentParam> experimentParams) {
-        this.experimentParams = experimentParams;
-    }
+    }            
 
     public String getTitle() {
         return title;

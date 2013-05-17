@@ -11,6 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -42,10 +45,16 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
     @Length(max = 500, message = "Role description length must be less than 500 characters")
     @Column(name = "description")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
-    //@Fetch(FetchMode.JOIN)
+    @ManyToMany(mappedBy = "roles")
+    private List<Group> groups;
+    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<RoleHasPermission> roleHasPermissions = new ArrayList<>();
+    @JoinTable(name = "role_has_permission",
+            joinColumns = {
+        @JoinColumn(name = "l_role_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_permission_id", referencedColumnName = "id")})
+    private List<Permission> permissions = new ArrayList<>();
 
     public Role() {
     }
@@ -78,43 +87,20 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
         this.description = description;
     }
 
-    public List<RoleHasPermission> getRoleHasPermissions() {
-        return roleHasPermissions;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setRoleHasPermissions(List<RoleHasPermission> roleHasPermissions) {
-        this.roleHasPermissions = roleHasPermissions;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
-    /**
-     * Get the rolehaspermission with the given permission. Return null if
-     * nothing was found.
-     *
-     * @param permission the permission
-     * @return the found rolehaspermission
-     */
-    public RoleHasPermission getRoleHasPermissionByPermission(Permission permission) {
-        RoleHasPermission foundRoleHasPermission = null;
-        for (RoleHasPermission roleHasPermission : roleHasPermissions) {
-            if (roleHasPermission.getPermission().equals(permission)) {
-                foundRoleHasPermission = roleHasPermission;
-                break;
-            }
-        }
-        return foundRoleHasPermission;
-    }
-
-    /**
-     * Convenience mehtod for getting the permissions of the role.
-     *
-     * @return the permission list
-     */
     public List<Permission> getPermissions() {
-        List<Permission> permissions = new ArrayList<>();
-        for (RoleHasPermission roleHasPermission : roleHasPermissions) {
-            permissions.add(roleHasPermission.getPermission());
-        }
         return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
     }
 
     @Override
@@ -152,5 +138,4 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
     public int compareTo(Role o) {
         return name.compareToIgnoreCase(o.getName());
     }
-        
 }

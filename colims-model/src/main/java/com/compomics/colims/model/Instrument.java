@@ -37,9 +37,7 @@ public class Instrument extends AbstractDatabaseEntity {
     private String name;
     @Basic(optional = true)
     @Column(name = "description")
-    private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "instrument")
-    private List<InstrumentParam> instrumentParams = new ArrayList<>();
+    private String description;    
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
@@ -81,12 +79,5 @@ public class Instrument extends AbstractDatabaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public List<InstrumentParam> getInstrumentParams() {
-        return instrumentParams;
-    }
-
-    public void setInstrumentParams(List<InstrumentParam> instrumentParams) {
-        this.instrumentParams = instrumentParams;
-    }
+   
 }

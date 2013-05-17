@@ -5,7 +5,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
 
 /**
  *
@@ -20,11 +19,5 @@ public interface UserRepository extends GenericRepository<User, Long> {
      * @return the found user
      */
     User findByName(String name);
-    
-    /**
-     * Save the UserHasGroup entity
-     * 
-     * @param userHasGroup 
-     */
-    void saveUserHasGroup(UserHasGroup userHasGroup);
+
 }

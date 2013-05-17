@@ -22,15 +22,15 @@ public abstract class AbstractDatabaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "username")
+    @Column(name = "user_name")
     @Basic(optional = false)
     protected String userName;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationdate", updatable = false)
+    @Column(name = "creation_date", updatable = false)
     @Basic(optional = false)
     protected Date creationDate;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modificationdate")
+    @Column(name = "modification_date")
     @Basic(optional = false)
     protected Date modificationDate;
 

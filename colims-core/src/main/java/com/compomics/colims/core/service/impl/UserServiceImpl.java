@@ -15,12 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
 import com.compomics.colims.repository.GroupRepository;
 import com.compomics.colims.repository.PermissionRepository;
 import com.compomics.colims.repository.RoleRepository;
 import com.compomics.colims.repository.UserRepository;
-import java.util.Iterator;
 
 /**
  *
@@ -91,8 +89,11 @@ public class UserServiceImpl implements UserService {
     public void fetchAuthenticationRelations(User user) {
         //attach the user to the new session
         userRepository.lock(user, LockOptions.NONE);
-        if (!Hibernate.isInitialized(user.getUserHasGroups())) {
-            Hibernate.initialize(user.getUserHasGroups());
+//        if (!Hibernate.isInitialized(user.getUserHasGroups())) {
+//            Hibernate.initialize(user.getUserHasGroups());
+//        }
+        if (!Hibernate.isInitialized(user.getGroups())) {
+            Hibernate.initialize(user.getGroups());
         }
     }
 
@@ -121,30 +122,30 @@ public class UserServiceImpl implements UserService {
      */
     private void updateUserhasGroups(User user, List<Group> addedGroups) { 
         //first, add groups if necessary
-        for (Group addedGroup : addedGroups) {
-            //check if the user already belongs to the given group
-            UserHasGroup userHasGroup = user.getUserHasGroupByGroup(addedGroup);
-
-            if (userHasGroup == null) {
-                userHasGroup = new UserHasGroup();
-                userHasGroup.setGroup(addedGroup);
-                userHasGroup.setUser(user);
-
-                //save the UserHasGroup entity
-                userRepository.saveUserHasGroup(userHasGroup);                
-                user.getUserHasGroups().add(userHasGroup);
-            }            
-        }
-        
-        //second, check for groups to remove
-        Iterator<UserHasGroup> iterator = user.getUserHasGroups().iterator();
-        while(iterator.hasNext()){
-            UserHasGroup userHasGroup = iterator.next();
-            if(!addedGroups.contains(userHasGroup.getGroup())){
-                //userHasGroup.setUser(null);
-                //remove UserHasGroup from userHasGroups
-                iterator.remove();
-            }
-        }
+//        for (Group addedGroup : addedGroups) {
+//            //check if the user already belongs to the given group
+//            UserHasGroup userHasGroup = user.getUserHasGroupByGroup(addedGroup);
+//
+//            if (userHasGroup == null) {
+//                userHasGroup = new UserHasGroup();
+//                userHasGroup.setGroup(addedGroup);
+//                userHasGroup.setUser(user);
+//
+//                //save the UserHasGroup entity
+//                userRepository.saveUserHasGroup(userHasGroup);                
+//                user.getUserHasGroups().add(userHasGroup);
+//            }            
+//        }
+//        
+//        //second, check for groups to remove
+//        Iterator<UserHasGroup> iterator = user.getUserHasGroups().iterator();
+//        while(iterator.hasNext()){
+//            UserHasGroup userHasGroup = iterator.next();
+//            if(!addedGroups.contains(userHasGroup.getGroup())){
+//                //userHasGroup.setUser(null);
+//                //remove UserHasGroup from userHasGroups
+//                iterator.remove();
+//            }
+//        }
     }
 }

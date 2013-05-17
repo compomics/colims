@@ -3,8 +3,6 @@ package com.compomics.colims.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,14 +13,13 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Project;
-import com.compomics.colims.model.ProjectParam;
 
 /**
  *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml" })
+@ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 public class ProjectRepositoryTest {
@@ -35,27 +32,13 @@ public class ProjectRepositoryTest {
     @Test
     public void testPeristProject() {
         Project project = new Project();
-        project.setDescription("test description");
+
         project.setTitle("test project title");
+        project.setLabel("testLabel");
+        project.setDescription("test project description");
 
-        List<ProjectParam> projectParams = new ArrayList<ProjectParam>();
-        ProjectParam projectParam_1 = new ProjectParam();
-        projectParam_1.setAccession("accession_1");
-        projectParam_1.setCvLabel("testCvLabel_1");
-        projectParam_1.setValue("param value 1");
-        projectParam_1.setProject(project);
-        projectParams.add(projectParam_1);
-
-        ProjectParam projectParam_2 = new ProjectParam();
-        projectParam_2.setAccession("accession_2");
-        projectParam_2.setCvLabel("testCvLabel_2");
-        projectParam_2.setValue("param value 2");
-        projectParam_2.setProject(project);
-        projectParams.add(projectParam_2);
-
-        project.setProjectParams(projectParams);
-        //set user
-        project.setUser(userRepository.findByName("user1"));
+        //set owner
+        project.setOwner(userRepository.findByName("user1"));
 
         //persist project
         projectRepository.save(project);
@@ -66,10 +49,8 @@ public class ProjectRepositoryTest {
         assertNotNull(project.getModificationdate());
 
         assertNotNull(project.getId());
-        assertNotNull(project.getUser());
-        assertEquals(2, project.getProjectParams().size());
-        for (ProjectParam projectParam : project.getProjectParams())
-            assertNotNull(projectParam.getId());
+        assertNotNull(project.getOwner());
+
         //test some methods of the generic repository for this entity.
         assertNotNull(projectRepository.findById(project.getId()));
         assertNotNull(projectRepository.findByExample(project));

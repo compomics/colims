@@ -8,9 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserHasGroup;
 import com.compomics.colims.repository.UserRepository;
-import org.hibernate.SessionFactory;
 
 /**
  *
@@ -23,9 +21,4 @@ public class UserHibernateRepository extends GenericHibernateRepository<User, Lo
     public User findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }             
-
-    @Override
-    public void saveUserHasGroup(UserHasGroup userHasGroup) {
-        getCurrentSession().persist(userHasGroup);
-    }
 }
