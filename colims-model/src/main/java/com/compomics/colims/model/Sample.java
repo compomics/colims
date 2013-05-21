@@ -28,9 +28,8 @@ import javax.persistence.Table;
 @Table(name = "sample")
 @Entity
 public class Sample extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -42,18 +41,21 @@ public class Sample extends AbstractDatabaseEntity {
     @Basic(optional = true)
     @Column(name = "name")
     private String name;
-    @ManyToOne 
-    @JoinColumn(name = "l_species_cv_term_id", referencedColumnName = "id") 
+    @ManyToOne
+    @JoinColumn(name = "l_species_cv_term_id", referencedColumnName = "id")
     private SpeciesCvTerm speciesCvTerm;
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
+    @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")
+    @ManyToOne
+    private Protocol protocol;
     @ManyToMany
     @JoinTable(name = "sample_has_material",
-    joinColumns = {
+            joinColumns = {
         @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
-    inverseJoinColumns = {
-        @JoinColumn(name = "l_material_id", referencedColumnName = "id")})    
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
@@ -85,6 +87,14 @@ public class Sample extends AbstractDatabaseEntity {
         return experiment;
     }
 
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
@@ -103,7 +113,7 @@ public class Sample extends AbstractDatabaseEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }    
+    }
 
     public List<AnalyticalRun> getAnalyticalRuns() {
         return analyticalRuns;
@@ -119,7 +129,7 @@ public class Sample extends AbstractDatabaseEntity {
 
     public void setSpeciesCvTerm(SpeciesCvTerm speciesCvTerm) {
         this.speciesCvTerm = speciesCvTerm;
-    }        
+    }
 
     @Override
     public int hashCode() {
@@ -147,6 +157,4 @@ public class Sample extends AbstractDatabaseEntity {
     public String toString() {
         return name;
     }
-    
-    
 }

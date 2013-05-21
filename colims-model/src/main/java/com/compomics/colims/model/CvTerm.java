@@ -1,6 +1,7 @@
 
 package com.compomics.colims.model;
 
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -26,14 +27,14 @@ public class CvTerm {
     @Column(name = "ontology")
     private String ontology;
     @Basic(optional = false)
+    @Column(name = "label")
+    private String label;
+    @Basic(optional = false)
     @Column(name = "accession")
     private String accession;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
-    @Column(name = "value")
-    private String value;
 
     public Long getId() {
         return id;
@@ -51,6 +52,14 @@ public class CvTerm {
         this.ontology = ontology;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }        
+
     public String getAccession() {
         return accession;
     }
@@ -65,14 +74,44 @@ public class CvTerm {
 
     public void setName(String name) {
         this.name = name;
+    }  
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(this.ontology);
+        hash = 79 * hash + Objects.hashCode(this.label);
+        hash = 79 * hash + Objects.hashCode(this.accession);
+        hash = 79 * hash + Objects.hashCode(this.name);
+        return hash;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }        
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CvTerm other = (CvTerm) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.ontology, other.ontology)) {
+            return false;
+        }
+        if (!Objects.equals(this.label, other.label)) {
+            return false;
+        }
+        if (!Objects.equals(this.accession, other.accession)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }    
 
 }

@@ -35,24 +35,12 @@ public class Protocol extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a protocol type")
-    @Length(min = 2, max = 30, message = "Type must be between 2 and 30 characters")
-    @Column(name = "type")
-    private String type;
-    @Basic(optional = false)
-    @Length(max = 500, message = "Description must be less than 500 characters")
-    @Column(name = "description")
-    private String description;
+    @NotBlank(message = "Please insert a protocol name")
+    @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
+    @Column(name = "name")
+    private String name;    
     @OneToMany(mappedBy = "protocol")
-    private List<Experiment> experiments = new ArrayList<>();
-
-    public List<Experiment> getExperiments() {
-        return experiments;
-    }
-
-    public void setExperiments(List<Experiment> experiments) {
-        this.experiments = experiments;
-    }    
+    private List<Sample> samples = new ArrayList<>();       
     
     public Long getId() {
         return id;
@@ -63,18 +51,19 @@ public class Protocol extends AbstractDatabaseEntity {
     }
 
     public String getType() {
-        return type;
+        return name;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.name = type;
+    }    
+
+    public List<Sample> getSamples() {
+        return samples;
     }
 
-    public String getDescription() {
-        return description;
+    public void setSamples(List<Sample> samples) {
+        this.samples = samples;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+        
 }

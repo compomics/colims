@@ -4,9 +4,6 @@ INSERT INTO `user` VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin'
 -- insert test instruments
 INSERT INTO `instrument` VALUES (3,'2012-11-08 16:51:11','2012-11-08 16:51:11','testUser','instrument 1 description','instrument_1'),(4,'2012-11-08 16:51:11','2012-11-08 16:51:11','testUser','instrument 2 description','instrument_2');
 
--- insert test instruments_params
-INSERT INTO `instrument_param` VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','testUser','accession_1','cv_label_1','instrument_param_value_1',3),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','testUser','accession_2','cv_label_1','instrument_param_value_2',3),(3,'2012-11-08 16:51:11','2012-11-08 16:51:11','testUser','accession_3','cv_label_1','instrument_param_value_3',4);
-
 -- insert test groups
 INSERT INTO `user_group` VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription1','testGroup1'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription2','testGroup2'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription3','testGroup3');
 
