@@ -19,7 +19,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 import com.compomics.colims.core.io.IOManager;
 import com.compomics.colims.core.io.parser.MzMLParser;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.model.BinaryFile;
+import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
 
@@ -72,10 +72,10 @@ public class ExperimentServiceImpl implements ExperimentService {
             } catch (MzMLUnmarshallerException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }
-            experiment.setBinaryFiles(new ArrayList<BinaryFile>());
+            experiment.setBinaryFiles(new ArrayList<ExperimentBinaryFile>());
 
             //add the file to the Experiment entity as BinaryFile entity
-            BinaryFile binaryFile = new BinaryFile(ioManager.readBytesFromFile(mzMLFile));
+            ExperimentBinaryFile binaryFile = new ExperimentBinaryFile(ioManager.readBytesFromFile(mzMLFile));
             experiment.getBinaryFiles().add(binaryFile);            
             
             //save experiment to db

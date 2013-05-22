@@ -13,14 +13,12 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "experiment_param")
+@Table(name = "experiment_binary_file")
 @Entity
-public class ExperimentParam extends AbstractParamEntity {
-    
-    private static final long serialVersionUID = 1L;
+public class ExperimentBinaryFile extends AbstractBinaryFile {
     
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Experiment experiment;
 
     public Experiment getExperiment() {

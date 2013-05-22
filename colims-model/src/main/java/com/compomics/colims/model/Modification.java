@@ -23,7 +23,6 @@ import javax.persistence.Table;
  */
 @Table(name = "modification")
 @Entity
-//@todo add modification_param class
 public class Modification extends AbstractDatabaseEntity {
     
     private static final long serialVersionUID = 1L;

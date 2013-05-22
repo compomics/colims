@@ -6,6 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.Length;
 
 /**
  *
@@ -37,16 +39,23 @@ public class Experiment extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "title")
     private String title;
-    @JoinColumn(name = "l_project_id", referencedColumnName = "id")
+    @Basic(optional = false)
+    @Column(name = "number")
+    private Long number;
+    @Basic(optional = true)
+    @Length(max = 500, message = "Description must be less than 500 characters")
+    @Column(name = "description")
+    private String description;
+    @Basic(optional = true)
+    @Column(name = "storage_location")
+    private String storageLocation;
     @ManyToOne
-    private Project project;
-    @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")
-    @ManyToOne
-    private Protocol protocol;    
+    @JoinColumn(name = "l_project_id", referencedColumnName = "id")    
+    private Project project;        
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<BinaryFile> binaryFiles = new ArrayList<>();
+    List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<SearchAndValidationSettings> searchAndValidationSettings = new ArrayList<>();
 
@@ -64,19 +73,35 @@ public class Experiment extends AbstractDatabaseEntity {
 
     public void setProject(Project project) {
         this.project = project;
-    }
-
-    public Protocol getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(Protocol protocol) {
-        this.protocol = protocol;
-    }            
+    }              
 
     public String getTitle() {
         return title;
     }
+
+    public Long getNumber() {
+        return number;
+    }
+
+    public void setNumber(Long number) {
+        this.number = number;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }   
+
+    public String getStorageLocation() {
+        return storageLocation;
+    }
+
+    public void setStorageLocation(String storageLocation) {
+        this.storageLocation = storageLocation;
+    }        
 
     public void setTitle(String title) {
         this.title = title;
@@ -90,11 +115,11 @@ public class Experiment extends AbstractDatabaseEntity {
         this.samples = samples;
     }
 
-    public List<BinaryFile> getBinaryFiles() {
+    public List<ExperimentBinaryFile> getBinaryFiles() {
         return binaryFiles;
     }
 
-    public void setBinaryFiles(List<BinaryFile> binaryFiles) {
+    public void setBinaryFiles(List<ExperimentBinaryFile> binaryFiles) {
         this.binaryFiles = binaryFiles;
     }
 
@@ -109,8 +134,9 @@ public class Experiment extends AbstractDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 79 * hash + (this.title != null ? this.title.hashCode() : 0);
-        hash = 79 * hash + (this.project != null ? this.project.hashCode() : 0);
+        hash = 67 * hash + Objects.hashCode(this.id);
+        hash = 67 * hash + Objects.hashCode(this.title);
+        hash = 67 * hash + Objects.hashCode(this.number);
         return hash;
     }
 
@@ -123,14 +149,17 @@ public class Experiment extends AbstractDatabaseEntity {
             return false;
         }
         final Experiment other = (Experiment) obj;
-        if ((this.title == null) ? (other.title != null) : !this.title.equals(other.title)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (this.project != other.project && (this.project == null || !this.project.equals(other.project))) {
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.number, other.number)) {
             return false;
         }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

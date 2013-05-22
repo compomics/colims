@@ -14,8 +14,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -24,36 +30,44 @@ import javax.persistence.Table;
 @Table(name = "instrument")
 @Entity
 public class Instrument extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
     @Basic(optional = false)
+    @NotBlank(message = "Please insert an instrument name")
+    @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
     @Column(name = "name")
     private String name;
-    @Basic(optional = true)
-    @Column(name = "description")
-    private String description;    
+    @Basic(optional = false)
+    @NotBlank(message = "Please insert an instrument type")
+    @Length(min = 2, max = 30, message = "Type must be between 2 and 30 characters")
+    @Column(name = "type")
+    private String type;    
+    @ManyToOne
+    @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id")    
+    private InstrumentCvTerm source;
+    @ManyToOne
+    @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id")    
+    private InstrumentCvTerm detector;
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "instrument_has_analyzer",
+            joinColumns = {
+        @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_instrument_cv_term_id", referencedColumnName = "id")})
+    private List<InstrumentCvTerm> analyzers = new ArrayList<>();
 
     public Instrument() {
     }
 
     public Instrument(String name) {
         this.name = name;
-    }
-
-    public List<AnalyticalRun> getAnalyticalRuns() {
-        return analyticalRuns;
-    }
-
-    public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
-        this.analyticalRuns = analyticalRuns;
     }
 
     public Long getId() {
@@ -72,12 +86,43 @@ public class Instrument extends AbstractDatabaseEntity {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getType() {
+        return type;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setType(String type) {
+        this.type = type;
+    }    
+
+    public InstrumentCvTerm getSource() {
+        return source;
     }
-   
+
+    public void setSource(InstrumentCvTerm source) {
+        this.source = source;
+    }
+
+    public InstrumentCvTerm getDetector() {
+        return detector;
+    }
+
+    public void setDetector(InstrumentCvTerm detector) {
+        this.detector = detector;
+    }        
+
+    public List<AnalyticalRun> getAnalyticalRuns() {
+        return analyticalRuns;
+    }
+
+    public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
+        this.analyticalRuns = analyticalRuns;
+    }
+
+    public List<InstrumentCvTerm> getAnalyzers() {
+        return analyzers;
+    }
+
+    public void setAnalyzers(List<InstrumentCvTerm> analyzers) {
+        this.analyzers = analyzers;
+    }
 }

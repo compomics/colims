@@ -33,22 +33,23 @@ public class Material extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
-    @Column(name = "description")
-    private String description;
+    @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id")
+    @ManyToOne
+    private MaterialCvTerm species;
+    @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id")
+    @ManyToOne
+    private MaterialCvTerm tissue;
+    @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id")
+    @ManyToOne
+    private MaterialCvTerm cellType;
+    @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id")
+    @ManyToOne
+    private MaterialCvTerm compartment;
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     @ManyToOne
     private Project project;
     @ManyToMany(mappedBy = "materials")
-    private List<Sample> samples = new ArrayList<>();
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    private List<Sample> samples = new ArrayList<>();    
 
     public Long getId() {
         return id;
@@ -58,6 +59,38 @@ public class Material extends AbstractDatabaseEntity {
         this.id = id;
     }
 
+    public MaterialCvTerm getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(MaterialCvTerm species) {
+        this.species = species;
+    }
+
+    public MaterialCvTerm getTissue() {
+        return tissue;
+    }
+
+    public void setTissue(MaterialCvTerm tissue) {
+        this.tissue = tissue;
+    }
+
+    public MaterialCvTerm getCellType() {
+        return cellType;
+    }
+
+    public void setCellType(MaterialCvTerm cellType) {
+        this.cellType = cellType;
+    }
+
+    public MaterialCvTerm getCompartment() {
+        return compartment;
+    }
+
+    public void setCompartment(MaterialCvTerm compartment) {
+        this.compartment = compartment;
+    }    
+    
     public Project getProject() {
         return project;
     }

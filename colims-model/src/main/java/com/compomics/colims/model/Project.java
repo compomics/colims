@@ -48,7 +48,7 @@ public class Project extends AbstractDatabaseEntity {
     private String title;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project label")
-    @Length(min = 3, max = 20, message = "Title must be between 3 and 20 characters")
+    @Length(min = 3, max = 20, message = "Label must be between 3 and 20 characters")
     @Column(name = "label")
     private String label;
     @Basic(optional = true)

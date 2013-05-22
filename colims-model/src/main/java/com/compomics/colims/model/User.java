@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,12 +17,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -46,15 +43,6 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
         parameters = {
     @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
 })
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
-    @NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
-    @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
-    @NamedQuery(name = "User.findByFullName", query = "SELECT u FROM User u WHERE u.firstName = :firstName AND u.lastName = :lastName"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractDatabaseEntity {
@@ -89,6 +77,11 @@ public class User extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert a password")
     @Type(type = "encryptedString")
     private String password;
+    @ManyToOne
+    @JoinColumn(name = "l_institution_id", referencedColumnName = "id")
+    private Institution institution;
+    @OneToMany(mappedBy = "owner")
+    private List<Project> projects = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
@@ -96,8 +89,6 @@ public class User extends AbstractDatabaseEntity {
             inverseJoinColumns = {
         @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
     private List<Group> groups = new ArrayList<>();
-    @OneToMany(mappedBy = "owner")
-    private List<Project> projects = new ArrayList<>();
 
     public User() {
     }
@@ -161,6 +152,14 @@ public class User extends AbstractDatabaseEntity {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
     }
 
     public List<Project> getProjects() {

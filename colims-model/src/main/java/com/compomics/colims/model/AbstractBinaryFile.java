@@ -4,24 +4,27 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.enums.BinaryFileType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
 /**
  *
  * @author Niels Hulstaert
  */
-@Table(name = "binary_file")
-@Entity
-public class BinaryFile extends AbstractDatabaseEntity {
+@MappedSuperclass
+public class AbstractBinaryFile extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     
@@ -30,17 +33,21 @@ public class BinaryFile extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
-    @ManyToOne
-    private Experiment experiment;
+    @Basic(optional = false)    
+    @Column(name = "file_type")
+    private String fileName;
+    @Basic(optional = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "file_type")
+    private BinaryFileType binaryFileType;
     @Lob
     @Basic(optional = false)
     @Column(name = "content")
     private byte[] content;
 
-    public BinaryFile(){}
+    public AbstractBinaryFile(){}
     
-    public BinaryFile(byte[] content) {
+    public AbstractBinaryFile(byte[] content) {
         this.content = content;
     }
 
@@ -52,13 +59,13 @@ public class BinaryFile extends AbstractDatabaseEntity {
         this.id = id;
     }
 
-    public Experiment getExperiment() {
-        return experiment;
+    public BinaryFileType getBinaryFileType() {
+        return binaryFileType;
     }
 
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
-    }
+    public void setBinaryFileType(BinaryFileType binaryFileType) {
+        this.binaryFileType = binaryFileType;
+    }    
 
     public byte[] getContent() {
         return content;
@@ -67,4 +74,13 @@ public class BinaryFile extends AbstractDatabaseEntity {
     public void setContent(byte[] content) {
         this.content = content;
     }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+        
 }
