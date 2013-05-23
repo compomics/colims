@@ -7,17 +7,13 @@ package com.compomics.colims.model;
 import com.compomics.colims.model.enums.BinaryFileType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
 
 /**
  *
@@ -34,7 +30,7 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @Basic(optional = false)    
-    @Column(name = "file_type")
+    @Column(name = "file_name")
     private String fileName;
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
