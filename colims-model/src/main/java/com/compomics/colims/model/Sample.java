@@ -65,6 +65,10 @@ public class Sample extends AbstractDatabaseEntity {
     public Sample() {
     }
 
+    public Sample(String name) {
+        this.name = name;
+    }    
+
     public Long getId() {
         return id;
     }

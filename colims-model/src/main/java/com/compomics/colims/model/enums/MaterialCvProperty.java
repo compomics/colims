@@ -1,4 +1,4 @@
-package com.compomics.colims.model.enums;
+    package com.compomics.colims.model.enums;
 
 /**
  *

@@ -19,11 +19,11 @@ import com.compomics.util.protein.Header.DatabaseType;
 @Transactional
 public class ProteinRepositoryTest {
     @Autowired
-    ProteinRepository repo;
+    private ProteinRepository repo;
 
-    String accession = "ABCDEFGH1234";
-    String sequence = "ACTGACTGACTGA";
-    long id;
+    private String accession = "ABCDEFGH1234";
+    private String sequence = "ACTGACTGACTGA";
+    private long id;
 
     @Before
     public void saveProtein() {

@@ -25,13 +25,13 @@ public class SpectrumRepositoryTest {
     }
 
     @Autowired
-    AnalyticalRunRepositoryForTesting analyticalRunRepository;
+    private AnalyticalRunRepositoryForTesting analyticalRunRepository;
 
     @Autowired
-    SpectrumRepository repo;
+    private SpectrumRepository repo;
 
-    Long idSpectrum;
-    Long idAnalyticalRun;
+    private Long idSpectrum;
+    private Long idAnalyticalRun;
 
     @Before
     public void saveSpectrum() {

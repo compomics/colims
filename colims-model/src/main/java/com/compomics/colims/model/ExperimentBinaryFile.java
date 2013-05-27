@@ -16,10 +16,17 @@ import javax.persistence.Table;
 @Table(name = "experiment_binary_file")
 @Entity
 public class ExperimentBinaryFile extends AbstractBinaryFile {
-    
+
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
+
+    public ExperimentBinaryFile() {
+    }
+
+    public ExperimentBinaryFile(byte[] content) {
+        super(content);
+    }
 
     public Experiment getExperiment() {
         return experiment;
@@ -27,6 +34,5 @@ public class ExperimentBinaryFile extends AbstractBinaryFile {
 
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
-    }        
-    
+    }
 }

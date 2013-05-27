@@ -16,25 +16,25 @@ import com.compomics.colims.model.Modification;
 @Transactional
 public class ModificationRepositoryTest {
     @Autowired
-    ModificationRepository repo;
+    private ModificationRepository modificationRepository;
 
-    String name = "modificationName";
-    Long id;
+    private String name = "modificationName";
+    private Long id;
 
     @Before
     public void saveSpectrum() {
         //Store an initial modification
         Modification modification = new Modification(name);
-        repo.save(modification);
+        modificationRepository.save(modification);
 
         //Ensure it's persisted
         Assert.assertNotNull("Identifier should be assigned now", id = modification.getId());
     }
 
     @Test
-    public final void testFindByName() {
+    public void testFindByName() {
         //Find
-        Modification modification = repo.findByName(name);
+        Modification modification = modificationRepository.findByName(name);
 
         //Compare expected values 
         Assert.assertNotNull(modification);

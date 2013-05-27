@@ -12,6 +12,9 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
+import org.junit.Before;
 
 /**
  *
@@ -25,29 +28,51 @@ public class InstrumentRepositoryTest {
 
     @Autowired
     private InstrumentRepository instrumentRepository;
+    private Instrument instrument;
 
+    @Before
+    public void loadInstrument(){
+        instrument = instrumentRepository.findAll().get(0);
+    }
+        
     @Test
     public void testFindInstrumentByName() {
-//        Instrument foundInstrument = instrumentRepository.findByName("instrument_1");
-//
-//        Assert.assertNotNull(foundInstrument);
+        Instrument foundInstrument = instrumentRepository.findByName("instrument_1");
+
+        Assert.assertNotNull(foundInstrument);
+    }
+    
+    @Test
+    public void testInstrumentCvTerms() {
+        //source cv term
+        Assert.assertNotNull(instrument.getSource());
+        Assert.assertEquals(InstrumentCvProperty.SOURCE, instrument.getSource().getInstrumentCvProperty());
+        
+        //detector cv term
+        Assert.assertNotNull(instrument.getDetector());
+        Assert.assertEquals(InstrumentCvProperty.DETECTOR, instrument.getDetector().getInstrumentCvProperty());
+        
+        //analyzer cv terms
+        Assert.assertEquals(2, instrument.getAnalyzers().size());
+        InstrumentCvTerm analyzer = instrument.getAnalyzers().get(0);
+        Assert.assertEquals(InstrumentCvProperty.ANALYZER, analyzer.getInstrumentCvProperty());
+        analyzer = instrument.getAnalyzers().get(1);
+        Assert.assertEquals(InstrumentCvProperty.ANALYZER, analyzer.getInstrumentCvProperty());
     }
 
     @Test
-    public void testCustomUpdateEventListener() {
-        
-//        Instrument instrument = instrumentRepository.findAll().get(0);
-//
-//        //get creation and modification date
-//        Date creationDate = instrument.getCreationdate();
-//        Date modificationDate = instrument.getModificationdate();
-//
-//        //update the instrument and save it
-//        instrument.setName("instrument_1_new_name");
-//        instrumentRepository.update(instrument);
-//
-//        //check if the creation date is the same and the modification has been updated
-//        Assert.assertEquals(creationDate, instrument.getCreationdate());
-//        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));        
+    public void testCustomUpdateEventListener() {                
+        //get creation and modification date
+        Date creationDate = instrument.getCreationdate();
+        Date modificationDate = instrument.getModificationdate();
+
+        //update the instrument and save it
+        instrument.setName("instrument_1_new_name");
+        instrumentRepository.update(instrument);
+
+        //check if the creation date is the same and the modification has been updated
+        Assert.assertEquals(creationDate, instrument.getCreationdate());
+        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));        
     }
+      
 }

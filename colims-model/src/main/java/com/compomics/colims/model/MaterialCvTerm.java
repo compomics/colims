@@ -2,6 +2,7 @@ package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.InstrumentCvProperty;
 import com.compomics.colims.model.enums.MaterialCvProperty;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 @Entity
 public class MaterialCvTerm extends CvTerm {
 
+    @Column(name = "cv_property")
     @Enumerated(EnumType.STRING)
     private MaterialCvProperty materialCvProperty;
 

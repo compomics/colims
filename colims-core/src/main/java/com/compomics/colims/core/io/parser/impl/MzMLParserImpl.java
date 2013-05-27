@@ -33,9 +33,16 @@ import com.compomics.colims.core.io.parser.MzMLParser;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
+import uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent;
+import uk.ac.ebi.jmzml.model.mzml.ComponentList;
+import uk.ac.ebi.jmzml.model.mzml.DetectorComponent;
+import uk.ac.ebi.jmzml.model.mzml.SourceComponent;
 
 /**
  *
@@ -96,9 +103,10 @@ public class MzMLParserImpl implements MzMLParser {
             LOGGER.debug("Unmarshalling " + sampleList.getCount() + " sample(s) from mzML file: " + mzMLFileName);
             for (uk.ac.ebi.jmzml.model.mzml.Sample mzMLSample : sampleList.getSample()) {
                 Sample sample = new Sample(mzMLSample.getId());
-                if (mzMLSample.getName() != null) {
-                    sample.setName(mzMLSample.getName());
-                }
+
+                //a sample can contain mutliple materials
+                Material material = new Material();
+
                 sample.setExperiment(experiment);
                 samples.add(sample);
             }
@@ -140,7 +148,7 @@ public class MzMLParserImpl implements MzMLParser {
         Sample foundSample = null;
         if (run.getSampleRef() != null) {
             for (Sample sample : samples) {
-                if (run.getSampleRef().equals(sample.getAccession())) {
+                if (run.getSampleRef().equals(sample.getName())) {
                     foundSample = sample;
                     break;
                 }
@@ -176,26 +184,66 @@ public class MzMLParserImpl implements MzMLParser {
         //For the moment, only consider the first InstrumentConfiguration
         //@todo include also possible other InstrumentConfigurations
         InstrumentConfiguration instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration().get(0);
-
         Instrument instrument = new Instrument(instrumentConfiguration.getId());
-        //@todo look how to translate this map this onto the colims schema
-//        List<InstrumentParam> instrumentParams = new ArrayList<>();
-//        //add cv params if available
-//        for (CVParam cVParam : instrumentConfiguration.getCvParam()) {
-//            InstrumentParam instrumentParam = new InstrumentParam();
-//            instrumentParam.setAccession(cVParam.getAccession());
-//            instrumentParam.setValue(cVParam.getValue());
-////            instrumentParam.setCvLabel(cVParam.getCv().getId());
-//            instrumentParam.setCvLabel(cVParam.getCvRef());
-//            instrumentParam.setInstrument(instrument);
-//
-//            instrumentParams.add(instrumentParam);
-//        }
+
+        ComponentList componentList = instrumentConfiguration.getComponentList();
+        //set source
+        if (componentList.getSource() != null && !componentList.getSource().isEmpty()) {
+            //for the moment, only consider the first source
+            SourceComponent sourceComponent = componentList.getSource().get(0);
+            InstrumentCvTerm source = new InstrumentCvTerm();
+            if (sourceComponent.getCvParam() != null && !sourceComponent.getCvParam().isEmpty()) {
+                CVParam cVParam = sourceComponent.getCvParam().get(0);
+                source.setAccession(cVParam.getAccession());
+                source.setName(cVParam.getName());
+                source.setLabel(cVParam.getCvRef());
+            }
+            source.setInstrumentCvProperty(InstrumentCvProperty.SOURCE);
+
+            //set relations
+            instrument.setSource(source);
+        }
+
+        //set detector
+        if (componentList.getDetector() != null && !componentList.getDetector().isEmpty()) {
+            //for the moment, only consider the first detector
+            DetectorComponent detectorComponent = componentList.getDetector().get(0);
+            InstrumentCvTerm detector = new InstrumentCvTerm();
+            if (detectorComponent.getCvParam() != null && !detectorComponent.getCvParam().isEmpty()) {
+                CVParam cVParam = detectorComponent.getCvParam().get(0);
+                detector.setAccession(cVParam.getAccession());
+                detector.setName(cVParam.getName());
+                detector.setLabel(cVParam.getCvRef());
+            }
+            detector.setInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+
+            //set relations
+            instrument.setSource(detector);
+        }
+
+        //set analyzers
+        if (componentList.getAnalyzer() != null && !componentList.getAnalyzer().isEmpty()) {
+            List<InstrumentCvTerm> analyzers = new ArrayList<>();
+            for (AnalyzerComponent analyzerComponent : componentList.getAnalyzer()) {
+                InstrumentCvTerm analyzer = new InstrumentCvTerm();
+                if (analyzerComponent.getCvParam() != null && !analyzerComponent.getCvParam().isEmpty()) {
+                    CVParam cVParam = analyzerComponent.getCvParam().get(0);
+                    analyzer.setAccession(cVParam.getAccession());
+                    analyzer.setName(cVParam.getName());
+                    analyzer.setLabel(cVParam.getCvRef());
+                }
+                analyzer.setInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+
+                analyzers.add(analyzer);
+            }
+            //set relations
+            instrument.setAnalyzers(analyzers);
+        }
 
         //set relations
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         analyticalRuns.add(analyticalRun);
-        instrument.setAnalyticalRuns(analyticalRuns);        
+        instrument.setAnalyticalRuns(analyticalRuns);
     }
 
     /**

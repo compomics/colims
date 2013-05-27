@@ -31,15 +31,15 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
     private Long id;
     @Basic(optional = false)    
     @Column(name = "file_name")
-    private String fileName;
+    protected String fileName;
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "file_type")
-    private BinaryFileType binaryFileType;
+    protected BinaryFileType binaryFileType;
     @Lob
     @Basic(optional = false)
     @Column(name = "content")
-    private byte[] content;
+    protected byte[] content;
 
     public AbstractBinaryFile(){}
     
