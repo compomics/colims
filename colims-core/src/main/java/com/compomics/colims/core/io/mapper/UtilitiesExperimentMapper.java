@@ -80,6 +80,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
         //load experiment settings
         PeptideShakerSettings experimentSettings = loadExperimentSettings(msExperiment);
+        
         //load fasta file in sequence factory        
         loadFastaFile(source.getFastaFile());
 
@@ -101,7 +102,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                 ProteomicAnalysis proteomicAnalysis = sampleAnalysisSet.getProteomicAnalysis(replicateNumber);
                 AnalyticalRun analyticalRun = new AnalyticalRun();
                 //@todo check if there is a more suitable candidate as accession number
-                analyticalRun.setAccession(replicateNumber.toString());
+                analyticalRun.setName(replicateNumber.toString());
 
                 //get (Ms2)Identification
                 //@todo find out what the identification number is                 

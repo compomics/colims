@@ -49,7 +49,7 @@ public class InMemoryDbTest {
         mzMLParser.importMzMLFiles(mzMLFiles);
 
         //try to parse unknown mzML file, should throw IllegalArgumentArgumentException
-        Experiment experiment = mzMLParser.parseExperiment("test_mzML_1.mzML");
+        Experiment experiment = mzMLParser.parseMzmlFile("test_mzML_1.mzML");
 
         //experimentService.save(experiment);
 

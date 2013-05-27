@@ -55,11 +55,11 @@ public class MzMLParserTest {
         mzMLParser.importMzMLFiles(mzMLFiles);
 
         //try to parse unknown mzML file, should throw IllegalArgumentArgumentException
-        Experiment experiment = mzMLParser.parseExperiment("unknown_MzML_file");
+        Experiment experiment = mzMLParser.parseMzmlFile("unknown_MzML_file");
     }
 
     @Test
-    public void testParseExperiment() throws IOException, MzMLUnmarshallerException {
+    public void testParseMzmlFile() throws IOException, MzMLUnmarshallerException {
         //import test mzML file
         List<File> mzMLFiles = new ArrayList<File>();
         File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();
@@ -68,7 +68,7 @@ public class MzMLParserTest {
         mzMLParser.importMzMLFiles(mzMLFiles);
 
         //import mzML file
-        Experiment experiment = mzMLParser.parseExperiment(mzMLFile.getName());
+        Experiment experiment = mzMLParser.parseMzmlFile(mzMLFile.getName());
 
         //get experiment
         assertNotNull(experiment);
@@ -84,7 +84,7 @@ public class MzMLParserTest {
         //get first run
         assertNotNull(sample.getAnalyticalRuns().get(0));
         AnalyticalRun analyticalRun = sample.getAnalyticalRuns().get(0);
-        assertEquals("Exp01", analyticalRun.getAccession());
+        assertEquals("Exp01", analyticalRun.getName());
         assertNotNull(analyticalRun.getStartDate());
         assertNotNull(analyticalRun.getSpectrums());
         assertEquals(1, analyticalRun.getSpectrums().size());

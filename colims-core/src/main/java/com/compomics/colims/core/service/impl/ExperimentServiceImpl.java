@@ -68,7 +68,7 @@ public class ExperimentServiceImpl implements ExperimentService {
         for (File mzMLFile : mzMlFiles) {
             Experiment experiment = new Experiment();
             try {
-                experiment = mzMLIOService.parseExperiment(mzMLFile.getName());
+                experiment = mzMLIOService.parseMzmlFile(mzMLFile.getName());
             } catch (MzMLUnmarshallerException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }

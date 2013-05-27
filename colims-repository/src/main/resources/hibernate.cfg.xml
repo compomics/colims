@@ -7,11 +7,7 @@
 
     <session-factory>        
 
-        <!-- mapping files containing only queries -->
-        <mapping resource="hbm/instrument.hbm.xml"/>      
-        <mapping resource="hbm/modification.hbm.xml"/>      
-        <mapping resource="hbm/protein.hbm.xml"/>      
-        <mapping resource="hbm/spectrum.hbm.xml"/>      
+        <!-- mapping files containing only queries -->                          
         <mapping resource="hbm/user.hbm.xml"/>      
         
     </session-factory>

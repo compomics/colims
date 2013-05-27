@@ -29,9 +29,8 @@ import javax.persistence.TemporalType;
 @Table(name = "analytical_run")
 @Entity
 public class AnalyticalRun extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -41,8 +40,8 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
 //    @ManyToOne
 //    private Replicate replicate;
     @Basic(optional = false)
-    @Column(name = "accession")
-    private String accession;
+    @Column(name = "name")
+    private String name;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
     @Basic(optional = true)
@@ -64,16 +63,16 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
         this.id = id;
     }
 
-    public String getAccession() {
-        return accession;
+    public String getName() {
+        return name;
     }
 
-    public void setAccession(String accession) {
-        this.accession = accession;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getStartDate() {
-        return startDate != null? new Date(startDate.getTime()) : null;
+        return startDate != null ? new Date(startDate.getTime()) : null;
     }
 
     public void setStartDate(Date startDate) {
@@ -114,7 +113,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (this.accession != null ? this.accession.hashCode() : 0);
+        hash = 89 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 
@@ -127,7 +126,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
             return false;
         }
         final AnalyticalRun other = (AnalyticalRun) obj;
-        if ((this.accession == null) ? (other.accession != null) : !this.accession.equals(other.accession)) {
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
         return true;
@@ -135,6 +134,6 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
 
     @Override
     public String toString() {
-        return accession;
+        return name;
     }
 }

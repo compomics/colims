@@ -37,13 +37,13 @@ public class SpectrumRepositoryTest {
     public void saveSpectrum() {
         //Setup analyticalRun
         AnalyticalRun analyticalRun = new AnalyticalRun();
-        analyticalRun.setAccession("accessionAnalyticalRun");
+        analyticalRun.setName("test_analytical_run");
 
         //Setup Spectrum
         Spectrum spectrum = new Spectrum();
-        spectrum.setAccession("accessionSpectrum");
+        spectrum.setAccession("spectrum");
         spectrum.setCharge(1);
-        spectrum.setScanNumber("scanNumber");
+        spectrum.setScanNumber("scan_number");
         spectrum.setMzRatio(123.45);
         spectrum.setAnalyticalRun(analyticalRun);
 

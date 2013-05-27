@@ -28,6 +28,6 @@ public interface MzMLParser {
      * @param mzMLFileName the mzML file name
      * @return the experiment
      */
-    Experiment parseExperiment(String mzMLFileName) throws MzMLUnmarshallerException, IOException;
+    Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException;
         
 }

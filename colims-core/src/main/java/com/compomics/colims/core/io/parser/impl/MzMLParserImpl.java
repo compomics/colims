@@ -70,7 +70,7 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     @Override
-    public Experiment parseExperiment(String mzMLFileName) throws MzMLUnmarshallerException, IOException {
+    public Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException {
         LOGGER.info("Start parsing experiment from file " + mzMLFileName);
         Experiment experiment = new Experiment();
 
@@ -139,7 +139,7 @@ public class MzMLParserImpl implements MzMLParser {
         LOGGER.debug("Unmarshalling run from mzML file: " + mzMLFileName);
 
         AnalyticalRun analyticalRun = new AnalyticalRun();
-        analyticalRun.setAccession(run.getId());
+        analyticalRun.setName(run.getId());
         if (run.getStartTimeStamp() != null) {
             analyticalRun.setStartDate(run.getStartTimeStamp().getTime());
         }
@@ -178,7 +178,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param analyticalRun the analytical run
      */
     private void addInstrument(String mzMLFileName, AnalyticalRun analyticalRun) {
-        LOGGER.debug("Adding instrument to run: " + analyticalRun.getAccession());
+        LOGGER.debug("Adding instrument to run: " + analyticalRun.getName());
         InstrumentConfigurationList instrumentConfigurationList = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/instrumentConfigurationList", InstrumentConfigurationList.class);
 
         //For the moment, only consider the first InstrumentConfiguration
@@ -253,7 +253,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param analyticalRun the analytical run
      */
     private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException {
-        LOGGER.debug("Adding spectra to run: " + analyticalRun.getAccession());
+        LOGGER.debug("Adding spectra to run: " + analyticalRun.getName());
         List<Spectrum> spectrums = new ArrayList<>();
         Set<String> spectrumIds = mzMLUnmarshallers.get(mzMLFileName).getSpectrumIDs();
 

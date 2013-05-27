@@ -96,7 +96,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         }
 
         PeptideShakerImport peptideShakerImport = new PeptideShakerImport(msExperiment, new File(tempFolder, PEPTIDESHAKER_SERIALIZATION_DIR));
-        LOGGER.info("Finishing import peptideshaker file " + peptideShakerCpsArchive.getName());
+        LOGGER.info("Finished importing peptideshaker file " + peptideShakerCpsArchive.getName());
 
         return peptideShakerImport;
     }
