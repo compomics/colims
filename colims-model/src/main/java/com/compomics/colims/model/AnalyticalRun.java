@@ -4,6 +4,8 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,12 +40,12 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-//    @JoinColumn(name = "l_replicateid", referencedColumnName = "replicateid")
-//    @ManyToOne
-//    private Replicate replicate;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+    @Column(name = "fragmentation_type")
+    @Enumerated(EnumType.STRING)    
+    private FragmentationType fragmentationType;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
     @Basic(optional = true)
@@ -71,6 +75,14 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
         this.name = name;
     }
 
+    public FragmentationType getFragmentationType() {
+        return fragmentationType;
+    }
+
+    public void setFragmentationType(FragmentationType fragmentationType) {
+        this.fragmentationType = fragmentationType;
+    }        
+
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;
     }
@@ -95,13 +107,6 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
         this.spectrums = spectrums;
     }
 
-//    public Replicate getReplicate() {
-//        return replicate;
-//    }
-//
-//    public void setReplicate(Replicate replicate) {
-//        this.replicate = replicate;
-//    }
     public Sample getSample() {
         return sample;
     }
