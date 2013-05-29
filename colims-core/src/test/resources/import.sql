@@ -25,20 +25,20 @@ INSERT INTO `role_has_permission` VALUES (1,1),(2,1),(3,2);
 -- insert test instrument cv terms
 INSERT INTO `instrument_cv_term` (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_1','MS','MALDI', 'PSI Mass Spectrometry','SOURCE'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_2','MS','MALDI', 'PSI Mass Spectrometry','SOURCE'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_3','MS','MALDI', 'PSI Mass Spectrometry','DETECTOR'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_4','MS','MALDI', 'PSI Mass Spectrometry','ANALYZER'), (5,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_5','MS','MALDI', 'PSI Mass Spectrometry','ANALYZER');
 
--- insert test instrument_has_analyzer
-INSERT INTO `instrument_has_analyzer` (l_instrument_id, l_instrument_cv_term_id) VALUES (1,4),(1,4),(2,5);
-
 -- insert test instruments
 INSERT INTO `instrument` (id, creation_date, modification_date, user_name, name, type, l_detector_cv_id, l_source_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','instrument_1','instrument_1_type', '3', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','instrument_2','instrument_2_type', '3', '2');
+
+-- insert test instrument_has_analyzer
+INSERT INTO `instrument_has_analyzer` (l_instrument_id, l_instrument_cv_term_id) VALUES (1,4),(1,4),(2,5);
 
 -- insert test protocol cv terms
 INSERT INTO `protocol_cv_term` (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','protocol_cv_acc_1','MS','reduction_1', 'PSI Mass Spectrometry','REDUCTION'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','protocol_cv_acc_2','MS','trypsin', 'PSI Mass Spectrometry','ENZYME'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','protocol_cv_acc_3','MS','enzyme_2', 'PSI Mass Spectrometry','ENZYME'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','protocol_cv_acc_4','MS','MALDI', 'PSI Mass Spectrometry','CHEMICAL_LABELING'), (5,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','protocol_cv_acc_5','MS','MALDI', 'PSI Mass Spectrometry','CELL_BASED');
 
+-- insert test protocols
+INSERT INTO `protocol` (id, creation_date, modification_date, user_name, l_cell_based_cv_id, l_enzyme_cv_id, l_reduction_cv_id, name) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin',5, 2, 1, 'protocol_1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin',5, 3, 1, 'protocol_2');
+
 -- insert test protocol_has_chemical_labeling
 INSERT INTO `protocol_has_chemical_labeling` (l_protocol_id, l_chemical_labeling_cv_term_id) VALUES (1,4),(1,4),(2,5);
-
--- insert test protocols
-INSERT INTO `protocol` (id, creation_date, modification_date, user_name, name, type, l_detector_cv_id, l_source_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','instrument_1','instrument_1_type', '3', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','instrument_2','instrument_2_type', '3', '2');
 
 -- insert test projects
 INSERT INTO `project` (id, creation_date, modification_date, user_name, description, label, title, l_owner_user_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 1 description', 'PR1', 'Project 1 title', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 2 description', 'PR2', 'Project 2 title', '1');

@@ -19,6 +19,7 @@ import com.compomics.colims.repository.GroupRepository;
 import com.compomics.colims.repository.PermissionRepository;
 import com.compomics.colims.repository.RoleRepository;
 import com.compomics.colims.repository.UserRepository;
+import java.util.Iterator;
 
 /**
  *
@@ -30,12 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private GroupRepository groupRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PermissionRepository permissionRepository;
 
     @Override
     public User findById(Long userId) {
@@ -77,6 +72,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User entity) {
+        //attach the user to the new session
+        userRepository.saveOrUpdate(entity);    
         userRepository.update(entity);
     }
 
@@ -89,63 +86,9 @@ public class UserServiceImpl implements UserService {
     public void fetchAuthenticationRelations(User user) {
         //attach the user to the new session
         userRepository.lock(user, LockOptions.NONE);
-//        if (!Hibernate.isInitialized(user.getUserHasGroups())) {
-//            Hibernate.initialize(user.getUserHasGroups());
-//        }
         if (!Hibernate.isInitialized(user.getGroups())) {
             Hibernate.initialize(user.getGroups());
         }
     }
-
-    @Override
-    public void saveUser(User user, List<Group> addedGroups) {
-        //userRepository.save(user);
-        updateUserhasGroups(user, addedGroups);
-        //userRepository.update(user);
-    }
-
-    @Override
-    public void updateUser(User user, List<Group> addedGroups) {
-        //attach the user to the new session
-        userRepository.lock(user, LockOptions.NONE);
-        updateUserhasGroups(user, addedGroups);
-        //userRepository.update(user);
-    }
-
-    /**
-     * Update the userHasGroups for the given user;
-     *  for an exisiting user: persist newly added UserHasGroup enitities, delete removed ones
-     *  for a new user: persist the UserHasGroup entities
-     *
-     * @param user the given user
-     * @param addedGroups the list of groups to add
-     */
-    private void updateUserhasGroups(User user, List<Group> addedGroups) { 
-        //first, add groups if necessary
-//        for (Group addedGroup : addedGroups) {
-//            //check if the user already belongs to the given group
-//            UserHasGroup userHasGroup = user.getUserHasGroupByGroup(addedGroup);
-//
-//            if (userHasGroup == null) {
-//                userHasGroup = new UserHasGroup();
-//                userHasGroup.setGroup(addedGroup);
-//                userHasGroup.setUser(user);
-//
-//                //save the UserHasGroup entity
-//                userRepository.saveUserHasGroup(userHasGroup);                
-//                user.getUserHasGroups().add(userHasGroup);
-//            }            
-//        }
-//        
-//        //second, check for groups to remove
-//        Iterator<UserHasGroup> iterator = user.getUserHasGroups().iterator();
-//        while(iterator.hasNext()){
-//            UserHasGroup userHasGroup = iterator.next();
-//            if(!addedGroups.contains(userHasGroup.getGroup())){
-//                //userHasGroup.setUser(null);
-//                //remove UserHasGroup from userHasGroups
-//                iterator.remove();
-//            }
-//        }
-    }
+        
 }

@@ -57,9 +57,8 @@ public class UtilitiesSpectrumMapperTest {
                 
         ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, 2));
-        Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);
-        
-        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");        
+        Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);        
+        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");                
         Spectrum spectrum = new Spectrum();
         
         utilitiesSpectrumMapper.map(mSnSpectrum, spectrum);

@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
+import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.PermissionRepository;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -44,11 +46,20 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public void delete(Permission entity) {
+        //attach the permission to the new session
+        permissionRepository.saveOrUpdate(entity);
+        //remove entity relations
+        for(Role role : entity.getRoles()){
+            role.getPermissions().remove(entity);
+        }
+        
         permissionRepository.delete(entity);
     }
 
     @Override
     public void update(Permission entity) {
+        //attach the permission to the new session
+        permissionRepository.saveOrUpdate(entity);
         permissionRepository.update(entity);
     }
 

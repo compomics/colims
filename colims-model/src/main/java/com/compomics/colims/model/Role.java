@@ -14,9 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
@@ -47,7 +45,7 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
     private String description;
     @ManyToMany(mappedBy = "roles")
     private List<Group> groups;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "role_has_permission",
             joinColumns = {

@@ -21,22 +21,5 @@ public interface GroupService extends GenericService<Group, Long> {
      * @return the found group
      */
     Group findByName(String name);
-    
-    /**
-     * Save the given group. Persist new GroupHasRoles first if new roles
-     * were assigned to the group.
-     *
-     * @param group the group to save
-     * @param addedRoles the added roles
-     */
-    void saveGroup(Group group, List<Role> addedRoles);
-    
-    /**
-     * Update the given group. Persist new GroupHasRoles first if new roles
-     * were assigned to the group.
-     *
-     * @param group the group to update
-     * @param addedGroups the added groups
-     */
-    void updateGroup(Group group, List<Role> addedRoles);
+        
 }

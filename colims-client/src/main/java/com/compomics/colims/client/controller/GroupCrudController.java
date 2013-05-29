@@ -181,7 +181,7 @@ public class GroupCrudController {
                     Group groupToDelete = getSelectedGroup();
                     //check if group is already has an id.
                     //If so, delete the group from the db.
-                    if (groupToDelete.getId() != null) {
+                    if (groupToDelete.getId() != null) {                                                
                         groupService.delete(groupToDelete);
                         eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, groupToDelete));
                     }
@@ -203,11 +203,14 @@ public class GroupCrudController {
                 }
                 if (validationMessages.isEmpty()) {
                     List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
+                    
+                    //add roles to the group
+                    selectedGroup.setRoles(addedRoles);
 
                     if (isExistingGroup(selectedGroup)) {
-                        groupService.updateGroup(selectedGroup, addedRoles);
+                        groupService.update(selectedGroup);
                     } else {
-                        groupService.saveGroup(selectedGroup, addedRoles);
+                        groupService.save(selectedGroup);
                     }
                     userManagementDialog.getGroupStateInfoLabel().setText("");
 

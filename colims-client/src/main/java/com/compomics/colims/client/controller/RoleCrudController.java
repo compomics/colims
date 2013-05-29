@@ -204,10 +204,13 @@ public class RoleCrudController {
                 if (validationMessages.isEmpty()) {
                     List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
 
+                    //add permissions to the selected role
+                    selectedRole.setPermissions(addedPermissions);
+                    
                     if (isExistingRole(selectedRole)) {
-                        roleService.updateRole(selectedRole, addedPermissions);
+                        roleService.update(selectedRole);
                     } else {
-                        roleService.saveRole(selectedRole, addedPermissions);
+                        roleService.save(selectedRole);
                     }
                     userManagementDialog.getGroupStateInfoLabel().setText("");
 

@@ -215,11 +215,18 @@ public class UserCrudController {
                 }
                 if (validationMessages.isEmpty()) {
                     List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
-
+                    
+                    //add groups to the selected user
+                    selectedUser.setGroups(addedGroups);
+                    
                     if (isExistingUser(selectedUser)) {
-                        userService.updateUser(selectedUser, addedGroups);
+                        userService.update(selectedUser);
                     } else {
-                        userService.saveUser(selectedUser, addedGroups);
+                        //add groups to user
+                        if(!addedGroups.isEmpty()){
+                            selectedUser.setGroups(addedGroups);
+                        }
+                        userService.save(selectedUser);
                     }
                     userManagementDialog.getUserStateInfoLabel().setText("");
 

@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -48,7 +47,7 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
     private String description;
     @ManyToMany(mappedBy = "groups")
     private List<User> users = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "group_has_role",
             joinColumns = {
