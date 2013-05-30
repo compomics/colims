@@ -4,6 +4,7 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
+import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.PermissionChangeEvent;
 import com.compomics.colims.client.event.RoleChangeEvent;
@@ -61,6 +62,19 @@ public class RoleCrudController {
     private PermissionService permissionService;
 
     /**
+     * Listen to a GroupChangeEvent and update the roles if necessary.
+     *
+     * @param groupChangeEvent the GroupChangeEvent
+     */
+    @Subscribe
+    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+        if (groupChangeEvent.areChildrenAffected()) {
+            roleBindingList.clear();
+            roleBindingList.addAll(roleService.findAll());
+        }
+    }
+
+    /**
      * Listen to a PermissionChangeEvent and update the available permissions in
      * the DualList.
      *
@@ -68,8 +82,6 @@ public class RoleCrudController {
      */
     @Subscribe
     public void onPermissionChangeEvent(PermissionChangeEvent permissionChangeEvent) {
-        //set selected index to -1
-        userManagementDialog.getRoleList().setSelectedIndex(-1);
         switch (permissionChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -79,13 +91,20 @@ public class RoleCrudController {
                 } else {
                     availablePermissions.add(permissionChangeEvent.getPermission());
                 }
+                if (!roleBindingList.isEmpty()) {
+                    userManagementDialog.getRoleList().setSelectedIndex(0);
+                }
                 break;
             case DELETED:
                 availablePermissions.remove(permissionChangeEvent.getPermission());
+                //update the role binding list
+                roleBindingList.clear();
+                roleBindingList.addAll(roleService.findAll());
                 break;
             default:
                 break;
         }
+
     }
 
     public void init() {
@@ -143,9 +162,6 @@ public class RoleCrudController {
                         //check if the group is found in the db.
                         //If so, disable the name text field and change the save button label.
                         if (isExistingRoleName(selectedRole)) {
-                            //@todo see if we need to fetch the relations
-                            //roleService.fetchAuthenticationRelations(selectedRole);
-
                             userManagementDialog.getRoleNameTextField().setEnabled(false);
                             userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
                             userManagementDialog.getRoleStateInfoLabel().setText("");
@@ -183,7 +199,7 @@ public class RoleCrudController {
                     //If so, delete the role from the db.
                     if (roleToDelete.getId() != null) {
                         roleService.delete(roleToDelete);
-                        eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, roleToDelete));
+                        eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
                     }
                     roleBindingList.remove(getSelectedRoleIndex());
                     userManagementDialog.getRoleList().setSelectedIndex(roleBindingList.size() - 1);
@@ -202,20 +218,25 @@ public class RoleCrudController {
                     validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
+                    //check if permissions have been added or removed
+                    if (userManagementDialog.getPermissionDualList().isModified()) {
+                        List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
 
-                    //add permissions to the selected role
-                    selectedRole.setPermissions(addedPermissions);
-                    
+                        //add permissions to the selected role
+                        selectedRole.setPermissions(addedPermissions);
+                    }
+
                     if (isExistingRole(selectedRole)) {
                         roleService.update(selectedRole);
                     } else {
                         roleService.save(selectedRole);
                     }
-                    userManagementDialog.getGroupStateInfoLabel().setText("");
+                    userManagementDialog.getRoleNameTextField().setEnabled(false);
+                    userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
+                    userManagementDialog.getRoleStateInfoLabel().setText("");
 
                     EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new RoleChangeEvent(type, selectedRole));
+                    eventBus.post(new RoleChangeEvent(type, userManagementDialog.getPermissionDualList().isModified(), selectedRole));
 
                     MessageEvent messageEvent = new MessageEvent("Role save confirmation", "Role " + selectedRole.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

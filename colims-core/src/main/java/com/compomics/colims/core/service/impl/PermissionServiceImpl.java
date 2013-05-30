@@ -15,7 +15,6 @@ import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.PermissionRepository;
-import org.hibernate.LockOptions;
 
 /**
  *

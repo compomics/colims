@@ -9,9 +9,9 @@ public class GroupChangeEvent extends EntityChangeEvent {
 
     private Group group;
 
-    public GroupChangeEvent(Type type, Group group) {
+    public GroupChangeEvent(Type type, boolean childrenAffected, Group group) {
+        super(type, childrenAffected);
         this.group = group;
-        this.type = type;
     }
 
     public Group getGroup() {

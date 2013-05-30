@@ -13,10 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.GroupRepository;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -52,8 +50,7 @@ public class GroupServiceImpl implements GroupService {
         //remove entity relations
         for(User user : entity.getUsers()){
             user.getGroups().remove(entity);
-        }
-        entity.getUsers().clear();        
+        }        
         
         groupRepository.delete(entity);
     }

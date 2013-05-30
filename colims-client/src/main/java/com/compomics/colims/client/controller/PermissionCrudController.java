@@ -1,13 +1,18 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.event.EntityChangeEvent;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.PermissionChangeEvent;
+import com.compomics.colims.client.event.RoleChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -50,10 +55,23 @@ public class PermissionCrudController {
     @Autowired
     private PermissionService permissionService;
 
+    /**
+     * Listen to a RoleChangeEvent and update the permissions if necessary.
+     *
+     * @param roleChangeEvent the RoleChangeEvent
+     */
+    @Subscribe
+    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+        if (roleChangeEvent.areChildrenAffected()) {
+            permissionBindingList.clear();
+            permissionBindingList.addAll(permissionService.findAll());
+        }
+    }
+
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-        
+
         //register to event bus
         eventBus.register(this);
 
@@ -102,9 +120,6 @@ public class PermissionCrudController {
                         //check if the permission is found in the db.
                         //If so, disable the name text field and change the save button label.
                         if (isExistingPermissionName(selectedPermission)) {
-                            //@todo see if we need to fetch the relations
-                            //permissionService.fetchAuthenticationRelations(selectedPermission);
-
                             userManagementDialog.getPermissionNameTextField().setEnabled(false);
                             userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
                             userManagementDialog.getPermissionStateInfoLabel().setText("");
@@ -139,7 +154,7 @@ public class PermissionCrudController {
                     //If so, delete the permission from the db.
                     if (permissionToDelete.getId() != null) {
                         permissionService.delete(permissionToDelete);
-                        eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, permissionToDelete));
+                        eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
                     }
                     permissionBindingList.remove(getSelectedPermissionIndex());
                     userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
@@ -162,11 +177,15 @@ public class PermissionCrudController {
                         permissionService.update(selectedPermission);
                     } else {
                         permissionService.save(selectedPermission);
+                        //refresh permission list
+                        userManagementDialog.getPermissionList().updateUI();
                     }
+                    userManagementDialog.getPermissionNameTextField().setEnabled(false);
+                    userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
                     userManagementDialog.getPermissionStateInfoLabel().setText("");
 
                     EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new PermissionChangeEvent(type, selectedPermission));
+                    eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
 
                     MessageEvent messageEvent = new MessageEvent("Permission save confirmation", "Permission " + selectedPermission.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

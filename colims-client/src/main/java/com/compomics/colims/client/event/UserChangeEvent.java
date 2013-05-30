@@ -9,9 +9,9 @@ public class UserChangeEvent extends EntityChangeEvent {
     
     private User user;
 
-    public UserChangeEvent(Type type, User user) {
+    public UserChangeEvent(Type type, boolean childrenAffected, User user) {
+        super(type, childrenAffected);
         this.user = user;
-        this.type = type;
     }
     
     public User getUser() {

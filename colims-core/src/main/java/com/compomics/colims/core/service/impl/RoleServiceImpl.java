@@ -15,7 +15,6 @@ import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.RoleRepository;
-import org.hibernate.LockOptions;
 
 /**
  *

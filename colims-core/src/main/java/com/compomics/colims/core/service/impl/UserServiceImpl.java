@@ -13,13 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.GroupRepository;
-import com.compomics.colims.repository.PermissionRepository;
-import com.compomics.colims.repository.RoleRepository;
 import com.compomics.colims.repository.UserRepository;
-import java.util.Iterator;
 
 /**
  *

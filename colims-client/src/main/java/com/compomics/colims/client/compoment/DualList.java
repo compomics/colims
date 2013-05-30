@@ -76,10 +76,18 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
      * Return the modified flag; were items added or removed from the added
      * items list?
      *
-     * @return
+     * @return the is modified dialog
      */
     public boolean isModified() {
         return isModified;
+    }
+
+    /**
+     * Clear the dual list; clear the available and added items.
+     */
+    public void clear() {
+        availableItemBindingList.clear();
+        addedItemBindingList.clear();
     }
 
     /**

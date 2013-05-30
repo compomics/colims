@@ -67,8 +67,6 @@ public class UserCrudController {
      */
     @Subscribe
     public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
-        //set selected index to -1
-        userManagementDialog.getUserList().setSelectedIndex(-1);
         switch (groupChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -77,6 +75,9 @@ public class UserCrudController {
                     availableGroups.set(index, groupChangeEvent.getGroup());
                 } else {
                     availableGroups.add(groupChangeEvent.getGroup());
+                }
+                if (!userBindingList.isEmpty()) {
+                    userManagementDialog.getUserList().setSelectedIndex(0);
                 }
                 break;
             case DELETED:
@@ -168,7 +169,7 @@ public class UserCrudController {
 
                         //populate dual list with groups                        
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
-                    } else {
+                    } else {                        
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
                     }
                 }
@@ -195,7 +196,7 @@ public class UserCrudController {
                     //If so, delete the user from the db.
                     if (userToDelete.getId() != null) {
                         userService.delete(userToDelete);
-                        eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, userToDelete));
+                        eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
                     }
                     userBindingList.remove(getSelectedUserIndex());
                     userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
@@ -214,24 +215,25 @@ public class UserCrudController {
                     validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
-                    
-                    //add groups to the selected user
-                    selectedUser.setGroups(addedGroups);
-                    
+                    //check if groups have been added or removed
+                    if (userManagementDialog.getGroupDualList().isModified()) {
+                        List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
+
+                        //add groups to the selected user
+                        selectedUser.setGroups(addedGroups);
+                    }
+
                     if (isExistingUser(selectedUser)) {
                         userService.update(selectedUser);
                     } else {
-                        //add groups to user
-                        if(!addedGroups.isEmpty()){
-                            selectedUser.setGroups(addedGroups);
-                        }
                         userService.save(selectedUser);
                     }
+                    userManagementDialog.getUserNameTextField().setEnabled(false);
+                    userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                     userManagementDialog.getUserStateInfoLabel().setText("");
 
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
-                    eventBus.post(new UserChangeEvent(type, selectedUser));
+                    eventBus.post(new UserChangeEvent(type, userManagementDialog.getGroupDualList().isModified(), selectedUser));
 
                     MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

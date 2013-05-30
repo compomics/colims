@@ -12,10 +12,26 @@ public abstract class EntityChangeEvent {
         CREATED, DELETED, UPDATED;                
     }
     
-    protected Type type; 
+    /**
+     * The type of change event
+     */
+    protected Type type;
+    /**
+     * Are children collections affected by the change event?
+     */
+    protected boolean childrenAffected;
 
+    public EntityChangeEvent(Type type, boolean childrenAffected) {
+        this.type = type;
+        this.childrenAffected = childrenAffected;
+    }    
+    
     public Type getType() {
         return type;
+    }        
+
+    public boolean areChildrenAffected() {
+        return childrenAffected;
     }        
 
 }

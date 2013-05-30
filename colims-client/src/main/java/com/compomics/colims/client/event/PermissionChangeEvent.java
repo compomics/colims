@@ -9,9 +9,9 @@ public class PermissionChangeEvent extends EntityChangeEvent {
 
     private Permission permission;
 
-    public PermissionChangeEvent(Type type, Permission permission) {
+    public PermissionChangeEvent(Type type, boolean childrenAffected, Permission permission) {
+        super(type, childrenAffected);
         this.permission = permission;
-        this.type = type;
     }
 
     public Permission getPermission() {

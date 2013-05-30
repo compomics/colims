@@ -7,6 +7,7 @@ import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.RoleChangeEvent;
+import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
@@ -61,6 +62,19 @@ public class GroupCrudController {
     private RoleService roleService;
 
     /**
+     * Listen to a UserChangeEvent and update the groups if necessary.
+     *
+     * @param userChangeEvent the UserChangeEvent
+     */
+    @Subscribe
+    public void onUserChangeEvent(UserChangeEvent userChangeEvent) {
+        if (userChangeEvent.areChildrenAffected()) {
+            groupBindingList.clear();
+            groupBindingList.addAll(groupService.findAll());
+        }
+    }
+
+    /**
      * Listen to a RoleChangeEvent and update the available roles in the
      * DualList.
      *
@@ -68,8 +82,6 @@ public class GroupCrudController {
      */
     @Subscribe
     public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
-        //set selected index to -1
-        userManagementDialog.getRoleList().setSelectedIndex(-1);
         switch (roleChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -79,13 +91,19 @@ public class GroupCrudController {
                 } else {
                     availableRoles.add(roleChangeEvent.getRole());
                 }
+                if (!groupBindingList.isEmpty()) {
+                    userManagementDialog.getGroupList().setSelectedIndex(0);
+                }
                 break;
             case DELETED:
                 availableRoles.remove(roleChangeEvent.getRole());
+                //update the group binding list
+                groupBindingList.clear();
+                groupBindingList.addAll(groupService.findAll());
                 break;
             default:
                 break;
-        }
+        }        
     }
 
     public void init() {
@@ -142,10 +160,7 @@ public class GroupCrudController {
 
                         //check if the group is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingGroupName(selectedGroup)) {
-                            //@todo see if we need to fetch the relations
-                            //groupService.fetchAuthenticationRelations(selectedGroup);
-
+                        if (isExistingGroupName(selectedGroup)) {                            
                             userManagementDialog.getGroupNameTextField().setEnabled(false);
                             userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                             userManagementDialog.getGroupStateInfoLabel().setText("");
@@ -157,7 +172,7 @@ public class GroupCrudController {
 
                         //populate dual list with roles                        
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
-                    } else {
+                    } else {                       
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
                     }
                 }
@@ -181,9 +196,9 @@ public class GroupCrudController {
                     Group groupToDelete = getSelectedGroup();
                     //check if group is already has an id.
                     //If so, delete the group from the db.
-                    if (groupToDelete.getId() != null) {                                                
+                    if (groupToDelete.getId() != null) {
                         groupService.delete(groupToDelete);
-                        eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, groupToDelete));
+                        eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
                     }
                     groupBindingList.remove(getSelectedGroupIndex());
                     userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
@@ -202,20 +217,25 @@ public class GroupCrudController {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database, please choose another group name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
-                    
-                    //add roles to the group
-                    selectedGroup.setRoles(addedRoles);
+                    //check if roles have been added or removed
+                    if (userManagementDialog.getRoleDualList().isModified()) {
+                        List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
+
+                        //add roles to the group
+                        selectedGroup.setRoles(addedRoles);
+                    }
 
                     if (isExistingGroup(selectedGroup)) {
                         groupService.update(selectedGroup);
                     } else {
                         groupService.save(selectedGroup);
                     }
+                    userManagementDialog.getGroupNameTextField().setEnabled(false);
+                    userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                     userManagementDialog.getGroupStateInfoLabel().setText("");
 
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new GroupChangeEvent(type, selectedGroup));
+                    eventBus.post(new GroupChangeEvent(type, userManagementDialog.getRoleDualList().isModified(), selectedGroup));
 
                     MessageEvent messageEvent = new MessageEvent("Group save confirmation", "Group " + selectedGroup.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

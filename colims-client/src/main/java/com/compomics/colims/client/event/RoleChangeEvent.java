@@ -9,9 +9,9 @@ public class RoleChangeEvent extends EntityChangeEvent {
 
     private Role role;
 
-    public RoleChangeEvent(Type type, Role role) {
+    public RoleChangeEvent(Type type, boolean childrenAffected, Role role) {
+        super(type, childrenAffected);
         this.role = role;
-        this.type = type;
     }
 
     public Role getRole() {
