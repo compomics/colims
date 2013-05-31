@@ -76,15 +76,18 @@ public class UserCrudController {
                 } else {
                     availableGroups.add(groupChangeEvent.getGroup());
                 }
-                if (!userBindingList.isEmpty()) {
-                    userManagementDialog.getUserList().setSelectedIndex(0);
-                }
                 break;
             case DELETED:
                 availableGroups.remove(groupChangeEvent.getGroup());
+                //update the user binding list
+                userBindingList.clear();
+                userBindingList.addAll(userService.findAll());
                 break;
             default:
                 break;
+        }
+        if (!userBindingList.isEmpty()) {
+            userManagementDialog.getUserList().setSelectedIndex(0);
         }
     }
 
@@ -169,7 +172,7 @@ public class UserCrudController {
 
                         //populate dual list with groups                        
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
-                    } else {                        
+                    } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
                     }
                 }

@@ -91,9 +91,6 @@ public class RoleCrudController {
                 } else {
                     availablePermissions.add(permissionChangeEvent.getPermission());
                 }
-                if (!roleBindingList.isEmpty()) {
-                    userManagementDialog.getRoleList().setSelectedIndex(0);
-                }
                 break;
             case DELETED:
                 availablePermissions.remove(permissionChangeEvent.getPermission());
@@ -104,7 +101,9 @@ public class RoleCrudController {
             default:
                 break;
         }
-
+        if (!roleBindingList.isEmpty()) {
+            userManagementDialog.getRoleList().setSelectedIndex(0);
+        }
     }
 
     public void init() {

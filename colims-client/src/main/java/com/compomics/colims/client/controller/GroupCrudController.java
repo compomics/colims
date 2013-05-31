@@ -91,9 +91,6 @@ public class GroupCrudController {
                 } else {
                     availableRoles.add(roleChangeEvent.getRole());
                 }
-                if (!groupBindingList.isEmpty()) {
-                    userManagementDialog.getGroupList().setSelectedIndex(0);
-                }
                 break;
             case DELETED:
                 availableRoles.remove(roleChangeEvent.getRole());
@@ -103,7 +100,10 @@ public class GroupCrudController {
                 break;
             default:
                 break;
-        }        
+        }
+        if (!groupBindingList.isEmpty()) {
+            userManagementDialog.getGroupList().setSelectedIndex(0);
+        }
     }
 
     public void init() {
@@ -160,7 +160,7 @@ public class GroupCrudController {
 
                         //check if the group is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingGroupName(selectedGroup)) {                            
+                        if (isExistingGroupName(selectedGroup)) {
                             userManagementDialog.getGroupNameTextField().setEnabled(false);
                             userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                             userManagementDialog.getGroupStateInfoLabel().setText("");
@@ -172,7 +172,7 @@ public class GroupCrudController {
 
                         //populate dual list with roles                        
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
-                    } else {                       
+                    } else {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
                     }
                 }
