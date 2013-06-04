@@ -4,10 +4,13 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.enums.ModificationScoreType;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,9 +25,8 @@ import javax.persistence.Table;
 @Table(name = "peptide_has_modification")
 @Entity
 public class PeptideHasModification extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -33,6 +35,13 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
     @Basic(optional = true)
     @Column(name = "location")
     private Integer location;
+    @Basic(optional = true)
+    @Column(name = "score")
+    private Double score;
+    @Basic(optional = true)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "score_type")
+    private ModificationScoreType modificationScoreType;
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
@@ -65,6 +74,22 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
 
     public void setPeptide(Peptide peptide) {
         this.peptide = peptide;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    public ModificationScoreType getModificationScoreType() {
+        return modificationScoreType;
+    }
+
+    public void setModificationScoreType(ModificationScoreType modificationScoreType) {
+        this.modificationScoreType = modificationScoreType;
     }
 
     public Modification getModification() {

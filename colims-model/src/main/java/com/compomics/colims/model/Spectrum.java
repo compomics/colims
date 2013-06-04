@@ -53,7 +53,7 @@ public class Spectrum extends AbstractDatabaseEntity {
     @Column(name = "mz_ratio")
     private Double mzRatio;
     @Basic(optional = false)
-    @Column(name = "charge")
+    @Column(name = "charge", nullable = true)
     private Integer charge;
     @Basic(optional = true)
     @Column(name = "scanTime")
