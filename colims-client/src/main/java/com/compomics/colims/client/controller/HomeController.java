@@ -3,6 +3,8 @@ package com.compomics.colims.client.controller;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
@@ -77,8 +79,8 @@ public class HomeController {
         //init spectrum table
         spectrumEventList = new BasicEventList<>();
         sortedSpectrumList = new SortedList<>(spectrumEventList, new SpectrumIdComparator());
-        homePanel.getSpectrumJTable().setModel(new EventTableModel(sortedSpectrumList, new SpectrumTableFormat()));
-        homePanel.getSpectrumJTable().setSelectionModel(new EventSelectionModel(sortedSpectrumList));
+        homePanel.getSpectrumJTable().setModel(new DefaultEventTableModel(sortedSpectrumList, new SpectrumTableFormat()));
+        homePanel.getSpectrumJTable().setSelectionModel(new DefaultEventSelectionModel(sortedSpectrumList));
 
         //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
         TableComparatorChooser tableSorter = TableComparatorChooser.install(

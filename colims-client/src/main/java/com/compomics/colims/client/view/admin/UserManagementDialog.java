@@ -1,4 +1,4 @@
-package com.compomics.colims.client.view;
+package com.compomics.colims.client.view.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import java.awt.Color;

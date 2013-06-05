@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller;
+package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
@@ -8,7 +8,7 @@ import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.PermissionChangeEvent;
 import com.compomics.colims.client.event.RoleChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.UserManagementDialog;
+import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.google.common.eventbus.EventBus;

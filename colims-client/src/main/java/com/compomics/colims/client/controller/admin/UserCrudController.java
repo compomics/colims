@@ -1,11 +1,11 @@
-package com.compomics.colims.client.controller;
+package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.UserManagementDialog;
+import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;

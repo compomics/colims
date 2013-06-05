@@ -26,6 +26,18 @@
                 <Property name="text" type="java.lang.String" value="user management"/>
               </Properties>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="cvMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="controlled vocabulary"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="instrumentCvMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="instrument"/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
@@ -48,6 +60,7 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>

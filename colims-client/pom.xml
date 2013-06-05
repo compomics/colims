@@ -18,7 +18,46 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
-    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>2.7.5</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
+                            <wsdloptions>
+                                <wsdloption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/OntologyQuery.wsdl</wsdl>
+<!--                                    <extraargs>
+                                        <extraarg>-client</extraarg>
+                                        <extraarg>-impl</extraarg>
+                                        <extraarg>-verbose</extraarg>
+                                        add setters for Collections
+                                        <extraarg>-xjc-Xsetters</extraarg>
+                                        change Boolean type getters to  getXXX
+                                        <extraarg>-xjc-Xbg</extraarg>
+                                    </extraargs>-->
+                                                                             
+                                    <!--<bindingFiles>-->
+                                    <!--<bindingFile>src/main/resources/schemas/binding.xml</bindingFile>-->
+                                    <!--</bindingFiles>-->
+                                </wsdloption>
+                            </wsdloptions>
+                        </configuration>
+                       
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>            
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -55,5 +94,12 @@
             <artifactId>glazedlists_java15</artifactId>
             <version>1.9.0</version>
         </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+            
     </dependencies>
 </project>
