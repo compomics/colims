@@ -65,8 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
         homeMenuItem = new javax.swing.JMenuItem();
         adminMenu = new javax.swing.JMenu();
         userManagementMenuItem = new javax.swing.JMenuItem();
-        cvMenu = new javax.swing.JMenu();
-        instrumentCvMenuItem = new javax.swing.JMenuItem();
+        metaDataManagementMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -93,12 +92,8 @@ public class MainFrame extends javax.swing.JFrame {
         userManagementMenuItem.setText("user management");
         adminMenu.add(userManagementMenuItem);
 
-        cvMenu.setText("controlled vocabulary");
-
-        instrumentCvMenuItem.setText("instrument");
-        cvMenu.add(instrumentCvMenuItem);
-
-        adminMenu.add(cvMenu);
+        metaDataManagementMenuItem.setText("metadata management");
+        adminMenu.add(metaDataManagementMenuItem);
 
         menuBar.add(adminMenu);
 
@@ -122,13 +117,12 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu adminMenu;
-    private javax.swing.JMenu cvMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem homeMenuItem;
     private javax.swing.JPanel homeParentPanel;
-    private javax.swing.JMenuItem instrumentCvMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem metaDataManagementMenuItem;
     private javax.swing.JPanel projectSetupParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;

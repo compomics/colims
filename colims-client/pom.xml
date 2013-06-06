@@ -33,7 +33,7 @@
                             <wsdloptions>
                                 <wsdloption>
                                     <wsdl>${basedir}/src/main/resources/wsdl/OntologyQuery.wsdl</wsdl>
-<!--                                    <extraargs>
+                                    <!--                                    <extraargs>
                                         <extraarg>-client</extraarg>
                                         <extraarg>-impl</extraarg>
                                         <extraarg>-verbose</extraarg>
@@ -99,6 +99,12 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
             <version>2.7.5</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>no.uib</groupId>
+            <artifactId>ols-dialog</artifactId>
+            <version>3.4.0</version>
         </dependency>
             
     </dependencies>

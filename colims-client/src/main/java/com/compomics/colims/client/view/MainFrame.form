@@ -26,18 +26,11 @@
                 <Property name="text" type="java.lang.String" value="user management"/>
               </Properties>
             </MenuItem>
-            <Menu class="javax.swing.JMenu" name="cvMenu">
+            <MenuItem class="javax.swing.JMenuItem" name="metaDataManagementMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="controlled vocabulary"/>
+                <Property name="text" type="java.lang.String" value="metadata management"/>
               </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="instrumentCvMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="instrument"/>
-                  </Properties>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
