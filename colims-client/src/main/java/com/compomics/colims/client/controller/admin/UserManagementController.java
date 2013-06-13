@@ -3,8 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.google.common.eventbus.EventBus;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

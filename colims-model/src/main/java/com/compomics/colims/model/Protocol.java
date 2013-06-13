@@ -60,7 +60,7 @@ public class Protocol extends AbstractDatabaseEntity {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
         @JoinColumn(name = "l_chemical_labeling_cv_term_id", referencedColumnName = "id")})
-    private List<InstrumentCvTerm> analyzers = new ArrayList<>();
+    private List<ProtocolCvTerm> chemicalLabels = new ArrayList<>();
     
     public Long getId() {
         return id;
@@ -118,12 +118,12 @@ public class Protocol extends AbstractDatabaseEntity {
         this.cellBased = cellBased;
     }
 
-    public List<InstrumentCvTerm> getAnalyzers() {
-        return analyzers;
+    public List<ProtocolCvTerm> getChemicalLabels() {
+        return chemicalLabels;
     }
 
-    public void setAnalyzers(List<InstrumentCvTerm> analyzers) {
-        this.analyzers = analyzers;
-    }        
+    public void setChemicalLabels(List<ProtocolCvTerm> chemicalLabels) {
+        this.chemicalLabels = chemicalLabels;
+    }           
         
 }

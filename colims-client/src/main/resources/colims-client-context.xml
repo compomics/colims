@@ -30,7 +30,7 @@
     
     <!-- ols soap service client -->
     <jaxws:client id="olsClient"
-                   serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
-                   address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery" />
+                  serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
+                  address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery" />
         
 </beans>

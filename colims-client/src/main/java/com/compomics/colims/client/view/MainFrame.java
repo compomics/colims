@@ -1,10 +1,8 @@
 package com.compomics.colims.client.view;
 
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 
 /**
@@ -47,6 +45,10 @@ public class MainFrame extends javax.swing.JFrame {
     public JMenu getAdminMenu() {
         return adminMenu;
     }
+
+    public JMenuItem getMetaDataManagementMenuItem() {
+        return metaDataManagementMenuItem;
+    }         
       
     /**
      * This method is called from within the constructor to initialize the form.

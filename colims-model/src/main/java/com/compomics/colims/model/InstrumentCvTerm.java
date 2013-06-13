@@ -26,4 +26,9 @@ public class InstrumentCvTerm extends CvTerm {
     public void setInstrumentCvProperty(InstrumentCvProperty instrumentCvProperty) {
         this.instrumentCvProperty = instrumentCvProperty;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.UserManagementController;
 import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.controller.admin.MetadataManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
@@ -46,13 +47,15 @@ public class MainController implements ActionListener {
     private ProjectSetupController projectSetupController;
     @Autowired
     private HomeController homeController;
+    @Autowired
+    private MetadataManagementController metadataManagementController;
     //services
     @Autowired
     private UserService userService;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private LocalSessionFactoryBean sessionFactoryBean;
+//    @Autowired
+//    private LocalSessionFactoryBean sessionFactoryBean;
 
     public MainFrame getMainFrame() {
         return mainFrame;
@@ -89,7 +92,7 @@ public class MainController implements ActionListener {
 
         //init child controllers
         projectSetupController.init();
-        homeController.init();
+        homeController.init();        
 
         //add panel components                        
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -134,8 +137,9 @@ public class MainController implements ActionListener {
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
         }
-        //else if (menuItemLabel.equals(mainFrame.getHomeMenuItem().getText())) {
-        //}
+        else if (menuItemLabel.equals(mainFrame.getMetaDataManagementMenuItem().getText())) {
+            metadataManagementController.getMetaDataManagementDialog().setVisible(true);
+        }
     }
 
     /**
@@ -154,7 +158,7 @@ public class MainController implements ActionListener {
      * @param message the error message
      */
     public void showUnexpectedErrorDialog(String message) {
-        showMessageDialog("Unexpected Error", "An expected error occured: "
+        showMessageDialog("Unexpected Error", "An unexpected error occured: "
                 + "\n" + message
                 + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
@@ -218,8 +222,10 @@ public class MainController implements ActionListener {
     private void initAdminSection() {
         //init admin controllers
         userManagementController.init();
+        metadataManagementController.init();
 
         //add action listeners                
         mainFrame.getUserManagementMenuItem().addActionListener(this);
+        mainFrame.getMetaDataManagementMenuItem().addActionListener(this);
     }
 }

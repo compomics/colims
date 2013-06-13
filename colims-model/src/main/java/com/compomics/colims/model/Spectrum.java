@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.enums.FragmentationType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,6 +65,9 @@ public class Spectrum extends AbstractDatabaseEntity {
     private Double intensity;
     @Column(name = "retentionTime")
     private Double retentionTime;    
+    @Column(name = "fragmentation_type")
+    @Enumerated(EnumType.STRING)    
+    private FragmentationType fragmentationType;
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne
     private AnalyticalRun analyticalRun;
@@ -144,6 +150,14 @@ public class Spectrum extends AbstractDatabaseEntity {
     public void setRetentionTime(Double retentionTime) {
         this.retentionTime = retentionTime;
     }
+
+    public FragmentationType getFragmentationType() {
+        return fragmentationType;
+    }
+
+    public void setFragmentationType(FragmentationType fragmentationType) {
+        this.fragmentationType = fragmentationType;
+    }        
 
     public AnalyticalRun getAnalyticalRun() {
         return analyticalRun;

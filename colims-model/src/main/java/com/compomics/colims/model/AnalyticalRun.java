@@ -5,7 +5,6 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.FragmentationType;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,10 +41,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     private Long id;
     @Basic(optional = false)
     @Column(name = "name")
-    private String name;
-    @Column(name = "fragmentation_type")
-    @Enumerated(EnumType.STRING)    
-    private FragmentationType fragmentationType;
+    private String name;    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
     @Basic(optional = true)
@@ -73,15 +69,7 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public FragmentationType getFragmentationType() {
-        return fragmentationType;
-    }
-
-    public void setFragmentationType(FragmentationType fragmentationType) {
-        this.fragmentationType = fragmentationType;
-    }        
+    }          
 
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;

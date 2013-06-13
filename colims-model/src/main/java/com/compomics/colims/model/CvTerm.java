@@ -22,19 +22,19 @@ public class CvTerm extends AbstractDatabaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
-    private Long id;
+    protected Long id;
     @Basic(optional = false)
     @Column(name = "ontology")
-    private String ontology;
+    protected String ontology;
     @Basic(optional = false)
     @Column(name = "label")
-    private String label;
+    protected String label;
     @Basic(optional = false)
     @Column(name = "accession")
-    private String accession;
+    protected String accession;
     @Basic(optional = false)
     @Column(name = "name")
-    private String name;
+    protected String name;
 
     public Long getId() {
         return id;
@@ -114,4 +114,9 @@ public class CvTerm extends AbstractDatabaseEntity {
         return true;
     }    
 
+    @Override
+    public String toString() {
+        return name + " [" + accession + "]";
+    }
+        
 }
