@@ -30,9 +30,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "protocol")
 @Entity
 public class Protocol extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -42,18 +41,18 @@ public class Protocol extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert a protocol name")
     @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
     @Column(name = "name")
-    private String name;   
+    private String name;
     @ManyToOne
-    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id")    
+    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id")
     private ProtocolCvTerm reduction;
     @ManyToOne
-    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id")    
-    private ProtocolCvTerm enzyme;    
+    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id")
+    private ProtocolCvTerm enzyme;
     @ManyToOne
-    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id")    
-    private ProtocolCvTerm cellBased;    
+    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id")
+    private ProtocolCvTerm cellBased;
     @OneToMany(mappedBy = "protocol")
-    private List<Sample> samples = new ArrayList<>();       
+    private List<Sample> samples = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {
@@ -61,7 +60,14 @@ public class Protocol extends AbstractDatabaseEntity {
             inverseJoinColumns = {
         @JoinColumn(name = "l_chemical_labeling_cv_term_id", referencedColumnName = "id")})
     private List<ProtocolCvTerm> chemicalLabels = new ArrayList<>();
-    
+    @ManyToMany
+    @JoinTable(name = "protocol_has_other_cv_term",
+            joinColumns = {
+        @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+        @JoinColumn(name = "l_other_cv_term_id", referencedColumnName = "id")})
+    private List<ProtocolCvTerm> otherCvTerms = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -76,7 +82,7 @@ public class Protocol extends AbstractDatabaseEntity {
 
     public void setType(String type) {
         this.name = type;
-    }    
+    }
 
     public List<Sample> getSamples() {
         return samples;
@@ -124,6 +130,13 @@ public class Protocol extends AbstractDatabaseEntity {
 
     public void setChemicalLabels(List<ProtocolCvTerm> chemicalLabels) {
         this.chemicalLabels = chemicalLabels;
-    }           
-        
+    }
+
+    public List<ProtocolCvTerm> getOtherCvTerms() {
+        return otherCvTerms;
+    }
+
+    public void setOtherCvTerms(List<ProtocolCvTerm> otherCvTerms) {
+        this.otherCvTerms = otherCvTerms;
+    }
 }
