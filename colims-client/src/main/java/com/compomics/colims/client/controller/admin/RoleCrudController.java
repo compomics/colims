@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -42,7 +43,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("roleCrudController")
-public class RoleCrudController {
+public class RoleCrudController implements Controllable {
 
     //model
     private ObservableList<Role> roleBindingList;
@@ -106,6 +107,7 @@ public class RoleCrudController {
         }
     }
 
+    @Override
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();

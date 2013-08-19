@@ -1,5 +1,6 @@
-package com.compomics.colims.core.io.mapper;
+package com.compomics.colims.core.io.peptideshaker.mapper;
 
+import com.compomics.colims.core.interfaces.Mapper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.model.PeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
@@ -27,7 +28,9 @@ import com.compomics.util.db.ObjectsCache;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.ProteomicAnalysis;
 import com.compomics.util.experiment.SampleAnalysisSet;
+import com.compomics.util.experiment.identification.IdentificationMethod;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
@@ -65,10 +68,14 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     /**
      * The map of new proteins (key: protein accession, value: the protein)
      */
-    private Map<String, Protein> newProteins = new HashMap<>();         
+    private Map<String, Protein> newProteins = new HashMap<>();
+    /**
+     * The cache used to store objects.
+     */
+    protected ObjectsCache objectsCache;
 
-    @Override     
-    public void map(PeptideShakerImport source, Experiment target) throws MappingException {        
+    @Override
+    public void map(PeptideShakerImport source, Experiment target) throws MappingException {
         if (source == null || target == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
@@ -80,11 +87,11 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
         //load experiment settings
         PeptideShakerSettings experimentSettings = loadExperimentSettings(msExperiment);
-        
+
         //load fasta file in sequence factory        
         loadFastaFile(source.getFastaFile());
 
-        //add samples
+        //add samples        
         List<Sample> samples = new ArrayList<>();
         //iterate over samples
         for (com.compomics.util.experiment.biology.Sample sourceSample : msExperiment.getSamples().values()) {
@@ -106,12 +113,14 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
                 //get (Ms2)Identification
                 //@todo find out what the identification number is                 
-                Ms2Identification ms2Identification = (Ms2Identification) proteomicAnalysis.getIdentification(1);
+                Ms2Identification ms2Identification = (Ms2Identification) proteomicAnalysis.getIdentification(IdentificationMethod.MS2_IDENTIFICATION);
 
                 if (ms2Identification.isDB()) {
                     try {
                         //connect to derby db
-                        ms2Identification.establishConnection(source.getDbDirectory().getAbsolutePath(), false, new ObjectsCache());
+                        objectsCache = new ObjectsCache();
+                        objectsCache.setAutomatedMemoryManagement(true);
+                        ms2Identification.establishConnection(source.getDbDirectory().getAbsolutePath(), false, objectsCache);
                     } catch (SQLException ex) {
                         LOGGER.error(ex);
                         throw new MappingException(ex.getMessage(), ex.getCause());
@@ -126,7 +135,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                 List<Spectrum> spectrums = new ArrayList<>();
                 //iterate over spectrum files
                 for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-                    boolean loadedSuccessfully = loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
+                        boolean loadedSuccessfully = loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
 
                     if (loadedSuccessfully) {
                         loadSpectrumMatches(ms2Identification, spectrumFileName);
@@ -183,7 +192,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         //check if peptide assumption is decoy
-        if (!peptideAssumption.isDecoy()) {
+        //if (!peptideAssumption.getDecoy) {
             com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
 
             Peptide targetPeptide = new Peptide();
@@ -225,7 +234,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                 }
             }
             targetPeptide.setPeptideHasProteins(peptideHasProteins);
-        }
+        //}
     }
 
     /**
@@ -233,7 +242,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      *
      * @param fastaFile the fasta file
      */
-    private void loadFastaFile(File fastaFile) throws MappingException {        
+    private void loadFastaFile(File fastaFile) throws MappingException {
         try {
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(fastaFile);
@@ -285,7 +294,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
         try {
             //load psms
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
+        } catch (SQLException | IOException | ClassNotFoundException | InterruptedException ex) {
             LOGGER.error(ex);
             throw new MappingException(ex.getMessage(), ex.getCause());
         }
@@ -300,17 +309,17 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     private void loadProteinMatches(Ms2Identification ms2Identification) throws MappingException {
         try {
             ms2Identification.loadProteinMatches(null);
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
+        } catch (SQLException | IOException | ClassNotFoundException | InterruptedException ex) {
             LOGGER.error(ex);
             throw new MappingException(ex.getMessage(), ex.getCause());
         }
     }
-        
-    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {        
+
+    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {
         PeptideShakerSettings experimentSettings = new PeptideShakerSettings();
-                
+
         experimentSettings = (PeptideShakerSettings) msExperiment.getUrParam(experimentSettings);
-        experimentSettings.getSearchParameters();
+        SearchParameters searchParameters = experimentSettings.getSearchParameters();
 
         return experimentSettings;
     }

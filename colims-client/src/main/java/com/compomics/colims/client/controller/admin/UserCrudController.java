@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
@@ -38,7 +39,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("userCrudController")
-public class UserCrudController {
+public class UserCrudController implements Controllable {
 
     //model
     private ObservableList<User> userBindingList;
@@ -91,6 +92,7 @@ public class UserCrudController {
         }
     }
 
+    @Override
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();

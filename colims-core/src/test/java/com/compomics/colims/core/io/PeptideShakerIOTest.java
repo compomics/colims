@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io;
 
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import java.io.File;
 import java.io.IOException;
 
@@ -12,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.model.PeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.biology.Sample;
 

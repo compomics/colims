@@ -1,5 +1,6 @@
-package com.compomics.colims.core.io.mapper;
+package com.compomics.colims.core.io.peptideshaker.mapper;
 
+import com.compomics.colims.core.interfaces.Mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

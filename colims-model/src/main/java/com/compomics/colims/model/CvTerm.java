@@ -36,6 +36,15 @@ public class CvTerm extends AbstractDatabaseEntity {
     @Column(name = "name")
     protected String name;
 
+    public CvTerm(){}
+
+    public CvTerm(String ontology, String label, String accession, String name) {
+        this.ontology = ontology;
+        this.label = label;
+        this.accession = accession;
+        this.name = name;
+    }        
+    
     public Long getId() {
         return id;
     }

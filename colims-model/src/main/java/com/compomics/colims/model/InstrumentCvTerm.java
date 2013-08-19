@@ -19,6 +19,13 @@ public class InstrumentCvTerm extends CvTerm {
     @Enumerated(EnumType.STRING)    
     private InstrumentCvProperty instrumentCvProperty;
 
+    public InstrumentCvTerm(){}
+    
+    public InstrumentCvTerm(InstrumentCvProperty instrumentCvProperty, String ontology, String label, String accession, String name) {
+        super(ontology, label, accession, name);
+        this.instrumentCvProperty = instrumentCvProperty;
+    }    
+    
     public InstrumentCvProperty getInstrumentCvProperty() {
         return instrumentCvProperty;
     }

@@ -167,10 +167,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
      * are no added items, the removeItemButton is disabled.
      */
     private void checkButtonStates() {
-        boolean setAddButtonEnabled = (availableItemBindingList.isEmpty() ? false : true);
-        addItemButton.setEnabled(setAddButtonEnabled);
-        boolean setRemoveButtonEnabled = (addedItemBindingList.isEmpty() ? false : true);
-        removeItemButton.setEnabled(setRemoveButtonEnabled);
+        addItemButton.setEnabled(!availableItemBindingList.isEmpty());
+        removeItemButton.setEnabled(!addedItemBindingList.isEmpty());
     }
 
     /**

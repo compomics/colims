@@ -1,11 +1,16 @@
 package com.compomics.colims.client.view.admin;
 
+import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.controller.admin.MetadataManagementController;
 import java.awt.Color;
 import java.awt.Frame;
+import java.awt.Window;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
+import no.uib.olsdialog.OLSInputable;
 
 /**
  *
@@ -13,12 +18,17 @@ import javax.swing.JTextField;
  */
 public class MetaDataManagementDialog extends javax.swing.JDialog {
 
+    private MetadataManagementController metadataManagementController;
+    
     /**
      * Creates new form InstrumentCvDialog
      */
-    public MetaDataManagementDialog(Frame parent, boolean modal) {
+    public MetaDataManagementDialog(Frame parent, boolean modal, MetadataManagementController metadataManagementController) {
         super(parent, modal);
+        this.metadataManagementController = metadataManagementController;
+        
         initComponents();
+        
         this.getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(parent);
     }
@@ -73,7 +83,7 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
 
     public JButton getSourceOlsButton() {
         return sourceOlsButton;
-    }        
+    } 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -121,11 +131,21 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
         addInstrumentButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        addInstrumentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addInstrumentButtonActionPerformed(evt);
+            }
+        });
 
         deleteInstrumentButton.setText("delete");
         deleteInstrumentButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        deleteInstrumentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteInstrumentButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout instrumentOverviewPanelLayout = new javax.swing.GroupLayout(instrumentOverviewPanel);
         instrumentOverviewPanel.setLayout(instrumentOverviewPanelLayout);
@@ -150,7 +170,7 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
                         .addComponent(addInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(instrumentListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(instrumentListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -189,6 +209,11 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
 
         addAnalyzerButton.setText("add analyzer");
         addAnalyzerButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        addAnalyzerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addAnalyzerButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout instrumentDetailPanelLayout = new javax.swing.GroupLayout(instrumentDetailPanel);
         instrumentDetailPanel.setLayout(instrumentDetailPanelLayout);
@@ -271,7 +296,7 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
         instrumentCrudPanelLayout.setVerticalGroup(
             instrumentCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentCrudPanelLayout.createSequentialGroup()
-                .addComponent(instrumentOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(instrumentOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(instrumentDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -298,6 +323,19 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addInstrumentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInstrumentButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addInstrumentButtonActionPerformed
+
+    private void deleteInstrumentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteInstrumentButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteInstrumentButtonActionPerformed
+
+    private void addAnalyzerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAnalyzerButtonActionPerformed
+       
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addAnalyzerButtonActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnalyzerButton;
@@ -325,4 +363,5 @@ public class MetaDataManagementDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton sourceOlsButton;
     // End of variables declaration//GEN-END:variables
+    
 }

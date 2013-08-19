@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.mapper.UtilitiesPeptideMapper;
+import com.compomics.colims.core.io.peptideshaker.mapper.UtilitiesPeptideMapper;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 
 /**

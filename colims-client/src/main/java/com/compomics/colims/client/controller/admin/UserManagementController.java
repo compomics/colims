@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.google.common.eventbus.EventBus;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("userManagementController")
-public class UserManagementController {
+public class UserManagementController implements Controllable {
 
     //model    
     //view
@@ -39,6 +40,7 @@ public class UserManagementController {
         return userManagementDialog;
     }
     
+    @Override
     public void init() {                          
         //init view
         userManagementDialog = new UserManagementDialog(mainController.getMainFrame(), true);        

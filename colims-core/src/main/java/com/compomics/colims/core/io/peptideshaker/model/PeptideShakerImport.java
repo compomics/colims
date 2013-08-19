@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.model;
+package com.compomics.colims.core.io.peptideshaker.model;
 
 import java.io.File;
 import java.util.List;
@@ -63,8 +63,8 @@ public class PeptideShakerImport {
     }
 
     /**
-     * Browse through the mgf files and return the (first) found mgf file.
-     * Return null if no file with the given name was found.
+     * Browse through the mgf files and return the (first) found mgf file with
+     * the given name. Return null if no file with the given name was found.
      *
      * @param mgfFileName the mgf file name
      * @return the found mgf file

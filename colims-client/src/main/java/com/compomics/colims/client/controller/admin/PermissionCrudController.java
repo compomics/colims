@@ -1,9 +1,7 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.PermissionChangeEvent;
 import com.compomics.colims.client.event.RoleChangeEvent;
@@ -39,7 +37,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("permissionCrudController")
-public class PermissionCrudController {
+public class PermissionCrudController implements Controllable {
 
     //model
     private ObservableList<Permission> permissionBindingList;
@@ -49,6 +47,7 @@ public class PermissionCrudController {
     //parent controller
     @Autowired
     private UserManagementController userManagementController;
+    //event bus    
     @Autowired
     private EventBus eventBus;
     //services
@@ -68,6 +67,7 @@ public class PermissionCrudController {
         }
     }
 
+    @Override
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
@@ -236,7 +236,7 @@ public class PermissionCrudController {
     }
 
     /**
-     * Get the selected permission index in the permission JList.
+     * Get the index of the selected permission in the permission JList.
      *
      * @return the selected index
      */
