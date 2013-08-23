@@ -16,4 +16,5 @@ public interface InstrumentRepository extends GenericRepository<Instrument, Long
      * @return the found instrument
      */
     Instrument findByName(String name);
+    
 }

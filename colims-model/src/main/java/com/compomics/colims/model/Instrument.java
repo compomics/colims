@@ -43,18 +43,16 @@ public class Instrument extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
     @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert an instrument type")
-    @Length(min = 2, max = 30, message = "Type must be between 2 and 30 characters")
-    @Column(name = "type")
-    private String type;    
+    private String name;    
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id")    
     private InstrumentCvTerm source;
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id")    
     private InstrumentCvTerm detector;
+    @ManyToOne
+    @JoinColumn(name = "l_instrument_type_id", referencedColumnName = "id")    
+    private InstrumentType instrumentType;    
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();    
     @ManyToMany
@@ -88,15 +86,7 @@ public class Instrument extends AbstractDatabaseEntity {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }    
-
+   
     public InstrumentCvTerm getSource() {
         return source;
     }
@@ -111,6 +101,14 @@ public class Instrument extends AbstractDatabaseEntity {
 
     public void setDetector(InstrumentCvTerm detector) {
         this.detector = detector;
+    }  
+
+    public InstrumentType getInstrumentType() {
+        return instrumentType;
+    }
+
+    public void setInstrumentType(InstrumentType instrumentType) {
+        this.instrumentType = instrumentType;
     }        
 
     public List<AnalyticalRun> getAnalyticalRuns() {
@@ -131,10 +129,9 @@ public class Instrument extends AbstractDatabaseEntity {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.type);
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.instrumentType);
         return hash;
     }
 
@@ -147,21 +144,18 @@ public class Instrument extends AbstractDatabaseEntity {
             return false;
         }
         final Instrument other = (Instrument) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.type, other.type)) {
+        if (!Objects.equals(this.instrumentType, other.instrumentType)) {
             return false;
         }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {
-        return name + " [" + type + "]";
+        return name + " [" + instrumentType + "]";
     }
         
 }

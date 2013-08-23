@@ -59,7 +59,7 @@ public class PermissionServiceImpl implements PermissionService {
     public void update(Permission entity) {
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
-        permissionRepository.update(entity);
+        //permissionRepository.update(entity);
     }
 
     @Override

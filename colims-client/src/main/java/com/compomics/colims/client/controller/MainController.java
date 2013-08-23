@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.UserManagementController;
 import com.compomics.colims.client.bean.AuthenticationBean;
-import com.compomics.colims.client.controller.admin.MetadataManagementController;
+import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
@@ -48,7 +48,7 @@ public class MainController implements ActionListener {
     @Autowired
     private HomeController homeController;
     @Autowired
-    private MetadataManagementController metadataManagementController;
+    private InstrumentManagementController metadataManagementController;
     //services
     @Autowired
     private UserService userService;
@@ -70,7 +70,7 @@ public class MainController implements ActionListener {
 //        schemaExport.setFormat(true);
 //        schemaExport.setDelimiter(";");
 //        schemaExport.execute(true, false, false, true);
-                        
+
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
@@ -92,7 +92,7 @@ public class MainController implements ActionListener {
 
         //init child controllers
         projectSetupController.init();
-        homeController.init();        
+        homeController.init();
 
         //add panel components                        
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -125,9 +125,14 @@ public class MainController implements ActionListener {
             }
         });
 
-        //show login dialog
-        loginDialog.setLocationRelativeTo(null);
-        loginDialog.setVisible(true);
+//        //show login dialog
+//        loginDialog.setLocationRelativeTo(null);
+//        loginDialog.setVisible(true);
+
+        //disable login dialog while developping
+        initAdminSection();
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
     }
 
     @Override
@@ -136,8 +141,7 @@ public class MainController implements ActionListener {
 
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
-        }
-        else if (menuItemLabel.equals(mainFrame.getMetaDataManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(mainFrame.getMetaDataManagementMenuItem().getText())) {
             metadataManagementController.getMetaDataManagementDialog().setVisible(true);
         }
     }

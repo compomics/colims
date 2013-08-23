@@ -15,7 +15,7 @@ import com.compomics.colims.repository.SessionBean;
  *
  * @author Niels Hulstaert
  */
-@Deprecated
+//@Deprecated
 public class AuditInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
@@ -63,7 +63,8 @@ public class AuditInterceptor extends EmptyInterceptor {
                 changed = true;
             }
             if ("userName".equals(propertyNames[i])) {
-                currentState[i] = sessionBean.getCurrentUser().getName();
+//                currentState[i] = sessionBean.getCurrentUser().getName();
+                currentState[i] = "N/A";
                 changed = true;
             }
         }

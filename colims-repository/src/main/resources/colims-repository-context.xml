@@ -25,9 +25,13 @@
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="colimsDataSource"/>
+        <property name="dataSource" ref="colimsDataSource"/>        
         <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
         <property name="packagesToScan" value="com.compomics.colims.model"/>
+        <!-- Adding Interceptor here -->
+        <property name="entityInterceptor">
+            <bean class="com.compomics.colims.repository.audit.AuditInterceptor"></bean>
+        </property>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${db.dialect}</prop> 
@@ -62,7 +66,7 @@
         <!-- This property value must match "encryptorRegisteredName" used when defining hibernate user types -->
         <property name="registeredName" value="jasyptHibernateEncryptor"/>
         <property name="encryptor" ref="stringEncryptor"/>
-    </bean>                      
+    </bean>        
     
     <!-- repository beans -->
     <context:component-scan base-package="com.compomics.colims.repository">

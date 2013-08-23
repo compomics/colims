@@ -1,7 +1,7 @@
 package com.compomics.colims.client.view.admin;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.admin.MetadataManagementController;
+import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
@@ -18,12 +18,12 @@ import no.uib.olsdialog.OLSInputable;
  */
 public class MetaDataManagementDialog extends javax.swing.JDialog {
 
-    private MetadataManagementController metadataManagementController;
+    private InstrumentManagementController metadataManagementController;
     
     /**
      * Creates new form InstrumentCvDialog
      */
-    public MetaDataManagementDialog(Frame parent, boolean modal, MetadataManagementController metadataManagementController) {
+    public MetaDataManagementDialog(Frame parent, boolean modal, InstrumentManagementController metadataManagementController) {
         super(parent, modal);
         this.metadataManagementController = metadataManagementController;
         

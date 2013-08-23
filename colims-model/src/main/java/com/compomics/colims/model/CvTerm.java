@@ -88,7 +88,6 @@ public class CvTerm extends AbstractDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
         hash = 79 * hash + Objects.hashCode(this.ontology);
         hash = 79 * hash + Objects.hashCode(this.label);
         hash = 79 * hash + Objects.hashCode(this.accession);
@@ -105,9 +104,6 @@ public class CvTerm extends AbstractDatabaseEntity {
             return false;
         }
         final CvTerm other = (CvTerm) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
         if (!Objects.equals(this.ontology, other.ontology)) {
             return false;
         }

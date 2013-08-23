@@ -1,6 +1,8 @@
 
 package com.compomics.colims.repository.playground;
 
+import com.compomics.colims.repository.InstrumentRepository;
+import com.compomics.colims.repository.impl.InstrumentHibernateRepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -11,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Playground {
     
     public static void main(String[] args) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");                
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");         
     }
 
 }

@@ -12,8 +12,10 @@ import com.compomics.colims.repository.InstrumentRepository;
  */
 @Repository("instrumentRepository")
 public class InstrumentHibernateRepository extends GenericHibernateRepository<Instrument, Long> implements InstrumentRepository {
+    
     @Override
     public Instrument findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
-    }
+    }    
+    
 }
