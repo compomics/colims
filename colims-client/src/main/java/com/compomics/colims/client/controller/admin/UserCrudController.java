@@ -144,7 +144,7 @@ public class UserCrudController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedUserIndex() != -1) {
+                    if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
                         User selectedUser = getSelectedUser();
 
                         //check if the selected user is the current user.
@@ -195,7 +195,7 @@ public class UserCrudController implements Controllable {
         userManagementDialog.getDeleteUserButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSelectedUserIndex() != -1) {
+                if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
                     User userToDelete = getSelectedUser();
                     //check if user is already has an id.
                     //If so, delete the user from the db.
@@ -203,7 +203,7 @@ public class UserCrudController implements Controllable {
                         userService.delete(userToDelete);
                         eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
                     }
-                    userBindingList.remove(getSelectedUserIndex());
+                    userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
                     userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
                 }
             }
@@ -282,16 +282,9 @@ public class UserCrudController implements Controllable {
      * @return the selected user
      */
     private User getSelectedUser() {
-        User selectedUser = (getSelectedUserIndex() != -1) ? userBindingList.get(getSelectedUserIndex()) : null;
+        int selectedUserIndex = userManagementDialog.getUserList().getSelectedIndex();
+        User selectedUser = (selectedUserIndex != -1) ? userBindingList.get(selectedUserIndex) : null;
         return selectedUser;
     }
 
-    /**
-     * Get the selected user index in the user JList.
-     *
-     * @return the selected index
-     */
-    private int getSelectedUserIndex() {
-        return userManagementDialog.getUserList().getSelectedIndex();
-    }
 }

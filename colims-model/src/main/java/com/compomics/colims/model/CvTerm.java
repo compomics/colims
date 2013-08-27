@@ -1,4 +1,3 @@
-
 package com.compomics.colims.model;
 
 import java.util.Objects;
@@ -15,9 +14,8 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public class CvTerm extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -36,15 +34,16 @@ public class CvTerm extends AbstractDatabaseEntity {
     @Column(name = "name")
     protected String name;
 
-    public CvTerm(){}
+    public CvTerm() {
+    }
 
     public CvTerm(String ontology, String label, String accession, String name) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
         this.name = name;
-    }        
-    
+    }
+
     public Long getId() {
         return id;
     }
@@ -67,7 +66,7 @@ public class CvTerm extends AbstractDatabaseEntity {
 
     public void setLabel(String label) {
         this.label = label;
-    }        
+    }
 
     public String getAccession() {
         return accession;
@@ -83,7 +82,7 @@ public class CvTerm extends AbstractDatabaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }  
+    }
 
     @Override
     public int hashCode() {
@@ -117,11 +116,20 @@ public class CvTerm extends AbstractDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name + " [" + accession + "]";
     }
-        
+
+    /**
+     * Convert the CV term to a String array
+     *
+     * @return
+     */
+    public String[] toStringArray() {
+        String[] stringArray = {label, accession, name};
+        return stringArray;
+    }
 }

@@ -23,7 +23,7 @@ INSERT INTO `permission` (id, creation_date, modification_date, user_name, descr
 INSERT INTO `role_has_permission` VALUES (1,1),(2,1),(3,2);
 
 -- insert test instrument types
-INSERT INTO `instrument_type` (id, creation_date, modification_date, user_name, type, description) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_1','instrument type 1 description'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_2','instrument type 2 description');
+INSERT INTO `instrument_type` (id, creation_date, modification_date, user_name, name, description) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_1_name','instrument type 1 description'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_2_name','instrument type 2 description');
 
 -- insert test instrument cv terms
 INSERT INTO `instrument_cv_term` (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_1','MS','MALDI', 'PSI Mass Spectrometry','SOURCE'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_2','MS','MALDI', 'PSI Mass Spectrometry','SOURCE'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_3','MS','MALDI', 'PSI Mass Spectrometry','DETECTOR'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_4','MS','analyzer 1', 'PSI Mass Spectrometry','ANALYZER'), (5,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_cv_acc_5','MS','analyzer 2', 'PSI Mass Spectrometry','ANALYZER');

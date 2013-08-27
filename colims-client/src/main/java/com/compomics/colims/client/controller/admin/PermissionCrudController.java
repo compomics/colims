@@ -110,7 +110,7 @@ public class PermissionCrudController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedPermissionIndex() != -1) {
+                    if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
                         Permission selectedPermission = getSelectedPermission();
 
                         //enable save and delete button
@@ -148,7 +148,7 @@ public class PermissionCrudController implements Controllable {
         userManagementDialog.getDeletePermissionButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSelectedPermissionIndex() != -1) {
+                if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
                     Permission permissionToDelete = getSelectedPermission();
                     //check if permission is already has an id.
                     //If so, delete the permission from the db.
@@ -156,7 +156,7 @@ public class PermissionCrudController implements Controllable {
                         permissionService.delete(permissionToDelete);
                         eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
                     }
-                    permissionBindingList.remove(getSelectedPermissionIndex());
+                    permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
                     userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
                 }
             }
@@ -231,16 +231,8 @@ public class PermissionCrudController implements Controllable {
      * @return the selected permission
      */
     private Permission getSelectedPermission() {
-        Permission selectedPermission = (getSelectedPermissionIndex() != -1) ? permissionBindingList.get(getSelectedPermissionIndex()) : null;
+        int seletedPermissionIndex = userManagementDialog.getPermissionList().getSelectedIndex();
+        Permission selectedPermission = (seletedPermissionIndex != -1) ? permissionBindingList.get(seletedPermissionIndex) : null;
         return selectedPermission;
-    }
-
-    /**
-     * Get the index of the selected permission in the permission JList.
-     *
-     * @return the selected index
-     */
-    private int getSelectedPermissionIndex() {
-        return userManagementDialog.getPermissionList().getSelectedIndex();
-    }
+    }    
 }

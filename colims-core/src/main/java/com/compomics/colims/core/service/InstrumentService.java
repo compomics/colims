@@ -2,6 +2,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
 
 /**
  *
@@ -23,6 +24,6 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @param accession the analyzer accession
      * @return the found analyzer
      */
-    InstrumentCvTerm findAnalyzerByAccession(String accession);     
+    InstrumentCvTerm findByAccession(String accession, InstrumentCvProperty instrumentCvProperty);     
    
 }

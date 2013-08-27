@@ -11,6 +11,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
 
 /**
  *
@@ -20,20 +21,20 @@ import com.compomics.colims.model.InstrumentCvTerm;
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class AnalyzerRepositoryTest {
+public class InstrumentCvTermRepositoryTest {
 
     @Autowired
-    private AnalyzerRepository analyzerRepository;        
+    private InstrumentCvTermRepository instrumentCvTermRepository;        
         
     @Test
     public void testFindByAccession() {
         //look for unknown analyzer
-        InstrumentCvTerm analyzer = analyzerRepository.findByAccession("unknown analyzer");
+        InstrumentCvTerm analyzer = instrumentCvTermRepository.findByAccession("unknown analyzer", InstrumentCvProperty.ANALYZER);
         Assert.assertNull(analyzer);
         
         //look for known analyzer
-        analyzer = analyzerRepository.findByAccession("instr_cv_acc_4");
+        analyzer = instrumentCvTermRepository.findByAccession("instr_cv_acc_4", InstrumentCvProperty.ANALYZER);
         Assert.assertNotNull(analyzer);        
-    }        
+    }                
       
 }

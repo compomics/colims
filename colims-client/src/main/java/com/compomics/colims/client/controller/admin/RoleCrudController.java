@@ -153,7 +153,7 @@ public class RoleCrudController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedRoleIndex() != -1) {
+                    if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
                         Role selectedRole = getSelectedRole();
 
                         //enable save and delete button
@@ -194,7 +194,7 @@ public class RoleCrudController implements Controllable {
         userManagementDialog.getDeleteRoleButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSelectedRoleIndex() != -1) {
+                if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
                     Role roleToDelete = getSelectedRole();
                     //check if role is already has an id.
                     //If so, delete the role from the db.
@@ -202,7 +202,7 @@ public class RoleCrudController implements Controllable {
                         roleService.delete(roleToDelete);
                         eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
                     }
-                    roleBindingList.remove(getSelectedRoleIndex());
+                    roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
                     userManagementDialog.getRoleList().setSelectedIndex(roleBindingList.size() - 1);
                 }
             }
@@ -281,16 +281,8 @@ public class RoleCrudController implements Controllable {
      * @return the selected role
      */
     private Role getSelectedRole() {
-        Role selectedRole = (getSelectedRoleIndex() != -1) ? roleBindingList.get(getSelectedRoleIndex()) : null;
+        int selectedRoleIndex = userManagementDialog.getRoleList().getSelectedIndex();
+        Role selectedRole = (selectedRoleIndex != -1) ? roleBindingList.get(selectedRoleIndex) : null;
         return selectedRole;
-    }
-
-    /**
-     * Get the selected role index in the role JList.
-     *
-     * @return the selected index
-     */
-    private int getSelectedRoleIndex() {
-        return userManagementDialog.getRoleList().getSelectedIndex();
     }
 }

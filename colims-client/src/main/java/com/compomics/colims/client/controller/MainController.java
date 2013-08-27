@@ -48,7 +48,7 @@ public class MainController implements ActionListener {
     @Autowired
     private HomeController homeController;
     @Autowired
-    private InstrumentManagementController metadataManagementController;
+    private InstrumentManagementController instrumentManagementController;
     //services
     @Autowired
     private UserService userService;
@@ -142,7 +142,7 @@ public class MainController implements ActionListener {
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
         } else if (menuItemLabel.equals(mainFrame.getMetaDataManagementMenuItem().getText())) {
-            metadataManagementController.getMetaDataManagementDialog().setVisible(true);
+            instrumentManagementController.getInstrumentManagementDialog().setVisible(true);
         }
     }
 
@@ -226,7 +226,7 @@ public class MainController implements ActionListener {
     private void initAdminSection() {
         //init admin controllers
         userManagementController.init();
-        metadataManagementController.init();
+        instrumentManagementController.init();
 
         //add action listeners                
         mainFrame.getUserManagementMenuItem().addActionListener(this);

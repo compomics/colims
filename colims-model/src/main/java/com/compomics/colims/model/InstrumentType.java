@@ -33,10 +33,10 @@ public class InstrumentType extends AbstractDatabaseEntity {
     @Column(name = "id")
     private Long id;
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an instrument type")
-    @Length(min = 2, max = 30, message = "Type must be between 2 and 30 characters")
-    @Column(name = "type")
-    private String type;
+    @NotBlank(message = "Please insert an instrument type name")
+    @Length(min = 2, max = 30, message = "Type name must be between 2 and 30 characters")
+    @Column(name = "name")
+    private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than 500 characters")
     @Column(name = "description")
@@ -52,13 +52,13 @@ public class InstrumentType extends AbstractDatabaseEntity {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setName(String name) {
+        this.name = name;
+    }    
 
     public String getDescription() {
         return description;

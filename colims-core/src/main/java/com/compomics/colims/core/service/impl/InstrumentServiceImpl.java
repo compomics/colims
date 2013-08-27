@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.repository.AnalyzerRepository;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
+import com.compomics.colims.repository.InstrumentCvTermRepository;
 import com.compomics.colims.repository.InstrumentRepository;
 
 /**
@@ -23,7 +24,7 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Autowired
     private InstrumentRepository instrumentRepository;
     @Autowired
-    private AnalyzerRepository analyzerRepository;
+    private InstrumentCvTermRepository instrumentCvTermRepository;
     
     @Override
     public Instrument findById(Long id) {
@@ -63,7 +64,7 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public InstrumentCvTerm findAnalyzerByAccession(String accession) {
-        return analyzerRepository.findByAccession(accession);
+    public InstrumentCvTerm findByAccession(String accession, InstrumentCvProperty instrumentCvProperty) {
+        return instrumentCvTermRepository.findByAccession(accession, instrumentCvProperty);
     }
 }

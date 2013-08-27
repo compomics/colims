@@ -153,7 +153,7 @@ public class GroupCrudController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (getSelectedGroupIndex() != -1) {
+                    if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
                         Group selectedGroup = getSelectedGroup();
 
                         //enable save and delete button
@@ -194,7 +194,7 @@ public class GroupCrudController implements Controllable {
         userManagementDialog.getDeleteGroupButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSelectedGroupIndex() != -1) {
+                if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
                     Group groupToDelete = getSelectedGroup();
                     //check if group is already has an id.
                     //If so, delete the group from the db.
@@ -202,7 +202,7 @@ public class GroupCrudController implements Controllable {
                         groupService.delete(groupToDelete);
                         eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
                     }
-                    groupBindingList.remove(getSelectedGroupIndex());
+                    groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
                     userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
                 }
             }
@@ -281,16 +281,8 @@ public class GroupCrudController implements Controllable {
      * @return the selected group
      */
     private Group getSelectedGroup() {
-        Group selectedGroup = (getSelectedGroupIndex() != -1) ? groupBindingList.get(getSelectedGroupIndex()) : null;
+        int selectedGroupIndex = userManagementDialog.getGroupList().getSelectedIndex();
+        Group selectedGroup = (selectedGroupIndex != -1) ? groupBindingList.get(selectedGroupIndex) : null;
         return selectedGroup;
-    }
-
-    /**
-     * Get the selected group index in the group JList.
-     *
-     * @return the selected index
-     */
-    private int getSelectedGroupIndex() {
-        return userManagementDialog.getGroupList().getSelectedIndex();
     }
 }
