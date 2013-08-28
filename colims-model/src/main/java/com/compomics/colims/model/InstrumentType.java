@@ -75,5 +75,10 @@ public class InstrumentType extends AbstractDatabaseEntity {
     public void setInstruments(List<Instrument> instruments) {
         this.instruments = instruments;
     }
-        
+
+    @Override
+    public String toString() {
+        return name;
+    }
+         
 }

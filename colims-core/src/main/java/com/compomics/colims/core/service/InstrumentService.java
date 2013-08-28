@@ -1,15 +1,13 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 
 /**
  *
  * @author niels
  */
 public interface InstrumentService extends GenericService<Instrument, Long> {
-    
+
     /**
      * Find the instrument by name, return null if no instrument was found.
      *
@@ -17,13 +15,13 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @return the found instrument
      */
     Instrument findByName(String name);
-    
+
     /**
-     * Find an analyzer by accession. Returns null if nothing was found.
-     * 
-     * @param accession the analyzer accession
-     * @return the found analyzer
+     * Delete the given experiment but check first if the instrument was used in
+     * any analytical run. If not, delete it else do nothing.
+     *
+     * @param instrument the instrument to delete
+     * @return is the instrument used in an analytical run or not
      */
-    InstrumentCvTerm findByAccession(String accession, InstrumentCvProperty instrumentCvProperty);     
-   
+    boolean checkUsageBeforeDeletion(Instrument instrument);
 }

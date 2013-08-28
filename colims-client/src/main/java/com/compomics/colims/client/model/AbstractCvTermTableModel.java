@@ -35,5 +35,10 @@ public abstract class AbstractCvTermTableModel<T> extends AbstractTableModel {
     public int getColumnCount() {
         return columnNames.length;
     }        
-          
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+            
 }

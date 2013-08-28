@@ -26,9 +26,9 @@
                 <Property name="text" type="java.lang.String" value="user management"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="metaDataManagementMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="metadata management"/>
+                <Property name="text" type="java.lang.String" value="instrument management"/>
               </Properties>
             </MenuItem>
           </SubComponents>

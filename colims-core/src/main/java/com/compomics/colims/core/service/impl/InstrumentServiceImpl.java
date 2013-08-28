@@ -8,10 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
-import com.compomics.colims.repository.InstrumentCvTermRepository;
 import com.compomics.colims.repository.InstrumentRepository;
+import org.hibernate.Hibernate;
 
 /**
  *
@@ -23,9 +21,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Autowired
     private InstrumentRepository instrumentRepository;
-    @Autowired
-    private InstrumentCvTermRepository instrumentCvTermRepository;
-    
+
     @Override
     public Instrument findById(Long id) {
         return instrumentRepository.findById(id);
@@ -64,7 +60,18 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public InstrumentCvTerm findByAccession(String accession, InstrumentCvProperty instrumentCvProperty) {
-        return instrumentCvTermRepository.findByAccession(accession, instrumentCvProperty);
+    public boolean checkUsageBeforeDeletion(Instrument instrument) {
+        boolean deleted = false;
+
+        instrumentRepository.saveOrUpdate(instrument);
+        //fetch the analytical runs
+        Hibernate.initialize(instrument.getAnalyticalRuns());
+        if (instrument.getAnalyticalRuns().isEmpty()) {
+            //delete the instrument
+            delete(instrument);
+            deleted = true;
+        }
+        
+        return deleted;
     }
 }

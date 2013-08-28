@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.enums.InstrumentCvProperty;
+import java.util.List;
 
 /**
  *
@@ -35,6 +36,13 @@ public class InstrumentCvTermRepositoryTest {
         //look for known analyzer
         analyzer = instrumentCvTermRepository.findByAccession("instr_cv_acc_4", InstrumentCvProperty.ANALYZER);
         Assert.assertNotNull(analyzer);        
-    }                
+    }  
+    
+    @Test
+    public void testFindByInstrumentCvProperty() {        
+        List<InstrumentCvTerm> analyzers = instrumentCvTermRepository.findByInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+        Assert.assertNotNull(analyzers);  
+        Assert.assertEquals(2, analyzers.size());
+    }
       
 }

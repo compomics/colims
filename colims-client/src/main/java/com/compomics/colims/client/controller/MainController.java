@@ -141,7 +141,7 @@ public class MainController implements ActionListener {
 
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
-        } else if (menuItemLabel.equals(mainFrame.getMetaDataManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.getInstrumentManagementDialog().setVisible(true);
         }
     }
@@ -230,6 +230,6 @@ public class MainController implements ActionListener {
 
         //add action listeners                
         mainFrame.getUserManagementMenuItem().addActionListener(this);
-        mainFrame.getMetaDataManagementMenuItem().addActionListener(this);
+        mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
     }
 }

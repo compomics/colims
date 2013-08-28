@@ -2,36 +2,29 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.PermissionChangeEvent;
 import com.compomics.colims.client.model.InstrumentDetailTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.EditInstrumentDialog;
 import com.compomics.colims.client.view.admin.InstrumentManagementDialog;
 import com.compomics.colims.client.view.admin.InstrumentTypeManagementDialog;
-import com.compomics.colims.client.view.admin.MetaDataManagementDialog;
+import com.compomics.colims.core.service.InstrumentCvTermService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.InstrumentTypeService;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
-import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.enums.InstrumentCvProperty;
 import com.google.common.eventbus.EventBus;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -53,9 +46,8 @@ import org.springframework.stereotype.Component;
 @Component("metaDataManagementController")
 public class InstrumentManagementController implements Controllable, OLSInputable {
 
-    //model  
+    //model      
     private ObservableList<Instrument> instrumentBindingList;
-    private ObservableList<InstrumentCvTerm> analyzerBindingList;
     private ObservableList<InstrumentType> instrumentTypeBindingList;
     private BindingGroup bindingGroup;
     //view
@@ -70,6 +62,8 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
     private InstrumentService instrumentService;
     @Autowired
     private InstrumentTypeService instrumentTypeService;
+    @Autowired
+    private InstrumentCvTermService instrumentCvTermService;
     @Autowired
     private EventBus eventBus;
 
@@ -90,7 +84,8 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
 
         //init views     
         initInstrumentManagementDialog();
-        initInstrumentTypeManagementDialog();       
+        initInstrumentTypeManagementDialog();
+        initEditInstrumentDialog();
 
         bindingGroup.bind();
 
@@ -118,9 +113,10 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
     private void initInstrumentManagementDialog() {
         instrumentManagementDialog = new InstrumentManagementDialog(mainController.getMainFrame(), true);
 
+        //add binding
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
         JListBinding instrumentListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, instrumentManagementDialog.getInstrumentList());
-        bindingGroup.addBinding(instrumentListBinding);        
+        bindingGroup.addBinding(instrumentListBinding);
 
         //add action listeners
         instrumentManagementDialog.getInstrumentList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -129,7 +125,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                 if (!e.getValueIsAdjusting()) {
                     if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
                         Instrument selectedInstrument = instrumentBindingList.get(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
-                        
+
                         InstrumentDetailTableModel instrumentDetailTableModel = new InstrumentDetailTableModel();
                         instrumentDetailTableModel.init(selectedInstrument);
                         instrumentManagementDialog.getInstrumentDetailTable().setModel(instrumentDetailTableModel);
@@ -137,22 +133,78 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                 }
             }
         });
-        
-        instrumentManagementDialog.getEditInstrumentButton().addActionListener(new ActionListener() {
 
+        instrumentManagementDialog.getAddInstrumentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editInstrumentDialog.setLocationRelativeTo(null);
-                editInstrumentDialog.setVisible(true);
+                Instrument defaultInstrument = createDefaultInstrument();
+                instrumentBindingList.add(defaultInstrument);
+                instrumentManagementDialog.getInstrumentList().setSelectedIndex(instrumentBindingList.size() - 1);
+            }
+        });
+
+        instrumentManagementDialog.getDeleteInstrumentButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                    Instrument instrumentToDelete = getSelectedInstrument();
+                    //check if the instrument is already has an id.
+                    //If so, delete the instrument from the db.
+                    if (instrumentToDelete.getId() != null) {
+                        boolean deleted = instrumentService.checkUsageBeforeDeletion(instrumentToDelete);
+                        if (!deleted) {
+                            eventBus.post(new MessageEvent("Instrument deletion", "The instrument was used for one or more analytical runs stored in the database. "
+                                    + "Hence, the instrument was not deleted.", JOptionPane.WARNING_MESSAGE));
+                        } else {
+                            instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
+                            instrumentManagementDialog.getInstrumentList().setSelectedIndex(instrumentBindingList.size() - 1);
+                        }
+                    }
+                }
+            }
+        });
+
+        instrumentManagementDialog.getEditInstrumentButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                    showEditInstrumentDialog(getSelectedInstrument());
+                }
+            }
+        });
+
+    }
+
+    private void initEditInstrumentDialog() {
+        editInstrumentDialog = new EditInstrumentDialog(mainController.getMainFrame(), true);
+
+        //add binding
+        
+
+        //add action listeners
+        editInstrumentDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    
+                }
+            }
+        });    
+        
+        editInstrumentDialog.getEditInstrumentTypesButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                instrumentTypeManagementDialog.setLocationRelativeTo(null);
+                instrumentTypeManagementDialog.setVisible(true);
             }
         });
     }
 
     private void initInstrumentTypeManagementDialog() {
         instrumentTypeManagementDialog = new InstrumentTypeManagementDialog(mainController.getMainFrame(), true);
-        
+
         instrumentTypeBindingList = ObservableCollections.observableList(instrumentTypeService.findAll());
-        JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentManagementDialog.getInstrumentList());
+        JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentTypeManagementDialog.getInstrumentTypeList());
         bindingGroup.addBinding(instrumentTypeListBinding);
 
         //permission bindings
@@ -173,7 +225,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                         instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(true);
                         instrumentTypeManagementDialog.getDeleteInstrumentTypeButton().setEnabled(true);
 
-                        //check if the permission is found in the db.
+                        //check if the instrument type is found in the db.
                         //If so, disable the name text field and change the save button label.
                         if (isExistingInstrumentTypeName(instrumentType)) {
                             instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(false);
@@ -210,7 +262,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                     //check if permission is already has an id.
                     //If so, delete the permission from the db.
                     if (instrumentTypeToDelete.getId() != null) {
-                        instrumentTypeService.delete(instrumentTypeToDelete);                       
+                        instrumentTypeService.delete(instrumentTypeToDelete);
                     }
                     instrumentTypeBindingList.remove(instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex());
                     instrumentTypeManagementDialog.getInstrumentTypeList().setSelectedIndex(instrumentTypeBindingList.size() - 1);
@@ -238,7 +290,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                     }
                     instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(false);
                     instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
-                    instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("");                    
+                    instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("");
 
                     MessageEvent messageEvent = new MessageEvent("Instrument type save confirmation", "Instrument type " + selectedInstrumentType.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
@@ -248,12 +300,6 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                 }
             }
         });
-    }
-    
-    private void initEditInstrumentDialog(){
-        editInstrumentDialog = new EditInstrumentDialog(mainController.getMainFrame(), true);
-        
-        
     }
 
     @Override
@@ -284,7 +330,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
             eventBus.post(messageEvent);
         } else {
             //check if the analyzer is found in the db
-            InstrumentCvTerm foundAnalyzer = instrumentService.findAnalyzerByAccession(analyzer.getAccession());
+            InstrumentCvTerm foundAnalyzer = instrumentCvTermService.findByAccession(analyzer.getAccession(), InstrumentCvProperty.ANALYZER);
             if (foundAnalyzer != null) {
                 instrument.getAnalyzers().add(foundAnalyzer);
             } else {
@@ -293,10 +339,10 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
             instrumentService.update(instrument);
         }
     }
-    
+
     /**
-     * Check if a instrument type with the given instrument type name exists in the
-     * database.
+     * Check if a instrument type with the given instrument type name exists in
+     * the database.
      *
      * @param instrumentType the instrument type
      * @return does the instrument type name exist
@@ -332,15 +378,54 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
         InstrumentType selectedInstrumentType = (selectedIndex != -1) ? instrumentTypeBindingList.get(selectedIndex) : null;
         return selectedInstrumentType;
     }
-    
+
     /**
-     * Check if the instrument type exists in the database; i.e. does the instrument type
-     * has an ID?
+     * Check if the instrument type exists in the database; i.e. does the
+     * instrument type has an ID?
      *
-     * @param instrumentType 
+     * @param instrumentType
      * @return does the instrument type exist
      */
     private boolean isExistingInstrumentType(InstrumentType instrumentType) {
         return instrumentType.getId() != null;
     }
+
+    /**
+     * Create a default instrument, with some default properties.
+     *
+     * @return the default experiment
+     */
+    private Instrument createDefaultInstrument() {
+        Instrument defaultInstrument = new Instrument("default instrument name");
+        //find instrument types
+        List<InstrumentType> instrumentTypes = instrumentTypeService.findAll();
+        if (!instrumentTypes.isEmpty()) {
+            defaultInstrument.setInstrumentType(instrumentTypes.get(0));
+        }
+        defaultInstrument.setInstrumentType(instrumentTypes.get(0));
+        //find sources
+        List<InstrumentCvTerm> sources = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.SOURCE);
+        if (!sources.isEmpty()) {
+            defaultInstrument.setSource(sources.get(0));
+        }
+        //find detectors
+        List<InstrumentCvTerm> detectors = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.DETECTOR);
+        if (!detectors.isEmpty()) {
+            defaultInstrument.setDetector(detectors.get(0));
+        }
+        //find analyzers
+        List<InstrumentCvTerm> analyzers = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+        if (!analyzers.isEmpty()) {
+            List<InstrumentCvTerm> defaultAnalyzers = new ArrayList<>();
+            defaultAnalyzers.add(analyzers.get(0));
+            defaultInstrument.setAnalyzers(defaultAnalyzers);
+        }
+        return defaultInstrument;
+    }
+
+    private void showEditInstrumentDialog(Instrument instrument) {
+        
+    }
+    
+    
 }

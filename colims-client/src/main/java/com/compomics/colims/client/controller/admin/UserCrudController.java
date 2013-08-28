@@ -197,7 +197,7 @@ public class UserCrudController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
                     User userToDelete = getSelectedUser();
-                    //check if user is already has an id.
+                    //check if the user is already has an id.
                     //If so, delete the user from the db.
                     if (userToDelete.getId() != null) {
                         userService.delete(userToDelete);

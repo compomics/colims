@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.enums.InstrumentCvProperty;
 import com.compomics.colims.repository.InstrumentCvTermRepository;
+import java.util.List;
 
 /**
  *
@@ -17,6 +18,11 @@ public class InstrumentCvTermHibernateRepository extends GenericHibernateReposit
     @Override
     public InstrumentCvTerm findByAccession(final String accession, final InstrumentCvProperty instrumentCvProperty) {
         return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("instrumentCvProperty", instrumentCvProperty));
+    }
+
+    @Override
+    public List<InstrumentCvTerm> findByInstrumentCvProperty(InstrumentCvProperty instrumentCvProperty) {
+        return findByCriteria(Restrictions.eq("instrumentCvProperty", instrumentCvProperty));
     }
         
 }
