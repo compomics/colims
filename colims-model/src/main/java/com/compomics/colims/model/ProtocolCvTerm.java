@@ -1,10 +1,7 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.ProtocolCvProperty;
-import javax.persistence.Column;
+import com.compomics.colims.model.enums.CvTermProperty;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
@@ -15,16 +12,11 @@ import javax.persistence.Table;
 @Entity
 public class ProtocolCvTerm extends CvTerm {
 
-    @Column(name = "cv_property")
-    @Enumerated(EnumType.STRING)
-    private ProtocolCvProperty protocolCvProperty;
-
-    public ProtocolCvProperty getProtocolCvProperty() {
-        return protocolCvProperty;
+    public ProtocolCvTerm() {
     }
 
-    public void setProtocolCvProperty(ProtocolCvProperty protocolCvProperty) {
-        this.protocolCvProperty = protocolCvProperty;
-    }            
-    
+    public ProtocolCvTerm(CvTermProperty cvTermProperty, String ontology, String label, String accession, String name) {
+        super(cvTermProperty, ontology, label, accession, name);
+    }
+
 }

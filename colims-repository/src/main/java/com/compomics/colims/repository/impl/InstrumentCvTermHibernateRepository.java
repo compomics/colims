@@ -17,12 +17,12 @@ public class InstrumentCvTermHibernateRepository extends GenericHibernateReposit
     
     @Override
     public InstrumentCvTerm findByAccession(final String accession, final InstrumentCvProperty instrumentCvProperty) {
-        return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("instrumentCvProperty", instrumentCvProperty));
+        return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvTermProperty", instrumentCvProperty));
     }
 
     @Override
     public List<InstrumentCvTerm> findByInstrumentCvProperty(InstrumentCvProperty instrumentCvProperty) {
-        return findByCriteria(Restrictions.eq("instrumentCvProperty", instrumentCvProperty));
+        return findByCriteria(Restrictions.eq("cvTermProperty", instrumentCvProperty));
     }
         
 }

@@ -38,6 +38,7 @@ import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
+import com.compomics.colims.model.enums.CvTermProperty;
 import com.compomics.colims.model.enums.InstrumentCvProperty;
 import uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent;
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
@@ -198,7 +199,7 @@ public class MzMLParserImpl implements MzMLParser {
                 source.setName(cVParam.getName());
                 source.setLabel(cVParam.getCvRef());
             }
-            source.setInstrumentCvProperty(InstrumentCvProperty.SOURCE);
+            source.setCvTermProperty(CvTermProperty.SOURCE);
 
             //set relations
             instrument.setSource(source);
@@ -215,7 +216,7 @@ public class MzMLParserImpl implements MzMLParser {
                 detector.setName(cVParam.getName());
                 detector.setLabel(cVParam.getCvRef());
             }
-            detector.setInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+            detector.setCvTermProperty(CvTermProperty.ANALYZER);
 
             //set relations
             instrument.setSource(detector);
@@ -232,7 +233,7 @@ public class MzMLParserImpl implements MzMLParser {
                     analyzer.setName(cVParam.getName());
                     analyzer.setLabel(cVParam.getCvRef());
                 }
-                analyzer.setInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+                analyzer.setCvTermProperty(CvTermProperty.ANALYZER);
 
                 analyzers.add(analyzer);
             }

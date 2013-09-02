@@ -6,6 +6,6 @@ package com.compomics.colims.model.enums;
  */
 public enum ProtocolCvProperty {
     
-    REDUCTION, ENZYME, CHEMICAL_LABELING, CELL_BASED, OTHER 
+        REDUCTION, ENZYME, CHEMICAL_LABELING, CELL_BASED, OTHER 
     
 }

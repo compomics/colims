@@ -1,11 +1,7 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.InstrumentCvProperty;
-import com.compomics.colims.model.enums.MaterialCvProperty;
-import javax.persistence.Column;
+import com.compomics.colims.model.enums.CvTermProperty;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
@@ -16,16 +12,11 @@ import javax.persistence.Table;
 @Entity
 public class MaterialCvTerm extends CvTerm {
 
-    @Column(name = "cv_property")
-    @Enumerated(EnumType.STRING)
-    private MaterialCvProperty materialCvProperty;
-
-    public MaterialCvProperty getMaterialCvProperty() {
-        return materialCvProperty;
-    }
-
-    public void setMaterialCvProperty(MaterialCvProperty materialCvProperty) {
-        this.materialCvProperty = materialCvProperty;
-    }
+    public MaterialCvTerm() {
+    }    
+    
+    public MaterialCvTerm(CvTermProperty cvTermProperty, String ontology, String label, String accession, String name) {
+        super(cvTermProperty, ontology, label, accession, name);
+    }        
         
 }

@@ -1,8 +1,12 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.InstrumentCvProperty;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +17,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public class CvTerm extends AbstractDatabaseEntity {
+public abstract class CvTerm extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,15 +37,19 @@ public class CvTerm extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "name")
     protected String name;
+    @Column(name = "cv_property")
+    @Enumerated(EnumType.STRING)
+    protected CvTermProperty cvTermProperty;
 
     public CvTerm() {
     }
 
-    public CvTerm(String ontology, String label, String accession, String name) {
+    public CvTerm(CvTermProperty cvTermProperty, String ontology, String label, String accession, String name) {
+        this.cvTermProperty = cvTermProperty;
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
-        this.name = name;
+        this.name = name;        
     }
 
     public Long getId() {
@@ -84,6 +92,14 @@ public class CvTerm extends AbstractDatabaseEntity {
         this.name = name;
     }
 
+    public CvTermProperty getCvTermProperty() {
+        return cvTermProperty;
+    }
+
+    public void setCvTermProperty(CvTermProperty cvTermProperty) {
+        this.cvTermProperty = cvTermProperty;
+    }        
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -124,12 +140,12 @@ public class CvTerm extends AbstractDatabaseEntity {
     }
 
     /**
-     * Convert the CV term to a String array
+     * Convert the CV term properties to a String array.
      *
      * @return
      */
     public String[] toStringArray() {
-        String[] stringArray = {label, accession, name};
+        String[] stringArray = {cvTermProperty.toString(), label, accession, name};
         return stringArray;
     }
 }
