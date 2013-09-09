@@ -10,6 +10,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.InstrumentRepository;
 import org.hibernate.Hibernate;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -18,58 +19,63 @@ import org.hibernate.Hibernate;
 @Service("instrumentService")
 @Transactional
 public class InstrumentServiceImpl implements InstrumentService {
-
+    
     @Autowired
     private InstrumentRepository instrumentRepository;
-
+    
     @Override
     public Instrument findById(Long id) {
         return instrumentRepository.findById(id);
     }
-
+    
     @Override
     public List<Instrument> findAll() {
         return instrumentRepository.findAll();
     }
-
+    
     @Override
     public void save(Instrument entity) {
         instrumentRepository.save(entity);
     }
-
+    
     @Override
     public void delete(Instrument entity) {
+        //attach the instrument to the session
+        instrumentRepository.lock(entity, LockOptions.NONE);
         instrumentRepository.delete(entity);
     }
-
+    
     @Override
     public Instrument findByName(String name) {
         return instrumentRepository.findByName(name);
     }
-
+    
     @Override
     public void update(Instrument entity) {
         //attach the instrument to the session
-        instrumentRepository.saveOrUpdate(entity);
+        instrumentRepository.lock(entity, LockOptions.NONE);
         instrumentRepository.update(entity);
     }
-
+    
     @Override
     public void saveOrUpdate(Instrument entity) {
         instrumentRepository.saveOrUpdate(entity);
     }
-
+    
     @Override
     public boolean checkUsageBeforeDeletion(Instrument instrument) {
         boolean deleted = false;
 
-        instrumentRepository.saveOrUpdate(instrument);
+        //attach the instrument to the session
+        instrumentRepository.lock(instrument, LockOptions.NONE);
         //fetch the analytical runs
-        Hibernate.initialize(instrument.getAnalyticalRuns());
-        if (instrument.getAnalyticalRuns().isEmpty()) {
-            //delete the instrument
-            delete(instrument);
-            deleted = true;
+        if (!Hibernate.isInitialized(instrument.getAnalyticalRuns())) {
+            Hibernate.initialize(instrument.getAnalyticalRuns());
+            if (instrument.getAnalyticalRuns().isEmpty()) {
+                //delete the instrument
+                delete(instrument);
+                deleted = true;
+            }
         }
         
         return deleted;

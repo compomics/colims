@@ -1,6 +1,8 @@
 package com.compomics.colims.client.view.admin;
 
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.InstrumentCvTerm;
 import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
@@ -26,9 +28,9 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    public DualList getCvTermDualList() {
+    public DualList<InstrumentCvTerm> getCvTermDualList() {
         return cvTermDualList;
-    }
+    }    
 
     public JList getCvTermSummaryList() {
         return cvTermsSummaryList;
@@ -71,7 +73,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
         nameLabel = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
-        cvTermDualList = new com.compomics.colims.client.compoment.DualList();
+        cvTermDualList = new com.compomics.colims.client.compoment.DualList<InstrumentCvTerm>();
         jScrollPane2 = new javax.swing.JScrollPane();
         cvTermsSummaryList = new javax.swing.JList();
         typeComboBox = new javax.swing.JComboBox();
@@ -182,7 +184,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelEditInstrumentButton;
-    private com.compomics.colims.client.compoment.DualList cvTermDualList;
+    private com.compomics.colims.client.compoment.DualList<InstrumentCvTerm> cvTermDualList;
     private javax.swing.JList cvTermsSummaryList;
     private javax.swing.JButton editInstrumentCvTermsButton;
     private javax.swing.JPanel editInstrumentPanel;

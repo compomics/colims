@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.MessageEvent;
@@ -10,24 +11,29 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.EditInstrumentDialog;
 import com.compomics.colims.client.view.admin.InstrumentManagementDialog;
 import com.compomics.colims.client.view.admin.InstrumentTypeManagementDialog;
-import com.compomics.colims.core.service.InstrumentCvTermService;
+import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.InstrumentTypeService;
 import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
+import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.CvTermProperty;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 import com.google.common.eventbus.EventBus;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import no.uib.olsdialog.OLSInputable;
@@ -39,6 +45,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +59,10 @@ import org.springframework.stereotype.Component;
 public class InstrumentManagementController implements Controllable, OLSInputable {
 
     //model      
-    private CvTermSummaryListModel cvTermSummaryListModel;
+    private CvTermSummaryListModel<InstrumentCvTerm> cvTermSummaryListModel;
     private ObservableList<Instrument> instrumentBindingList;
     private ObservableList<InstrumentType> instrumentTypeBindingList;
-    private BindingGroup bindingGroup;    
+    private BindingGroup bindingGroup;
     //view
     private InstrumentManagementDialog instrumentManagementDialog;
     private InstrumentTypeManagementDialog instrumentTypeManagementDialog;
@@ -69,7 +76,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
     @Autowired
     private InstrumentTypeService instrumentTypeService;
     @Autowired
-    private InstrumentCvTermService instrumentCvTermService;
+    private CvTermService cvTermService;
     @Autowired
     private EventBus eventBus;
 
@@ -113,7 +120,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
 //
 //                instrumentManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 //            }
-//        });
+//        });   
     }
 
     private void initInstrumentManagementDialog() {
@@ -192,23 +199,38 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
 
     private void initEditInstrumentDialog() {
         editInstrumentDialog = new EditInstrumentDialog(mainController.getMainFrame(), true);
-        
+
         //add binding
-        Binding instrumentNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentManagementDialog.getInstrumentList(), ELProperty.create("${selectedElement.name}"), editInstrumentDialog.getNameTextField(), BeanProperty.create("text"), "instrumentNameBinding");        
+        Binding instrumentNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentManagementDialog.getInstrumentList(), ELProperty.create("${selectedElement.name}"), editInstrumentDialog.getNameTextField(), BeanProperty.create("text"), "instrumentNameBinding");
         bindingGroup.addBinding(instrumentNameBinding);
-        
+        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, editInstrumentDialog.getTypeComboBox());
+        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
+
         //set model and renderer
         cvTermSummaryListModel = new CvTermSummaryListModel();
         editInstrumentDialog.getCvTermSummaryList().setModel(cvTermSummaryListModel);
-        editInstrumentDialog.getCvTermSummaryList().setCellRenderer(new CvTermSummaryCellRenderer());
+        editInstrumentDialog.getCvTermSummaryList().setCellRenderer(new CvTermSummaryCellRenderer<InstrumentCvTerm>());
 
         //add action listeners
         editInstrumentDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
-                        
+                    if (editInstrumentDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
+                        //get selected CvTermProperty                        
+                        CvTermProperty selectedCvTermProperty = (CvTermProperty) editInstrumentDialog.getCvTermSummaryList().getSelectedValue();
+                        //load duallist for the selected CvTermProperty
+                        List<InstrumentCvTerm> availableCvTerms = cvTermService.findByCvTermByProperty(InstrumentCvTerm.class, selectedCvTermProperty);
+                                                
+                        List<InstrumentCvTerm> addedCvTerms;
+                        if (cvTermSummaryListModel.isSingleCvTerm(selectedCvTermProperty)) {
+                            addedCvTerms = new ArrayList<>();
+                            addedCvTerms.add(cvTermSummaryListModel.getSingleCvTerms().get(selectedCvTermProperty));
+                            editInstrumentDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
+                        } else {
+                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedCvTermProperty);
+                            editInstrumentDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
+                        }
                     }
                 }
             }
@@ -221,6 +243,28 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                 instrumentTypeManagementDialog.setVisible(true);
             }
         });
+
+        editInstrumentDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                //get selected CvTermProperty                        
+                CvTermProperty selectedCvTermProperty = (CvTermProperty) editInstrumentDialog.getCvTermSummaryList().getSelectedValue();                              
+                
+                Instrument instrument = getSelectedInstrument();  
+                List<InstrumentCvTerm> addedItems = editInstrumentDialog.getCvTermDualList().getAddedItems();
+                //check for property
+                if(selectedCvTermProperty.equals(CvTermProperty.SOURCE)){                    
+                    instrument.setSource(addedItems.get(0));
+                }
+                else if(selectedCvTermProperty.equals(CvTermProperty.DETECTOR)){
+                    instrument.setDetector(addedItems.get(0));
+                }
+                else if(selectedCvTermProperty.equals(CvTermProperty.ANALYZER)){
+                    instrument.setAnalyzers(addedItems);
+                }                                
+            }
+        });
+
     }
 
     private void initInstrumentTypeManagementDialog() {
@@ -230,7 +274,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
         JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentTypeManagementDialog.getInstrumentTypeList());
         bindingGroup.addBinding(instrumentTypeListBinding);
 
-        //permission bindings
+        //instrument type bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeManagementDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.name"), instrumentTypeManagementDialog.getInstrumentTypeNameTextField(), ELProperty.create("${text}"), "nameBinding");
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeManagementDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.description"), instrumentTypeManagementDialog.getInstrumentTypeDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
@@ -257,7 +301,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                         } else {
                             instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(true);
                             instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("save");
-                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("This permission hasn't been saved to the database.");
+                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("This instrument type hasn't been saved to the database.");
                         }
                     } else {
                         instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(false);
@@ -353,7 +397,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
             eventBus.post(messageEvent);
         } else {
             //check if the analyzer is found in the db
-            InstrumentCvTerm foundAnalyzer = instrumentCvTermService.findByAccession(analyzer.getAccession(), InstrumentCvProperty.ANALYZER);
+            InstrumentCvTerm foundAnalyzer = (InstrumentCvTerm) cvTermService.findByAccession(analyzer.getAccession(), CvTermProperty.ANALYZER);
             if (foundAnalyzer != null) {
                 instrument.getAnalyzers().add(foundAnalyzer);
             } else {
@@ -427,35 +471,37 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
         }
         defaultInstrument.setInstrumentType(instrumentTypes.get(0));
         //find sources
-        List<InstrumentCvTerm> sources = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.SOURCE);
+        List<CvTerm> sources = cvTermService.findByCvTermByProperty(CvTermProperty.SOURCE);
         if (!sources.isEmpty()) {
-            defaultInstrument.setSource(sources.get(0));
+            defaultInstrument.setSource((InstrumentCvTerm) sources.get(0));
         }
         //find detectors
-        List<InstrumentCvTerm> detectors = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.DETECTOR);
+        List<CvTerm> detectors = cvTermService.findByCvTermByProperty(CvTermProperty.DETECTOR);
         if (!detectors.isEmpty()) {
-            defaultInstrument.setDetector(detectors.get(0));
+            defaultInstrument.setDetector((InstrumentCvTerm) detectors.get(0));
         }
         //find analyzers
-        List<InstrumentCvTerm> analyzers = instrumentCvTermService.findByInstrumentCvProperty(InstrumentCvProperty.ANALYZER);
+        List<CvTerm> analyzers = cvTermService.findByCvTermByProperty(CvTermProperty.ANALYZER);
         if (!analyzers.isEmpty()) {
             List<InstrumentCvTerm> defaultAnalyzers = new ArrayList<>();
-            defaultAnalyzers.add(analyzers.get(0));
+            defaultAnalyzers.add((InstrumentCvTerm) analyzers.get(0));
             defaultInstrument.setAnalyzers(defaultAnalyzers);
         }
         return defaultInstrument;
     }
 
     private void updateEditInstrumentDialog(Instrument instrument) {
+        //set the selected item in the instrument type combobox        
+        editInstrumentDialog.getTypeComboBox().setSelectedItem(instrument.getInstrumentType());
+
         //add the single CV terms
-        EnumMap<CvTermProperty, CvTerm> singleCvTerms = new EnumMap<>(CvTermProperty.class);
+        EnumMap<CvTermProperty, InstrumentCvTerm> singleCvTerms = new EnumMap<>(CvTermProperty.class);
         singleCvTerms.put(CvTermProperty.SOURCE, instrument.getSource());
         singleCvTerms.put(CvTermProperty.DETECTOR, instrument.getDetector());
-        singleCvTerms.put(CvTermProperty.CELL_BASED, null);
-        
+
         //add the multiple CV terms
-        EnumMap<CvTermProperty, List<? extends CvTerm>> multipleCvTerms = new EnumMap<>(CvTermProperty.class);
-        multipleCvTerms.put(CvTermProperty.ANALYZER, instrument.getAnalyzers());        
+        EnumMap<CvTermProperty, List<InstrumentCvTerm>> multipleCvTerms = new EnumMap<>(CvTermProperty.class);
+        multipleCvTerms.put(CvTermProperty.ANALYZER, instrument.getAnalyzers());
         cvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
     }
 }

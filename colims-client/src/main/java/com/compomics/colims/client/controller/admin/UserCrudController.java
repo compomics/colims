@@ -1,7 +1,9 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
@@ -17,10 +19,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -40,11 +46,13 @@ import org.springframework.stereotype.Component;
  */
 @Component("userCrudController")
 public class UserCrudController implements Controllable {
-
+    private static final Logger LOGGER = Logger.getLogger(MainController.class);
+    
     //model
     private ObservableList<User> userBindingList;
     private BindingGroup bindingGroup;
     private List<Group> availableGroups;
+    private boolean areChildrenAffected;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -96,6 +104,8 @@ public class UserCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+
+        areChildrenAffected = false;
 
         //register to event bus
         eventBus.register(this);
@@ -163,6 +173,7 @@ public class UserCrudController implements Controllable {
                         if (isExistingUserName(selectedUser)) {
                             userService.fetchAuthenticationRelations(selectedUser);
 
+
                             userManagementDialog.getUserNameTextField().setEnabled(false);
                             userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                             userManagementDialog.getUserStateInfoLabel().setText("");
@@ -209,6 +220,20 @@ public class UserCrudController implements Controllable {
             }
         });
 
+        userManagementDialog.getGroupDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                //change groups of the selected user                                    
+                List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
+
+                //add groups to the selected user
+                User selectedUser = getSelectedUser();
+                selectedUser.setGroups(addedGroups);
+
+                areChildrenAffected = true;
+            }
+        });
+
         userManagementDialog.getUserSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -220,14 +245,6 @@ public class UserCrudController implements Controllable {
                     validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    //check if groups have been added or removed
-                    if (userManagementDialog.getGroupDualList().isModified()) {
-                        List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
-
-                        //add groups to the selected user
-                        selectedUser.setGroups(addedGroups);
-                    }
-
                     if (isExistingUser(selectedUser)) {
                         userService.update(selectedUser);
                     } else {
@@ -238,7 +255,7 @@ public class UserCrudController implements Controllable {
                     userManagementDialog.getUserStateInfoLabel().setText("");
 
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
-                    eventBus.post(new UserChangeEvent(type, userManagementDialog.getGroupDualList().isModified(), selectedUser));
+                    eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
                     MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
@@ -286,5 +303,4 @@ public class UserCrudController implements Controllable {
         User selectedUser = (selectedUserIndex != -1) ? userBindingList.get(selectedUserIndex) : null;
         return selectedUser;
     }
-
 }

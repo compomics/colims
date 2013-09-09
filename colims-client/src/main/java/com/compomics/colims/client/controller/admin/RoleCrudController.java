@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
@@ -21,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -49,6 +52,7 @@ public class RoleCrudController implements Controllable {
     private ObservableList<Role> roleBindingList;
     private BindingGroup bindingGroup;
     private List<Permission> availablePermissions;
+    boolean areChildrenAffected;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -111,6 +115,8 @@ public class RoleCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+
+        areChildrenAffected = false;
 
         //register to event bus
         eventBus.register(this);
@@ -208,6 +214,20 @@ public class RoleCrudController implements Controllable {
             }
         });
 
+        userManagementDialog.getPermissionDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                //change permissions of the selected role                                    
+                List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
+
+                //add permissions to the selected role
+                Role selectedRole = getSelectedRole();
+                selectedRole.setPermissions(addedPermissions);
+
+                areChildrenAffected = true;
+            }
+        });
+
         userManagementDialog.getRoleSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,14 +239,6 @@ public class RoleCrudController implements Controllable {
                     validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    //check if permissions have been added or removed
-                    if (userManagementDialog.getPermissionDualList().isModified()) {
-                        List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
-
-                        //add permissions to the selected role
-                        selectedRole.setPermissions(addedPermissions);
-                    }
-
                     if (isExistingRole(selectedRole)) {
                         roleService.update(selectedRole);
                     } else {
@@ -237,7 +249,7 @@ public class RoleCrudController implements Controllable {
                     userManagementDialog.getRoleStateInfoLabel().setText("");
 
                     EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new RoleChangeEvent(type, userManagementDialog.getPermissionDualList().isModified(), selectedRole));
+                    eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
 
                     MessageEvent messageEvent = new MessageEvent("Role save confirmation", "Role " + selectedRole.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

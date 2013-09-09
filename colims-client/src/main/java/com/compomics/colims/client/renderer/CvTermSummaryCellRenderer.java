@@ -12,12 +12,12 @@ import javax.swing.JList;
  *
  * @author Niels Hulstaert
  */
-public class CvTermSummaryCellRenderer extends DefaultListCellRenderer {
+public class CvTermSummaryCellRenderer<T extends CvTerm> extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        CvTermSummaryListModel cvTermSummaryListModel = (CvTermSummaryListModel) list.getModel();
+        CvTermSummaryListModel<T> cvTermSummaryListModel = (CvTermSummaryListModel) list.getModel();
 
         String labelText;
         
@@ -25,14 +25,14 @@ public class CvTermSummaryCellRenderer extends DefaultListCellRenderer {
         CvTermProperty cvTermProperty = (CvTermProperty) cvTermSummaryListModel.getElementAt(index);
         //check if the CV term is single or multiple
         if (cvTermSummaryListModel.isSingleCvTerm(cvTermProperty)) {
-            CvTerm cvTerm = cvTermSummaryListModel.getSingleCvTerms().get(cvTermProperty);
-            if (cvTerm != null) {
+            T t = cvTermSummaryListModel.getSingleCvTerms().get(cvTermProperty);
+            if (t != null) {
                 labelText = cvTermProperty.toString() + " (1/1)";
             } else {
                 labelText = cvTermProperty.toString() + " (0/1)";
             }
         } else {
-            List<? extends CvTerm> cvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(cvTermProperty);
+            List<T> cvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(cvTermProperty);
             labelText = cvTermProperty.toString() + " (" + cvTerms.size() + ")";
         }
 

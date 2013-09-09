@@ -39,7 +39,6 @@ import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.CvTermProperty;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 import uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent;
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
 import uk.ac.ebi.jmzml.model.mzml.DetectorComponent;

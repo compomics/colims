@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.repository.InstrumentTypeRepository;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -50,9 +49,9 @@ public class InstrumentTypeServiceImpl implements InstrumentTypeService {
 
     @Override
     public void update(InstrumentType entity) {
-        //attach the instrument to the session
-        instrumentTypeRepository.saveOrUpdate(entity);
-        //instrumentTypeRepository.update(entity);
+        //attach the instrument type to the session
+        instrumentTypeRepository.lock(entity, LockOptions.NONE);
+        instrumentTypeRepository.update(entity);
     }
 
     @Override

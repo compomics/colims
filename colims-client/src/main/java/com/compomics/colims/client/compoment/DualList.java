@@ -17,12 +17,13 @@ import org.jdesktop.swingbinding.SwingBindings;
  * @author niels
  */
 public class DualList<T extends Comparable> extends javax.swing.JPanel {
-
+    public static final String CHANGED = "changed";
+        
     //model
     private BindingGroup bindingGroup;
     private ObservableList<T> availableItemBindingList;
     private ObservableList<T> addedItemBindingList;
-    private boolean isModified;
+    private int maximumAmountOfAddedItems;
 
     /**
      * Create new form DualList
@@ -42,6 +43,20 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
      * @param addedItems the added items
      */
     public void populateLists(List<T> availableItems, List<T> addedItems) {
+        populateLists(availableItems, addedItems, Integer.MAX_VALUE);
+    }
+    
+    /**
+     * Populate the available and added items lists. This method removes the
+     * added items from the availabe items
+     *
+     * @param availableItems the available items
+     * @param addedItems the added items
+     * @param maximumAmountOfAddedItems the maximum amount of added items
+     */
+    public void populateLists(List<T> availableItems, List<T> addedItems, int maximumAmountOfAddedItems) {
+        this.maximumAmountOfAddedItems = maximumAmountOfAddedItems;
+        
         availableItemBindingList.clear();
         //check for added items in the available items list
         for (T availableItem : availableItems) {
@@ -51,12 +66,9 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         }
 
         addedItemBindingList.clear();
-        addedItemBindingList.addAll(addedItems);
-
-        //change modified flag
-        if (isModified) {
-            isModified = false;
-        }
+        addedItemBindingList.addAll(addedItems);        
+        
+        checkButtonStates();
     }
 
     /**
@@ -69,17 +81,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         for (T addedItem : addedItemBindingList) {
             addedItems.add(addedItem);
         }
+        
         return addedItems;
-    }
-
-    /**
-     * Return the modified flag; were items added or removed from the added
-     * items list?
-     *
-     * @return the is modified dialog
-     */
-    public boolean isModified() {
-        return isModified;
     }
 
     /**
@@ -88,16 +91,19 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
     public void clear() {
         availableItemBindingList.clear();
         addedItemBindingList.clear();
-    }
+    }  
+    
+    
 
     /**
      * Init the component.
      */
     private void init() {
+        //set default value
+        maximumAmountOfAddedItems = Integer.MAX_VALUE;
+        
         //init bindings
         bindingGroup = new BindingGroup();
-
-        isModified = false;
 
         availableItemBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding availableItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, availableItemBindingList, availableItemList);
@@ -116,8 +122,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
                 List selectedItems = availableItemList.getSelectedValuesList();
 
                 for (Object selectedObject : selectedItems) {
-                    T selectedItem = (T) selectedObject;
-
+                    T selectedItem = (T) selectedObject;                    
+                    
                     //add to addedItemBindingList and sort
                     addedItemBindingList.add(selectedItem);
                     Collections.sort(addedItemBindingList);
@@ -126,11 +132,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
 
                     //check button states
                     checkButtonStates();
-
-                    //change modified flag
-                    if (!isModified) {
-                        isModified = true;
-                    }
+                                        
+                    DualList.this.firePropertyChange(CHANGED, false, true);
                 }
             }
         });
@@ -141,8 +144,8 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
                 List selectedItems = addedItemList.getSelectedValuesList();
 
                 for (Object selectedObject : selectedItems) {
-                    T selectedItem = (T) selectedObject;
-
+                    T selectedItem = (T) selectedObject;                    
+                    
                     //add to availableItemBindingList and sort
                     availableItemBindingList.add(selectedItem);
                     Collections.sort(availableItemBindingList);
@@ -151,24 +154,30 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
 
                     //check button states
                     checkButtonStates();
-
-                    //change modified flag
-                    if (!isModified) {
-                        isModified = true;
-                    }
+                    
+                    DualList.this.firePropertyChange(CHANGED, false, true);
                 }
             }
         });
-    }
+    }        
 
     /**
      * Change the addItemButton and removeItemButton enabled states. If there
-     * are no more available items, the addItemButton is disabled and if there
+     * are no more available items or the maximum number of items has been reached, the addItemButton is disabled and if there
      * are no added items, the removeItemButton is disabled.
      */
     private void checkButtonStates() {
-        addItemButton.setEnabled(!availableItemBindingList.isEmpty());
-        removeItemButton.setEnabled(!addedItemBindingList.isEmpty());
+        boolean addItemButtonEnabled = true;
+        boolean removeItemButtonEnabled = true;
+        if(availableItemBindingList.isEmpty() || addedItemBindingList.size() == maximumAmountOfAddedItems){
+            addItemButtonEnabled = false;
+        }
+        if(addedItemBindingList.isEmpty()){
+            removeItemButtonEnabled = false;
+        }        
+        
+        addItemButton.setEnabled(addItemButtonEnabled);
+        removeItemButton.setEnabled(removeItemButtonEnabled);
     }
 
     /**

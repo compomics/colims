@@ -28,10 +28,10 @@ public class AuditInterceptor extends EmptyInterceptor {
 
     public void setSessionBean(SessionBean sessionBean) {
         this.sessionBean = sessionBean;
-    }
+    }        
 
     @Override
-    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
+    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {       
         return audit(currentState, propertyNames);
     }
 
@@ -41,7 +41,7 @@ public class AuditInterceptor extends EmptyInterceptor {
     }
 
     /**
-     * Fills in the audit values (user name, creation date, modification date)
+     * Fill in the audit values (user name, creation date, modification date)
      * for the entity that will be saved or updated.
      *
      * @param currentState the current state of the entity

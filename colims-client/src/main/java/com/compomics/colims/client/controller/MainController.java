@@ -128,6 +128,9 @@ public class MainController implements ActionListener {
 //        //show login dialog
 //        loginDialog.setLocationRelativeTo(null);
 //        loginDialog.setVisible(true);
+        User user = userService.findAll().get(0);
+        authenticationBean.setCurrentUser(user);
+            
 
         //disable login dialog while developping
         initAdminSection();
@@ -185,7 +188,7 @@ public class MainController implements ActionListener {
             //mainFrame.getAdminMenu().setVisible(false);
             //}
 
-            //set current user in authentication bean    
+            //set current user in authentication bean                
             authenticationBean.setCurrentUser(currentUser);
 
             mainFrame.setLocationRelativeTo(null);

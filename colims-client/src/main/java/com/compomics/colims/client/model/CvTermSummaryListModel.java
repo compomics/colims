@@ -10,16 +10,16 @@ import javax.swing.AbstractListModel;
  *
  * @author Niels Hulstaert
  */
-public class CvTermSummaryListModel extends AbstractListModel {
+public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel {
     
     /**
      * The EnumMap containing the single CV terms (key: CvTermProperty; value: a single CV term or null).
      */    
-    private EnumMap<CvTermProperty, CvTerm> singleCvTerms;
+    private EnumMap<CvTermProperty, T> singleCvTerms;
     /**
      * The EnumMap containing the multiple CV terms (key: CvTermProperty; value: a list of multiple CV terms, can be empty).
      */ 
-    private EnumMap<CvTermProperty, List<? extends CvTerm>> multipleCvTerms;
+    private EnumMap<CvTermProperty, List<T>> multipleCvTerms;
     /**
      * The single CV term key array for indexing purposes
      */
@@ -34,11 +34,11 @@ public class CvTermSummaryListModel extends AbstractListModel {
         multipleCvTerms = new EnumMap<>(CvTermProperty.class);
     }
 
-    public EnumMap<CvTermProperty, CvTerm> getSingleCvTerms() {
+    public EnumMap<CvTermProperty, T> getSingleCvTerms() {
         return singleCvTerms;
     }
 
-    public EnumMap<CvTermProperty, List<? extends CvTerm>> getMultipleCvTerms() {
+    public EnumMap<CvTermProperty, List<T>> getMultipleCvTerms() {
         return multipleCvTerms;
     }        
 
@@ -48,7 +48,7 @@ public class CvTermSummaryListModel extends AbstractListModel {
      * @param singleCvTerms
      * @param multipleCvTerms 
      */
-    public void update(EnumMap<CvTermProperty, CvTerm> singleCvTerms, EnumMap<CvTermProperty, List<? extends CvTerm>> multipleCvTerms) {
+    public void update(EnumMap<CvTermProperty, T> singleCvTerms, EnumMap<CvTermProperty, List<T>> multipleCvTerms) {
         this.singleCvTerms = singleCvTerms;
         this.multipleCvTerms = multipleCvTerms;
         singleCvTermKeys = singleCvTerms.keySet().toArray(new CvTermProperty[singleCvTerms.size()]);

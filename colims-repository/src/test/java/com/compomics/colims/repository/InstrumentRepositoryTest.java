@@ -1,5 +1,6 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.CvTerm;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -12,10 +13,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.model.enums.CvTermProperty;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 import org.junit.Before;
 
 /**
@@ -62,7 +61,7 @@ public class InstrumentRepositoryTest {
 
         //analyzer cv terms
         Assert.assertEquals(2, instrument.getAnalyzers().size());
-        InstrumentCvTerm analyzer = instrument.getAnalyzers().get(0);
+        CvTerm analyzer = instrument.getAnalyzers().get(0);
         Assert.assertEquals(CvTermProperty.ANALYZER, analyzer.getCvTermProperty());
         analyzer = instrument.getAnalyzers().get(1);
         Assert.assertEquals(CvTermProperty.ANALYZER, analyzer.getCvTermProperty());
@@ -81,6 +80,6 @@ public class InstrumentRepositoryTest {
         //check if the creation date is the same and the modification has been updated
         Assert.assertEquals(creationDate, instrument.getCreationdate());
         //@ToDo check why the date doesn't change, possible because the transaction has not been flushed yet.
-//        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));        
+        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));        
     }
 }

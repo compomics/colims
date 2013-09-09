@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
@@ -21,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -49,6 +52,7 @@ public class GroupCrudController implements Controllable {
     private ObservableList<Group> groupBindingList;
     private BindingGroup bindingGroup;
     private List<Role> availableRoles;
+    boolean areChildrenAffected;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -111,6 +115,8 @@ public class GroupCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+
+        areChildrenAffected = false;
 
         //register to event bus
         eventBus.register(this);
@@ -208,6 +214,20 @@ public class GroupCrudController implements Controllable {
             }
         });
 
+        userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                //change roles of the selected group                                    
+                List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
+
+                //add roles to the selected group
+                Group selectedGroup = getSelectedGroup();
+                selectedGroup.setRoles(addedRoles);
+
+                areChildrenAffected = true;
+            }
+        });
+
         userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,14 +239,6 @@ public class GroupCrudController implements Controllable {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database, please choose another group name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    //check if roles have been added or removed
-                    if (userManagementDialog.getRoleDualList().isModified()) {
-                        List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
-
-                        //add roles to the group
-                        selectedGroup.setRoles(addedRoles);
-                    }
-
                     if (isExistingGroup(selectedGroup)) {
                         groupService.update(selectedGroup);
                     } else {
@@ -237,7 +249,7 @@ public class GroupCrudController implements Controllable {
                     userManagementDialog.getGroupStateInfoLabel().setText("");
 
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new GroupChangeEvent(type, userManagementDialog.getRoleDualList().isModified(), selectedGroup));
+                    eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
 
                     MessageEvent messageEvent = new MessageEvent("Group save confirmation", "Group " + selectedGroup.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

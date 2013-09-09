@@ -15,6 +15,7 @@ import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.PermissionRepository;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -46,7 +47,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void delete(Permission entity) {
         //attach the permission to the new session
-        permissionRepository.saveOrUpdate(entity);
+        permissionRepository.lock(entity, LockOptions.NONE);
         //remove entity relations
         for(Role role : entity.getRoles()){
             role.getPermissions().remove(entity);
@@ -56,10 +57,10 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void update(Permission entity) {
+    public void update(Permission entity) {        
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
-        //permissionRepository.update(entity);
+        permissionRepository.update(entity);        
     }
 
     @Override

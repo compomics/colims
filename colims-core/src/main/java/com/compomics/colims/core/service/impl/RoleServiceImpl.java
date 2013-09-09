@@ -15,6 +15,7 @@ import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.RoleRepository;
+import org.hibernate.LockOptions;
 
 /**
  *
@@ -46,7 +47,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(Role entity) {
         //attach the role to the new session
-        roleRepository.saveOrUpdate(entity);
+        roleRepository.lock(entity, LockOptions.NONE);
         //remove entity relations
         for(Group group : entity.getGroups()){
             group.getRoles().remove(entity);

@@ -122,6 +122,9 @@
         <Component class="javax.swing.JTextField" name="nameTextField">
         </Component>
         <Component class="com.compomics.colims.client.compoment.DualList" name="cvTermDualList">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;InstrumentCvTerm&gt;"/>
+          </AuxValues>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
           <AuxValues>

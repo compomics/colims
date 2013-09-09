@@ -1,7 +1,6 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.CvTermProperty;
-import com.compomics.colims.model.enums.InstrumentCvProperty;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -17,7 +16,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class CvTerm extends AbstractDatabaseEntity {
+public abstract class CvTerm extends AbstractDatabaseEntity implements Comparable<CvTerm> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -30,7 +29,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
     protected String ontology;
     @Basic(optional = false)
     @Column(name = "label")
-    protected String label;
+    protected String label;    
     @Basic(optional = false)
     @Column(name = "accession")
     protected String accession;
@@ -137,6 +136,11 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
     @Override
     public String toString() {
         return name + " [" + accession + "]";
+    }
+    
+    @Override
+    public int compareTo(CvTerm o) {
+        return accession.compareTo(o.getAccession());
     }
 
     /**

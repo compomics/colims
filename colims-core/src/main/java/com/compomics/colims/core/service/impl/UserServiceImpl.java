@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.UserRepository;
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -23,7 +25,8 @@ import com.compomics.colims.repository.UserRepository;
 @Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
-
+    private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -68,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User entity) {
         //attach the user to the new session
-        userRepository.saveOrUpdate(entity);    
+        userRepository.saveOrUpdate(entity);
         userRepository.update(entity);
     }
 
@@ -79,11 +82,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void fetchAuthenticationRelations(User user) {
-        //attach the user to the new session
-        userRepository.lock(user, LockOptions.NONE);
-        if (!Hibernate.isInitialized(user.getGroups())) {
-            Hibernate.initialize(user.getGroups());
+        try {
+            //attach the user to the new session
+            userRepository.lock(user, LockOptions.NONE);
+            if (!Hibernate.isInitialized(user.getGroups())) {
+                Hibernate.initialize(user.getGroups());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
         }
     }
-        
 }
