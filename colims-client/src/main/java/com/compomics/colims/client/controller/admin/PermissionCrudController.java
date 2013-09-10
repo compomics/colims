@@ -167,7 +167,7 @@ public class PermissionCrudController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 Permission selectedPermission = getSelectedPermission();
                 //validate permission
-                List<String> validationMessages = GuiUtils.validateEntity(getSelectedPermission());
+                List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
                 //check for a new permission if the permission name already exists in the db                
                 if (!isExistingPermission(selectedPermission) && isExistingPermissionName(selectedPermission)) {
                     validationMessages.add(selectedPermission.getName() + " already exists in the database, please choose another permission name.");

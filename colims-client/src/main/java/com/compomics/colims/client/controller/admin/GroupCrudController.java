@@ -233,7 +233,7 @@ public class GroupCrudController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 Group selectedGroup = getSelectedGroup();
                 //validate group
-                List<String> validationMessages = GuiUtils.validateEntity(getSelectedGroup());
+                List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
                 //check for a new group if the group name already exists in the db                
                 if (!isExistingGroup(selectedGroup) && isExistingGroupName(selectedGroup)) {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database, please choose another group name.");

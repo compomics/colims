@@ -233,7 +233,7 @@ public class RoleCrudController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 Role selectedRole = getSelectedRole();
                 //validate role
-                List<String> validationMessages = GuiUtils.validateEntity(getSelectedRole());
+                List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
                 //check for a new group if the role name already exists in the db                
                 if (!isExistingRole(selectedRole) && isExistingRoleName(selectedRole)) {
                     validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");

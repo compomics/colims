@@ -33,7 +33,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
     }    
 
     public JList getCvTermSummaryList() {
-        return cvTermsSummaryList;
+        return cvTermSummaryList;
     }
 
     public JButton getEditInstrumentCvTermsButton() {
@@ -56,9 +56,9 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
         return cancelEditInstrumentButton;
     }
 
-    public JButton getSaveInstrumentButton() {
-        return saveInstrumentButton;
-    }        
+    public JButton getInstrumentSaveOrUpdateButton() {
+        return instrumentSaveOrUpdateButton;
+    }          
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,12 +75,12 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
         cvTermDualList = new com.compomics.colims.client.compoment.DualList<InstrumentCvTerm>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        cvTermsSummaryList = new javax.swing.JList();
+        cvTermSummaryList = new javax.swing.JList();
         typeComboBox = new javax.swing.JComboBox();
         editInstrumentTypesButton = new javax.swing.JButton();
         editInstrumentCvTermsButton = new javax.swing.JButton();
         cancelEditInstrumentButton = new javax.swing.JButton();
-        saveInstrumentButton = new javax.swing.JButton();
+        instrumentSaveOrUpdateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -88,14 +88,14 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
 
         typeLabel.setText("type");
 
-        jScrollPane2.setViewportView(cvTermsSummaryList);
+        jScrollPane2.setViewportView(cvTermSummaryList);
 
-        editInstrumentTypesButton.setText("edit");
+        editInstrumentTypesButton.setText("edit...");
         editInstrumentTypesButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editInstrumentTypesButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editInstrumentTypesButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        editInstrumentCvTermsButton.setText("edit");
+        editInstrumentCvTermsButton.setText("edit...");
         editInstrumentCvTermsButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editInstrumentCvTermsButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editInstrumentCvTermsButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -105,10 +105,10 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
         cancelEditInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         cancelEditInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        saveInstrumentButton.setText("save");
-        saveInstrumentButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        saveInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        saveInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        instrumentSaveOrUpdateButton.setText("save");
+        instrumentSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        instrumentSaveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        instrumentSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout editInstrumentPanelLayout = new javax.swing.GroupLayout(editInstrumentPanel);
         editInstrumentPanel.setLayout(editInstrumentPanelLayout);
@@ -120,7 +120,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
                     .addGroup(editInstrumentPanelLayout.createSequentialGroup()
                         .addComponent(editInstrumentCvTermsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(saveInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(instrumentSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cancelEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(editInstrumentPanelLayout.createSequentialGroup()
@@ -137,7 +137,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
                                 .addComponent(editInstrumentTypesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(cvTermDualList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         editInstrumentPanelLayout.setVerticalGroup(
@@ -160,7 +160,7 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
                 .addGroup(editInstrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editInstrumentCvTermsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(instrumentSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -185,14 +185,14 @@ public class EditInstrumentDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelEditInstrumentButton;
     private com.compomics.colims.client.compoment.DualList<InstrumentCvTerm> cvTermDualList;
-    private javax.swing.JList cvTermsSummaryList;
+    private javax.swing.JList cvTermSummaryList;
     private javax.swing.JButton editInstrumentCvTermsButton;
     private javax.swing.JPanel editInstrumentPanel;
     private javax.swing.JButton editInstrumentTypesButton;
+    private javax.swing.JButton instrumentSaveOrUpdateButton;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
-    private javax.swing.JButton saveInstrumentButton;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables

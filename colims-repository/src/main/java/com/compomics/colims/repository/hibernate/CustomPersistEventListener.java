@@ -30,7 +30,7 @@ public class CustomPersistEventListener implements PersistEventListener {
     public void onPersist(PersistEvent event) throws HibernateException {
         LOGGER.debug("Entering onPersist(PersistEvent event)");
 
-        onListen(event.getObject());                
+        onListen(event.getObject());
     }
 
     @Override

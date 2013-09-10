@@ -26,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -173,7 +172,6 @@ public class UserCrudController implements Controllable {
                         if (isExistingUserName(selectedUser)) {
                             userService.fetchAuthenticationRelations(selectedUser);
 
-
                             userManagementDialog.getUserNameTextField().setEnabled(false);
                             userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                             userManagementDialog.getUserStateInfoLabel().setText("");
@@ -239,7 +237,7 @@ public class UserCrudController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = getSelectedUser();
                 //validate user
-                List<String> validationMessages = GuiUtils.validateEntity(getSelectedUser());
+                List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
                 //check for a new user if the user name already exists in the db                
                 if (!isExistingUser(selectedUser) && isExistingUserName(selectedUser)) {
                     validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");

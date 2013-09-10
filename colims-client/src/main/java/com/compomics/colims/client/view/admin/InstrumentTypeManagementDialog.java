@@ -54,6 +54,10 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
         return instrumentTypeStateInfoLabel;
     }        
 
+    public JButton getCancelInstrumentTypeManagementButton() {
+        return cancelInstrumentTypeManagementButton;
+    }        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,6 +81,7 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
         instrumentTypeStateInfoLabel = new javax.swing.JLabel();
         instrumentTypeDescriptionScrollPane = new javax.swing.JScrollPane();
         instrumentTypeDescriptionTextArea = new javax.swing.JTextArea();
+        cancelInstrumentTypeManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -148,6 +153,11 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
         instrumentTypeDescriptionTextArea.setRows(5);
         instrumentTypeDescriptionScrollPane.setViewportView(instrumentTypeDescriptionTextArea);
 
+        cancelInstrumentTypeManagementButton.setText("cancel");
+        cancelInstrumentTypeManagementButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentTypeManagementButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentTypeManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout instrumentTypeDetailPanelLayout = new javax.swing.GroupLayout(instrumentTypeDetailPanel);
         instrumentTypeDetailPanel.setLayout(instrumentTypeDetailPanelLayout);
         instrumentTypeDetailPanelLayout.setHorizontalGroup(
@@ -168,6 +178,8 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentTypeDetailPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cancelInstrumentTypeManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         instrumentTypeDetailPanelLayout.setVerticalGroup(
@@ -183,7 +195,9 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
                     .addComponent(instrumentTypeDescriptionLabel)
                     .addComponent(instrumentTypeDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelInstrumentTypeManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -224,6 +238,7 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addInstrumentTypeButton;
+    private javax.swing.JButton cancelInstrumentTypeManagementButton;
     private javax.swing.JButton deleteInstrumentTypeButton;
     private javax.swing.JPanel instrumentTypeCrudPanel;
     private javax.swing.JLabel instrumentTypeDescriptionLabel;

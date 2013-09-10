@@ -43,13 +43,16 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     /**
-     * Internal method to quickly create a {@link Criteria} for the {@link EntityClass} with optional {@link Criterion}s. 
+     * Internal method to quickly create a {@link Criteria} for the
+     * {@link EntityClass} with optional {@link Criterion}s.
+     *
      * @return
      */
     protected Criteria createCriteria(final Criterion... criterions) {
         Criteria createCriteria = getCurrentSession().createCriteria(entityClass);
-        for (Criterion criterion : criterions)
+        for (Criterion criterion : criterions) {
             createCriteria.add(criterion);
+        }
         return createCriteria;
     }
 
@@ -73,8 +76,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     public List<T> findByNamedQuery(final String queryName, final Object... params) {
         Query namedQuey = getCurrentSession().getNamedQuery(queryName);
 
-        for (int i = 0; i < params.length; i++)
+        for (int i = 0; i < params.length; i++) {
             namedQuey.setParameter(i + 1, params[i]);
+        }
 
         final List<T> result = namedQuey.list();
         return result;
@@ -84,8 +88,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     public List<T> findByNamedQueryAndNamedParams(final String queryName, final Map<String, ? extends Object> params) {
         Query namedQuey = getCurrentSession().getNamedQuery(queryName);
 
-        for (final Map.Entry<String, ? extends Object> param : params.entrySet())
+        for (final Map.Entry<String, ? extends Object> param : params.entrySet()) {
             namedQuey.setParameter(param.getKey(), param.getValue());
+        }
 
         final List<T> result = namedQuey.list();
         return result;
@@ -151,11 +156,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
             final int maxResults, final Criterion... criterion) {
         Criteria crit = createCriteria(criterion);
 
-        if (firstResult > 0)
+        if (firstResult > 0) {
             crit.setFirstResult(firstResult);
+        }
 
-        if (maxResults > 0)
+        if (maxResults > 0) {
             crit.setMaxResults(maxResults);
+        }
 
         final List<T> result = crit.list();
         return result;
