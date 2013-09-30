@@ -1,6 +1,6 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -15,8 +15,8 @@ public class MaterialCvTerm extends CvTerm {
     public MaterialCvTerm() {
     }    
     
-    public MaterialCvTerm(CvTermProperty cvTermProperty, String ontology, String label, String accession, String name) {
-        super(cvTermProperty, ontology, label, accession, name);
+    public MaterialCvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+        super(cvTermType, ontology, label, accession, name);
     }        
         
 }

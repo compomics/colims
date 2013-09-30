@@ -46,7 +46,7 @@ public class UserManagementController implements Controllable {
         userManagementDialog = new UserManagementDialog(mainController.getMainFrame(), true);        
 
         //init child controllers
-        userCrudController.init();               
+        userCrudController.init();
         groupCrudController.init();
         roleCrudController.init();
         permissionCrudController.init();

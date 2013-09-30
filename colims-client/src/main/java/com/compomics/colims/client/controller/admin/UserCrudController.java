@@ -169,7 +169,7 @@ public class UserCrudController implements Controllable {
 
                         //check if the user is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingUserName(selectedUser)) {
+                        if (selectedUser.getId() != null) {
                             userService.fetchAuthenticationRelations(selectedUser);
 
                             userManagementDialog.getUserNameTextField().setEnabled(false);
@@ -239,11 +239,11 @@ public class UserCrudController implements Controllable {
                 //validate user
                 List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
                 //check for a new user if the user name already exists in the db                
-                if (!isExistingUser(selectedUser) && isExistingUserName(selectedUser)) {
+                if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
                     validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    if (isExistingUser(selectedUser)) {
+                    if (selectedUser.getId() != null) {
                         userService.update(selectedUser);
                     } else {
                         userService.save(selectedUser);
@@ -263,20 +263,10 @@ public class UserCrudController implements Controllable {
                 }
             }
         });
-    }
+    }    
 
     /**
-     * Check if the user exists in the database; i.e. does the user has an ID?
-     *
-     * @param user the given user
-     * @return
-     */
-    private boolean isExistingUser(User user) {
-        return user.getId() != null;
-    }
-
-    /**
-     * Check if the user with the given user name exists in the database
+     * Check if the CV term with the given user name exists in the database
      *
      * @param user the selected user
      * @return the does exist boolean

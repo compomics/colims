@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.ProtocolCvTerm;
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 
 /**
@@ -32,29 +32,29 @@ public class CvTermRepositoryTest {
     @Test
     public void testFindByAccession() {
         //look for unknown analyzer
-        CvTerm cvTerm = cvTermRepository.findByAccession("unknown analyzer", CvTermProperty.ANALYZER);
+        CvTerm cvTerm = cvTermRepository.findByAccession("unknown analyzer", CvTermType.ANALYZER);
         Assert.assertNull(cvTerm);        
         
         //look for known analyzer
-        cvTerm = cvTermRepository.findByAccession("instr_cv_acc_4", CvTermProperty.ANALYZER);
+        cvTerm = cvTermRepository.findByAccession("instr_cv_acc_4", CvTermType.ANALYZER);
         Assert.assertNotNull(cvTerm);        
         //check if the CvTerm is an InstrumentCvTerm
         Assert.assertTrue(cvTerm instanceof InstrumentCvTerm);
         
         //look for known enzyme
-        cvTerm = cvTermRepository.findByAccession("protocol_cv_acc_2", CvTermProperty.ENZYME);
+        cvTerm = cvTermRepository.findByAccession("protocol_cv_acc_2", CvTermType.ENZYME);
         Assert.assertNotNull(cvTerm);        
         //check if the CvTerm is a ProtocolCvTerm
         Assert.assertTrue(cvTerm instanceof ProtocolCvTerm);
     }  
     
     @Test
-    public void testFindByCvTermProperty() {        
-        List<CvTerm> cvTerms = cvTermRepository.findByCvTermProperty(CvTermProperty.ANALYZER);
+    public void testFindBycvTermType() {        
+        List<CvTerm> cvTerms = cvTermRepository.findBycvTermType(CvTermType.ANALYZER);
         Assert.assertNotNull(cvTerms);  
         Assert.assertEquals(2, cvTerms.size());
         
-        cvTerms = cvTermRepository.findByCvTermProperty(CvTermProperty.ENZYME);
+        cvTerms = cvTermRepository.findBycvTermType(CvTermType.ENZYME);
         Assert.assertNotNull(cvTerms);  
         Assert.assertEquals(2, cvTerms.size());
     }

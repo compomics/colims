@@ -145,7 +145,7 @@ public class MainController implements ActionListener {
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementController.getUserManagementDialog().setVisible(true);
         } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
-            instrumentManagementController.getInstrumentManagementDialog().setVisible(true);
+            instrumentManagementController.getInstrumentManagementOverviewDialog().setVisible(true);
         }
     }
 

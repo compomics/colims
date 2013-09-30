@@ -34,9 +34,12 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="518" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="494" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Component id="instrumentTypeCrudPanel" alignment="0" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="instrumentTypeCrudPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              </Group>
           </Group>
       </Group>
     </DimensionLayout>
@@ -49,14 +52,22 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="instrumentTypeOverviewPanel" alignment="1" pref="411" max="32767" attributes="0"/>
               <Component id="instrumentTypeDetailPanel" alignment="0" pref="411" max="32767" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="cancelInstrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="instrumentTypeOverviewPanel" pref="302" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="instrumentTypeDetailPanel" min="-2" pref="210" max="-2" attributes="0"/>
+                  <Component id="instrumentTypeOverviewPanel" pref="228" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="instrumentTypeDetailPanel" min="-2" pref="218" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelInstrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -101,7 +112,7 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="deleteInstrumentTypeButton" min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="instrumentTypeListScrollPane" alignment="0" pref="257" max="32767" attributes="0"/>
+                          <Component id="instrumentTypeListScrollPane" alignment="0" pref="183" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -191,8 +202,6 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="instrumentTypeSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="cancelInstrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -212,10 +221,7 @@
                           <Component id="instrumentTypeDescriptionScrollPane" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="instrumentTypeSaveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cancelInstrumentTypeManagementButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="instrumentTypeSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -286,22 +292,22 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="cancelInstrumentTypeManagementButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="cancel"/>
-                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 25]"/>
-                </Property>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 25]"/>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 25]"/>
-                </Property>
-              </Properties>
-            </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="cancelInstrumentTypeManagementButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

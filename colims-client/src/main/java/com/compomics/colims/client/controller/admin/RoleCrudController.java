@@ -166,9 +166,9 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(true);
                         userManagementDialog.getDeleteRoleButton().setEnabled(true);
 
-                        //check if the group is found in the db.
+                        //check if the role is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingRoleName(selectedRole)) {
+                        if (selectedRole.getId() != null) {
                             userManagementDialog.getRoleNameTextField().setEnabled(false);
                             userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
                             userManagementDialog.getRoleStateInfoLabel().setText("");
@@ -235,11 +235,11 @@ public class RoleCrudController implements Controllable {
                 //validate role
                 List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
                 //check for a new group if the role name already exists in the db                
-                if (!isExistingRole(selectedRole) && isExistingRoleName(selectedRole)) {
+                if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
                     validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    if (isExistingRole(selectedRole)) {
+                    if (selectedRole.getId() != null) {
                         roleService.update(selectedRole);
                     } else {
                         roleService.save(selectedRole);
@@ -259,17 +259,7 @@ public class RoleCrudController implements Controllable {
                 }
             }
         });
-    }
-
-    /**
-     * Check if the role exists in the database; i.e. does the role has an ID?
-     *
-     * @param role the given role
-     * @return does the role exist
-     */
-    private boolean isExistingRole(Role role) {
-        return role.getId() != null;
-    }
+    }    
 
     /**
      * Check if a role with the given role name exists in the database.

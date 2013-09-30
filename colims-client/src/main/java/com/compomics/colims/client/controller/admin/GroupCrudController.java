@@ -168,7 +168,7 @@ public class GroupCrudController implements Controllable {
 
                         //check if the group is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingGroupName(selectedGroup)) {
+                        if (selectedGroup.getId() != null) {
                             userManagementDialog.getGroupNameTextField().setEnabled(false);
                             userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                             userManagementDialog.getGroupStateInfoLabel().setText("");
@@ -235,11 +235,11 @@ public class GroupCrudController implements Controllable {
                 //validate group
                 List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
                 //check for a new group if the group name already exists in the db                
-                if (!isExistingGroup(selectedGroup) && isExistingGroupName(selectedGroup)) {
+                if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database, please choose another group name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    if (isExistingGroup(selectedGroup)) {
+                    if (selectedGroup.getId() != null) {
                         groupService.update(selectedGroup);
                     } else {
                         groupService.save(selectedGroup);
@@ -259,17 +259,7 @@ public class GroupCrudController implements Controllable {
                 }
             }
         });
-    }
-
-    /**
-     * Check if the group exists in the database; i.e. does the group has an ID?
-     *
-     * @param group the given group
-     * @return does the group exist
-     */
-    private boolean isExistingGroup(Group group) {
-        return group.getId() != null;
-    }
+    }    
 
     /**
      * Check if a group with the given group name exists in the database.

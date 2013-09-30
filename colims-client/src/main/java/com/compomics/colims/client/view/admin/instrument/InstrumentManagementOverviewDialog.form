@@ -31,7 +31,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="502" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="523" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
           </Group>
@@ -52,6 +52,11 @@
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="cancelInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -60,8 +65,10 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="instrumentOverviewPanel" min="-2" pref="182" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="instrumentDetailPanel" min="-2" pref="280" max="-2" attributes="0"/>
+                  <Component id="instrumentDetailPanel" min="-2" pref="270" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="cancelInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -178,19 +185,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="instrumentDetailTableScrollPane" min="-2" pref="581" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
-                              <Component id="instrumentStateInfoLabel" min="-2" pref="376" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="412" max="-2" attributes="0"/>
-                              <Component id="editInstrumentButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="cancelInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="editInstrumentButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="instrumentDetailTableScrollPane" min="-2" pref="581" max="-2" attributes="0"/>
                       </Group>
+                      <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
+                      <Component id="instrumentStateInfoLabel" min="-2" pref="376" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -208,12 +208,9 @@
                               <Component id="instrumentDetailTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="editInstrumentButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cancelInstrumentManagementButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="editInstrumentButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -268,16 +265,16 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="cancelInstrumentManagementButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="cancel"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 25]"/>
-                </Property>
-              </Properties>
-            </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="cancelInstrumentManagementButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

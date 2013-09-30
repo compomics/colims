@@ -15,7 +15,7 @@ import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 
 /**
@@ -32,8 +32,8 @@ public class CvTermServiceTest {
     private CvTermService cvTermService;
     
     @Test
-    public void testFindByCvTermByProperty() {         
-        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByProperty(InstrumentCvTerm.class, CvTermProperty.SOURCE);
+    public void testFindByCvTermByType() {         
+        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
         
         Assert.assertNotNull(sources);
         Assert.assertEquals(2, sources.size());

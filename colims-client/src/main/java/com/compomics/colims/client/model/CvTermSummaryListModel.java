@@ -1,7 +1,7 @@
 package com.compomics.colims.client.model;
 
 import com.compomics.colims.model.CvTerm;
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import java.util.EnumMap;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -13,32 +13,32 @@ import javax.swing.AbstractListModel;
 public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel {
     
     /**
-     * The EnumMap containing the single CV terms (key: CvTermProperty; value: a single CV term or null).
+     * The EnumMap containing the single CV terms (key: cvTermType; value: a single CV term or null).
      */    
-    private EnumMap<CvTermProperty, T> singleCvTerms;
+    private EnumMap<CvTermType, T> singleCvTerms;
     /**
-     * The EnumMap containing the multiple CV terms (key: CvTermProperty; value: a list of multiple CV terms, can be empty).
+     * The EnumMap containing the multiple CV terms (key: cvTermType; value: a list of multiple CV terms, can be empty).
      */ 
-    private EnumMap<CvTermProperty, List<T>> multipleCvTerms;
+    private EnumMap<CvTermType, List<T>> multipleCvTerms;
     /**
      * The single CV term key array for indexing purposes
      */
-    private CvTermProperty[] singleCvTermKeys;
+    private CvTermType[] singleCvTermKeys;
     /**
      * The multiple CV term key array for indexing purposes
      */
-    private CvTermProperty[] multipleCvTermKeys;
+    private CvTermType[] multipleCvTermKeys;
 
     public CvTermSummaryListModel() {
-        singleCvTerms = new EnumMap<>(CvTermProperty.class);        
-        multipleCvTerms = new EnumMap<>(CvTermProperty.class);
+        singleCvTerms = new EnumMap<>(CvTermType.class);        
+        multipleCvTerms = new EnumMap<>(CvTermType.class);
     }
 
-    public EnumMap<CvTermProperty, T> getSingleCvTerms() {
+    public EnumMap<CvTermType, T> getSingleCvTerms() {
         return singleCvTerms;
     }
 
-    public EnumMap<CvTermProperty, List<T>> getMultipleCvTerms() {
+    public EnumMap<CvTermType, List<T>> getMultipleCvTerms() {
         return multipleCvTerms;
     }        
 
@@ -48,23 +48,23 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * @param singleCvTerms
      * @param multipleCvTerms 
      */
-    public void update(EnumMap<CvTermProperty, T> singleCvTerms, EnumMap<CvTermProperty, List<T>> multipleCvTerms) {
+    public void update(EnumMap<CvTermType, T> singleCvTerms, EnumMap<CvTermType, List<T>> multipleCvTerms) {
         this.singleCvTerms = singleCvTerms;
         this.multipleCvTerms = multipleCvTerms;
-        singleCvTermKeys = singleCvTerms.keySet().toArray(new CvTermProperty[singleCvTerms.size()]);
-        multipleCvTermKeys = multipleCvTerms.keySet().toArray(new CvTermProperty[multipleCvTerms.size()]);
+        singleCvTermKeys = singleCvTerms.keySet().toArray(new CvTermType[singleCvTerms.size()]);
+        multipleCvTermKeys = multipleCvTerms.keySet().toArray(new CvTermType[multipleCvTerms.size()]);
         this.fireContentsChanged(this, 0, getSize());
     }
 
     /**
-     * Check if the given CvTermProperty can hold multiple CV term values or just one.
+     * Check if the given cvTermType can hold multiple CV term values or just one.
      * 
-     * @param cvTermProperty
+     * @param cvTermType
      * @return 
      */
-    public boolean isSingleCvTerm(CvTermProperty cvTermProperty) {
+    public boolean isSingleCvTerm(CvTermType cvTermType) {
         boolean isSingleCvTerm = false;
-        if (singleCvTerms.containsKey(cvTermProperty)) {
+        if (singleCvTerms.containsKey(cvTermType)) {
             isSingleCvTerm = true;
         }
         return isSingleCvTerm;

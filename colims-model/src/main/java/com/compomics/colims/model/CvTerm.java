@@ -1,6 +1,6 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -38,13 +38,13 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
     protected String name;
     @Column(name = "cv_property")
     @Enumerated(EnumType.STRING)
-    protected CvTermProperty cvTermProperty;
+    protected CvTermType cvTermType;
 
     public CvTerm() {
     }
 
-    public CvTerm(CvTermProperty cvTermProperty, String ontology, String label, String accession, String name) {
-        this.cvTermProperty = cvTermProperty;
+    public CvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+        this.cvTermType = cvTermType;
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
@@ -91,12 +91,12 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
         this.name = name;
     }
 
-    public CvTermProperty getCvTermProperty() {
-        return cvTermProperty;
+    public CvTermType getcvTermType() {
+        return cvTermType;
     }
 
-    public void setCvTermProperty(CvTermProperty cvTermProperty) {
-        this.cvTermProperty = cvTermProperty;
+    public void setcvTermType(CvTermType cvTermType) {
+        this.cvTermType = cvTermType;
     }        
 
     @Override
@@ -149,7 +149,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
      * @return
      */
     public String[] toStringArray() {
-        String[] stringArray = {cvTermProperty.toString(), label, accession, name};
+        String[] stringArray = {cvTermType.toString(), label, accession, name};
         return stringArray;
     }
 }

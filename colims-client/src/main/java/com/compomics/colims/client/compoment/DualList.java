@@ -26,7 +26,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
     private int maximumAmountOfAddedItems;
 
     /**
-     * Create new form DualList
+     * Constructor
      */
     public DualList() {
         initComponents();
@@ -37,7 +37,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
 
     /**
      * Populate the available and added items lists. This method removes the
-     * added items from the availabe items
+     * added items from the availabe items.
      *
      * @param availableItems the available items
      * @param addedItems the added items
@@ -66,7 +66,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         }
 
         addedItemBindingList.clear();
-        addedItemBindingList.addAll(addedItems);        
+        addedItemBindingList.addAll(addedItems);
         
         checkButtonStates();
     }
@@ -92,9 +92,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         availableItemBindingList.clear();
         addedItemBindingList.clear();
     }  
-    
-    
-
+        
     /**
      * Init the component.
      */
@@ -144,7 +142,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
                 List selectedItems = addedItemList.getSelectedValuesList();
 
                 for (Object selectedObject : selectedItems) {
-                    T selectedItem = (T) selectedObject;                    
+                    T selectedItem = (T) selectedObject;
                     
                     //add to availableItemBindingList and sort
                     availableItemBindingList.add(selectedItem);

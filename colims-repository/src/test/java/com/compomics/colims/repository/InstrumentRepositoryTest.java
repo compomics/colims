@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentType;
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import org.junit.Before;
 
 /**
@@ -53,18 +53,18 @@ public class InstrumentRepositoryTest {
     public void testInstrumentCvTerms() {
         //source cv term
         Assert.assertNotNull(instrument.getSource());
-        Assert.assertEquals(CvTermProperty.SOURCE, instrument.getSource().getCvTermProperty());
+        Assert.assertEquals(CvTermType.SOURCE, instrument.getSource().getcvTermType());
 
         //detector cv term
         Assert.assertNotNull(instrument.getDetector());
-        Assert.assertEquals(CvTermProperty.DETECTOR, instrument.getDetector().getCvTermProperty());
+        Assert.assertEquals(CvTermType.DETECTOR, instrument.getDetector().getcvTermType());
 
         //analyzer cv terms
         Assert.assertEquals(2, instrument.getAnalyzers().size());
         CvTerm analyzer = instrument.getAnalyzers().get(0);
-        Assert.assertEquals(CvTermProperty.ANALYZER, analyzer.getCvTermProperty());
+        Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());
         analyzer = instrument.getAnalyzers().get(1);
-        Assert.assertEquals(CvTermProperty.ANALYZER, analyzer.getCvTermProperty());
+        Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());
     }
 
     @Test

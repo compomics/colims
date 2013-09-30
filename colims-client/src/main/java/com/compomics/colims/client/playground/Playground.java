@@ -22,6 +22,10 @@ public class Playground {
                 System.out.println(mapItem.getValue());
             }
         }
-        Map termsByExactName = olsClient.getTermsByExactName("electrospray ionization", "MS");        
+        Map termsByExactName = olsClient.getTermsByExactName("electrospray ionization", "MS");  
+        Map termXrefs = olsClient.getTermXrefs("MS:1000073", "MS");
+        Map termMetadata = olsClient.getTermMetadata("MS:1000073", "MS");
+        
+        System.out.println("test");
     }
 }

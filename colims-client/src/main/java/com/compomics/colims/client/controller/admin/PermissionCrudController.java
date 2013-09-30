@@ -119,7 +119,7 @@ public class PermissionCrudController implements Controllable {
 
                         //check if the permission is found in the db.
                         //If so, disable the name text field and change the save button label.
-                        if (isExistingPermissionName(selectedPermission)) {
+                        if (selectedPermission.getId() != null) {
                             userManagementDialog.getPermissionNameTextField().setEnabled(false);
                             userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
                             userManagementDialog.getPermissionStateInfoLabel().setText("");
@@ -169,11 +169,11 @@ public class PermissionCrudController implements Controllable {
                 //validate permission
                 List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
                 //check for a new permission if the permission name already exists in the db                
-                if (!isExistingPermission(selectedPermission) && isExistingPermissionName(selectedPermission)) {
+                if (selectedPermission.getId() == null && isExistingPermissionName(selectedPermission)) {
                     validationMessages.add(selectedPermission.getName() + " already exists in the database, please choose another permission name.");
                 }
                 if (validationMessages.isEmpty()) {
-                    if (isExistingPermission(selectedPermission)) {
+                    if (selectedPermission.getId() != null) {
                         permissionService.update(selectedPermission);
                     } else {
                         permissionService.save(selectedPermission);
@@ -195,18 +195,7 @@ public class PermissionCrudController implements Controllable {
                 }
             }
         });
-    }
-
-    /**
-     * Check if the permission exists in the database; i.e. does the permission
-     * has an ID?
-     *
-     * @param permission the given permission
-     * @return does the permission exist
-     */
-    private boolean isExistingPermission(Permission permission) {
-        return permission.getId() != null;
-    }
+    }    
 
     /**
      * Check if a permission with the given permission name exists in the

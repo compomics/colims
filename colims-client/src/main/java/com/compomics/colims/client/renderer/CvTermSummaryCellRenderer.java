@@ -2,7 +2,7 @@ package com.compomics.colims.client.renderer;
 
 import com.compomics.colims.client.model.CvTermSummaryListModel;
 import com.compomics.colims.model.CvTerm;
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -21,19 +21,19 @@ public class CvTermSummaryCellRenderer<T extends CvTerm> extends DefaultListCell
 
         String labelText;
         
-        //get the selected CvTermProperty
-        CvTermProperty cvTermProperty = (CvTermProperty) cvTermSummaryListModel.getElementAt(index);
+        //get the selected cvTermType
+        CvTermType cvTermType = (CvTermType) cvTermSummaryListModel.getElementAt(index);
         //check if the CV term is single or multiple
-        if (cvTermSummaryListModel.isSingleCvTerm(cvTermProperty)) {
-            T t = cvTermSummaryListModel.getSingleCvTerms().get(cvTermProperty);
+        if (cvTermSummaryListModel.isSingleCvTerm(cvTermType)) {
+            T t = cvTermSummaryListModel.getSingleCvTerms().get(cvTermType);
             if (t != null) {
-                labelText = cvTermProperty.toString() + " (1/1)";
+                labelText = cvTermType.toString() + " (1/1)";
             } else {
-                labelText = cvTermProperty.toString() + " (0/1)";
+                labelText = cvTermType.toString() + " (0/1)";
             }
         } else {
-            List<T> cvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(cvTermProperty);
-            labelText = cvTermProperty.toString() + " (" + cvTerms.size() + ")";
+            List<T> cvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(cvTermType);
+            labelText = cvTermType.toString() + " (" + cvTerms.size() + ")";
         }
 
         setText(labelText);

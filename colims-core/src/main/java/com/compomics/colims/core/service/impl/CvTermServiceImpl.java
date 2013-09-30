@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.enums.CvTermProperty;
+import com.compomics.colims.model.enums.CvTermType;
 import com.compomics.colims.repository.CvTermRepository;
 import java.util.ArrayList;
 import org.hibernate.LockOptions;
@@ -57,20 +57,20 @@ public class CvTermServiceImpl implements CvTermService {
     }        
 
     @Override
-    public CvTerm findByAccession(String accession, CvTermProperty cvTermProperty) {
-        return cvTermRepository.findByAccession(accession, cvTermProperty);
+    public CvTerm findByAccession(String accession, CvTermType cvTermType) {
+        return cvTermRepository.findByAccession(accession, cvTermType);
     }
 
     @Override
-    public List<CvTerm> findByCvTermByProperty(CvTermProperty cvTermProperty) {
-        return cvTermRepository.findByCvTermProperty(cvTermProperty);
+    public List<CvTerm> findByCvTermByType(CvTermType cvTermType) {
+        return cvTermRepository.findBycvTermType(cvTermType);
     }
 
     @Override
-    public <T extends CvTerm> List<T> findByCvTermByProperty(Class<T> clazz, CvTermProperty cvTermProperty) {
+    public <T extends CvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType) {
         List<T> cvTerms = new ArrayList<>();
         
-        for(CvTerm cvTerm : cvTermRepository.findByCvTermProperty(cvTermProperty)){
+        for(CvTerm cvTerm : cvTermRepository.findBycvTermType(cvTermType)){
             if(clazz.isInstance(cvTerm)){
                 cvTerms.add((T) cvTerm);
             }
