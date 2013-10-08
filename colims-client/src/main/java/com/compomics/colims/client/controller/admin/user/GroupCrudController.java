@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin;
+package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
@@ -166,7 +166,7 @@ public class GroupCrudController implements Controllable {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(true);
                         userManagementDialog.getDeleteGroupButton().setEnabled(true);
 
-                        //check if the group is found in the db.
+                        //check if the group has an ID.
                         //If so, disable the name text field and change the save button label.
                         if (selectedGroup.getId() != null) {
                             userManagementDialog.getGroupNameTextField().setEnabled(false);
@@ -175,7 +175,7 @@ public class GroupCrudController implements Controllable {
                         } else {
                             userManagementDialog.getGroupNameTextField().setEnabled(true);
                             userManagementDialog.getGroupSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been saved to the database.");
+                            userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been persisted to the database.");
                         }
 
                         //populate dual list with roles                        
@@ -251,7 +251,7 @@ public class GroupCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
 
-                    MessageEvent messageEvent = new MessageEvent("Group save confirmation", "Group " + selectedGroup.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Group save confirmation", "Group " + selectedGroup.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);

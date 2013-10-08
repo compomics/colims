@@ -21,46 +21,45 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "institution")
 @Entity
 public class Institution extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-        
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name")
-    @Length(min = 5, max = 30, message = "Institution name must be between 5 and 30 characters")
-    @Column(name = "name")
+    @Length(min = 5, max = 30, message = "Institution name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
     private String name;
-    @Basic(optional = false)
 //    @NotBlank(message = "Please insert an institution abbreviation")
-    @Length(min = 1, max = 10, message = "Institution abbreviation must be between 1 and 10 characters")
-    @Column(name = "abbreviation")
+    @Basic(optional = false)
+    @Length(min = 1, max = 10, message = "Institution abbreviation must be between {min} and {max} characters")
+    @Column(name = "abbreviation", nullable = false)
     private String abbreviation;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a street name")
-    @Length(min = 2, max = 20, message = "Street name must be between 2 and 30 characters")
-    @Column(name = "street")
+    @Length(min = 2, max = 20, message = "Street name must be between {min} and {max} characters")
+    @Column(name = "street", nullable = false)
     private String street;
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a street number")    
-    @Column(name = "number")
+    @NotBlank(message = "Please insert a street number")
+    @Column(name = "number", nullable = false)
     private Integer number;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
-    @Length(min = 2, max = 30, message = "Institution city name must be between 2 and 20 characters")
-    @Column(name = "city")
+    @Length(min = 2, max = 30, message = "Institution city name must be between {min} and {max} characters")
+    @Column(name = "city", nullable = false)
     private String city;
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a postal code")    
-    @Column(name = "postal_code")
+    @NotBlank(message = "Please insert a postal code")
+    @Column(name = "postal_code", nullable = false)
     private Integer postalCode;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a country")
-    @Length(min = 2, max = 30, message = "Institution country name must be between 2 and 20 characters")
-    @Column(name = "country")
+    @Length(min = 2, max = 30, message = "Institution country name must be between {min} and {max} characters")
+    @Column(name = "country", nullable = false)
     private String country;
 
     public Long getId() {
@@ -125,6 +124,5 @@ public class Institution extends AbstractDatabaseEntity {
 
     public void setCountry(String country) {
         this.country = country;
-    }        
-    
+    }
 }

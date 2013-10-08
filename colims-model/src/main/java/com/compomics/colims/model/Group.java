@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,15 +33,15 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Long id;    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
-    @Length(min = 5, max = 100, message = "Group name length must be between 5 and 100 characters")
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = true)
-    @Length(max = 500, message = "Group description length must be less than 500 characters")
+    @Length(min = 5, max = 100, message = "Group name length must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
+    private String name;    
+    @Basic(optional = false)
+    @Length(max = 500, message = "Group description length must be less than {max} characters")
     @Column(name = "description")
     private String description;
     @ManyToMany(mappedBy = "groups")

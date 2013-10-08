@@ -37,10 +37,10 @@ public class Peptide extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
-    @Column(name = "peptide_sequence")
+    @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
     @Column(name = "experimental_mass")
     private Double experimentalMass;

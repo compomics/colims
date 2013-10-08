@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.repository.InstrumentRepository;
 import org.hibernate.Hibernate;
 import org.hibernate.LockOptions;
@@ -24,7 +25,7 @@ public class InstrumentServiceImpl implements InstrumentService {
     private InstrumentRepository instrumentRepository;
     
     @Override
-    public Instrument findById(Long id) {
+    public Instrument findById(final Long id) {
         return instrumentRepository.findById(id);
     }
     
@@ -34,36 +35,36 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
     
     @Override
-    public void save(Instrument entity) {
+    public void save(final Instrument entity) {
         instrumentRepository.save(entity);
     }
     
     @Override
-    public void delete(Instrument entity) {
+    public void delete(final Instrument entity) {
         //attach the instrument to the session
         instrumentRepository.lock(entity, LockOptions.NONE);
         instrumentRepository.delete(entity);
     }
     
     @Override
-    public Instrument findByName(String name) {
+    public Instrument findByName(final String name) {
         return instrumentRepository.findByName(name);
     }
     
     @Override
-    public void update(Instrument entity) {
+    public void update(final Instrument entity) {
         //attach the instrument to the session
         instrumentRepository.saveOrUpdate(entity);
         instrumentRepository.update(entity);
     }
     
     @Override
-    public void saveOrUpdate(Instrument entity) {
+    public void saveOrUpdate(final Instrument entity) {
         instrumentRepository.saveOrUpdate(entity);
     }
     
     @Override
-    public boolean checkUsageBeforeDeletion(Instrument instrument) {
+    public boolean checkUsageBeforeDeletion(final Instrument instrument) {
         boolean deleted = false;
 
         //attach the instrument to the session
@@ -80,4 +81,5 @@ public class InstrumentServiceImpl implements InstrumentService {
         
         return deleted;
     }
+    
 }

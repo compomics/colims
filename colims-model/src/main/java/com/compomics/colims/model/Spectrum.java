@@ -41,19 +41,19 @@ public class Spectrum extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
-    @Column(name = "accession")
+    @Column(name = "accession", nullable = false)
     private String accession;
     @Basic(optional = true)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
-    @Column(name = "scan_number")
+    @Column(name = "scan_number", nullable = false)
     private String scanNumber;
     @Basic(optional = false)
-    @Column(name = "mz_ratio")
+    @Column(name = "mz_ratio", nullable = false)
     private Double mzRatio;
     @Basic(optional = false)
     @Column(name = "charge", nullable = true)

@@ -52,8 +52,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         return typeComboBox;
     }  
 
-    public JButton getCancelEditInstrumentButton() {
-        return cancelEditInstrumentButton;
+    public JButton getCloseEditInstrumentButton() {
+        return closeEditInstrumentButton;
     }
 
     public JButton getInstrumentSaveOrUpdateButton() {
@@ -75,7 +75,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
         typeComboBox = new javax.swing.JComboBox();
         editInstrumentTypesButton = new javax.swing.JButton();
-        cancelEditInstrumentButton = new javax.swing.JButton();
+        closeEditInstrumentButton = new javax.swing.JButton();
         instrumentSaveOrUpdateButton = new javax.swing.JButton();
         cvTermsPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -95,10 +95,10 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         editInstrumentTypesButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editInstrumentTypesButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelEditInstrumentButton.setText("cancel");
-        cancelEditInstrumentButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelEditInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelEditInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeEditInstrumentButton.setText("close");
+        closeEditInstrumentButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeEditInstrumentButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeEditInstrumentButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         instrumentSaveOrUpdateButton.setText("save");
         instrumentSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -162,7 +162,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(instrumentSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         editInstrumentPanelLayout.setVerticalGroup(
@@ -182,7 +182,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(editInstrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instrumentSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(closeEditInstrumentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -205,7 +205,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelEditInstrumentButton;
+    private javax.swing.JButton closeEditInstrumentButton;
     private com.compomics.colims.client.compoment.DualList<InstrumentCvTerm> cvTermDualList;
     private javax.swing.JList cvTermSummaryList;
     private javax.swing.JPanel cvTermsPanel;

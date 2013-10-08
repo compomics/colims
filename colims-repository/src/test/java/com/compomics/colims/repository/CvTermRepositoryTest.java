@@ -50,11 +50,11 @@ public class CvTermRepositoryTest {
     
     @Test
     public void testFindBycvTermType() {        
-        List<CvTerm> cvTerms = cvTermRepository.findBycvTermType(CvTermType.ANALYZER);
+        List<CvTerm> cvTerms = cvTermRepository.findByCvTermType(CvTermType.ANALYZER);
         Assert.assertNotNull(cvTerms);  
         Assert.assertEquals(2, cvTerms.size());
         
-        cvTerms = cvTermRepository.findBycvTermType(CvTermType.ENZYME);
+        cvTerms = cvTermRepository.findByCvTermType(CvTermType.ENZYME);
         Assert.assertNotNull(cvTerms);  
         Assert.assertEquals(2, cvTerms.size());
     }

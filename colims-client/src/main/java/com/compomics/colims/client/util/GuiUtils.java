@@ -27,19 +27,24 @@ import javax.validation.ValidatorFactory;
 public class GuiUtils {
 
     /**
+     * Private constructor to prevent initialization.
+     */
+    private GuiUtils() { }
+
+    /**
      * Center the dialog on the parent frame
      *
      * @param parentFrame the parent frame
      * @param dialog the dialog
      */
-    public static void centerDialogOnFrame(JFrame parentFrame, JDialog dialog) {
+    public static void centerDialogOnFrame(final JFrame parentFrame, final JDialog dialog) {
         Point topLeft = parentFrame.getLocationOnScreen();
         Dimension parentSize = parentFrame.getSize();
 
         Dimension dialogSize = dialog.getSize();
 
-        int x = 0;
-        int y = 0;
+        int x;
+        int y;
 
         if (parentSize.width > dialogSize.width) {
             x = ((parentSize.width - dialogSize.width) / 2) + topLeft.x;
@@ -62,16 +67,18 @@ public class GuiUtils {
      * @param parentContainer the parent container
      * @return the component name
      */
-    public static String getCurrentCardName(Container parentContainer) {
+    public static String getCurrentCardName(final Container parentContainer) {
         CardLayout cardLayout = (CardLayout) parentContainer.getLayout();
 
         if (cardLayout == null) {
             throw new IllegalArgumentException("The layout of the parent container is no card layout.");
         }
 
-        for (Component component : parentContainer.getComponents())
-            if (component.isVisible())
+        for (Component component : parentContainer.getComponents()) {
+            if (component.isVisible()) {
                 return ((JPanel) component).getName();
+            }
+        }
 
         throw new IllegalStateException("None of the cards in parentContainer was visible; Could not getCurrentCardName");
     }
@@ -83,8 +90,8 @@ public class GuiUtils {
      * @param t the entity
      * @return the list of validation messages
      */
-    public static <T> List<String> validateEntity(T t) {
-        List<String> validationMessages = new ArrayList<String>();
+    public static <T> List<String> validateEntity(final T t) {
+        List<String> validationMessages = new ArrayList<>();
 
         ValidatorFactory entityValidator = Validation.buildDefaultValidatorFactory();
         Validator validator = entityValidator.getValidator();
@@ -92,12 +99,11 @@ public class GuiUtils {
 
         if (!constraintViolations.isEmpty()) {
             for (ConstraintViolation<T> constraintViolation : constraintViolations) {
-                if(constraintViolation.getInvalidValue() != null && !constraintViolation.getInvalidValue().toString().isEmpty()){
-                    validationMessages.add(constraintViolation.getMessage() + ": " + constraintViolation.getInvalidValue());                
+                if (constraintViolation.getInvalidValue() != null && !constraintViolation.getInvalidValue().toString().isEmpty()) {
+                    validationMessages.add(constraintViolation.getMessage() + ": " + constraintViolation.getInvalidValue());
+                } else {
+                    validationMessages.add(constraintViolation.getMessage());
                 }
-                else{
-                    validationMessages.add(constraintViolation.getMessage());                
-                }                                
             }
         }
 

@@ -28,12 +28,12 @@ public class SpectrumFile extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     //the gzipped mgf file
     @Lob
     @Basic(optional = false)
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private byte[] content;
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
     @ManyToOne

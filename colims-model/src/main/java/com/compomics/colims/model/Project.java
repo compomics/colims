@@ -39,21 +39,21 @@ public class Project extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project title")
-    @Length(min = 5, max = 100, message = "Title must be between 5 and 100 characters")
-    @Column(name = "title")
+    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
+    @Column(name = "title", nullable = false)
     private String title;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project label")
-    @Length(min = 3, max = 20, message = "Label must be between 3 and 20 characters")
-    @Column(name = "label")
+    @Length(min = 3, max = 20, message = "Label must be between {min} and {max} characters")
+    @Column(name = "label", nullable = false)
     private String label;
     @Basic(optional = true)
-    @Length(max = 500, message = "Description must be less than 500 characters")
-    @Column(name = "description")
+    @Length(max = 500, message = "Description must be less than {max} characters")
+    @Column(name = "description", nullable = false)
     private String description;
     @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id")
     @ManyToOne

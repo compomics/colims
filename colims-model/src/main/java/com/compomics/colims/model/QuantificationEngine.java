@@ -30,7 +30,7 @@ public class QuantificationEngine extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationEngine")
     private List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines = new ArrayList<>();

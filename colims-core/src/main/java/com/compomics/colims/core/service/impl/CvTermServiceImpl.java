@@ -63,14 +63,14 @@ public class CvTermServiceImpl implements CvTermService {
 
     @Override
     public List<CvTerm> findByCvTermByType(CvTermType cvTermType) {
-        return cvTermRepository.findBycvTermType(cvTermType);
+        return cvTermRepository.findByCvTermType(cvTermType);
     }
 
     @Override
     public <T extends CvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType) {
         List<T> cvTerms = new ArrayList<>();
         
-        for(CvTerm cvTerm : cvTermRepository.findBycvTermType(cvTermType)){
+        for(CvTerm cvTerm : cvTermRepository.findByCvTermType(cvTermType)){
             if(clazz.isInstance(cvTerm)){
                 cvTerms.add((T) cvTerm);
             }

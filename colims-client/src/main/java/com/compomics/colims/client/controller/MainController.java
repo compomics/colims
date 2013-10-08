@@ -1,8 +1,8 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.controller.admin.UserManagementController;
+import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.bean.AuthenticationBean;
-import com.compomics.colims.client.controller.admin.InstrumentManagementController;
+import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;

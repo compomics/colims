@@ -32,20 +32,20 @@ public class Experiment extends AbstractDatabaseEntity {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    
     @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Long id;    
     @Basic(optional = false)
-    @Column(name = "title")
-    private String title;
+    @Column(name = "title", nullable = false)
+    private String title;   
     @Basic(optional = false)
-    @Column(name = "number")
+    @Column(name = "number", nullable = false)
     private Long number;
     @Basic(optional = true)
-    @Length(max = 500, message = "Description must be less than 500 characters")
+    @Length(max = 500, message = "Description must be less than {max} characters")
     @Column(name = "description")
-    private String description;
+    private String description;  
     @Basic(optional = true)
     @Column(name = "storage_location")
     private String storageLocation;

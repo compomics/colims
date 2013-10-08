@@ -31,15 +31,15 @@ public class InstrumentType extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Long id;    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument type name")
-    @Length(min = 2, max = 30, message = "Type name must be between 2 and 30 characters")
-    @Column(name = "name")
-    private String name;
+    @Length(min = 2, max = 30, message = "Type name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
+    private String name; 
     @Basic(optional = true)
-    @Length(max = 500, message = "Description must be less than 500 characters")
+    @Length(max = 500, message = "Description must be less than {max} characters")
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "instrumentType")

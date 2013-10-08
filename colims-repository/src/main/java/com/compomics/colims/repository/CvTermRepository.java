@@ -9,7 +9,6 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 public interface CvTermRepository extends GenericRepository<CvTerm, Long> {
-    
     /**
      * Find a CV term by accession and cvTermType. Returns null if nothing
      * was found.
@@ -26,6 +25,5 @@ public interface CvTermRepository extends GenericRepository<CvTerm, Long> {
      * @param cvTermType the cvTermType
      * @return the found CV terms
      */
-    List<CvTerm> findBycvTermType(CvTermType cvTermType);
-    
+    List<CvTerm> findByCvTermType(CvTermType cvTermType);
 }

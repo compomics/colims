@@ -25,20 +25,20 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)   
     @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
-    @Basic(optional = false)    
-    @Column(name = "file_name")
+    @Column(name = "id", nullable = false)
+    private Long id;  
+    @Basic(optional = false)
+    @Column(name = "file_name", nullable = false)
     protected String fileName;
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
-    @Column(name = "file_type")
+    @Column(name = "file_type", nullable = false)
     protected BinaryFileType binaryFileType;
-    @Lob
     @Basic(optional = false)
-    @Column(name = "content")
+    @Lob
+    @Column(name = "content", nullable = false)
     protected byte[] content;
 
     public AbstractBinaryFile(){}

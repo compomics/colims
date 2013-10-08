@@ -19,9 +19,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -39,20 +41,27 @@ public class Protocol extends AbstractDatabaseEntity {
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a protocol name")
-    @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
-    @Column(name = "name")
+    @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
     private String name;
+    @Basic(optional = false)
+    @NotNull(message = "A protocol must have a reduction")
     @ManyToOne
-    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm reduction;
+    @Basic(optional = false)
+    @NotNull(message = "A protocol must have an enzyme")
     @ManyToOne
-    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm enzyme;
+    @Basic(optional = false)
+    @NotNull(message = "A protocol must have a cell based property")
     @ManyToOne
-    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm cellBased;
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();
+    @NotEmpty(message = "A protocol must have at least one chemical labelling")
     @ManyToMany
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {

@@ -1,7 +1,7 @@
 package com.compomics.colims.client.view.admin;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.admin.InstrumentManagementController;
+import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;

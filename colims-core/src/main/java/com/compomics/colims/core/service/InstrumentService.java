@@ -1,6 +1,8 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.InstrumentCvTerm;
+import java.util.List;
 
 /**
  *
@@ -24,4 +26,5 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @return is the instrument used in an analytical run or not
      */
     boolean checkUsageBeforeDeletion(Instrument instrument);
+    
 }

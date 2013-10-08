@@ -20,23 +20,24 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Basic(optional = false)
-    @Column(name = "id")
-    protected Long id;
+    @Column(name = "id", nullable = false)
+    protected Long id;    
     @Basic(optional = false)
-    @Column(name = "ontology")
+    @Column(name = "ontology", nullable = false)
     protected String ontology;
     @Basic(optional = false)
-    @Column(name = "label")
-    protected String label;    
+    @Column(name = "label", nullable = false)
+    protected String label; 
     @Basic(optional = false)
-    @Column(name = "accession")
-    protected String accession;
+    @Column(name = "accession", nullable = false)
+    protected String accession;    
     @Basic(optional = false)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     protected String name;
-    @Column(name = "cv_property")
+    @Basic(optional = false)
+    @Column(name = "cv_property", nullable = false)
     @Enumerated(EnumType.STRING)
     protected CvTermType cvTermType;
 
@@ -142,14 +143,5 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
     public int compareTo(CvTerm o) {
         return accession.compareTo(o.getAccession());
     }
-
-    /**
-     * Convert the CV term properties to a String array.
-     *
-     * @return
-     */
-    public String[] toStringArray() {
-        String[] stringArray = {cvTermType.toString(), label, accession, name};
-        return stringArray;
-    }
+ 
 }

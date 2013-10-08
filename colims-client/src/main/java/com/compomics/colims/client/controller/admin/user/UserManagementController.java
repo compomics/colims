@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin;
+package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;

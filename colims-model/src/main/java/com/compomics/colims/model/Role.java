@@ -32,15 +32,15 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a role accession")
-    @Length(min = 5, max = 100, message = "Role name length must be between 5 and 100 characters")
-    @Column(name = "name")
+    @Length(min = 5, max = 100, message = "Role name length must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = true)
-    @Length(max = 500, message = "Role description length must be less than 500 characters")
+    @Length(max = 500, message = "Role description length must be less than {max} characters")
     @Column(name = "description")
     private String description;
     @ManyToMany(mappedBy = "roles")

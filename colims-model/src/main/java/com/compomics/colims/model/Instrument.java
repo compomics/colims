@@ -7,8 +7,8 @@ package com.compomics.colims.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,10 +20,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -37,24 +39,31 @@ public class Instrument extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
-    @Length(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
-    @Column(name = "name")
-    private String name;    
+    @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
+    private String name;
+    @Basic(optional = false)
+    @NotNull(message = "An instrument must have a source")
     @ManyToOne
-    @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id")    
+    @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvTerm source;
+    @Basic(optional = false)
+    @NotNull(message = "An instrument must have a detector")
     @ManyToOne
-    @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id")    
+    @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvTerm detector;
+    @Basic(optional = false)
+    @NotNull(message = "An instrument must have an instrument type")
     @ManyToOne
-    @JoinColumn(name = "l_instrument_type_id", referencedColumnName = "id")    
-    private InstrumentType instrumentType;    
+    @JoinColumn(name = "l_instrument_type_id", referencedColumnName = "id", nullable = false)
+    private InstrumentType instrumentType;
     @OneToMany(mappedBy = "instrument")
-    private List<AnalyticalRun> analyticalRuns = new ArrayList<>();    
+    private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+    @NotEmpty(message = "An instrument must have at least one analyzer")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "instrument_has_analyzer",
@@ -86,7 +95,7 @@ public class Instrument extends AbstractDatabaseEntity {
     public void setName(String name) {
         this.name = name;
     }
-   
+
     public InstrumentCvTerm getSource() {
         return source;
     }
@@ -101,7 +110,7 @@ public class Instrument extends AbstractDatabaseEntity {
 
     public void setDetector(InstrumentCvTerm detector) {
         this.detector = detector;
-    }  
+    }
 
     public InstrumentType getInstrumentType() {
         return instrumentType;
@@ -109,7 +118,7 @@ public class Instrument extends AbstractDatabaseEntity {
 
     public void setInstrumentType(InstrumentType instrumentType) {
         this.instrumentType = instrumentType;
-    }        
+    }
 
     public List<AnalyticalRun> getAnalyticalRuns() {
         return analyticalRuns;
@@ -151,11 +160,10 @@ public class Instrument extends AbstractDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name + " [" + instrumentType + "]";
     }
-        
 }

@@ -14,15 +14,13 @@ import java.util.List;
  */
 @Repository("cvTermRepository")
 public class CvTermHibernateRepository extends GenericHibernateRepository<CvTerm, Long> implements CvTermRepository {
-    
     @Override
     public CvTerm findByAccession(final String accession, final CvTermType cvTermType) {
         return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvTermType", cvTermType));
     }
 
     @Override
-    public List<CvTerm> findBycvTermType(CvTermType cvTermType) {
+    public List<CvTerm> findByCvTermType(final CvTermType cvTermType) {
         return findByCriteria(Restrictions.eq("cvTermType", cvTermType));
     }
-        
 }

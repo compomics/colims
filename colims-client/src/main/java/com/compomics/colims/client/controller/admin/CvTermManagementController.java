@@ -1,41 +1,18 @@
 package com.compomics.colims.client.controller.admin;
 
-import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.event.EntityChangeEvent;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
-import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.RoleChangeEvent;
-import com.compomics.colims.client.event.UserChangeEvent;
+import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvTermManagementDialog;
-import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
-import com.compomics.colims.core.service.GroupService;
-import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.CvTerm;
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.CvTermType;
 import com.compomics.colims.model.factory.CvTermFactory;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,19 +22,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
-import static no.uib.olsdialog.example.OLS_Example.getOntologyFromCvTerm;
 import org.apache.xml.xml_soap.MapItem;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JListBinding;
-import org.jdesktop.swingbinding.JTableBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
@@ -69,16 +34,14 @@ import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 @Component("cvTermManagementController")
 public class CvTermManagementController implements OLSInputable {
 
-    private static final String SAVE_CV_TERM = "save";
+    private static final String ADD_CV_TERM = "add";
     private static final String UPDATE_CV_TERM = "update";
-    //model    
-    private ObservableList<CvTerm> cvTermBindingList;
+    //model
+    private CvTermWithoutTypeTableModel cvTermWithoutTypeTableModel;
     /**
-     * The cvTermType of the CV terms in the binding list.
+     * The cvTermType of the CV terms in the table model.
      */
     private CvTermType cvTermType;
-    private BindingGroup bindingGroup;
-    private JTableBinding cvTermTableBinding;
     //view
     private CvTermManagementDialog cvTermManagementDialog;
     //parent controller
@@ -103,33 +66,9 @@ public class CvTermManagementController implements OLSInputable {
         //register to event bus
         eventBus.register(this);
 
-        //init bindings
-        bindingGroup = new BindingGroup();
-
-        cvTermBindingList = ObservableCollections.observableList(new ArrayList());
-
-        //table binding
-        cvTermTableBinding = SwingBindings.createJTableBinding(AutoBinding.UpdateStrategy.READ_WRITE, cvTermBindingList, cvTermManagementDialog.getCvTermTable());
-
-        //Add column bindings
-        JTableBinding.ColumnBinding columnBinding = cvTermTableBinding.addColumnBinding(ELProperty.create("${label}"));
-        columnBinding.setColumnName("Ontology");
-        columnBinding.setEditable(Boolean.FALSE);
-        columnBinding.setColumnClass(String.class);
-
-        columnBinding = cvTermTableBinding.addColumnBinding(ELProperty.create("${accession}"));
-        columnBinding.setColumnName("Accession");
-        columnBinding.setEditable(Boolean.FALSE);
-        columnBinding.setColumnClass(String.class);
-
-        columnBinding = cvTermTableBinding.addColumnBinding(ELProperty.create("${name}"));
-        columnBinding.setColumnName("Name");
-        columnBinding.setEditable(Boolean.FALSE);
-        columnBinding.setColumnClass(String.class);
-
-        bindingGroup.addBinding(cvTermTableBinding);
-
-        bindingGroup.bind();
+        //init and set table model
+        cvTermWithoutTypeTableModel = new CvTermWithoutTypeTableModel();
+        cvTermManagementDialog.getCvTermTable().setModel(cvTermWithoutTypeTableModel);
 
         //add listeners
         cvTermManagementDialog.getCvTermTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -137,17 +76,17 @@ public class CvTermManagementController implements OLSInputable {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
                     int selectedRow = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-                    if (selectedRow != -1 && !cvTermBindingList.isEmpty()) {
-                        CvTerm selectedCvTerm = cvTermBindingList.get(selectedRow);
+                    if (selectedRow != -1 && !cvTermWithoutTypeTableModel.getCvTerms().isEmpty()) {
+                        CvTerm selectedCvTerm = cvTermWithoutTypeTableModel.getCvTerms().get(selectedRow);
 
-                        //check if the CV term is found in the db.
-                        //If so, disable the name text field and change the save button label.
+                        //check if the CV term has an ID.
+                        //If so, change the save button text and the info state label.
                         if (selectedCvTerm.getId() != null) {
                             cvTermManagementDialog.getSaveOrUpdateButton().setText("update");
                             cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
                         } else {
                             cvTermManagementDialog.getSaveOrUpdateButton().setText("save");
-                            cvTermManagementDialog.getCvTermStateInfoLabel().setText("This CV term hasn't been saved to the database.");
+                            cvTermManagementDialog.getCvTermStateInfoLabel().setText("This CV term hasn't been persisted to the database.");
                         }
 
                         //set details fields
@@ -166,7 +105,7 @@ public class CvTermManagementController implements OLSInputable {
                                 }
                             }
                         } else {
-                            cvTermManagementDialog.getDefinitionTextArea().setText("");
+                            clearCvTermDetailFields();
                         }
                     }
                 }
@@ -183,7 +122,9 @@ public class CvTermManagementController implements OLSInputable {
         cvTermManagementDialog.getDeleteCvTermButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                CvTerm selectedCvTerm = getSelectedCvTerm();
+                
+                cvTermService.delete(selectedCvTerm);
             }
         });
 
@@ -206,7 +147,7 @@ public class CvTermManagementController implements OLSInputable {
                     cvTermManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("Cv term save confirmation", "CV term " + selectedCvTerm.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Cv term save confirmation", "CV term " + selectedCvTerm.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -232,30 +173,36 @@ public class CvTermManagementController implements OLSInputable {
     public void updateDialog(CvTermType cvTermType, List<CvTerm> cvTerms) {
         this.cvTermType = cvTermType;
 
-        clearDialog();
+        //clear table model and detail field
+        cvTermWithoutTypeTableModel.setCvTerms(new ArrayList<CvTerm>());
 
-        cvTermBindingList.addAll(cvTerms);
+        clearCvTermDetailFields();
+
+        cvTermWithoutTypeTableModel.setCvTerms(cvTerms);
     }
 
     @Override
     public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
-        if (field.equals(SAVE_CV_TERM)) {
+        //check wether a CV term has to be added or updated
+        if (field.equals(ADD_CV_TERM)) {
             CvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
 
-            //add CV term to binding list
-            cvTermBindingList.add(cvTerm);
+            //add CV term to the table model
+            cvTermWithoutTypeTableModel.addCvTerm(cvTerm);
 
             //set selected index to newly added CV term
-            cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(cvTermBindingList.size() - 1, cvTermBindingList.size() - 1);
+            cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(cvTermWithoutTypeTableModel.getRowCount() - 1, cvTermWithoutTypeTableModel.getRowCount() - 1);
         } else {
             //update selected CV term
             CvTerm selectedCvTerm = getSelectedCvTerm();
             updateCvTerm(selectedCvTerm, ontologyLong, ontologyShort, accession, selectedValue);
 
-            //update observable list
+            //update CV term in table model
             int selectedIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-            cvTermBindingList.remove(selectedIndex);
-            cvTermBindingList.add(selectedIndex, selectedCvTerm);
+            cvTermWithoutTypeTableModel.updateCvTerm(selectedCvTerm, selectedIndex);
+
+            //clear selection and set selected index again
+            cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
             cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(selectedIndex, selectedIndex);
         }
 
@@ -264,34 +211,6 @@ public class CvTermManagementController implements OLSInputable {
     @Override
     public Window getWindow() {
         return cvTermManagementDialog;
-    }
-
-    /**
-     * Show the OLS dialog.
-     *
-     * @param isNewCvTerm is the CV term new or did already exist in the DB
-     */
-    private void showOlsDialog(boolean isNewCvTerm) {
-        String ontology = "PSI Mass Spectrometry Ontology [MS]";
-
-        Map<String, List<String>> preselectedOntologies = new HashMap<>();
-        preselectedOntologies.put("MS", null);
-
-        String field = (isNewCvTerm) ? SAVE_CV_TERM : UPDATE_CV_TERM;
-
-        new OLSDialog(cvTermManagementDialog, this, true, field, ontology, null, preselectedOntologies);
-    }
-
-    /**
-     * Get the selected CV term in the CV term table.
-     *
-     * @return the selected CV term
-     */
-    private CvTerm getSelectedCvTerm() {
-        int selectedCvTermIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-        CvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? cvTermBindingList.get(selectedCvTermIndex) : null;
-
-        return selectedCvTerm;
     }
 
     /**
@@ -311,7 +230,7 @@ public class CvTermManagementController implements OLSInputable {
     }
 
     /**
-     * Update the given CV term. Checks wich fields have been modified.
+     * Update the given CV term. Only the modifified fields are set.
      *
      * @param cvTerm
      * @param ontology
@@ -335,15 +254,41 @@ public class CvTermManagementController implements OLSInputable {
     }
 
     /**
+     * Show the OLS dialog.
+     *
+     * @param isNewCvTerm is the CV term new or did already exist in the DB
+     */
+    private void showOlsDialog(boolean isNewCvTerm) {
+        String ontology = "PSI Mass Spectrometry Ontology [MS]";
+
+        Map<String, List<String>> preselectedOntologies = new HashMap<>();
+        preselectedOntologies.put("MS", null);
+
+        String field = (isNewCvTerm) ? ADD_CV_TERM : UPDATE_CV_TERM;
+
+        //show new OLS dialog
+        new OLSDialog(cvTermManagementDialog, this, true, field, ontology, null, preselectedOntologies);
+    }
+
+    /**
+     * Get the selected CV term in the CV term table.
+     *
+     * @return the selected CV term
+     */
+    private CvTerm getSelectedCvTerm() {
+        int selectedCvTermIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
+        CvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? cvTermWithoutTypeTableModel.getCvTerms().get(selectedCvTermIndex) : null;
+
+        return selectedCvTerm;
+    }
+
+    /**
      * Clear the dialog; clear the detail fields and the selected row in the
      * overview table.
      *
      */
-    private void clearDialog() {
-        //clear binding list
-        cvTermBindingList.clear();
+    private void clearCvTermDetailFields() {
 
-        cvTermManagementDialog.getCvTermTable().clearSelection();
 
         cvTermManagementDialog.getOntologyTextField().setText("");
         cvTermManagementDialog.getOntologyLabelTextField().setText("");

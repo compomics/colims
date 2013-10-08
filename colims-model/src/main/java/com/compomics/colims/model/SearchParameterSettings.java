@@ -27,7 +27,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @JoinColumn(name = "l_s_and_val_set_has_s_eng_id", referencedColumnName = "id")
     @ManyToOne

@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.FragmentationType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,8 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,14 +34,14 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Long id;    
     @Basic(optional = false)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;    
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_date")
     @Basic(optional = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_date")    
     protected Date startDate;
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne

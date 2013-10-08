@@ -52,31 +52,32 @@ public class User extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
-    @Length(min = 2, max = 20, message = "User name must be between 2 and 20 characters")
+    @Length(min = 2, max = 20, message = "User name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a first name")
-    @Length(min = 2, max = 20, message = "First name must be between 2 and 20 characters")
-    @Column(name = "first_name")
+    @Length(min = 2, max = 20, message = "First name must be between {min} and {max} characters")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a last name")
-    @Length(min = 2, max = 30, message = "Last name must be between 2 and 30 characters")
-    @Column(name = "last_name")
+    @Length(min = 2, max = 30, message = "Last name must be between {min} and {max} characters")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     @Basic(optional = false)
     @Email(message = "Please insert a valid email address")
     @NotBlank(message = "Please insert an email address")
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
-    @Basic(optional = false)
-    @Column(name = "password")
+    @Basic(optional = false)    
     @NotBlank(message = "Please insert a password")
     @Type(type = "encryptedString")
+    @Column(name = "password", nullable = false)
     private String password;
     @ManyToOne
     @JoinColumn(name = "l_institution_id", referencedColumnName = "id")

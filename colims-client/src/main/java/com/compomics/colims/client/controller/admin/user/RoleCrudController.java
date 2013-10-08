@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin;
+package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
@@ -166,7 +166,7 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(true);
                         userManagementDialog.getDeleteRoleButton().setEnabled(true);
 
-                        //check if the role is found in the db.
+                        //check if the role has an ID.
                         //If so, disable the name text field and change the save button label.
                         if (selectedRole.getId() != null) {
                             userManagementDialog.getRoleNameTextField().setEnabled(false);
@@ -175,7 +175,7 @@ public class RoleCrudController implements Controllable {
                         } else {
                             userManagementDialog.getRoleNameTextField().setEnabled(true);
                             userManagementDialog.getRoleSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been saved to the database.");
+                            userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been persisted to the database.");
                         }
 
                         //populate dual list with permission                        
@@ -251,7 +251,7 @@ public class RoleCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
 
-                    MessageEvent messageEvent = new MessageEvent("Role save confirmation", "Role " + selectedRole.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Role save confirmation", "Role " + selectedRole.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);

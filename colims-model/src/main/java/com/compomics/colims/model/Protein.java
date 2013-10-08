@@ -35,18 +35,18 @@ public class Protein extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
-    @Column(name = "accession")
+    @Column(name = "accession", nullable = false)
     private String accession;
     @Lob
     @Basic(optional = false)
-    @Column(name = "protein_sequence")
+    @Column(name = "protein_sequence", nullable = false)
     private String sequence;
-    @Basic(optional = false)
-    @Column(name = "database_type")
+    @Basic(optional = false)    
     @Enumerated(EnumType.STRING)
+    @Column(name = "database_type", nullable = false)
     private Header.DatabaseType databaseType;
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin;
+package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
@@ -117,7 +117,7 @@ public class PermissionCrudController implements Controllable {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(true);
                         userManagementDialog.getDeletePermissionButton().setEnabled(true);
 
-                        //check if the permission is found in the db.
+                        //check if the permission has an ID.
                         //If so, disable the name text field and change the save button label.
                         if (selectedPermission.getId() != null) {
                             userManagementDialog.getPermissionNameTextField().setEnabled(false);
@@ -126,7 +126,7 @@ public class PermissionCrudController implements Controllable {
                         } else {
                             userManagementDialog.getPermissionNameTextField().setEnabled(true);
                             userManagementDialog.getPermissionSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been saved to the database.");
+                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been persisted to the database.");
                         }
                     } else {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
@@ -187,7 +187,7 @@ public class PermissionCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
 
-                    MessageEvent messageEvent = new MessageEvent("Permission save confirmation", "Permission " + selectedPermission.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Permission save confirmation", "Permission " + selectedPermission.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);

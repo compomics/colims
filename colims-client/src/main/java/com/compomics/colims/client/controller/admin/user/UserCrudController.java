@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin;
+package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
@@ -167,7 +167,7 @@ public class UserCrudController implements Controllable {
                         //enable save button
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(true);
 
-                        //check if the user is found in the db.
+                        //check if the user is has an ID.
                         //If so, disable the name text field and change the save button label.
                         if (selectedUser.getId() != null) {
                             userService.fetchAuthenticationRelations(selectedUser);
@@ -178,7 +178,7 @@ public class UserCrudController implements Controllable {
                         } else {
                             userManagementDialog.getUserNameTextField().setEnabled(true);
                             userManagementDialog.getUserSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been saved to the database.");
+                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been persisted to the database.");
                         }
 
                         //populate dual list with groups                        
@@ -255,7 +255,7 @@ public class UserCrudController implements Controllable {
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
                     eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
-                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was saved successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);

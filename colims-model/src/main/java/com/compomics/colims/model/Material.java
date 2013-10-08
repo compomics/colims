@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -31,18 +32,26 @@ public class Material extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
-    @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id")
+    @Basic(optional = false)
+    @NotNull(message = "A material must have a species")
+    @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm species;
-    @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id")
+    @Basic(optional = false)
+    @NotNull(message = "A material must have a tissue")
+    @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm tissue;
-    @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id")
+    @Basic(optional = false)
+    @NotNull(message = "A material must have a cell type")
+    @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm cellType;
-    @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id")
+    @Basic(optional = false)
+    @NotNull(message = "A material must have a compartment")
+    @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm compartment;
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")

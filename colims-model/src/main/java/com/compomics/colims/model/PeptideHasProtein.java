@@ -24,7 +24,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
