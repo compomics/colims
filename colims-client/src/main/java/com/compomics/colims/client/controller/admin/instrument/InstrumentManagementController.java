@@ -97,7 +97,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
      */
     @Subscribe
     public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
-        if(instrumentManagementDialog.isVisible()){
+        if (instrumentManagementDialog.isVisible()) {
             instrumentManagementDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
         }
     }
@@ -183,7 +183,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                                     + "Hence, the instrument was not deleted.", JOptionPane.WARNING_MESSAGE));
                         } else {
                             instrumentBindingList.remove(instrumentManagementOverviewDialog.getInstrumentList().getSelectedIndex());
-                            instrumentManagementOverviewDialog.getInstrumentList().setSelectedIndex(instrumentBindingList.size() - 1);
+                            instrumentManagementOverviewDialog.getInstrumentList().getSelectionModel().clearSelection();
                         }
                     }
                 }
@@ -250,8 +250,7 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                             addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
                             instrumentManagementDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
-                    }
-                    else{
+                    } else {
                         instrumentManagementDialog.getCvTermDualList().clear();
                     }
                 }
@@ -324,11 +323,25 @@ public class InstrumentManagementController implements Controllable, OLSInputabl
                     MessageEvent messageEvent = new MessageEvent("Instrument persist confirmation", "Instrument " + selectedInstrument.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
-                    //clear selection in instrument list in overview dialog
-                    instrumentManagementOverviewDialog.getInstrumentList().clearSelection();
+                    //refresh selection in instrument list in management overview dialog
+                    int index = instrumentManagementOverviewDialog.getInstrumentList().getSelectedIndex();
+                    instrumentManagementOverviewDialog.getInstrumentList().getSelectionModel().clearSelection();
+                    instrumentManagementOverviewDialog.getInstrumentList().setSelectedIndex(index);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
                     eventBus.post(messageEvent);
+                }
+            }
+        });
+
+        instrumentManagementDialog.getTypeComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Instrument selectedInstrument = getSelectedInstrument();
+                if (selectedInstrument != null) {
+                    //set instrument type                    
+                    InstrumentType selectedInstrumentType = instrumentTypeBindingList.get(instrumentManagementDialog.getTypeComboBox().getSelectedIndex());
+                    selectedInstrument.setInstrumentType(selectedInstrumentType);
                 }
             }
         });
