@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -28,6 +29,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -39,6 +41,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -106,9 +109,7 @@ public class GroupCrudController implements Controllable {
             default:
                 break;
         }
-        if (!groupBindingList.isEmpty()) {
-            userManagementDialog.getGroupList().setSelectedIndex(0);
-        }
+        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
     }
 
     @Override
@@ -182,6 +183,7 @@ public class GroupCrudController implements Controllable {
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
                     } else {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
+                        clearGroupDetailFields();
                     }
                 }
             }
@@ -205,11 +207,27 @@ public class GroupCrudController implements Controllable {
                     //check if group is already has an id.
                     //If so, delete the group from the db.
                     if (groupToDelete.getId() != null) {
-                        groupService.delete(groupToDelete);
-                        eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
+                        try {
+                            groupService.delete(groupToDelete);
+                            eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
+
+                            groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
+                            userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the group can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(groupToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
+                    } else {
+                        groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
+                        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
                     }
-                    groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                    userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
                 }
             }
         });
@@ -251,7 +269,7 @@ public class GroupCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
 
-                    MessageEvent messageEvent = new MessageEvent("Group save confirmation", "Group " + selectedGroup.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Group persist confirmation", "Group " + selectedGroup.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -259,7 +277,7 @@ public class GroupCrudController implements Controllable {
                 }
             }
         });
-    }    
+    }
 
     /**
      * Check if a group with the given group name exists in the database.
@@ -286,5 +304,14 @@ public class GroupCrudController implements Controllable {
         int selectedGroupIndex = userManagementDialog.getGroupList().getSelectedIndex();
         Group selectedGroup = (selectedGroupIndex != -1) ? groupBindingList.get(selectedGroupIndex) : null;
         return selectedGroup;
+    }
+
+    /**
+     * Clear the group detail fields
+     */
+    private void clearGroupDetailFields() {
+        userManagementDialog.getGroupNameTextField().setText("");
+        userManagementDialog.getGroupDescriptionTextArea().setText("");
+        userManagementDialog.getRoleDualList().clear();
     }
 }

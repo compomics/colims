@@ -1,6 +1,8 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.event.CvTermChangeEvent;
+import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
 import com.compomics.colims.client.util.GuiUtils;
@@ -13,17 +15,19 @@ import com.google.common.eventbus.EventBus;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
 import org.apache.xml.xml_soap.MapItem;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
@@ -104,9 +108,9 @@ public class CvTermManagementController implements OLSInputable {
                                     cvTermManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
                                 }
                             }
-                        } else {
-                            clearCvTermDetailFields();
                         }
+                    } else {
+                        clearCvTermDetailFields();
                     }
                 }
             }
@@ -116,15 +120,6 @@ public class CvTermManagementController implements OLSInputable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showOlsDialog(true);
-            }
-        });
-
-        cvTermManagementDialog.getDeleteCvTermButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CvTerm selectedCvTerm = getSelectedCvTerm();
-                
-                cvTermService.delete(selectedCvTerm);
             }
         });
 
@@ -147,11 +142,47 @@ public class CvTermManagementController implements OLSInputable {
                     cvTermManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("Cv term save confirmation", "CV term " + selectedCvTerm.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("CV term persist confirmation", "CV term " + selectedCvTerm.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
+
+                    eventBus.post(new CvTermChangeEvent());
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
                     eventBus.post(messageEvent);
+                }
+            }
+        });
+
+        cvTermManagementDialog.getDeleteCvTermButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CvTerm cvTermToDelete = getSelectedCvTerm();
+                int selectedIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
+
+                //check if instrument type has an id.
+                //If so, try to delete the permission from the db.
+                if (cvTermToDelete.getId() != null) {
+                    try {
+                        cvTermService.delete(cvTermToDelete);
+
+                        cvTermWithoutTypeTableModel.removeCvTerm(selectedIndex);
+                        cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
+
+                        eventBus.post(new CvTermChangeEvent());
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the CV term can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(cvTermToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    cvTermWithoutTypeTableModel.removeCvTerm(selectedIndex);
+                    cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
                 }
             }
         });
@@ -160,6 +191,14 @@ public class CvTermManagementController implements OLSInputable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showOlsDialog(false);
+            }
+        });
+        
+        cvTermManagementDialog.getCloseButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cvTermManagementDialog.setVisible(false);
             }
         });
     }
@@ -173,12 +212,10 @@ public class CvTermManagementController implements OLSInputable {
     public void updateDialog(CvTermType cvTermType, List<CvTerm> cvTerms) {
         this.cvTermType = cvTermType;
 
-        //clear table model and detail field
-        cvTermWithoutTypeTableModel.setCvTerms(new ArrayList<CvTerm>());
-
-        clearCvTermDetailFields();
-
         cvTermWithoutTypeTableModel.setCvTerms(cvTerms);
+
+        //clear selection
+        cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
     }
 
     @Override
@@ -283,13 +320,9 @@ public class CvTermManagementController implements OLSInputable {
     }
 
     /**
-     * Clear the dialog; clear the detail fields and the selected row in the
-     * overview table.
-     *
+     * Clear the CV term details fields
      */
     private void clearCvTermDetailFields() {
-
-
         cvTermManagementDialog.getOntologyTextField().setText("");
         cvTermManagementDialog.getOntologyLabelTextField().setText("");
         cvTermManagementDialog.getAccessionTextField().setText("");

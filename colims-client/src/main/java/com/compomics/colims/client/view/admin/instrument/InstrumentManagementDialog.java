@@ -84,6 +84,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         editInstrumentCvTermsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("instrument management");
         setPreferredSize(new java.awt.Dimension(1100, 500));
 
         nameLabel.setText("name");

@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -28,6 +29,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -39,6 +41,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -106,9 +109,7 @@ public class RoleCrudController implements Controllable {
             default:
                 break;
         }
-        if (!roleBindingList.isEmpty()) {
-            userManagementDialog.getRoleList().setSelectedIndex(0);
-        }
+        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
     }
 
     @Override
@@ -182,6 +183,7 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
                     } else {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
+                        clearRoleDetailFields();
                     }
                 }
             }
@@ -205,11 +207,27 @@ public class RoleCrudController implements Controllable {
                     //check if role is already has an id.
                     //If so, delete the role from the db.
                     if (roleToDelete.getId() != null) {
-                        roleService.delete(roleToDelete);
-                        eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
+                        try {
+                            roleService.delete(roleToDelete);
+                            eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
+
+                            roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
+                            userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the role can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(roleToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
+                    } else {
+                        roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
+                        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
                     }
-                    roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                    userManagementDialog.getRoleList().setSelectedIndex(roleBindingList.size() - 1);
                 }
             }
         });
@@ -251,7 +269,7 @@ public class RoleCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
 
-                    MessageEvent messageEvent = new MessageEvent("Role save confirmation", "Role " + selectedRole.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Role persist confirmation", "Role " + selectedRole.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -259,7 +277,7 @@ public class RoleCrudController implements Controllable {
                 }
             }
         });
-    }    
+    }
 
     /**
      * Check if a role with the given role name exists in the database.
@@ -286,5 +304,14 @@ public class RoleCrudController implements Controllable {
         int selectedRoleIndex = userManagementDialog.getRoleList().getSelectedIndex();
         Role selectedRole = (selectedRoleIndex != -1) ? roleBindingList.get(selectedRoleIndex) : null;
         return selectedRole;
+    }
+
+    /**
+     * Clear the role detail fields
+     */
+    private void clearRoleDetailFields() {
+        userManagementDialog.getRoleNameTextField().setText("");
+        userManagementDialog.getRoleDescriptionTextArea().setText("");
+        userManagementDialog.getPermissionDualList().clear();
     }
 }

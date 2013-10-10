@@ -4,6 +4,7 @@ import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
@@ -26,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -37,6 +39,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -45,8 +48,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("userCrudController")
 public class UserCrudController implements Controllable {
+
     private static final Logger LOGGER = Logger.getLogger(MainController.class);
-    
     //model
     private ObservableList<User> userBindingList;
     private BindingGroup bindingGroup;
@@ -94,9 +97,7 @@ public class UserCrudController implements Controllable {
             default:
                 break;
         }
-        if (!userBindingList.isEmpty()) {
-            userManagementDialog.getUserList().setSelectedIndex(0);
-        }
+        userManagementDialog.getUserList().getSelectionModel().clearSelection();
     }
 
     @Override
@@ -185,6 +186,7 @@ public class UserCrudController implements Controllable {
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
+                        clearUserDetailFields();
                     }
                 }
             }
@@ -209,11 +211,27 @@ public class UserCrudController implements Controllable {
                     //check if the user is already has an id.
                     //If so, delete the user from the db.
                     if (userToDelete.getId() != null) {
-                        userService.delete(userToDelete);
-                        eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+                        try {
+                            userService.delete(userToDelete);
+                            eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+
+                            userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                            userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the user can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(userToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
+                    } else {
+                        userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                        userManagementDialog.getUserList().getSelectionModel().clearSelection();
                     }
-                    userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                    userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
                 }
             }
         });
@@ -255,7 +273,7 @@ public class UserCrudController implements Controllable {
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
                     eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
-                    MessageEvent messageEvent = new MessageEvent("User save confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("User persist confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -263,7 +281,7 @@ public class UserCrudController implements Controllable {
                 }
             }
         });
-    }    
+    }
 
     /**
      * Check if the CV term with the given user name exists in the database
@@ -290,5 +308,17 @@ public class UserCrudController implements Controllable {
         int selectedUserIndex = userManagementDialog.getUserList().getSelectedIndex();
         User selectedUser = (selectedUserIndex != -1) ? userBindingList.get(selectedUserIndex) : null;
         return selectedUser;
+    }
+
+    /**
+     * Clear the user detail fields
+     */
+    private void clearUserDetailFields() {
+        userManagementDialog.getUserNameTextField().setText("");
+        userManagementDialog.getFirstNameTextField().setText("");
+        userManagementDialog.getLastNameTextField().setText("");
+        userManagementDialog.getEmailTextField().setText("");
+        userManagementDialog.getPasswordTextField().setText("");
+        userManagementDialog.getGroupDualList().clear();
     }
 }

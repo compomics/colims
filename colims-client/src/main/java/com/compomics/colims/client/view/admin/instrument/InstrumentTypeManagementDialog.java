@@ -84,6 +84,7 @@ public class InstrumentTypeManagementDialog extends javax.swing.JDialog {
         closeInstrumentTypeManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("instrument type management");
 
         instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         instrumentTypeOverviewPanel.setOpaque(false);

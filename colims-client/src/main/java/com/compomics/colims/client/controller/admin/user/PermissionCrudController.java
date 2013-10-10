@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.PermissionChangeEvent;
@@ -19,6 +20,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -30,6 +32,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -130,6 +133,7 @@ public class PermissionCrudController implements Controllable {
                         }
                     } else {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
+                        clearPermissionDetailFields();
                     }
                 }
             }
@@ -153,11 +157,27 @@ public class PermissionCrudController implements Controllable {
                     //check if permission is already has an id.
                     //If so, delete the permission from the db.
                     if (permissionToDelete.getId() != null) {
-                        permissionService.delete(permissionToDelete);
-                        eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
+                        try {
+                            permissionService.delete(permissionToDelete);
+                            eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
+
+                            permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
+                            userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the permission can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(permissionToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
+                    } else {
+                        permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
+                        userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
                     }
-                    permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
-                    userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
                 }
             }
         });
@@ -187,7 +207,7 @@ public class PermissionCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
 
-                    MessageEvent messageEvent = new MessageEvent("Permission save confirmation", "Permission " + selectedPermission.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Permission persist confirmation", "Permission " + selectedPermission.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
@@ -195,7 +215,7 @@ public class PermissionCrudController implements Controllable {
                 }
             }
         });
-    }    
+    }
 
     /**
      * Check if a permission with the given permission name exists in the
@@ -223,5 +243,13 @@ public class PermissionCrudController implements Controllable {
         int seletedPermissionIndex = userManagementDialog.getPermissionList().getSelectedIndex();
         Permission selectedPermission = (seletedPermissionIndex != -1) ? permissionBindingList.get(seletedPermissionIndex) : null;
         return selectedPermission;
-    }    
+    }
+
+    /**
+     * Clear the permission detail fields
+     */
+    private void clearPermissionDetailFields() {
+        userManagementDialog.getPermissionNameTextField().setText("");
+        userManagementDialog.getPermissionDescriptionTextArea().setText("");
+    }
 }

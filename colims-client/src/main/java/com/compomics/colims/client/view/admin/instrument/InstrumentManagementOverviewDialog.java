@@ -76,6 +76,7 @@ public class InstrumentManagementOverviewDialog extends javax.swing.JDialog {
         closeInstrumentManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("instrument management overview");
 
         instrumentOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         instrumentOverviewPanel.setOpaque(false);

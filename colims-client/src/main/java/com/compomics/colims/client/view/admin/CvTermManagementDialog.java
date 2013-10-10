@@ -104,6 +104,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("CV term management");
 
         cvTermOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         cvTermOverviewPanel.setOpaque(false);

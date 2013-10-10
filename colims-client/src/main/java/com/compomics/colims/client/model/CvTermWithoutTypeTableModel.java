@@ -88,4 +88,14 @@ public class CvTermWithoutTypeTableModel extends AbstractTableModel {
         cvTerms.set(rowIndex, cvTerm);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
+    
+    /**
+     * Remove the CV term with the given row index from the model.
+     * 
+     * @param rowIndex 
+     */
+    public void removeCvTerm(int rowIndex){
+        cvTerms.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
 }

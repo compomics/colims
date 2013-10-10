@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.bean.AuthenticationBean;
+import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
@@ -48,6 +49,8 @@ public class MainController implements ActionListener {
     @Autowired
     private HomeController homeController;
     @Autowired
+    private CvTermManagementController cvTermManagementController;
+    @Autowired
     private InstrumentManagementController instrumentManagementController;
     //services
     @Autowired
@@ -93,6 +96,7 @@ public class MainController implements ActionListener {
         //init child controllers
         projectSetupController.init();
         homeController.init();
+        cvTermManagementController.init();
 
         //add panel components                        
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

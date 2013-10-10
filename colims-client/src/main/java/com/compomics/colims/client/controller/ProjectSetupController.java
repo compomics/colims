@@ -377,7 +377,7 @@ public class ProjectSetupController {
         protected void done() {
             try {
                 get();
-                MessageEvent messageEvent = new MessageEvent("Project save confirmation", "Project " + project.getTitle() + " was persisted successfully", JOptionPane.INFORMATION_MESSAGE);
+                MessageEvent messageEvent = new MessageEvent("Project persist confirmation", "Project " + project.getTitle() + " was persisted successfully", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
             } catch (InterruptedException | ExecutionException | CancellationException ex) {
                 LOGGER.error(ex.getMessage(), ex);

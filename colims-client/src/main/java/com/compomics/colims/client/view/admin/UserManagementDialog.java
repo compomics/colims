@@ -251,6 +251,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionDescriptionTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("user management");
         setModal(true);
         setResizable(false);
 
