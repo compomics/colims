@@ -46,18 +46,15 @@ public class Material extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm species;
-    @Basic(optional = false)
-    @NotNull(message = "A material must have a tissue")
+    @Basic(optional = true)    
     @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm tissue;
-    @Basic(optional = false)
-    @NotNull(message = "A material must have a cell type")
+    @Basic(optional = true)
     @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm cellType;
-    @Basic(optional = false)
-    @NotNull(message = "A material must have a compartment")
+    @Basic(optional = true)
     @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm compartment;

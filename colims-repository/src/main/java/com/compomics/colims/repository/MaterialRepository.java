@@ -13,8 +13,8 @@ public interface MaterialRepository extends GenericRepository<Material, Long> {
      * Find the material by the material name, returns null if no material
      * was found.
      *
-     * @param name the instrument name
-     * @return the found instrument
+     * @param name the material name
+     * @return the found material
      */
     Material findByName(String name);
 

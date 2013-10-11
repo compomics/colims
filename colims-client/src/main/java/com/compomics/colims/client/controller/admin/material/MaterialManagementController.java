@@ -396,7 +396,7 @@ public class MaterialManagementController implements Controllable {
     /**
      * Create a default material, with some default properties.
      *
-     * @return the default experiment
+     * @return the default material
      */
     private Material createDefaultMaterial() {
         Material defaultMaterial = new Material("default material name");
@@ -406,17 +406,17 @@ public class MaterialManagementController implements Controllable {
         if (!species.isEmpty()) {
             defaultMaterial.setSpecies(species.get(0));
         }
-        //find tissue
+        //find tissues
         List<MaterialCvTerm> tissues = cvTermService.findByCvTermByType(MaterialCvTerm.class, CvTermType.TISSUE);
         if (!tissues.isEmpty()) {
             defaultMaterial.setTissue(tissues.get(0));
         }
-        //find cell type
+        //find cell types
         List<MaterialCvTerm> cellTypes = cvTermService.findByCvTermByType(MaterialCvTerm.class, CvTermType.CELL_TYPE);
         if (!cellTypes.isEmpty()) {
             defaultMaterial.setCellType(cellTypes.get(0));
         }
-        //find compartment
+        //find compartments
         List<MaterialCvTerm> compartments = cvTermService.findByCvTermByType(MaterialCvTerm.class, CvTermType.COMPARTMENT);
         if (!compartments.isEmpty()) {
             defaultMaterial.setCompartment(compartments.get(0));

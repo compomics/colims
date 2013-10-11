@@ -1,8 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
-import java.util.List;
 
 /**
  *

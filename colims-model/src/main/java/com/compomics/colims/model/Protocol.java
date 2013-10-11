@@ -44,24 +44,20 @@ public class Protocol extends AbstractDatabaseEntity {
     @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
-    @Basic(optional = false)
-    @NotNull(message = "A protocol must have a reduction")
+    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm reduction;
-    @Basic(optional = false)
-    @NotNull(message = "A protocol must have an enzyme")
+    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm enzyme;
-    @Basic(optional = false)
-    @NotNull(message = "A protocol must have a cell based property")
+    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = false)
     private ProtocolCvTerm cellBased;
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();
-    @NotEmpty(message = "A protocol must have at least one chemical labelling")
     @ManyToMany
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {
@@ -77,6 +73,13 @@ public class Protocol extends AbstractDatabaseEntity {
         @JoinColumn(name = "l_other_cv_term_id", referencedColumnName = "id")})
     private List<ProtocolCvTerm> otherCvTerms = new ArrayList<>();
 
+    public Protocol() {
+    }
+
+    public Protocol(String name) {
+        this.name = name;
+    }    
+    
     public Long getId() {
         return id;
     }

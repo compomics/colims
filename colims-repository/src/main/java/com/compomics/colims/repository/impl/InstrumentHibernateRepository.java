@@ -4,9 +4,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.repository.InstrumentRepository;
-import java.util.List;
 
 /**
  *

@@ -569,7 +569,7 @@ public class InstrumentManagementController implements Controllable {
     /**
      * Create a default instrument, with some default properties.
      *
-     * @return the default experiment
+     * @return the default instrument
      */
     private Instrument createDefaultInstrument() {
         Instrument defaultInstrument = new Instrument("default instrument name");

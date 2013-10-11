@@ -5,6 +5,7 @@ import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.material.MaterialManagementController;
+import com.compomics.colims.client.controller.admin.protocol.ProtocolManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
@@ -55,6 +56,8 @@ public class MainController implements ActionListener {
     private InstrumentManagementController instrumentManagementController;
     @Autowired
     private MaterialManagementController materialManagementController;
+    @Autowired
+    private ProtocolManagementController protocolManagementController;
     //services
     @Autowired
     private UserService userService;
@@ -156,6 +159,9 @@ public class MainController implements ActionListener {
         } else if (menuItemLabel.equals(mainFrame.getMaterialManagementMenuItem().getText())) {
             materialManagementController.getMaterialManagementOverviewDialog().setVisible(true);
         }
+        else if (menuItemLabel.equals(mainFrame.getProtocolManagementMenuItem().getText())) {
+            protocolManagementController.getProtocolManagementOverviewDialog().setVisible(true);
+        }
     }
 
     /**
@@ -240,10 +246,12 @@ public class MainController implements ActionListener {
         userManagementController.init();
         instrumentManagementController.init();
         materialManagementController.init();
+        protocolManagementController.init();
 
         //add action listeners                
         mainFrame.getUserManagementMenuItem().addActionListener(this);
         mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
         mainFrame.getMaterialManagementMenuItem().addActionListener(this);
+        mainFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
 }

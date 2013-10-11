@@ -52,6 +52,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     public JMenuItem getMaterialManagementMenuItem() {
         return materialManagementMenuItem;
+    }     
+
+    public JMenuItem getProtocolManagementMenuItem() {
+        return protocolManagementMenuItem;
     }        
       
     /**
@@ -74,6 +78,7 @@ public class MainFrame extends javax.swing.JFrame {
         userManagementMenuItem = new javax.swing.JMenuItem();
         instrumentManagementMenuItem = new javax.swing.JMenuItem();
         materialManagementMenuItem = new javax.swing.JMenuItem();
+        protocolManagementMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -108,6 +113,9 @@ public class MainFrame extends javax.swing.JFrame {
         materialManagementMenuItem.setText("materials");
         managementMenu.add(materialManagementMenuItem);
 
+        protocolManagementMenuItem.setText("protocols");
+        managementMenu.add(protocolManagementMenuItem);
+
         adminMenu.add(managementMenu);
 
         menuBar.add(adminMenu);
@@ -141,6 +149,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem materialManagementMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel projectSetupParentPanel;
+    private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables

@@ -41,6 +41,11 @@
                     <Property name="text" type="java.lang.String" value="materials"/>
                   </Properties>
                 </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="protocolManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="protocols"/>
+                  </Properties>
+                </MenuItem>
               </SubComponents>
             </Menu>
           </SubComponents>
