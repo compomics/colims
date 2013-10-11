@@ -4,6 +4,7 @@ import com.compomics.colims.client.controller.admin.user.UserManagementControlle
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
+import com.compomics.colims.client.controller.admin.material.MaterialManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
@@ -41,17 +42,19 @@ public class MainController implements ActionListener {
     //views
     private MainFrame mainFrame;
     private LoginDialog loginDialog;
-    //child controllers
-    @Autowired
-    private UserManagementController userManagementController;
+    //child controllers    
     @Autowired
     private ProjectSetupController projectSetupController;
     @Autowired
     private HomeController homeController;
     @Autowired
+    private UserManagementController userManagementController;
+    @Autowired
     private CvTermManagementController cvTermManagementController;
     @Autowired
     private InstrumentManagementController instrumentManagementController;
+    @Autowired
+    private MaterialManagementController materialManagementController;
     //services
     @Autowired
     private UserService userService;
@@ -134,7 +137,7 @@ public class MainController implements ActionListener {
 //        loginDialog.setVisible(true);
         User user = userService.findAll().get(0);
         authenticationBean.setCurrentUser(user);
-            
+
 
         //disable login dialog while developping
         initAdminSection();
@@ -150,6 +153,8 @@ public class MainController implements ActionListener {
             userManagementController.getUserManagementDialog().setVisible(true);
         } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.getInstrumentManagementOverviewDialog().setVisible(true);
+        } else if (menuItemLabel.equals(mainFrame.getMaterialManagementMenuItem().getText())) {
+            materialManagementController.getMaterialManagementOverviewDialog().setVisible(true);
         }
     }
 
@@ -234,9 +239,11 @@ public class MainController implements ActionListener {
         //init admin controllers
         userManagementController.init();
         instrumentManagementController.init();
+        materialManagementController.init();
 
         //add action listeners                
         mainFrame.getUserManagementMenuItem().addActionListener(this);
         mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
+        mainFrame.getMaterialManagementMenuItem().addActionListener(this);
     }
 }

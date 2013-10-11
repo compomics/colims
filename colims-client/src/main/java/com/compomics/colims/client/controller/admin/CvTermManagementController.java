@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -104,7 +103,7 @@ public class CvTermManagementController implements OLSInputable {
                         if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
                             for (MapItem mapItem : termMetadata.getItem()) {
                                 //look for definition item
-                                if (mapItem.getKey().equals("definition")) {
+                                if (mapItem.getKey().equals("definition") && mapItem.getValue() != null) {
                                     cvTermManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
                                 }
                             }
@@ -219,11 +218,11 @@ public class CvTermManagementController implements OLSInputable {
     }
 
     @Override
-    public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
+    public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {        
         //check wether a CV term has to be added or updated
-        if (field.equals(ADD_CV_TERM)) {
+        if (field.equals(ADD_CV_TERM)) {            
             CvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
-
+            
             //add CV term to the table model
             cvTermWithoutTypeTableModel.addCvTerm(cvTerm);
 
@@ -242,7 +241,6 @@ public class CvTermManagementController implements OLSInputable {
             cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
             cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(selectedIndex, selectedIndex);
         }
-
     }
 
     @Override
@@ -323,10 +321,11 @@ public class CvTermManagementController implements OLSInputable {
      * Clear the CV term details fields
      */
     private void clearCvTermDetailFields() {
+        cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
         cvTermManagementDialog.getOntologyTextField().setText("");
         cvTermManagementDialog.getOntologyLabelTextField().setText("");
         cvTermManagementDialog.getAccessionTextField().setText("");
         cvTermManagementDialog.getNameTextField().setText("");
-        cvTermManagementDialog.getDefinitionTextArea().setText("");
+        cvTermManagementDialog.getDefinitionTextArea().setText("");                
     }
 }

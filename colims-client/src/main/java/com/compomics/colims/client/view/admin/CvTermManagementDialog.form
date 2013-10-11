@@ -125,6 +125,7 @@
             <Component class="javax.swing.JButton" name="addCvTermButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="add..."/>
+                <Property name="toolTipText" type="java.lang.String" value="add a CV term with the OLS dialog"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>
@@ -371,6 +372,7 @@
             <Component class="javax.swing.JButton" name="EditUsingOlsCvTermButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
+                <Property name="toolTipText" type="java.lang.String" value="add a CV term with the OLS dialog"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>

@@ -1,12 +1,12 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.Material;
 
 /**
  *
  * @author niels
  */
-public interface InstrumentService extends GenericService<Instrument, Long> {
+public interface MaterialService extends GenericService<Material, Long> {
 
     /**
      * Find the instrument by name, return null if no instrument was found.
@@ -14,6 +14,6 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @param name the instrument by name
      * @return the found instrument
      */
-    Instrument findByName(String name);    
-    
+    Material findByName(String name);
+
 }

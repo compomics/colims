@@ -48,7 +48,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     public JMenuItem getInstrumentManagementMenuItem() {
         return instrumentManagementMenuItem;
-    }            
+    }   
+
+    public JMenuItem getMaterialManagementMenuItem() {
+        return materialManagementMenuItem;
+    }        
       
     /**
      * This method is called from within the constructor to initialize the form.
@@ -66,8 +70,10 @@ public class MainFrame extends javax.swing.JFrame {
         viewMenu = new javax.swing.JMenu();
         homeMenuItem = new javax.swing.JMenuItem();
         adminMenu = new javax.swing.JMenu();
+        managementMenu = new javax.swing.JMenu();
         userManagementMenuItem = new javax.swing.JMenuItem();
         instrumentManagementMenuItem = new javax.swing.JMenuItem();
+        materialManagementMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,11 +97,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         adminMenu.setText("Admin");
 
-        userManagementMenuItem.setText("user management");
-        adminMenu.add(userManagementMenuItem);
+        managementMenu.setText("management");
 
-        instrumentManagementMenuItem.setText("instrument management");
-        adminMenu.add(instrumentManagementMenuItem);
+        userManagementMenuItem.setText("users");
+        managementMenu.add(userManagementMenuItem);
+
+        instrumentManagementMenuItem.setText("instruments");
+        managementMenu.add(instrumentManagementMenuItem);
+
+        materialManagementMenuItem.setText("materials");
+        managementMenu.add(materialManagementMenuItem);
+
+        adminMenu.add(managementMenu);
 
         menuBar.add(adminMenu);
 
@@ -124,6 +137,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel homeParentPanel;
     private javax.swing.JMenuItem instrumentManagementMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;
+    private javax.swing.JMenu managementMenu;
+    private javax.swing.JMenuItem materialManagementMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel projectSetupParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;

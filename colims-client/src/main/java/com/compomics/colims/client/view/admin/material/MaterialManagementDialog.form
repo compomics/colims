@@ -26,7 +26,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <EmptySpace min="0" pref="631" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+              <Component id="materialCrudPanel" alignment="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -34,13 +34,13 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <EmptySpace min="0" pref="538" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+              <Component id="materialCrudPanel" alignment="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="materialCrudPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -48,14 +48,14 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="instrumentOverviewPanel" pref="611" max="32767" attributes="0"/>
-                      <Component id="instrumentDetailPanel" min="-2" pref="611" max="-2" attributes="0"/>
+                      <Component id="materialOverviewPanel" pref="611" max="32767" attributes="0"/>
+                      <Component id="materialDetailPanel" min="-2" pref="611" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="closeInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeMaterialManagementButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -64,18 +64,18 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentOverviewPanel" pref="182" max="32767" attributes="0"/>
+                  <Component id="materialOverviewPanel" pref="182" max="32767" attributes="0"/>
                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentDetailPanel" min="-2" pref="285" max="-2" attributes="0"/>
+                  <Component id="materialDetailPanel" min="-2" pref="285" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="closeInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeMaterialManagementButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="instrumentOverviewPanel">
+        <Container class="javax.swing.JPanel" name="materialOverviewPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -93,11 +93,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="instrumentListScrollPane" min="-2" pref="279" max="-2" attributes="0"/>
+                      <Component id="materialListScrollPane" min="-2" pref="279" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="addInstrumentButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="deleteInstrumentButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="addMaterialButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteMaterialButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -110,11 +110,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="addInstrumentButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="addMaterialButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="deleteInstrumentButton" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="deleteMaterialButton" min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="instrumentListScrollPane" alignment="0" pref="137" max="32767" attributes="0"/>
+                          <Component id="materialListScrollPane" alignment="0" pref="137" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -122,14 +122,14 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="instrumentListScrollPane">
+            <Container class="javax.swing.JScrollPane" name="materialListScrollPane">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JList" name="instrumentList">
+                <Component class="javax.swing.JList" name="materialList">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
@@ -138,7 +138,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="addInstrumentButton">
+            <Component class="javax.swing.JButton" name="addMaterialButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="add"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -152,7 +152,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="deleteInstrumentButton">
+            <Component class="javax.swing.JButton" name="deleteMaterialButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -168,7 +168,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="instrumentDetailPanel">
+        <Container class="javax.swing.JPanel" name="materialDetailPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -187,14 +187,14 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="instrumentStateInfoLabel" max="32767" attributes="0"/>
+                          <Component id="materialStateInfoLabel" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <EmptySpace min="-2" pref="501" max="-2" attributes="0"/>
-                                      <Component id="editInstrumentButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="materialEditButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="instrumentDetailTableScrollPane" alignment="0" min="-2" pref="581" max="-2" attributes="0"/>
+                                  <Component id="materialDetailTableScrollPane" alignment="0" min="-2" pref="581" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -206,25 +206,25 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="instrumentStateInfoLabel" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="materialStateInfoLabel" min="-2" pref="20" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="instrumentDetailTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
+                      <Component id="materialDetailTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="editInstrumentButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="materialEditButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="instrumentDetailTableScrollPane">
+            <Container class="javax.swing.JScrollPane" name="materialDetailTableScrollPane">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="instrumentDetailTable">
+                <Component class="javax.swing.JTable" name="materialDetailTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -238,15 +238,16 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="editInstrumentButton">
+            <Component class="javax.swing.JButton" name="materialEditButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
+                <Property name="toolTipText" type="java.lang.String" value="save or update the selected material"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="instrumentStateInfoLabel">
+            <Component class="javax.swing.JLabel" name="materialStateInfoLabel">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="11" style="1"/>
@@ -258,7 +259,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="closeInstrumentManagementButton">
+        <Component class="javax.swing.JButton" name="closeMaterialManagementButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="close"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

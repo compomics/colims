@@ -61,25 +61,6 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Override
     public void saveOrUpdate(final Instrument entity) {
         instrumentRepository.saveOrUpdate(entity);
-    }
-    
-    @Override
-    public boolean checkUsageBeforeDeletion(final Instrument instrument) {
-        boolean deleted = false;
-
-        //attach the instrument to the session
-        instrumentRepository.lock(instrument, LockOptions.NONE);
-        //fetch the analytical runs
-        if (!Hibernate.isInitialized(instrument.getAnalyticalRuns())) {
-            Hibernate.initialize(instrument.getAnalyticalRuns());
-            if (instrument.getAnalyticalRuns().isEmpty()) {
-                //delete the instrument
-                delete(instrument);
-                deleted = true;
-            }
-        }
-        
-        return deleted;
-    }
+    }   
     
 }

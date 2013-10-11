@@ -21,16 +21,28 @@
             <Property name="text" type="java.lang.String" value="Admin"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="userManagementMenuItem">
+            <Menu class="javax.swing.JMenu" name="managementMenu">
               <Properties>
-                <Property name="text" type="java.lang.String" value="user management"/>
+                <Property name="text" type="java.lang.String" value="management"/>
               </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="instrument management"/>
-              </Properties>
-            </MenuItem>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="userManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="users"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="instruments"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="materialManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="materials"/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">

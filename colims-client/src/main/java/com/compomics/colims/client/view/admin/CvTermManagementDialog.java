@@ -111,6 +111,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         cvTermOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
         addCvTermButton.setText("add...");
+        addCvTermButton.setToolTipText("add a CV term with the OLS dialog");
         addCvTermButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addCvTermButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addCvTermButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -202,6 +203,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(definitionTextArea);
 
         EditUsingOlsCvTermButton.setText("edit...");
+        EditUsingOlsCvTermButton.setToolTipText("add a CV term with the OLS dialog");
         EditUsingOlsCvTermButton.setMaximumSize(new java.awt.Dimension(80, 25));
         EditUsingOlsCvTermButton.setMinimumSize(new java.awt.Dimension(80, 25));
         EditUsingOlsCvTermButton.setPreferredSize(new java.awt.Dimension(80, 25));

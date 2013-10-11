@@ -52,7 +52,7 @@
               <Component id="instrumentTypeDetailPanel" alignment="0" pref="411" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="closeInstrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -64,7 +64,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="instrumentTypeDetailPanel" min="-2" pref="213" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="closeInstrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -292,7 +292,7 @@
             </Container>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="closeInstrumentTypeManagementButton">
+        <Component class="javax.swing.JButton" name="closeInstrumentTypeCrudButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="close"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
