@@ -55,20 +55,7 @@ public class PermissionCrudController implements Controllable {
     private EventBus eventBus;
     //services
     @Autowired
-    private PermissionService permissionService;
-
-    /**
-     * Listen to a RoleChangeEvent and update the permissions if necessary.
-     *
-     * @param roleChangeEvent the RoleChangeEvent
-     */
-    @Subscribe
-    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
-        if (roleChangeEvent.areChildrenAffected()) {
-            permissionBindingList.clear();
-            permissionBindingList.addAll(permissionService.findAll());
-        }
-    }
+    private PermissionService permissionService;    
 
     @Override
     public void init() {
@@ -215,6 +202,25 @@ public class PermissionCrudController implements Controllable {
                 }
             }
         });
+    }
+    
+    @Override
+    public void showView() {
+        //clear selection
+        userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
+    } 
+    
+    /**
+     * Listen to a RoleChangeEvent and update the permissions if necessary.
+     *
+     * @param roleChangeEvent the RoleChangeEvent
+     */
+    @Subscribe
+    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+        if (roleChangeEvent.areChildrenAffected()) {
+            permissionBindingList.clear();
+            permissionBindingList.addAll(permissionService.findAll());
+        }
     }
 
     /**

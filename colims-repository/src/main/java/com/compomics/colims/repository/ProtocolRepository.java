@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Protocol;
+import java.util.List;
 
 /**
  *
@@ -16,5 +17,12 @@ public interface ProtocolRepository extends GenericRepository<Protocol, Long> {
      * @return the found protocol
      */
     Protocol findByName(String name);
+    
+    /**
+     * Find all protocols ordered by name.
+     * 
+     * @return the ordered list of protocols
+     */
+    List<Protocol> findAllOrderedByName();
 
 }

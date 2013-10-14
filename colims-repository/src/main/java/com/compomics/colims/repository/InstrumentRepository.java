@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Instrument;
+import java.util.List;
 
 /**
  *
@@ -16,5 +17,12 @@ public interface InstrumentRepository extends GenericRepository<Instrument, Long
      * @return the found instrument
      */
     Instrument findByName(String name);
+    
+    /**
+     * Find all instruments ordered by name.
+     * 
+     * @return the ordered list of instruments
+     */
+    List<Instrument> findAllOrderedByName();
 
 }

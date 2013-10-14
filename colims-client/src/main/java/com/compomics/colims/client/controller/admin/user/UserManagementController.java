@@ -51,4 +51,14 @@ public class UserManagementController implements Controllable {
         roleCrudController.init();
         permissionCrudController.init();
     }
+    
+    @Override
+    public void showView() {
+        userCrudController.showView();
+        groupCrudController.showView();
+        roleCrudController.showView();
+        permissionCrudController.showView();
+        
+        userManagementDialog.setVisible(true);
+    } 
 }

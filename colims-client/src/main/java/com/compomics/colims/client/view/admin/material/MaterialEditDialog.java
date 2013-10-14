@@ -71,7 +71,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("instrument management");
+        setTitle("material management");
 
         closeMaterialEditButton.setText("close");
         closeMaterialEditButton.setMaximumSize(new java.awt.Dimension(80, 25));

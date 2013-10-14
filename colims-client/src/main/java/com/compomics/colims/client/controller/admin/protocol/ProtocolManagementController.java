@@ -79,19 +79,7 @@ public class ProtocolManagementController implements Controllable {
 
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;
-    }
-
-    /**
-     * Listen to a CV term change event posted by the
-     * CvTermManagementController. If the ProtocolManagementDialog is visible,
-     * clear the selection in the CV term summary list.
-     */
-    @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
-        if (protocolEditDialog.isVisible()) {
-            protocolEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
-        }
-    }
+    }    
 
     @Override
     public void init() {
@@ -106,6 +94,26 @@ public class ProtocolManagementController implements Controllable {
         initProtocolEditDialog();
 
         bindingGroup.bind();
+    }
+    
+    @Override
+    public void showView() {
+        //clear selection
+        protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
+        
+        protocolManagementDialog.setVisible(true);        
+    } 
+    
+    /**
+     * Listen to a CV term change event posted by the
+     * CvTermManagementController. If the ProtocolManagementDialog is visible,
+     * clear the selection in the CV term summary list.
+     */
+    @Subscribe
+    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+        if (protocolEditDialog.isVisible()) {
+            protocolEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
+        }
     }
 
     private void initProtocolManagementDialog() {
@@ -325,7 +333,6 @@ public class ProtocolManagementController implements Controllable {
                     } else {
                         protocolService.save(selectedProtocol);
                     }
-                    protocolEditDialog.getNameTextField().setEnabled(false);
                     protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
 
                     MessageEvent messageEvent = new MessageEvent("Protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);

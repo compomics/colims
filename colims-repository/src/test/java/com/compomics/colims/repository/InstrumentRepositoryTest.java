@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.model.enums.CvTermType;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.junit.Before;
 
 /**
@@ -50,6 +53,23 @@ public class InstrumentRepositoryTest {
     }
 
     @Test
+    public void testFindAllOrderedByName() {
+        List<Instrument> instruments = instrumentRepository.findAllOrderedByName();
+        
+        Assert.assertNotNull(instruments);
+        Assert.assertTrue(!instruments.isEmpty());
+        
+        //check if the list is sorted by instrument name
+        boolean sorted = true;
+        for (int i = 1; i < instruments.size(); i++) {
+            if (instruments.get(i - 1).getName().compareTo(instruments.get(i).getName()) > 0) {
+                sorted = false;
+            }
+        }
+        Assert.assertTrue(sorted);        
+    }
+
+    @Test
     public void testInstrumentCvTerms() {
         //source cv term
         Assert.assertNotNull(instrument.getSource());
@@ -80,6 +100,6 @@ public class InstrumentRepositoryTest {
         //check if the creation date is the same and the modification has been updated
         Assert.assertEquals(creationDate, instrument.getCreationdate());
         //@ToDo check why the date doesn't change, possible because the transaction has not been flushed yet.
-        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));        
+        Assert.assertFalse(modificationDate.equals(instrument.getModificationdate()));
     }
 }

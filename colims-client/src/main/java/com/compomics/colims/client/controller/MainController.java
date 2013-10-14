@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("mainController")
-public class MainController implements ActionListener {
+public class MainController implements Controllable, ActionListener {
 
     private static final Logger LOGGER = Logger.getLogger(MainController.class);
     //model
@@ -144,6 +144,13 @@ public class MainController implements ActionListener {
 
         //disable login dialog while developping
         initAdminSection();
+
+        //@todo move this call to showview
+        showView();
+    }
+
+    @Override
+    public void showView() {
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
@@ -153,14 +160,13 @@ public class MainController implements ActionListener {
         String menuItemLabel = e.getActionCommand();
 
         if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
-            userManagementController.getUserManagementDialog().setVisible(true);
+            userManagementController.showView();
         } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
-            instrumentManagementController.getInstrumentManagementOverviewDialog().setVisible(true);
+            instrumentManagementController.showView();
         } else if (menuItemLabel.equals(mainFrame.getMaterialManagementMenuItem().getText())) {
-            materialManagementController.getMaterialManagementOverviewDialog().setVisible(true);
-        }
-        else if (menuItemLabel.equals(mainFrame.getProtocolManagementMenuItem().getText())) {
-            protocolManagementController.getProtocolManagementOverviewDialog().setVisible(true);
+            materialManagementController.showView();
+        } else if (menuItemLabel.equals(mainFrame.getProtocolManagementMenuItem().getText())) {
+            protocolManagementController.showView();
         }
     }
 

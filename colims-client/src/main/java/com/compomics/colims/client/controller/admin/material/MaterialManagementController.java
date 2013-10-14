@@ -78,19 +78,7 @@ public class MaterialManagementController implements Controllable {
 
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
-    }
-
-    /**
-     * Listen to a CV term change event posted by the
-     * CvTermManagementController. If the MaterialManagementDialog is visible,
-     * clear the selection in the CV term summary list.
-     */
-    @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
-        if (materialEditDialog.isVisible()) {
-            materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
-        }
-    }
+    }    
 
     @Override
     public void init() {
@@ -105,6 +93,26 @@ public class MaterialManagementController implements Controllable {
         initMaterialEditDialog();
 
         bindingGroup.bind();
+    }
+    
+    @Override
+    public void showView() {
+        //clear selection
+        materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
+        
+        materialManagementDialog.setVisible(true);        
+    } 
+    
+    /**
+     * Listen to a CV term change event posted by the
+     * CvTermManagementController. If the MaterialManagementDialog is visible,
+     * clear the selection in the CV term summary list.
+     */
+    @Subscribe
+    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+        if (materialEditDialog.isVisible()) {
+            materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
+        }
     }
 
     private void initMaterialManagementDialog() {
@@ -322,7 +330,6 @@ public class MaterialManagementController implements Controllable {
                     } else {
                         materialService.save(selectedMaterial);
                     }
-                    materialEditDialog.getNameTextField().setEnabled(false);
                     materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
 
                     MessageEvent messageEvent = new MessageEvent("Material persist confirmation", "Material " + selectedMaterial.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);

@@ -36,7 +36,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<Permission> findAll() {
-        return permissionRepository.findAll();
+        return permissionRepository.findAllOrderedByName();
     }
 
     @Override

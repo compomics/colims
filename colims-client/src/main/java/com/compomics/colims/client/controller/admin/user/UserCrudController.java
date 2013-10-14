@@ -5,6 +5,9 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
+import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.GroupChangeEvent;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.event.UserChangeEvent;
@@ -68,37 +71,7 @@ public class UserCrudController implements Controllable {
     @Autowired
     private UserService userService;
     @Autowired
-    private GroupService groupService;
-
-    /**
-     * Listen to a GroupChangeEvent and update the available groups in the
-     * DualList.
-     *
-     * @param groupChangeEvent the GroupEvent
-     */
-    @Subscribe
-    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
-        switch (groupChangeEvent.getType()) {
-            case CREATED:
-            case UPDATED:
-                int index = availableGroups.indexOf(groupChangeEvent.getGroup());
-                if (index != -1) {
-                    availableGroups.set(index, groupChangeEvent.getGroup());
-                } else {
-                    availableGroups.add(groupChangeEvent.getGroup());
-                }
-                break;
-            case DELETED:
-                availableGroups.remove(groupChangeEvent.getGroup());
-                //update the user binding list
-                userBindingList.clear();
-                userBindingList.addAll(userService.findAll());
-                break;
-            default:
-                break;
-        }
-        userManagementDialog.getUserList().getSelectionModel().clearSelection();
-    }
+    private GroupService groupService;    
 
     @Override
     public void init() {
@@ -281,6 +254,42 @@ public class UserCrudController implements Controllable {
                 }
             }
         });
+    }
+    
+    @Override
+    public void showView() {
+        //clear selection
+        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+    } 
+    
+    /**
+     * Listen to a GroupChangeEvent and update the available groups in the
+     * DualList.
+     *
+     * @param groupChangeEvent the GroupEvent
+     */
+    @Subscribe
+    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+        switch (groupChangeEvent.getType()) {
+            case CREATED:
+            case UPDATED:
+                int index = availableGroups.indexOf(groupChangeEvent.getGroup());
+                if (index != -1) {
+                    availableGroups.set(index, groupChangeEvent.getGroup());
+                } else {
+                    availableGroups.add(groupChangeEvent.getGroup());
+                }
+                break;
+            case DELETED:
+                availableGroups.remove(groupChangeEvent.getGroup());
+                //update the user binding list
+                userBindingList.clear();
+                userBindingList.addAll(userService.findAll());
+                break;
+            default:
+                break;
+        }
+        userManagementDialog.getUserList().getSelectionModel().clearSelection();
     }
 
     /**

@@ -71,7 +71,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("instrument management");
+        setTitle("protocol management");
 
         closeProtocolEditButton.setText("close");
         closeProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));

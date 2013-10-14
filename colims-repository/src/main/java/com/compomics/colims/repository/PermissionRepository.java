@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Permission;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,12 @@ public interface PermissionRepository extends GenericRepository<Permission, Long
      * @return the found permission
      */
     Permission findByName(String name);
+    
+    /**
+     * Find all permissions ordered by name.
+     * 
+     * @return the ordered list of permissions
+     */
+    List<Permission> findAllOrderedByName();
     
 }

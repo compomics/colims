@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("homeController")
-public class HomeController {
+public class HomeController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(HomeController.class);
     //model
@@ -194,6 +194,11 @@ public class HomeController {
             }
         });
     }
+
+    @Override
+    public void showView() {
+        //do nothing
+    }        
 
     private void addSpectrumPanel(SpectrumPanel spectrumPanel) {
         //remove spectrum panel if already present

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.repository.ProtocolRepository;
+import java.util.List;
+import org.hibernate.criterion.Order;
 
 /**
  *
@@ -17,5 +19,10 @@ public class ProtocolHibernateRepository extends GenericHibernateRepository<Prot
     public Protocol findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }    
+
+    @Override
+    public List<Protocol> findAllOrderedByName() {
+        return createCriteria().addOrder(Order.asc("name")).list();
+    }
     
 }

@@ -31,7 +31,7 @@ public class InstrumentServiceImpl implements InstrumentService {
     
     @Override
     public List<Instrument> findAll() {
-        return instrumentRepository.findAll();
+        return instrumentRepository.findAllOrderedByName();
     }
     
     @Override

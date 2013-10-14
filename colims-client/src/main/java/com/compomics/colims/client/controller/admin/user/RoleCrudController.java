@@ -69,49 +69,6 @@ public class RoleCrudController implements Controllable {
     @Autowired
     private PermissionService permissionService;
 
-    /**
-     * Listen to a GroupChangeEvent and update the roles if necessary.
-     *
-     * @param groupChangeEvent the GroupChangeEvent
-     */
-    @Subscribe
-    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
-        if (groupChangeEvent.areChildrenAffected()) {
-            roleBindingList.clear();
-            roleBindingList.addAll(roleService.findAll());
-        }
-    }
-
-    /**
-     * Listen to a PermissionChangeEvent and update the available permissions in
-     * the DualList.
-     *
-     * @param permissionChangeEvent the PermissionChangeEvent
-     */
-    @Subscribe
-    public void onPermissionChangeEvent(PermissionChangeEvent permissionChangeEvent) {
-        switch (permissionChangeEvent.getType()) {
-            case CREATED:
-            case UPDATED:
-                int index = availablePermissions.indexOf(permissionChangeEvent.getPermission());
-                if (index != -1) {
-                    availablePermissions.set(index, permissionChangeEvent.getPermission());
-                } else {
-                    availablePermissions.add(permissionChangeEvent.getPermission());
-                }
-                break;
-            case DELETED:
-                availablePermissions.remove(permissionChangeEvent.getPermission());
-                //update the role binding list
-                roleBindingList.clear();
-                roleBindingList.addAll(roleService.findAll());
-                break;
-            default:
-                break;
-        }
-        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
-    }
-
     @Override
     public void init() {
         //get view
@@ -277,6 +234,55 @@ public class RoleCrudController implements Controllable {
                 }
             }
         });
+    }
+
+    @Override
+    public void showView() {
+        //clear selection
+        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+    }
+
+    /**
+     * Listen to a GroupChangeEvent and update the roles if necessary.
+     *
+     * @param groupChangeEvent the GroupChangeEvent
+     */
+    @Subscribe
+    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+        if (groupChangeEvent.areChildrenAffected()) {
+            roleBindingList.clear();
+            roleBindingList.addAll(roleService.findAll());
+        }
+    }
+
+    /**
+     * Listen to a PermissionChangeEvent and update the available permissions in
+     * the DualList.
+     *
+     * @param permissionChangeEvent the PermissionChangeEvent
+     */
+    @Subscribe
+    public void onPermissionChangeEvent(PermissionChangeEvent permissionChangeEvent) {
+        switch (permissionChangeEvent.getType()) {
+            case CREATED:
+            case UPDATED:
+                int index = availablePermissions.indexOf(permissionChangeEvent.getPermission());
+                if (index != -1) {
+                    availablePermissions.set(index, permissionChangeEvent.getPermission());
+                } else {
+                    availablePermissions.add(permissionChangeEvent.getPermission());
+                }
+                break;
+            case DELETED:
+                availablePermissions.remove(permissionChangeEvent.getPermission());
+                //update the role binding list
+                roleBindingList.clear();
+                roleBindingList.addAll(roleService.findAll());
+                break;
+            default:
+                break;
+        }
+        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
     }
 
     /**

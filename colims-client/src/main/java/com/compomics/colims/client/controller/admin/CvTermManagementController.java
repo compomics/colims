@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
@@ -35,7 +36,7 @@ import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
  * @author Niels Hulstaert
  */
 @Component("cvTermManagementController")
-public class CvTermManagementController implements OLSInputable {
+public class CvTermManagementController implements Controllable, OLSInputable {
 
     private static final String ADD_CV_TERM = "add";
     private static final String UPDATE_CV_TERM = "update";
@@ -62,6 +63,7 @@ public class CvTermManagementController implements OLSInputable {
         return cvTermManagementDialog;
     }
 
+    @Override
     public void init() {
         //get view
         cvTermManagementDialog = new CvTermManagementDialog(mainController.getMainFrame(), true);
@@ -201,6 +203,14 @@ public class CvTermManagementController implements OLSInputable {
             }
         });
     }
+    
+    @Override
+    public void showView() {
+        //clear selection
+        cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
+        
+        cvTermManagementDialog.setVisible(true);
+    }        
 
     /**
      * Update the CV term list and set the current cvTermType.
@@ -328,4 +338,5 @@ public class CvTermManagementController implements OLSInputable {
         cvTermManagementDialog.getNameTextField().setText("");
         cvTermManagementDialog.getDefinitionTextArea().setText("");                
     }
+    
 }

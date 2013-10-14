@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Role;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,12 @@ public interface RoleRepository extends GenericRepository<Role, Long> {
      * @return the found role
      */
     Role findByName(String name);
+    
+    /**
+     * Find all roles ordered by name.
+     * 
+     * @return the ordered list of roles
+     */
+    List<Role> findAllOrderedByName();
     
 }

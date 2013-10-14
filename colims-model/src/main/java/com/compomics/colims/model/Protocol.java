@@ -6,6 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -59,6 +62,7 @@ public class Protocol extends AbstractDatabaseEntity {
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
@@ -66,6 +70,7 @@ public class Protocol extends AbstractDatabaseEntity {
         @JoinColumn(name = "l_chemical_labeling_cv_term_id", referencedColumnName = "id")})
     private List<ProtocolCvTerm> chemicalLabels = new ArrayList<>();
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_other_cv_term",
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
@@ -151,4 +156,32 @@ public class Protocol extends AbstractDatabaseEntity {
     public void setOtherCvTerms(List<ProtocolCvTerm> otherCvTerms) {
         this.otherCvTerms = otherCvTerms;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 43 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Protocol other = (Protocol) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+        
 }

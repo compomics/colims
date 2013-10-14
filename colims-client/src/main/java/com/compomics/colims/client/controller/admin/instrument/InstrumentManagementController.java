@@ -64,8 +64,8 @@ public class InstrumentManagementController implements Controllable {
     private BindingGroup bindingGroup;
     //view
     private InstrumentManagementDialog instrumentManagementDialog;
-    private InstrumentTypeCrudDialog instrumentTypeCrudDialog;
     private InstrumentEditDialog instrumentEditDialog;
+    private InstrumentTypeCrudDialog instrumentTypeCrudDialog;    
     //parent controller
     @Autowired
     private MainController mainController;
@@ -86,19 +86,7 @@ public class InstrumentManagementController implements Controllable {
 
     public InstrumentManagementDialog getInstrumentManagementOverviewDialog() {
         return instrumentManagementDialog;
-    }
-
-    /**
-     * Listen to a CV term change event posted by the
-     * CvTermManagementController. If the InstrumentManagementDialog is visible,
-     * clear the selection in the CV term summary list.
-     */
-    @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
-        if (instrumentEditDialog.isVisible()) {
-            instrumentEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
-        }
-    }
+    }    
 
     @Override
     public void init() {
@@ -114,6 +102,26 @@ public class InstrumentManagementController implements Controllable {
         initInstrumentEditDialog();
 
         bindingGroup.bind();
+    }
+
+    @Override
+    public void showView() {
+        //clear selection
+        instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+        
+        instrumentManagementDialog.setVisible(true);        
+    }  
+    
+    /**
+     * Listen to a CV term change event posted by the
+     * CvTermManagementController. If the InstrumentManagementDialog is visible,
+     * clear the selection in the CV term summary list.
+     */
+    @Subscribe
+    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+        if (instrumentEditDialog.isVisible()) {
+            instrumentEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
+        }
     }
 
     private void initInstrumentManagementDialog() {
@@ -325,7 +333,6 @@ public class InstrumentManagementController implements Controllable {
                     } else {
                         instrumentService.save(selectedInstrument);
                     }
-                    instrumentEditDialog.getNameTextField().setEnabled(false);
                     instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
 
                     MessageEvent messageEvent = new MessageEvent("Instrument persist confirmation", "Instrument " + selectedInstrument.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);

@@ -5,6 +5,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.User;
+import java.util.List;
 
 /**
  *
@@ -19,5 +20,12 @@ public interface UserRepository extends GenericRepository<User, Long> {
      * @return the found user
      */
     User findByName(String name);
+    
+    /**
+     * Find all users ordered by name.
+     * 
+     * @return the ordered list of users
+     */
+    List<User> findAllOrderedByUserName();
 
 }

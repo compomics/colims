@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.InstrumentRepository;
+import java.util.List;
+import org.hibernate.criterion.Order;
 
 /**
  *
@@ -17,5 +19,10 @@ public class InstrumentHibernateRepository extends GenericHibernateRepository<In
     public Instrument findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }    
+
+    @Override
+    public List<Instrument> findAllOrderedByName() {
+        return createCriteria().addOrder(Order.asc("name")).list();
+    }
     
 }

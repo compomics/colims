@@ -29,7 +29,7 @@ public class MaterialServiceImpl implements MaterialService {
     
     @Override
     public List<Material> findAll() {
-        return materialRepository.findAll();
+        return materialRepository.findAllOrderedByName();
     }
     
     @Override

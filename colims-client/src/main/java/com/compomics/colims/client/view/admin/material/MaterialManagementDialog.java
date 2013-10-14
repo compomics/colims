@@ -77,7 +77,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         closeMaterialManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("instrument management overview");
+        setTitle("material management overview");
 
         materialOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         materialOverviewPanel.setOpaque(false);

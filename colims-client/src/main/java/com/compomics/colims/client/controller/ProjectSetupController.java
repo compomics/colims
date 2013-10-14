@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("projectSetupController")
-public class ProjectSetupController {
+public class ProjectSetupController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectSetupController.class);
     private static final String PROJECT_META_DATA_CARD_NAME = "projectMetaDataPanel";
@@ -297,6 +297,11 @@ public class ProjectSetupController {
         });
 
     }
+
+    @Override
+    public void showView() {
+        //do nothing
+    }        
 
     /**
      * Listens to an UserChangeEvent. Removes, adds or updates the user in the

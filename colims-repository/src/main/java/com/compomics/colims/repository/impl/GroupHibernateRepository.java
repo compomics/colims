@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Group;
 import com.compomics.colims.repository.GroupRepository;
+import java.util.List;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -20,6 +22,11 @@ public class GroupHibernateRepository extends GenericHibernateRepository<Group, 
     @Override
     public Group findByName(String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
+    }
+
+    @Override
+    public List<Group> findAllOrderedByName() {
+        return createCriteria().addOrder(Order.asc("name")).list();
     }
         
 }

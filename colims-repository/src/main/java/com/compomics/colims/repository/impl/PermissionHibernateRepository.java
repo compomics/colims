@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.repository.PermissionRepository;
+import java.util.List;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -21,6 +23,11 @@ public class PermissionHibernateRepository extends GenericHibernateRepository<Pe
     @Override
     public Permission findByName(String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
+    }
+
+    @Override
+    public List<Permission> findAllOrderedByName() {
+        return createCriteria().addOrder(Order.asc("name")).list();
     }
     
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Role;
 import com.compomics.colims.repository.RoleRepository;
+import java.util.List;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -21,5 +23,10 @@ public class RoleHibernateRepository extends GenericHibernateRepository<Role, Lo
     public Role findByName(String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }    
+
+    @Override
+    public List<Role> findAllOrderedByName() {
+        return createCriteria().addOrder(Order.asc("name")).list();
+    }
     
 }

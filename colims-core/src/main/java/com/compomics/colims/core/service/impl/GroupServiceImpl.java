@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> findAll() {
-        return groupRepository.findAll();
+        return groupRepository.findAllOrderedByName();
     }
 
     @Override
@@ -49,10 +49,10 @@ public class GroupServiceImpl implements GroupService {
         //attach the group to the new session
         groupRepository.lock(entity, LockOptions.NONE);
         //remove entity relations
-        for(User user : entity.getUsers()){
+        for (User user : entity.getUsers()) {
             user.getGroups().remove(entity);
-        }        
-        
+        }
+
         groupRepository.delete(entity);
     }
 
@@ -71,6 +71,5 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findByName(String name) {
         return groupRepository.findByName(name);
-    }    
-    
+    }
 }

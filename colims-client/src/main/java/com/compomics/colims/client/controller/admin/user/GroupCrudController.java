@@ -69,49 +69,6 @@ public class GroupCrudController implements Controllable {
     @Autowired
     private RoleService roleService;
 
-    /**
-     * Listen to a UserChangeEvent and update the groups if necessary.
-     *
-     * @param userChangeEvent the UserChangeEvent
-     */
-    @Subscribe
-    public void onUserChangeEvent(UserChangeEvent userChangeEvent) {
-        if (userChangeEvent.areChildrenAffected()) {
-            groupBindingList.clear();
-            groupBindingList.addAll(groupService.findAll());
-        }
-    }
-
-    /**
-     * Listen to a RoleChangeEvent and update the available roles in the
-     * DualList.
-     *
-     * @param roleChangeEvent the RoleChangeEvent
-     */
-    @Subscribe
-    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
-        switch (roleChangeEvent.getType()) {
-            case CREATED:
-            case UPDATED:
-                int index = availableRoles.indexOf(roleChangeEvent.getRole());
-                if (index != -1) {
-                    availableRoles.set(index, roleChangeEvent.getRole());
-                } else {
-                    availableRoles.add(roleChangeEvent.getRole());
-                }
-                break;
-            case DELETED:
-                availableRoles.remove(roleChangeEvent.getRole());
-                //update the group binding list
-                groupBindingList.clear();
-                groupBindingList.addAll(groupService.findAll());
-                break;
-            default:
-                break;
-        }
-        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
-    }
-
     @Override
     public void init() {
         //get view
@@ -277,6 +234,55 @@ public class GroupCrudController implements Controllable {
                 }
             }
         });
+    }
+
+    @Override
+    public void showView() {
+        //clear selection
+        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+    }
+
+    /**
+     * Listen to a UserChangeEvent and update the groups if necessary.
+     *
+     * @param userChangeEvent the UserChangeEvent
+     */
+    @Subscribe
+    public void onUserChangeEvent(UserChangeEvent userChangeEvent) {
+        if (userChangeEvent.areChildrenAffected()) {
+            groupBindingList.clear();
+            groupBindingList.addAll(groupService.findAll());
+        }
+    }
+
+    /**
+     * Listen to a RoleChangeEvent and update the available roles in the
+     * DualList.
+     *
+     * @param roleChangeEvent the RoleChangeEvent
+     */
+    @Subscribe
+    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+        switch (roleChangeEvent.getType()) {
+            case CREATED:
+            case UPDATED:
+                int index = availableRoles.indexOf(roleChangeEvent.getRole());
+                if (index != -1) {
+                    availableRoles.set(index, roleChangeEvent.getRole());
+                } else {
+                    availableRoles.add(roleChangeEvent.getRole());
+                }
+                break;
+            case DELETED:
+                availableRoles.remove(roleChangeEvent.getRole());
+                //update the group binding list
+                groupBindingList.clear();
+                groupBindingList.addAll(groupService.findAll());
+                break;
+            default:
+                break;
+        }
+        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
     }
 
     /**
