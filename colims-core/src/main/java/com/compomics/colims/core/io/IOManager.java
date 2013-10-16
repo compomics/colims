@@ -23,11 +23,11 @@ public interface IOManager {
 
     /**
      * Write the byte array to file.
-     *
-     * @param file the file to be written to
+     * 
      * @param bytes the byte array
+     * @param file the file to be written to
      */
-    void writeBytesToFile(File file, byte[] bytes) throws IOException;
+    void writeBytesToFile(byte[] bytes, File file) throws IOException;
 
     /**
      * Unzip and write to a byte array.
@@ -39,9 +39,9 @@ public interface IOManager {
     
     /**
      * Unzip and write the byte array to file.
-     *
-     * @param file the file to be written to
+     * 
      * @param bytes the byte array
+     * @param file the file to be written to
      */
-    void unzipAndWriteBytesToFile(File file, byte[] bytes) throws IOException;
+    void unzipAndWriteBytesToFile(byte[] bytes, File file) throws IOException;
 }

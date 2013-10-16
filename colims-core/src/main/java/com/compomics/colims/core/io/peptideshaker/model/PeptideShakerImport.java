@@ -9,7 +9,7 @@ import com.compomics.util.experiment.MsExperiment;
  *
  * @author Niels Hulstaert
  */
-public class PeptideShakerImport {
+    public class PeptideShakerImport {
 
     /**
      * The location of the db contained in the PeptideShaker .cps archive

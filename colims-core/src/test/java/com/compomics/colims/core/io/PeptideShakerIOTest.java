@@ -43,4 +43,5 @@ public class PeptideShakerIOTest {
         Assert.assertNotNull(sample);
         Assert.assertNotNull(msExperiment.getAnalysisSet(sample));
     }
+    
 }

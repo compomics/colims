@@ -12,7 +12,6 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import com.compomics.colims.core.config.PropertiesConfigurationHolder;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
@@ -21,6 +20,7 @@ import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.io.Files;
+import org.springframework.stereotype.Component;
 
 /**
  *
@@ -45,7 +45,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 
     @Override
     public PeptideShakerImport importPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws PeptideShakerIOException {
-        LOGGER.info("Start importing peptideshaker file " + peptideShakerCpsArchive.getName());
+        LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         MsExperiment msExperiment;
 
@@ -68,11 +68,12 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
                     LOGGER.debug("Creating file for archive entry " + archiveEntry.getName());
                     File destinationFile = new File(destinationDirectory, archiveEntry.getName());
 
-                    //make the necessary directories in the temp folder
+                    //create the necessary directories in the destination directory
                     boolean madeDirs = destinationFile.getParentFile().mkdirs();
                     //check if the directories have been made if they didn't exist yet
                     if (!madeDirs && !destinationFile.getParentFile().exists()) {
-                        throw new IOException("Unable to create the necessary directories in directory " + destinationFile.getAbsolutePath());
+                        throw new IOException("Unable to create the necessary directories in directory " + destinationFile.getAbsolutePath()
+                                + ". Check if you have to right to write in this directory.");
                     }
 
                     try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(destinationFile))) {

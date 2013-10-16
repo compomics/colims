@@ -1,4 +1,3 @@
-
 package com.compomics.colims.core.mapper;
 
 import java.io.File;
@@ -32,16 +31,16 @@ import com.compomics.util.experiment.massspectrometry.Precursor;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class UtilitiesSpectrumMapperTest {
-    
+
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
     private IOManager iOManager;
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    
+
     @Test
-    public void testMapSpectrum() throws MappingException, IOException{
+    public void testMapSpectrum() throws MappingException, IOException {
         //create new MSnSpectrum
         HashMap<Double, Peak> peaks = new HashMap<>();
         peaks.put(123.3, new Peak(123.3, 100.0, 22.5));
@@ -54,40 +53,39 @@ public class UtilitiesSpectrumMapperTest {
         peaks.put(1125.5, new Peak(1125.5, 100.0, 22.5));
         peaks.put(474.3, new Peak(474.3, 100.0, 22.5));
         peaks.put(142.3, new Peak(142.3, 100.0, 22.5));
-                
+
         ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, 2));
-        Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);        
-        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");                
+        Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);
+        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
         Spectrum spectrum = new Spectrum();
-        
+
         utilitiesSpectrumMapper.map(mSnSpectrum, spectrum);
-                
-        Assert.assertEquals(mSnSpectrum.getSpectrumTitle(), spectrum.getTitle());        
+
+        Assert.assertEquals(mSnSpectrum.getSpectrumTitle(), spectrum.getTitle());
         Assert.assertEquals(mSnSpectrum.getPrecursor().getMz(), spectrum.getMzRatio(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getIntensity(), spectrum.getIntensity(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getRt(), spectrum.getRetentionTime(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getPossibleCharges().get(0).value, spectrum.getCharge().intValue());
-        
+
         Assert.assertNotNull(spectrum.getSpectrumFiles());
         Assert.assertEquals(1, spectrum.getSpectrumFiles().size());
         Assert.assertNotNull(spectrum.getSpectrumFiles().get(0));
         Assert.assertNotNull(spectrum.getSpectrumFiles().get(0).getContent());
         Assert.assertNotNull(spectrum.getSpectrumFiles().get(0).getSpectrum());
-        
+
         //check if the SpectrumFile byte array contains the correct peaks
         File spectrumFile = temporaryFolder.newFile("spectrumFile");
-                        
-        iOManager.unzipAndWriteBytesToFile(spectrumFile, spectrum.getSpectrumFiles().get(0).getContent());
+
+        iOManager.unzipAndWriteBytesToFile(spectrum.getSpectrumFiles().get(0).getContent(), spectrumFile);
         MascotGenericFile mascotGenericFile = new MascotGenericFile(spectrumFile);
-        HashMap<Double, Double> mappedPeaks = mascotGenericFile.getPeaks(); 
+        HashMap<Double, Double> mappedPeaks = mascotGenericFile.getPeaks();
         Assert.assertEquals(peaks.size(), mappedPeaks.size());
-        
+
         //compare the spectrum peaks
-        for(Double mzRatio : peaks.keySet()){
+        for (Double mzRatio : peaks.keySet()) {
             Assert.assertTrue(mappedPeaks.containsKey(mzRatio));
             Assert.assertEquals(peaks.get(mzRatio).intensity, mappedPeaks.get(mzRatio), 0.01);
         }
     }
-
 }

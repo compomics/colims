@@ -29,26 +29,26 @@ public class IOManagerImpl implements IOManager {
     }
 
     @Override
-    public void writeBytesToFile(File file, byte[] bytes) throws IOException {
+    public void writeBytesToFile(byte[] bytes, File file) throws IOException {
         FileUtils.writeByteArrayToFile(file, bytes);
     }
 
     @Override
     public byte[] unzip(byte[] bytes) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        
+
         //this method uses a buffer internally
         IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(bytes)), byteArrayOutputStream);
-        
-        return byteArrayOutputStream.toByteArray(); 
+
+        return byteArrayOutputStream.toByteArray();
     }
 
     @Override
-    public void unzipAndWriteBytesToFile(File file, byte[] bytes) throws IOException {
+    public void unzipAndWriteBytesToFile(byte[] bytes, File file) throws IOException {
         //first unzip byte array
         byte[] unzippedBytes = unzip(bytes);
-        
+
         //then write to file
-        writeBytesToFile(file, unzippedBytes);       
+        writeBytesToFile(unzippedBytes, file);
     }
 }
