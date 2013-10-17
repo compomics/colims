@@ -28,12 +28,12 @@ public class MaxQuantEvidenceParserTest {
     }
 
     @Autowired
-    MaxQuantEvidenceParser parser;
+    MaxQuantEvidenceParser maxQuantEvidenceParser;
 
     @Test
     public void testMaxQuantEvidenceParser() throws IOException {
         // Parse file
-        parser.parse(getFile("testdata/evidence_subset_1000.tsv"));
+        //parser.parse(getFile("testdata/evidence_subset_1000.tsv"));
 
         // Assertions
         // TODO fail("Not yet implemented");
@@ -67,7 +67,7 @@ public class MaxQuantEvidenceParserTest {
         Peptide peptide = new Peptide();
         Map<String, String> values = new HashMap<>();
         values.put(EvidenceHeaders.Oxidation_M_Probabilities.column, "AAM(1)GNFAAFSAIPGVEVR");
-        parser.linkPeptideToModifications(peptide, values);
+        maxQuantEvidenceParser.linkPeptideToModifications(peptide, values);
 
         // Check modification value matches what we expect
         List<PeptideHasModification> modifications = peptide.getPeptideHasModifications();
@@ -89,7 +89,7 @@ public class MaxQuantEvidenceParserTest {
         Map<String, String> values = new HashMap<>();
         String modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
         values.put(modificationName, "1");
-        parser.linkPeptideToModifications(peptide, values);
+        maxQuantEvidenceParser.linkPeptideToModifications(peptide, values);
 
         // Check modification value matches what we expect
         List<PeptideHasModification> modifications = peptide.getPeptideHasModifications();

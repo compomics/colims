@@ -15,7 +15,7 @@ public class MaxQuantMsmsParserTest {
         MaxQuantMsmsParser parser = new MaxQuantMsmsParser();
 
         // Parse file
-        parser.parse(getFile("testdata/msms_subset_1000.tsv"));
+        //parser.parse(getFile("testdata/msms_subset_1000.tsv"));
 
         // Assertions
         // TODO fail("Not yet implemented");
