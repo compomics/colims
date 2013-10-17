@@ -1,4 +1,4 @@
-package com.compomics.colims.core.interfaces;
+package com.compomics.colims.core.mapper;
 
 import com.compomics.colims.core.exception.MappingException;
 

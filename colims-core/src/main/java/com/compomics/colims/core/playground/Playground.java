@@ -20,6 +20,10 @@ import java.util.List;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.apache.xml.xml_soap.Map;
+import org.apache.xml.xml_soap.MapItem;
+import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
+import uk.ac.ebi.ook.web.model.DataHolder;
 
 /**
  *
@@ -28,23 +32,8 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 public class Playground {    
     
     public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
-        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();                        
         
-        
-        PermissionService permissionService = applicationContext.getBean("permissionService", PermissionService.class);
-//        Permission permission = new Permission();
-//        permission.setName("bonobo");
-//        permission.setDescription("bonobo desc");
-//        permissionService.save(permission);
-        
-        List<Permission> findAll = permissionService.findAll();
-                
-        Permission findByName = permissionService.findByName("bonobo");
-        findByName.setDescription("djjjjjjjjjjjjjjjjjjjjjjjjjfjdjdj");
-        permissionService.update(findByName);
-        
-        
-        System.out.println("test");
         //
         //        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
         //        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
@@ -56,5 +45,21 @@ public class Playground {
         //        cpsParentImpl.loadCpsFile(null);
         //        cpsParentImpl.loadSpectrumFiles(null);
         //        System.out.println("test");
+        
+        Query olsClient = (Query) applicationContext.getBean("olsClient");
+        Map ontologyNames = olsClient.getOntologyNames();
+        for (MapItem mapItem : ontologyNames.getItem()) {
+            if (mapItem.getKey().equals("MS")) {
+                System.out.println(mapItem.getKey());
+                System.out.println(mapItem.getValue());
+            }
+        }
+        Map termsByExactName = olsClient.getTermsByExactName("electrospray ionization", "MS");  
+        Map termXrefs = olsClient.getTermXrefs("MS:1000073", "MS");
+        Map termMetadata = olsClient.getTermMetadata("MS:1000073", "MS");
+        
+        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
+        
+        System.out.println("test");
     }
 }

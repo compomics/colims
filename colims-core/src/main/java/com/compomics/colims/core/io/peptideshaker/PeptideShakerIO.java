@@ -16,7 +16,8 @@ public interface PeptideShakerIO {
      * instance. The .cps archive is unzipped in a temp folder.
      *
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
-     * @return
+     * @return the PeptideShaker import object
+     * @throws PeptideShakerIOException
      */
     PeptideShakerImport importPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws PeptideShakerIOException;
 
@@ -26,8 +27,8 @@ public interface PeptideShakerIO {
      *
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
      * @param destinationDirectory the destination directory
-     *
-     * @return
+     * @return the PeptideShaker import object
+     * @throws PeptideShakerIOException
      */
     PeptideShakerImport importPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws PeptideShakerIOException;
 }

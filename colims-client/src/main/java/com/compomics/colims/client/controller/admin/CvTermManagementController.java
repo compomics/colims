@@ -100,6 +100,8 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                         cvTermManagementDialog.getAccessionTextField().setText(selectedCvTerm.getAccession());
                         cvTermManagementDialog.getNameTextField().setText(selectedCvTerm.getName());
 
+                        //reset definition text area
+                        cvTermManagementDialog.getDefinitionTextArea().setText("");
                         //get term definition from ols service
                         org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvTerm.getAccession(), selectedCvTerm.getLabel());
                         if (termMetadata != null && !termMetadata.getItem().isEmpty()) {

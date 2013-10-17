@@ -1,6 +1,6 @@
-package com.compomics.colims.core.io.peptideshaker.mapper;
+package com.compomics.colims.core.mapper.impl;
 
-import com.compomics.colims.core.interfaces.Mapper;
+import com.compomics.colims.core.mapper.Mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
      * The map of new modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();;
+    private Map<String, Modification> newModifications = new HashMap<>();
     /**
      * Compomics utilities spectrum factory
      *
@@ -39,15 +39,16 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
      */
     private PTMFactory pTMFactory = PTMFactory.getInstance();
 
-    public UtilitiesPeptideMapper() {        
+    public UtilitiesPeptideMapper() {
     }
 
     @Override
     public void map(com.compomics.util.experiment.biology.Peptide source, Peptide target) throws MappingException {
         //set sequence
         target.setSequence(source.getSequence());
-        //@todo check if this is the experimental mass
-        target.setExperimentalMass(source.getMass());
+        //set theoretical mass
+        target.setTheoreticalMass(source.getMass());
+        //@todo how to get experimental mass
 
         //check for modifications
         if (!source.getModificationMatches().isEmpty()) {

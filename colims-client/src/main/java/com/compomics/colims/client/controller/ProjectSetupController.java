@@ -9,7 +9,7 @@ import com.compomics.colims.client.event.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.interfaces.Mapper;
+import com.compomics.colims.core.mapper.Mapper;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
