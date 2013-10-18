@@ -55,4 +55,9 @@ public class ModificationServiceImpl implements ModificationService {
     public Modification findByName(String name) {
         return modificationRepository.findByName(name);
     }
+
+    @Override
+    public Modification findByAccession(String accession) {
+        return modificationRepository.findByAccession(accession);
+    }
 }

@@ -12,8 +12,14 @@ import com.compomics.colims.repository.ModificationRepository;
  */
 @Repository("modificationRepository")
 public class ModificationHibernateRepository extends GenericHibernateRepository<Modification, Long> implements ModificationRepository {
+    
     @Override
     public Modification findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
+    }
+    
+    @Override
+    public Modification findByAccession(final String accession) {
+        return findUniqueByCriteria(Restrictions.eq("accession", accession));
     }
 }

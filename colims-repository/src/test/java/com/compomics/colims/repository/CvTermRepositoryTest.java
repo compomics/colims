@@ -36,7 +36,7 @@ public class CvTermRepositoryTest {
         Assert.assertNull(cvTerm);        
         
         //look for known analyzer
-        cvTerm = cvTermRepository.findByAccession("instr_cv_acc_4", CvTermType.ANALYZER);
+        cvTerm = cvTermRepository.findByAccession("MS:1000140", CvTermType.ANALYZER);
         Assert.assertNotNull(cvTerm);        
         //check if the CvTerm is an InstrumentCvTerm
         Assert.assertTrue(cvTerm instanceof InstrumentCvTerm);

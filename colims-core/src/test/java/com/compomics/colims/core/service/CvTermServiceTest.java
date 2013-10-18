@@ -33,7 +33,7 @@ public class CvTermServiceTest {
     
     @Test
     public void testFindByCvTermByType() {         
-        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
+        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.DETECTOR);
         
         Assert.assertNotNull(sources);
         Assert.assertEquals(2, sources.size());

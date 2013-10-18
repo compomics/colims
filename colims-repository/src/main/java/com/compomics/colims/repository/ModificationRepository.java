@@ -15,4 +15,12 @@ public interface ModificationRepository extends GenericRepository<Modification, 
      * @return the found modification
      */
     Modification findByName(String name);
+    
+    /**
+     * Find a modification by the modification accession.
+     *
+     * @param accession the modification accession
+     * @return the found modification
+     */
+    Modification findByAccession(String accession);
 }

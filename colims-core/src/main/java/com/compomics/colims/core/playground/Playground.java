@@ -54,9 +54,10 @@ public class Playground {
                 System.out.println(mapItem.getValue());
             }
         }
-        Map termsByExactName = olsClient.getTermsByExactName("electrospray ionization", "MS");  
-        Map termXrefs = olsClient.getTermXrefs("MS:1000073", "MS");
-        Map termMetadata = olsClient.getTermMetadata("MS:1000073", "MS");
+        Map termsByName = olsClient.getTermsByName("oxidation of m", "MOD", false);  
+        Map termsByExactName = olsClient.getTermsByExactName("methionine oxidation with neutral loss of 64 Da", "MOD");  
+        Map termXrefs = olsClient.getTermXrefs("MOD:00935", "MOD");
+        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
         
         List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
         

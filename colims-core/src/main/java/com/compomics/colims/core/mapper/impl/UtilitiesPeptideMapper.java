@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.service.ModificationService;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
@@ -24,8 +25,11 @@ import org.springframework.stereotype.Component;
 @Component("utilitiesPeptideMapper")
 public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experiment.biology.Peptide, Peptide> {
 
+    private static final String UNKNOWN_UTILITIES_PTM = "unknown";
     @Autowired
     private ModificationService modificationService;
+    @Autowired
+    private OlsService olsService;
     /**
      * The map of new modifications (key: modification name, value: the
      * modification)
@@ -60,26 +64,42 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
                 //look for the modification in the db
                 //@todo configure hibernate cache and check performance
                 Modification modification = modificationService.findByName(modificationMatch.getTheoreticPtm());
-                if (modification != null) {
-                }//look for the modification in the newModifications map    
-                else if (newModifications.containsKey(modificationMatch.getTheoreticPtm())) {
-                    modification = newModifications.get(modificationMatch.getTheoreticPtm());
-                }//else it's a new modification     
-                else {
-                    modification = new Modification(modificationMatch.getTheoreticPtm());
+                if (modification == null) {
+                    //the modification was not found in the db
+                    //look for the modification in the newModifications map    
+                    if (newModifications.containsKey(modificationMatch.getTheoreticPtm())) {
+                        modification = newModifications.get(modificationMatch.getTheoreticPtm());
+                    } else {
+                        //the modification was not found in the newModification map
+                        //look for the modification in the PSI-MOD ontology
+                        modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());
 
-                    //get modification from modification factory
-                    PTM ptM = pTMFactory.getPTM(modificationMatch.getTheoreticPtm());
-                    //@todo check if the PTM mass is the average of the monoisotopic
-                    modification.setMonoIsotopicMass(ptM.getMass());
+                        if (modification == null) {
+                            //the modification was not found by name in the PSI-MOD ontology
+                            //@todo maybe search by mass or not by exact name?
+                            //get modification from modification factory
+                            PTM ptM = pTMFactory.getPTM(modificationMatch.getTheoreticPtm());
 
-                    //add to newModifications
-                    newModifications.put(modification.getName(), modification);
+                            //check if the PTM is not unknown in the PTMFactory
+                            if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
+                                modification = new Modification(modificationMatch.getTheoreticPtm());
+
+                                //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                                modification.setMonoIsotopicMassShift(ptM.getMass());
+
+                                //add to newModifications
+                                newModifications.put(modification.getName(), modification);
+                            }
+                        }
+                    }
                 }
-                peptideHasModifications.add(peptideHasModification);
-                //set entity relations
-                peptideHasModification.setModification(modification);
-                peptideHasModification.setPeptide(target);
+
+                if (modification != null) {
+                    peptideHasModifications.add(peptideHasModification);
+                    //set entity relations
+                    peptideHasModification.setModification(modification);
+                    peptideHasModification.setPeptide(target);
+                }
             }
             target.setPeptideHasModifications(peptideHasModifications);
         }

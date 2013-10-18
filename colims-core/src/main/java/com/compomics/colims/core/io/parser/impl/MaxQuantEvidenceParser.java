@@ -169,7 +169,7 @@ public class MaxQuantEvidenceParser {
         Modification modification = modificationRepository.findByName(modificationName);
         if (modification == null) {
             modification = new Modification(modificationName);
-            // TODO figure out where to get values for: monoIsotopicMass, averageMass
+            //@todo figure out where to get values for: monoIsotopicMass, averageMass
             // Persist modification
             modificationRepository.save(modification);
         }
