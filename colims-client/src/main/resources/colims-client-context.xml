@@ -20,9 +20,6 @@
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>
-    
-    <!-- guava event bus bean -->
-    <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>       
+    </context:component-scan>        
         
 </beans>

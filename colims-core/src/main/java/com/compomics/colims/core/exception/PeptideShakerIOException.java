@@ -2,7 +2,8 @@
 package com.compomics.colims.core.exception;
 
 /**
- *
+ * Wrapper exception for PeptideShaker related exceptions
+ * 
  * @author Niels Hulstaert
  */
 public class PeptideShakerIOException extends Exception {

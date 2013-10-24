@@ -355,7 +355,7 @@ public class ProjectSetupController implements Controllable {
         @Override
         protected Void doInBackground() throws Exception {
             LOGGER.info("Start importing PeptideShaker file " + cpsResource.getFilename());
-            PeptideShakerImport peptideShakerImport = peptideShakerIO.importPeptideShakerCpsArchive(cpsResource.getFile());
+            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(cpsResource.getFile());
             LOGGER.info("Finished importing PeptideShaker file " + cpsResource.getFilename());
 
             //set mgf and fasta files

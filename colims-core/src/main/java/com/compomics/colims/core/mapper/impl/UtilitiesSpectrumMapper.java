@@ -25,11 +25,13 @@ import org.springframework.stereotype.Component;
  */
 @Component("utilitiesSpectrumMapper")
 public class UtilitiesSpectrumMapper implements Mapper<MSnSpectrum, Spectrum> {
-
+    
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSpectrumMapper.class);
-
+    
     @Override
     public void map(MSnSpectrum source, Spectrum target) throws MappingException {
+        LOGGER.debug("Start mapping MSnSpectrum with title" + source.getSpectrumTitle());
+        
         if (source == null || target == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
@@ -72,7 +74,7 @@ public class UtilitiesSpectrumMapper implements Mapper<MSnSpectrum, Spectrum> {
         //create new SpectrumFile
         SpectrumFile spectrumFile = new SpectrumFile();
         spectrumFile.setSpectrum(target);
-
+        
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
@@ -97,5 +99,7 @@ public class UtilitiesSpectrumMapper implements Mapper<MSnSpectrum, Spectrum> {
         List<SpectrumFile> spectrumFiles = new ArrayList<>();
         spectrumFiles.add(spectrumFile);
         target.setSpectrumFiles(spectrumFiles);
+        
+        LOGGER.debug("Finished mapping MSnSpectrum with title" + source.getSpectrumTitle());
     }
 }

@@ -45,6 +45,9 @@
     <!-- logic beans -->                                
     <bean id="ionLadderMassesCalculator" class="com.compomics.colims.core.logic.impl.IonLadderMassesCalculatorImpl"/> 
     
+    <!-- guava event bus bean -->
+    <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>       
+    
      <!-- ols soap service client -->
     <jaxws:client id="olsClient"
                   serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"

@@ -37,6 +37,7 @@ import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import com.google.common.eventbus.EventBus;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,6 +58,8 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     private Mapper utilitiesPeptideMapper;
     @Autowired
     private ProteinService proteinService;
+    @Autowired
+    private EventBus eventBus;
     /**
      * Compomics utilities spectrum factory
      */
@@ -72,21 +75,27 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     /**
      * The cache used to store objects.
      */
-    protected ObjectsCache objectsCache;
+    private ObjectsCache objectsCache;
+    /**
+     * The PeptideShaker experiment settings
+     */
+    private PeptideShakerSettings experimentSettings;
+    
 
     @Override
     public void map(PeptideShakerImport source, Experiment target) throws MappingException {
         if (source == null || target == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
-        LOGGER.info("Start mapping PeptideShaker experiment " + source.getMsExperiment().getReference() + " on domain model Experiment");
+        LOGGER.info("Start mapping PeptideShaker experiment " + source.getMsExperiment().getReference() + " on domain model Experiment class");
 
+        //get the MsExperiment object
         MsExperiment msExperiment = source.getMsExperiment();
         //set title
         target.setTitle(msExperiment.getReference());
 
         //load experiment settings
-        PeptideShakerSettings experimentSettings = loadExperimentSettings(msExperiment);
+        experimentSettings = loadExperimentSettings(msExperiment);
 
         //load fasta file in sequence factory        
         loadFastaFile(source.getFastaFile());

@@ -29,8 +29,8 @@ public class PeptideShakerIOTest {
     private PeptideShakerIO peptideShakerIO;
 
     @Test
-    public void testImportPeptideShakerCpsFile() throws IOException, PeptideShakerIOException {
-        PeptideShakerImport peptideShakerImport = peptideShakerIO.importPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+    public void testUnpackPeptideShakerCpsFile() throws IOException, PeptideShakerIOException {
+        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
 
         File dbDirectory = peptideShakerImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
