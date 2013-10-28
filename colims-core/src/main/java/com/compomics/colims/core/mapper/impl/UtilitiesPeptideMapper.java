@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experiment.biology.Peptide, Peptide> {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
-    
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
     @Autowired
     private ModificationService modificationService;
@@ -91,7 +90,7 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
                     modification = mapModificationMatch(modificationMatch);
                 }
 
-                //set entity relations
+                //set entity relations if modification could be mapped
                 if (modification != null) {
                     PeptideHasModification peptideHasModification = new PeptideHasModification();
                     //set location in the PeptideHasModification join table
@@ -102,9 +101,9 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
                     //set entity relations
                     peptideHasModification.setModification(modification);
                     peptideHasModification.setPeptide(target);
-                }
-                else{
-                    LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+                } else {
+                    LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+                    throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
                 }
             }
 
@@ -165,7 +164,7 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
      * null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
-     * @return the colims Modification
+     * @return the colims Modification entity
      */
     private Modification mapModificationMatch(CvTerm cvTerm) {
         Modification modification;
@@ -182,7 +181,7 @@ public class UtilitiesPeptideMapper implements Mapper<com.compomics.util.experim
                 //the modification was not found in the database
                 //look for the modification in the PSI-MOD ontology by accession                
                 modification = olsService.findModifiationByAccession(cvTerm.getAccession());
-                
+
                 if (modification != null) {
                     newModifications.put(modification.getName(), modification);
                 }

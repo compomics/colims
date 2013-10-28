@@ -11,7 +11,8 @@
     
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="colims-client.properties"/>        
+        <property name="location" value="colims-client.properties"/> 
+        <property name="order" value="-1"/>     
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
     </bean>

@@ -137,11 +137,11 @@ public class UtilitiesPeptideMapperTest {
         }
 
     }
-    
+
     /*
-     * Test the mapping for a peptide with 1 nonsense modification.
+     * Test the mapping for a peptide with 1 nonsense modification. The mapper should throw a MappingException.
      */
-    @Test
+    @Test(expected = MappingException.class)
     public void testMapPeptide3() throws MappingException, IOException {
         //create new utilities peptide
         com.compomics.util.experiment.biology.Peptide source = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<String>(), new ArrayList<ModificationMatch>());
@@ -153,11 +153,5 @@ public class UtilitiesPeptideMapperTest {
         com.compomics.colims.model.Peptide target = new Peptide();
 
         utilitiesPeptideMapper.map(source, target);
-
-        Assert.assertEquals(source.getSequence(), target.getSequence());
-        Assert.assertEquals(source.getMass(), target.getTheoreticalMass(), 0.001);
-
-        //check modification mapping
-        Assert.assertTrue(target.getPeptideHasModifications().isEmpty());        
     }
 }
