@@ -21,10 +21,7 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.preferences.ModificationProfile;
-import java.awt.Color;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Before;
 
 /**

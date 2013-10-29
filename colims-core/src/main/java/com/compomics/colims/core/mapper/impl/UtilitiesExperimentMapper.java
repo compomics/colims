@@ -38,8 +38,10 @@ import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.google.common.eventbus.EventBus;
+import static eu.isas.peptideshaker.gui.tabpanels.SpectrumIdentificationPanel.NO_ID;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
+import java.util.logging.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +90,9 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
         try {
+            //clear mapping resources
+            clearMappingResources();
+
             LOGGER.info("Start mapping PeptideShaker experiment " + source.getMsExperiment().getReference() + " on domain model Experiment class");
 
             //get the MsExperiment object
@@ -127,9 +132,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
                     if (ms2Identification.isDB()) {
                         try {
-                            //connect to derby db
-                            objectsCache = new ObjectsCache();
-                            objectsCache.setAutomatedMemoryManagement(true);
+                            //connect to derby db                            
                             ms2Identification.establishConnection(source.getDbDirectory().getAbsolutePath(), false, objectsCache);
                         } catch (SQLException ex) {
                             LOGGER.error(ex);
@@ -139,6 +142,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                         throw new IllegalStateException("The Ms2Identification should have a db backend.");
                     }
 
+                    //@todo is this necessary?
                     //load spectrum, peptide and protein matches
                     PSParameter psmProbabilities = new PSParameter();
                     PSParameter peptideProbabilities = new PSParameter();
@@ -150,30 +154,36 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                     List<Spectrum> spectrums = new ArrayList<>();
                     //iterate over spectrum files
                     for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-                        //get spectrum identification keys by mgf file name
-                        List<String> spectrumIdentificationKeys = ms2Identification.getSpectrumIdentification(spectrumFileName);
-                        //iterate over psms
-                        for (String spectrumIdentificationKey : spectrumIdentificationKeys) {
-                            try {
-                                SpectrumMatch spectrumMatch = ms2Identification.getSpectrumMatch(spectrumIdentificationKey);
-                                //get spectrum by SpectrumMatch key
-                                MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(spectrumMatch.getKey());
+                        //iterate over the spectrum titles in the SpectrumFactory for the given file
+                        for (String spectrumTitle : spectrumFactory.getSpectrumTitles(spectrumFileName)) {
+                            //get the spectrum key
+                            String spectrumKey = com.compomics.util.experiment.massspectrometry.Spectrum.getSpectrumKey(spectrumTitle, spectrumTitle);
 
-                                Spectrum targetSpectrum = new Spectrum();
-                                //map MSnSpectrum to model Spectrum
-                                utilitiesSpectrumMapper.map(sourceSpectrum, targetSpectrum);
+                            //get spectrum by key
+                            MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(spectrumKey);
 
-                                spectrums.add(targetSpectrum);
-                                //set entity relations
-                                targetSpectrum.setAnalyticalRun(analyticalRun);
+                            Spectrum targetSpectrum = new Spectrum();
+                            //map MSnSpectrum to model Spectrum
+                            utilitiesSpectrumMapper.map(sourceSpectrum, targetSpectrum);
 
-                                mapSpectrumRelations(ms2Identification, spectrumMatch, targetSpectrum);
-                            } catch (MzMLUnmarshallerException | IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                                LOGGER.error(ex);
-                                throw new MappingException(ex.getMessage(), ex.getCause());
+                            spectrums.add(targetSpectrum);
+                            //set entity relations
+                            targetSpectrum.setAnalyticalRun(analyticalRun);
+
+                            //check if a PSM exists
+                            if (ms2Identification.matchExists(spectrumKey)) {
+                                SpectrumMatch spectrumMatch = ms2Identification.getSpectrumMatch(spectrumKey);
+                                mapPsm(ms2Identification, spectrumMatch, targetSpectrum);
+                            }
+                            else{
+                                System.out.println("test");
                             }
                         }
+                        ArrayList<String> spectrumTitles = spectrumFactory.getSpectrumTitles(spectrumFileName);
+                        ArrayList<String> spectrumIdentification = ms2Identification.getSpectrumIdentification(spectrumFileName);
+                        System.out.println("test");
                     }
+                    
                     analyticalRuns.add(analyticalRun);
                     //set entity relations
                     analyticalRun.setSpectrums(spectrums);
@@ -191,9 +201,20 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
             LOGGER.error(ex.getMessage(), ex);
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
-        } catch (ClassNotFoundException | SQLException | InterruptedException ex) {
+        } catch (ClassNotFoundException | SQLException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * Clear the mapping resources: reset the SpectrumFactory, ...
+     */
+    private void clearMappingResources() throws IOException {
+        spectrumFactory.clearFactory();
+        sequenceFactory.clearFactory();
+        objectsCache = new ObjectsCache();
+        objectsCache.setAutomatedMemoryManagement(true);
+        newProteins.clear();
     }
 
     /**
@@ -204,7 +225,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      * @param targetSpectrum the target spectrum
      * @throws MappingException
      */
-    private void mapSpectrumRelations(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
+    private void mapPsm(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         //check if peptide assumption is decoy
@@ -250,7 +271,6 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
             }
         }
         targetPeptide.setPeptideHasProteins(peptideHasProteins);
-        //}
     }
 
     /**
@@ -279,7 +299,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);
-            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, psmProbabilities, null);
+            //ms2Identification.loadSpectrumMatchParameters(spectrumFileName, psmProbabilities, null);
         }
     }
 
@@ -309,7 +329,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      */
     private void loadPeptideMatches(Ms2Identification ms2Identification, PSParameter peptideProbabilities) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadPeptideMatches(null);
-        ms2Identification.loadPeptideMatchParameters(peptideProbabilities, null);
+        //ms2Identification.loadPeptideMatchParameters(peptideProbabilities, null);
     }
 
     /**
@@ -324,7 +344,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      */
     private void loadProteinMatches(Ms2Identification ms2Identification, PSParameter proteinProbabilities) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadProteinMatches(null);
-        ms2Identification.loadProteinMatchParameters(proteinProbabilities, null);
+        //ms2Identification.loadProteinMatchParameters(proteinProbabilities, null);
     }
 
     /**
