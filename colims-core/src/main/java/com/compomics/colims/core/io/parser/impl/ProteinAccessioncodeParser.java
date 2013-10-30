@@ -35,12 +35,12 @@ public class ProteinAccessioncodeParser {
 	 * @return list of accession codes found in entireLine using the regular expressions retrieved through
 	 *         {@link #getProteinAccessioncodeMatchingRegexes()}
 	 */
-	static List<String> extractProteinAccessioncodes(final String entireLine) {
+	static ArrayList<String> extractProteinAccessioncodes(final String entireLine) {
 		// Unfortunately, there are different formats in use for the accession codes, handle each case we find here
 		List<String> regexes = getProteinAccessioncodeMatchingRegexes();
 
 		// Add all occurrences of any matches found in entireLine for any of the patterns
-		List<String> accessionCodes = new ArrayList<>();
+		ArrayList<String> accessionCodes = new ArrayList<>();
 		for (String regex : regexes) {
 			Pattern compile = Pattern.compile(regex);
 			Matcher matcher = compile.matcher(entireLine);
