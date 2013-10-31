@@ -56,7 +56,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesExperimentMapper.class);
     @Autowired
-    private Mapper utilitiesSpectrumMapper;
+    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
     private Mapper utilitiesPeptideMapper;
     @Autowired
@@ -157,33 +157,33 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                         //iterate over the spectrum titles in the SpectrumFactory for the given file
                         for (String spectrumTitle : spectrumFactory.getSpectrumTitles(spectrumFileName)) {
                             //get the spectrum key
-                            String spectrumKey = com.compomics.util.experiment.massspectrometry.Spectrum.getSpectrumKey(spectrumTitle, spectrumTitle);
+                            String spectrumKey = com.compomics.util.experiment.massspectrometry.Spectrum.getSpectrumKey(spectrumFileName, spectrumTitle);
 
                             //get spectrum by key
                             MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(spectrumKey);
 
+                            //check if an identification match exists
+                            boolean matchExists = ms2Identification.matchExists(spectrumKey);
+                            int charge = 0;
+                            if (matchExists) {
+                                SpectrumMatch spectrumMatch = ms2Identification.getSpectrumMatch(spectrumKey);
+                                charge = spectrumMatch.getBestAssumption().getIdentificationCharge().value;
+                            } else {
+                                LOGGER.debug("No PSM was found for spectrum " + spectrumKey);
+                                if (!sourceSpectrum.getPrecursor().getPossibleCharges().isEmpty()) {
+                                    charge = sourceSpectrum.getPrecursor().getPossibleCharges().get(0).value;
+                                }
+                            }
+
                             Spectrum targetSpectrum = new Spectrum();
                             //map MSnSpectrum to model Spectrum
-                            utilitiesSpectrumMapper.map(sourceSpectrum, targetSpectrum);
-
+                            utilitiesSpectrumMapper.map(sourceSpectrum, charge, targetSpectrum);
                             spectrums.add(targetSpectrum);
                             //set entity relations
                             targetSpectrum.setAnalyticalRun(analyticalRun);
-
-                            //check if a PSM exists
-                            if (ms2Identification.matchExists(spectrumKey)) {
-                                SpectrumMatch spectrumMatch = ms2Identification.getSpectrumMatch(spectrumKey);
-                                mapPsm(ms2Identification, spectrumMatch, targetSpectrum);
-                            }
-                            else{
-                                System.out.println("test");
-                            }
                         }
-                        ArrayList<String> spectrumTitles = spectrumFactory.getSpectrumTitles(spectrumFileName);
-                        ArrayList<String> spectrumIdentification = ms2Identification.getSpectrumIdentification(spectrumFileName);
-                        System.out.println("test");
                     }
-                    
+
                     analyticalRuns.add(analyticalRun);
                     //set entity relations
                     analyticalRun.setSpectrums(spectrums);
@@ -215,62 +215,6 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
         objectsCache = new ObjectsCache();
         objectsCache.setAutomatedMemoryManagement(true);
         newProteins.clear();
-    }
-
-    /**
-     * Map the Spectrum relations.
-     *
-     * @param ms2Identification the Ms2Identification
-     * @param spectrumMatch the SpectrumMatch
-     * @param targetSpectrum the target spectrum
-     * @throws MappingException
-     */
-    private void mapPsm(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
-        //get best assumption
-        PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
-        //check if peptide assumption is decoy
-        //if (!peptideAssumption.getDecoy) {
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-
-        Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(sourcePeptide, targetPeptide);
-        //set entity relations
-        targetSpectrum.getPeptides().add(targetPeptide);
-        targetPeptide.setSpectrum(targetSpectrum);
-
-        //get protein matches keys
-        List<String> proteinKeys = sourcePeptide.getParentProteins();
-        List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
-        //iterate over protein keys
-        for (String proteinKey : proteinKeys) {
-            try {
-                ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
-                //get best/main match
-                if (proteinMatch != null) {
-                    com.compomics.util.experiment.biology.Protein sourceProtein = sequenceFactory.getProtein(proteinMatch.getMainMatch());
-                    if (!sourceProtein.isDecoy()) {
-                        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                        //check if protein is found in the db or in the newProteins
-                        //@todo configure hibernate cache and check performance
-                        Protein targetProtein = proteinService.findByAccession(sourceProtein.getAccession());
-                        if (targetProtein != null) {
-                        } else if (newProteins.containsKey(sourceProtein.getAccession())) {
-                            targetProtein = newProteins.get(sourceProtein.getAccession());
-                        } else {
-                            targetProtein = new Protein(sourceProtein.getAccession(), sourceProtein.getSequence(), sourceProtein.getDatabaseType());
-                        }
-                        peptideHasProteins.add(peptideHasProtein);
-                        //set entity relations
-                        peptideHasProtein.setProtein(targetProtein);
-                        peptideHasProtein.setPeptide(targetPeptide);
-                    }
-                }
-            } catch (InterruptedException | IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                LOGGER.error(ex);
-                throw new MappingException(ex.getMessage(), ex.getCause());
-            }
-        }
-        targetPeptide.setPeptideHasProteins(peptideHasProteins);
     }
 
     /**

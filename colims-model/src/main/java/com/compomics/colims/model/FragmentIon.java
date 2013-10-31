@@ -4,14 +4,12 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermType;
 import com.compomics.colims.model.enums.FragmentIonType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,12 +21,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -56,6 +50,9 @@ public class FragmentIon extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "intensity", nullable = false)
     private Double intensity;
+    @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
+    @ManyToOne
+    private Spectrum spectrum;
     @ManyToMany    
     @JoinTable(name = "fragment_ion_has_neutral_loss",
             joinColumns = {
@@ -107,6 +104,14 @@ public class FragmentIon extends AbstractDatabaseEntity {
         this.intensity = intensity;
     }
 
+    public Spectrum getSpectrum() {
+        return spectrum;
+    }
+
+    public void setSpectrum(Spectrum spectrum) {
+        this.spectrum = spectrum;
+    }        
+
     public List<Role> getNeutralLosses() {
         return neutralLosses;
     }
@@ -114,5 +119,44 @@ public class FragmentIon extends AbstractDatabaseEntity {
     public void setNeutralLosses(List<Role> neutralLosses) {
         this.neutralLosses = neutralLosses;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.fragmentIonType);
+        hash = 97 * hash + Objects.hashCode(this.fragmentIonNumber);
+        hash = 97 * hash + Objects.hashCode(this.mzRatio);
+        hash = 97 * hash + Objects.hashCode(this.intensity);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FragmentIon other = (FragmentIon) obj;
+        if (this.fragmentIonType != other.fragmentIonType) {
+            return false;
+        }
+        if (!Objects.equals(this.fragmentIonNumber, other.fragmentIonNumber)) {
+            return false;
+        }
+        if (!Objects.equals(this.mzRatio, other.mzRatio)) {
+            return false;
+        }
+        if (!Objects.equals(this.intensity, other.intensity)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "FragmentIon{" + "fragmentIonType=" + fragmentIonType + ", fragmentIonNumber=" + fragmentIonNumber + ", mzRatio=" + mzRatio + ", intensity=" + intensity + '}';
+    }        
     
 }

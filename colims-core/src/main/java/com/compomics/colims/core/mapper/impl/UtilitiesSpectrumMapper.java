@@ -24,57 +24,59 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("utilitiesSpectrumMapper")
-public class UtilitiesSpectrumMapper implements Mapper<MSnSpectrum, Spectrum> {
-    
+public class UtilitiesSpectrumMapper {
+
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSpectrumMapper.class);
-    
-    @Override
-    public void map(MSnSpectrum source, Spectrum target) throws MappingException {
-        LOGGER.debug("Start mapping MSnSpectrum with title" + source.getSpectrumTitle());
-        
-        if (source == null || target == null) {
+
+    /**
+     * Map the utilities spectrum onto the colims spectrum.
+     * 
+     * @param sourceSpectrum the utilities spectrum
+     * @param charge the spectrum charge
+     * @param targetSpectrum the colims spectrum
+     * @throws MappingException 
+     */
+    public void map(MSnSpectrum sourceSpectrum, int charge, Spectrum targetSpectrum) throws MappingException {
+        LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
+
+        if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
 
         //get precursor from source
-        Precursor precursor = source.getPrecursor();
+        Precursor precursor = sourceSpectrum.getPrecursor();
 
         //create new mgf file from scratch
         MascotGenericFile mascotGenericFile = new MascotGenericFile();
-        mascotGenericFile.setFilename(source.getSpectrumTitle());
+        mascotGenericFile.setFilename(sourceSpectrum.getSpectrumTitle());
 
         //set mascot file properties
         mascotGenericFile.setComments("");
         mascotGenericFile.setPrecursorMZ(precursor.getMz());
         mascotGenericFile.setIntensity(precursor.getIntensity());
-        //@todo is it possible that a precursor has multiple charge possibilities?
-        if (!precursor.getPossibleCharges().isEmpty()) {
-            mascotGenericFile.setCharge(source.getPrecursor().getPossibleCharges().get(0).value);
-        }
+        mascotGenericFile.setCharge(charge);
 
         //set target spectrum properties        
         //@todo is spectrum key the correct accession property?
-        target.setAccession(source.getSpectrumKey());
-        target.setTitle(source.getSpectrumTitle());
-        target.setScanNumber(source.getScanNumber());
-        target.setMzRatio(precursor.getMz());
-        target.setIntensity(precursor.getIntensity());
-        target.setRetentionTime(precursor.getRt());
-        if (!precursor.getPossibleCharges().isEmpty()) {
-            target.setCharge(precursor.getPossibleCharges().get(0).value);
-        }
+        targetSpectrum.setAccession(sourceSpectrum.getSpectrumKey());
+        targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
+        targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber());
+        targetSpectrum.setMzRatio(precursor.getMz());
+        targetSpectrum.setIntensity(precursor.getIntensity());
+        targetSpectrum.setRetentionTime(precursor.getRt());
+        targetSpectrum.setCharge(charge);
 
         //copy spectrum peaks
         HashMap<Double, Double> peaks = new HashMap<>();
-        for (Peak peak : source.getPeakList()) {
+        for (Peak peak : sourceSpectrum.getPeakList()) {
             peaks.put(peak.mz, peak.intensity);
         }
         mascotGenericFile.setPeaks(peaks);
 
         //create new SpectrumFile
         SpectrumFile spectrumFile = new SpectrumFile();
-        spectrumFile.setSpectrum(target);
-        
+        spectrumFile.setSpectrum(targetSpectrum);
+
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
@@ -98,8 +100,8 @@ public class UtilitiesSpectrumMapper implements Mapper<MSnSpectrum, Spectrum> {
         //set SpectrumFiles
         List<SpectrumFile> spectrumFiles = new ArrayList<>();
         spectrumFiles.add(spectrumFile);
-        target.setSpectrumFiles(spectrumFiles);
-        
-        LOGGER.debug("Finished mapping MSnSpectrum with title" + source.getSpectrumTitle());
+        targetSpectrum.setSpectrumFiles(spectrumFiles);
+
+        LOGGER.debug("Finished mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
     }
 }

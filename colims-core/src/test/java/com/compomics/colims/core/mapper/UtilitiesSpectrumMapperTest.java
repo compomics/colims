@@ -60,13 +60,14 @@ public class UtilitiesSpectrumMapperTest {
         MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
         Spectrum spectrum = new Spectrum();
 
-        utilitiesSpectrumMapper.map(mSnSpectrum, spectrum);
+        int charge = 2;
+        utilitiesSpectrumMapper.map(mSnSpectrum, charge, spectrum);
 
         Assert.assertEquals(mSnSpectrum.getSpectrumTitle(), spectrum.getTitle());
         Assert.assertEquals(mSnSpectrum.getPrecursor().getMz(), spectrum.getMzRatio(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getIntensity(), spectrum.getIntensity(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getRt(), spectrum.getRetentionTime(), 0.001);
-        Assert.assertEquals(mSnSpectrum.getPrecursor().getPossibleCharges().get(0).value, spectrum.getCharge().intValue());
+        Assert.assertEquals(charge, spectrum.getCharge().intValue());
 
         Assert.assertNotNull(spectrum.getSpectrumFiles());
         Assert.assertEquals(1, spectrum.getSpectrumFiles().size());
