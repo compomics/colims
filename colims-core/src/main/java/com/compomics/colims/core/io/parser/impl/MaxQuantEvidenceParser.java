@@ -87,11 +87,10 @@ public class MaxQuantEvidenceParser {
         String sequence = values.get(EvidenceHeaders.Sequence.column);
 
         // The charge corrected mass of the precursor ion.
-        Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+        //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
 
         // Create peptide
         Peptide peptide = new Peptide(sequence, ProteinAccessioncodeParser.extractProteinAccessioncodes(values.get(EvidenceHeaders.Proteins.column)), extractModifications(values));
-        //TODO add max quant mass to the peptide
         return peptide;
     }
 
