@@ -5,6 +5,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.ModificationScoreType;
+import com.compomics.colims.model.enums.ModificationTypeEnum;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,15 +43,21 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "score_type")
     private ModificationScoreType modificationScoreType;
+    @Basic(optional = true)
+    @Column(name = "modification_type", nullable = true)
+    @Enumerated(EnumType.ORDINAL)
+    private ModificationTypeEnum modificationType;
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
     @JoinColumn(name = "l_modification_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.ALL)
     private Modification modification;
-    @JoinColumn(name = "l_modification_type_id", referencedColumnName = "id")
-    @ManyToOne
-    private ModificationType modificationType;
+
+    public PeptideHasModification() {
+        //default value for score type
+        this.modificationScoreType = ModificationScoreType.DELTA;
+    }            
 
     public Long getId() {
         return id;
@@ -92,19 +99,19 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         this.modificationScoreType = modificationScoreType;
     }
 
+    public ModificationTypeEnum getModificationType() {
+        return modificationType;
+    }
+
+    public void setModificationType(ModificationTypeEnum modificationType) {
+        this.modificationType = modificationType;
+    }        
+
     public Modification getModification() {
         return modification;
     }
 
     public void setModification(Modification modification) {
         this.modification = modification;
-    }
-
-    public ModificationType getModificationType() {
-        return modificationType;
-    }
-
-    public void setModificationType(ModificationType modificationType) {
-        this.modificationType = modificationType;
-    }
+    }        
 }

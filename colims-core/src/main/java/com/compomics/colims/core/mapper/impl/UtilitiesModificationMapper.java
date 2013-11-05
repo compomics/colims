@@ -12,6 +12,8 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.enums.ModificationScoreType;
+import com.compomics.colims.model.enums.ModificationTypeEnum;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
@@ -19,8 +21,11 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PrideObjectsFactory;
 import com.compomics.util.pride.PtmToPrideMap;
+import eu.isas.peptideshaker.myparameters.PSPtmScores;
+import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +35,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("utilitiesModificationMapper")
-public class UtilitiesModificationMapper implements Mapper<ArrayList<ModificationMatch>, Peptide> {
+public class UtilitiesModificationMapper {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
@@ -70,8 +75,7 @@ public class UtilitiesModificationMapper implements Mapper<ArrayList<Modificatio
         PtmToPrideMap.loadPtmToPrideMap(searchParameters);
     }
 
-    @Override
-    public void map(ArrayList<ModificationMatch> modificationMatches, Peptide targetPeptide) throws MappingException {
+    public void map(ArrayList<ModificationMatch> modificationMatches, PSPtmScores ptmScores, Peptide targetPeptide) throws MappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //iterate over modification matches
@@ -89,9 +93,31 @@ public class UtilitiesModificationMapper implements Mapper<ArrayList<Modificatio
             //set entity relations if modification could be mapped
             if (modification != null) {
                 PeptideHasModification peptideHasModification = new PeptideHasModification();
+                //set modification type
+                if (modificationMatch.isVariable()) {
+                    peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
+                } else {
+                    peptideHasModification.setModificationType(ModificationTypeEnum.FIXED);
+                }
+
                 //set location in the PeptideHasModification join table
                 //substract one because the modification site in the ModificationMatch class starts from 1
-                peptideHasModification.setLocation(modificationMatch.getModificationSite() - 1);
+                Integer location = modificationMatch.getModificationSite() - 1;
+                peptideHasModification.setLocation(location);
+
+                if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
+                    String locationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
+                    if (locationKeys != null) {
+                        ArrayList<Integer> locations = PtmScoring.getLocations(locationKeys);
+                        if (locations.contains(modificationMatch.getModificationSite())) {
+                            Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(locationKeys);
+                            peptideHasModification.setScore(deltaScore);
+                        }
+                        else{
+                            throw new IllegalStateException("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + locationKeys + ")" );
+                        }
+                    }
+                }
 
                 peptideHasModifications.add(peptideHasModification);
                 //set entity relations

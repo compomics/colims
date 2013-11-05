@@ -45,10 +45,11 @@ public class UtilitiesProteinMapper implements Mapper<List<ProteinMatch>, Peptid
                     com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinMatch.getMainMatch());
                     if (!sourceProtein.isDecoy()) {
                         PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                        //check if protein is in the newProteins
+                        //check if the protein is found in the newProteins
                         //@todo configure hibernate cache and check performance
                         Protein targetProtein = newProteins.get(sourceProtein.getAccession());
                         if (targetProtein == null) {
+                            //check if the protein is found in the db
                             targetProtein = proteinService.findByAccession(sourceProtein.getAccession());
                             if (targetProtein == null) {
                                 targetProtein = new Protein(sourceProtein.getAccession(), sourceProtein.getSequence(), sourceProtein.getDatabaseType());

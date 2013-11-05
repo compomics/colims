@@ -58,7 +58,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    private Mapper utilitiesPeptideMapper;
+    private UtilitiesPsmMapper utilitiesPsmMapper;
     @Autowired
     private ProteinService proteinService;
     @Autowired
@@ -162,12 +162,15 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                             //get spectrum by key
                             MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(spectrumKey);
 
+                            Spectrum targetSpectrum = new Spectrum();
+
                             //check if an identification match exists
                             boolean matchExists = ms2Identification.matchExists(spectrumKey);
                             int charge = 0;
                             if (matchExists) {
                                 SpectrumMatch spectrumMatch = ms2Identification.getSpectrumMatch(spectrumKey);
                                 charge = spectrumMatch.getBestAssumption().getIdentificationCharge().value;
+                                utilitiesPsmMapper.map(ms2Identification, spectrumMatch, targetSpectrum);
                             } else {
                                 LOGGER.debug("No PSM was found for spectrum " + spectrumKey);
                                 if (!sourceSpectrum.getPrecursor().getPossibleCharges().isEmpty()) {
@@ -175,7 +178,6 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
                                 }
                             }
 
-                            Spectrum targetSpectrum = new Spectrum();
                             //map MSnSpectrum to model Spectrum
                             utilitiesSpectrumMapper.map(sourceSpectrum, charge, targetSpectrum);
                             spectrums.add(targetSpectrum);

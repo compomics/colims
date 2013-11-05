@@ -40,26 +40,26 @@ import org.springframework.stereotype.Component;
  */
 @Component("utilitiesPsmMapper")
 public class UtilitiesPsmMapper {
-
+    
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPsmMapper.class);
     @Autowired
-    private Mapper utilitiesPeptideMapper;
+    private UtilitiesPeptideMapper utilitiesPeptideMapper;
     @Autowired
-    private Mapper utilitiesProteinMapper;
-
+    private UtilitiesProteinMapper utilitiesProteinMapper;
+    
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         //check if peptide assumption is decoy
         //if (!peptideAssumption.getDecoy) {
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-
+        
         Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(sourcePeptide, targetPeptide);
+        utilitiesPeptideMapper.map(spectrumMatch, targetPeptide);
         //set entity relations
         targetSpectrum.getPeptides().add(targetPeptide);
         targetPeptide.setSpectrum(targetSpectrum);
-
+        
         List<ProteinMatch> proteinMatches = new ArrayList<>();
         //iterate over protein keys        
         for (String proteinKey : sourcePeptide.getParentProteins()) {
@@ -69,10 +69,10 @@ public class UtilitiesPsmMapper {
                     proteinMatches.add(proteinMatch);
                 }
             } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(UtilitiesPsmMapper.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
         //map proteins
-        utilitiesProteinMapper.map(proteinMatches, sourcePeptide);
+        utilitiesProteinMapper.map(proteinMatches, targetPeptide);
     }
 }
