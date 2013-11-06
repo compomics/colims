@@ -22,6 +22,7 @@ import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PrideObjectsFactory;
 import com.compomics.util.pride.PtmToPrideMap;
 import com.google.common.collect.HashBiMap;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.io.FileNotFoundException;
@@ -36,14 +37,13 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("utilitiesPeptideMapper")
-public class UtilitiesPeptideMapper implements Mapper<SpectrumMatch, Peptide> {
+public class UtilitiesPeptideMapper {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
-    @Override
-    public void map(SpectrumMatch spectrumMatch, Peptide targetPeptide) throws MappingException {
+    public void map(SpectrumMatch spectrumMatch, PSParameter psmProbabilities, Peptide targetPeptide) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         //get peptide
@@ -54,6 +54,10 @@ public class UtilitiesPeptideMapper implements Mapper<SpectrumMatch, Peptide> {
         //set theoretical mass
         targetPeptide.setTheoreticalMass(sourcePeptide.getMass());
         //@todo how to get experimental mass
+        //set psm probability
+        targetPeptide.setPsmProbability(psmProbabilities.getPsmProbabilityScore());
+        //set psm posterior error probability
+        targetPeptide.setPsmPostErrorProbability(psmProbabilities.getPsmProbability());
 
         //check for modifications and modification scores
         if (!sourcePeptide.getModificationMatches().isEmpty()) {

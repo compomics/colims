@@ -10,11 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.Group;
 import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 

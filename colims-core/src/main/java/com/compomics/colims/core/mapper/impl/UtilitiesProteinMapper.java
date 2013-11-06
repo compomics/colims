@@ -13,6 +13,7 @@ import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("utilitiesProteinMapper")
-public class UtilitiesProteinMapper implements Mapper<List<ProteinMatch>, Peptide> {
+public class UtilitiesProteinMapper {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesProteinMapper.class);
     @Autowired
@@ -33,8 +34,7 @@ public class UtilitiesProteinMapper implements Mapper<List<ProteinMatch>, Peptid
      */
     private Map<String, Protein> newProteins = new HashMap<>();
 
-    @Override
-    public void map(List<ProteinMatch> proteinMatches, Peptide targetPeptide) throws MappingException {
+    public void map(List<ProteinMatch> proteinMatches, PSParameter peptideProbabilities, Peptide targetPeptide) throws MappingException {
         try {
             List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
             //iterate over protein matches
@@ -57,6 +57,8 @@ public class UtilitiesProteinMapper implements Mapper<List<ProteinMatch>, Peptid
                                 newProteins.put(targetProtein.getAccession(), targetProtein);
                             }
                         }
+                        peptideHasProtein.setPeptideProbability(peptideProbabilities.getPeptideProbabilityScore());
+                        peptideHasProtein.setPeptidePostErrorProbability(peptideProbabilities.getPeptideProbability());
                         peptideHasProteins.add(peptideHasProtein);
                         //set entity relations
                         peptideHasProtein.setProtein(targetProtein);

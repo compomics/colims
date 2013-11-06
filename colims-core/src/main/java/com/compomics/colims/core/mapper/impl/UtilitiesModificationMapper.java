@@ -93,30 +93,30 @@ public class UtilitiesModificationMapper {
             //set entity relations if modification could be mapped
             if (modification != null) {
                 PeptideHasModification peptideHasModification = new PeptideHasModification();
-                //set modification type
-                if (modificationMatch.isVariable()) {
-                    peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
-                } else {
-                    peptideHasModification.setModificationType(ModificationTypeEnum.FIXED);
-                }
 
                 //set location in the PeptideHasModification join table
                 //substract one because the modification site in the ModificationMatch class starts from 1
                 Integer location = modificationMatch.getModificationSite() - 1;
                 peptideHasModification.setLocation(location);
+                
+                //set modification type
+                if (modificationMatch.isVariable()) {
+                    peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
+                    peptideHasModification.setModificationScoreType(ModificationScoreType.DELTA);
 
-                if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
-                    String locationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
-                    if (locationKeys != null) {
-                        ArrayList<Integer> locations = PtmScoring.getLocations(locationKeys);
-                        if (locations.contains(modificationMatch.getModificationSite())) {
+                    if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
+                        String locationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
+                        if (locationKeys != null) {
                             Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(locationKeys);
                             peptideHasModification.setScore(deltaScore);
-                        }
-                        else{
-                            throw new IllegalStateException("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + locationKeys + ")" );
+                            ArrayList<Integer> locations = PtmScoring.getLocations(locationKeys);
+                            if (!locations.contains(modificationMatch.getModificationSite())) {
+                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + locationKeys + ")");
+                            }
                         }
                     }
+                } else {
+                    peptideHasModification.setModificationType(ModificationTypeEnum.FIXED);
                 }
 
                 peptideHasModifications.add(peptideHasModification);
@@ -165,13 +165,13 @@ public class UtilitiesModificationMapper {
 
                     //check if the PTM is not unknown in the PTMFactory
                     if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
-                        modification = new Modification(modificationMatch.getTheoreticPtm());
+                        modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
 
                         //@todo check if the PTM mass is the average or the monoisotopic mass shift
                         modification.setMonoIsotopicMassShift(ptM.getMass());
 
                         //add to newModifications
-                        newModifications.put(modification.getName(), modification);
+                        newModifications.put(modification.getAccession(), modification);
                     }
                 }
             }
@@ -191,7 +191,7 @@ public class UtilitiesModificationMapper {
         Modification modification;
 
         //look for the modification in the newModifications map
-        modification = newModifications.get(cvTerm.getName());
+        modification = newModifications.get(cvTerm.getAccession());
 
         if (modification == null) {
             //the modification was not found in the newModifications map    
@@ -204,7 +204,7 @@ public class UtilitiesModificationMapper {
                 modification = olsService.findModifiationByAccession(cvTerm.getAccession());
 
                 if (modification != null) {
-                    newModifications.put(modification.getName(), modification);
+                    newModifications.put(modification.getAccession(), modification);
                 }
             }
         }

@@ -42,10 +42,18 @@ public class Peptide extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
-    @Column(name = "experimental_mass")
+    @Basic(optional = true)
+    @Column(name = "experimental_mass", nullable = true)
     private Double experimentalMass;
-    @Column(name = "theoretical_mass")
+    @Basic(optional = true)
+    @Column(name = "theoretical_mass", nullable = true)
     private Double theoreticalMass;
+    @Basic(optional = true)
+    @Column(name = "psm_prob", nullable = true)
+    private Double psmProbability;
+    @Basic(optional = true)
+    @Column(name = "psm_post_error_prob", nullable = true)
+    private Double psmPostErrorProbability;
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
     @ManyToOne
     private IdentificationFile identificationFile;
@@ -109,6 +117,22 @@ public class Peptide extends AbstractDatabaseEntity {
     public void setSpectrum(Spectrum spectrum) {
         this.spectrum = spectrum;
     }
+
+    public Double getPsmProbability() {
+        return psmProbability;
+    }
+
+    public void setPsmProbability(Double psmProbability) {
+        this.psmProbability = psmProbability;
+    }
+
+    public Double getPsmPostErrorProbability() {
+        return psmPostErrorProbability;
+    }
+
+    public void setPsmPostErrorProbability(Double psmPostErrorProbability) {
+        this.psmPostErrorProbability = psmPostErrorProbability;
+    }           
 
     public List<PeptideHasModification> getPeptideHasModifications() {
         return peptideHasModifications;

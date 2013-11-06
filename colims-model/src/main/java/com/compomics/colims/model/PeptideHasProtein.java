@@ -18,14 +18,19 @@ import javax.persistence.Table;
 @Table(name = "peptide_has_protein")
 @Entity
 public class PeptideHasProtein extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Long id;
+    @Basic(optional = true)
+    @Column(name = "peptide_prob", nullable = true)
+    private Double peptideProbability;
+    @Basic(optional = true)
+    @Column(name = "peptide_post_error_prob", nullable = true)
+    private Double peptidePostErrorProbability;
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
@@ -39,6 +44,22 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Double getPeptideProbability() {
+        return peptideProbability;
+    }
+
+    public void setPeptideProbability(Double peptideProbability) {
+        this.peptideProbability = peptideProbability;
+    }
+
+    public Double getPeptidePostErrorProbability() {
+        return peptidePostErrorProbability;
+    }
+
+    public void setPeptidePostErrorProbability(Double peptidePostErrorProbability) {
+        this.peptidePostErrorProbability = peptidePostErrorProbability;
     }
 
     public Peptide getPeptide() {

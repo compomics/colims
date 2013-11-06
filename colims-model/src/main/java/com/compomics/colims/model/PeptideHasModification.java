@@ -55,9 +55,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
     private Modification modification;
 
     public PeptideHasModification() {
-        //default value for score type
-        this.modificationScoreType = ModificationScoreType.DELTA;
-    }            
+    }
 
     public Long getId() {
         return id;
@@ -105,7 +103,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
 
     public void setModificationType(ModificationTypeEnum modificationType) {
         this.modificationType = modificationType;
-    }        
+    }
 
     public Modification getModification() {
         return modification;
@@ -113,5 +111,5 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
 
     public void setModification(Modification modification) {
         this.modification = modification;
-    }        
+    }
 }

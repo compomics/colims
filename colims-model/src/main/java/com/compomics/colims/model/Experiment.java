@@ -39,8 +39,8 @@ public class Experiment extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "title", nullable = false)
     private String title;   
-    @Basic(optional = false)
-    @Column(name = "number", nullable = false)
+    @Basic(optional = true)
+    @Column(name = "number", nullable = true)
     private Long number;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")

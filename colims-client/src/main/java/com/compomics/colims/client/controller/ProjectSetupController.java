@@ -114,6 +114,8 @@ public class ProjectSetupController implements Controllable {
 
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("title"), "titleBinding");
         bindingGroup.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("label"), "labelBinding");
+        bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getDescriptionTextArea(), ELProperty.create("${text}"), project, BeanProperty.create("description"), "descriptionBinding");
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getUserComboBox(), ELProperty.create("${selectedItem}"), project, BeanProperty.create("user"), "userBinding");

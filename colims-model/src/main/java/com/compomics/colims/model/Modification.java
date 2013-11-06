@@ -54,7 +54,7 @@ public class Modification extends AbstractDatabaseEntity {
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
     public Modification() {
-    }
+    }           
 
     public Modification(String name) {
         this.name = name;

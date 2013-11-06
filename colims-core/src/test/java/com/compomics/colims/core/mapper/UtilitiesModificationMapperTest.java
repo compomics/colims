@@ -76,7 +76,7 @@ public class UtilitiesModificationMapperTest {
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         ModificationMatch oxidationMatch = new ModificationMatch(oxidation.getName(), true, 7);
         modificationMatches.add(oxidationMatch);
-        ModificationMatch phosphorylationMatch = new ModificationMatch(phosphorylation.getName(), false, 1);
+        ModificationMatch phosphorylationMatch = new ModificationMatch(phosphorylation.getName(), true, 1);
         modificationMatches.add(phosphorylationMatch);
 
         //create PSPtmScores
@@ -142,7 +142,7 @@ public class UtilitiesModificationMapperTest {
     public void testMapModification_2() throws MappingException, IOException {
         //create ModificationMatches       
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        ModificationMatch oxidationMatch = new ModificationMatch("methionine oxidation with neutral loss of 64 Da", true, 7);
+        ModificationMatch oxidationMatch = new ModificationMatch("methionine oxidation with neutral loss of 64 Da", false, 7);
         modificationMatches.add(oxidationMatch);
 
         //create PSPtmScores
@@ -169,13 +169,11 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
-            Assert.assertNotNull(peptideHasModification.getPeptide());
-            Assert.assertNotNull(peptideHasModification.getModificationScoreType());
-            Assert.assertNotNull(peptideHasModification.getScore());
-
-            Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());
-            Assert.assertEquals(ModificationScoreType.DELTA, peptideHasModification.getModificationScoreType());
-            Assert.assertEquals(oxidationScore, peptideHasModification.getScore(), 0.001);
+            Assert.assertNotNull(peptideHasModification.getPeptide());            
+            
+            //since the modification is fixed, there should be no score
+            Assert.assertNull(peptideHasModification.getModificationScoreType());
+            Assert.assertNull(peptideHasModification.getScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNotNull(modification.getId());

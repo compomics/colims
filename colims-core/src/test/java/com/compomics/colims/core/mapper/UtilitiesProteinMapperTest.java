@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.mapper.impl.UtilitiesPeptideMapper;
+import com.compomics.colims.core.mapper.impl.UtilitiesProteinMapper;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
@@ -33,10 +34,10 @@ import org.junit.Before;
 public class UtilitiesProteinMapperTest {
 
     @Autowired
-    private UtilitiesPeptideMapper utilitiesPeptideMapper;    
+    private UtilitiesProteinMapper utilitiesProteinMapper;    
     
     @Test
-    public void testMapPeptide() throws MappingException, IOException {
+    public void testMapProtein() throws MappingException, IOException {
 //        //create new utilities peptide
 //        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<String>(), new ArrayList<ModificationMatch>());        
 //        Peptide targetPeptide = new Peptide();

@@ -26,6 +26,7 @@ import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PrideObjectsFactory;
 import com.compomics.util.pride.PtmToPrideMap;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -40,26 +41,37 @@ import org.springframework.stereotype.Component;
  */
 @Component("utilitiesPsmMapper")
 public class UtilitiesPsmMapper {
-    
+
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPsmMapper.class);
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
-    
+
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
-        //check if peptide assumption is decoy
-        //if (!peptideAssumption.getDecoy) {
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-        
+
+        PSParameter psmProbabilities = new PSParameter();
+        PSParameter peptideProbabilities = new PSParameter();
+        PSParameter proteinProbabilities = new PSParameter();
         Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(spectrumMatch, targetPeptide);
+        try {
+            //get psm and peptide probabilities            
+            psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
+            peptideProbabilities = peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
+            System.out.println("test");
+        } catch (SQLException | IOException | ClassNotFoundException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        }
+
+        utilitiesPeptideMapper.map(spectrumMatch, psmProbabilities, targetPeptide);
         //set entity relations
         targetSpectrum.getPeptides().add(targetPeptide);
         targetPeptide.setSpectrum(targetSpectrum);
-        
+
         List<ProteinMatch> proteinMatches = new ArrayList<>();
         //iterate over protein keys        
         for (String proteinKey : sourcePeptide.getParentProteins()) {
@@ -70,9 +82,10 @@ public class UtilitiesPsmMapper {
                 }
             } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
                 LOGGER.error(ex.getMessage(), ex);
+                throw new MappingException(ex);
             }
         }
         //map proteins
-        utilitiesProteinMapper.map(proteinMatches, targetPeptide);
+        utilitiesProteinMapper.map(proteinMatches, peptideProbabilities, targetPeptide);
     }
 }

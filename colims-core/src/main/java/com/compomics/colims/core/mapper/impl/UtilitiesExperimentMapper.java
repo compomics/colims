@@ -144,12 +144,9 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
                     //@todo is this necessary?
                     //load spectrum, peptide and protein matches
-                    PSParameter psmProbabilities = new PSParameter();
-                    PSParameter peptideProbabilities = new PSParameter();
-                    PSParameter proteinProbabilities = new PSParameter();
-                    loadSpectrumMatches(ms2Identification, source, psmProbabilities);
-                    loadPeptideMatches(ms2Identification, peptideProbabilities);
-                    loadProteinMatches(ms2Identification, proteinProbabilities);
+                    loadSpectrumMatches(ms2Identification, source);
+                    loadPeptideMatches(ms2Identification);
+                    loadProteinMatches(ms2Identification);
 
                     List<Spectrum> spectrums = new ArrayList<>();
                     //iterate over spectrum files
@@ -241,11 +238,11 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    private void loadSpectrumMatches(Ms2Identification ms2Identification, PeptideShakerImport source, PSParameter psmProbabilities) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadSpectrumMatches(Ms2Identification ms2Identification, PeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);
-            //ms2Identification.loadSpectrumMatchParameters(spectrumFileName, psmProbabilities, null);
+            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null);
         }
     }
 
@@ -273,9 +270,9 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    private void loadPeptideMatches(Ms2Identification ms2Identification, PSParameter peptideProbabilities) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadPeptideMatches(Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadPeptideMatches(null);
-        //ms2Identification.loadPeptideMatchParameters(peptideProbabilities, null);
+        ms2Identification.loadPeptideMatchParameters(new PSParameter(), null);
     }
 
     /**
@@ -288,9 +285,9 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    private void loadProteinMatches(Ms2Identification ms2Identification, PSParameter proteinProbabilities) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadProteinMatches(Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadProteinMatches(null);
-        //ms2Identification.loadProteinMatchParameters(proteinProbabilities, null);
+        ms2Identification.loadProteinMatchParameters(new PSParameter(), null);
     }
 
     /**

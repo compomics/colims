@@ -24,6 +24,7 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.preferences.ModificationProfile;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import java.io.FileNotFoundException;
 import org.junit.Before;
 
@@ -48,10 +49,15 @@ public class UtilitiesPeptideMapperTest {
         SpectrumMatch spectrumMatch = new SpectrumMatch("0", peptideAssumption);
         spectrumMatch.setBestAssumption(peptideAssumption);
         
+        PSParameter psmProbabilities = new PSParameter();
+        psmProbabilities.setSpectrumProbabilityScore(0.5);
+        psmProbabilities.setPsmProbability(0.1);
         Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(spectrumMatch, targetPeptide);
+        utilitiesPeptideMapper.map(spectrumMatch, psmProbabilities, targetPeptide);
 
         Assert.assertEquals(sourcePeptide.getSequence(), targetPeptide.getSequence());
         Assert.assertEquals(sourcePeptide.getMass(), targetPeptide.getTheoreticalMass(), 0.001);        
+        Assert.assertEquals(psmProbabilities.getPsmProbabilityScore(), targetPeptide.getPsmProbability(), 0.001);        
+        Assert.assertEquals(psmProbabilities.getPsmProbability(), targetPeptide.getPsmPostErrorProbability(), 0.001);        
     }
 }
