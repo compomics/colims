@@ -47,8 +47,8 @@ public class UtilitiesPeptideMapper {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         //get peptide
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();        
+        
         //set sequence
         targetPeptide.setSequence(sourcePeptide.getSequence());
         //set theoretical mass

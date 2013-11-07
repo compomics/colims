@@ -51,8 +51,8 @@ public class UtilitiesPsmMapper {
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();                
+        
         PSParameter psmProbabilities = new PSParameter();
         PSParameter peptideProbabilities = new PSParameter();
         PSParameter proteinProbabilities = new PSParameter();
@@ -60,7 +60,7 @@ public class UtilitiesPsmMapper {
         try {
             //get psm and peptide probabilities            
             psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
-            peptideProbabilities = peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
+            peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
             System.out.println("test");
         } catch (SQLException | IOException | ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);

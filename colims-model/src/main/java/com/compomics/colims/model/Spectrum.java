@@ -74,9 +74,7 @@ public class Spectrum extends AbstractDatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<FragmentIon> fragmentIons = new ArrayList<>();
+    private List<SpectrumFile> spectrumFiles = new ArrayList<>();    
     
     public Spectrum(){
     }
@@ -183,15 +181,7 @@ public class Spectrum extends AbstractDatabaseEntity {
 
     public void setSpectrumFiles(List<SpectrumFile> spectrumFiles) {
         this.spectrumFiles = spectrumFiles;
-    }
-
-    public List<FragmentIon> getFragmentIons() {
-        return fragmentIons;
-    }
-
-    public void setFragmentIons(List<FragmentIon> fragmentIons) {
-        this.fragmentIons = fragmentIons;
-    }        
+    }           
 
     @Override
     public int hashCode() {
