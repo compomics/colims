@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl;
 
-import com.compomics.colims.core.mapper.Mapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;

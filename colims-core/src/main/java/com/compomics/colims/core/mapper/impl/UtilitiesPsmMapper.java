@@ -47,7 +47,7 @@ public class UtilitiesPsmMapper {
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
-
+    
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
