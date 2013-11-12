@@ -2,6 +2,7 @@ package com.compomics.colims.core.io.parser.impl;
 
 import com.compomics.util.experiment.biology.Protein;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -42,15 +43,15 @@ public class MaxQuantIdentificationIntegrationTest {
         System.out.println("golden path test");
         //atm cursory test
 
-        Map<Integer, Protein> proteinGroupMap = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(proteinGroupFile);
+        Map<Integer, ProteinMatch> proteinGroupMap = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(proteinGroupFile);
 
         //first test if the proteingroups are parsed correctly
 
         assertThat(proteinGroupMap.keySet().size(), is(1760));
         assertThat(proteinGroupMap.get(1438), is(notNullValue()));
-        assertThat(proteinGroupMap.get(1438).isDecoy(), is(false));
+        //assertThat(proteinGroupMap.get(1438).isDecoy(), is(false));
         assertThat(proteinGroupMap.get(9999), is(nullValue()));
-        assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
+        //assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
 
         List<PeptideAssumption> parsedPeptides = evidenceParser.parse(evidenceFile, null);
 
@@ -81,7 +82,7 @@ public class MaxQuantIdentificationIntegrationTest {
         assertThat(parsedPeptides.get(998).getScore(), is(107.17));
 
         //test link between protein groups and peptides
-        assertThat(proteinGroupMap.get(Integer.parseInt(parsedPeptides.get(900).getPeptide().getParentProteins().get(0))).getAccession(), is("Q9VPR3"));
+        assertThat(proteinGroupMap.get(Integer.parseInt(parsedPeptides.get(900).getPeptide().getParentProteins().get(0))).getMainMatch(), is("Q9VPR3"));
         assertThat(parsedPeptides.get(1).getPeptide().getParentProteins().size(), is(2));
         assertThat(Integer.parseInt(parsedPeptides.get(1).getPeptide().getParentProteins().get(1)), is(1100));
     }
@@ -99,7 +100,7 @@ public class MaxQuantIdentificationIntegrationTest {
         //only parse the peptides and see if it throws any kinks next to nullpointers
         List<PeptideAssumption> parsedPeptides = evidenceParser.parse(evidenceFile, null);
         assertThat(parsedPeptides.get(200).getPeptide().getParentProteins().size(), is(1));
-        Map<Integer, Protein> proteinList = new HashMap<>();
+        Map<Integer, ProteinMatch> proteinList = new HashMap<>();
         //it appears the peptides got parsed, now to blow up the proteingroups
         boolean errorThrown = false;
         try {
