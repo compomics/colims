@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl;
 
-import com.compomics.colims.core.mapper.Mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,6 @@ import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -97,19 +95,28 @@ public class UtilitiesModificationMapper {
                 //substract one because the modification site in the ModificationMatch class starts from 1
                 Integer location = modificationMatch.getModificationSite() - 1;
                 peptideHasModification.setLocation(location);
-                
+
                 //set modification type
                 if (modificationMatch.isVariable()) {
                     peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
 
                     if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
-                        String locationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
-                        if (locationKeys != null) {
-                            Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(locationKeys);
-                            peptideHasModification.setDeltaScore(deltaScore);
-                            ArrayList<Integer> locations = PtmScoring.getLocations(locationKeys);
+                        String alphaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestAScoreLocations();
+                        if (alphaLocationKeys != null) {
+                            Double alphaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getAScore(alphaLocationKeys);
+                            peptideHasModification.setAlphaScore(alphaScore);
+                            ArrayList<Integer> locations = PtmScoring.getLocations(alphaLocationKeys);
                             if (!locations.contains(modificationMatch.getModificationSite())) {
-                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + locationKeys + ")");
+                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + alphaLocationKeys + ")");
+                            }
+                        }
+                        String deltaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
+                        if (deltaLocationKeys != null) {
+                            Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(deltaLocationKeys);
+                            peptideHasModification.setDeltaScore(deltaScore);
+                            ArrayList<Integer> locations = PtmScoring.getLocations(deltaLocationKeys);
+                            if (!locations.contains(modificationMatch.getModificationSite())) {
+                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + deltaLocationKeys + ")");
                             }
                         }
                     }
