@@ -8,16 +8,22 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
+//import com.compomics.colims.model.Modification;
+//import com.compomics.colims.model.Peptide;
+import com.compomics.util.experiment.biology.Peptide;
+//import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
+//import com.compomics.colims.model.Protein;
+import com.compomics.util.experiment.biology.Protein;
 import com.compomics.colims.model.QuantificationGroup;
-import com.compomics.colims.model.QuantificationGroupHasPeptide;
+//import com.compomics.colims.model.QuantificationGroupHasPeptide;
 import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.ProteinRepository;
-import com.compomics.util.protein.Header.DatabaseType;
+import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import java.util.ArrayList;
+import java.util.Arrays;
+//import com.compomics.util.protein.Header.DatabaseType;
 
 /**
  * Parser for MaxQuant evidence.txt output files, that creates {@link Peptide}s,
@@ -41,34 +47,50 @@ public class MaxQuantEvidenceParser {
     ModificationRepository modificationRepository;
 
     /**
-     * Parse the evidenceFile and add the peptides, proteins and modifications
-     * within to the quantificationGroup.
+     * Parse the evidenceFile and add the peptides, protein references and
+     * modifications within to the quantificationGroup.
      *
      * @param evidenceFile
      * @param quantificationGroup
      * @throws IOException
      */
-    public void parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
+    public List<PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
+        List<PeptideAssumption> parsedPeptideList = new ArrayList<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
-            Peptide peptide = createPeptide(values);
-            // TODO Persist the peptide; we are currently missing a Hibernate Repository to do so, so skip for now
+            PeptideAssumption assumption = createPeptide(values);
 
-            linkPeptideToProtein(peptide, values);
-            linkPeptideToModifications(peptide, values);
-
+            //linkPeptideToProtein(peptide, values);
+            //linkPeptideToModifications(peptide, values);
+            parsedPeptideList.add(assumption);
             // QuantificationGroupHasPeptide
             // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
-            QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
-            quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
-            quantificationGroupHasPeptide.setPeptide(peptide);
+            //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
+            //quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
+            //quantificationGroupHasPeptide.setPeptide(peptide);
             // TODO Store QuantificationGroupHasPeptide instances
         }
+        return parsedPeptideList;
+    }
 
+    /**
+     * Parse the evidenceFile and add the peptides, proteins and modifications
+     *
+     * @param evidenceFile
+     * @param proteinGroupFile
+     * @param quantificationGroup
+     * @return
+     * @throws IOException
+     */
+    public List<Peptide> parse(final File evidenceFile, final File proteinGroupFile, final QuantificationGroup quantificationGroup) throws IOException {
+        List<Peptide> parsedPeptideList = new ArrayList<>();
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
+
+        return parsedPeptideList;
     }
 
     /**
@@ -77,18 +99,17 @@ public class MaxQuantEvidenceParser {
      * @param values
      * @return
      */
-    static Peptide createPeptide(final Map<String, String> values) {
+    public static PeptideAssumption createPeptide(final Map<String, String> values) {
         // The identified AA sequence of the peptide.
         String sequence = values.get(EvidenceHeaders.Sequence.column);
 
         // The charge corrected mass of the precursor ion.
-        Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
-
+        //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+        ArrayList<String> proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
         // Create peptide
-        Peptide peptide = new Peptide();
-        peptide.setTheoreticalMass(massCorrected);
-        peptide.setSequence(sequence);
-        return peptide;
+        Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
+        PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 0, null, Double.parseDouble(values.get(EvidenceHeaders.Score.column)));
+        return assumption;
     }
 
     /**
@@ -99,32 +120,32 @@ public class MaxQuantEvidenceParser {
      * @param peptide
      * @param values
      */
-    void linkPeptideToProtein(final Peptide peptide, final Map<String, String> values) {
-        // Accession codes can be parsed from the lines stored in the Proteins column
-        String entireLine = values.get(EvidenceHeaders.Proteins.column);
-        List<String> proteinAccessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(entireLine);
-
-        // Locate the first protein by accession and link the peptide to that protein through PeptideHasProtein
-        String firstAccession = proteinAccessioncodes.get(0);
-        Protein protein = proteinRepository.findByAccession(firstAccession);
-        if (protein == null) {
-            String sequence = values.get(EvidenceHeaders.Sequence.column);
-            DatabaseType databaseType = DatabaseType.Unknown;
-            protein = new Protein(firstAccession, sequence, databaseType);
-            // TODO Persist protein, probably, depending on the protein availability method decided on by Davy & users
-            // ??? proteinRepository.save(protein);
-        }
-
-        // Create a PeptideHasProtein instance to link protein and peptide
-        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-        peptideHasProtein.setProtein(protein);
-        peptideHasProtein.setPeptide(peptide);
-        // Store the reference between each of the two in either instance
-        protein.getPeptideHasProteins().add(peptideHasProtein);
-        peptide.getPeptideHasProteins().add(peptideHasProtein);
-        // TODO Persist PeptideHasProtein instance using a Hibernate Repository that still has to be created
-    }
-
+    //ArrayList<String> fetchProteinAccessionForPeptide(final Map<String, String> values) {
+    // Accession codes can be parsed from the lines stored in the Proteins column
+    //String entireLine = values.get(EvidenceHeaders.Proteins.column);
+    // List<String> proteinAccessioncodes = ProteinAccessioncodeParser.extractProteinAccessioncodes(entireLine);
+//TODO change peptide.setParentProteins in utilities to take a List
+    //peptide.setParentProteins(proteinAccessioncodes);
+    // Locate the first protein by accession and link the peptide to that protein through PeptideHasProtein
+    //String firstAccession = proteinAccessioncodes.get(0);
+    //Protein protein = proteinRepository.findByAccession(firstAccession);
+    //if (protein == null) {
+    //String sequence = values.get(EvidenceHeaders.Sequence.column);
+    //DatabaseType databaseType = DatabaseType.Unknown;
+    //Protein protein = new Protein(firstAccession, sequence, databaseType);
+    // Protein protein = new Protein(firstAccession, sequence, false);
+    // TODO Persist protein, probably, depending on the protein availability method decided on by Davy & users
+    // ??? proteinRepository.save(protein);
+    //}
+    // Create a PeptideHasProtein instance to link protein and peptide
+    //PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
+    //peptideHasProtein.setProtein(protein);
+    //peptideHasProtein.setPeptide(peptide);
+    // Store the reference between each of the two in either instance
+    //protein.getPeptideHasProteins().add(peptideHasProtein);
+    //peptide.getPeptideHasProteins().add(peptideHasProtein);
+    // TODO Persist PeptideHasProtein instance using a Hibernate Repository that still has to be created
+    //}
     /**
      * From values extract a variety of {@link Modification}s and link them to
      * the {@link Peptide} instance using {@link PeptideHasProtein} as
@@ -133,14 +154,15 @@ public class MaxQuantEvidenceParser {
      * @param peptide
      * @param values
      */
-    void linkPeptideToModifications(final Peptide peptide, final Map<String, String> values) {
+    public static ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) {
+        ArrayList<ModificationMatch> modificationsForPeptide = new ArrayList<>();
         // Sequence representation including the post-translational
         // modifications (abbreviation of the modification in brackets
         // before the modified AA). The sequence is always surrounded
         // by underscore characters ('_').
         String modifications = values.get(EvidenceHeaders.Modifications.column);
         if ("Unmodified".equalsIgnoreCase(modifications)) {
-            return;
+            return modificationsForPeptide;
         }
 
         // Fields we need to create the PeptideHasModification
@@ -152,6 +174,7 @@ public class MaxQuantEvidenceParser {
         if (oxidationProbabilities != null && oxidationProbabilities.contains("(1)")) {
             // Find precise location
             location = oxidationProbabilities.indexOf("(1)") - 1;
+            //in case of multiple modifications in one location, this wil break
             modificationName = EvidenceHeaders.Oxidation_M_Probabilities.column;
         } else // Look for Acetyl (Protein N-term)
         if ("1".equals(values.get(EvidenceHeaders.Acetyl_Protein_N_term.column))) {
@@ -164,27 +187,29 @@ public class MaxQuantEvidenceParser {
             String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
             throw new IllegalStateException(message);
         }
-
+        //TODO parse parameters for fixed and variable modifications
+        modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
         // Retrieve modification from database, or create a new one
-        Modification modification = modificationRepository.findByName(modificationName);
-        if (modification == null) {
-            modification = new Modification(modificationName);
-            //@todo figure out where to get values for: monoIsotopicMass, averageMass
-            // Persist modification
-            modificationRepository.save(modification);
-        }
+        //Modification modification = modificationRepository.findByName(modificationName);
+        // if (modification == null) {
+        // modification = new Modification(modificationName);
+        // TODO figure out where to get values for: monoIsotopicMass, averageMass
+        // Persist modification
+        // modificationRepository.save(modification);
+        //}
 
         // Create PeptideHasModification
-        PeptideHasModification peptideHasModification = new PeptideHasModification();
-        peptideHasModification.setLocation(location);
-        peptideHasModification.setModification(modification);
-        peptideHasModification.setPeptide(peptide);
+        //PeptideHasModification peptideHasModification = new PeptideHasModification();
+        //peptideHasModification.setLocation(location);
+        // peptideHasModification.setModification(modification);
+        //peptideHasModification.setPeptide(peptide);
         // TODO Persist the PeptideHasModification instance using a new to create Hibernate Repository
 
         // Store the PeptideHasModification in both peptide and modification
-        peptide.getPeptideHasModifications().add(peptideHasModification);
-        modification.getPeptideHasModifications().add(peptideHasModification);
+        //peptide.getPeptideHasModifications().add(peptideHasModification);
+        // modification.getPeptideHasModifications().add(peptideHasModification);
         //
+        return modificationsForPeptide;
     }
 }
 
