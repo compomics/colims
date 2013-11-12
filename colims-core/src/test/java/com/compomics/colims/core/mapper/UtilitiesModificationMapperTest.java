@@ -85,6 +85,7 @@ public class UtilitiesModificationMapperTest {
         ArrayList<Integer> locations = new ArrayList();
         locations.add(oxidationMatch.getModificationSite());
         double oxidationScore = 100.0;
+        ptmScoring.addAScore(locations, oxidationScore);
         ptmScoring.addDeltaScore(locations, oxidationScore);
         ptmScores.addPtmScoring(oxidation.getName(), ptmScoring);
 
@@ -92,6 +93,7 @@ public class UtilitiesModificationMapperTest {
         locations = new ArrayList();
         locations.add(phosphorylationMatch.getModificationSite());
         double phosphorylationScore = 200.0;
+        ptmScoring.addAScore(locations, phosphorylationScore);
         ptmScoring.addDeltaScore(locations, phosphorylationScore);
         ptmScores.addPtmScoring(phosphorylation.getName(), ptmScoring);
 
@@ -110,10 +112,8 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
             Assert.assertNotNull(peptideHasModification.getPeptide());
+            Assert.assertNotNull(peptideHasModification.getAlphaScore());  
             Assert.assertNotNull(peptideHasModification.getDeltaScore());  
-            
-            //alpha score should be null
-            Assert.assertNull(peptideHasModification.getAlphaScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
@@ -128,6 +128,7 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationTypeEnum.FIXED, peptideHasModification.getModificationType());
+                Assert.assertEquals(phosphorylationScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
             }
         }
@@ -151,6 +152,7 @@ public class UtilitiesModificationMapperTest {
         ArrayList<Integer> locations = new ArrayList();
         locations.add(oxidationMatch.getModificationSite());
         double oxidationScore = 100.0;
+        ptmScoring.addAScore(locations, oxidationScore);
         ptmScoring.addDeltaScore(locations, oxidationScore);
         ptmScores.addPtmScoring(oxidationMatch.getTheoreticPtm(), ptmScoring);
 

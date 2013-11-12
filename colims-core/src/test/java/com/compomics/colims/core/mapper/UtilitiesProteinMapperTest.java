@@ -11,28 +11,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.mapper.impl.UtilitiesPeptideMapper;
 import com.compomics.colims.core.mapper.impl.UtilitiesProteinMapper;
-import com.compomics.colims.core.service.ModificationService;
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import com.compomics.util.preferences.ModificationProfile;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 /**
  *
