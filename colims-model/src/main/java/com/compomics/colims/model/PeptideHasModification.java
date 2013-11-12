@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.ModificationScoreType;
 import com.compomics.colims.model.enums.ModificationTypeEnum;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -37,12 +36,11 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
     @Column(name = "location")
     private Integer location;
     @Basic(optional = true)
-    @Column(name = "score")
-    private Double score;
+    @Column(name = "alpha_score")
+    private Double alphaScore;
     @Basic(optional = true)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "score_type")
-    private ModificationScoreType modificationScoreType;
+    @Column(name = "delta_score")
+    private Double deltaScore;
     @Basic(optional = true)
     @Column(name = "modification_type", nullable = true)
     @Enumerated(EnumType.ORDINAL)
@@ -81,21 +79,21 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         this.peptide = peptide;
     }
 
-    public Double getScore() {
-        return score;
+    public Double getAlphaScore() {
+        return alphaScore;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public void setAlphaScore(Double alphaScore) {
+        this.alphaScore = alphaScore;
     }
 
-    public ModificationScoreType getModificationScoreType() {
-        return modificationScoreType;
+    public Double getDeltaScore() {
+        return deltaScore;
     }
 
-    public void setModificationScoreType(ModificationScoreType modificationScoreType) {
-        this.modificationScoreType = modificationScoreType;
-    }
+    public void setDeltaScore(Double deltaScore) {
+        this.deltaScore = deltaScore;
+    }    
 
     public ModificationTypeEnum getModificationType() {
         return modificationType;

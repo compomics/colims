@@ -50,6 +50,8 @@ public class Protein extends AbstractDatabaseEntity {
     private Header.DatabaseType databaseType;
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
+    @OneToMany(mappedBy = "mainGroupProtein")
+    private List<PeptideHasProtein> peptideHasMainGroupProteins = new ArrayList<>();
 
     public Protein() {
     }
@@ -99,6 +101,14 @@ public class Protein extends AbstractDatabaseEntity {
     public void setPeptideHasProteins(List<PeptideHasProtein> peptideHasProteins) {
         this.peptideHasProteins = peptideHasProteins;
     }
+
+    public List<PeptideHasProtein> getPeptideHasMainGroupProteins() {
+        return peptideHasMainGroupProteins;
+    }
+
+    public void setPeptideHasMainGroupProteins(List<PeptideHasProtein> peptideHasMainGroupProteins) {
+        this.peptideHasMainGroupProteins = peptideHasMainGroupProteins;
+    }        
 
     @Override
     public int hashCode() {

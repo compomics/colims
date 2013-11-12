@@ -12,7 +12,6 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationScoreType;
 import com.compomics.colims.model.enums.ModificationTypeEnum;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -102,13 +101,12 @@ public class UtilitiesModificationMapper {
                 //set modification type
                 if (modificationMatch.isVariable()) {
                     peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
-                    peptideHasModification.setModificationScoreType(ModificationScoreType.DELTA);
 
                     if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
                         String locationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
                         if (locationKeys != null) {
                             Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(locationKeys);
-                            peptideHasModification.setScore(deltaScore);
+                            peptideHasModification.setDeltaScore(deltaScore);
                             ArrayList<Integer> locations = PtmScoring.getLocations(locationKeys);
                             if (!locations.contains(modificationMatch.getModificationSite())) {
                                 LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + locationKeys + ")");

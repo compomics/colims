@@ -16,7 +16,6 @@ import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationScoreType;
 import com.compomics.colims.model.enums.ModificationTypeEnum;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -111,10 +110,10 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
             Assert.assertNotNull(peptideHasModification.getPeptide());
-            Assert.assertNotNull(peptideHasModification.getModificationScoreType());
-            Assert.assertNotNull(peptideHasModification.getScore());
+            Assert.assertNotNull(peptideHasModification.getDeltaScore());  
             
-            Assert.assertEquals(ModificationScoreType.DELTA, peptideHasModification.getModificationScoreType());
+            //alpha score should be null
+            Assert.assertNull(peptideHasModification.getAlphaScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
@@ -123,13 +122,13 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());                
-                Assert.assertEquals(oxidationScore, peptideHasModification.getScore(), 0.001);
+                Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals(phosphorylation.getName())) {
                 Assert.assertEquals(phosphorylation.getName(), modification.getName());
                 Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationTypeEnum.FIXED, peptideHasModification.getModificationType());
-                Assert.assertEquals(phosphorylationScore, peptideHasModification.getScore(), 0.001);
+                Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
             }
         }
 
@@ -172,8 +171,8 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getPeptide());            
             
             //since the modification is fixed, there should be no score
-            Assert.assertNull(peptideHasModification.getModificationScoreType());
-            Assert.assertNull(peptideHasModification.getScore());
+            Assert.assertNull(peptideHasModification.getDeltaScore());
+            Assert.assertNull(peptideHasModification.getAlphaScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNotNull(modification.getId());

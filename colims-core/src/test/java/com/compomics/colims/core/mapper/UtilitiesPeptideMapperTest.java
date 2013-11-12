@@ -12,21 +12,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.mapper.impl.UtilitiesPeptideMapper;
-import com.compomics.colims.core.service.ModificationService;
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
-import com.compomics.util.preferences.ModificationProfile;
 import eu.isas.peptideshaker.myparameters.PSParameter;
-import java.io.FileNotFoundException;
-import org.junit.Before;
 
 /**
  *
@@ -49,9 +40,11 @@ public class UtilitiesPeptideMapperTest {
         SpectrumMatch spectrumMatch = new SpectrumMatch("0", peptideAssumption);
         spectrumMatch.setBestAssumption(peptideAssumption);
         
+        //create psm scores
         PSParameter psmProbabilities = new PSParameter();
         psmProbabilities.setSpectrumProbabilityScore(0.5);
         psmProbabilities.setPsmProbability(0.1);
+        
         Peptide targetPeptide = new Peptide();
         utilitiesPeptideMapper.map(spectrumMatch, psmProbabilities, targetPeptide);
 

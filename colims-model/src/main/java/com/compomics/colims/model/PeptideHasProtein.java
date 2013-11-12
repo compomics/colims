@@ -37,6 +37,9 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.ALL)
     private Protein protein;
+    @JoinColumn(name = "l_main_group_protein_id", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Protein mainGroupProtein;
 
     public Long getId() {
         return id;
@@ -77,4 +80,14 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
     public void setProtein(Protein protein) {
         this.protein = protein;
     }
+
+    public Protein getMainGroupProtein() {
+        return mainGroupProtein;
+    }
+
+    public void setMainGroupProtein(Protein mainGroupProtein) {
+        this.mainGroupProtein = mainGroupProtein;
+    }
+    
+    
 }

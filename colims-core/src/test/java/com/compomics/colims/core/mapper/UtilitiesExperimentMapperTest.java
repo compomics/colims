@@ -58,7 +58,7 @@ public class UtilitiesExperimentMapperTest {
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
         peptideShakerImport.setMgfFiles(mgfFiles);
-        peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+            peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
 
         Experiment experiment = new Experiment();
 
