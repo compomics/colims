@@ -57,7 +57,7 @@ public class MaxQuantParser {
 
         // Parse msms.txt and create and persist the objects found within
         Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
-        msmsParser.parse(msmsFile.toFile(), quantificationGroup);
+        msmsParser.parse(msmsFile.toFile(), false);
 
         // Protein ??
         // Modification ??
