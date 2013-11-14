@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view.admin.protocol;
 
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +20,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
+        protocolDetailTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -78,9 +77,13 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("protocol management overview");
 
+        protocolCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         protocolOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         protocolOverviewPanel.setOpaque(false);
         protocolOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        protocolListScrollPane.setOpaque(false);
 
         protocolListScrollPane.setViewportView(protocolList);
 
@@ -125,6 +128,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         protocolDetailPanel.setOpaque(false);
         protocolDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
+        protocolDetailTableScrollPane.setOpaque(false);
+
         protocolDetailTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -136,6 +141,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        protocolDetailTable.setOpaque(false);
         protocolDetailTableScrollPane.setViewportView(protocolDetailTable);
 
         protocolEditButton.setText("edit...");

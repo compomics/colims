@@ -1,7 +1,5 @@
 package com.compomics.colims.client.view.admin.material;
 
-import com.compomics.colims.client.view.admin.material.*;
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,7 +20,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
+        materialDetailTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -79,9 +77,13 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("material management overview");
 
+        materialCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         materialOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         materialOverviewPanel.setOpaque(false);
         materialOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        materialListScrollPane.setOpaque(false);
 
         materialListScrollPane.setViewportView(materialList);
 
@@ -126,6 +128,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         materialDetailPanel.setOpaque(false);
         materialDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
+        materialDetailTableScrollPane.setOpaque(false);
+
         materialDetailTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -137,6 +141,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        materialDetailTable.setOpaque(false);
         materialDetailTableScrollPane.setViewportView(materialDetailTable);
 
         materialEditButton.setText("edit...");

@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view.admin.instrument;
 
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +20,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
+        instrumentDetailTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -78,9 +77,13 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("instrument management overview");
 
+        instrumentCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         instrumentOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         instrumentOverviewPanel.setOpaque(false);
         instrumentOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        instrumentListScrollPane.setOpaque(false);
 
         instrumentListScrollPane.setViewportView(instrumentList);
 
@@ -125,6 +128,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         instrumentDetailPanel.setOpaque(false);
         instrumentDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
+        instrumentDetailTableScrollPane.setOpaque(false);
+
         instrumentDetailTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -136,6 +141,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        instrumentDetailTable.setOpaque(false);
         instrumentDetailTableScrollPane.setViewportView(instrumentDetailTable);
 
         instrumentEditButton.setText("edit...");

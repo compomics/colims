@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view.admin.instrument;
 
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,7 +21,6 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(parent);
     }
 
@@ -86,9 +84,13 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("instrument type management");
 
+        instrumentTypeCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         instrumentTypeOverviewPanel.setOpaque(false);
         instrumentTypeOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        instrumentTypeListScrollPane.setOpaque(false);
 
         instrumentTypeListScrollPane.setViewportView(instrumentTypeList);
 

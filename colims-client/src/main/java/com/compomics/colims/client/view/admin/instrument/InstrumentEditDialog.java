@@ -23,8 +23,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         super(parent, modal);
         
         initComponents();
-        
-        this.getContentPane().setBackground(Color.WHITE);
+                
         setLocationRelativeTo(parent);
     }
 
@@ -87,6 +86,8 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         setTitle("instrument management");
         setPreferredSize(new java.awt.Dimension(1100, 500));
 
+        instrumentEditPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         nameLabel.setText("name");
 
         typeLabel.setText("type");
@@ -107,6 +108,9 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         instrumentSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
+        cvTermsPanel.setOpaque(false);
+
+        cvTermSummaryScrollPane.setOpaque(false);
 
         cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
 

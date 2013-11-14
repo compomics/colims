@@ -2,7 +2,6 @@ package com.compomics.colims.client.view.admin.material;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.model.MaterialCvTerm;
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -22,7 +21,6 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(parent);
     }
 
@@ -73,6 +71,8 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("material management");
 
+        materialEditPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         closeMaterialEditButton.setText("close");
         closeMaterialEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
         closeMaterialEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -84,6 +84,9 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         materialSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
+        cvTermsPanel.setOpaque(false);
+
+        cvTermSummaryScrollPane.setOpaque(false);
 
         cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
 

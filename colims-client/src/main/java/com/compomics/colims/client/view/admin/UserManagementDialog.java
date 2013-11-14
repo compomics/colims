@@ -4,7 +4,6 @@ import com.compomics.colims.client.compoment.DualList;
 import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -23,8 +22,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
      */
     public UserManagementDialog(Frame parent, boolean modal) {
         super(parent, modal);
+        
         initComponents();
-        this.getContentPane().setBackground(Color.WHITE);
+        
         setLocationRelativeTo(parent);
     }
 
@@ -255,6 +255,11 @@ public class UserManagementDialog extends javax.swing.JDialog {
         setModal(true);
         setResizable(false);
 
+        userManagementTabbedPane.setBackground(new java.awt.Color(255, 255, 255));
+        userManagementTabbedPane.setOpaque(true);
+
+        userCrudPanel.setOpaque(false);
+
         userOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         userOverviewPanel.setOpaque(false);
         userOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
@@ -417,6 +422,8 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Users", userCrudPanel);
 
+        groupCrudPanel.setOpaque(false);
+
         groupOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         groupOverviewPanel.setOpaque(false);
         groupOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
@@ -556,6 +563,8 @@ public class UserManagementDialog extends javax.swing.JDialog {
         );
 
         userManagementTabbedPane.addTab("Groups", groupCrudPanel);
+
+        roleCrudPanel.setOpaque(false);
 
         roleOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         roleOverviewPanel.setOpaque(false);
@@ -697,9 +706,13 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Roles", roleCrudPanel);
 
+        permissionCrudPanel.setOpaque(false);
+
         permissionOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         permissionOverviewPanel.setOpaque(false);
         permissionOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        permissionListScrollPane.setOpaque(false);
 
         permissionListScrollPane.setViewportView(permissionList);
 

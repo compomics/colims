@@ -197,9 +197,11 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         addItemButton = new javax.swing.JButton();
         removeItemButton = new javax.swing.JButton();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         availableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Available"));
+        availableScrollPane.setOpaque(false);
 
         availableScrollPane.setViewportView(availableItemList);
 
@@ -212,6 +214,7 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         add(availableScrollPane, gridBagConstraints);
 
         addedScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Added"));
+        addedScrollPane.setOpaque(false);
 
         addedScrollPane.setViewportView(addedItemList);
 
@@ -223,7 +226,10 @@ public class DualList<T extends Comparable> extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(addedScrollPane, gridBagConstraints);
 
+        buttonParentPanel.setOpaque(false);
         buttonParentPanel.setLayout(new java.awt.GridBagLayout());
+
+        buttonPanel.setOpaque(false);
 
         addItemButton.setText(">>");
         addItemButton.setMaximumSize(new java.awt.Dimension(80, 25));

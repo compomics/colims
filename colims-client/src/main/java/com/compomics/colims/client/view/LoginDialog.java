@@ -15,9 +15,9 @@ public class LoginDialog extends javax.swing.JDialog {
      * Creates new form LoginDialog
      */
     public LoginDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        this.getContentPane().setBackground(Color.WHITE);
+        super(parent, modal);        
         initComponents();
+        this.getContentPane().setBackground(Color.WHITE);
     }
     
     public JButton getLoginButton() {

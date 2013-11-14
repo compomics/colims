@@ -19,7 +19,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
+        cvTermTableScrollPane.getViewport().setOpaque(false);        
         setLocationRelativeTo(parent);
     }    
 
@@ -106,6 +106,8 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CV term management");
 
+        cvTermCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         cvTermOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         cvTermOverviewPanel.setOpaque(false);
         cvTermOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
@@ -121,6 +123,8 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         deleteCvTermButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteCvTermButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        cvTermTableScrollPane.setOpaque(false);
+
         cvTermTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -132,6 +136,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        cvTermTable.setOpaque(false);
         cvTermTableScrollPane.setViewportView(cvTermTable);
 
         javax.swing.GroupLayout cvTermOverviewPanelLayout = new javax.swing.GroupLayout(cvTermOverviewPanel);

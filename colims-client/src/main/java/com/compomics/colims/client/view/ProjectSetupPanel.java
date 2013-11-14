@@ -130,11 +130,15 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         proceedInfoLabel = new javax.swing.JLabel();
         finishButton = new javax.swing.JButton();
 
+        setOpaque(false);
+
         topPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        topPanel.setOpaque(false);
         topPanel.setPreferredSize(new java.awt.Dimension(400, 285));
         topPanel.setLayout(new java.awt.CardLayout());
 
         projectMetaDataPanel.setName("projectMetaDataPanel"); // NOI18N
+        projectMetaDataPanel.setOpaque(false);
 
         titleLabel.setText("title");
         titleLabel.setPreferredSize(new java.awt.Dimension(48, 14));
@@ -209,6 +213,7 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         projectMetaDataPanel.getAccessibleContext().setAccessibleName("");
 
         dataImportPanel.setName("dataImportPanel"); // NOI18N
+        dataImportPanel.setOpaque(false);
 
         fileSelectionLabel.setText("Select a PeptideShaker .cps file");
 
@@ -276,6 +281,7 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         dataImportPanel.getAccessibleContext().setAccessibleName("");
 
         bottomPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        bottomPanel.setOpaque(false);
 
         backButton.setText("back");
         backButton.setMaximumSize(new java.awt.Dimension(80, 25));

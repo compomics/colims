@@ -68,14 +68,26 @@ public class HomePanel extends javax.swing.JPanel {
 
         jScrollPane2.setViewportView(jEditorPane1);
 
+        setOpaque(false);
+
+        topPanel.setOpaque(false);
+
+        jScrollPane1.setOpaque(false);
+
         analyticalRunJList.setBorder(javax.swing.BorderFactory.createTitledBorder("Analytical Runs"));
         jScrollPane1.setViewportView(analyticalRunJList);
+
+        jScrollPane4.setOpaque(false);
 
         sampleJList.setBorder(javax.swing.BorderFactory.createTitledBorder("Samples"));
         jScrollPane4.setViewportView(sampleJList);
 
+        jScrollPane5.setOpaque(false);
+
         projectJList.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));
         jScrollPane5.setViewportView(projectJList);
+
+        jScrollPane6.setOpaque(false);
 
         experimentJList.setBorder(javax.swing.BorderFactory.createTitledBorder("Experiments"));
         jScrollPane6.setViewportView(experimentJList);
@@ -108,6 +120,9 @@ public class HomePanel extends javax.swing.JPanel {
         );
 
         spectrumPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Spectra"));
+        spectrumPanel.setOpaque(false);
+
+        jScrollPane7.setOpaque(false);
 
         spectrumJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -122,6 +137,7 @@ public class HomePanel extends javax.swing.JPanel {
         ));
         jScrollPane7.setViewportView(spectrumJTable);
 
+        spectrumDetailPanel.setOpaque(false);
         spectrumDetailPanel.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.GroupLayout spectrumPanelLayout = new javax.swing.GroupLayout(spectrumPanel);

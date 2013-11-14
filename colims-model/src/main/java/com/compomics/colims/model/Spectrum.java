@@ -59,7 +59,7 @@ public class Spectrum extends AbstractDatabaseEntity {
     @Column(name = "charge", nullable = true)
     private Integer charge;
     @Basic(optional = true)
-    @Column(name = "scanTime")
+    @Column(name = "scan_time")
     private Double scanTime;
     @Column(name = "intensity")
     private Double intensity;

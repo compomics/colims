@@ -1,5 +1,6 @@
 package com.compomics.colims.client.view;
 
+import java.awt.Color;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        this.getContentPane().setBackground(Color.WHITE);
     }
 
     public JPanel getHomeParentPanel() {
@@ -87,9 +89,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N
 
+        homeParentPanel.setOpaque(false);
         homeParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Home", homeParentPanel);
 
+        projectSetupParentPanel.setOpaque(false);
         projectSetupParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Project setup", projectSetupParentPanel);
 
