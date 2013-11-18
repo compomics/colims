@@ -71,7 +71,7 @@ public class UserCrudController implements Controllable {
     @Autowired
     private UserService userService;
     @Autowired
-    private GroupService groupService;    
+    private GroupService groupService;
 
     @Override
     public void init() {
@@ -169,7 +169,7 @@ public class UserCrudController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 User newUser = new User("name");
-                newUser.setUsername(authenticationBean.getCurrentUser().getName());
+                newUser.setUserName(authenticationBean.getCurrentUser().getName());
                 userBindingList.add(newUser);
                 userManagementDialog.getUserNameTextField().setEnabled(true);
                 userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
@@ -255,13 +255,13 @@ public class UserCrudController implements Controllable {
             }
         });
     }
-    
+
     @Override
     public void showView() {
         //clear selection
         userManagementDialog.getUserList().getSelectionModel().clearSelection();
-    } 
-    
+    }
+
     /**
      * Listen to a GroupChangeEvent and update the available groups in the
      * DualList.

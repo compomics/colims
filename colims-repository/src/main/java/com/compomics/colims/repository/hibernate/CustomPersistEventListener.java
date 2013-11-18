@@ -45,7 +45,7 @@ public class CustomPersistEventListener implements PersistEventListener {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
 
             //set the user name            
-            entity.setUsername(sessionBean.getCurrentUser().getName());
+            entity.setUserName(sessionBean.getCurrentUser().getName());
 
             // set the creation date
             if (entity.getCreationdate() == null) {

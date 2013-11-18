@@ -8,12 +8,12 @@ import javax.swing.JTable;
  *
  * @author niels
  */
-public class HomePanel extends javax.swing.JPanel {
+public class HomePanel_old extends javax.swing.JPanel {
 
     /**
      * Creates new form HomePanel
      */
-    public HomePanel() {
+    public HomePanel_old() {
         initComponents();
     }
 

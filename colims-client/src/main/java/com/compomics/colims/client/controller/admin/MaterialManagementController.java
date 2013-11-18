@@ -1,4 +1,4 @@
-package com.compomics.colims.client.controller.admin.material;
+package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;

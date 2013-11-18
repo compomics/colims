@@ -34,11 +34,11 @@ public abstract class AbstractDatabaseEntity implements Serializable {
     @Column(name = "modification_date", nullable = false)
     protected Date modificationDate;
 
-    public String getUsername() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUsername(String username) {
+    public void setUserName(String username) {
         this.userName = username;
     }
 
