@@ -13,6 +13,7 @@ import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
+import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
@@ -29,13 +30,14 @@ public class UtilitiesSpectrumMapper {
 
     /**
      * Map the utilities spectrum onto the colims spectrum.
-     * 
+     *
      * @param sourceSpectrum the utilities spectrum
      * @param charge the spectrum charge
+     * @param fragmentationType the fragmentation type of the spectrum
      * @param targetSpectrum the colims spectrum
-     * @throws MappingException 
+     * @throws MappingException
      */
-    public void map(MSnSpectrum sourceSpectrum, int charge, Spectrum targetSpectrum) throws MappingException {
+    public void map(MSnSpectrum sourceSpectrum, int charge, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
         LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
 
         if (sourceSpectrum == null || targetSpectrum == null) {
@@ -64,6 +66,9 @@ public class UtilitiesSpectrumMapper {
         targetSpectrum.setIntensity(precursor.getIntensity());
         targetSpectrum.setRetentionTime(precursor.getRt());
         targetSpectrum.setCharge(charge);
+        if (fragmentationType != null) {
+            targetSpectrum.setFragmentationType(fragmentationType);
+        }
 
         //copy spectrum peaks
         HashMap<Double, Double> peaks = new HashMap<>();

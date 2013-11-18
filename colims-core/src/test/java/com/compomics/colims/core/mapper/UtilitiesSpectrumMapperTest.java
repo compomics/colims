@@ -19,6 +19,7 @@ import com.compomics.colims.core.io.IOManager;
 import com.compomics.colims.core.mapper.impl.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
@@ -61,13 +62,14 @@ public class UtilitiesSpectrumMapperTest {
         Spectrum spectrum = new Spectrum();
 
         int charge = 2;
-        utilitiesSpectrumMapper.map(mSnSpectrum, charge, spectrum);
+        utilitiesSpectrumMapper.map(mSnSpectrum, charge, FragmentationType.CID, spectrum);
 
         Assert.assertEquals(mSnSpectrum.getSpectrumTitle(), spectrum.getTitle());
         Assert.assertEquals(mSnSpectrum.getPrecursor().getMz(), spectrum.getMzRatio(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getIntensity(), spectrum.getIntensity(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getRt(), spectrum.getRetentionTime(), 0.001);
         Assert.assertEquals(charge, spectrum.getCharge().intValue());
+        Assert.assertEquals(FragmentationType.CID, spectrum.getFragmentationType());
 
         Assert.assertNotNull(spectrum.getSpectrumFiles());
         Assert.assertEquals(1, spectrum.getSpectrumFiles().size());

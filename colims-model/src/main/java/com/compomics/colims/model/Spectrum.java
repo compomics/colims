@@ -63,7 +63,7 @@ public class Spectrum extends AbstractDatabaseEntity {
     private Double scanTime;
     @Column(name = "intensity")
     private Double intensity;
-    @Column(name = "retentionTime")
+    @Column(name = "retention_time")
     private Double retentionTime;    
     @Column(name = "fragmentation_type")
     @Enumerated(EnumType.STRING)    
