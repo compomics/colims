@@ -37,7 +37,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;            
 
             //set the user name            
-            entity.setUsername(sessionBean.getCurrentUser().getName());
+            entity.setUserName(sessionBean.getCurrentUser().getName());
             
             if(entity.getCreationdate() == null){
                 entity.setCreationdate(new Date());

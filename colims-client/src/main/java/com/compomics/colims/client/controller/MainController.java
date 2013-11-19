@@ -3,9 +3,9 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
-import com.compomics.colims.client.controller.admin.instrument.InstrumentManagementController;
-import com.compomics.colims.client.controller.admin.material.MaterialManagementController;
-import com.compomics.colims.client.controller.admin.protocol.ProtocolManagementController;
+import com.compomics.colims.client.controller.admin.InstrumentManagementController;
+import com.compomics.colims.client.controller.admin.MaterialManagementController;
+import com.compomics.colims.client.controller.admin.ProtocolManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.MainFrame;
@@ -47,7 +47,7 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private ProjectSetupController projectSetupController;
     @Autowired
-    private HomeController homeController;
+    private ProjectsOverviewController projectsOverviewController;
     @Autowired
     private UserManagementController userManagementController;
     @Autowired
@@ -100,8 +100,8 @@ public class MainController implements Controllable, ActionListener {
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 
         //init child controllers
-        projectSetupController.init();
-        homeController.init();
+        projectsOverviewController.init();
+        projectSetupController.init();        
         cvTermManagementController.init();
 
         //add panel components                        
@@ -110,8 +110,8 @@ public class MainController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        mainFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);
-        mainFrame.getHomeParentPanel().add(homeController.getHomePanel(), gridBagConstraints);
+        mainFrame.getHomeParentPanel().add(projectsOverviewController.getProjectsOverviewPanel(), gridBagConstraints);
+        mainFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);        
 
         //add action listeners                
         //add menu item action listeners

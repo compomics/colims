@@ -8,7 +8,7 @@ import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.SpectrumTableFormat;
-import com.compomics.colims.client.view.HomePanel;
+import com.compomics.colims.client.view.HomePanel_old;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -52,7 +52,7 @@ public class HomeController implements Controllable {
     private EventList<Spectrum> spectrumEventList;
     private SortedList<Spectrum> sortedSpectrumList;
     //view
-    private HomePanel homePanel;
+    private HomePanel_old homePanel;
     //parent controller
     @Autowired
     private MainController mainController;
@@ -67,12 +67,12 @@ public class HomeController implements Controllable {
     public HomeController() {
     }
 
-    public HomePanel getHomePanel() {
+    public HomePanel_old getHomePanel() {
         return homePanel;
     }
 
     public void init() {
-        homePanel = new HomePanel();
+        homePanel = new HomePanel_old();
 
         //init spectrum table
         spectrumEventList = new BasicEventList<>();
