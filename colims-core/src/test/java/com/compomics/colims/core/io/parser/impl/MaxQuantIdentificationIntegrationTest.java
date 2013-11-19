@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io.parser.impl;
 
-import com.compomics.util.experiment.biology.Protein;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;

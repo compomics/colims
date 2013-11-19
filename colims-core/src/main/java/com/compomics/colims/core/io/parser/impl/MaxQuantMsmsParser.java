@@ -15,7 +15,9 @@ import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,7 +33,23 @@ import org.springframework.stereotype.Service;
 public class MaxQuantMsmsParser {
 
     private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
-    private HashMap<Double, Peak> parsePeakList;
+
+    private HashMap<Double,Peak> parsePeakList(String peaklist, String intensities, String masses) {
+        HashMap<Double,Peak> peakMap = new HashMap<>();
+        String[] peakList = peaklist.split(";");
+        String[] intensityList = intensities.split(";");
+        String[] massList = masses.split(";");
+        for (int i = 0; i < peakList.length; i++) {
+            int charge = 1;
+            if(peakList[i].contains("")){
+            
+            }
+            Double moverz = Double.parseDouble(massList[i])/charge;
+            peakMap.put(moverz,new Peak(moverz, Double.parseDouble(intensityList[i])));
+        }
+
+        return peakMap;
+    }
 
     /**
      * Parse the argument msms.txt file, and link all {@link Spectrum} instances
@@ -42,7 +60,8 @@ public class MaxQuantMsmsParser {
      * @param quantificationGroup
      * @throws IOException
      */
-    public void parse(final File msmsFile, boolean addPeakList) throws IOException {
+    public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException {
+        Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile);
 
@@ -53,7 +72,7 @@ public class MaxQuantMsmsParser {
             // A unique (consecutive) identifier for each row in the msms
             // table, which is used to cross-link the information in this file with
             // the information stored in the other files.
-            String id = values.get(MsmsHeaders.id.column);
+            Integer id = Integer.parseInt(values.get(MsmsHeaders.id.column));
 
 
             // - Unannotated in documentation -
@@ -62,15 +81,14 @@ public class MaxQuantMsmsParser {
 
             // Andromeda score for the best associated MS/MS spectrum.
 
-
-            Double score = Double.valueOf(values.get(MsmsHeaders.Score.column));
+//            Double score = Double.valueOf(values.get(MsmsHeaders.Score.column));
 
 
             // Posterior Error Probability
-            Double pep = Double.valueOf(values.get(MsmsHeaders.PEP.column));
+//          Double pep = Double.valueOf(values.get(MsmsHeaders.PEP.column));
 
             // The type of precursor ion as identified by MaxQuant.
-            String type = values.get(MsmsHeaders.Type.column);
+//            String type = values.get(MsmsHeaders.Type.column);
 
             //create the precursor of the fragment
 
@@ -83,19 +101,26 @@ public class MaxQuantMsmsParser {
             Integer charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));
             ArrayList<Charge> charges = new ArrayList<>();
             charges.add(new Charge(Charge.PLUS, charge));
-            Precursor precursor = new Precursor(rt, mz, charges);
+            Double precursorIntensity = Double.parseDouble(values.get(MsmsHeaders.Precursor_Intensity.column));
+            Precursor precursor = new Precursor(rt, mz, precursorIntensity, charges);
 
 
             String scanNumber = values.get(MsmsHeaders.Scan_Number.column);
-            
+
+            String fileName = values.get(MsmsHeaders.Raw_File.column);
+
+            String spectrumTitle = String.format("%s-%s", fileName, values.get(MsmsHeaders.Scan_Number.column));
+
             if (addPeakList) {
-                
-                HashMap<Double,Peak> peaklist = parsePeakList;
-                Spectrum spectrum = new MSnSpectrum(charge, precursor, type, null, type, rt);
+
+                HashMap<Double,Peak> peakList = parsePeakList(values.get(MsmsHeaders.Matches.column),values.get(MsmsHeaders.Intensities.column),values.get(MsmsHeaders.Masses.column));
+                MSnSpectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, peakList, fileName, rt);
                 spectrum.setScanNumber(scanNumber);
+                spectrumMap.put(id, spectrum);
             } else {
-                Spectrum spectrum = new MSnSpectrum(charge, precursor, type, type);
+                MSnSpectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, fileName);
                 spectrum.setScanNumber(scanNumber);
+                spectrumMap.put(id, spectrum);
             }
 
 
@@ -106,6 +131,7 @@ public class MaxQuantMsmsParser {
             //quantification.setQuantificationGroup(quantificationGroup);
             //quantificationGroup.getQuantifications().add(quantification);
         }
+        return spectrumMap;
     }
 
     /**
