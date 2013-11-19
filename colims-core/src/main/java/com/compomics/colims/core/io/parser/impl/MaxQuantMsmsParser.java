@@ -15,7 +15,9 @@ import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,11 +34,21 @@ public class MaxQuantMsmsParser {
 
     private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
 
-    private HashMap<Double, Peak> parsePeakList() {
-        HashMap<Double, Peak> peakList = new HashMap<>();
+    private HashMap<Double,Peak> parsePeakList(String peaklist, String intensities, String masses) {
+        HashMap<Double,Peak> peakMap = new HashMap<>();
+        String[] peakList = peaklist.split(";");
+        String[] intensityList = intensities.split(";");
+        String[] massList = masses.split(";");
+        for (int i = 0; i < peakList.length; i++) {
+            int charge = 1;
+            if(peakList[i].contains("")){
+            
+            }
+            Double moverz = Double.parseDouble(massList[i])/charge;
+            peakMap.put(moverz,new Peak(moverz, Double.parseDouble(intensityList[i])));
+        }
 
-
-        return peakList;
+        return peakMap;
     }
 
     /**
@@ -48,11 +60,11 @@ public class MaxQuantMsmsParser {
      * @param quantificationGroup
      * @throws IOException
      */
-    public Map<Integer,Spectrum> parse(final File msmsFile, boolean addPeakList) throws IOException {
-        Map<Integer,Spectrum> spectrumMap = new HashMap<>();
+    public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException {
+        Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
         // Convert file into some values we can loop over, without reading file in at once
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile);
-        
+
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create objects
@@ -89,7 +101,8 @@ public class MaxQuantMsmsParser {
             Integer charge = Integer.valueOf(values.get(MsmsHeaders.Charge.column));
             ArrayList<Charge> charges = new ArrayList<>();
             charges.add(new Charge(Charge.PLUS, charge));
-            Precursor precursor = new Precursor(rt, mz, charges);
+            Double precursorIntensity = Double.parseDouble(values.get(MsmsHeaders.Precursor_Intensity.column));
+            Precursor precursor = new Precursor(rt, mz, precursorIntensity, charges);
 
 
             String scanNumber = values.get(MsmsHeaders.Scan_Number.column);
@@ -100,14 +113,14 @@ public class MaxQuantMsmsParser {
 
             if (addPeakList) {
 
-                HashMap<Double, Peak> peakList = parsePeakList();
-                Spectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, peakList, fileName, rt);
+                HashMap<Double,Peak> peakList = parsePeakList(values.get(MsmsHeaders.Matches.column),values.get(MsmsHeaders.Intensities.column),values.get(MsmsHeaders.Masses.column));
+                MSnSpectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, peakList, fileName, rt);
                 spectrum.setScanNumber(scanNumber);
-                spectrumMap.put(id,spectrum);
+                spectrumMap.put(id, spectrum);
             } else {
-                Spectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, fileName);
+                MSnSpectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, fileName);
                 spectrum.setScanNumber(scanNumber);
-                spectrumMap.put(id,spectrum);
+                spectrumMap.put(id, spectrum);
             }
 
 
