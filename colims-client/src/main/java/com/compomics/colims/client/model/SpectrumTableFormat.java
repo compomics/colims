@@ -4,16 +4,13 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Spectrum;
 import java.util.Comparator;
-import org.apache.log4j.Logger;
 
 /**
  *
  * @author Niels Hulstaert
- * @author Harald Barsnes
  */
 public class SpectrumTableFormat implements AdvancedTableFormat<Object> {
 
-    private static final Logger LOGGER = Logger.getLogger(SpectrumTableFormat.class);
     private static final String[] columnNames = {"Id", "Accession", "Precursor charge", "Precursor M/Z ratio", "Peptide sequence"};
     public static final int SPECTRUM_ID = 0;
     public static final int ACCESSION = 1;

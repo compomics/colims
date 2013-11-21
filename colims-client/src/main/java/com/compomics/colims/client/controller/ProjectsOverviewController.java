@@ -1,11 +1,23 @@
 package com.compomics.colims.client.controller;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.swing.AdvancedTableModel;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.model.ProjectOverviewTableFormat;
 import com.compomics.colims.client.view.ProjectsOverviewPanel;
+import com.compomics.colims.client.view.ProjectsOverviewPanel_1;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.comparator.ProjectIdComparator;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
@@ -31,9 +43,8 @@ public class ProjectsOverviewController {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectsOverviewController.class);
     //model
-    private BindingGroup bindingGroup;
-    private ObservableList<Project> projectBindingList;
-    private ObservableList<Experiment> experimentBindingList;
+    private EventList<Project> projects = new BasicEventList<>();
+    private EventList<Experiment> experiments;
     //view
     private ProjectsOverviewPanel projectsOverviewPanel;
     //parent controller
@@ -50,56 +61,54 @@ public class ProjectsOverviewController {
     public void init() {
         projectsOverviewPanel = new ProjectsOverviewPanel();
 
-        //init bindings
-        bindingGroup = new BindingGroup();
-
-        projectBindingList = ObservableCollections.observableList(projectService.findAllWithEagerFetching());
-        JListBinding projectJListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, projectBindingList, projectsOverviewPanel.getProjectList());
-        bindingGroup.addBinding(projectJListBinding);
-        experimentBindingList = ObservableCollections.observableList(new ArrayList<Experiment>());
-        JListBinding experimentJListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, experimentBindingList, projectsOverviewPanel.getExperimentList());
-        bindingGroup.addBinding(experimentJListBinding);
-
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getProjectList(), BeanProperty.create("selectedElement.title"), projectsOverviewPanel.getProjectTitleTextField(), ELProperty.create("${text}"), "projectTitleBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getProjectList(), BeanProperty.create("selectedElement.label"), projectsOverviewPanel.getProjectLabelTextField(), ELProperty.create("${text}"), "projectLabelBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getProjectList(), BeanProperty.create("selectedElement.owner.name"), projectsOverviewPanel.getProjectOwnerTextField(), ELProperty.create("${text}"), "projectOwnerBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getProjectList(), BeanProperty.create("selectedElement.description"), projectsOverviewPanel.getProjectDescriptionTextArea(), ELProperty.create("${text}"), "projectDescriptionBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getExperimentList(), BeanProperty.create("selectedElement.title"), projectsOverviewPanel.getExperimentTitleTextField(), ELProperty.create("${text}"), "experimentTitleBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getExperimentList(), BeanProperty.create("selectedElement.number"), projectsOverviewPanel.getExperimentNumberTextField(), ELProperty.create("${text}"), "experimentNumberBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectsOverviewPanel.getExperimentList(), BeanProperty.create("selectedElement.description"), projectsOverviewPanel.getExperimentDescriptionTextArea(), ELProperty.create("${text}"), "experimentDescriptionBinding");
-        bindingGroup.addBinding(binding);
-
-        bindingGroup.bind();
+        //fill projects table
+        projects.addAll(projectService.findAllWithEagerFetching());
+        SortedList<Project> sortedProjects = new SortedList<>(projects, new ProjectIdComparator());
+        DefaultEventSelectionModel eventSelectionModel = new DefaultEventSelectionModel<>(projects);
+        AdvancedTableModel<Project> projectTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectOverviewTableFormat());
+        projectsOverviewPanel.getProjectsTable().setModel(projectTableModel);
+        
+        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
+        TableComparatorChooser tableSorter = TableComparatorChooser.install(
+                projectsOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
-        projectsOverviewPanel.getProjectList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        projectsOverviewPanel.getProjectsTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedProjectIndex = projectsOverviewPanel.getProjectList().getSelectedIndex();
-                    if (selectedProjectIndex != -1) {
-                        Project selectedProject = projectBindingList.get(selectedProjectIndex);
-                        experimentBindingList.clear();
-                        if (!selectedProject.getExperiments().isEmpty()) {
-                            experimentBindingList.addAll(selectedProject.getExperiments());
-                        } else {
-                            clearExperimentDetails();
-                        }
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    int selectedRowIndex = projectsOverviewPanel.getProjectsTable().getSelectedRow();
+                    if (selectedRowIndex != -1 && !projects.isEmpty()) {
+                        Project selectedProject = projects.get(projectsOverviewPanel.getProjectsTable().convertRowIndexToModel(selectedRowIndex));
+                        System.out.println("test");
                     }
                 }
             }
         });
-    }
 
-    private void clearExperimentDetails() {
-        projectsOverviewPanel.getExperimentTitleTextField().setText("");
-        projectsOverviewPanel.getExperimentNumberTextField().setText("");
-        projectsOverviewPanel.getExperimentDescriptionTextArea().setText("");
+        projectsOverviewPanel.getAddProjectButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        projectsOverviewPanel.getEditProjectButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        projectsOverviewPanel.getAddExperimentButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        projectsOverviewPanel.getEditExperimentButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
     }
+    
 }

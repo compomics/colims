@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.exception.MappingException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
+import java.util.logging.Level;
 
 /**
  *
@@ -69,15 +71,15 @@ public class ExperimentServiceImpl implements ExperimentService {
             Experiment experiment = new Experiment();
             try {
                 experiment = mzMLIOService.parseMzmlFile(mzMLFile.getName());
-            } catch (MzMLUnmarshallerException ex) {
+            } catch (MzMLUnmarshallerException | MappingException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }
             experiment.setBinaryFiles(new ArrayList<ExperimentBinaryFile>());
 
             //add the file to the Experiment entity as BinaryFile entity
             ExperimentBinaryFile binaryFile = new ExperimentBinaryFile(ioManager.readBytesFromFile(mzMLFile));
-            experiment.getBinaryFiles().add(binaryFile);            
-            
+            experiment.getBinaryFiles().add(binaryFile);
+
             //save experiment to db
             experimentRepository.save(experiment);
         }

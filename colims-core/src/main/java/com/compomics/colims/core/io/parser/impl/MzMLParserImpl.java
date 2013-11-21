@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.core.io.parser.impl;
 
-import java.io.ByteArrayOutputStream;
+import com.compomics.colims.core.exception.MappingException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ import uk.ac.ebi.jmzml.model.mzml.SelectedIonList;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
-import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.core.io.parser.MzMLParser;
+import com.compomics.colims.core.mapper.impl.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
@@ -37,8 +37,13 @@ import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.experiment.massspectrometry.Peak;
+import com.compomics.util.experiment.massspectrometry.Precursor;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent;
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
 import uk.ac.ebi.jmzml.model.mzml.DetectorComponent;
@@ -54,6 +59,8 @@ public class MzMLParserImpl implements MzMLParser {
     private static final Logger LOGGER = Logger.getLogger(MzMLParserImpl.class);
     private static final String DEFAULT_SAMPLE_ACCESSION = "default_sample";
     private Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
+    @Autowired
+    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
 
     public MzMLParserImpl() {
         mzMLUnmarshallers = new HashMap<>();
@@ -70,7 +77,7 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     @Override
-    public Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException {
+    public Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.info("Start parsing experiment from file " + mzMLFileName);
         Experiment experiment = new Experiment();
 
@@ -93,7 +100,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param experiment the experiment
      */
-    private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException {
+    private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.info("Start parsing samples");
         List<Sample> samples = new ArrayList<>();
 
@@ -133,7 +140,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param samples the sample list
      */
-    private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException {
+    private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException, MappingException {
         //get run
         Run run = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/run", Run.class);
         LOGGER.debug("Unmarshalling run from mzML file: " + mzMLFileName);
@@ -252,7 +259,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param analyticalRun the analytical run
      */
-    private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException {
+    private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.debug("Adding spectra to run: " + analyticalRun.getName());
         List<Spectrum> spectrums = new ArrayList<>();
         Set<String> spectrumIds = mzMLUnmarshallers.get(mzMLFileName).getSpectrumIDs();
@@ -270,7 +277,7 @@ public class MzMLParserImpl implements MzMLParser {
         analyticalRun.setSpectrums(spectrums);
     }
 
-    private Spectrum getSpectrumById(String mzMLFileName, String spectrumId) throws MzMLUnmarshallerException, IOException {
+    private Spectrum getSpectrumById(String mzMLFileName, String spectrumId) throws MzMLUnmarshallerException, IOException, MappingException {
         Spectrum spectrum = new Spectrum();
 
         uk.ac.ebi.jmzml.model.mzml.Spectrum mzMLSpectrum = mzMLUnmarshallers.get(mzMLFileName).getSpectrumById(spectrumId);
@@ -327,66 +334,26 @@ public class MzMLParserImpl implements MzMLParser {
             }
         }
 
-        //set spectrum properties
-        spectrum.setAccession(mzMLSpectrum.getId());
-        if (mzRatio == 0.0) {
-            LOGGER.warn("No M/Z ratio could be found for spectrum: " + spectrum.getAccession());
-        }
-        spectrum.setMzRatio(mzRatio);
-        spectrum.setCharge(charge);
-        if (scanTime == -1.0) {
-            LOGGER.warn("No scan time could be found for spectrum: " + spectrum.getAccession());
-        }
-        spectrum.setScanTime(scanTime);
-
-        //add spectrum file
-        addSpectrumFile(spectrum, mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray());
-
-        return spectrum;
-    }
-
-    /**
-     * Adds the spectrum file for the given spectrum. The spectrum binary data
-     * is converted to the mgf format and stored as a BLOB in the db.
-     *
-     * @param spectrum the spectrum
-     * @param binaryDataArrayList the binary data list (mz ratios and
-     * intensities)
-     * @throws IOException
-     */
-    private void addSpectrumFile(Spectrum spectrum, List<BinaryDataArray> binaryDataArrayList) throws IOException {
-        SpectrumFile spectrumFile = new SpectrumFile();
+        //create new MSnSpectrum
+        ArrayList<Charge> possibleCharges = new ArrayList<>();
+        possibleCharges.add(new Charge(Charge.PLUS, charge));
+        Precursor precursor = new Precursor(0.0, mzRatio, possibleCharges);        
 
         //get mz ratios and intensities and put them in a map (key: mz ratio, value: intensity)
-        BinaryDataArray mzBinaryDataArray = (BinaryDataArray) binaryDataArrayList.get(0);
+        BinaryDataArray mzBinaryDataArray = (BinaryDataArray) mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(0);
         Number[] mzNumbers = mzBinaryDataArray.getBinaryDataAsNumberArray();
-        BinaryDataArray intBinaryDataArray = (BinaryDataArray) binaryDataArrayList.get(1);
+        BinaryDataArray intBinaryDataArray = (BinaryDataArray) mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(1);
         Number[] intNumbers = intBinaryDataArray.getBinaryDataAsNumberArray();
-        HashMap<Double, Double> peaks = new HashMap<>();
+        HashMap<Double, Peak> peaks = new HashMap<>();
         for (int i = 0; i < mzNumbers.length; i++) {
-            peaks.put(mzNumbers[i].doubleValue(), intNumbers[i].doubleValue());
+            peaks.put(mzNumbers[i].doubleValue(), new Peak(mzNumbers[i].doubleValue(), intNumbers[i].doubleValue()));
         }
 
-        //write identification data to stream
-        MascotGenericFile mascotGenericFile = new MascotGenericFile();
-        mascotGenericFile.setFilename(spectrum.getAccession());
-        mascotGenericFile.setTitle(spectrum.getAccession());
-        mascotGenericFile.setPrecursorMZ(spectrum.getMzRatio());
-        mascotGenericFile.setCharge(spectrum.getCharge());
-        mascotGenericFile.setPeaks(peaks);
+        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, mzMLSpectrum.getId(), peaks, mzMLFileName);
+        mSnSpectrum.setScanStartTime(scanTime);
+        //map MSnSpectrum to colims spectrum
+        utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.EDT, spectrum);
 
-        mascotGenericFile.setComments("");
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        mascotGenericFile.writeToStream(outputStream);
-
-        //set content of spectrum file
-        spectrumFile.setContent(outputStream.toByteArray());
-
-        //set relations
-        spectrumFile.setSpectrum(spectrum);
-        List<SpectrumFile> spectrumFiles = new ArrayList<>();
-        spectrumFiles.add(spectrumFile);
-        spectrum.setSpectrumFiles(spectrumFiles);
+        return spectrum;
     }
 }

@@ -156,7 +156,7 @@ public class InstrumentManagementController implements Controllable {
                             cvTerms.add(analyzer);
                         }
                         CvTermTableModel cvTermTableModel = new CvTermTableModel(cvTerms);
-                        instrumentManagementDialog.getInstrumentDetailTable().setModel(cvTermTableModel);
+                        instrumentManagementDialog.getInstrumentDetailsTable().setModel(cvTermTableModel);
                     } else {
                         //clear detail view
                         clearInstrumentDetailFields();
@@ -635,7 +635,7 @@ public class InstrumentManagementController implements Controllable {
      */
     private void clearInstrumentDetailFields() {
         instrumentManagementDialog.getInstrumentStateInfoLabel().setText("");
-        instrumentManagementDialog.getInstrumentDetailTable().setModel(new CvTermTableModel());
+        instrumentManagementDialog.getInstrumentDetailsTable().setModel(new CvTermTableModel());
     }
 
     /**

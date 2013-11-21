@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.core.exception.MappingException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class InMemoryDbTest {
      * A simple H2 db test.
      */
     @Test
-    public void testParseMzMLAndPersistExperiment() throws IOException, MzMLUnmarshallerException {
+    public void testParseMzMLAndPersistExperiment() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
         List<File> mzMLFiles = new ArrayList<File>();
         File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();

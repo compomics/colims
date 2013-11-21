@@ -1,9 +1,7 @@
 package com.compomics.colims.client.view.admin.instrument;
 
 import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.InstrumentCvTerm;
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JComboBox;

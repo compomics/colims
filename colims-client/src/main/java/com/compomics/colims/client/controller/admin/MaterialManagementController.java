@@ -146,7 +146,7 @@ public class MaterialManagementController implements Controllable {
                         cvTerms.add(selectedMaterial.getTissue());
                         cvTerms.add(selectedMaterial.getCompartment());
                         CvTermTableModel cvTermTableModel = new CvTermTableModel(cvTerms);
-                        materialManagementDialog.getMaterialDetailTable().setModel(cvTermTableModel);
+                        materialManagementDialog.getMaterialDetailsTable().setModel(cvTermTableModel);
                     } else {
                         //clear detail view
                         clearMaterialDetailFields();
@@ -458,6 +458,6 @@ public class MaterialManagementController implements Controllable {
      */
     private void clearMaterialDetailFields() {
         materialManagementDialog.getMaterialStateInfoLabel().setText("");
-        materialManagementDialog.getMaterialDetailTable().setModel(new CvTermTableModel());
+        materialManagementDialog.getMaterialDetailsTable().setModel(new CvTermTableModel());
     }
 }

@@ -1,6 +1,8 @@
 package com.compomics.colims.client.view;
 
+import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -17,42 +19,30 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public JTextArea getExperimentDescriptionTextArea() {
-        return experimentDescriptionTextArea;
+    public JButton getAddExperimentButton() {
+        return addExperimentButton;
     }
 
-    public JList getExperimentList() {
-        return experimentList;
+    public JButton getAddProjectButton() {
+        return addProjectButton;
     }
 
-    public JTextField getExperimentNumberTextField() {
-        return experimentNumberTextField;
+    public JButton getEditExperimentButton() {
+        return editExperimentButton;
     }
 
-    public JTextField getExperimentTitleTextField() {
-        return experimentTitleTextField;
+    public JButton getEditProjectButton() {
+        return editProjectButton;
     }
 
-    public JTextArea getProjectDescriptionTextArea() {
-        return projectDescriptionTextArea;
+    public JTable getExperimentsTable() {
+        return experimentsTable;
     }
 
-    public JTextField getProjectLabelTextField() {
-        return projectLabelTextField;
-    }
-
-    public JList getProjectList() {
-        return projectList;
-    }
-
-    public JTextField getProjectOwnerTextField() {
-        return projectOwnerTextField;
-    }
-
-    public JTextField getProjectTitleTextField() {
-        return projectTitleTextField;
-    }    
-
+    public JTable getProjectsTable() {
+        return projectsTable;
+    }        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,217 +53,100 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         projectsOverviewPanel = new javax.swing.JPanel();
-        projectsScrollPane = new javax.swing.JScrollPane();
-        projectList = new javax.swing.JList();
-        projectDetailPanel = new javax.swing.JPanel();
-        projectDescriptionLabel = new javax.swing.JLabel();
-        projectLabelTextField = new javax.swing.JTextField();
-        projectTitleTextField = new javax.swing.JTextField();
-        projectTitleLabel = new javax.swing.JLabel();
-        projectDescriptionScrollPanel = new javax.swing.JScrollPane();
-        projectDescriptionTextArea = new javax.swing.JTextArea();
-        projectLabelLabel = new javax.swing.JLabel();
-        projectOwnerlabel = new javax.swing.JLabel();
-        projectOwnerTextField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        addProjectButton = new javax.swing.JButton();
+        editProjectButton = new javax.swing.JButton();
+        projectsTableScrollPane = new javax.swing.JScrollPane();
+        projectsTable = new javax.swing.JTable();
         experimentsOverviewPanel = new javax.swing.JPanel();
-        experimentsScrollPane = new javax.swing.JScrollPane();
-        experimentList = new javax.swing.JList();
-        experimentDetailPanel = new javax.swing.JPanel();
-        experimentTitleLabel = new javax.swing.JLabel();
-        experimentTitleTextField = new javax.swing.JTextField();
-        experimentNumberLabel = new javax.swing.JLabel();
-        experimentNumberTextField = new javax.swing.JTextField();
-        experimentDescriptionLabel = new javax.swing.JLabel();
-        projectDescriptionScrollPanel1 = new javax.swing.JScrollPane();
-        experimentDescriptionTextArea = new javax.swing.JTextArea();
+        addExperimentButton = new javax.swing.JButton();
+        editExperimentButton = new javax.swing.JButton();
+        experimentsTableScrollPane = new javax.swing.JScrollPane();
+        experimentsTable = new javax.swing.JTable();
 
         setOpaque(false);
 
         projectsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("projects"));
         projectsOverviewPanel.setOpaque(false);
 
-        projectsScrollPane.setOpaque(false);
+        addProjectButton.setText("add...");
+        addProjectButton.setToolTipText("add a new project");
+        addProjectButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        addProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        addProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        projectsScrollPane.setViewportView(projectList);
+        editProjectButton.setText("edit...");
+        editProjectButton.setToolTipText("edit the metadata of an existing project");
+        editProjectButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        editProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        editProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        projectDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("project details"));
-        projectDetailPanel.setOpaque(false);
-
-        projectDescriptionLabel.setText("description");
-
-        projectLabelTextField.setEditable(false);
-
-        projectTitleTextField.setEditable(false);
-
-        projectTitleLabel.setText("title");
-
-        projectDescriptionTextArea.setEditable(false);
-        projectDescriptionTextArea.setColumns(20);
-        projectDescriptionTextArea.setRows(5);
-        projectDescriptionTextArea.setAutoscrolls(false);
-        projectDescriptionScrollPanel.setViewportView(projectDescriptionTextArea);
-
-        projectLabelLabel.setText("label");
-
-        projectOwnerlabel.setText("owner");
-
-        projectOwnerTextField.setEditable(false);
-
-        javax.swing.GroupLayout projectDetailPanelLayout = new javax.swing.GroupLayout(projectDetailPanel);
-        projectDetailPanel.setLayout(projectDetailPanelLayout);
-        projectDetailPanelLayout.setHorizontalGroup(
-            projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                                .addComponent(projectOwnerlabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(projectOwnerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(216, 216, 216))
-                            .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                                .addComponent(projectTitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(projectTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addComponent(projectLabelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(projectLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(226, 226, 226))
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addComponent(projectDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(projectDescriptionScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
-        );
-        projectDetailPanelLayout.setVerticalGroup(
-            projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectTitleLabel)
-                    .addComponent(projectTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectLabelLabel)
-                    .addComponent(projectLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectOwnerlabel)
-                    .addComponent(projectOwnerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addComponent(projectDescriptionLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(projectDescriptionScrollPanel))
-                .addContainerGap())
-        );
-
-        jButton1.setText("add...");
-        jButton1.setMaximumSize(new java.awt.Dimension(80, 25));
-        jButton1.setMinimumSize(new java.awt.Dimension(80, 25));
-        jButton1.setPreferredSize(new java.awt.Dimension(80, 25));
+        projectsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        projectsTableScrollPane.setViewportView(projectsTable);
 
         javax.swing.GroupLayout projectsOverviewPanelLayout = new javax.swing.GroupLayout(projectsOverviewPanel);
         projectsOverviewPanel.setLayout(projectsOverviewPanelLayout);
         projectsOverviewPanelLayout.setHorizontalGroup(
             projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectsScrollPane)
-                    .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(468, 468, 468)
+                .addComponent(editProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(projectDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(projectsTableScrollPane)
                 .addContainerGap())
         );
         projectsOverviewPanelLayout.setVerticalGroup(
             projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectsOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                        .addComponent(projectDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(13, 13, 13))
-                    .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                        .addComponent(projectsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(projectsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         experimentsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("project experiments"));
         experimentsOverviewPanel.setOpaque(false);
 
-        experimentsScrollPane.setViewportView(experimentList);
+        addExperimentButton.setText("add...");
+        addExperimentButton.setToolTipText("add a new experiment");
+        addExperimentButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        addExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        addExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        experimentDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("experiment details"));
-        experimentDetailPanel.setOpaque(false);
+        editExperimentButton.setText("edit...");
+        editExperimentButton.setToolTipText("edit the metadata of an existing experiment");
+        editExperimentButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        editExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        editExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        experimentTitleLabel.setText("title");
-
-        experimentTitleTextField.setEditable(false);
-
-        experimentNumberLabel.setText("number");
-
-        experimentNumberTextField.setEditable(false);
-
-        experimentDescriptionLabel.setText("description");
-
-        experimentDescriptionTextArea.setEditable(false);
-        experimentDescriptionTextArea.setColumns(20);
-        experimentDescriptionTextArea.setRows(5);
-        experimentDescriptionTextArea.setAutoscrolls(false);
-        projectDescriptionScrollPanel1.setViewportView(experimentDescriptionTextArea);
-
-        javax.swing.GroupLayout experimentDetailPanelLayout = new javax.swing.GroupLayout(experimentDetailPanel);
-        experimentDetailPanel.setLayout(experimentDetailPanelLayout);
-        experimentDetailPanelLayout.setHorizontalGroup(
-            experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                        .addComponent(experimentTitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(experimentTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                        .addComponent(experimentNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(experimentNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                        .addComponent(experimentDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(projectDescriptionScrollPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        experimentDetailPanelLayout.setVerticalGroup(
-            experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(experimentTitleLabel)
-                    .addComponent(experimentTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(experimentNumberLabel)
-                    .addComponent(experimentNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(experimentDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(experimentDetailPanelLayout.createSequentialGroup()
-                        .addComponent(experimentDescriptionLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(projectDescriptionScrollPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        experimentsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        experimentsTableScrollPane.setViewportView(experimentsTable);
 
         javax.swing.GroupLayout experimentsOverviewPanelLayout = new javax.swing.GroupLayout(experimentsOverviewPanel);
         experimentsOverviewPanel.setLayout(experimentsOverviewPanelLayout);
@@ -281,20 +154,24 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
             experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentsOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(experimentDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(experimentsOverviewPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(editExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(addExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(experimentsTableScrollPane))
+                .addContainerGap())
         );
         experimentsOverviewPanelLayout.setVerticalGroup(
             experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentsOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(experimentDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(experimentsOverviewPanelLayout.createSequentialGroup()
-                        .addComponent(experimentsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(experimentsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -313,37 +190,22 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectsOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(projectsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(experimentsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel experimentDescriptionLabel;
-    private javax.swing.JTextArea experimentDescriptionTextArea;
-    private javax.swing.JPanel experimentDetailPanel;
-    private javax.swing.JList experimentList;
-    private javax.swing.JLabel experimentNumberLabel;
-    private javax.swing.JTextField experimentNumberTextField;
-    private javax.swing.JLabel experimentTitleLabel;
-    private javax.swing.JTextField experimentTitleTextField;
+    private javax.swing.JButton addExperimentButton;
+    private javax.swing.JButton addProjectButton;
+    private javax.swing.JButton editExperimentButton;
+    private javax.swing.JButton editProjectButton;
     private javax.swing.JPanel experimentsOverviewPanel;
-    private javax.swing.JScrollPane experimentsScrollPane;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel projectDescriptionLabel;
-    private javax.swing.JScrollPane projectDescriptionScrollPanel;
-    private javax.swing.JScrollPane projectDescriptionScrollPanel1;
-    private javax.swing.JTextArea projectDescriptionTextArea;
-    private javax.swing.JPanel projectDetailPanel;
-    private javax.swing.JLabel projectLabelLabel;
-    private javax.swing.JTextField projectLabelTextField;
-    private javax.swing.JList projectList;
-    private javax.swing.JTextField projectOwnerTextField;
-    private javax.swing.JLabel projectOwnerlabel;
-    private javax.swing.JLabel projectTitleLabel;
-    private javax.swing.JTextField projectTitleTextField;
+    private javax.swing.JTable experimentsTable;
+    private javax.swing.JScrollPane experimentsTableScrollPane;
     private javax.swing.JPanel projectsOverviewPanel;
-    private javax.swing.JScrollPane projectsScrollPane;
+    private javax.swing.JTable projectsTable;
+    private javax.swing.JScrollPane projectsTableScrollPane;
     // End of variables declaration//GEN-END:variables
 }

@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.io.IOManager;
-import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 
 /**
  *
@@ -26,6 +29,14 @@ import com.compomics.colims.repository.SpectrumRepository;
 public class SpectrumServiceImpl implements SpectrumService {
 
     private static final Logger LOGGER = Logger.getLogger(SpectrumServiceImpl.class);
+    /**
+     * This constant defines the start tag for the ions.
+     */
+    private static final String IONS_START = "BEGIN IONS";
+    /**
+     * This constant defines the ernd tag for the ions.
+     */
+    private static final String IONS_END = "END IONS";
     @Autowired
     private SpectrumRepository spectrumRepository;
     @Autowired
@@ -73,23 +84,54 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
-    public Map<Double, Double> getSpectrumPeaks(Long spectrumId) {
-        Map<Double, Double> spectrumPeaks = null;
+    public Map<Double, Double> getSpectrumPeaks(Long spectrumId) throws IOException {
+        Map<Double, Double> spectrumPeaks = new HashMap<>();
 
         Spectrum spectrum = spectrumRepository.findById(spectrumId);
 
         Hibernate.initialize(spectrum.getSpectrumFiles());
         if (!spectrum.getSpectrumFiles().isEmpty()) {
-            try {
-                SpectrumFile spectrumFile = spectrum.getSpectrumFiles().get(0);                
-                byte[] unzippedBytes = iOManager.unzip(spectrumFile.getContent());
-                
-                MascotGenericFile mascotGenericFile = new MascotGenericFile("testMGFFile", new String(unzippedBytes));
+            SpectrumFile spectrumFile = spectrum.getSpectrumFiles().get(0);
+            spectrumPeaks = getSpectrumPeaks(spectrumFile);
+        }
 
-                spectrumPeaks = mascotGenericFile.getPeaks();
-            } catch (IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
+        return spectrumPeaks;
+    }
+
+    @Override
+    public Map<Double, Double> getSpectrumPeaks(SpectrumFile spectrumFile) throws IOException {
+        byte[] unzippedBytes = iOManager.unzip(spectrumFile.getContent());
+
+        Map<Double, Double> spectrumPeaks = new HashMap<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(unzippedBytes)));) {
+            boolean inSpectrum = false;
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                //Delete leading/trailing spaces.
+                line = line.trim();
+                if (line.startsWith(IONS_START)) {
+                    inSpectrum = true;
+                } else if (line.startsWith(IONS_END)) {
+                    break;
+                } else if (inSpectrum && (line.indexOf("=") < 0)) {
+                    // We're inside the spectrum, with no '=' in the line, so it should be
+                    // a peak line.
+                    // A peak line should be either of the following two:
+                    // 234.56 789
+                    // 234.56 789   1+
+                    String[] splits = line.split("[ \t]");
+                    if (splits.length == 2 || splits.length == 3) {
+                        Double mass = Double.parseDouble(splits[0]);
+                        Double intensity = Double.parseDouble(splits[1]);
+                        spectrumPeaks.put(mass, intensity);
+                    } else {
+                        LOGGER.error("Unrecognized line while parsing peaks from spectrum " + spectrumFile.getSpectrum().getAccession() + " in MGF format.");
+                    }
+                }
             }
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+            throw ex;
         }
 
         return spectrumPeaks;

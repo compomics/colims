@@ -171,7 +171,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
 
                             //map MSnSpectrum to model Spectrum
                             //@todo get fragmentation type from peptideshaker
-                            utilitiesSpectrumMapper.map(sourceSpectrum, charge, null, targetSpectrum);
+                            utilitiesSpectrumMapper.map(sourceSpectrum, null, targetSpectrum);
                             spectrums.add(targetSpectrum);
                             //set entity relations
                             targetSpectrum.setAnalyticalRun(analyticalRun);

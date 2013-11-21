@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
@@ -44,7 +45,7 @@ public class UtilitiesProteinMapper {
      * @param targetPeptide the colims peptide
      * @throws MappingException
      */
-    public void map(List<ProteinMatch> proteinMatches, PSParameter peptideProbabilities, Peptide targetPeptide) throws MappingException {
+    public void map(List<ProteinMatch> proteinMatches, MatchScore peptideMatchScore, Peptide targetPeptide) throws MappingException {
         try {
             List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
             //iterate over protein matches
@@ -61,8 +62,8 @@ public class UtilitiesProteinMapper {
                             Protein matchedProtein = getProtein(proteinAccession);
                             if (matchedProtein != null) {
                                 PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                                peptideHasProtein.setPeptideProbability(peptideProbabilities.getPeptideProbabilityScore());
-                                peptideHasProtein.setPeptidePostErrorProbability(peptideProbabilities.getPeptideProbability());
+                                peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
+                                peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
                                 peptideHasProteins.add(peptideHasProtein);
                                 //set entity relations
                                 peptideHasProtein.setProtein(matchedProtein);
@@ -73,8 +74,8 @@ public class UtilitiesProteinMapper {
                     } else {
                         //only set the main matched protein as the protein and leave the main group protein empty
                         PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                        peptideHasProtein.setPeptideProbability(peptideProbabilities.getPeptideProbabilityScore());
-                        peptideHasProtein.setPeptidePostErrorProbability(peptideProbabilities.getPeptideProbability());
+                        peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
+                        peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
                         peptideHasProteins.add(peptideHasProtein);
                         //set entity relations
                         peptideHasProtein.setProtein(mainMatchedProtein);

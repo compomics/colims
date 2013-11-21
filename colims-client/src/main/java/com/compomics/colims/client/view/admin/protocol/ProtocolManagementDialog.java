@@ -20,7 +20,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        protocolDetailTableScrollPane.getViewport().setOpaque(false);
+        protocolDetailsTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -36,8 +36,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         return protocolList;
     }  
 
-    public JTable getProtocolDetailTable() {
-        return protocolDetailTable;
+    public JTable getProtocolDetailsTable() {
+        return protocolDetailsTable;
     }
 
     public JButton getEditProtocolButton() {
@@ -68,8 +68,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         addProtocolButton = new javax.swing.JButton();
         deleteProtocolButton = new javax.swing.JButton();
         protocolDetailPanel = new javax.swing.JPanel();
-        protocolDetailTableScrollPane = new javax.swing.JScrollPane();
-        protocolDetailTable = new javax.swing.JTable();
+        protocolDetailsTableScrollPane = new javax.swing.JScrollPane();
+        protocolDetailsTable = new javax.swing.JTable();
         protocolEditButton = new javax.swing.JButton();
         protocolStateInfoLabel = new javax.swing.JLabel();
         closeProtocolManagementButton = new javax.swing.JButton();
@@ -128,9 +128,9 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         protocolDetailPanel.setOpaque(false);
         protocolDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        protocolDetailTableScrollPane.setOpaque(false);
+        protocolDetailsTableScrollPane.setOpaque(false);
 
-        protocolDetailTable.setModel(new javax.swing.table.DefaultTableModel(
+        protocolDetailsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -141,8 +141,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        protocolDetailTable.setOpaque(false);
-        protocolDetailTableScrollPane.setViewportView(protocolDetailTable);
+        protocolDetailsTable.setOpaque(false);
+        protocolDetailsTableScrollPane.setViewportView(protocolDetailsTable);
 
         protocolEditButton.setText("edit...");
         protocolEditButton.setToolTipText("save or update the selected protocol");
@@ -164,7 +164,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                             .addGroup(protocolDetailPanelLayout.createSequentialGroup()
                                 .addGap(501, 501, 501)
                                 .addComponent(protocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(protocolDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(protocolDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -173,7 +173,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
             .addGroup(protocolDetailPanelLayout.createSequentialGroup()
                 .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(protocolDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(protocolDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(protocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -233,8 +233,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteProtocolButton;
     private javax.swing.JPanel protocolCrudPanel;
     private javax.swing.JPanel protocolDetailPanel;
-    private javax.swing.JTable protocolDetailTable;
-    private javax.swing.JScrollPane protocolDetailTableScrollPane;
+    private javax.swing.JTable protocolDetailsTable;
+    private javax.swing.JScrollPane protocolDetailsTableScrollPane;
     private javax.swing.JButton protocolEditButton;
     private javax.swing.JList protocolList;
     private javax.swing.JScrollPane protocolListScrollPane;

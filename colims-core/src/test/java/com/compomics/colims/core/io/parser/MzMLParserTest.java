@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.core.io.parser;
 
+import com.compomics.colims.core.exception.MappingException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -46,9 +47,9 @@ public class MzMLParserTest {
      * found for the given MzML file name.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException {
+    public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
-        List<File> mzMLFiles = new ArrayList<File>();
+        List<File> mzMLFiles = new ArrayList<>();
         File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();
         mzMLFiles.add(mzMLFile);
 
@@ -59,7 +60,7 @@ public class MzMLParserTest {
     }
 
     @Test
-    public void testParseMzmlFile() throws IOException, MzMLUnmarshallerException {
+    public void testParseMzmlFile() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
         List<File> mzMLFiles = new ArrayList<File>();
         File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();
@@ -92,7 +93,7 @@ public class MzMLParserTest {
         //get first spectrum
         assertNotNull(analyticalRun.getSpectrums().get(0));
         Spectrum spectrum = analyticalRun.getSpectrums().get(0);
-        assertEquals("scan=20", spectrum.getAccession());
+        assertEquals("test_mzML_1.mzML_cus_scan=20", spectrum.getAccession());
         assertEquals(445.34, spectrum.getMzRatio(), 0.001);
         assertEquals(Integer.valueOf(2), spectrum.getCharge());
         assertEquals(5.9905, spectrum.getScanTime(), 0.001);

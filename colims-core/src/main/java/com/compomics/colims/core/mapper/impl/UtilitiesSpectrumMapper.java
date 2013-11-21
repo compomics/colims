@@ -3,20 +3,19 @@ package com.compomics.colims.core.mapper.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.log4j.Logger;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.model.MascotGenericFile;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,12 +31,11 @@ public class UtilitiesSpectrumMapper {
      * Map the utilities spectrum onto the colims spectrum.
      *
      * @param sourceSpectrum the utilities spectrum
-     * @param charge the spectrum charge
      * @param fragmentationType the fragmentation type of the spectrum
      * @param targetSpectrum the colims spectrum
      * @throws MappingException
      */
-    public void map(MSnSpectrum sourceSpectrum, int charge, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
+    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
         LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
 
         if (sourceSpectrum == null || targetSpectrum == null) {
@@ -47,47 +45,34 @@ public class UtilitiesSpectrumMapper {
         //get precursor from source
         Precursor precursor = sourceSpectrum.getPrecursor();
 
-        //create new mgf file from scratch
-        MascotGenericFile mascotGenericFile = new MascotGenericFile();
-        mascotGenericFile.setFilename(sourceSpectrum.getSpectrumTitle());
-
-        //set mascot file properties
-        mascotGenericFile.setComments("");
-        mascotGenericFile.setPrecursorMZ(precursor.getMz());
-        mascotGenericFile.setIntensity(precursor.getIntensity());
-        mascotGenericFile.setCharge(charge);
-
         //set target spectrum properties        
         //@todo is spectrum key the correct accession property?
         targetSpectrum.setAccession(sourceSpectrum.getSpectrumKey());
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
         targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber());
+        targetSpectrum.setScanTime(sourceSpectrum.getScanStartTime());
         targetSpectrum.setMzRatio(precursor.getMz());
         targetSpectrum.setIntensity(precursor.getIntensity());
         targetSpectrum.setRetentionTime(precursor.getRt());
-        targetSpectrum.setCharge(charge);
+        targetSpectrum.setCharge(precursor.getPossibleCharges().get(0).value);
         if (fragmentationType != null) {
             targetSpectrum.setFragmentationType(fragmentationType);
         }
-
-        //copy spectrum peaks
-        HashMap<Double, Double> peaks = new HashMap<>();
-        for (Peak peak : sourceSpectrum.getPeakList()) {
-            peaks.put(peak.mz, peak.intensity);
-        }
-        mascotGenericFile.setPeaks(peaks);
 
         //create new SpectrumFile
         SpectrumFile spectrumFile = new SpectrumFile();
         spectrumFile.setSpectrum(targetSpectrum);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(byteArrayOutputStream));
                 ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
 
-            //write mgf file as stream to byte array
-            mascotGenericFile.writeToStream(byteArrayOutputStream);
-            byteArrayOutputStream.flush();
+            //write MSnSpectum to a byte array output stream
+            sourceSpectrum.writeMgf(bufferedWriter);
+            bufferedWriter.flush();
+            
+            //get the bytes from the stream
             byte[] unzippedBytes = byteArrayOutputStream.toByteArray();
 
             //gzip byte array

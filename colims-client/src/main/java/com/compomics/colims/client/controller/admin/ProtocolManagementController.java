@@ -152,7 +152,7 @@ public class ProtocolManagementController implements Controllable {
                             cvTerms.add(otherCvTerm);
                         }
                         CvTermTableModel cvTermTableModel = new CvTermTableModel(cvTerms);
-                        protocolManagementDialog.getProtocolDetailTable().setModel(cvTermTableModel);
+                        protocolManagementDialog.getProtocolDetailsTable().setModel(cvTermTableModel);
                     } else {
                         //clear detail view
                         clearProtocolDetailFields();
@@ -442,6 +442,6 @@ public class ProtocolManagementController implements Controllable {
      */
     private void clearProtocolDetailFields() {
         protocolManagementDialog.getProtocolStateInfoLabel().setText("");
-        protocolManagementDialog.getProtocolDetailTable().setModel(new CvTermTableModel());
+        protocolManagementDialog.getProtocolDetailsTable().setModel(new CvTermTableModel());
     }
 }

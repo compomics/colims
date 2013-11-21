@@ -20,7 +20,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        materialDetailTableScrollPane.getViewport().setOpaque(false);
+        materialDetailsTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -36,8 +36,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         return materialList;
     }  
 
-    public JTable getMaterialDetailTable() {
-        return materialDetailTable;
+    public JTable getMaterialDetailsTable() {
+        return materialDetailsTable;
     }
 
     public JButton getEditMaterialButton() {
@@ -68,8 +68,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         addMaterialButton = new javax.swing.JButton();
         deleteMaterialButton = new javax.swing.JButton();
         materialDetailPanel = new javax.swing.JPanel();
-        materialDetailTableScrollPane = new javax.swing.JScrollPane();
-        materialDetailTable = new javax.swing.JTable();
+        materialDetailsTableScrollPane = new javax.swing.JScrollPane();
+        materialDetailsTable = new javax.swing.JTable();
         materialEditButton = new javax.swing.JButton();
         materialStateInfoLabel = new javax.swing.JLabel();
         closeMaterialManagementButton = new javax.swing.JButton();
@@ -128,9 +128,9 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         materialDetailPanel.setOpaque(false);
         materialDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        materialDetailTableScrollPane.setOpaque(false);
+        materialDetailsTableScrollPane.setOpaque(false);
 
-        materialDetailTable.setModel(new javax.swing.table.DefaultTableModel(
+        materialDetailsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -141,8 +141,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        materialDetailTable.setOpaque(false);
-        materialDetailTableScrollPane.setViewportView(materialDetailTable);
+        materialDetailsTable.setOpaque(false);
+        materialDetailsTableScrollPane.setViewportView(materialDetailsTable);
 
         materialEditButton.setText("edit...");
         materialEditButton.setToolTipText("save or update the selected material");
@@ -164,7 +164,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
                             .addGroup(materialDetailPanelLayout.createSequentialGroup()
                                 .addGap(501, 501, 501)
                                 .addComponent(materialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(materialDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(materialDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -173,7 +173,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
             .addGroup(materialDetailPanelLayout.createSequentialGroup()
                 .addComponent(materialStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(materialDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(materialDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(materialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -233,8 +233,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteMaterialButton;
     private javax.swing.JPanel materialCrudPanel;
     private javax.swing.JPanel materialDetailPanel;
-    private javax.swing.JTable materialDetailTable;
-    private javax.swing.JScrollPane materialDetailTableScrollPane;
+    private javax.swing.JTable materialDetailsTable;
+    private javax.swing.JScrollPane materialDetailsTableScrollPane;
     private javax.swing.JButton materialEditButton;
     private javax.swing.JList materialList;
     private javax.swing.JScrollPane materialListScrollPane;

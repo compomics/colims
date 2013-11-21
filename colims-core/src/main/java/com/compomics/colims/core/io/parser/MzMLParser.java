@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.parser;
 
+import com.compomics.colims.core.exception.MappingException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +29,6 @@ public interface MzMLParser {
      * @param mzMLFileName the mzML file name
      * @return the experiment
      */
-    Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException;
+    Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException;
         
 }

@@ -202,7 +202,7 @@
                                       <EmptySpace min="-2" pref="501" max="-2" attributes="0"/>
                                       <Component id="instrumentEditButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="instrumentDetailTableScrollPane" alignment="0" min="-2" pref="581" max="-2" attributes="0"/>
+                                  <Component id="instrumentDetailsTableScrollPane" alignment="0" min="-2" pref="581" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -216,7 +216,7 @@
                   <Group type="102" attributes="0">
                       <Component id="instrumentStateInfoLabel" min="-2" pref="20" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="instrumentDetailTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
+                      <Component id="instrumentDetailsTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="instrumentEditButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -225,7 +225,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="instrumentDetailTableScrollPane">
+            <Container class="javax.swing.JScrollPane" name="instrumentDetailsTableScrollPane">
               <Properties>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -235,7 +235,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="instrumentDetailTable">
+                <Component class="javax.swing.JTable" name="instrumentDetailsTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">

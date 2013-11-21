@@ -20,7 +20,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
-        instrumentDetailTableScrollPane.getViewport().setOpaque(false);
+        instrumentDetailsTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
 
@@ -36,8 +36,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         return instrumentList;
     }  
 
-    public JTable getInstrumentDetailTable() {
-        return instrumentDetailTable;
+    public JTable getInstrumentDetailsTable() {
+        return instrumentDetailsTable;
     }
 
     public JButton getEditInstrumentButton() {
@@ -68,8 +68,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         addInstrumentButton = new javax.swing.JButton();
         deleteInstrumentButton = new javax.swing.JButton();
         instrumentDetailPanel = new javax.swing.JPanel();
-        instrumentDetailTableScrollPane = new javax.swing.JScrollPane();
-        instrumentDetailTable = new javax.swing.JTable();
+        instrumentDetailsTableScrollPane = new javax.swing.JScrollPane();
+        instrumentDetailsTable = new javax.swing.JTable();
         instrumentEditButton = new javax.swing.JButton();
         instrumentStateInfoLabel = new javax.swing.JLabel();
         closeInstrumentManagementButton = new javax.swing.JButton();
@@ -128,9 +128,9 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         instrumentDetailPanel.setOpaque(false);
         instrumentDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        instrumentDetailTableScrollPane.setOpaque(false);
+        instrumentDetailsTableScrollPane.setOpaque(false);
 
-        instrumentDetailTable.setModel(new javax.swing.table.DefaultTableModel(
+        instrumentDetailsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -141,8 +141,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        instrumentDetailTable.setOpaque(false);
-        instrumentDetailTableScrollPane.setViewportView(instrumentDetailTable);
+        instrumentDetailsTable.setOpaque(false);
+        instrumentDetailsTableScrollPane.setViewportView(instrumentDetailsTable);
 
         instrumentEditButton.setText("edit...");
         instrumentEditButton.setToolTipText("save or update the selected instrument");
@@ -164,7 +164,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                             .addGroup(instrumentDetailPanelLayout.createSequentialGroup()
                                 .addGap(501, 501, 501)
                                 .addComponent(instrumentEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(instrumentDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(instrumentDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -173,7 +173,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
             .addGroup(instrumentDetailPanelLayout.createSequentialGroup()
                 .addComponent(instrumentStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instrumentDetailTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(instrumentDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(instrumentEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -233,8 +233,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteInstrumentButton;
     private javax.swing.JPanel instrumentCrudPanel;
     private javax.swing.JPanel instrumentDetailPanel;
-    private javax.swing.JTable instrumentDetailTable;
-    private javax.swing.JScrollPane instrumentDetailTableScrollPane;
+    private javax.swing.JTable instrumentDetailsTable;
+    private javax.swing.JScrollPane instrumentDetailsTableScrollPane;
     private javax.swing.JButton instrumentEditButton;
     private javax.swing.JList instrumentList;
     private javax.swing.JScrollPane instrumentListScrollPane;

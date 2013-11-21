@@ -28,29 +28,22 @@ import eu.isas.peptideshaker.myparameters.PSParameter;
 public class UtilitiesPeptideMapperTest {
 
     @Autowired
-    private UtilitiesPeptideMapper utilitiesPeptideMapper;    
-    
+    private UtilitiesPeptideMapper utilitiesPeptideMapper;
+
     @Test
     public void testMapPeptide() throws MappingException, IOException {
         //create new utilities Peptide
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<String>(), new ArrayList<ModificationMatch>());        
-        //create new utilities PeptideAssumption
-        PeptideAssumption peptideAssumption = new PeptideAssumption(sourcePeptide, 1, 1, new Charge(1, 1), 100.0);        
-        //create new utilities SpectrumMatch
-        SpectrumMatch spectrumMatch = new SpectrumMatch("0", peptideAssumption);
-        spectrumMatch.setBestAssumption(peptideAssumption);
-        
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<String>(), new ArrayList<ModificationMatch>());
+
         //create psm scores
-        PSParameter psmProbabilities = new PSParameter();
-        psmProbabilities.setSpectrumProbabilityScore(0.5);
-        psmProbabilities.setPsmProbability(0.1);
-        
+        MatchScore psmMatchScore = new MatchScore(0.5, 0.1);
+
         Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(spectrumMatch, psmProbabilities, targetPeptide);
+        utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, null, targetPeptide);
 
         Assert.assertEquals(sourcePeptide.getSequence(), targetPeptide.getSequence());
-        Assert.assertEquals(sourcePeptide.getMass(), targetPeptide.getTheoreticalMass(), 0.001);        
-        Assert.assertEquals(psmProbabilities.getPsmProbabilityScore(), targetPeptide.getPsmProbability(), 0.001);        
-        Assert.assertEquals(psmProbabilities.getPsmProbability(), targetPeptide.getPsmPostErrorProbability(), 0.001);        
+        Assert.assertEquals(sourcePeptide.getMass(), targetPeptide.getTheoreticalMass(), 0.001);
+        Assert.assertEquals(psmMatchScore.getProbability(), targetPeptide.getPsmProbability(), 0.001);
+        Assert.assertEquals(psmMatchScore.getPostErrorProbability(), targetPeptide.getPsmPostErrorProbability(), 0.001);
     }
 }
