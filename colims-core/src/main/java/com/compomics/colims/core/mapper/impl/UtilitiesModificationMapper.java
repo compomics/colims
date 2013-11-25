@@ -14,15 +14,10 @@ import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationTypeEnum;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
-import com.compomics.util.pride.PrideObjectsFactory;
-import com.compomics.util.pride.PtmToPrideMap;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,14 +32,12 @@ public class UtilitiesModificationMapper {
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
     @Autowired
+    private PtmCvTermMapper ptmCvTermMapper;
+    @Autowired
     private ModificationService modificationService;
     @Autowired
     private OlsService olsService;
-    /**
-     * The utilities PtmToPrideMap that holds mappings between utilities PTMs
-     * and CV term PTMs
-     */
-    private PtmToPrideMap ptmToPrideMap;
+
     /**
      * The map of new modifications (key: modification name, value: the
      * modification)
@@ -56,29 +49,23 @@ public class UtilitiesModificationMapper {
      * @todo think of a good way to import this .cus file from the .compomics
      * folder
      */
-    private PTMFactory pTMFactory = PTMFactory.getInstance();
-
-    public UtilitiesModificationMapper() throws FileNotFoundException, IOException, ClassNotFoundException {
-        ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();
-    }
-
+    private PTMFactory pTMFactory = PTMFactory.getInstance();      
     /**
-     * Update the PtmToPrideMap with the PTMs found in the PeptideShaker
-     * SearchParameters
+     * Map the utilities modification matches onto the colims peptide. The
+     * utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
-     * @param searchParameters the PeptideShaker SearchParameters
+     * @param modificationMatches the list of modification matches
+     * @param ptmScores the PeptideShaker PTM scores
+     * @param targetPeptide the colims target peptide
+     * @throws MappingException
      */
-    public void update(SearchParameters searchParameters) throws FileNotFoundException, IOException, ClassNotFoundException {
-        PtmToPrideMap.loadPtmToPrideMap(searchParameters);
-    }
-
     public void map(ArrayList<ModificationMatch> modificationMatches, PSPtmScores ptmScores, Peptide targetPeptide) throws MappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //iterate over modification matches
         for (ModificationMatch modificationMatch : modificationMatches) {
-            //try to find a mapped CV term in the PtmToPrideMap
-            CvTerm cvTerm = ptmToPrideMap.getCVTerm(modificationMatch.getTheoreticPtm());
+            //try to find a mapped CV term
+            CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationMatch.getTheoreticPtm());
 
             Modification modification;
             if (cvTerm != null) {

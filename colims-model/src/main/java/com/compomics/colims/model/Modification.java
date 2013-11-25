@@ -54,7 +54,7 @@ public class Modification extends AbstractDatabaseEntity {
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
     public Modification() {
-    }           
+    }
 
     public Modification(String name) {
         this.name = name;
@@ -63,7 +63,7 @@ public class Modification extends AbstractDatabaseEntity {
     public Modification(String accession, String name) {
         this.accession = accession;
         this.name = name;
-    }       
+    }
 
     public Long getId() {
         return id;

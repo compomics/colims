@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.mapper.impl.PtmCvTermMapper;
 import com.compomics.colims.core.mapper.impl.UtilitiesModificationMapper;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
@@ -22,6 +23,7 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.preferences.ModificationProfile;
+import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.io.FileNotFoundException;
@@ -36,6 +38,8 @@ import org.junit.Before;
 public class UtilitiesModificationMapperTest {
 
     @Autowired
+    private PtmCvTermMapper ptmCvTermMapper;
+    @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
     private ModificationService modificationService;
@@ -43,12 +47,16 @@ public class UtilitiesModificationMapperTest {
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
+    private CvTerm nonUtilitiesPtm;
+    private String nonUtilitiesPtmName;
 
     @Before
     public void loadSearchParameters() throws FileNotFoundException, IOException {
         //get PTMs from PTMFactory
         oxidation = pTMFactory.getPTM("oxidation of m");
         phosphorylation = pTMFactory.getPTM("phosphorylation of y");
+        nonUtilitiesPtmName = "L-proline removal";
+        nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 
         searchParameters = new SearchParameters();
 
@@ -60,14 +68,17 @@ public class UtilitiesModificationMapperTest {
 
         try {
             //update mapper with the SearchParameters
-            utilitiesModificationMapper.update(searchParameters);
+            ptmCvTermMapper.updatePtmToPrideMap(searchParameters);
         } catch (FileNotFoundException | ClassNotFoundException ex) {
             Assert.fail();
         }
+
+        //add the non utilities PTM to the ptmCvTermMapper
+        ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
     }
 
     /*
-     * Test the mapping for a peptide with 2 modifications, none of them are present in the db.
+     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
      */
     @Test
     public void testMapModification_1() throws MappingException {
@@ -77,6 +88,8 @@ public class UtilitiesModificationMapperTest {
         modificationMatches.add(oxidationMatch);
         ModificationMatch phosphorylationMatch = new ModificationMatch(phosphorylation.getName(), true, 1);
         modificationMatches.add(phosphorylationMatch);
+        ModificationMatch nonUtilitiesModificationMatch = new ModificationMatch(nonUtilitiesPtmName, true, 5);
+        modificationMatches.add(nonUtilitiesModificationMatch);
 
         //create PSPtmScores
         PSPtmScores ptmScores = new PSPtmScores();
@@ -97,6 +110,14 @@ public class UtilitiesModificationMapperTest {
         ptmScoring.addDeltaScore(locations, phosphorylationScore);
         ptmScores.addPtmScoring(phosphorylation.getName(), ptmScoring);
 
+        ptmScoring = new PtmScoring(nonUtilitiesPtmName);
+        locations = new ArrayList();
+        locations.add(nonUtilitiesModificationMatch.getModificationSite());
+        double nonUtilitiesPtmScore = 300.0;
+        ptmScoring.addAScore(locations, nonUtilitiesPtmScore);
+        ptmScoring.addDeltaScore(locations, nonUtilitiesPtmScore);
+        ptmScores.addPtmScoring(nonUtilitiesPtmName, ptmScoring);
+
         //create new colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
@@ -104,7 +125,7 @@ public class UtilitiesModificationMapperTest {
 
         //check modification mapping
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
-        Assert.assertEquals(2, targetPeptide.getPeptideHasModifications().size());
+        Assert.assertEquals(3, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
         for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
             //check for null values
@@ -112,24 +133,35 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
             Assert.assertNotNull(peptideHasModification.getPeptide());
-            Assert.assertNotNull(peptideHasModification.getAlphaScore());  
-            Assert.assertNotNull(peptideHasModification.getDeltaScore());  
+            Assert.assertNotNull(peptideHasModification.getAlphaScore());
+            Assert.assertNotNull(peptideHasModification.getDeltaScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-            if (modification.getName().equals(oxidation.getName())) {
-                Assert.assertEquals(oxidation.getName(), modification.getName());
+            if (modification.getName().equals("monohydroxylated lysine")) {
+                Assert.assertEquals("monohydroxylated lysine", modification.getName());
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());                
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
-            } else if (modification.getName().equals(phosphorylation.getName())) {
-                Assert.assertEquals(phosphorylation.getName(), modification.getName());
+                Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
+            } else if (modification.getName().equals("phosphorylated residue")) {
+                Assert.assertEquals("phosphorylated residue", modification.getName());
                 Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationTypeEnum.FIXED, peptideHasModification.getModificationType());
+                Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
+            } else if (modification.getName().equals("L-proline removal")) {
+                Assert.assertEquals("L-proline removal", modification.getName());
+                Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
+                Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());
+                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getAlphaScore(), 0.001);
+                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
+            }
+            else{
+                Assert.fail();
             }
         }
 
@@ -170,8 +202,8 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
-            Assert.assertNotNull(peptideHasModification.getPeptide());            
-            
+            Assert.assertNotNull(peptideHasModification.getPeptide());
+
             //since the modification is fixed, there should be no score
             Assert.assertNull(peptideHasModification.getDeltaScore());
             Assert.assertNull(peptideHasModification.getAlphaScore());
