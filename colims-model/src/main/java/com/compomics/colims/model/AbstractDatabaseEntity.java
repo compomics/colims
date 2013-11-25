@@ -9,6 +9,9 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,6 +25,11 @@ public abstract class AbstractDatabaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Basic(optional = false)
+    @Column(name = "id", nullable = false)
+    protected Long id;    
     @Basic(optional = false)
     @Column(name = "user_name", nullable = false)
     protected String userName;
@@ -33,6 +41,14 @@ public abstract class AbstractDatabaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modification_date", nullable = false)
     protected Date modificationDate;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }        
 
     public String getUserName() {
         return userName;

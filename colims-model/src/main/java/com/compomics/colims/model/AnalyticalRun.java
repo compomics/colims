@@ -12,9 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -30,12 +27,7 @@ import javax.persistence.TemporalType;
 @Entity
 public class AnalyticalRun extends AbstractDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;    
+    private static final long serialVersionUID = 1L;   
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;    
@@ -50,19 +42,11 @@ public class AnalyticalRun extends AbstractDatabaseEntity {
     @ManyToOne
     private Instrument instrument;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
-    private List<Spectrum> spectrums = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private List<Spectrum> spectrums = new ArrayList<>();  
 
     public String getName() {
         return name;
-    }
+    }        
 
     public void setName(String name) {
         this.name = name;

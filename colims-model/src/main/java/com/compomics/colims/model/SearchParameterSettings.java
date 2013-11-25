@@ -24,11 +24,6 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
     @JoinColumn(name = "l_s_and_val_set_has_s_eng_id", referencedColumnName = "id")
     @ManyToOne
     private SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine;
@@ -40,13 +35,5 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
     public void setSearchAndValSetHasSearchEngine(SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine) {
         this.searchAndValSetHasSearchEngine = searchAndValSetHasSearchEngine;
     }    
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
     
 }

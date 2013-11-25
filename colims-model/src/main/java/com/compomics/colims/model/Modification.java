@@ -11,9 +11,6 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,11 +23,7 @@ import javax.persistence.Table;
 public class Modification extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     //@todo make mandatory?
     @Basic(optional = true)
     @Column(name = "accession", nullable = true)
@@ -63,14 +56,6 @@ public class Modification extends AbstractDatabaseEntity {
     public Modification(String accession, String name) {
         this.accession = accession;
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getAccession() {

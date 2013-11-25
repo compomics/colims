@@ -23,11 +23,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Institution extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name")
     @Length(min = 5, max = 30, message = "Institution name must be between {min} and {max} characters")
@@ -61,14 +57,6 @@ public class Institution extends AbstractDatabaseEntity {
     @Length(min = 2, max = 30, message = "Institution country name must be between {min} and {max} characters")
     @Column(name = "country", nullable = false)
     private String country;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

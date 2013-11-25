@@ -98,14 +98,15 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
         projectsOverviewPanelLayout.setHorizontalGroup(
             projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                .addGap(468, 468, 468)
-                .addComponent(editProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(addProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectsTableScrollPane)
+                .addGroup(projectsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectsOverviewPanelLayout.createSequentialGroup()
+                        .addGap(468, 468, 468)
+                        .addComponent(editProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(addProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(projectsOverviewPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(projectsTableScrollPane)))
                 .addContainerGap())
         );
         projectsOverviewPanelLayout.setVerticalGroup(

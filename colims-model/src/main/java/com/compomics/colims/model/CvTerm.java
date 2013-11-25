@@ -6,9 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -19,11 +16,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class CvTerm extends AbstractDatabaseEntity implements Comparable<CvTerm> {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    protected Long id;    
+
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
     protected String ontology;
@@ -50,14 +43,6 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
         this.label = label;
         this.accession = accession;
         this.name = name;        
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getOntology() {

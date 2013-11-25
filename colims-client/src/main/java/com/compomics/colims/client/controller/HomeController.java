@@ -17,9 +17,10 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.comparator.SpectrumIdComparator;
+import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 import java.awt.GridBagConstraints;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.ListSelectionModel;
@@ -76,7 +77,7 @@ public class HomeController implements Controllable {
 
         //init spectrum table
         spectrumEventList = new BasicEventList<>();
-        sortedSpectrumList = new SortedList<>(spectrumEventList, new SpectrumIdComparator());
+        sortedSpectrumList = new SortedList<>(spectrumEventList, new IdComparator());
         homePanel.getSpectrumJTable().setModel(new DefaultEventTableModel(sortedSpectrumList, new SpectrumTableFormat()));
         homePanel.getSpectrumJTable().setSelectionModel(new DefaultEventSelectionModel(sortedSpectrumList));
 
@@ -182,7 +183,12 @@ public class HomeController implements Controllable {
                     if (homePanel.getSpectrumJTable().getSelectedRow() != -1) {
                         Spectrum spectrum = sortedSpectrumList.get(homePanel.getSpectrumJTable().getSelectedRow());
 
-                        Map<Double, Double> spectrumPeaks = spectrumService.getSpectrumPeaks(spectrum.getId());
+                        Map<Double, Double> spectrumPeaks = null;
+                        try {
+                            spectrumPeaks = spectrumService.getSpectrumPeaks(spectrum.getId());
+                        } catch (IOException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
+                        }
 
                         //check if the spectrum has been matched
                         Peptide peptide = (spectrum.getPeptides().isEmpty()) ? null : spectrum.getPeptides().get(0);

@@ -49,11 +49,7 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
 public class User extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
     @Length(min = 2, max = 20, message = "User name must be between {min} and {max} characters")
@@ -98,14 +94,6 @@ public class User extends AbstractDatabaseEntity {
     public User(String name) {
         this();
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

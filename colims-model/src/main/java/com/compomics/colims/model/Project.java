@@ -12,9 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -36,11 +33,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Project extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project title")
     @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
@@ -72,14 +65,6 @@ public class Project extends AbstractDatabaseEntity {
     private List<Material> materials = new ArrayList<>();
 
     public Project() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {

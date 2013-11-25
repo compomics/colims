@@ -6,13 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,24 +21,12 @@ import javax.persistence.Table;
 public class IdentificationFile extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     @JoinColumn(name = "l_search_and_val_set_id", referencedColumnName = "id")
     @ManyToOne
     private SearchAndValidationSettings searchAndValidationSettings;
     @OneToMany(mappedBy = "identificationFile")
     private List<Peptide> peptides = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public SearchAndValidationSettings getSearchAndValidationSettings() {
         return searchAndValidationSettings;

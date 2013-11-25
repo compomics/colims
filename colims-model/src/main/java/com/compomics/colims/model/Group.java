@@ -30,11 +30,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;    
+ 
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 5, max = 100, message = "Group name length must be between {min} and {max} characters")
@@ -60,14 +56,6 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
 
     public Group(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

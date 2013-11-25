@@ -7,12 +7,7 @@ package com.compomics.colims.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,12 +22,7 @@ import javax.persistence.Table;
 public class SearchAndValSetHasSearchEngine extends AbstractDatabaseEntity {
     
     private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     @OneToMany(mappedBy="searchAndValSetHasSearchEngine")
     private List<SearchParameterSettings> searchParametersSettings = new ArrayList<>();
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
@@ -48,15 +38,7 @@ public class SearchAndValSetHasSearchEngine extends AbstractDatabaseEntity {
 
     public void setSearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings) {
         this.searchAndValidationSettings = searchAndValidationSettings;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }    
+    } 
     
     public SearchEngine getSearchEngine() {
         return searchEngine;

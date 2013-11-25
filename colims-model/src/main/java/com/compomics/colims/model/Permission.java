@@ -6,9 +6,6 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -24,11 +21,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Permission extends AbstractDatabaseEntity implements Comparable<Permission> {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert a permission accession")
     @Length(min = 5, max = 100, message = "Permission name length must be between {min} and {max} characters")
@@ -46,14 +39,6 @@ public class Permission extends AbstractDatabaseEntity implements Comparable<Per
 
     public Permission(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

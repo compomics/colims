@@ -26,21 +26,8 @@ public class SearchEngine extends AbstractDatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
     @OneToMany(mappedBy = "searchEngine")
-    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }    
+    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines = new ArrayList<>();  
 
     public List<SearchAndValSetHasSearchEngine> getSearchAndValSetHasSearchEngines() {
         return searchAndValSetHasSearchEngines;
