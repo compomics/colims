@@ -1,5 +1,11 @@
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.client.compoment.DualList;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Niels Hulstaert
@@ -12,8 +18,32 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     public ProjectEditDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);        
         initComponents();
-    }        
+    } 
 
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+
+    public JTextArea getProjectDescriptionTextArea() {
+        return projectDescriptionTextArea;
+    }
+
+    public JTextField getProjectLabelTextField() {
+        return projectLabelTextField;
+    }
+
+    public JComboBox getProjectOwnerComboBox() {
+        return projectOwnerComboBox;
+    }
+
+    public JButton getSaveOrUpdateButton() {
+        return saveOrUpdateButton;
+    }
+
+    public DualList getUserDualList() {
+        return userDualList;
+    }        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

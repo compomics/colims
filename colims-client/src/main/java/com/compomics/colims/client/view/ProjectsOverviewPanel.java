@@ -1,10 +1,7 @@
 package com.compomics.colims.client.view;
 
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 /**
  *
@@ -17,6 +14,12 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
      */
     public ProjectsOverviewPanel() {
         initComponents();
+
+        projectsTableScrollPane.getViewport().setOpaque(false);
+        projectsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        experimentsTableScrollPane.getViewport().setOpaque(false);
+        experimentsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
 
     public JButton getAddExperimentButton() {
@@ -41,8 +44,8 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
 
     public JTable getProjectsTable() {
         return projectsTable;
-    }        
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

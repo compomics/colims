@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 public class ProjectsOverviewController {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectsOverviewController.class);
+    
     //model
     private EventList<Project> projects = new BasicEventList<>();
     private AdvancedTableModel<Project> projectsTableModel;
@@ -53,14 +54,14 @@ public class ProjectsOverviewController {
 
         //init projects and experiments table
         projects.addAll(projectService.findAllWithEagerFetching());
-        SortedList<Project> sortedProjects = new SortedList<>(projects, new IdComparator());        
-        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectOverviewTableFormat());        
+        SortedList<Project> sortedProjects = new SortedList<>(projects, new IdComparator());
+        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectOverviewTableFormat());
         projectsOverviewPanel.getProjectsTable().setModel(projectsTableModel);
-        
-        SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());        
+
+        SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
         experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentOverviewTableFormat());
         projectsOverviewPanel.getExperimentsTable().setModel(experimentsTableModel);
-        
+
         //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectsOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
@@ -74,11 +75,11 @@ public class ProjectsOverviewController {
                 if (!lse.getValueIsAdjusting()) {
                     //clear project experiments table
                     experiments.clear();
-                    
-                    int selectedProjectIndex = projectsOverviewPanel.getProjectsTable().getSelectedRow();                   
-                    if (selectedProjectIndex != -1 && !projects.isEmpty()) {                        
+
+                    int selectedProjectIndex = projectsOverviewPanel.getProjectsTable().getSelectedRow();
+                    if (selectedProjectIndex != -1 && !projects.isEmpty()) {
                         Project selectedProject = projectsTableModel.getElementAt(selectedProjectIndex);
-                        
+
                         //fill project experiments table                        
                         experiments.addAll(selectedProject.getExperiments());
                     }
@@ -110,5 +111,4 @@ public class ProjectsOverviewController {
             }
         });
     }
-    
 }
