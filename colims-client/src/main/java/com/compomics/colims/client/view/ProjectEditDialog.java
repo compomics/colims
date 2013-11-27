@@ -3,6 +3,7 @@ package com.compomics.colims.client.view;
 import com.compomics.colims.client.compoment.DualList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -42,6 +43,10 @@ public class ProjectEditDialog extends javax.swing.JDialog {
 
     public DualList getUserDualList() {
         return userDualList;
+    }       
+
+    public JLabel getProjectStateInfoLabel() {
+        return projectStateInfoLabel;
     }        
     
     /**
@@ -67,6 +72,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         userDualListLabel = new javax.swing.JLabel();
         saveOrUpdateButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        projectStateInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CoLims login");
@@ -101,6 +107,13 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
         cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        projectStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        projectStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
+        projectStateInfoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        projectStateInfoLabel.setMaximumSize(new java.awt.Dimension(100, 20));
+        projectStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
+        projectStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
+
         javax.swing.GroupLayout projectDetailPanelLayout = new javax.swing.GroupLayout(projectDetailPanel);
         projectDetailPanel.setLayout(projectDetailPanelLayout);
         projectDetailPanelLayout.setHorizontalGroup(
@@ -109,42 +122,45 @@ public class ProjectEditDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addComponent(projectTitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectTitleTextField))
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                        .addComponent(projectLabelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
                         .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(projectDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(projectOwnerLabel)
-                            .addComponent(userDualListLabel))
-                        .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(projectDetailPanelLayout.createSequentialGroup()
+                                    .addComponent(projectLabelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(projectLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(projectDetailPanelLayout.createSequentialGroup()
+                                    .addComponent(projectOwnerLabel)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(projectOwnerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(userDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
-                                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                                        .addComponent(projectOwnerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addGap(10, 10, 10))
+                                    .addComponent(projectDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(userDualListLabel))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(projectDescriptionScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(userDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(projectDetailPanelLayout.createSequentialGroup()
+                        .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(projectStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(projectDetailPanelLayout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(projectDescriptionScrollPanel))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectDetailPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(projectDetailPanelLayout.createSequentialGroup()
+                                .addComponent(projectTitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(projectTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         projectDetailPanelLayout.setVerticalGroup(
             projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(projectStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(projectTitleLabel)
                     .addComponent(projectTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -153,18 +169,18 @@ public class ProjectEditDialog extends javax.swing.JDialog {
                     .addComponent(projectLabelLabel)
                     .addComponent(projectLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(projectOwnerLabel)
+                    .addComponent(projectOwnerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(projectDescriptionLabel)
-                    .addComponent(projectDescriptionScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectOwnerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectOwnerLabel))
+                    .addComponent(projectDescriptionScrollPanel))
                 .addGap(18, 18, 18)
                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userDualList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userDualList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(userDualListLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(projectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -194,6 +210,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     private javax.swing.JTextField projectLabelTextField;
     private javax.swing.JComboBox projectOwnerComboBox;
     private javax.swing.JLabel projectOwnerLabel;
+    private javax.swing.JLabel projectStateInfoLabel;
     private javax.swing.JLabel projectTitleLabel;
     private javax.swing.JTextField projectTitleTextField;
     private javax.swing.JButton saveOrUpdateButton;

@@ -17,11 +17,24 @@
 </hibernate-mapping>-->
 
 <hibernate-mapping>    
-<!--    <query name="User.fetchAuthenticationRelations">
-        SELECT distinct user
-        FROM 
-        User user
-        left join fetch user.userHasGroups
-        where user.id = :userId                         
-    </query>-->
+    <query name="User.getUserIdsWithMostOwnedProjects">
+        select
+        u.id
+        from project p, user u
+        where p.l_owner_user_id = u.id
+        group by u.id having count(u.id) =
+        (
+        select
+        max(projects_owned)
+        from
+        (
+        select
+        u.id user_id, count(u.id) projects_owned
+        from project p, user u
+        where p.l_owner_user_id = u.id
+        group by u.id
+        )
+        as sub_1
+        )                  
+    </query>
 </hibernate-mapping>

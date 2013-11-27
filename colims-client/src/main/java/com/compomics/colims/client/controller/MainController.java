@@ -47,7 +47,7 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private ProjectSetupController projectSetupController;
     @Autowired
-    private ProjectsOverviewController projectsOverviewController;
+    private ProjectManagementController projectManagementController;
     @Autowired
     private UserManagementController userManagementController;
     @Autowired
@@ -100,7 +100,7 @@ public class MainController implements Controllable, ActionListener {
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 
         //init child controllers
-        projectsOverviewController.init();
+        projectManagementController.init();
         projectSetupController.init();        
         cvTermManagementController.init();
 
@@ -110,7 +110,7 @@ public class MainController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        mainFrame.getHomeParentPanel().add(projectsOverviewController.getProjectsOverviewPanel(), gridBagConstraints);
+        mainFrame.getHomeParentPanel().add(projectManagementController.getProjectsOverviewPanel(), gridBagConstraints);
         mainFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);        
 
         //add action listeners                

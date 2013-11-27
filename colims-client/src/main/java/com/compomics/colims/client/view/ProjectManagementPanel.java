@@ -7,12 +7,12 @@ import javax.swing.JTable;
  *
  * @author niels
  */
-public class ProjectsOverviewPanel extends javax.swing.JPanel {
+public class ProjectManagementPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form OverviewPanel
      */
-    public ProjectsOverviewPanel() {
+    public ProjectManagementPanel() {
         initComponents();
 
         projectsTableScrollPane.getViewport().setOpaque(false);
@@ -66,7 +66,7 @@ public class ProjectsOverviewPanel extends javax.swing.JPanel {
         experimentsTableScrollPane = new javax.swing.JScrollPane();
         experimentsTable = new javax.swing.JTable();
 
-        setOpaque(false);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         projectsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("projects"));
         projectsOverviewPanel.setOpaque(false);

@@ -44,7 +44,10 @@ INSERT INTO `protocol` (id, creation_date, modification_date, user_name, l_cell_
 INSERT INTO `protocol_has_chemical_labeling` (l_protocol_id, l_chemical_labeling_cv_term_id) VALUES (1,4),(1,5),(2,5);
 
 -- insert test projects
-INSERT INTO `project` (id, creation_date, modification_date, user_name, description, label, title, l_owner_user_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 1 description', 'PR1', 'Project 1 title', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 2 description', 'PR2', 'Project 2 title', '1');
+INSERT INTO `project` (id, creation_date, modification_date, user_name, description, label, title, l_owner_user_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 1 description', 'PR1', 'Project 1 title', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 2 description', 'PR2', 'Project 2 title', '1'),(3,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','project 3 description', 'PR3', 'Project 3 title', '2');
+
+-- insert project users
+INSERT INTO `project_has_user` (l_project_id, l_user_id) VALUES (1,2),(1,3),(2,2);
 
 -- insert test experiments
 INSERT INTO `experiment` (id, creation_date, modification_date, user_name, description, number, storage_location, title, l_project_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','experiment 1 description', '114', 'C://project//114','Experiment 1 title', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','experiment 2 description', '115', 'C://project//115','Experiment 2 title', '1');

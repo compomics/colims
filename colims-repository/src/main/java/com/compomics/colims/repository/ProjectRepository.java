@@ -5,10 +5,19 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.User;
+import java.util.List;
 
 /**
  *
  * @author Niels Hulstaert
  */
 public interface ProjectRepository extends GenericRepository<Project, Long> {
+
+    /**
+     * Get that owns the most projects.
+     *
+     * @return
+     */
+    User getUserWithMostProjectOwns();
 }

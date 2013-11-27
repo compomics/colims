@@ -84,7 +84,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Overview"/>
+                <TitledBorder title="overview"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -180,7 +180,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Detail"/>
+                <TitledBorder title="detail"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>

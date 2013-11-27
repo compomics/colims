@@ -108,7 +108,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
 
         cvTermCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        cvTermOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
+        cvTermOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("overview"));
         cvTermOverviewPanel.setOpaque(false);
         cvTermOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -166,7 +166,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        cvTermDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
+        cvTermDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
         cvTermDetailPanel.setOpaque(false);
         cvTermDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 

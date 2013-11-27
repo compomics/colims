@@ -86,7 +86,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
 
         instrumentTypeCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
+        instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("overview"));
         instrumentTypeOverviewPanel.setOpaque(false);
         instrumentTypeOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -131,7 +131,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        instrumentTypeDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
+        instrumentTypeDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
         instrumentTypeDetailPanel.setOpaque(false);
         instrumentTypeDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
+import junit.framework.Assert;
 
 /**
  *
@@ -63,5 +64,13 @@ public class ProjectRepositoryTest {
         //delete project
         projectRepository.delete(project);
         assertEquals(numberOfProjects, projectRepository.countAll());
+    }
+    
+    @Test
+    public void testGetUserWithMostProjectOwns(){
+        User userWithMostProjectOwns = projectRepository.getUserWithMostProjectOwns();
+        
+        assertNotNull(userWithMostProjectOwns);
+        assertEquals(1L, userWithMostProjectOwns.getId().longValue());
     }
 }

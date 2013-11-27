@@ -61,8 +61,8 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="userOverviewPanel" alignment="1" pref="891" max="32767" attributes="0"/>
-                  <Component id="userDetailPanel" alignment="0" pref="891" max="32767" attributes="0"/>
+                  <Component id="userOverviewPanel" alignment="1" pref="897" max="32767" attributes="0"/>
+                  <Component id="userDetailPanel" alignment="0" pref="897" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -80,7 +80,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Overview"/>
+                    <TitledBorder title="overview"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -173,7 +173,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Detail"/>
+                    <TitledBorder title="detail"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -185,14 +185,9 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="0" pref="776" max="32767" attributes="0"/>
-                                  <Component id="userSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Group type="102" attributes="0">
@@ -203,31 +198,41 @@
                                               <Component id="firstNameLabel" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
                                               <Component id="emailLabel" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="emailTextField" alignment="0" pref="264" max="32767" attributes="0"/>
-                                              <Component id="lastNameTextField" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="firstNameTextField" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="userNameTextField" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="passwordTextField" max="32767" attributes="0"/>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <EmptySpace max="32767" attributes="0"/>
+                                                  <Component id="userNameTextField" min="-2" pref="264" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" attributes="0">
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                                          <Component id="emailTextField" alignment="0" pref="264" max="32767" attributes="0"/>
+                                                          <Component id="lastNameTextField" alignment="0" max="32767" attributes="0"/>
+                                                          <Component id="passwordTextField" max="32767" attributes="0"/>
+                                                      </Group>
+                                                      <Component id="firstNameTextField" alignment="1" min="-2" pref="264" max="-2" attributes="0"/>
+                                                  </Group>
+                                              </Group>
                                           </Group>
                                       </Group>
                                       <Component id="userStateInfoLabel" max="32767" attributes="0"/>
                                   </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="groupDualList" pref="0" max="32767" attributes="0"/>
-                                      </Group>
                                       <Group type="102" attributes="0">
-                                          <EmptySpace max="32767" attributes="0"/>
                                           <Component id="groupsLabel" min="-2" pref="85" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="377" max="-2" attributes="0"/>
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                       </Group>
+                                      <Component id="groupDualList" pref="471" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="userSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -239,40 +244,39 @@
                               <Component id="groupsLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="userStateInfoLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="12" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="groupDualList" min="-2" pref="124" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="userSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="groupDualList" alignment="0" pref="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="firstNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="firstNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="firstNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lastNameLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="lastNameTextField" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="emailLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="emailTextField" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="lastNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lastNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="emailTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="emailLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="passwordTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="passwordTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Component id="userSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -376,8 +380,8 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="groupOverviewPanel" alignment="1" pref="891" max="32767" attributes="0"/>
-                  <Component id="groupDetailPanel" alignment="0" pref="891" max="32767" attributes="0"/>
+                  <Component id="groupOverviewPanel" alignment="1" pref="897" max="32767" attributes="0"/>
+                  <Component id="groupDetailPanel" alignment="0" pref="897" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -395,7 +399,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Overview"/>
+                    <TitledBorder title="overview"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -488,7 +492,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Detail"/>
+                    <TitledBorder title="detail"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -504,7 +508,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
                                           <Component id="groupNameLabel" min="-2" pref="108" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -512,12 +516,12 @@
                                       </Group>
                                       <Group type="102" attributes="0">
                                           <Component id="groupDescriptionLabel" min="-2" pref="108" max="-2" attributes="0"/>
-                                          <EmptySpace max="32767" attributes="0"/>
+                                          <EmptySpace min="-2" max="-2" attributes="0"/>
                                           <Component id="groupDescriptionScrollPane" min="-2" pref="267" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="roleDualList" min="-2" pref="462" max="-2" attributes="0"/>
+                                  <Component id="roleDualList" min="-2" pref="468" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="groupStateInfoLabel" min="-2" pref="379" max="-2" attributes="0"/>
@@ -541,9 +545,9 @@
                               <Component id="groupStateInfoLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="rolesLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="groupNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="groupNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -554,14 +558,11 @@
                                       <Component id="groupDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="roleDualList" min="-2" pref="127" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="roleDualList" alignment="1" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="groupSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -657,8 +658,8 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="roleOverviewPanel" alignment="1" pref="891" max="32767" attributes="0"/>
-                  <Component id="roleDetailPanel" alignment="0" pref="891" max="32767" attributes="0"/>
+                  <Component id="roleOverviewPanel" alignment="1" pref="897" max="32767" attributes="0"/>
+                  <Component id="roleDetailPanel" alignment="0" pref="897" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -676,7 +677,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Overview"/>
+                    <TitledBorder title="overview"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -769,7 +770,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Detail"/>
+                    <TitledBorder title="detail"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -798,7 +799,7 @@
                                       </Group>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="permissionDualList" min="-2" pref="462" max="-2" attributes="0"/>
+                                  <Component id="permissionDualList" min="-2" pref="468" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="roleStateInfoLabel" min="-2" pref="379" max="-2" attributes="0"/>
@@ -822,9 +823,9 @@
                               <Component id="roleStateInfoLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="permissionsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="roleNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="roleNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -835,14 +836,11 @@
                                       <Component id="roleDescriptionScrollPane" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="permissionDualList" min="-2" pref="127" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="permissionDualList" alignment="1" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="roleSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -938,8 +936,8 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="permissionOverviewPanel" alignment="1" pref="891" max="32767" attributes="0"/>
-                  <Component id="permissionDetailPanel" alignment="0" pref="891" max="32767" attributes="0"/>
+                  <Component id="permissionOverviewPanel" alignment="1" pref="897" max="32767" attributes="0"/>
+                  <Component id="permissionDetailPanel" alignment="0" pref="897" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -957,7 +955,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Overview"/>
+                    <TitledBorder title="overview"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -1053,7 +1051,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Detail"/>
+                    <TitledBorder title="detail"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -1080,7 +1078,7 @@
                               </Group>
                               <Component id="permissionStateInfoLabel" alignment="0" min="-2" pref="379" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="490" max="32767" attributes="0"/>
+                          <EmptySpace pref="496" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
@@ -1093,7 +1091,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="permissionStateInfoLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="permissionNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="permissionNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1103,9 +1101,9 @@
                               <Component id="permissionDescriptionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="permissionDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
+                          <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

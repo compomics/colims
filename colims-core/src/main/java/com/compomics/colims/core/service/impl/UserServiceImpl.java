@@ -92,4 +92,9 @@ public class UserServiceImpl implements UserService {
             LOGGER.error(hbe, hbe.getCause());
         }
     }
+
+    @Override
+    public User getHighestProjectOwner() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -79,7 +79,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
 
         materialCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        materialOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
+        materialOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("overview"));
         materialOverviewPanel.setOpaque(false);
         materialOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -124,7 +124,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        materialDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
+        materialDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
         materialDetailPanel.setOpaque(false);
         materialDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 

@@ -18,14 +18,15 @@ import org.hibernate.criterion.Order;
  */
 @Repository("userRepository")
 public class UserHibernateRepository extends GenericHibernateRepository<User, Long> implements UserRepository {
-    
+
     @Override
     public User findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
-    }             
+    }
 
     @Override
     public List<User> findAllOrderedByUserName() {
         return createCriteria().addOrder(Order.asc("name")).list();
     }
+
 }

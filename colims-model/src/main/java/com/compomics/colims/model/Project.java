@@ -46,10 +46,11 @@ public class Project extends AbstractDatabaseEntity {
     private String label;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     private String description;
-    @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id")
+    @Basic(optional = false)
     @ManyToOne
+    @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id", nullable = false)    
     private User owner;
     @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)

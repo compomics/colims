@@ -79,6 +79,7 @@ public class UtilitiesSpectrumMapper {
             gZIPOutputStream.write(unzippedBytes);
             gZIPOutputStream.flush();
             gZIPOutputStream.finish();
+            
             //set content of the SpectrumFile
             spectrumFile.setContent(zippedByteArrayOutputStream.toByteArray());
         } catch (IOException ex) {
