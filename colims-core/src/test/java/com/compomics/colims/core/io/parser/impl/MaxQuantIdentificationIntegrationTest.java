@@ -3,15 +3,14 @@ package com.compomics.colims.core.io.parser.impl;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.number.IsCloseTo.*;
 
 /**
  *
@@ -59,7 +58,7 @@ public class MaxQuantIdentificationIntegrationTest {
         assertThat(parsedPeptides.size(), is(999));
         assertThat(parsedPeptides.get(4).getPeptide().getSequence(), is("AAAAGENEEWTTDYPHFADVADQEGFPAIATMYR"));
         assertThat(parsedPeptides.get(4).getPeptide().getParentProteins().size(), is(2));
-        assertThat(new BigDecimal(parsedPeptides.get(4).getPeptide().getMass()).setScale(4, RoundingMode.UP).doubleValue(), is(3743.6475));
+        assertThat(parsedPeptides.get(4).getPeptide().getMass(), closeTo(3743.6475,0.0001));
 
         //is unmodified
         assertThat(parsedPeptides.get(4).getPeptide().getModificationMatches().isEmpty(), is(true));
@@ -92,7 +91,7 @@ public class MaxQuantIdentificationIntegrationTest {
      *
      * @throws Exception
      */
-    @Test
+    @Test(expected = IOException.class)
     public void noProteinsFound() throws Exception {
         System.out.println("missing proteingroups file");
 
@@ -101,13 +100,7 @@ public class MaxQuantIdentificationIntegrationTest {
         assertThat(parsedPeptides.get(200).getPeptide().getParentProteins().size(), is(1));
         Map<Integer, ProteinMatch> proteinList = new HashMap<>();
         //it appears the peptides got parsed, now to blow up the proteingroups
-        boolean errorThrown = false;
-        try {
-            proteinList = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(new File("this file does not exist"));
-        } catch (FileNotFoundException fnfe) {
-            errorThrown = true;
-        }
-        assertThat(errorThrown, is(true));
-        assertThat(proteinList.get(Integer.parseInt(parsedPeptides.get(200).getPeptide().getParentProteins().get(0))),is(nullValue()));
+        proteinList = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(new File("this file does not exist"));
+        assertThat(proteinList.get(Integer.parseInt(parsedPeptides.get(200).getPeptide().getParentProteins().get(0))), is(nullValue()));
     }
 }

@@ -22,12 +22,6 @@
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.compomics</groupId>
-                    <artifactId>ms-lims</artifactId>                    
-                </exclusion>
-            </exclusions>
         </dependency>
         
         <dependency>

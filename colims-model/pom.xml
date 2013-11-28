@@ -23,26 +23,26 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.3.0.Final</version>
+            <version>5.1.0.Alpha1</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.1.9.Final</version>
+            <version>4.3.0.CR1</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>4.1.9.Final</version>
+            <version>4.3.0.CR1</version>
         </dependency>
         
         <!-- jasypt encryption dependency -->
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt-hibernate4</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.1</version>
         </dependency>
         
         <dependency>
