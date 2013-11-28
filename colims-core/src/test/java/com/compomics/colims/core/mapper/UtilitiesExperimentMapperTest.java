@@ -52,65 +52,65 @@ public class UtilitiesExperimentMapperTest {
 
     @Test
     public void testExperimentMapper() throws IOException, PeptideShakerIOException, MappingException {
-//        //import PeptideShaker .cps file
-//        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_3.cps").getFile());
-//        //set mgf files and fasta file
-//        List<File> mgfFiles = new ArrayList<>();
-//        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
-//        peptideShakerImport.setMgfFiles(mgfFiles);
-//            peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
-//
-//        Experiment experiment = new Experiment();
-//
-//        utilitiesExperimentMapper.map(peptideShakerImport, experiment);
-//
-//        //experiment
-//        Assert.assertNotNull(experiment.getSamples());
-//        Assert.assertEquals(1, experiment.getSamples().size());
-//        Assert.assertEquals(peptideShakerImport.getMsExperiment().getReference(), experiment.getTitle());
-//
-//        //sample
-//        Sample sample = experiment.getSamples().get(0);
-//        Assert.assertNotNull(sample);
-//        Assert.assertNotNull(sample.getExperiment());
-//        Assert.assertEquals(1, sample.getAnalyticalRuns().size());
-//
-//        //analytical run
-//        AnalyticalRun analyticalRun = sample.getAnalyticalRuns().get(0);
-//        Assert.assertNotNull(analyticalRun);
-//        Assert.assertNotNull(analyticalRun.getSample());
-//        Assert.assertNotNull(analyticalRun.getSpectrums());
-//        Assert.assertEquals(4706, analyticalRun.getSpectrums().size());
-//
-//        //spectra
-//        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-//            Assert.assertNotNull(spectrum.getAnalyticalRun());
-//            if (!spectrum.getPeptides().isEmpty()) {
-//                for (Peptide peptide : spectrum.getPeptides()) {
-//                    Assert.assertNotNull(peptide.getSpectrum());
-//                    Assert.assertFalse(peptide.getSequence().isEmpty());
-//                    if (!peptide.getPeptideHasProteins().isEmpty()) {
-//                        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
-//                            Assert.assertNotNull(peptideHasProtein.getPeptide());
-//                            Protein protein = peptideHasProtein.getProtein();
-//                            Assert.assertNotNull(protein);
-//                            Assert.assertFalse(protein.getAccession().isEmpty());
-//                            Assert.assertFalse(protein.getSequence().isEmpty());
-//                            Assert.assertNotNull(protein.getDatabaseType());
-//                        }
-//                    }
-//                    if (!peptide.getPeptideHasModifications().isEmpty()) {
-//                        for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {
-//                            Assert.assertNotNull(peptideHasModification.getPeptide());
-//                            Modification modification = peptideHasModification.getModification();
-//                            Assert.assertNotNull(modification);
-//                            //Assert.assertNotNull(modification.getPeptideHasModifications());
-//                            Assert.assertFalse(modification.getName().isEmpty());
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        //import PeptideShaker .cps file
+        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_3.cps").getFile());
+        //set mgf files and fasta file
+        List<File> mgfFiles = new ArrayList<>();
+        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
+        peptideShakerImport.setMgfFiles(mgfFiles);
+            peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+
+        Experiment experiment = new Experiment();
+
+        utilitiesExperimentMapper.map(peptideShakerImport, experiment);
+
+        //experiment
+        Assert.assertNotNull(experiment.getSamples());
+        Assert.assertEquals(1, experiment.getSamples().size());
+        Assert.assertEquals(peptideShakerImport.getMsExperiment().getReference(), experiment.getTitle());
+
+        //sample
+        Sample sample = experiment.getSamples().get(0);
+        Assert.assertNotNull(sample);
+        Assert.assertNotNull(sample.getExperiment());
+        Assert.assertEquals(1, sample.getAnalyticalRuns().size());
+
+        //analytical run
+        AnalyticalRun analyticalRun = sample.getAnalyticalRuns().get(0);
+        Assert.assertNotNull(analyticalRun);
+        Assert.assertNotNull(analyticalRun.getSample());
+        Assert.assertNotNull(analyticalRun.getSpectrums());
+        Assert.assertEquals(4706, analyticalRun.getSpectrums().size());
+
+        //spectra
+        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+            Assert.assertNotNull(spectrum.getAnalyticalRun());
+            if (!spectrum.getPeptides().isEmpty()) {
+                for (Peptide peptide : spectrum.getPeptides()) {
+                    Assert.assertNotNull(peptide.getSpectrum());
+                    Assert.assertFalse(peptide.getSequence().isEmpty());
+                    if (!peptide.getPeptideHasProteins().isEmpty()) {
+                        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
+                            Assert.assertNotNull(peptideHasProtein.getPeptide());
+                            Protein protein = peptideHasProtein.getProtein();
+                            Assert.assertNotNull(protein);
+                            Assert.assertFalse(protein.getAccession().isEmpty());
+                            Assert.assertFalse(protein.getSequence().isEmpty());
+                            Assert.assertNotNull(protein.getDatabaseType());
+                        }
+                    }
+                    if (!peptide.getPeptideHasModifications().isEmpty()) {
+                        for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {
+                            Assert.assertNotNull(peptideHasModification.getPeptide());
+                            Modification modification = peptideHasModification.getModification();
+                            Assert.assertNotNull(modification);
+                            //Assert.assertNotNull(modification.getPeptideHasModifications());
+                            Assert.assertFalse(modification.getName().isEmpty());
+                        }
+                    }
+                }
+            }
+        }
 //
 //        //persist project
 //        Project project = new Project();
