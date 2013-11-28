@@ -7,6 +7,7 @@ package com.compomics.colims.core.service;
 import java.util.List;
 
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.User;
 
 /**
  *
@@ -20,4 +21,11 @@ public interface ProjectService extends GenericService<Project, Long> {
      * @return the found projects
      */
     List<Project> findAllWithEagerFetching();
+    
+    /**
+     * Get the user that owns the most projects.
+     *
+     * @return
+     */
+    User getUserWithMostProjectOwns();
 }

@@ -6,7 +6,6 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
-import java.util.List;
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.List;
 public interface ProjectRepository extends GenericRepository<Project, Long> {
 
     /**
-     * Get that owns the most projects.
+     * Get the user that owns the most projects.
      *
      * @return
      */

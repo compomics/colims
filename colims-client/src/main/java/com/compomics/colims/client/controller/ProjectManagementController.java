@@ -10,9 +10,9 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.model.ExperimentsOverviewTableFormat;
 import com.compomics.colims.client.model.ProjectsOverviewTableFormat;
+import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.comparator.IdComparator;
@@ -22,6 +22,12 @@ import java.util.ArrayList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +40,7 @@ public class ProjectManagementController {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
     //model
+    private BindingGroup bindingGroup;
     private EventList<Project> projects = new BasicEventList<>();
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
@@ -43,20 +50,29 @@ public class ProjectManagementController {
     private Project projectToEdit;
     //view
     private ProjectManagementPanel projectManagementPanel;
+    private ProjectEditDialog projectEditDialog;
     //parent controller
     @Autowired
     private MainController mainController;
     //services
     @Autowired
     private ProjectService projectService;
-    @Autowired
-    private UserService userService;
 
     public ProjectManagementPanel getProjectsOverviewPanel() {
         return projectManagementPanel;
     }
 
     public void init() {
+        bindingGroup = new BindingGroup();
+        
+        initProjectManagementPanel();
+        
+        initProjectEditDialog();
+        
+        bindingGroup.bind();
+    }
+    
+    private void initProjectManagementPanel(){
         projectManagementPanel = new ProjectManagementPanel();
 
         //init projects table
@@ -124,6 +140,14 @@ public class ProjectManagementController {
         projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //show project edit dialog
+                EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
+                if (!selectedProjects.isEmpty()) {
+                    projectToEdit = selectedProjects.get(0);
+                    
+                    projectEditDialog.setLocationRelativeTo(null);
+                    projectEditDialog.setVisible(true);
+                }
             }
         });
 
@@ -138,6 +162,16 @@ public class ProjectManagementController {
             public void actionPerformed(ActionEvent e) {
             }
         });
+    }
+    
+    private void initProjectEditDialog(){
+        projectEditDialog = new ProjectEditDialog(mainController.getMainFrame(), true);
+        
+        //add binding
+        Binding projectTitleBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, projectToEdit, BeanProperty.create("title"), projectEditDialog.getProjectTitleTextField(), BeanProperty.create("text"), "projectTitleBinding");
+        bindingGroup.addBinding(projectTitleBinding);
+//        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentEditDialog.getTypeComboBox());
+//        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
     }
     
     /**

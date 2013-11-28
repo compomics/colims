@@ -37,11 +37,4 @@ public interface UserService extends GenericService<User, Long> {
      */
     void fetchAuthenticationRelations(User user);
 
-    /**
-     * Get the user thats owns the most projects. If two user own the most
-     * projects, return the first one ordered by name.
-     *
-     * @return
-     */
-    User getHighestProjectOwner();
 }

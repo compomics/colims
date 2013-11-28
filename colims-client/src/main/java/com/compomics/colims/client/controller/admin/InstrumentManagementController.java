@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.MessageEvent;

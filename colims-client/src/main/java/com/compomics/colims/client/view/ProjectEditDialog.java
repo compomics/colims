@@ -47,6 +47,10 @@ public class ProjectEditDialog extends javax.swing.JDialog {
 
     public JLabel getProjectStateInfoLabel() {
         return projectStateInfoLabel;
+    }     
+
+    public JTextField getProjectTitleTextField() {
+        return projectTitleTextField;
     }        
     
     /**

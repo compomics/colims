@@ -14,6 +14,7 @@ import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
 import org.hibernate.Hibernate;
 
@@ -65,17 +66,19 @@ public class ProjectServiceImpl implements ProjectService {
         //fetch collections
         for (Project project : projects) {
             Hibernate.initialize(project.getExperiments());
-//            project.getExperiments().size();
             for (Experiment experiment : project.getExperiments()) {
                 Hibernate.initialize(experiment.getSamples());
-//                experiment.getSamples().size();
                 for (Sample sample : experiment.getSamples()) {
                     Hibernate.initialize(sample.getAnalyticalRuns());
-//                    sample.getAnalyticalRuns().size();
                 }
             }
         }
 
         return projects;
+    }
+
+    @Override
+    public User getUserWithMostProjectOwns() {
+        return projectRepository.getUserWithMostProjectOwns();
     }
 }
