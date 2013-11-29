@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.parser.impl;
 
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
-import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,11 +23,10 @@ public class MaxQuantMsmsParserTest {
      * Test of parse method, of class MaxQuantMsmsParser.
      */
     @Test
-    public void testParseWithoutPeaklist() throws Exception {
-        System.out.println("parseWithoutPeaklist");
-        boolean addPeakList = false;
+    public void testParse() throws Exception {
+        System.out.println("parseTest");
         MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
-        Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, addPeakList);
+        Map<Integer, MSnSpectrum> result = instance.parse(msmsFile);
         assertThat(result.keySet().size(), is(999));
         assertThat(Integer.parseInt(result.get(899).getScanNumber()), is(58732));
         assertThat(result.get(899).getSpectrumTitle(), is("QE2_120326_OPL2023_stoolpools_MdW_LB_stoolpool1_02-58732"));
@@ -37,13 +35,15 @@ public class MaxQuantMsmsParserTest {
         assertThat(result.get(899).getPrecursor().getPossibleCharges().get(0).getChargeAsFormattedString(), is("++"));
         assertThat(result.get(899).getPrecursor().getMz(), is(993.51256));
         assertThat(result.get(899).getPrecursor().getIntensity(), is(0.0));
-        boolean mgfFail = false;
-        try {
-            result.get(899).asMgf();
-        } catch (NullPointerException npe) {
-            mgfFail = true;
-        }
-        assertThat(mgfFail, is(true));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testParseWithoutPeaklist() throws Exception {
+        System.out.println("testWithoutPeaklist");
+        MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
+        Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, false);
+        //throws a nullpointer
+        result.get(899).asMgf();
     }
 
     @Test
@@ -59,5 +59,5 @@ public class MaxQuantMsmsParserTest {
         Peak peak = peaks.next();
         assertThat(peak.getMz(), is(1005.48413188591));
         assertThat(peak.getIntensity(), is(34416.9));
-    }
+  }
 }

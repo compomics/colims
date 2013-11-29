@@ -34,21 +34,24 @@ public class MaxQuantMsmsParser {
 
     private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
 
-    private HashMap<Double,Peak> parsePeakList(String peaklist, String intensities, String masses) {
-        HashMap<Double,Peak> peakMap = new HashMap<>();
+    private HashMap<Double, Peak> parsePeakList(String peaklist, String intensities, String masses) {
+        HashMap<Double, Peak> peakMap = new HashMap<>();
         String[] peakList = peaklist.split(";");
         String[] intensityList = intensities.split(";");
         String[] massList = masses.split(";");
         for (int i = 0; i < peakList.length; i++) {
             int charge = 1;
-            if(peakList[i].contains("")){
-            
+            if (peakList[i].contains("")) {
             }
-            Double moverz = Double.parseDouble(massList[i])/charge;
-            peakMap.put(moverz,new Peak(moverz, Double.parseDouble(intensityList[i])));
+            Double moverz = Double.parseDouble(massList[i]) / charge;
+            peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
         }
 
         return peakMap;
+    }
+
+    public Map<Integer, MSnSpectrum> parse(final File msmsFile) throws IOException {
+        return parse(msmsFile, false);
     }
 
     /**
@@ -113,7 +116,7 @@ public class MaxQuantMsmsParser {
 
             if (addPeakList) {
 
-                HashMap<Double,Peak> peakList = parsePeakList(values.get(MsmsHeaders.Matches.column),values.get(MsmsHeaders.Intensities.column),values.get(MsmsHeaders.Masses.column));
+                HashMap<Double, Peak> peakList = parsePeakList(values.get(MsmsHeaders.Matches.column), values.get(MsmsHeaders.Intensities.column), values.get(MsmsHeaders.Masses.column));
                 MSnSpectrum spectrum = new MSnSpectrum(charge, precursor, spectrumTitle, peakList, fileName, rt);
                 spectrum.setScanNumber(scanNumber);
                 spectrumMap.put(id, spectrum);
