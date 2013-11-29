@@ -8,17 +8,29 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.model.ExperimentsOverviewTableFormat;
 import com.compomics.colims.client.model.ProjectsOverviewTableFormat;
+import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.IdComparator;
+import com.compomics.colims.model.enums.CvTermType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
@@ -28,6 +40,10 @@ import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,14 +56,14 @@ public class ProjectManagementController {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
     //model
-    private BindingGroup bindingGroup;
     private EventList<Project> projects = new BasicEventList<>();
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private Project projectToEdit;
+    private BindingGroup bindingGroup;
+    private ObservableList<User> userBindingList;
     //view
     private ProjectManagementPanel projectManagementPanel;
     private ProjectEditDialog projectEditDialog;
@@ -57,6 +73,8 @@ public class ProjectManagementController {
     //services
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private UserService userService;
 
     public ProjectManagementPanel getProjectsOverviewPanel() {
         return projectManagementPanel;
@@ -64,15 +82,14 @@ public class ProjectManagementController {
 
     public void init() {
         bindingGroup = new BindingGroup();
-        
+
         initProjectManagementPanel();
-        
         initProjectEditDialog();
-        
+
         bindingGroup.bind();
     }
-    
-    private void initProjectManagementPanel(){
+
+    private void initProjectManagementPanel() {
         projectManagementPanel = new ProjectManagementPanel();
 
         //init projects table
@@ -127,23 +144,20 @@ public class ProjectManagementController {
 
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //show project edit dialog
-                EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
-                if (!selectedProjects.isEmpty()) {
-                    projectToEdit = selectedProjects.get(0);
+            public void actionPerformed(ActionEvent e) {                                
+                    updateProjectEditDialog(createDefaultProject());
                     
-                }
+                    projectEditDialog.setLocationRelativeTo(null);
+                    projectEditDialog.setVisible(true);                
             }
         });
 
         projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //show project edit dialog
-                EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
-                if (!selectedProjects.isEmpty()) {
-                    projectToEdit = selectedProjects.get(0);
+                Project selectedProject = getSelectedProject();
+                if(selectedProject != null){
+                    updateProjectEditDialog(selectedProject);
                     
                     projectEditDialog.setLocationRelativeTo(null);
                     projectEditDialog.setVisible(true);
@@ -154,6 +168,14 @@ public class ProjectManagementController {
         projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //get the selected project and show the project edit dialog
+                EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
+                if (!selectedProjects.isEmpty()) {
+                    updateProjectEditDialog(createDefaultProject());
+
+                    projectEditDialog.setLocationRelativeTo(null);
+                    projectEditDialog.setVisible(true);
+                }
             }
         });
 
@@ -163,17 +185,57 @@ public class ProjectManagementController {
             }
         });
     }
-    
-    private void initProjectEditDialog(){
+
+    private void initProjectEditDialog() {
         projectEditDialog = new ProjectEditDialog(mainController.getMainFrame(), true);
-        
+
         //add binding
-        Binding projectTitleBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, projectToEdit, BeanProperty.create("title"), projectEditDialog.getProjectTitleTextField(), BeanProperty.create("text"), "projectTitleBinding");
-        bindingGroup.addBinding(projectTitleBinding);
-//        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentEditDialog.getTypeComboBox());
-//        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
+        userBindingList = ObservableCollections.observableList(userService.findAll());
+
+        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
+        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
+
+        //add action listeners
+        projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                List<User> addedItems = projectEditDialog.getUserDualList().getAddedItems();
+            }
+        });
+
+        projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                Instrument selectedInstrument = getSelectedInstrument();
+//                //validate instrument
+//                List<String> validationMessages = GuiUtils.validateEntity(selectedInstrument);
+//                //check for a new instrument if the instrument name already exists in the db                
+//                if (selectedInstrument.getId() == null && isExistingInstrumentName(selectedInstrument)) {
+//                    validationMessages.add(selectedInstrument.getName() + " already exists in the database, please choose another instrument name.");
+//                }
+//                if (validationMessages.isEmpty()) {
+//                    if (selectedInstrument.getId() != null) {
+//                        instrumentService.update(selectedInstrument);
+//                    } else {
+//                        instrumentService.save(selectedInstrument);
+//                    }
+//                    instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
+//
+//                    MessageEvent messageEvent = new MessageEvent("Instrument persist confirmation", "Instrument " + selectedInstrument.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+//                    eventBus.post(messageEvent);
+//
+//                    //refresh selection in instrument list in management overview dialog
+//                    int index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+//                    instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+//                    instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
+//                } else {
+//                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+//                    eventBus.post(messageEvent);
+//                }
+            }
+        });
     }
-    
+
     /**
      * Create a default project, with some default properties.
      *
@@ -181,36 +243,48 @@ public class ProjectManagementController {
      */
     private Project createDefaultProject() {
         Project defaultProject = new Project();
-        
+
         defaultProject.setTitle("default project title");
         defaultProject.setLabel("def_label");
-        
+
         //set default owner, i.e. the user with the most projects
+        User userWithMostProjectOwns = projectService.getUserWithMostProjectOwns();
+        if (userWithMostProjectOwns != null) {
+            defaultProject.setOwner(userWithMostProjectOwns);
+        }
+
         return defaultProject;
+    }
+
+    private void updateProjectEditDialog(Project project) {
+        if (project.getId() != null) {
+            projectEditDialog.getSaveOrUpdateButton().setText("update");
+        } else {
+            projectEditDialog.getSaveOrUpdateButton().setText("save");
+        }
+
+        projectEditDialog.getTitleTextField().setText(project.getTitle());
+        projectEditDialog.getLabelTextField().setText(project.getLabel());
+
+        //set the selected item in the owner combobox        
+        projectEditDialog.getOwnerComboBox().setSelectedItem(project.getOwner());
+        projectEditDialog.getUserDualList().populateLists(userService.findAll(), project.getUsers());
+    }
+
+    /**
+     * Get the selected project in the project management table.
+     *
+     * @return the selected project
+     */
+    private Project getSelectedProject() {
+        Project selectedProject = null;
         
-//        //find instrument types
-//        List<InstrumentType> instrumentTypes = instrumentTypeService.findAll();
-//        if (!instrumentTypes.isEmpty()) {
-//            defaultInstrument.setInstrumentType(instrumentTypes.get(0));
-//        }
-//        defaultInstrument.setInstrumentType(instrumentTypes.get(0));
-//        //find sources
-//        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
-//        if (!sources.isEmpty()) {
-//            defaultInstrument.setSource(sources.get(0));
-//        }
-//        //find detectors
-//        List<InstrumentCvTerm> detectors = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.DETECTOR);
-//        if (!detectors.isEmpty()) {
-//            defaultInstrument.setDetector(detectors.get(0));
-//        }
-//        //find analyzers
-//        List<InstrumentCvTerm> analyzers = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.ANALYZER);
-//        if (!analyzers.isEmpty()) {
-//            List<InstrumentCvTerm> defaultAnalyzers = new ArrayList<>();
-//            defaultAnalyzers.add(analyzers.get(0));
-//            defaultInstrument.setAnalyzers(defaultAnalyzers);
-//        }
-//        return defaultInstrument;
+        //get the selected project and show the project edit dialog
+        EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
+        if (!selectedProjects.isEmpty()) {
+            updateProjectEditDialog(createDefaultProject());
+        }
+        
+        return selectedProject;
     }
 }
