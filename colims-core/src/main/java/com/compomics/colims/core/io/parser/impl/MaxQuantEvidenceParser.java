@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 //import com.compomics.colims.model.Modification;
 //import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.biology.Peptide;
@@ -17,8 +14,6 @@ import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.util.experiment.biology.Protein;
 import com.compomics.colims.model.QuantificationGroup;
 //import com.compomics.colims.model.QuantificationGroupHasPeptide;
-import com.compomics.colims.repository.ModificationRepository;
-import com.compomics.colims.repository.ProteinRepository;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import java.util.ArrayList;
@@ -35,16 +30,7 @@ import java.util.Arrays;
  * records. The {@link ProteinAccessioncodeParser} is used to retrieve the
  * correct accessioncode to use from a String.
  */
-@Service("maxQuantEvidenceParser")
 public class MaxQuantEvidenceParser {
-
-    MaxQuantEvidenceParser() {/* Do not allow just anyone to instantiate this class, we need access to beans! */
-
-    }
-    @Autowired
-    ProteinRepository proteinRepository;
-    @Autowired
-    ModificationRepository modificationRepository;
 
     /**
      * Parse the evidenceFile and add the peptides, protein references and
@@ -54,7 +40,7 @@ public class MaxQuantEvidenceParser {
      * @param quantificationGroup
      * @throws IOException
      */
-    public List<PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
+    public static List<PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         List<PeptideAssumption> parsedPeptideList = new ArrayList<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
@@ -85,14 +71,15 @@ public class MaxQuantEvidenceParser {
      * @param quantificationGroup
      * @return
      * @throws IOException
+     *
+     * public final List<Peptide> parse(final File evidenceFile, final File
+     * proteinGroupFile, final QuantificationGroup quantificationGroup) throws
+     * IOException { List<Peptide> parsedPeptideList = new ArrayList<>();
+     * TabularFileLineValuesIterator valuesIterator = new
+     * TabularFileLineValuesIterator(evidenceFile);
+     *
+     * return parsedPeptideList; }
      */
-    public List<Peptide> parse(final File evidenceFile, final File proteinGroupFile, final QuantificationGroup quantificationGroup) throws IOException {
-        List<Peptide> parsedPeptideList = new ArrayList<>();
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
-
-        return parsedPeptideList;
-    }
-
     /**
      * Create a new peptide instance from the values contained in the map.
      *
@@ -146,6 +133,7 @@ public class MaxQuantEvidenceParser {
     //peptide.getPeptideHasProteins().add(peptideHasProtein);
     // TODO Persist PeptideHasProtein instance using a Hibernate Repository that still has to be created
     //}
+    
     /**
      * From values extract a variety of {@link Modification}s and link them to
      * the {@link Peptide} instance using {@link PeptideHasProtein} as
@@ -273,7 +261,7 @@ enum EvidenceHeaders {
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
-    String column;
+    protected String column;
 
     private EvidenceHeaders(final String fieldname) {
         column = fieldname;
