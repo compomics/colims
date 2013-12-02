@@ -19,6 +19,7 @@ import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvTerm;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.enums.CvTermType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -225,6 +226,9 @@ public class ProtocolManagementController implements Controllable {
 
     private void initProtocolEditDialog() {
         protocolEditDialog = new ProtocolEditDialog(mainController.getMainFrame(), true);
+        
+        //init dual list
+        protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
 
         //add binding
         Binding protocolNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, protocolManagementDialog.getProtocolList(), ELProperty.create("${selectedElement.name}"), protocolEditDialog.getNameTextField(), BeanProperty.create("text"), "protocolNameBinding");

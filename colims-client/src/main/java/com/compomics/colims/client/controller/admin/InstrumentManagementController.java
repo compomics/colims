@@ -20,6 +20,7 @@ import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.enums.CvTermType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -228,6 +229,9 @@ public class InstrumentManagementController implements Controllable {
 
     private void initInstrumentEditDialog() {
         instrumentEditDialog = new InstrumentEditDialog(mainController.getMainFrame(), true);
+        
+        //init dual list
+        instrumentEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
 
         //add binding
         Binding instrumentNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentManagementDialog.getInstrumentList(), ELProperty.create("${selectedElement.name}"), instrumentEditDialog.getNameTextField(), BeanProperty.create("text"), "instrumentNameBinding");

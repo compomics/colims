@@ -25,13 +25,13 @@ public class DualList<T> extends javax.swing.JPanel {
     private ObservableList<T> availableItemBindingList;
     private ObservableList<T> addedItemBindingList;
     private int maximumAmountOfAddedItems;
-    private Comparator<T> comparator;
+    private Comparator<? super T> comparator;
 
     /**
      * Constructor
      */
-    public DualList() {        
-        initComponents();        
+    public DualList() {
+        initComponents();
     }
 
     /**
@@ -54,8 +54,12 @@ public class DualList<T> extends javax.swing.JPanel {
      * @param maximumAmountOfAddedItems the maximum amount of added items
      */
     public void populateLists(List<T> availableItems, List<T> addedItems, int maximumAmountOfAddedItems) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("The dual list component has not been initialized.");
+        }
+
         this.maximumAmountOfAddedItems = maximumAmountOfAddedItems;
-        
+
         availableItemBindingList.clear();
         //check for added items in the available items list
         for (T availableItem : availableItems) {
@@ -63,10 +67,10 @@ public class DualList<T> extends javax.swing.JPanel {
                 availableItemBindingList.add(availableItem);
             }
         }
-        
+
         addedItemBindingList.clear();
         addedItemBindingList.addAll(addedItems);
-        
+
         checkButtonStates();
     }
 
@@ -80,7 +84,7 @@ public class DualList<T> extends javax.swing.JPanel {
         for (T addedItem : addedItemBindingList) {
             addedItems.add(addedItem);
         }
-        
+
         return addedItems;
     }
 
@@ -95,7 +99,7 @@ public class DualList<T> extends javax.swing.JPanel {
     /**
      * Init the component.
      */
-    public void init(Comparator<T> comparator) {
+    public void init(Comparator<? super T> comparator) {
         this.comparator = comparator;
 
         //set default value
@@ -103,15 +107,15 @@ public class DualList<T> extends javax.swing.JPanel {
 
         //init bindings
         bindingGroup = new BindingGroup();
-        
+
         availableItemBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding availableItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, availableItemBindingList, availableItemList);
         bindingGroup.addBinding(availableItemBinding);
-        
+
         addedItemBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding addedItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, addedItemBindingList, addedItemList);
         bindingGroup.addBinding(addedItemBinding);
-        
+
         bindingGroup.bind();
 
         //add action listeners
@@ -119,7 +123,7 @@ public class DualList<T> extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 List selectedItems = availableItemList.getSelectedValuesList();
-                
+
                 for (Object selectedObject : selectedItems) {
                     T selectedItem = (T) selectedObject;
 
@@ -131,17 +135,17 @@ public class DualList<T> extends javax.swing.JPanel {
 
                     //check button states
                     checkButtonStates();
-                    
+
                     DualList.this.firePropertyChange(CHANGED, false, true);
                 }
             }
         });
-        
+
         removeItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 List selectedItems = addedItemList.getSelectedValuesList();
-                
+
                 for (Object selectedObject : selectedItems) {
                     T selectedItem = (T) selectedObject;
 
@@ -153,15 +157,11 @@ public class DualList<T> extends javax.swing.JPanel {
 
                     //check button states
                     checkButtonStates();
-                    
+
                     DualList.this.firePropertyChange(CHANGED, false, true);
                 }
             }
         });
-    }    
-    
-    private void sort(ObservableList<T> listToSort) {
-        Collections.sort(listToSort, comparator);
     }
 
     /**
@@ -178,10 +178,19 @@ public class DualList<T> extends javax.swing.JPanel {
         }
         if (addedItemBindingList.isEmpty()) {
             removeItemButtonEnabled = false;
-        }        
-        
+        }
+
         addItemButton.setEnabled(addItemButtonEnabled);
         removeItemButton.setEnabled(removeItemButtonEnabled);
+    }
+
+    /**
+     * Sort the list using the comparator
+     *
+     * @param listToSort
+     */
+    private void sort(ObservableList<T> listToSort) {
+        Collections.sort(listToSort, comparator);
     }
 
     /**

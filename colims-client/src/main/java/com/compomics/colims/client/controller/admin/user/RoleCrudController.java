@@ -17,6 +17,7 @@ import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
+import com.compomics.colims.model.comparator.PermissionNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -73,6 +74,9 @@ public class RoleCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+        
+        //init dual list
+        userManagementDialog.getPermissionDualList().init(new PermissionNameComparator());
 
         areChildrenAffected = false;
 
