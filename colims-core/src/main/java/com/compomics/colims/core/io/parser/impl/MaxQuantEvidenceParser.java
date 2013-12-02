@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.parser.impl;
 
+import com.compomics.colims.model.Modification;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +17,8 @@ import com.compomics.colims.model.QuantificationGroup;
 //import com.compomics.colims.model.QuantificationGroupHasPeptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.compomics.util.experiment.quantification.Ratio;
+import com.compomics.util.experiment.quantification.matches.PeptideQuantification;
 import java.util.ArrayList;
 import java.util.Arrays;
 //import com.compomics.util.protein.Header.DatabaseType;
@@ -49,7 +52,6 @@ public class MaxQuantEvidenceParser {
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
             PeptideAssumption assumption = createPeptide(values);
-
             //linkPeptideToProtein(peptide, values);
             //linkPeptideToModifications(peptide, values);
             parsedPeptideList.add(assumption);
@@ -97,6 +99,28 @@ public class MaxQuantEvidenceParser {
         Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
         PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 0, null, Double.parseDouble(values.get(EvidenceHeaders.Score.column)));
         return assumption;
+    }
+
+    /**
+     * Create a new PeptideQuant instance from the values contained in the map.
+     *
+     * @param values
+     * @return
+     */
+    public static PeptideQuantification createPeptideQuantification(final Map<String, String> values) {
+        //String peptideId
+        String peptideID = values.get(EvidenceHeaders.Peptide_ID.column);
+        // The id of the peptide quant
+        int id = Integer.parseInt(values.get(EvidenceHeaders.id.column));
+        // The normalized ratio
+        double ratio = Double.parseDouble(values.get(EvidenceHeaders.Normalized_Ratio.column));
+        //create utilities Ratio object
+        Ratio utilitiesRatio = new Ratio(id, ratio);
+        // Create peptidequantification
+        PeptideQuantification pepQuant = new PeptideQuantification(peptideID);
+        // add the ratio to the quant object
+        pepQuant.addRatio(id, utilitiesRatio);
+        return pepQuant;
     }
 
     /**
@@ -192,7 +216,6 @@ public class MaxQuantEvidenceParser {
         // peptideHasModification.setModification(modification);
         //peptideHasModification.setPeptide(peptide);
         // TODO Persist the PeptideHasModification instance using a new to create Hibernate Repository
-
         // Store the PeptideHasModification in both peptide and modification
         //peptide.getPeptideHasModifications().add(peptideHasModification);
         // modification.getPeptideHasModifications().add(peptideHasModification);
@@ -257,7 +280,8 @@ enum EvidenceHeaders {
     Combinatorics("Combinatorics"),
     Intensity("Intensity"),
     Reverse("Reverse"),
-    Contaminant("Contaminant");
+    Contaminant("Contaminant"),
+    Normalized_Ratio("Ratio H/L normalized"),;
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
