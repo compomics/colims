@@ -27,15 +27,14 @@ import org.hibernate.validator.constraints.NotBlank;
 // group is a reserved SQL keyword
 @Table(name = "user_group")
 @Entity
-public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
+public class Group extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
- 
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 5, max = 100, message = "Group name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
-    private String name;    
+    private String name;
     @Basic(optional = false)
     @Length(max = 500, message = "Group description length must be less than {max} characters")
     @Column(name = "description")
@@ -114,11 +113,6 @@ public class Group extends AbstractDatabaseEntity implements Comparable<Group> {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int compareTo(Group o) {
-        return name.compareToIgnoreCase(o.getName());
     }
 
     @Override
