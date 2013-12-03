@@ -18,12 +18,12 @@ import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.comparator.UserNameComparator;
+import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -35,11 +35,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
@@ -64,6 +60,7 @@ public class ProjectManagementController {
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
     private BindingGroup bindingGroup;
     private ObservableList<User> userBindingList;
+    private Project projectToEdit;
     //view
     private ProjectManagementPanel projectManagementPanel;
     private ProjectEditDialog projectEditDialog;
@@ -75,12 +72,17 @@ public class ProjectManagementController {
     private ProjectService projectService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EventBus eventBus;
 
     public ProjectManagementPanel getProjectsOverviewPanel() {
         return projectManagementPanel;
     }
 
     public void init() {
+        //register to event bus
+        eventBus.register(this);
+        
         bindingGroup = new BindingGroup();
 
         initProjectManagementPanel();
@@ -144,38 +146,34 @@ public class ProjectManagementController {
 
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {                                
-                    updateProjectEditDialog(createDefaultProject());
-                    
-                    projectEditDialog.setLocationRelativeTo(null);
-                    projectEditDialog.setVisible(true);                
+            public void actionPerformed(ActionEvent e) {
+                projectToEdit = createDefaultProject();
+                updateProjectEditDialog(projectToEdit);
+
+                projectEditDialog.setLocationRelativeTo(null);
+                projectEditDialog.setVisible(true);
             }
         });
 
         projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Project selectedProject = getSelectedProject();
-                if(selectedProject != null){
-                    updateProjectEditDialog(selectedProject);
-                    
+                projectToEdit = getSelectedProject();
+                if (projectToEdit != null) {
+                    updateProjectEditDialog(projectToEdit);
+
                     projectEditDialog.setLocationRelativeTo(null);
                     projectEditDialog.setVisible(true);
+                }
+                else{
+                    eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
 
         projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //get the selected project and show the project edit dialog
-                EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
-                if (!selectedProjects.isEmpty()) {
-                    updateProjectEditDialog(createDefaultProject());
-
-                    projectEditDialog.setLocationRelativeTo(null);
-                    projectEditDialog.setVisible(true);
-                }
+            public void actionPerformed(ActionEvent e) {                
             }
         });
 
@@ -184,10 +182,14 @@ public class ProjectManagementController {
             public void actionPerformed(ActionEvent e) {
             }
         });
+        
     }
 
     private void initProjectEditDialog() {
         projectEditDialog = new ProjectEditDialog(mainController.getMainFrame(), true);
+        
+        //init dual list
+        projectEditDialog.getUserDualList().init(new UserNameComparator());
 
         //add binding
         userBindingList = ObservableCollections.observableList(userService.findAll());
@@ -199,41 +201,101 @@ public class ProjectManagementController {
         projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                List<User> addedItems = projectEditDialog.getUserDualList().getAddedItems();
+                List<User> addedUsers = projectEditDialog.getUserDualList().getAddedItems();
+
+                projectToEdit.setUsers(addedUsers);
             }
         });
 
         projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-//                Instrument selectedInstrument = getSelectedInstrument();
-//                //validate instrument
-//                List<String> validationMessages = GuiUtils.validateEntity(selectedInstrument);
-//                //check for a new instrument if the instrument name already exists in the db                
-//                if (selectedInstrument.getId() == null && isExistingInstrumentName(selectedInstrument)) {
-//                    validationMessages.add(selectedInstrument.getName() + " already exists in the database, please choose another instrument name.");
-//                }
-//                if (validationMessages.isEmpty()) {
-//                    if (selectedInstrument.getId() != null) {
-//                        instrumentService.update(selectedInstrument);
-//                    } else {
-//                        instrumentService.save(selectedInstrument);
-//                    }
-//                    instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
-//
-//                    MessageEvent messageEvent = new MessageEvent("Instrument persist confirmation", "Instrument " + selectedInstrument.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
-//                    eventBus.post(messageEvent);
-//
-//                    //refresh selection in instrument list in management overview dialog
-//                    int index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
-//                    instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
-//                    instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
-//                } else {
-//                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
-//                    eventBus.post(messageEvent);
-//                }
+            public void actionPerformed(ActionEvent e) {                
+                //validate project
+                List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
+                //check for a new project if the project title already exists in the db                
+                if (projectToEdit.getId() == null && isExistingInstrumentName(selectedInstrument)) {
+                    validationMessages.add(selectedInstrument.getName() + " already exists in the database, please choose another instrument name.");
+                }
+                if (validationMessages.isEmpty()) {
+                    if (selectedInstrument.getId() != null) {
+                        instrumentService.update(selectedInstrument);
+                    } else {
+                        instrumentService.save(selectedInstrument);
+                    }
+                    instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
+
+                    MessageEvent messageEvent = new MessageEvent("Instrument persist confirmation", "Instrument " + selectedInstrument.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    eventBus.post(messageEvent);
+
+                    //refresh selection in instrument list in management overview dialog
+                    int index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                    instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+                    instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
+        
+        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                projectEditDialog.dispose();
+            }
+        });
+    }
+
+    private void updateProjectEditDialog(Project project) {
+        if (project.getId() != null) {
+            projectEditDialog.getSaveOrUpdateButton().setText("update");
+        } else {
+            projectEditDialog.getSaveOrUpdateButton().setText("save");
+        }
+
+        projectEditDialog.getTitleTextField().setText(project.getTitle());
+        projectEditDialog.getLabelTextField().setText(project.getLabel());
+
+        //set the selected item in the owner combobox        
+        projectEditDialog.getOwnerComboBox().setSelectedItem(project.getOwner());
+        projectEditDialog.getDescriptionTextArea().setText(project.getDescription());
+        //populate user dual list
+        projectEditDialog.getUserDualList().populateLists(userService.findAll(), project.getUsers());
+    }
+
+    /**
+     * Get the selected project in the project management table.
+     *
+     * @return the selected project
+     */
+    private Project getSelectedProject() {
+        Project selectedProject = null;
+
+        //get the selected project and show the project edit dialog
+        EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
+        if (!selectedProjects.isEmpty()) {
+            selectedProject = selectedProjects.get(0);
+        }
+
+        return selectedProject;
+    }
+    
+    /**
+     * Check if a project with the given project title exists in the
+     * database.
+     *
+     * @param project the project
+     * @return does the project title exist
+     */
+    private boolean isExistingProjectTitle(Project project) {
+        boolean isExistingProjectTitle = true;
+        Project foundProject = projectService.findByName(instrument.getName());
+        if (foundInstrument == null) {
+            isExistingInstrumentName = false;
+        }
+
+        return isExistingInstrumentName;
     }
 
     /**
@@ -256,35 +318,23 @@ public class ProjectManagementController {
         return defaultProject;
     }
 
-    private void updateProjectEditDialog(Project project) {
-        if (project.getId() != null) {
-            projectEditDialog.getSaveOrUpdateButton().setText("update");
-        } else {
-            projectEditDialog.getSaveOrUpdateButton().setText("save");
-        }
-
-        projectEditDialog.getTitleTextField().setText(project.getTitle());
-        projectEditDialog.getLabelTextField().setText(project.getLabel());
-
-        //set the selected item in the owner combobox        
-        projectEditDialog.getOwnerComboBox().setSelectedItem(project.getOwner());
-        projectEditDialog.getUserDualList().populateLists(userService.findAll(), project.getUsers());
-    }
-
     /**
-     * Get the selected project in the project management table.
+     * Create a default experiment, with some default properties.
      *
-     * @return the selected project
+     * @return the default experiment
      */
-    private Project getSelectedProject() {
-        Project selectedProject = null;
-        
-        //get the selected project and show the project edit dialog
-        EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
-        if (!selectedProjects.isEmpty()) {
-            updateProjectEditDialog(createDefaultProject());
+    private Project createDefaultExperiment() {
+        Project defaultProject = new Project();
+
+        defaultProject.setTitle("default project title");
+        defaultProject.setLabel("def_label");
+
+        //set default owner, i.e. the user with the most projects
+        User userWithMostProjectOwns = projectService.getUserWithMostProjectOwns();
+        if (userWithMostProjectOwns != null) {
+            defaultProject.setOwner(userWithMostProjectOwns);
         }
-        
-        return selectedProject;
+
+        return defaultProject;
     }
 }

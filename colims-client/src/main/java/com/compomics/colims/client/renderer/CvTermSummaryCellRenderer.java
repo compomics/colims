@@ -32,7 +32,7 @@ public class CvTermSummaryCellRenderer<T extends CvTerm> extends DefaultListCell
                 labelText = cvTermType.toString() + " (0/1)";
             }
         } else {
-            List<T> cvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(cvTermType);
+            List<T> cvTerms = cvTermSummaryListModel.getMultiCvTerms().get(cvTermType);
             labelText = cvTermType.toString() + " (" + cvTerms.size() + ")";
         }
 

@@ -14,6 +14,14 @@ import com.compomics.colims.model.User;
 public interface ProjectRepository extends GenericRepository<Project, Long> {
 
     /**
+     * Find the project by title.
+     *
+     * @param title the project title
+     * @return the found project
+     */
+    Project findByTitle(String title);
+    
+    /**
      * Get the user that owns the most projects.
      *
      * @return

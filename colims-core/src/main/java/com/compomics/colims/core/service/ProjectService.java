@@ -16,6 +16,14 @@ import com.compomics.colims.model.User;
 public interface ProjectService extends GenericService<Project, Long> {
 
     /**
+     * Find the project by title.
+     *
+     * @param title the project title
+     * @return the found project
+     */
+    Project findByTitle(String title);
+    
+    /**
      * Find all projects and load the according experiments.
      * 
      * @return the found projects

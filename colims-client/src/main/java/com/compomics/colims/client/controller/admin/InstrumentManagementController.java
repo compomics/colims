@@ -221,7 +221,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentManagementDialog.setVisible(false);
+                instrumentManagementDialog.dispose();
             }
         });
 
@@ -266,7 +266,7 @@ public class InstrumentManagementController implements Controllable {
                             }
                             instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -314,7 +314,7 @@ public class InstrumentManagementController implements Controllable {
                     }
                 } else if (selectedcvTermType.equals(CvTermType.ANALYZER)) {
                     instrument.setAnalyzers(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.ANALYZER, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.ANALYZER, addedItems);
                 }
 
             }
@@ -367,7 +367,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentEditDialog.setVisible(false);
+                instrumentEditDialog.dispose();
             }
         });
 
@@ -515,7 +515,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentTypeCrudDialog.getCloseInstrumentTypeCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentTypeCrudDialog.setVisible(false);
+                instrumentTypeCrudDialog.dispose();
             }
         });
     }    

@@ -81,4 +81,9 @@ public class ProjectServiceImpl implements ProjectService {
     public User getUserWithMostProjectOwns() {
         return projectRepository.getUserWithMostProjectOwns();
     }
+
+    @Override
+    public Project findByTitle(String title) {
+        return projectRepository.findByTitle(title);
+    }
 }

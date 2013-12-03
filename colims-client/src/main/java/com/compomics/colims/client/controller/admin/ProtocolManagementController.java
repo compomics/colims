@@ -218,7 +218,7 @@ public class ProtocolManagementController implements Controllable {
         protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                protocolManagementDialog.setVisible(false);
+                protocolManagementDialog.dispose();
             }
         });
 
@@ -263,7 +263,7 @@ public class ProtocolManagementController implements Controllable {
                             }
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -312,10 +312,10 @@ public class ProtocolManagementController implements Controllable {
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CHEMICAL_LABELING)) {
                     protocol.setChemicalLabels(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 } else if (selectedcvTermType.equals(CvTermType.OTHER)) {
                     protocol.setOtherCvTerms(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 }
 
             }
@@ -356,7 +356,7 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                protocolEditDialog.setVisible(false);
+                protocolEditDialog.dispose();
             }
         });
 

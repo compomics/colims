@@ -212,7 +212,7 @@ public class MaterialManagementController implements Controllable {
         materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                materialManagementDialog.setVisible(false);
+                materialManagementDialog.dispose();
             }
         });
 
@@ -257,7 +257,7 @@ public class MaterialManagementController implements Controllable {
                             }
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -353,7 +353,7 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                materialEditDialog.setVisible(false);
+                materialEditDialog.dispose();
             }
         });
 

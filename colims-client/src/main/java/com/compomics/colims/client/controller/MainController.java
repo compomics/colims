@@ -197,7 +197,7 @@ public class MainController implements Controllable, ActionListener {
         User currentUser = userService.findByLoginCredentials(loginDialog.getUserNameTextField().getText(), String.valueOf(loginDialog.getPasswordTextField().getPassword()));
         if (currentUser != null) {
             LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
-            loginDialog.setVisible(false);
+            loginDialog.dispose();
 
             //@todo change this to the new user management 
             //check if the current user has Role.ADMIN.
@@ -206,7 +206,7 @@ public class MainController implements Controllable, ActionListener {
             initAdminSection();
             //} else {
             //set admin menu invisible
-            //mainFrame.getAdminMenu().setVisible(false);
+            //mainFrame.getAdminMenu().dispose();
             //}
 
             //set current user in authentication bean                
