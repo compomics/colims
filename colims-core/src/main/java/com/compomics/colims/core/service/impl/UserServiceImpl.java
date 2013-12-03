@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     public void update(User entity) {
         //attach the user to the new session
         userRepository.saveOrUpdate(entity);
-        userRepository.update(entity);
+        //userRepository.update(entity);
     }
 
     @Override
