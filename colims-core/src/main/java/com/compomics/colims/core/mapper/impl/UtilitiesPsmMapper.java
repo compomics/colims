@@ -55,9 +55,6 @@ public class UtilitiesPsmMapper {
         } catch (ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
-        } catch (InterruptedException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
         }
 
         MatchScore psmMatchScore = new MatchScore(psmProbabilities.getPsmProbabilityScore(), psmProbabilities.getPsmProbability());
@@ -93,9 +90,7 @@ public class UtilitiesPsmMapper {
         } catch (ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(UtilitiesPsmMapper.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        } 
     //map proteins
     MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
 
