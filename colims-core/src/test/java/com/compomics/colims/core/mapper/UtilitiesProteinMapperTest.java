@@ -19,6 +19,7 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.springframework.core.io.ClassPathResource;
@@ -48,7 +49,7 @@ public class UtilitiesProteinMapperTest {
      * @throws IOException
      */
     @Test
-    public void testMapProtein_1() throws MappingException, IOException {
+    public void testMapProtein_1() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
         //create new utilities peptide
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P16083");
@@ -87,7 +88,7 @@ public class UtilitiesProteinMapperTest {
      * @throws IOException
      */
     @Test
-    public void testMapProtein_2() throws MappingException, IOException {
+    public void testMapProtein_2() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
         //create new utilities peptide
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P06241");

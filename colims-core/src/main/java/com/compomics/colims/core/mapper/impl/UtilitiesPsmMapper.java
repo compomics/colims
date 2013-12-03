@@ -15,6 +15,7 @@ import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,16 @@ public class UtilitiesPsmMapper {
             //get psm and peptide probabilities            
             psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
             peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
+        } catch (SQLException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (ClassNotFoundException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (InterruptedException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
         }
@@ -62,19 +72,33 @@ public class UtilitiesPsmMapper {
 
         List<ProteinMatch> proteinMatches = new ArrayList<>();
         //iterate over protein keys        
-        for (String proteinKey : sourcePeptide.getParentProteins()) {
-            try {
-                ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
+        try {
+            for (String proteinKey : sourcePeptide.getParentProteins()) {
+
+                ProteinMatch proteinMatch = null;
                 if (proteinMatch != null) {
                     proteinMatches.add(proteinMatch);
                 }
-            } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                throw new MappingException(ex);
+                proteinMatch = ms2Identification.getProteinMatch(proteinKey);
             }
-        }
-        //map proteins
-        MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
-        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
-    }
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (SQLException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (ClassNotFoundException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(UtilitiesPsmMapper.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+    //map proteins
+    MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
+
+    utilitiesProteinMapper.map (proteinMatches, peptideMatchScore, targetPeptide);
+}
 }

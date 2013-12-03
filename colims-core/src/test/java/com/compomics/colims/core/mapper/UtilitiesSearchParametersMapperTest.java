@@ -31,24 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class UtilitiesSearchParametersMapperTest {
 
-    public UtilitiesSearchParametersMapperTest() {
-    }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
     @Autowired
     private PeptideShakerIO peptideShakerIO;
 
