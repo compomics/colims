@@ -83,6 +83,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         editProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        projectsTableScrollPane.setOpaque(false);
+
         projectsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -94,6 +96,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        projectsTable.setOpaque(false);
         projectsTableScrollPane.setViewportView(projectsTable);
 
         javax.swing.GroupLayout projectsOverviewPanelLayout = new javax.swing.GroupLayout(projectsOverviewPanel);
@@ -139,6 +142,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         editExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        experimentsTableScrollPane.setOpaque(false);
+
         experimentsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -150,6 +155,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        experimentsTable.setOpaque(false);
         experimentsTableScrollPane.setViewportView(experimentsTable);
 
         javax.swing.GroupLayout experimentsOverviewPanelLayout = new javax.swing.GroupLayout(experimentsOverviewPanel);

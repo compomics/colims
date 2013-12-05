@@ -18,6 +18,7 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvTerm;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.enums.CvTermType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -211,7 +212,7 @@ public class MaterialManagementController implements Controllable {
         materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                materialManagementDialog.setVisible(false);
+                materialManagementDialog.dispose();
             }
         });
 
@@ -220,6 +221,9 @@ public class MaterialManagementController implements Controllable {
     private void initMaterialEditDialog() {
         materialEditDialog = new MaterialEditDialog(mainController.getMainFrame(), true);
 
+        //init dual list
+        materialEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
+        
         //add binding
         Binding materialNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, materialManagementDialog.getMaterialList(), ELProperty.create("${selectedElement.name}"), materialEditDialog.getNameTextField(), BeanProperty.create("text"), "materialNameBinding");
         bindingGroup.addBinding(materialNameBinding);
@@ -253,7 +257,7 @@ public class MaterialManagementController implements Controllable {
                             }
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -349,7 +353,7 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                materialEditDialog.setVisible(false);
+                materialEditDialog.dispose();
             }
         });
 

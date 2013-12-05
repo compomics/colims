@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.MessageEvent;
@@ -21,6 +20,7 @@ import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.InstrumentType;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.enums.CvTermType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -221,7 +221,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentManagementDialog.setVisible(false);
+                instrumentManagementDialog.dispose();
             }
         });
 
@@ -229,6 +229,9 @@ public class InstrumentManagementController implements Controllable {
 
     private void initInstrumentEditDialog() {
         instrumentEditDialog = new InstrumentEditDialog(mainController.getMainFrame(), true);
+        
+        //init dual list
+        instrumentEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
 
         //add binding
         Binding instrumentNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentManagementDialog.getInstrumentList(), ELProperty.create("${selectedElement.name}"), instrumentEditDialog.getNameTextField(), BeanProperty.create("text"), "instrumentNameBinding");
@@ -263,7 +266,7 @@ public class InstrumentManagementController implements Controllable {
                             }
                             instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -311,7 +314,7 @@ public class InstrumentManagementController implements Controllable {
                     }
                 } else if (selectedcvTermType.equals(CvTermType.ANALYZER)) {
                     instrument.setAnalyzers(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.ANALYZER, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.ANALYZER, addedItems);
                 }
 
             }
@@ -364,7 +367,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentEditDialog.setVisible(false);
+                instrumentEditDialog.dispose();
             }
         });
 
@@ -512,7 +515,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentTypeCrudDialog.getCloseInstrumentTypeCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentTypeCrudDialog.setVisible(false);
+                instrumentTypeCrudDialog.dispose();
             }
         });
     }    

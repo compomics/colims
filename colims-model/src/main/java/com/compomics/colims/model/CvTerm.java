@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class CvTerm extends AbstractDatabaseEntity implements Comparable<CvTerm> {
+public abstract class CvTerm extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -122,11 +122,6 @@ public abstract class CvTerm extends AbstractDatabaseEntity implements Comparabl
     @Override
     public String toString() {
         return name + " [" + accession + "]";
-    }
-    
-    @Override
-    public int compareTo(CvTerm o) {
-        return accession.compareTo(o.getAccession());
-    }
+    }    
  
 }

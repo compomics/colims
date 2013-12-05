@@ -18,8 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.swing.event.SwingPropertyChangeSupport;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -66,9 +64,6 @@ public class Project extends AbstractDatabaseEntity {
     private List<Experiment> experiments = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private List<Material> materials = new ArrayList<>();
-    
-    @Transient
-    private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     public Project() {
     }
@@ -78,9 +73,7 @@ public class Project extends AbstractDatabaseEntity {
     }
 
     public void setTitle(String title) {
-        String oldTitle = this.title;
         this.title = title;
-        propertyChangeSupport.firePropertyChange("title", oldTitle, title);
     }
 
     public String getLabel() {

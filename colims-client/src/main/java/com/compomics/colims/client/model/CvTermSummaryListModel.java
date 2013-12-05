@@ -21,7 +21,7 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * The EnumMap containing the multiple CV terms (key: cvTermType; value: a
      * list of multiple CV terms, can be empty).
      */
-    private EnumMap<CvTermType, List<T>> multipleCvTerms;
+    private EnumMap<CvTermType, List<T>> multiCvTerms;
     /**
      * The single CV term key array for indexing purposes
      */
@@ -29,19 +29,19 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
     /**
      * The multiple CV term key array for indexing purposes
      */
-    private CvTermType[] multipleCvTermKeys;
+    private CvTermType[] multiCvTermKeys;
 
     public CvTermSummaryListModel() {
         singleCvTerms = new EnumMap<>(CvTermType.class);
-        multipleCvTerms = new EnumMap<>(CvTermType.class);
+        multiCvTerms = new EnumMap<>(CvTermType.class);
     }
 
     public EnumMap<CvTermType, T> getSingleCvTerms() {
         return singleCvTerms;
     }
 
-    public EnumMap<CvTermType, List<T>> getMultipleCvTerms() {
-        return multipleCvTerms;
+    public EnumMap<CvTermType, List<T>> getMultiCvTerms() {
+        return multiCvTerms;
     }
 
     /**
@@ -63,8 +63,8 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * @param cvTermType 
      * @param cvTerms  
      */
-    public void updateMultipleCvTerm(CvTermType cvTermType, List<T> cvTerms) {
-        multipleCvTerms.put(cvTermType, cvTerms);
+    public void updateMultiCvTerm(CvTermType cvTermType, List<T> cvTerms) {
+        multiCvTerms.put(cvTermType, cvTerms);
         this.fireContentsChanged(this, 0, getSize());
     }
 
@@ -74,11 +74,11 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * @param singleCvTerms
      * @param multipleCvTerms
      */
-    public void update(EnumMap<CvTermType, T> singleCvTerms, EnumMap<CvTermType, List<T>> multipleCvTerms) {
+    public void update(EnumMap<CvTermType, T> singleCvTerms, EnumMap<CvTermType, List<T>> multiCvTerms) {
         this.singleCvTerms = singleCvTerms;
-        this.multipleCvTerms = multipleCvTerms;
+        this.multiCvTerms = multiCvTerms;
         singleCvTermKeys = singleCvTerms.keySet().toArray(new CvTermType[singleCvTerms.size()]);
-        multipleCvTermKeys = multipleCvTerms.keySet().toArray(new CvTermType[multipleCvTerms.size()]);
+        multiCvTermKeys = multiCvTerms.keySet().toArray(new CvTermType[multiCvTerms.size()]);
         this.fireContentsChanged(this, 0, getSize());
     }
 
@@ -99,7 +99,7 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
 
     @Override
     public int getSize() {
-        return singleCvTerms.size() + multipleCvTerms.size();
+        return singleCvTerms.size() + multiCvTerms.size();
     }
 
     @Override
@@ -108,7 +108,7 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
         if (index < singleCvTermKeys.length) {
             element = singleCvTermKeys[index];
         } else {
-            element = multipleCvTermKeys[index - singleCvTermKeys.length];
+            element = multiCvTermKeys[index - singleCvTermKeys.length];
         }
         return element;
     }

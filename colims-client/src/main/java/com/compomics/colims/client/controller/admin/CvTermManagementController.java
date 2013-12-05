@@ -201,7 +201,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                cvTermManagementDialog.setVisible(false);
+                cvTermManagementDialog.dispose();
             }
         });
     }
