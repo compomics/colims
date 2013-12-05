@@ -209,7 +209,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
+        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialManagementDialog.dispose();
@@ -350,7 +350,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
+        materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialEditDialog.dispose();

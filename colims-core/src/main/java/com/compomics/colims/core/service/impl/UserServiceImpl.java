@@ -47,8 +47,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(User user) {
-        //attach the user to the new session
-        userRepository.lock(user, LockOptions.NONE);
         userRepository.delete(user);
     }
 
