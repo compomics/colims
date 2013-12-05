@@ -17,10 +17,13 @@ import com.compomics.colims.model.QuantificationGroup;
 //import com.compomics.colims.model.QuantificationGroupHasPeptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.quantification.Ratio;
 import com.compomics.util.experiment.quantification.matches.PeptideQuantification;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import org.apache.log4j.Logger;
 //import com.compomics.util.protein.Header.DatabaseType;
 
 /**
@@ -35,6 +38,8 @@ import java.util.Arrays;
  */
 public class MaxQuantEvidenceParser {
 
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantEvidenceParser.class);
+
     /**
      * Parse the evidenceFile and add the peptides, protein references and
      * modifications within to the quantificationGroup.
@@ -43,18 +48,30 @@ public class MaxQuantEvidenceParser {
      * @param quantificationGroup
      * @throws IOException
      */
-    public static List<PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
+    public static Map<Integer, PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
-        List<PeptideAssumption> parsedPeptideList = new ArrayList<>();
+        Map<Integer, PeptideAssumption> parsedPeptideList = new HashMap<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
-            PeptideAssumption assumption = createPeptide(values);
-            //linkPeptideToProtein(peptide, values);
-            //linkPeptideToModifications(peptide, values);
-            parsedPeptideList.add(assumption);
+            try {
+                PeptideAssumption assumption = createPeptide(values);
+                //linkPeptideToProtein(peptide, values);
+                //linkPeptideToModifications(peptide, values);
+                Integer bestMsMs;
+                if (values.containsKey(EvidenceHeaders.best_MS_MS_ID.column)) {
+                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.best_MS_MS_ID.column));
+                } else {
+                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.MS_MS_IDs.column).split(";")[0]);
+                }
+
+                parsedPeptideList.put(bestMsMs, assumption);
+            } catch (UnparseableException upe) {
+                //TODO decide what to do with this
+                LOGGER.error(upe);
+            }
             // QuantificationGroupHasPeptide
             // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
             //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
@@ -86,19 +103,49 @@ public class MaxQuantEvidenceParser {
      * Create a new peptide instance from the values contained in the map.
      *
      * @param values
-     * @return
+     * @return a {@code PeptideAssumption} or the parsed row
+     * @throws UnparseableException if something went wrong while parsing the
+     * evidence row
      */
-    public static PeptideAssumption createPeptide(final Map<String, String> values) {
-        // The identified AA sequence of the peptide.
-        String sequence = values.get(EvidenceHeaders.Sequence.column);
+    public static PeptideAssumption createPeptide(final Map<String, String> values) throws UnparseableException {
+        if (values.get(EvidenceHeaders.MS_MS_IDs.column).isEmpty()) {
+            //can't have evidence without proof
+            throw new UnparseableException("peptide does not have an MS/MS scan");
+        } else {
+            String sequence = values.get(EvidenceHeaders.Sequence.column);
 
-        // The charge corrected mass of the precursor ion.
-        //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
-        ArrayList<String> proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
-        // Create peptide
-        Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
-        PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 0, null, Double.parseDouble(values.get(EvidenceHeaders.Score.column)));
-        return assumption;
+            // The charge corrected mass of the precursor ion.
+            //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+
+
+            ArrayList<String> proteinIds = new ArrayList<>();
+
+            if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.column)) {
+                proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
+            } else {
+                //up for discussion
+            }
+
+            // Create peptide
+            Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
+            double score = -1;
+            if (values.get(EvidenceHeaders.Score.column).equalsIgnoreCase("NAN")) {
+                throw new UnparseableException("could not parse score for peptide");
+            } else {
+                score = Double.parseDouble(values.get(EvidenceHeaders.Score.column));
+            }
+
+            //because I can
+            Charge identificationCharge = null;
+
+            if (values.containsKey(EvidenceHeaders.Charge.column)) {
+                identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.column)));
+            }
+
+            //99 is missing value according to statistics --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
+            PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
+            return assumption;
+        }
     }
 
     /**
@@ -157,7 +204,6 @@ public class MaxQuantEvidenceParser {
     //peptide.getPeptideHasProteins().add(peptideHasProtein);
     // TODO Persist PeptideHasProtein instance using a Hibernate Repository that still has to be created
     //}
-    
     /**
      * From values extract a variety of {@link Modification}s and link them to
      * the {@link Peptide} instance using {@link PeptideHasProtein} as
@@ -281,7 +327,8 @@ enum EvidenceHeaders {
     Intensity("Intensity"),
     Reverse("Reverse"),
     Contaminant("Contaminant"),
-    Normalized_Ratio("Ratio H/L normalized"),;
+    Normalized_Ratio("Ratio H/L normalized"),
+    best_MS_MS_ID("Best MS/MS");
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
