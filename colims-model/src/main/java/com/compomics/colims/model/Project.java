@@ -52,7 +52,7 @@ public class Project extends AbstractDatabaseEntity {
     @ManyToOne
     @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id", nullable = false)    
     private User owner;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "project_has_user",
             joinColumns = {
