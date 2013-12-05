@@ -63,7 +63,7 @@ public class ProjectSetupController implements Controllable {
     private ProjectSetupPanel projectSetupPanel;
     //main controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private EventBus eventBus;
     @Autowired

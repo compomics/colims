@@ -30,7 +30,7 @@ public class Group extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 5, max = 100, message = "Group name length must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
     @Length(max = 500, message = "Group description length must be less than {max} characters")

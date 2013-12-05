@@ -28,18 +28,17 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Material extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = false)
     private String name;
     @Basic(optional = false)
     @NotNull(message = "A material must have a species")
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm species;
-    @Basic(optional = true)    
+    @Basic(optional = true)
     @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvTerm tissue;
@@ -62,7 +61,7 @@ public class Material extends AbstractDatabaseEntity {
 
     public Material(String name) {
         this.name = name;
-    }    
+    }
 
     public String getName() {
         return name;
@@ -146,5 +145,4 @@ public class Material extends AbstractDatabaseEntity {
     public String toString() {
         return name;
     }
-        
 }

@@ -25,39 +25,38 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "experiment")
 @Entity
 public class Experiment extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-       
     @Basic(optional = false)
-    @Column(name = "title", nullable = false)
-    private String title;   
+    @Column(name = "title", nullable = false, unique = true)
+    private String title;
     @Basic(optional = true)
     @Column(name = "number", nullable = true)
     private Long number;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")
     @Column(name = "description")
-    private String description;  
+    private String description;
     @Basic(optional = true)
     @Column(name = "storage_location")
     private String storageLocation;
     @ManyToOne
-    @JoinColumn(name = "l_project_id", referencedColumnName = "id")    
-    private Project project;        
+    @JoinColumn(name = "l_project_id", referencedColumnName = "id")
+    private Project project;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<SearchAndValidationSettings> searchAndValidationSettings = new ArrayList<>();
-    
+
     public Project getProject() {
         return project;
     }
 
     public void setProject(Project project) {
         this.project = project;
-    }              
+    }
 
     public String getTitle() {
         return title;
@@ -77,7 +76,7 @@ public class Experiment extends AbstractDatabaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }   
+    }
 
     public String getStorageLocation() {
         return storageLocation;
@@ -85,7 +84,7 @@ public class Experiment extends AbstractDatabaseEntity {
 
     public void setStorageLocation(String storageLocation) {
         this.storageLocation = storageLocation;
-    }        
+    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -113,7 +112,7 @@ public class Experiment extends AbstractDatabaseEntity {
 
     public void setSearchAndValidationSettings(List<SearchAndValidationSettings> searchAndValidationSettings) {
         this.searchAndValidationSettings = searchAndValidationSettings;
-    }        
+    }
 
     @Override
     public int hashCode() {
@@ -143,11 +142,10 @@ public class Experiment extends AbstractDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return title;
     }
-    
 }

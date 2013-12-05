@@ -3,7 +3,7 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -53,7 +53,7 @@ import org.springframework.stereotype.Component;
 @Component("userCrudController")
 public class UserCrudController implements Controllable {
 
-    private static final Logger LOGGER = Logger.getLogger(MainController.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     private ObservableList<User> userBindingList;
     private BindingGroup bindingGroup;

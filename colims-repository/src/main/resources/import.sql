@@ -2,25 +2,25 @@
 INSERT INTO `institution` (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_code, street) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec');
 
 -- insert test users
-INSERT INTO `user` (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','user1@test.com','user1_first_name','user1_last_name','user1_name','7xyb63kC2ILEWopdoLiakOW4s8C9H5j/',1),(2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','user2@test.com','user2_first_name','user2_last_name','user2_name','jFkoyvRMKioGbr0Y6Ruhdw==', 1),(3,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','user3@test.com','user3_first_name','user3_last_name','user3_name','Ne+eQXzpoGE/7l/qEOv88dtSrYzmoPON',1);
+INSERT INTO `user` (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin11@test.com','admin1_first_name','admin1_last_name','admin1','7xyb63kC2ILEWopdoLiakOW4s8C9H5j/',1),(2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab1@test.com','lab1_first_name','lab1_last_name','lab1','jFkoyvRMKioGbr0Y6Ruhdw==', 1),(3,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab2@test.com','lab2_first_name','lab2_last_name','lab2','jFkoyvRMKioGbr0Y6Ruhdw==', 1),(4,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','collab1@test.com','collab1_first_name','collab1_last_name','collab1','Ne+eQXzpoGE/7l/qEOv88dtSrYzmoPON',1);
 
 -- insert test groups
-INSERT INTO `user_group` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription1','testGroup1'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription2','testGroup2'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription3','testGroup3');
+INSERT INTO `user_group` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','lab group description','lab'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','collaboration 1 group description','collaboration 1');
 
 -- insert test user_has_groups
-INSERT INTO `user_has_group` VALUES (1,1),(2,1),(3,2);
+INSERT INTO `user_has_group` (l_user_id, l_group_id) VALUES (1,1),(2,2),(3,2),(4,3);
 
 -- insert test roles
-INSERT INTO `group_role` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription1','testRole1'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription2','testRole2'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription3','testRole3');
+INSERT INTO `group_role` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin role description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','lab role description','lab'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','collaboration role description','collaboration');
 
 -- insert test group_has_roles
-INSERT INTO `group_has_role` VALUES (1,1),(1,2),(3,2);
+INSERT INTO `group_has_role` (l_group_id, l_role_id) VALUES (1,1),(2,2),(3,3);
 
 -- insert test permissions
-INSERT INTO `permission` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription1','testPermission1'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription2','testPermission2'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','testDescription3','testPermission3');
+INSERT INTO `permission` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','read','read'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','create','create'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','update','update'),(4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','delete','delete');
 
 -- insert test role_has_permissions
-INSERT INTO `role_has_permission` VALUES (1,1),(2,1),(3,2);
+INSERT INTO `role_has_permission` (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3),(3,1);
 
 -- insert test instrument types
 INSERT INTO `instrument_type` (id, creation_date, modification_date, user_name, name, description) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_1_name','instrument type 1 description'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_2_name','instrument type 2 description');
