@@ -88,6 +88,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         titleLabel.setText("title");
 
         descriptionTextArea.setColumns(20);
+        descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setRows(5);
         descriptionTextArea.setAutoscrolls(false);
         descriptionScrollPanel.setViewportView(descriptionTextArea);
