@@ -1,6 +1,5 @@
 package com.compomics.colims.client.controller.admin.user;
 
-import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
@@ -18,6 +17,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.GroupNameComparator;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;

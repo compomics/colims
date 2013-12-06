@@ -1,7 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
-import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
@@ -11,6 +10,7 @@ import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;

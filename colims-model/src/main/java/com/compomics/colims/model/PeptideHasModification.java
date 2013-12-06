@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.ModificationTypeEnum;
+import com.compomics.colims.model.enums.ModificationType;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,7 +37,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
     @Basic(optional = true)
     @Column(name = "modification_type", nullable = true)
     @Enumerated(EnumType.ORDINAL)
-    private ModificationTypeEnum modificationType;
+    private ModificationType modificationType;
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
@@ -80,11 +80,11 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         this.deltaScore = deltaScore;
     }    
 
-    public ModificationTypeEnum getModificationType() {
+    public ModificationType getModificationType() {
         return modificationType;
     }
 
-    public void setModificationType(ModificationTypeEnum modificationType) {
+    public void setModificationType(ModificationType modificationType) {
         this.modificationType = modificationType;
     }
 

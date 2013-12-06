@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationTypeEnum;
+import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
@@ -85,7 +85,7 @@ public class UtilitiesModificationMapper {
 
                 //set modification type
                 if (modificationMatch.isVariable()) {
-                    peptideHasModification.setModificationType(ModificationTypeEnum.VARIABLE);
+                    peptideHasModification.setModificationType(ModificationType.VARIABLE);
 
                     if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
                         String alphaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestAScoreLocations();
@@ -108,7 +108,7 @@ public class UtilitiesModificationMapper {
                         }
                     }
                 } else {
-                    peptideHasModification.setModificationType(ModificationTypeEnum.FIXED);
+                    peptideHasModification.setModificationType(ModificationType.FIXED);
                 }
 
                 peptideHasModifications.add(peptideHasModification);

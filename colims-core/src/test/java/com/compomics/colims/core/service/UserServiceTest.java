@@ -1,4 +1,3 @@
-
 package com.compomics.colims.core.service;
 
 import org.junit.Assert;
@@ -14,6 +13,8 @@ import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
+import com.compomics.colims.repository.AuthenticationBean;
+import java.util.List;
 
 /**
  *
@@ -27,12 +28,15 @@ public class UserServiceTest {
     
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationBean authenticationBean;
     
     @Test
-    public void testFindGroupsByUserId() {         
+    public void testFindGroupsByUserId() {
         User user = userService.findById(1L);
         userService.fetchAuthenticationRelations(user);
-                  
+        authenticationBean.setCurrentUser(user);
+
 //        Assert.assertEquals(2, user.getUserHasGroups().size());
 //        Group group = user.getUserHasGroups().get(0).getGroup();
 //        Assert.assertNotNull(group);
@@ -41,7 +45,18 @@ public class UserServiceTest {
 //        Assert.assertNotNull(role);
 //        Assert.assertEquals(2, role.getRoleHasPermissions().size());
 //        Permission permission = role.getRoleHasPermissions().get(0).getPermission();
-//        Assert.assertNotNull(permission);               
+//        Assert.assertNotNull(permission);       
+
+        User newUser = new User("testUser");
+        newUser.setEmail("test@test");
+        newUser.setFirstName("test");
+        newUser.setLastName("test");
+        newUser.setPassword("blablablabla");
+        
+        userService.save(newUser);
+        userService.delete(newUser);
+        List<User> findAll = userService.findAll();
+        
+        System.out.println("test");
     }
-    
 }
