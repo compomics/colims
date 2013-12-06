@@ -491,6 +491,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         groupStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         groupDescriptionTextArea.setColumns(20);
+        groupDescriptionTextArea.setLineWrap(true);
         groupDescriptionTextArea.setRows(5);
         groupDescriptionScrollPane.setViewportView(groupDescriptionTextArea);
 
@@ -631,6 +632,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         roleStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         roleDescriptionTextArea.setColumns(20);
+        roleDescriptionTextArea.setLineWrap(true);
         roleDescriptionTextArea.setRows(5);
         roleDescriptionScrollPane.setViewportView(roleDescriptionTextArea);
 
@@ -773,6 +775,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         permissionDescriptionTextArea.setColumns(20);
+        permissionDescriptionTextArea.setLineWrap(true);
         permissionDescriptionTextArea.setRows(5);
         permissionDescriptionScrollPane.setViewportView(permissionDescriptionTextArea);
 

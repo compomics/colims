@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
@@ -63,7 +63,7 @@ public class MaterialManagementController implements Controllable {
     private MaterialEditDialog materialEditDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -117,7 +117,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     private void initMaterialManagementDialog() {
-        materialManagementDialog = new MaterialManagementDialog(mainController.getMainFrame(), true);
+        materialManagementDialog = new MaterialManagementDialog(mainController.getColimsFrame(), true);
 
         //add binding
         materialBindingList = ObservableCollections.observableList(materialService.findAll());
@@ -209,7 +209,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
+        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialManagementDialog.dispose();
@@ -219,7 +219,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     private void initMaterialEditDialog() {
-        materialEditDialog = new MaterialEditDialog(mainController.getMainFrame(), true);
+        materialEditDialog = new MaterialEditDialog(mainController.getColimsFrame(), true);
 
         //init dual list
         materialEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
@@ -350,7 +350,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
+        materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialEditDialog.dispose();

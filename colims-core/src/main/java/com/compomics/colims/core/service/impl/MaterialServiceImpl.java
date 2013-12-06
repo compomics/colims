@@ -39,8 +39,6 @@ public class MaterialServiceImpl implements MaterialService {
     
     @Override
     public void delete(final Material entity) {
-        //attach the instrument to the session
-        materialRepository.lock(entity, LockOptions.NONE);
         materialRepository.delete(entity);
     }
     
@@ -51,8 +49,6 @@ public class MaterialServiceImpl implements MaterialService {
     
     @Override
     public void update(final Material entity) {
-        //attach the instrument to the session
-        materialRepository.saveOrUpdate(entity);
         materialRepository.update(entity);
     }
     

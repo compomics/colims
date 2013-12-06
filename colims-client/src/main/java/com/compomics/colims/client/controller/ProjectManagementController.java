@@ -69,7 +69,7 @@ public class ProjectManagementController {
     private ProjectEditDialog projectEditDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     //services
     @Autowired
     private ProjectService projectService;
@@ -78,7 +78,7 @@ public class ProjectManagementController {
     @Autowired
     private EventBus eventBus;
 
-    public ProjectManagementPanel getProjectsOverviewPanel() {
+    public ProjectManagementPanel getProjectManagementPanel() {
         return projectManagementPanel;
     }
 
@@ -159,7 +159,7 @@ public class ProjectManagementController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Project selectedProject = getSelectedProject();
-                if(selectedProject != null){
+                if (selectedProject != null) {
                     projectToEdit = selectedProject;
 
                     updateProjectEditDialog();
@@ -176,25 +176,25 @@ public class ProjectManagementController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Project projectToDelete = getSelectedProject();
-                
-                if(projectToDelete != null){
-                    try {
-                            projectService.delete(projectToDelete);
 
-                            //remove from overview table and clear selection
-                            projects.remove(projectToDelete);
-                            projectsSelectionModel.clearSelection();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the instrument can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(projectToDelete.getLabel());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
+                if (projectToDelete != null) {
+                    try {
+                        projectService.delete(projectToDelete);
+
+                        //remove from overview table and clear selection
+                        projects.remove(projectToDelete);
+                        projectsSelectionModel.clearSelection();
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the instrument can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(projectToDelete.getLabel());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
                         }
+                    }
                 }
             }
         });
@@ -214,7 +214,7 @@ public class ProjectManagementController {
     }
 
     private void initProjectEditDialog() {
-        projectEditDialog = new ProjectEditDialog(mainController.getMainFrame(), true);
+        projectEditDialog = new ProjectEditDialog(mainController.getColimsFrame(), true);
 
         //init dual list
         projectEditDialog.getUserDualList().init(new UserNameComparator());
@@ -297,6 +297,10 @@ public class ProjectManagementController {
         return selectedProject;
     }
 
+    /**
+     * Update the project edit dialog with the selected project in the project
+     * overview table.
+     */
     private void updateProjectEditDialog() {
         if (projectToEdit.getId() != null) {
             projectEditDialog.getSaveOrUpdateButton().setText("update");
@@ -368,18 +372,12 @@ public class ProjectManagementController {
      *
      * @return the default experiment
      */
-    private Project createDefaultExperiment() {
-        Project defaultProject = new Project();
+    private Experiment createDefaultExperiment() {
+        Experiment defaultExperiment = new Experiment();
 
-        defaultProject.setTitle("default project title");
-        defaultProject.setLabel("def_label");
+        defaultExperiment.setTitle("default experiment title");
+        defaultExperiment.setNumber(1L);        
 
-        //set default owner, i.e. the user with the most projects
-        User userWithMostProjectOwns = projectService.getUserWithMostProjectOwns();
-        if (userWithMostProjectOwns != null) {
-            defaultProject.setOwner(userWithMostProjectOwns);
-        }
-
-        return defaultProject;
+        return defaultExperiment;
     }
 }

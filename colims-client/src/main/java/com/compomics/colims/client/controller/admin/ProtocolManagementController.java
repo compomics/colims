@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
@@ -64,7 +64,7 @@ public class ProtocolManagementController implements Controllable {
     private ProtocolEditDialog protocolEditDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -118,7 +118,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     private void initProtocolManagementDialog() {
-        protocolManagementDialog = new ProtocolManagementDialog(mainController.getMainFrame(), true);
+        protocolManagementDialog = new ProtocolManagementDialog(mainController.getColimsFrame(), true);
 
         //add binding
         protocolBindingList = ObservableCollections.observableList(protocolService.findAll());
@@ -215,7 +215,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
+        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolManagementDialog.dispose();
@@ -225,7 +225,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     private void initProtocolEditDialog() {
-        protocolEditDialog = new ProtocolEditDialog(mainController.getMainFrame(), true);
+        protocolEditDialog = new ProtocolEditDialog(mainController.getColimsFrame(), true);
         
         //init dual list
         protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
@@ -353,7 +353,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
+        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolEditDialog.dispose();

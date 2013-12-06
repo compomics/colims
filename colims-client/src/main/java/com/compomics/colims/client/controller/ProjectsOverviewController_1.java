@@ -39,7 +39,7 @@ public class ProjectsOverviewController_1 {
     private ProjectsOverviewPanel_1 projectsOverviewPanel;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     //services
     @Autowired
     private ProjectService projectService;

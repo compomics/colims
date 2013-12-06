@@ -24,7 +24,7 @@ public class Permission extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @NotBlank(message = "Please insert a permission accession")
     @Length(min = 5, max = 100, message = "Permission name length must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Permission description length must be less than {max} characters")

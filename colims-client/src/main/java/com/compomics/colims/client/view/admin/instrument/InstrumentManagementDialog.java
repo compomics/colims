@@ -44,8 +44,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         return instrumentEditButton;
     }        
 
-    public JButton getCloseInstrumentManagementButton() {
-        return closeInstrumentManagementButton;
+    public JButton getCancelInstrumentManagementButton() {
+        return cancelInstrumentManagementButton;
     }     
 
     public JLabel getInstrumentStateInfoLabel() {
@@ -72,7 +72,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         instrumentDetailsTable = new javax.swing.JTable();
         instrumentEditButton = new javax.swing.JButton();
         instrumentStateInfoLabel = new javax.swing.JLabel();
-        closeInstrumentManagementButton = new javax.swing.JButton();
+        cancelInstrumentManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("instrument management overview");
@@ -179,8 +179,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        closeInstrumentManagementButton.setText("close");
-        closeInstrumentManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentManagementButton.setText("cancel");
+        cancelInstrumentManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout instrumentCrudPanelLayout = new javax.swing.GroupLayout(instrumentCrudPanel);
         instrumentCrudPanel.setLayout(instrumentCrudPanelLayout);
@@ -194,7 +194,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentCrudPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(closeInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         instrumentCrudPanelLayout.setVerticalGroup(
@@ -205,7 +205,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(instrumentDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -229,7 +229,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addInstrumentButton;
-    private javax.swing.JButton closeInstrumentManagementButton;
+    private javax.swing.JButton cancelInstrumentManagementButton;
     private javax.swing.JButton deleteInstrumentButton;
     private javax.swing.JPanel instrumentCrudPanel;
     private javax.swing.JPanel instrumentDetailPanel;

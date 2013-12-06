@@ -24,8 +24,8 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    public JButton getCloseMaterialEditButton() {
-        return closeMaterialEditButton;
+    public JButton getCancelMaterialEditButton() {
+        return cancelMaterialEditButton;
     }
 
     public DualList<MaterialCvTerm> getCvTermDualList() {
@@ -58,7 +58,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         materialEditPanel = new javax.swing.JPanel();
-        closeMaterialEditButton = new javax.swing.JButton();
+        cancelMaterialEditButton = new javax.swing.JButton();
         materialSaveOrUpdateButton = new javax.swing.JButton();
         cvTermsPanel = new javax.swing.JPanel();
         cvTermSummaryScrollPane = new javax.swing.JScrollPane();
@@ -73,10 +73,10 @@ public class MaterialEditDialog extends javax.swing.JDialog {
 
         materialEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        closeMaterialEditButton.setText("close");
-        closeMaterialEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeMaterialEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeMaterialEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelMaterialEditButton.setText("cancel");
+        cancelMaterialEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelMaterialEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelMaterialEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         materialSaveOrUpdateButton.setText("save");
         materialSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -135,7 +135,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(materialSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeMaterialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cancelMaterialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(materialEditPanelLayout.createSequentialGroup()
                         .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -154,7 +154,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(materialEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(materialSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(closeMaterialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cancelMaterialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -177,7 +177,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeMaterialEditButton;
+    private javax.swing.JButton cancelMaterialEditButton;
     private com.compomics.colims.client.compoment.DualList<MaterialCvTerm> cvTermDualList;
     private javax.swing.JList cvTermSummaryList;
     private javax.swing.JScrollPane cvTermSummaryScrollPane;

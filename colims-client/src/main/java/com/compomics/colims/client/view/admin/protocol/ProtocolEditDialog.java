@@ -24,8 +24,8 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    public JButton getCloseProtocolEditButton() {
-        return closeProtocolEditButton;
+    public JButton getCancelProtocolEditButton() {
+        return cancelProtocolEditButton;
     }
 
     public DualList<ProtocolCvTerm> getCvTermDualList() {
@@ -58,7 +58,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         protocolEditPanel = new javax.swing.JPanel();
-        closeProtocolEditButton = new javax.swing.JButton();
+        cancelProtocolEditButton = new javax.swing.JButton();
         protocolSaveOrUpdateButton = new javax.swing.JButton();
         cvTermsPanel = new javax.swing.JPanel();
         cvTermSummaryScrollPane = new javax.swing.JScrollPane();
@@ -73,10 +73,10 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
 
         protocolEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        closeProtocolEditButton.setText("close");
-        closeProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setText("cancel");
+        cancelProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         protocolSaveOrUpdateButton.setText("save");
         protocolSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -135,7 +135,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(protocolEditPanelLayout.createSequentialGroup()
                         .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -154,7 +154,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -177,7 +177,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeProtocolEditButton;
+    private javax.swing.JButton cancelProtocolEditButton;
     private com.compomics.colims.client.compoment.DualList<ProtocolCvTerm> cvTermDualList;
     private javax.swing.JList cvTermSummaryList;
     private javax.swing.JScrollPane cvTermSummaryScrollPane;

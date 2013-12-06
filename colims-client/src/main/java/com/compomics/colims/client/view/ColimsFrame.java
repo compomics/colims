@@ -10,12 +10,12 @@ import javax.swing.JTabbedPane;
  *
  * @author Niels Hulstaert Hulstaert
  */
-public class MainFrame extends javax.swing.JFrame {
+public class ColimsFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form MainFrame
      */
-    public MainFrame() {
+    public ColimsFrame() {
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
     }

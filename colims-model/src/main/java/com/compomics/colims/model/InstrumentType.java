@@ -29,7 +29,7 @@ public class InstrumentType extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument type name")
     @Length(min = 2, max = 30, message = "Type name must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name; 
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")

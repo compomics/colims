@@ -1,7 +1,7 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.MessageEvent;
@@ -50,7 +50,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     private CvTermManagementDialog cvTermManagementDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private EventBus eventBus;
     //services
@@ -66,7 +66,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     @Override
     public void init() {
         //get view
-        cvTermManagementDialog = new CvTermManagementDialog(mainController.getMainFrame(), true);
+        cvTermManagementDialog = new CvTermManagementDialog(mainController.getColimsFrame(), true);
 
         //register to event bus
         eventBus.register(this);
@@ -197,7 +197,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             }
         });
         
-        cvTermManagementDialog.getCloseButton().addActionListener(new ActionListener() {
+        cvTermManagementDialog.getCancelButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {

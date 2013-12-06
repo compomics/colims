@@ -35,6 +35,6 @@ public interface UserService extends GenericService<User, Long> {
      *
      * @param user the given user
      */
-    void fetchAuthenticationRelations(User user);
+    void fetchAuthenticationRelations(User user);        
 
 }

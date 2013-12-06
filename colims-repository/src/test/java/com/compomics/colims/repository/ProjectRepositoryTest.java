@@ -36,7 +36,7 @@ public class ProjectRepositoryTest {
         project.setDescription("test project description");
 
         //set owner
-        User owner = userRepository.findByName("user1_name");
+        User owner = userRepository.findByName("admin1");
         project.setOwner(owner);
 
         long numberOfProjects = projectRepository.countAll();

@@ -1,6 +1,6 @@
 package com.compomics.colims.client;
 
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.spring.ApplicationContextProvider;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
@@ -48,8 +48,8 @@ public class CoLimsClientStarter {
             @Override
             public void run() {
                 ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
-                MainController mainController = (MainController) applicationContext.getBean("mainController");
-                mainController.init();
+                ColimsController colimsController = (ColimsController) applicationContext.getBean("colimsController");
+                colimsController.init();
             }
         });
     }

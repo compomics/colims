@@ -41,8 +41,6 @@ public class InstrumentServiceImpl implements InstrumentService {
     
     @Override
     public void delete(final Instrument entity) {
-        //attach the instrument to the session
-        instrumentRepository.lock(entity, LockOptions.NONE);
         instrumentRepository.delete(entity);
     }
     
@@ -53,8 +51,6 @@ public class InstrumentServiceImpl implements InstrumentService {
     
     @Override
     public void update(final Instrument entity) {
-        //attach the instrument to the session
-        instrumentRepository.saveOrUpdate(entity);
         instrumentRepository.update(entity);
     }
     

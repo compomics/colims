@@ -24,7 +24,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
     @Column(name = "label", nullable = false)
     protected String label; 
     @Basic(optional = false)
-    @Column(name = "accession", nullable = false)
+    @Column(name = "accession", nullable = false, unique = true)
     protected String accession;    
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
