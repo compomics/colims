@@ -36,33 +36,33 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
     public void testFindAllUsers() {
         List<User> users = userRepository.findAll();
 
-        Assert.assertEquals(3, users.size());
+        Assert.assertEquals(4, users.size());
     }
     
     @Test
     public void testFindUserByName() {
-        User user = userRepository.findByName("user1_name");
+        User user = userRepository.findByName("admin1");
 
         Assert.assertNotNull(user);
     }
     
     @Test
     public void testEncryptedPassword() {
-        User user = userRepository.findByName("user1_name");
+        User user = userRepository.findByName("admin1");
 
         Assert.assertEquals("nielsniels", user.getPassword());
     }
     
     @Test
     public void testInstitutionRelation() {
-        User user = userRepository.findByName("user1_name");
+        User user = userRepository.findByName("admin1");
 
         Assert.assertNotNull(user.getInstitution());        
     }        
      
     @Test
     public void testAuthorizationRelations() {
-        User user = userRepository.findByName("user1_name");
+        User user = userRepository.findByName("admin1");
         
         //groups
         Assert.assertNotNull(user.getGroups());
@@ -72,11 +72,11 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
         //roles
         Assert.assertNotNull(groups.get(0).getRoles());
         List<Role> roles = groups.get(0).getRoles();
-        Assert.assertEquals(2, roles.size());
+        Assert.assertEquals(1, roles.size());
         
         //permissions
         Assert.assertNotNull(roles.get(0).getPermissions());
         List<Permission> permissions = roles.get(0).getPermissions();
-        Assert.assertEquals(1, permissions.size());
+        Assert.assertEquals(4, permissions.size());
     } 
 }

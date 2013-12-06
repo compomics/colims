@@ -1,9 +1,5 @@
 package com.compomics.colims.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  *
@@ -40,7 +36,7 @@ public class ProjectRepositoryTest {
         project.setDescription("test project description");
 
         //set owner
-        User owner = userRepository.findByName("user1_name");
+        User owner = userRepository.findByName("admin1");
         project.setOwner(owner);
 
         long numberOfProjects = projectRepository.countAll();
@@ -49,28 +45,28 @@ public class ProjectRepositoryTest {
         projectRepository.save(project);
 
         //test AbstractDatabaseEntity properties set by hibernate interceptor
-        assertEquals("N/A", project.getUserName());
-        assertNotNull(project.getCreationdate());
-        assertNotNull(project.getModificationdate());
+        Assert.assertEquals("N/A", project.getUserName());
+        Assert.assertNotNull(project.getCreationdate());
+        Assert.assertNotNull(project.getModificationdate());
 
-        assertNotNull(project.getId());
-        assertNotNull(project.getOwner());
+        Assert.assertNotNull(project.getId());
+        Assert.assertNotNull(project.getOwner());
 
         //test some methods of the generic repository for this entity.
-        assertNotNull(projectRepository.findById(project.getId()));
-        assertNotNull(projectRepository.findByExample(project));
-        assertEquals(numberOfProjects + 1, projectRepository.countAll());
+        Assert.assertNotNull(projectRepository.findById(project.getId()));
+        Assert.assertNotNull(projectRepository.findByExample(project));
+        Assert.assertEquals(numberOfProjects + 1, projectRepository.countAll());
 
         //delete project
         projectRepository.delete(project);
-        assertEquals(numberOfProjects, projectRepository.countAll());
+        Assert.assertEquals(numberOfProjects, projectRepository.countAll());
     }
     
     @Test
     public void testGetUserWithMostProjectOwns(){
         User userWithMostProjectOwns = projectRepository.getUserWithMostProjectOwns();
         
-        assertNotNull(userWithMostProjectOwns);
-        assertEquals(1L, userWithMostProjectOwns.getId().longValue());
+        Assert.assertNotNull(userWithMostProjectOwns);
+        Assert.assertEquals(1L, userWithMostProjectOwns.getId().longValue());
     }
 }

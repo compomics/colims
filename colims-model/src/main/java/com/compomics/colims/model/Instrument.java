@@ -33,11 +33,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Instrument extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a source")

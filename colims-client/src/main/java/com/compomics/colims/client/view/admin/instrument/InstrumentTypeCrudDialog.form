@@ -57,7 +57,7 @@
               <Component id="instrumentTypeDetailPanel" alignment="0" pref="411" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="closeInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -69,7 +69,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="instrumentTypeDetailPanel" min="-2" pref="213" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="closeInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelInstrumentTypeCrudButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -293,6 +293,7 @@
                 <Component class="javax.swing.JTextArea" name="instrumentTypeDescriptionTextArea">
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
+                    <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="rows" type="int" value="5"/>
                   </Properties>
                 </Component>
@@ -300,9 +301,9 @@
             </Container>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="closeInstrumentTypeCrudButton">
+        <Component class="javax.swing.JButton" name="cancelInstrumentTypeCrudButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="close"/>
+            <Property name="text" type="java.lang.String" value="cancel"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

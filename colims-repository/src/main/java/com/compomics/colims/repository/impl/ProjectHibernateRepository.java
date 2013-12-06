@@ -14,6 +14,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -39,5 +40,10 @@ public class ProjectHibernateRepository extends GenericHibernateRepository<Proje
         }
 
         return user;
+    }
+
+    @Override
+    public Project findByTitle(String title) {
+        return findUniqueByCriteria(Restrictions.eq("title", title));
     }
 }

@@ -1,7 +1,7 @@
 package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.google.common.eventbus.EventBus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UserManagementController implements Controllable {
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     //child controllers
     @Autowired
     private UserCrudController userCrudController;
@@ -43,7 +43,7 @@ public class UserManagementController implements Controllable {
     @Override
     public void init() {                          
         //init view
-        userManagementDialog = new UserManagementDialog(mainController.getMainFrame(), true);        
+        userManagementDialog = new UserManagementDialog(mainController.getColimsFrame(), true);        
 
         //init child controllers
         userCrudController.init();

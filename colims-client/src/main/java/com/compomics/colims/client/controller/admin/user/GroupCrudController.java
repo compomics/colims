@@ -17,6 +17,8 @@ import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
+import com.compomics.colims.model.comparator.RoleNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -73,6 +75,9 @@ public class GroupCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+        
+        //init dual list
+        userManagementDialog.getRoleDualList().init(new RoleNameComparator());
 
         areChildrenAffected = false;
 

@@ -22,14 +22,14 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "group_role")
 @Entity
-public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
+public class Role extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a role accession")
     @Length(min = 5, max = 100, message = "Role name length must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Role description length must be less than {max} characters")
@@ -114,10 +114,5 @@ public class Role extends AbstractDatabaseEntity implements Comparable<Role> {
     @Override
     public String toString() {
         return name;
-    }
-
-    @Override
-    public int compareTo(Role o) {
-        return name.compareToIgnoreCase(o.getName());
-    }
+    }    
 }

@@ -39,8 +39,6 @@ public class ProtocolServiceImpl implements ProtocolService {
 
     @Override
     public void delete(final Protocol entity) {
-        //attach the instrument to the session
-        protocolRepository.lock(entity, LockOptions.NONE);
         protocolRepository.delete(entity);
     }
 
@@ -51,8 +49,6 @@ public class ProtocolServiceImpl implements ProtocolService {
 
     @Override
     public void update(final Protocol entity) {
-        //attach the instrument to the session
-        protocolRepository.saveOrUpdate(entity);
         protocolRepository.update(entity);
     }
 

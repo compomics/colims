@@ -47,7 +47,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void delete(Permission entity) {
         //attach the permission to the new session
-        permissionRepository.lock(entity, LockOptions.NONE);
+        permissionRepository.update(entity);
         //remove entity relations
         for(Role role : entity.getRoles()){
             role.getPermissions().remove(entity);

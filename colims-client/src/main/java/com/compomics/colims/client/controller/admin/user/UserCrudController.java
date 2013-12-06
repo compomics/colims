@@ -3,7 +3,7 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -17,6 +17,7 @@ import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.comparator.GroupNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -52,7 +53,7 @@ import org.springframework.stereotype.Component;
 @Component("userCrudController")
 public class UserCrudController implements Controllable {
 
-    private static final Logger LOGGER = Logger.getLogger(MainController.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     private ObservableList<User> userBindingList;
     private BindingGroup bindingGroup;
@@ -77,6 +78,9 @@ public class UserCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
+        
+        //init dual list
+        userManagementDialog.getGroupDualList().init(new GroupNameComparator());
 
         areChildrenAffected = false;
 

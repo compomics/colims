@@ -41,8 +41,6 @@ public class CvTermServiceImpl implements CvTermService {
 
     @Override
     public void update(CvTerm entity) {
-        //attach the CV term to the new session
-        cvTermRepository.lock(entity, LockOptions.NONE);
         cvTermRepository.update(entity);
     }
 
