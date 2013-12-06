@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.parser.impl;
 import com.compomics.colims.model.Modification;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 //import com.compomics.colims.model.Modification;
@@ -122,9 +121,9 @@ public class MaxQuantEvidenceParser {
 
             if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.column)) {
                 proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
-            } else {
-                //up for discussion
-            }
+            } 
+            /**else {
+            }*/
 
             // Create peptide
             Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
