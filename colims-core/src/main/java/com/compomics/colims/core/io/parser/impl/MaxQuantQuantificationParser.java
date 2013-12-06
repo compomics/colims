@@ -32,9 +32,11 @@ public class MaxQuantQuantificationParser {
         Map<Integer, QuantificationGroup> quantificationGroupMap = new HashMap<>(1000);
         TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aQuantificationFile);
         Map<String, String> quantificationLine;
+        
         while (iter.hasNext()) {
             quantificationLine = iter.next();
-            //make heavy one
+            
+            //parse heavy one
             String heavyIntensityAsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.HIGHINTENSITY.headerName);
             double heavyIntensity;
             if (heavyIntensityAsString.equalsIgnoreCase("nan")) {
@@ -42,40 +44,48 @@ public class MaxQuantQuantificationParser {
             } else {
                 heavyIntensity = Double.parseDouble(heavyIntensityAsString);
             }
-            //make light one 
+            
+            //parse light one 
             String lightIntensityAsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.LOWINTENSITY.headerName);
             double lightIntensity;
             if (lightIntensityAsString.equalsIgnoreCase("nan")) {
                 lightIntensity = 0.0;
             } else {
-                lightIntensity = Double.parseDouble(heavyIntensityAsString);
+                lightIntensity = Double.parseDouble(lightIntensityAsString);
             }
 
-            int peptideID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.PEPTIDEID.headerName));
-            int spectrumID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.BESTSPECTRUMID.headerName));
+            String[] spectrumIDsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.SPECTRUMIDS.headerName).split(";");
 
             int quantificationGroupID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.ID.headerName));
 
-            Quantification lightQuant = new Quantification();
-            Quantification heavyQuant = new Quantification();
             QuantificationGroup quantGroup = new QuantificationGroup();
 
             List<Quantification> quantificationsList = new ArrayList<Quantification>();
-            quantificationsList.add(lightQuant);
-            quantificationsList.add(heavyQuant);
+
+            for (String aSpectrumID : spectrumIDsString) {
+                int spectrumID = Integer.parseInt(aSpectrumID);
+
+                Quantification lightQuant = new Quantification();
+                Quantification heavyQuant = new Quantification();
+
+                lightQuant.setIntensity(lightIntensity);
+                lightQuant.setSpectrumKey(spectrumID);
+                lightQuant.setWeight(QuantificationWeight.LIGHT);
+                lightQuant.setQuantificationGroup(quantGroup);
+
+                heavyQuant.setIntensity(heavyIntensity);
+                heavyQuant.setSpectrumKey(spectrumID);
+                heavyQuant.setWeight(QuantificationWeight.HEAVY);
+                heavyQuant.setQuantificationGroup(quantGroup);
+
+                quantificationsList.add(lightQuant);
+                quantificationsList.add(heavyQuant);
+            }
+            
             quantGroup.setQuantifications(quantificationsList);
-
-            lightQuant.setIntensity(lightIntensity);
-            lightQuant.setSpectrum(null);
-            lightQuant.setWeight(QuantificationWeight.LIGHT);
-            lightQuant.setQuantificationGroup(quantGroup);
-
-            heavyQuant.setIntensity(heavyIntensity);
-            heavyQuant.setSpectrum(null);
-            heavyQuant.setWeight(QuantificationWeight.HEAVY);
-            heavyQuant.setQuantificationGroup(quantGroup);
             quantificationGroupMap.put(quantificationGroupID, quantGroup);
         }
+        
         return quantificationGroupMap;
     }
 
@@ -85,6 +95,7 @@ public class MaxQuantQuantificationParser {
         LOWINTENSITY("Intensity L"),
         HIGHINTENSITY("Intensity H"),
         PEPTIDEID("Peptide ID"),
+        SPECTRUMIDS("MS/MS IDs"),
         BESTSPECTRUMID("Best MS/MS");
         public String headerName;
 

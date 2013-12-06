@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.model;
 
-
 import com.compomics.colims.model.enums.QuantificationWeight;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,9 +29,9 @@ public class Quantification extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_quantification_group_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationGroup quantificationGroup;
-    @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
-    @ManyToOne
-    private Spectrum spectrum;
+    @Basic(optional = false)
+    @Column(name = "id")
+    private int spectrumKey;
     @Basic(optional = true)
     @Column(name = "weight")
     private double intensity;
@@ -64,11 +63,11 @@ public class Quantification extends AbstractDatabaseEntity {
         return weight;
     }
 
-    public Spectrum getSpectrum() {
-        return spectrum;
+    public int getSpectrumKey() {
+        return spectrumKey;
     }
 
-    public void setSpectrum(Spectrum spectrum) {
-        this.spectrum = spectrum;
+    public void setSpectrumKey(int spectrumKey) {
+        this.spectrumKey = spectrumKey;
     }
 }
