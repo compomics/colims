@@ -29,15 +29,15 @@ public class Quantification extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_quantification_group_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationGroup quantificationGroup;
-    @Basic(optional = false)
-    @Column(name = "id")
-    private int spectrumKey;
-    @Basic(optional = true)
-    @Column(name = "weight")
-    private double intensity;
     @Basic(optional = true)
     @Column(name = "intensity")
+    private double intensity;
+    @Basic(optional = true)
+    @Column(name = "weight")
     private QuantificationWeight weight;
+    @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
+    @ManyToOne
+    private Spectrum spectrum;
 
     public QuantificationGroup getQuantificationGroup() {
         return quantificationGroup;
@@ -63,11 +63,11 @@ public class Quantification extends AbstractDatabaseEntity {
         return weight;
     }
 
-    public int getSpectrumKey() {
-        return spectrumKey;
+    public Spectrum getSpectrum() {
+        return spectrum;
     }
 
-    public void setSpectrumKey(int spectrumKey) {
-        this.spectrumKey = spectrumKey;
+    public void setSpectrum(Spectrum spectrum) {
+        this.spectrum = spectrum;
     }
 }

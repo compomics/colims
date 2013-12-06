@@ -25,68 +25,87 @@ public class MaxQuantQuantificationParser {
     /**
      * parses a max quant protein groups file into memory
      *
-     * @param aProteinGroupsFile the file to parse
-     * @return a Map key: the protein groupid, value: the ProteinMatch
+     * @param aQuantificationFile the file to parse
+     * @return a Map key: the spectrum ID, value: the list of quantifications
      */
-    public static Map<Integer, QuantificationGroup> parseMaxQuantQuantificationGroups(File aQuantificationFile) throws IOException, FileNotFoundException {
-        Map<Integer, QuantificationGroup> quantificationGroupMap = new HashMap<>(1000);
+    public static Map<Integer, List<Quantification>> parseMaxQuantQuantification(File aQuantificationFile) throws IOException, FileNotFoundException {
+        Map<Integer, List<Quantification>> processedSpectrumMap = new HashMap<>(1000);
+
         TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aQuantificationFile);
         Map<String, String> quantificationLine;
-        
+
         while (iter.hasNext()) {
             quantificationLine = iter.next();
-            
+
             //parse heavy one
             String heavyIntensityAsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.HIGHINTENSITY.headerName);
-            double heavyIntensity;
-            if (heavyIntensityAsString.equalsIgnoreCase("nan")) {
-                heavyIntensity = 0.0;
-            } else {
-                heavyIntensity = Double.parseDouble(heavyIntensityAsString);
+
+            double heavyIntensity = 0.0;
+            if (heavyIntensityAsString != null) {
+                if (!heavyIntensityAsString.isEmpty() & !heavyIntensityAsString.equalsIgnoreCase("nan")) {
+                    heavyIntensity = Double.parseDouble(heavyIntensityAsString);
+                }
             }
-            
+
             //parse light one 
             String lightIntensityAsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.LOWINTENSITY.headerName);
-            double lightIntensity;
-            if (lightIntensityAsString.equalsIgnoreCase("nan")) {
-                lightIntensity = 0.0;
-            } else {
-                lightIntensity = Double.parseDouble(lightIntensityAsString);
-            }
 
+            double lightIntensity = 0.0;
+            if (heavyIntensityAsString != null) {
+                if (!lightIntensityAsString.isEmpty() & !lightIntensityAsString.equalsIgnoreCase("nan")) {
+                    lightIntensity = Double.parseDouble(lightIntensityAsString);
+                }
+            }
             String[] spectrumIDsString = quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.SPECTRUMIDS.headerName).split(";");
 
-            int quantificationGroupID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.ID.headerName));
-
+            //int quantificationGroupID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.ID.headerName));
             QuantificationGroup quantGroup = new QuantificationGroup();
 
             List<Quantification> quantificationsList = new ArrayList<Quantification>();
 
             for (String aSpectrumID : spectrumIDsString) {
+
+                List<Quantification> spectrumSpecificQuantificationsList = new ArrayList<Quantification>();
                 int spectrumID = Integer.parseInt(aSpectrumID);
 
                 Quantification lightQuant = new Quantification();
                 Quantification heavyQuant = new Quantification();
 
                 lightQuant.setIntensity(lightIntensity);
-                lightQuant.setSpectrumKey(spectrumID);
+                // lightQuant.setSpectrum(null);
                 lightQuant.setWeight(QuantificationWeight.LIGHT);
                 lightQuant.setQuantificationGroup(quantGroup);
 
                 heavyQuant.setIntensity(heavyIntensity);
-                heavyQuant.setSpectrumKey(spectrumID);
+                //  heavyQuant.setSpectrum(null);
                 heavyQuant.setWeight(QuantificationWeight.HEAVY);
                 heavyQuant.setQuantificationGroup(quantGroup);
 
-                quantificationsList.add(lightQuant);
-                quantificationsList.add(heavyQuant);
+                spectrumSpecificQuantificationsList.add(lightQuant);
+                spectrumSpecificQuantificationsList.add(heavyQuant);
+
+                mergeIntoTotalResults(spectrumID, spectrumSpecificQuantificationsList, processedSpectrumMap);
+                quantificationsList.addAll(spectrumSpecificQuantificationsList);
             }
-            
             quantGroup.setQuantifications(quantificationsList);
-            quantificationGroupMap.put(quantificationGroupID, quantGroup);
+
         }
-        
-        return quantificationGroupMap;
+
+        return processedSpectrumMap;
+    }
+
+    /**
+     * merges the spectrum lines from a single result into the master returning
+     * map
+     *
+     */
+    private static void mergeIntoTotalResults(int spectrumID, List<Quantification> spectrumSpecificQuantificationsList, Map<Integer, List<Quantification>> processedSpectrumMap) {
+        if (processedSpectrumMap.keySet().contains(spectrumID)) {
+            List<Quantification> currentSpectrumQuantList = processedSpectrumMap.get(spectrumID);
+            currentSpectrumQuantList.addAll(spectrumSpecificQuantificationsList);
+        } else {
+            processedSpectrumMap.put(spectrumID, spectrumSpecificQuantificationsList);
+        }
     }
 
     private enum QuantificationGroupHeaders {
