@@ -1,9 +1,11 @@
 package com.compomics.colims.core.aop;
 
+import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,24 +24,27 @@ public class AuthenticationInterceptor {
     @Autowired
     private AuthenticationBean authenticationBean;
 
-    @Pointcut("execution(* com.compomics.colims.core.service.*.save(..))")
-    public void beforeCreateOperation() {
+    @Before("execution(* com.compomics.colims.core.service.*.save(..))")
+    public void beforeCreateOperation(JoinPoint joinPoint) {
+        if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)){
+            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no save permission.");
+        }
+        
     }
 
-    //pointcut for the execution of a delete method.
-    //The implementations are assumed to be in sub packages.
-    @Pointcut("execution(* com.compomics.colims.core.service.*.update(..))")
-    public void beforeUpdateOperation() {
+    @Before("execution(* com.compomics.colims.core.service.*.update(..))")
+    public void beforeUpdateOperation(JoinPoint joinPoint) {
+        if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.UPDATE)){
+            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no update permission.");
+        }
     }
 
-    @Pointcut("execution(* com.compomics.colims.core.service.*.delete(..))")
-    public void beforeDeleteOperation() {
+    @Before("execution(* com.compomics.colims.core.service.*.delete(..))")
+    public void beforeDeleteOperation(JoinPoint joinPoint) throws PermissionException {
+        if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)){
+            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no delete permission.");
+        }
     }
 
-    @Before("beforeCrudOperation()")
-    public Object log(ProceedingJoinPoint pjp) throws Throwable {
-        Map<DefaultPermission, Boolean> defaultPermissions = authenticationBean.getDefaultPermissions();
-
-        return pjp.proceed();
-    }
+    
 }

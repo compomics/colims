@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.core.exception.PermissionException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,28 +34,7 @@ public class UserServiceTest {
     
     @Test
     public void testFindGroupsByUserId() {
-        User user = userService.findById(1L);
-        userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
-
-//        Assert.assertEquals(2, user.getUserHasGroups().size());
-//        Group group = user.getUserHasGroups().get(0).getGroup();
-//        Assert.assertNotNull(group);
-//        Assert.assertEquals(2, group.getGroupHasRoles().size());
-//        Role role = group.getGroupHasRoles().get(0).getRole();
-//        Assert.assertNotNull(role);
-//        Assert.assertEquals(2, role.getRoleHasPermissions().size());
-//        Permission permission = role.getRoleHasPermissions().get(0).getPermission();
-//        Assert.assertNotNull(permission);       
-
-        User newUser = new User("testUser");
-        newUser.setEmail("test@test");
-        newUser.setFirstName("test");
-        newUser.setLastName("test");
-        newUser.setPassword("blablablabla");
         
-        userService.save(newUser);
-        userService.delete(newUser);
         List<User> findAll = userService.findAll();
         
         System.out.println("test");
