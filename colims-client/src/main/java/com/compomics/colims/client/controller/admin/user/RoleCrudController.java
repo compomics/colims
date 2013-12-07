@@ -144,7 +144,7 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
                     } else {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
-                        clearRoleDetailFields();
+                        //clearRoleDetailFields();
                     }
                 }
             }
@@ -244,6 +244,9 @@ public class RoleCrudController implements Controllable {
     public void showView() {
         //clear selection
         userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        if (!roleBindingList.isEmpty()) {
+            userManagementDialog.getRoleList().setSelectedIndex(0);
+        }
     }
 
     /**

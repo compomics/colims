@@ -78,7 +78,7 @@ public class UserCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-        
+
         //init dual list
         userManagementDialog.getGroupDualList().init(new GroupNameComparator());
 
@@ -163,7 +163,7 @@ public class UserCrudController implements Controllable {
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
-                        clearUserDetailFields();
+                        //clearUserDetailFields();
                     }
                 }
             }
@@ -264,6 +264,9 @@ public class UserCrudController implements Controllable {
     public void showView() {
         //clear selection
         userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        if (!userBindingList.isEmpty()) {
+            userManagementDialog.getUserList().setSelectedIndex(0);
+        }
     }
 
     /**

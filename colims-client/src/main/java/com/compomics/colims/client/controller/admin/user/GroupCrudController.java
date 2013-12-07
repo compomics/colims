@@ -145,7 +145,7 @@ public class GroupCrudController implements Controllable {
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
                     } else {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
-                        clearGroupDetailFields();
+                        //clearGroupDetailFields();
                     }
                 }
             }
@@ -245,6 +245,10 @@ public class GroupCrudController implements Controllable {
     public void showView() {
         //clear selection
         userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+        if (!groupBindingList.isEmpty()) {
+            userManagementDialog.getGroupList().setSelectedIndex(0);
+        }
+        
     }
 
     /**

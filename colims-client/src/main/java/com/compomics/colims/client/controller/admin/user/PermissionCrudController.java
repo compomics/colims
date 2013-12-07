@@ -55,7 +55,7 @@ public class PermissionCrudController implements Controllable {
     private EventBus eventBus;
     //services
     @Autowired
-    private PermissionService permissionService;    
+    private PermissionService permissionService;
 
     @Override
     public void init() {
@@ -120,7 +120,7 @@ public class PermissionCrudController implements Controllable {
                         }
                     } else {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
-                        clearPermissionDetailFields();
+                        //clearPermissionDetailFields();
                     }
                 }
             }
@@ -203,13 +203,16 @@ public class PermissionCrudController implements Controllable {
             }
         });
     }
-    
+
     @Override
     public void showView() {
         //clear selection
         userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
-    } 
-    
+        if (!permissionBindingList.isEmpty()) {
+            userManagementDialog.getPermissionList().setSelectedIndex(0);
+        }
+    }
+
     /**
      * Listen to a RoleChangeEvent and update the permissions if necessary.
      *
