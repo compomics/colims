@@ -145,7 +145,6 @@ public class GroupCrudController implements Controllable {
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
                     } else {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
-                        //clearGroupDetailFields();
                     }
                 }
             }
@@ -169,6 +168,7 @@ public class GroupCrudController implements Controllable {
                     //check if group is already has an id.
                     //If so, delete the group from the db.
                     if (groupToDelete.getId() != null) {
+                        //if(gr){
                         try {
                             groupService.delete(groupToDelete);
                             eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
@@ -186,9 +186,10 @@ public class GroupCrudController implements Controllable {
                                 throw dive;
                             }
                         }
+                    //}
                     } else {
                         groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -243,11 +244,7 @@ public class GroupCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
-        if (!groupBindingList.isEmpty()) {
-            userManagementDialog.getGroupList().setSelectedIndex(0);
-        }
+        resetSelection();
         
     }
 
@@ -291,7 +288,7 @@ public class GroupCrudController implements Controllable {
             default:
                 break;
         }
-        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -322,11 +319,14 @@ public class GroupCrudController implements Controllable {
     }
 
     /**
-     * Clear the group detail fields
+     * Reset the selection in the group list.
      */
-    private void clearGroupDetailFields() {
-        userManagementDialog.getGroupNameTextField().setText("");
-        userManagementDialog.getGroupDescriptionTextArea().setText("");
-        userManagementDialog.getRoleDualList().clear();
+    private void resetSelection() {
+        //clear selection
+        userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+        if (!groupBindingList.isEmpty()) {
+            userManagementDialog.getGroupList().setSelectedIndex(0);
+        }
     }
+    
 }

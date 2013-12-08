@@ -173,6 +173,10 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return permissionDescriptionTextArea;
     }
 
+    public JButton getCancelButton() {
+        return cancelButton;
+    }        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

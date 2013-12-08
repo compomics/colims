@@ -28,7 +28,7 @@ public class Role extends AbstractDatabaseEntity {
    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a role accession")
-    @Length(min = 5, max = 100, message = "Role name length must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "Role name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = true)

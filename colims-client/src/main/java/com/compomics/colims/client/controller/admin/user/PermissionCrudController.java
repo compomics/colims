@@ -120,7 +120,6 @@ public class PermissionCrudController implements Controllable {
                         }
                     } else {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
-                        //clearPermissionDetailFields();
                     }
                 }
             }
@@ -163,7 +162,7 @@ public class PermissionCrudController implements Controllable {
                         }
                     } else {
                         permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
-                        userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -206,11 +205,7 @@ public class PermissionCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
-        if (!permissionBindingList.isEmpty()) {
-            userManagementDialog.getPermissionList().setSelectedIndex(0);
-        }
+       resetSelection();
     }
 
     /**
@@ -254,11 +249,14 @@ public class PermissionCrudController implements Controllable {
         return selectedPermission;
     }
 
-    /**
-     * Clear the permission detail fields
+   /**
+     * Reset the selection in the role list.
      */
-    private void clearPermissionDetailFields() {
-        userManagementDialog.getPermissionNameTextField().setText("");
-        userManagementDialog.getPermissionDescriptionTextArea().setText("");
+    private void resetSelection() {
+         //clear selection
+        userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
+        if (!permissionBindingList.isEmpty()) {
+            userManagementDialog.getPermissionList().setSelectedIndex(0);
+        }
     }
 }

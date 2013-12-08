@@ -146,7 +146,7 @@ public class ColimsController implements Controllable, ActionListener {
 //        loginDialog.setLocationRelativeTo(null);
 //        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("collab1");
+        User currentUser = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(currentUser);
         authenticationBean.setCurrentUser(currentUser);
 

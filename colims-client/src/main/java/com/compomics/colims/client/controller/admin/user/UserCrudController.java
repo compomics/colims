@@ -163,7 +163,6 @@ public class UserCrudController implements Controllable {
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
-                        //clearUserDetailFields();
                     }
                 }
             }
@@ -207,7 +206,7 @@ public class UserCrudController implements Controllable {
                         }
                     } else {
                         userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -262,11 +261,7 @@ public class UserCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getUserList().getSelectionModel().clearSelection();
-        if (!userBindingList.isEmpty()) {
-            userManagementDialog.getUserList().setSelectedIndex(0);
-        }
+        resetSelection();
     }
 
     /**
@@ -296,7 +291,7 @@ public class UserCrudController implements Controllable {
             default:
                 break;
         }
-        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -327,14 +322,13 @@ public class UserCrudController implements Controllable {
     }
 
     /**
-     * Clear the user detail fields
+     * Reset the selection in the user list.
      */
-    private void clearUserDetailFields() {
-        userManagementDialog.getUserNameTextField().setText("");
-        userManagementDialog.getFirstNameTextField().setText("");
-        userManagementDialog.getLastNameTextField().setText("");
-        userManagementDialog.getEmailTextField().setText("");
-        userManagementDialog.getPasswordTextField().setText("");
-        userManagementDialog.getGroupDualList().clear();
+    private void resetSelection() {
+        //clear selection
+        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        if (!userBindingList.isEmpty()) {
+            userManagementDialog.getUserList().setSelectedIndex(0);
+        }
     }
 }

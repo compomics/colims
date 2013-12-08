@@ -144,7 +144,6 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
                     } else {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
-                        //clearRoleDetailFields();
                     }
                 }
             }
@@ -187,7 +186,7 @@ public class RoleCrudController implements Controllable {
                         }
                     } else {
                         roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -242,11 +241,7 @@ public class RoleCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
-        if (!roleBindingList.isEmpty()) {
-            userManagementDialog.getRoleList().setSelectedIndex(0);
-        }
+        resetSelection();
     }
 
     /**
@@ -289,7 +284,7 @@ public class RoleCrudController implements Controllable {
             default:
                 break;
         }
-        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -319,12 +314,14 @@ public class RoleCrudController implements Controllable {
         return selectedRole;
     }
 
-    /**
-     * Clear the role detail fields
+   /**
+     * Reset the selection in the role list.
      */
-    private void clearRoleDetailFields() {
-        userManagementDialog.getRoleNameTextField().setText("");
-        userManagementDialog.getRoleDescriptionTextArea().setText("");
-        userManagementDialog.getPermissionDualList().clear();
+    private void resetSelection() {
+        //clear selection
+        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        if (!roleBindingList.isEmpty()) {
+            userManagementDialog.getRoleList().setSelectedIndex(0);
+        }
     }
 }

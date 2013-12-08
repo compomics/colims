@@ -30,7 +30,7 @@ public class Material extends AbstractDatabaseEntity {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
-    @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = false)
     private String name;
     @Basic(optional = false)

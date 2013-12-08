@@ -47,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Group entity) {
         //attach the group to the new session
-        groupRepository.update(entity);
+        groupRepository.saveOrUpdate(entity);
         //remove entity relations
         for (User user : entity.getUsers()) {
             user.getGroups().remove(entity);

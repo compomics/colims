@@ -29,7 +29,7 @@ public class Group extends AbstractDatabaseEntity {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
-    @Length(min = 5, max = 100, message = "Group name length must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
