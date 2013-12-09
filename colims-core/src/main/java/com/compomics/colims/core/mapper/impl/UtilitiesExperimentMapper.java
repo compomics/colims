@@ -36,6 +36,7 @@ import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.google.common.eventbus.EventBus;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
+import java.util.logging.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,7 +204,7 @@ public class UtilitiesExperimentMapper implements Mapper<PeptideShakerImport, Ex
     /**
      * Clear the mapping resources: reset the SpectrumFactory, ...
      */
-    private void clearMappingResources() throws IOException {
+    private void clearMappingResources() throws IOException, SQLException {
         spectrumFactory.clearFactory();
         sequenceFactory.clearFactory();
         objectsCache = new ObjectsCache();

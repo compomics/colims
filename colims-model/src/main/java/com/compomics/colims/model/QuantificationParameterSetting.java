@@ -22,7 +22,7 @@ public class QuantificationParameterSetting extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationParamaterSetting")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationParameterSetting")
     private List<QuantMethodHasQuantEngine> quantMethodHasQuantEngines = new ArrayList<>();
 
     public List<QuantMethodHasQuantEngine> getQuantMethodHasQuantEngines() {

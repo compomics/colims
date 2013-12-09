@@ -41,7 +41,6 @@ public class MaxQuantProteinGroupParser {
                 proteinMatch.setMainMatch(parsedAccession);
                 proteinMatch.addTheoreticProtein(parsedAccession);
                 proteinGroupMap.put(Integer.parseInt(proteinGroupLine.get(ProteinGroupHeaders.ID.headerName)), proteinMatch);
-
             }
         }
         return proteinGroupMap;
