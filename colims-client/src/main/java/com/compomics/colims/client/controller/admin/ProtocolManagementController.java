@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.CvTermChangeEvent;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
@@ -19,6 +19,7 @@ import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvTerm;
+import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.enums.CvTermType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -63,7 +64,7 @@ public class ProtocolManagementController implements Controllable {
     private ProtocolEditDialog protocolEditDialog;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -79,7 +80,7 @@ public class ProtocolManagementController implements Controllable {
 
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;
-    }    
+    }
 
     @Override
     public void init() {
@@ -95,15 +96,15 @@ public class ProtocolManagementController implements Controllable {
 
         bindingGroup.bind();
     }
-    
+
     @Override
     public void showView() {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
-        
-        protocolManagementDialog.setVisible(true);        
-    } 
-    
+
+        protocolManagementDialog.setVisible(true);
+    }
+
     /**
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the ProtocolManagementDialog is visible,
@@ -117,7 +118,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     private void initProtocolManagementDialog() {
-        protocolManagementDialog = new ProtocolManagementDialog(mainController.getMainFrame(), true);
+        protocolManagementDialog = new ProtocolManagementDialog(mainController.getColimsFrame(), true);
 
         //add binding
         protocolBindingList = ObservableCollections.observableList(protocolService.findAll());
@@ -214,17 +215,20 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
+        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                protocolManagementDialog.setVisible(false);
+                protocolManagementDialog.dispose();
             }
         });
 
     }
 
     private void initProtocolEditDialog() {
-        protocolEditDialog = new ProtocolEditDialog(mainController.getMainFrame(), true);
+        protocolEditDialog = new ProtocolEditDialog(mainController.getColimsFrame(), true);
+
+        //init dual list
+        protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
 
         //add binding
         Binding protocolNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, protocolManagementDialog.getProtocolList(), ELProperty.create("${selectedElement.name}"), protocolEditDialog.getNameTextField(), BeanProperty.create("text"), "protocolNameBinding");
@@ -259,7 +263,7 @@ public class ProtocolManagementController implements Controllable {
                             }
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultipleCvTerms().get(selectedcvTermType);
+                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -308,10 +312,10 @@ public class ProtocolManagementController implements Controllable {
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CHEMICAL_LABELING)) {
                     protocol.setChemicalLabels(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 } else if (selectedcvTermType.equals(CvTermType.OTHER)) {
                     protocol.setOtherCvTerms(addedItems);
-                    cvTermSummaryListModel.updateMultipleCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
+                    cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 }
 
             }
@@ -325,7 +329,8 @@ public class ProtocolManagementController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedProtocol);
                 //check for a new protocol if the protocol name already exists in the db                
                 if (selectedProtocol.getId() == null && isExistingProtocolName(selectedProtocol)) {
-                    validationMessages.add(selectedProtocol.getName() + " already exists in the database, please choose another protocol name.");
+                    validationMessages.add(selectedProtocol.getName() + " already exists in the database,"
+                            + "\n" + "please choose another protocol name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedProtocol.getId() != null) {
@@ -335,7 +340,7 @@ public class ProtocolManagementController implements Controllable {
                     }
                     protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("Protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
@@ -343,16 +348,16 @@ public class ProtocolManagementController implements Controllable {
                     protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     protocolManagementDialog.getProtocolList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
+        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                protocolEditDialog.setVisible(false);
+                protocolEditDialog.dispose();
             }
         });
 

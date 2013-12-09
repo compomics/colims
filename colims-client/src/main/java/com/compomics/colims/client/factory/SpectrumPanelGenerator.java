@@ -1,6 +1,6 @@
 package com.compomics.colims.client.factory;
 
-import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.core.logic.IonLadderMassesCalculator;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.UnknownAAException;

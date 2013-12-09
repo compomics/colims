@@ -18,14 +18,13 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "permission")
 @Entity
-public class Permission extends AbstractDatabaseEntity implements Comparable<Permission> {
+public class Permission extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
     @Basic(optional = false)
     @NotBlank(message = "Please insert a permission accession")
-    @Length(min = 5, max = 100, message = "Permission name length must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Length(min = 3, max = 20, message = "Permission name length must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Permission description length must be less than {max} characters")
@@ -64,7 +63,7 @@ public class Permission extends AbstractDatabaseEntity implements Comparable<Per
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -94,10 +93,5 @@ public class Permission extends AbstractDatabaseEntity implements Comparable<Per
     @Override
     public String toString() {
         return name;
-    }
-
-    @Override
-    public int compareTo(Permission o) {
-        return name.compareToIgnoreCase(o.getName());
     }
 }

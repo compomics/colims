@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.SearchParameterSettings;
 import com.compomics.colims.repository.SearchParameterRepository;
-import static org.apache.batik.svggen.font.table.Table.name;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *

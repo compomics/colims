@@ -25,6 +25,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         
         initComponents();
         
+        this.getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(parent);
     }
 
@@ -172,6 +173,10 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return permissionDescriptionTextArea;
     }
 
+    public JButton getCancelButton() {
+        return cancelButton;
+    }        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -249,6 +254,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionStateInfoLabel = new javax.swing.JLabel();
         permissionDescriptionScrollPane = new javax.swing.JScrollPane();
         permissionDescriptionTextArea = new javax.swing.JTextArea();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("user management");
@@ -491,6 +497,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         groupStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         groupDescriptionTextArea.setColumns(20);
+        groupDescriptionTextArea.setLineWrap(true);
         groupDescriptionTextArea.setRows(5);
         groupDescriptionScrollPane.setViewportView(groupDescriptionTextArea);
 
@@ -631,6 +638,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         roleStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         roleDescriptionTextArea.setColumns(20);
+        roleDescriptionTextArea.setLineWrap(true);
         roleDescriptionTextArea.setRows(5);
         roleDescriptionScrollPane.setViewportView(roleDescriptionTextArea);
 
@@ -773,6 +781,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         permissionDescriptionTextArea.setColumns(20);
+        permissionDescriptionTextArea.setLineWrap(true);
         permissionDescriptionTextArea.setRows(5);
         permissionDescriptionScrollPane.setViewportView(permissionDescriptionTextArea);
 
@@ -832,15 +841,28 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Permissions", permissionCrudPanel);
 
+        cancelButton.setText("cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(userManagementTabbedPane)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(userManagementTabbedPane)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(userManagementTabbedPane)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -850,6 +872,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton addPermissionButton;
     private javax.swing.JButton addRoleButton;
     private javax.swing.JButton addUserButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteGroupButton;
     private javax.swing.JButton deletePermissionButton;
     private javax.swing.JButton deleteRoleButton;

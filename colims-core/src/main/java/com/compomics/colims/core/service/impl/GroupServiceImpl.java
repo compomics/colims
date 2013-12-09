@@ -14,8 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.enums.DefaultGroup;
+import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.GroupRepository;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -47,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Group entity) {
         //attach the group to the new session
-        groupRepository.lock(entity, LockOptions.NONE);
+        groupRepository.saveOrUpdate(entity);
         //remove entity relations
         for (User user : entity.getUsers()) {
             user.getGroups().remove(entity);
@@ -58,8 +59,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void update(Group entity) {
-        //attach the group to the new session
-        groupRepository.saveOrUpdate(entity);
         groupRepository.update(entity);
     }
 
@@ -71,5 +70,19 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findByName(String name) {
         return groupRepository.findByName(name);
+    }
+
+    @Override
+    public boolean isDefaultGroup(Group group) {
+        boolean isDefaultGroup = false;
+        
+        for(DefaultGroup defaultGroup : DefaultGroup.values()){
+            if(group.getName().equals(defaultGroup.getDbEntry())){
+                isDefaultGroup = true;
+                break;
+            }
+        }
+        
+        return isDefaultGroup;
     }
 }

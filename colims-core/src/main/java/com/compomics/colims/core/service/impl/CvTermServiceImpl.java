@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.model.CvTerm;
 import java.util.List;
@@ -41,8 +42,6 @@ public class CvTermServiceImpl implements CvTermService {
 
     @Override
     public void update(CvTerm entity) {
-        //attach the CV term to the new session
-        cvTermRepository.lock(entity, LockOptions.NONE);
         cvTermRepository.update(entity);
     }
 

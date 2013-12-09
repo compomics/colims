@@ -56,7 +56,7 @@ public class HomeController implements Controllable {
     private HomePanel_old homePanel;
     //parent controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     //services
     @Autowired
     private ProjectService projectService;

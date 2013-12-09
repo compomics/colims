@@ -63,7 +63,7 @@ public class ProjectSetupController implements Controllable {
     private ProjectSetupPanel projectSetupPanel;
     //main controller
     @Autowired
-    private MainController mainController;
+    private ColimsController mainController;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -233,7 +233,7 @@ public class ProjectSetupController implements Controllable {
                         getCardLayout().next(projectSetupPanel.getTopPanel());
                         onCardSwitch();
                     } else {
-                        MessageEvent messageEvent = new MessageEvent("Validation warning", validationMessages, JOptionPane.WARNING_MESSAGE);
+                        MessageEvent messageEvent = new MessageEvent("validation warning", validationMessages, JOptionPane.WARNING_MESSAGE);
                         eventBus.post(messageEvent);
                     }
                 } else {
@@ -292,7 +292,7 @@ public class ProjectSetupController implements Controllable {
                     PersistProjectSwingWorker persistProjectSwingWorker = new PersistProjectSwingWorker();
                     persistProjectSwingWorker.execute();
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Files missing", "Please provide the necessary files (.csp, .mgf and .fasta)", JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("files not found", "Please provide the necessary files (.csp, .mgf and .fasta)", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -384,7 +384,7 @@ public class ProjectSetupController implements Controllable {
         protected void done() {
             try {
                 get();
-                MessageEvent messageEvent = new MessageEvent("Project persist confirmation", "Project " + project.getTitle() + " was persisted successfully", JOptionPane.INFORMATION_MESSAGE);
+                MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + project.getTitle() + " was persisted successfully", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
             } catch (InterruptedException | ExecutionException | CancellationException ex) {
                 LOGGER.error(ex.getMessage(), ex);

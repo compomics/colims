@@ -49,8 +49,6 @@ public class InstrumentTypeServiceImpl implements InstrumentTypeService {
 
     @Override
     public void update(InstrumentType entity) {
-        //attach the instrument type to the session
-        instrumentTypeRepository.lock(entity, LockOptions.NONE);
         instrumentTypeRepository.update(entity);
     }
 

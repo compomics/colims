@@ -18,6 +18,10 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
+/**
+ *
+ * @author Kenneth Verheggen
+ */
 @Table(name = "quantification_group")
 @Entity
 public class QuantificationGroup extends AbstractDatabaseEntity {
@@ -31,7 +35,8 @@ public class QuantificationGroup extends AbstractDatabaseEntity {
     private List<Quantification> quantifications = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationGroup")
     private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides = new ArrayList<>();
-
+    
+    
     public QuantificationFile getQuantificationFile() {
         return quantificationFile;
     }

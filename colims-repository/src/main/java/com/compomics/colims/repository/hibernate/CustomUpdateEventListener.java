@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.compomics.colims.model.AbstractDatabaseEntity;
-import com.compomics.colims.repository.SessionBean;
+import com.compomics.colims.repository.AuthenticationBean;
 
 /**
  *
@@ -21,7 +21,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(CustomUpdateEventListener.class);
     @Autowired
-    private SessionBean sessionBean;
+    private AuthenticationBean authenticationBean;
 
     @Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event) {
@@ -37,7 +37,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;            
 
             //set the user name            
-            entity.setUserName(sessionBean.getCurrentUser().getName());
+            entity.setUserName(authenticationBean.getCurrentUser().getName());
             
             if(entity.getCreationdate() == null){
                 entity.setCreationdate(new Date());

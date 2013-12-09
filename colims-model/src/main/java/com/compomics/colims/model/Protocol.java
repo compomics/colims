@@ -32,11 +32,10 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Protocol extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
     @Basic(optional = false)
     @NotBlank(message = "Please insert a protocol name")
-    @Length(min = 2, max = 30, message = "Name must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = true)
     @ManyToOne
@@ -74,7 +73,7 @@ public class Protocol extends AbstractDatabaseEntity {
 
     public Protocol(String name) {
         this.name = name;
-    }    
+    }
 
     public String getType() {
         return name;
@@ -166,5 +165,4 @@ public class Protocol extends AbstractDatabaseEntity {
     public String toString() {
         return name;
     }
-        
 }

@@ -1,16 +1,18 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
-import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
-import com.compomics.colims.client.view.MainFrame;
+import com.compomics.colims.client.view.ColimsFrame;
+import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Group;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
@@ -33,15 +35,15 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("mainController")
-public class MainController implements Controllable, ActionListener {
+@Component("colimsController")
+public class ColimsController implements Controllable, ActionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(MainController.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     @Autowired
     private AuthenticationBean authenticationBean;
     //views
-    private MainFrame mainFrame;
+    private ColimsFrame colimsFrame;
     private LoginDialog loginDialog;
     //child controllers    
     @Autowired
@@ -66,8 +68,8 @@ public class MainController implements Controllable, ActionListener {
 //    @Autowired
 //    private LocalSessionFactoryBean sessionFactoryBean;
 
-    public MainFrame getMainFrame() {
-        return mainFrame;
+    public ColimsFrame getColimsFrame() {
+        return colimsFrame;
     }
 
     /**
@@ -85,7 +87,12 @@ public class MainController implements Controllable, ActionListener {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 LOGGER.error(e.getMessage(), e);
-                showUnexpectedErrorDialog(e.getMessage());
+                //check for permission exceptions
+                if (e instanceof PermissionException) {
+                    showPermissionErrorDialog(e.getMessage());
+                } else {
+                    showUnexpectedErrorDialog(e.getMessage());
+                }
             }
         });
 
@@ -93,15 +100,15 @@ public class MainController implements Controllable, ActionListener {
         eventBus.register(this);
 
         //init login view       
-        mainFrame = new MainFrame();
-        loginDialog = new LoginDialog(mainFrame, true);
+        colimsFrame = new ColimsFrame();
+        loginDialog = new LoginDialog(colimsFrame, true);
 
         //workaround for better beansbinding logging issue
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 
         //init child controllers
         projectManagementController.init();
-        projectSetupController.init();        
+        projectSetupController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -110,12 +117,12 @@ public class MainController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        mainFrame.getHomeParentPanel().add(projectManagementController.getProjectsOverviewPanel(), gridBagConstraints);
-        mainFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);        
+        colimsFrame.getHomeParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        colimsFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);
 
         //add action listeners                
         //add menu item action listeners
-        mainFrame.getHomeMenuItem().addActionListener(this);
+        colimsFrame.getHomeMenuItem().addActionListener(this);
 
         loginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
@@ -138,12 +145,18 @@ public class MainController implements Controllable, ActionListener {
 //        //show login dialog
 //        loginDialog.setLocationRelativeTo(null);
 //        loginDialog.setVisible(true);
-        User user = userService.findAll().get(0);
-        authenticationBean.setCurrentUser(user);
+        //while developing, set a default user in the AuthenticationBean
+        User currentUser = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(currentUser);
+        authenticationBean.setCurrentUser(currentUser);
 
 
-        //disable login dialog while developping
-        initAdminSection();
+        if (authenticationBean.isAdmin()) {
+            initAdminSection();
+        } else {
+            //disable admin menu
+            colimsFrame.getAdminMenu().setEnabled(false);
+        }
 
         //@todo move this call to showview
         showView();
@@ -151,21 +164,21 @@ public class MainController implements Controllable, ActionListener {
 
     @Override
     public void showView() {
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+        colimsFrame.setLocationRelativeTo(null);
+        colimsFrame.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
-        if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
+        if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
             userManagementController.showView();
-        } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.showView();
-        } else if (menuItemLabel.equals(mainFrame.getMaterialManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(colimsFrame.getMaterialManagementMenuItem().getText())) {
             materialManagementController.showView();
-        } else if (menuItemLabel.equals(mainFrame.getProtocolManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(colimsFrame.getProtocolManagementMenuItem().getText())) {
             protocolManagementController.showView();
         }
     }
@@ -186,9 +199,21 @@ public class MainController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showUnexpectedErrorDialog(String message) {
-        showMessageDialog("Unexpected Error", "An unexpected error occured: "
+        showMessageDialog("unexpected error", "An unexpected error occured: "
                 + "\n" + message
                 + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * In case of a permission error, show permission error dialog with the
+     * error message.
+     *
+     * @param message the error message
+     */
+    public void showPermissionErrorDialog(String message) {
+        showMessageDialog("permission warning", "A permission warning occured: "
+                + "\n" + message
+                + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
 
     private void onLogin() {
@@ -197,23 +222,20 @@ public class MainController implements Controllable, ActionListener {
         User currentUser = userService.findByLoginCredentials(loginDialog.getUserNameTextField().getText(), String.valueOf(loginDialog.getPasswordTextField().getPassword()));
         if (currentUser != null) {
             LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
-            loginDialog.setVisible(false);
-
-            //@todo change this to the new user management 
-            //check if the current user has Role.ADMIN.
-            //If so, init the admin section
-            //if (currentUser.getRole().equals(Role.ADMIN)) {
-            initAdminSection();
-            //} else {
-            //set admin menu invisible
-            //mainFrame.getAdminMenu().setVisible(false);
-            //}
+            loginDialog.dispose();
 
             //set current user in authentication bean                
             authenticationBean.setCurrentUser(currentUser);
 
-            mainFrame.setLocationRelativeTo(null);
-            mainFrame.setVisible(true);
+            if (authenticationBean.isAdmin()) {
+                initAdminSection();
+            } else {
+                //disable admin menu
+                colimsFrame.getAdminMenu().setEnabled(false);
+            }
+
+            colimsFrame.setLocationRelativeTo(null);
+            colimsFrame.setVisible(true);
         } else {
             showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
             loginDialog.getUserNameTextField().setText("");
@@ -237,9 +259,9 @@ public class MainController implements Controllable, ActionListener {
             scrollPane.setPreferredSize(new Dimension(600, 200));
             textArea.setEditable(false);
 
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), scrollPane, title, messageType);
+            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), message, title, messageType);
+            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);
         }
     }
 
@@ -255,9 +277,9 @@ public class MainController implements Controllable, ActionListener {
         protocolManagementController.init();
 
         //add action listeners                
-        mainFrame.getUserManagementMenuItem().addActionListener(this);
-        mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
-        mainFrame.getMaterialManagementMenuItem().addActionListener(this);
-        mainFrame.getProtocolManagementMenuItem().addActionListener(this);
+        colimsFrame.getUserManagementMenuItem().addActionListener(this);
+        colimsFrame.getInstrumentManagementMenuItem().addActionListener(this);
+        colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
+        colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
 }

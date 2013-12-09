@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
+import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.PermissionRepository;
 import org.hibernate.LockOptions;
 
@@ -47,7 +48,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void delete(Permission entity) {
         //attach the permission to the new session
-        permissionRepository.lock(entity, LockOptions.NONE);
+        permissionRepository.saveOrUpdate(entity);
         //remove entity relations
         for(Role role : entity.getRoles()){
             role.getPermissions().remove(entity);
@@ -71,6 +72,20 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Permission findByName(String name) {
         return permissionRepository.findByName(name);
+    }
+
+    @Override
+    public boolean isDefaultPermission(Permission permission) {
+        boolean isDefaultPermission = false;
+        
+        for(DefaultPermission defaultPermission : DefaultPermission.values()){
+            if(permission.getName().equals(defaultPermission.getDbEntry())){
+                isDefaultPermission = true;
+                break;
+            }
+        }
+        
+        return isDefaultPermission;
     }
         
 }

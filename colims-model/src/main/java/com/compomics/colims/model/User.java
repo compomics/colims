@@ -17,7 +17,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -32,8 +31,7 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "user", uniqueConstraints =
-        @UniqueConstraint(columnNames = {"name"}))
+@Table(name = "user")
 @Entity
 @TypeDef(name = "encryptedString",
         typeClass = EncryptedStringType.class,
@@ -45,20 +43,19 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
 public class User extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
-    @Length(min = 2, max = 20, message = "User name must be between {min} and {max} characters")
-    @Column(name = "name", nullable = false)
+    @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a first name")
-    @Length(min = 2, max = 20, message = "First name must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters")
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a last name")
-    @Length(min = 2, max = 30, message = "Last name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "Last name must be between {min} and {max} characters")
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Basic(optional = false)
@@ -66,7 +63,7 @@ public class User extends AbstractDatabaseEntity {
     @NotBlank(message = "Please insert an email address")
     @Column(name = "email", nullable = false)
     private String email;
-    @Basic(optional = false)    
+    @Basic(optional = false)
     @NotBlank(message = "Please insert a password")
     @Type(type = "encryptedString")
     @Column(name = "password", nullable = false)
@@ -75,6 +72,8 @@ public class User extends AbstractDatabaseEntity {
     @JoinColumn(name = "l_institution_id", referencedColumnName = "id")
     private Institution institution;
     @OneToMany(mappedBy = "owner")
+    private List<Project> ownedProjects = new ArrayList<>();
+    @ManyToMany(mappedBy = "users")
     private List<Project> projects = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "user_has_group",
@@ -148,13 +147,21 @@ public class User extends AbstractDatabaseEntity {
         this.institution = institution;
     }
 
+    public List<Project> getOwnedProjects() {
+        return ownedProjects;
+    }
+
+    public void setOwnedProjects(List<Project> ownedProjects) {
+        this.ownedProjects = ownedProjects;
+    }
+
     public List<Project> getProjects() {
         return projects;
     }
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
-    }
+    }        
 
     @Override
     public boolean equals(Object obj) {

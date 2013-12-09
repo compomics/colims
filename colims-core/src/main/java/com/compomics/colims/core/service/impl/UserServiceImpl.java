@@ -47,8 +47,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(User user) {
-        //attach the user to the new session
-        userRepository.lock(user, LockOptions.NONE);
         userRepository.delete(user);
     }
 
@@ -71,8 +69,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User entity) {
         //attach the user to the new session
+        //userRepository.saveOrUpdate(entity);
         userRepository.saveOrUpdate(entity);
-        userRepository.update(entity);
     }
 
     @Override
@@ -84,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public void fetchAuthenticationRelations(User user) {
         try {
             //attach the user to the new session
-            userRepository.lock(user, LockOptions.NONE);
+            userRepository.saveOrUpdate(user);
             if (!Hibernate.isInitialized(user.getGroups())) {
                 Hibernate.initialize(user.getGroups());
             }
@@ -92,9 +90,5 @@ public class UserServiceImpl implements UserService {
             LOGGER.error(hbe, hbe.getCause());
         }
     }
-
-    @Override
-    public User getHighestProjectOwner() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 }

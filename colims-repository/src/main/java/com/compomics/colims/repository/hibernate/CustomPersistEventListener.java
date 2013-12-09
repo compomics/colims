@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.compomics.colims.model.AbstractDatabaseEntity;
-import com.compomics.colims.repository.SessionBean;
+import com.compomics.colims.repository.AuthenticationBean;
 
 /**
  *
@@ -24,7 +24,7 @@ public class CustomPersistEventListener implements PersistEventListener {
 
     private static final Logger LOGGER = Logger.getLogger(CustomPersistEventListener.class);
     @Autowired
-    private SessionBean sessionBean;
+    private AuthenticationBean authenticationBean;
 
     @Override
     public void onPersist(PersistEvent event) throws HibernateException {
@@ -45,7 +45,7 @@ public class CustomPersistEventListener implements PersistEventListener {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
 
             //set the user name            
-            entity.setUserName(sessionBean.getCurrentUser().getName());
+            entity.setUserName(authenticationBean.getCurrentUser().getName());
 
             // set the creation date
             if (entity.getCreationdate() == null) {
