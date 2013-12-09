@@ -197,7 +197,7 @@ public class UserCrudController implements Controllable {
                             //check if the user can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(userToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

@@ -177,7 +177,7 @@ public class RoleCrudController implements Controllable {
                             //check if the role can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(roleToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

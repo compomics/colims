@@ -188,7 +188,7 @@ public class ProjectManagementController {
                         //check if the instrument can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(projectToDelete.getLabel());
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("project", projectToDelete.getLabel());
                             eventBus.post(dbConstraintMessageEvent);
                         } else {
                             //pass the exception

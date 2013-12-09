@@ -188,7 +188,7 @@ public class ProtocolManagementController implements Controllable {
                             //check if the protocol can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(protocolToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("protocol", protocolToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

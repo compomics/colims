@@ -191,7 +191,7 @@ public class InstrumentManagementController implements Controllable {
                             //check if the instrument can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(instrumentToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("instrument", instrumentToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception
@@ -466,7 +466,7 @@ public class InstrumentManagementController implements Controllable {
                             //check if the instrument type can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(instrumentTypeToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("instrument type", instrumentTypeToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

@@ -180,7 +180,7 @@ public class GroupCrudController implements Controllable {
                                 //check if the group can be deleted without breaking existing database relations,
                                 //i.e. are there any constraints violations
                                 if (dive.getCause() instanceof ConstraintViolationException) {
-                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(groupToDelete.getName());
+                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("group", groupToDelete.getName());
                                     eventBus.post(dbConstraintMessageEvent);
                                 } else {
                                     //pass the exception
