@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.model.CvTerm;
 import java.util.List;

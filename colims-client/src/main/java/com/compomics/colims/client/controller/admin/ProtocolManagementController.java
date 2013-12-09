@@ -80,7 +80,7 @@ public class ProtocolManagementController implements Controllable {
 
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;
-    }    
+    }
 
     @Override
     public void init() {
@@ -96,15 +96,15 @@ public class ProtocolManagementController implements Controllable {
 
         bindingGroup.bind();
     }
-    
+
     @Override
     public void showView() {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
-        
-        protocolManagementDialog.setVisible(true);        
-    } 
-    
+
+        protocolManagementDialog.setVisible(true);
+    }
+
     /**
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the ProtocolManagementDialog is visible,
@@ -226,7 +226,7 @@ public class ProtocolManagementController implements Controllable {
 
     private void initProtocolEditDialog() {
         protocolEditDialog = new ProtocolEditDialog(mainController.getColimsFrame(), true);
-        
+
         //init dual list
         protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
 
@@ -329,7 +329,8 @@ public class ProtocolManagementController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedProtocol);
                 //check for a new protocol if the protocol name already exists in the db                
                 if (selectedProtocol.getId() == null && isExistingProtocolName(selectedProtocol)) {
-                    validationMessages.add(selectedProtocol.getName() + " already exists in the database, please choose another protocol name.");
+                    validationMessages.add(selectedProtocol.getName() + " already exists in the database,"
+                            + "\n" + "please choose another protocol name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedProtocol.getId() != null) {
@@ -339,7 +340,7 @@ public class ProtocolManagementController implements Controllable {
                     }
                     protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("Protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
@@ -347,7 +348,7 @@ public class ProtocolManagementController implements Controllable {
                     protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     protocolManagementDialog.getProtocolList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

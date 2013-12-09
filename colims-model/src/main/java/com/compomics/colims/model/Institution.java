@@ -36,7 +36,7 @@ public class Institution extends AbstractDatabaseEntity {
     private String abbreviation;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a street name")
-    @Length(min = 2, max = 20, message = "Street name must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters")
     @Column(name = "street", nullable = false)
     private String street;
     @Basic(optional = false)
@@ -45,7 +45,7 @@ public class Institution extends AbstractDatabaseEntity {
     private Integer number;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
-    @Length(min = 2, max = 30, message = "Institution city name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "Institution city name must be between {min} and {max} characters")
     @Column(name = "city", nullable = false)
     private String city;
     @Basic(optional = false)
@@ -54,7 +54,7 @@ public class Institution extends AbstractDatabaseEntity {
     private Integer postalCode;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a country")
-    @Length(min = 2, max = 30, message = "Institution country name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "Institution country name must be between {min} and {max} characters")
     @Column(name = "country", nullable = false)
     private String country;
 

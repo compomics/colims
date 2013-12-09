@@ -45,17 +45,17 @@ public class User extends AbstractDatabaseEntity {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
-    @Length(min = 2, max = 20, message = "User name must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a first name")
-    @Length(min = 2, max = 20, message = "First name must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters")
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a last name")
-    @Length(min = 2, max = 30, message = "Last name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "Last name must be between {min} and {max} characters")
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Basic(optional = false)

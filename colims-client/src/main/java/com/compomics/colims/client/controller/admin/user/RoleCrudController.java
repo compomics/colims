@@ -144,7 +144,6 @@ public class RoleCrudController implements Controllable {
                         userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
                     } else {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
-                        clearRoleDetailFields();
                     }
                 }
             }
@@ -187,7 +186,7 @@ public class RoleCrudController implements Controllable {
                         }
                     } else {
                         roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -215,7 +214,8 @@ public class RoleCrudController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
                 //check for a new group if the role name already exists in the db                
                 if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
-                    validationMessages.add(selectedRole.getName() + " already exists in the database, please choose another role name.");
+                    validationMessages.add(selectedRole.getName() + " already exists in the database,"
+                            + "\n" + "please choose another role name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedRole.getId() != null) {
@@ -230,10 +230,10 @@ public class RoleCrudController implements Controllable {
                     EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
 
-                    MessageEvent messageEvent = new MessageEvent("Role persist confirmation", "Role " + selectedRole.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("role persist confirmation", "Role " + selectedRole.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -242,8 +242,7 @@ public class RoleCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -286,7 +285,7 @@ public class RoleCrudController implements Controllable {
             default:
                 break;
         }
-        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -316,12 +315,14 @@ public class RoleCrudController implements Controllable {
         return selectedRole;
     }
 
-    /**
-     * Clear the role detail fields
+   /**
+     * Reset the selection in the role list.
      */
-    private void clearRoleDetailFields() {
-        userManagementDialog.getRoleNameTextField().setText("");
-        userManagementDialog.getRoleDescriptionTextArea().setText("");
-        userManagementDialog.getPermissionDualList().clear();
+    private void resetSelection() {
+        //clear selection
+        userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+        if (!roleBindingList.isEmpty()) {
+            userManagementDialog.getRoleList().setSelectedIndex(0);
+        }
     }
 }
