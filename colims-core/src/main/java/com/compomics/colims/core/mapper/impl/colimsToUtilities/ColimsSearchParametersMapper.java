@@ -5,11 +5,12 @@ import com.compomics.colims.core.mapper.Mapper;
 
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import java.io.File;
+import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,8 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
 
         searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
         //TODO FIX THE ENZYME !!!!
-        // Enzyme enzyme = new Enzyme();
-        // searchParameters.setEnzyme(colimsSearchParametersSettings.getEnzyme());
+        Enzyme enzyme = new Enzyme(0, colimsSearchParametersSettings.getEnzyme(), "", "", "", "");
+        searchParameters.setEnzyme(enzyme);
         searchParameters.setMaxEValue(colimsSearchParametersSettings.getEvalueCutoff());
         searchParameters.setFragmentIonAccuracy(colimsSearchParametersSettings.getFragMassTolerance());
 
