@@ -54,7 +54,7 @@ public class MaxQuantIdentificationIntegrationTest {
         assertThat(proteinGroupMap.get(9999), is(nullValue()));
         //assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
 
-        List<PeptideAssumption> parsedPeptides = evidenceParser.parse(evidenceFile, null);
+        Map<Integer,PeptideAssumption> parsedPeptides = MaxQuantEvidenceParser.parse(evidenceFile, null);
 
         //then test if the peptides were properly parsed
         assertThat(parsedPeptides.size(), is(999));
@@ -109,8 +109,8 @@ public class MaxQuantIdentificationIntegrationTest {
         System.out.println("missing proteingroups file");
 
         //only parse the peptides and see if it throws any kinks next to nullpointers
-        List<PeptideAssumption> parsedPeptides = evidenceParser.parse(evidenceFile, null);
-        assertThat(parsedPeptides.get(200).getPeptide().getParentProteins().size(), is(1));
+        Map<Integer,PeptideAssumption> parsedPeptides = MaxQuantEvidenceParser.parse(evidenceFile, null);
+        assertThat(parsedPeptides.get(417).getPeptide().getParentProteins().size(), is(1));
         Map<Integer, ProteinMatch> proteinList = new HashMap<>();
         //it appears the peptides got parsed, now to blow up the proteingroups
         proteinList = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(new File("this file does not exist"));

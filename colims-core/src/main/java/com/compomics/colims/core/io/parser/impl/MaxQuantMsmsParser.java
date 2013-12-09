@@ -15,9 +15,7 @@ import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Service("maxQuantMsmsParser")
 public class MaxQuantMsmsParser {
 
-    private static final Logger log = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
 
     private HashMap<Double, Peak> parsePeakList(String peaklist, String intensities, String masses) {
         HashMap<Double, Peak> peakMap = new HashMap<>();
