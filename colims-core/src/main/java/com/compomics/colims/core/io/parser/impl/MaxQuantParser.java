@@ -51,9 +51,9 @@ public class MaxQuantParser {
      * @throws IOException
      */
     public void parseMaxQuantTextFolder(final Path maxQuantTextFolder) throws IOException {
-        
+
         //TODO parameters
-        
+
         // Create a single QuantificationFile file to the argument folder, and store it in the database
         QuantificationFile quantificationFile = new QuantificationFile();
         // TODO Probably store the folder name in quantificationFile, but there are no such fields available
@@ -68,15 +68,17 @@ public class MaxQuantParser {
         quantificationGroup.setQuantificationFile(quantificationFile);
         // TODO Store quantificationGroup; we are currently missing a Hibernate Repository to do so, so skip for now
 
+        // Parse msms.txt and create and persist the objects found within
+        LOGGER.debug("starting msms parsing");
+        Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
+        msms = msmsParser.parse(msmsFile.toFile(), false);
+
         // Parse evidence.txt and create and persist the objects found within
         LOGGER.debug("starting evidence parsing");
         Path evidenceFile = maxQuantTextFolder.resolve(EVIDENCETXT);
         peptideAssumptions = MaxQuantEvidenceParser.parse(evidenceFile.toFile(), quantificationGroup);
 
-        // Parse msms.txt and create and persist the objects found within
-        LOGGER.debug("starting msms parsing");
-        Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
-        msms = msmsParser.parse(msmsFile.toFile(), false);
+        //update peptide msms to best scoring msms entry
 
         LOGGER.debug("starting protein group parsing");
         Path proteinGroupsFile = maxQuantTextFolder.resolve(PROTEINGROUPS);
