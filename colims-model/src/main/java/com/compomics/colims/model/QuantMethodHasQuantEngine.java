@@ -26,7 +26,7 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
     private QuantificationEngine quantificationEngine;
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationParameterSetting quantificationParamaterSetting;
+    private QuantificationParameterSetting quantificationParameterSetting;
 
     public QuantificationMethod getQuantificationMethod() {
         return quantificationMethod;
@@ -44,11 +44,11 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         this.quantificationEngine = quantificationEngine;
     }
 
-    public QuantificationParameterSetting getQuantificationParamaterSetting() {
-        return quantificationParamaterSetting;
+    public QuantificationParameterSetting getQuantificationParameterSetting() {
+        return quantificationParameterSetting;
     }
 
-    public void setQuantificationParamaterSetting(QuantificationParameterSetting quantificationParamaterSetting) {
-        this.quantificationParamaterSetting = quantificationParamaterSetting;
+    public void setQuantificationParameterSetting(QuantificationParameterSetting quantificationParameterSetting) {
+        this.quantificationParameterSetting = quantificationParameterSetting;
     }
 }
