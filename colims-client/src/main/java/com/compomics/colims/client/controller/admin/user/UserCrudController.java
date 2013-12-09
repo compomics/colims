@@ -1,6 +1,5 @@
 package com.compomics.colims.client.controller.admin.user;
 
-import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
@@ -18,6 +17,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.GroupNameComparator;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -78,7 +78,7 @@ public class UserCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-        
+
         //init dual list
         userManagementDialog.getGroupDualList().init(new GroupNameComparator());
 
@@ -163,7 +163,6 @@ public class UserCrudController implements Controllable {
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
-                        clearUserDetailFields();
                     }
                 }
             }
@@ -207,7 +206,7 @@ public class UserCrudController implements Controllable {
                         }
                     } else {
                         userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                        resetSelection();
                     }
                 }
             }
@@ -235,7 +234,8 @@ public class UserCrudController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
                 //check for a new user if the user name already exists in the db                
                 if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
-                    validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
+                    validationMessages.add(selectedUser.getName() + " already exists in the database"
+                            + "\n" + "please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedUser.getId() != null) {
@@ -250,10 +250,10 @@ public class UserCrudController implements Controllable {
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
                     eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
-                    MessageEvent messageEvent = new MessageEvent("User persist confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("user persist confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -262,8 +262,7 @@ public class UserCrudController implements Controllable {
 
     @Override
     public void showView() {
-        //clear selection
-        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -293,7 +292,7 @@ public class UserCrudController implements Controllable {
             default:
                 break;
         }
-        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        resetSelection();
     }
 
     /**
@@ -324,14 +323,13 @@ public class UserCrudController implements Controllable {
     }
 
     /**
-     * Clear the user detail fields
+     * Reset the selection in the user list.
      */
-    private void clearUserDetailFields() {
-        userManagementDialog.getUserNameTextField().setText("");
-        userManagementDialog.getFirstNameTextField().setText("");
-        userManagementDialog.getLastNameTextField().setText("");
-        userManagementDialog.getEmailTextField().setText("");
-        userManagementDialog.getPasswordTextField().setText("");
-        userManagementDialog.getGroupDualList().clear();
+    private void resetSelection() {
+        //clear selection
+        userManagementDialog.getUserList().getSelectionModel().clearSelection();
+        if (!userBindingList.isEmpty()) {
+            userManagementDialog.getUserList().setSelectedIndex(0);
+        }
     }
 }

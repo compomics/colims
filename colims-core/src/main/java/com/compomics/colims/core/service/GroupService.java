@@ -5,6 +5,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Group;
+import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import java.util.List;
 
@@ -21,5 +22,13 @@ public interface GroupService extends GenericService<Group, Long> {
      * @return the found group
      */
     Group findByName(String name);
+    
+    /**
+     * Check if the group is a default group.
+     *
+     * @param group the group
+     * @return
+     */
+    boolean isDefaultGroup(Group group);
         
 }

@@ -326,7 +326,8 @@ public class MaterialManagementController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedMaterial);
                 //check for a new material if the material name already exists in the db                
                 if (selectedMaterial.getId() == null && isExistingMaterialName(selectedMaterial)) {
-                    validationMessages.add(selectedMaterial.getName() + " already exists in the database, please choose another material name.");
+                    validationMessages.add(selectedMaterial.getName() + " already exists in the database,"
+                            + "\n" + "please choose another material name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedMaterial.getId() != null) {
@@ -336,7 +337,7 @@ public class MaterialManagementController implements Controllable {
                     }
                     materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("Material persist confirmation", "Material " + selectedMaterial.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + selectedMaterial.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in material list in management overview dialog
@@ -344,7 +345,7 @@ public class MaterialManagementController implements Controllable {
                     materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     materialManagementDialog.getMaterialList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

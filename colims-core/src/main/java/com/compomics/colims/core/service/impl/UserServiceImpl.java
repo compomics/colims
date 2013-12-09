@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public void update(User entity) {
         //attach the user to the new session
         //userRepository.saveOrUpdate(entity);
-        userRepository.update(entity);
+        userRepository.saveOrUpdate(entity);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public void fetchAuthenticationRelations(User user) {
         try {
             //attach the user to the new session
-            userRepository.lock(user, LockOptions.NONE);
+            userRepository.saveOrUpdate(user);
             if (!Hibernate.isInitialized(user.getGroups())) {
                 Hibernate.initialize(user.getGroups());
             }

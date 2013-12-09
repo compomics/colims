@@ -4,8 +4,8 @@ package com.compomics.colims.model.enums;
  *
  * @author niels
  */
-public enum DefaultPermissionEnum {
+public enum ModificationType {
     
-    READ, CREATE, UPDATE, DELETE
+    FIXED, VARIABLE
     
 }

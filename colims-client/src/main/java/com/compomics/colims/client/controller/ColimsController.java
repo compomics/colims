@@ -1,7 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
-import com.compomics.colims.client.bean.AuthenticationBean;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
@@ -9,8 +8,11 @@ import com.compomics.colims.client.controller.admin.ProtocolManagementController
 import com.compomics.colims.client.event.MessageEvent;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
+import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Group;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
@@ -85,7 +87,12 @@ public class ColimsController implements Controllable, ActionListener {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 LOGGER.error(e.getMessage(), e);
-                showUnexpectedErrorDialog(e.getMessage());
+                //check for permission exceptions
+                if (e instanceof PermissionException) {
+                    showPermissionErrorDialog(e.getMessage());
+                } else {
+                    showUnexpectedErrorDialog(e.getMessage());
+                }
             }
         });
 
@@ -101,7 +108,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init child controllers
         projectManagementController.init();
-        projectSetupController.init();        
+        projectSetupController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -111,7 +118,7 @@ public class ColimsController implements Controllable, ActionListener {
         gridBagConstraints.weighty = 1.0;
 
         colimsFrame.getHomeParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
-        colimsFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);        
+        colimsFrame.getProjectSetupParentPanel().add(projectSetupController.getProjectSetupPanel(), gridBagConstraints);
 
         //add action listeners                
         //add menu item action listeners
@@ -139,12 +146,17 @@ public class ColimsController implements Controllable, ActionListener {
 //        loginDialog.setLocationRelativeTo(null);
 //        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-        User user = userService.findByName("admin1");
-        authenticationBean.setCurrentUser(user);
+        User currentUser = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(currentUser);
+        authenticationBean.setCurrentUser(currentUser);
 
 
-        //disable login dialog while developping
-        initAdminSection();
+        if (authenticationBean.isAdmin()) {
+            initAdminSection();
+        } else {
+            //disable admin menu
+            colimsFrame.getAdminMenu().setEnabled(false);
+        }
 
         //@todo move this call to showview
         showView();
@@ -187,9 +199,21 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showUnexpectedErrorDialog(String message) {
-        showMessageDialog("Unexpected Error", "An unexpected error occured: "
+        showMessageDialog("unexpected error", "An unexpected error occured: "
                 + "\n" + message
                 + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * In case of a permission error, show permission error dialog with the
+     * error message.
+     *
+     * @param message the error message
+     */
+    public void showPermissionErrorDialog(String message) {
+        showMessageDialog("permission warning", "A permission warning occured: "
+                + "\n" + message
+                + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
 
     private void onLogin() {
@@ -200,18 +224,15 @@ public class ColimsController implements Controllable, ActionListener {
             LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
             loginDialog.dispose();
 
-            //@todo change this to the new user management 
-            //check if the current user has Role.ADMIN.
-            //If so, init the admin section
-            //if (currentUser.getRole().equals(Role.ADMIN)) {
-            initAdminSection();
-            //} else {
-            //set admin menu invisible
-            //mainFrame.getAdminMenu().dispose();
-            //}
-
             //set current user in authentication bean                
             authenticationBean.setCurrentUser(currentUser);
+
+            if (authenticationBean.isAdmin()) {
+                initAdminSection();
+            } else {
+                //disable admin menu
+                colimsFrame.getAdminMenu().setEnabled(false);
+            }
 
             colimsFrame.setLocationRelativeTo(null);
             colimsFrame.setVisible(true);

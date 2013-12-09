@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 
-import com.compomics.colims.repository.SessionBean;
+import com.compomics.colims.repository.AuthenticationBean;
 
 /**
  * Hibernate interceptor for auditing purposes. Fills in the field in the
@@ -15,20 +15,20 @@ import com.compomics.colims.repository.SessionBean;
  *
  * @author Niels Hulstaert
  */
-//@Deprecated
+@Deprecated
 public class AuditInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
-    private SessionBean sessionBean;
+    private AuthenticationBean authenticationBean;
 
-    public SessionBean getSessionBean() {
-        return sessionBean;
+    public AuthenticationBean getAuthenticationBean() {
+        return authenticationBean;
     }
 
-    public void setSessionBean(SessionBean sessionBean) {
-        this.sessionBean = sessionBean;
-    }        
+    public void setAuthenticationBean(AuthenticationBean authenticationBean) {
+        this.authenticationBean = authenticationBean;
+    }            
 
     @Override
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {       

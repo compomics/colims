@@ -17,7 +17,7 @@ import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationTypeEnum;
+import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
@@ -142,21 +142,21 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals("monohydroxylated lysine", modification.getName());
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());                
+                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());                
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals("phosphorylated residue")) {
                 Assert.assertEquals("phosphorylated residue", modification.getName());
                 Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());
+                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals("L-proline removal")) {
                 Assert.assertEquals("L-proline removal", modification.getName());
                 Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationTypeEnum.VARIABLE, peptideHasModification.getModificationType());
+                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
             }

@@ -47,7 +47,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(Role entity) {
         //attach the role to the new session
-        roleRepository.update(entity);
+        roleRepository.saveOrUpdate(entity);
         //remove entity relations
         for(Group group : entity.getGroups()){
             group.getRoles().remove(entity);
