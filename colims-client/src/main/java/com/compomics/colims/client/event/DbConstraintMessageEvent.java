@@ -12,6 +12,6 @@ public class DbConstraintMessageEvent extends MessageEvent {
                 + " Try to remove any existing relations between this entity and other database entities.";
     
     public DbConstraintMessageEvent(String entityName){
-        super("database constraint violation", String.format(CONSTRAINT_MESSAGE, entityName) , JOptionPane.ERROR_MESSAGE);
+        super("database constraint violation", String.format(CONSTRAINT_MESSAGE, entityName) , JOptionPane.WARNING_MESSAGE);
     }
 }

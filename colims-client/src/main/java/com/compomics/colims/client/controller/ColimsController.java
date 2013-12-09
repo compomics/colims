@@ -199,7 +199,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showUnexpectedErrorDialog(String message) {
-        showMessageDialog("Unexpected Error", "An unexpected error occured: "
+        showMessageDialog("unexpected error", "An unexpected error occured: "
                 + "\n" + message
                 + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
@@ -211,7 +211,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showPermissionErrorDialog(String message) {
-        showMessageDialog("Permission Error", "A permission error occured: "
+        showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }

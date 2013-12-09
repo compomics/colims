@@ -234,7 +234,8 @@ public class UserCrudController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
                 //check for a new user if the user name already exists in the db                
                 if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
-                    validationMessages.add(selectedUser.getName() + " already exists in the database, please choose another user name.");
+                    validationMessages.add(selectedUser.getName() + " already exists in the database"
+                            + "\n" + "please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedUser.getId() != null) {
@@ -249,10 +250,10 @@ public class UserCrudController implements Controllable {
                     UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
                     eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
-                    MessageEvent messageEvent = new MessageEvent("User persist confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("user persist confirmation", "User " + selectedUser.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

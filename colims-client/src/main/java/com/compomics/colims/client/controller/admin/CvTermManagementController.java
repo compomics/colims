@@ -150,7 +150,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
                     eventBus.post(new CvTermChangeEvent());
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

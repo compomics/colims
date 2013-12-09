@@ -3,6 +3,7 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
@@ -17,7 +18,6 @@ import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
-import com.compomics.colims.model.comparator.CvTermAccessionComparator;
 import com.compomics.colims.model.comparator.RoleNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -70,15 +70,15 @@ public class GroupCrudController implements Controllable {
     private GroupService groupService;
     @Autowired
     private RoleService roleService;
-
+    
     @Override
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-        
+
         //init dual list
         userManagementDialog.getRoleDualList().init(new RoleNameComparator());
-
+        
         areChildrenAffected = false;
 
         //register to event bus
@@ -93,7 +93,7 @@ public class GroupCrudController implements Controllable {
 
         //init binding
         bindingGroup = new BindingGroup();
-
+        
         groupBindingList = ObservableCollections.observableList(groupService.findAll());
         JListBinding groupListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, groupBindingList, userManagementDialog.getGroupList());
         bindingGroup.addBinding(groupListBinding);
@@ -103,7 +103,7 @@ public class GroupCrudController implements Controllable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getGroupList(), BeanProperty.create("selectedElement.description"), userManagementDialog.getGroupDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
         bindingGroup.addBinding(binding);
-
+        
         bindingGroup.bind();
 
         //add listeners
@@ -111,13 +111,13 @@ public class GroupCrudController implements Controllable {
             @Override
             public void focusGained(FocusEvent e) {
             }
-
+            
             @Override
             public void focusLost(FocusEvent e) {
                 userManagementDialog.getGroupList().updateUI();
             }
         });
-
+        
         userManagementDialog.getGroupList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -149,7 +149,7 @@ public class GroupCrudController implements Controllable {
                 }
             }
         });
-
+        
         userManagementDialog.getAddGroupButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,7 +159,7 @@ public class GroupCrudController implements Controllable {
                 userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
             }
         });
-
+        
         userManagementDialog.getDeleteGroupButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -168,25 +168,29 @@ public class GroupCrudController implements Controllable {
                     //check if group is already has an id.
                     //If so, delete the group from the db.
                     if (groupToDelete.getId() != null) {
-                        //if(gr){
-                        try {
-                            groupService.delete(groupToDelete);
-                            eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
-
-                            groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                            userManagementDialog.getGroupList().getSelectionModel().clearSelection();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the group can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(groupToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
+                        //check if the group is a default group
+                        if (!groupService.isDefaultGroup(groupToDelete)) {
+                            try {
+                                groupService.delete(groupToDelete);
+                                eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
+                                
+                                groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
+                                userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+                            } catch (DataIntegrityViolationException dive) {
+                                //check if the group can be deleted without breaking existing database relations,
+                                //i.e. are there any constraints violations
+                                if (dive.getCause() instanceof ConstraintViolationException) {
+                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(groupToDelete.getName());
+                                    eventBus.post(dbConstraintMessageEvent);
+                                } else {
+                                    //pass the exception
+                                    throw dive;
+                                }
                             }
-                        }
-                    //}
+                        } else {
+                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("group", groupToDelete.getName());
+                            eventBus.post(defaultDbEntryMessageEvent);
+                        }                        
                     } else {
                         groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
                         resetSelection();
@@ -194,7 +198,7 @@ public class GroupCrudController implements Controllable {
                 }
             }
         });
-
+        
         userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -204,11 +208,11 @@ public class GroupCrudController implements Controllable {
                 //add roles to the selected group
                 Group selectedGroup = getSelectedGroup();
                 selectedGroup.setRoles(addedRoles);
-
+                
                 areChildrenAffected = true;
             }
         });
-
+        
         userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -217,7 +221,8 @@ public class GroupCrudController implements Controllable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
                 //check for a new group if the group name already exists in the db                
                 if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
-                    validationMessages.add(selectedGroup.getName() + " already exists in the database, please choose another group name.");
+                    validationMessages.add(selectedGroup.getName() + " already exists in the database,"
+                            + "\n" + "please choose another group name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedGroup.getId() != null) {
@@ -228,20 +233,20 @@ public class GroupCrudController implements Controllable {
                     userManagementDialog.getGroupNameTextField().setEnabled(false);
                     userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                     userManagementDialog.getGroupStateInfoLabel().setText("");
-
+                    
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
-
-                    MessageEvent messageEvent = new MessageEvent("Group persist confirmation", "Group " + selectedGroup.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    MessageEvent messageEvent = new MessageEvent("group persist confirmation", "Group " + selectedGroup.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
     }
-
+    
     @Override
     public void showView() {
         resetSelection();
@@ -303,7 +308,7 @@ public class GroupCrudController implements Controllable {
         if (foundGroup == null) {
             isExistingGroupName = false;
         }
-
+        
         return isExistingGroupName;
     }
 
@@ -328,5 +333,4 @@ public class GroupCrudController implements Controllable {
             userManagementDialog.getGroupList().setSelectedIndex(0);
         }
     }
-    
 }

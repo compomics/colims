@@ -167,7 +167,7 @@ public class ProjectManagementController {
                     projectEditDialog.setLocationRelativeTo(null);
                     projectEditDialog.setVisible(true);
                 } else {
-                    eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -245,7 +245,8 @@ public class ProjectManagementController {
                 List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
                 //check for a new project if the project title already exists in the db                
                 if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
-                    validationMessages.add(projectToEdit.getTitle() + " already exists in the database, please choose another project title.");
+                    validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
+                            + "\n" + "please choose another project title.");
                 }
                 int index = 0;
                 if (validationMessages.isEmpty()) {
@@ -260,14 +261,14 @@ public class ProjectManagementController {
                     }
                     projectEditDialog.getSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("Project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in project list in management overview dialog
                     projectsSelectionModel.clearSelection();
                     projectsSelectionModel.setLeadSelectionIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.ERROR_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
