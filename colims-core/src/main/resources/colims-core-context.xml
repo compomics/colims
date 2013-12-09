@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"    
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd       
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://cxf.apache.org/jaxws 
+       http://cxf.apache.org/schemas/jaxws.xsd">
+    
+    <!-- import spring config file from colims-repository -->
+    <import resource="classpath:colims-repository-context.xml"/> 
+    
+    <!-- property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="colims-core.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>               
+    </bean>
+    
+    <tx:annotation-driven/>     
+    
+    <aop:aspectj-autoproxy />  
+    
+    <!--<bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
+      
+    <bean class="com.compomics.colims.core.aop.AuthenticationInterceptor" />  
+    
+    <!-- service beans -->
+    <context:component-scan base-package="com.compomics.colims.core.service">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>   
+    
+    <!-- component beans -->
+    <context:component-scan base-package="com.compomics.colims.core">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>     
+    
+    <!-- logic beans -->                                
+    <bean id="ionLadderMassesCalculator" class="com.compomics.colims.core.logic.impl.IonLadderMassesCalculatorImpl"/> 
+    
+    <!-- guava event bus bean -->
+    <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>       
+    
+     <!-- ols soap service client -->
+    <jaxws:client id="olsClient"
+                  serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
+                  address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery" /> 
+    
+</beans>
