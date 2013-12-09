@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.mapper.impl.UtilitiesExperimentMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesExperimentMapper;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.AnalyticalRun;

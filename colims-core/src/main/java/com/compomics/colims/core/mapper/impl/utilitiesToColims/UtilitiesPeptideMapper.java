@@ -1,4 +1,4 @@
-package com.compomics.colims.core.mapper.impl;
+package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.mapper.MatchScore;

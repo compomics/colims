@@ -7,6 +7,7 @@ import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;

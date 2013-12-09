@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.mapper.impl.UtilitiesProteinMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.util.experiment.identification.SequenceFactory;

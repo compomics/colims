@@ -11,8 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.mapper.impl.PtmCvTermMapper;
-import com.compomics.colims.core.mapper.impl.UtilitiesModificationMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.PtmCvTermMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesModificationMapper;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;

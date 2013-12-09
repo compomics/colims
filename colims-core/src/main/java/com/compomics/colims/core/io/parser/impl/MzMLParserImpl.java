@@ -29,7 +29,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.io.parser.MzMLParser;
-import com.compomics.colims.core.mapper.impl.UtilitiesSpectrumMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
