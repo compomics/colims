@@ -37,7 +37,16 @@ public class PtmCvTermMapper {
         
     public PtmCvTermMapper() throws FileNotFoundException, IOException, ClassNotFoundException {
         ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();
+    }   
+
+    public PtmToPrideMap getPtmToPrideMap() {
+        return ptmToPrideMap;
     }
+
+    public void setPtmToPrideMap(PtmToPrideMap ptmToPrideMap) throws ClassNotFoundException, FileNotFoundException, IOException {
+        PrideObjectsFactory.getInstance().setPtmToPrideMap(ptmToPrideMap);
+        this.ptmToPrideMap = ptmToPrideMap;
+    }        
     
     /**
      * Init the PTM to CV term map
@@ -53,8 +62,11 @@ public class PtmCvTermMapper {
      *
      * @param searchParameters the PeptideShaker SearchParameters
      */
-    public void updatePtmToPrideMap(SearchParameters searchParameters) throws FileNotFoundException, IOException, ClassNotFoundException {
-        ptmToPrideMap = PtmToPrideMap.loadPtmToPrideMap(searchParameters);
+    public void updatePtmToPrideMap(SearchParameters searchParameters) throws FileNotFoundException, IOException, ClassNotFoundException {  
+        //do this because of break statement in loadPtmToPrideMap
+        for(int i  = 0 ; i < searchParameters.getModificationProfile().getAllModifications().size() ; i++){
+            ptmToPrideMap = PtmToPrideMap.loadPtmToPrideMap(searchParameters);
+        }        
     }
     
     /**

@@ -25,6 +25,7 @@ import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.pride.CvTerm;
+import com.compomics.util.pride.PtmToPrideMap;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.io.File;
@@ -53,7 +54,7 @@ public class UtilitiesModificationMapperTest {
     @Autowired
     private ModificationService modificationService;
     @Autowired
-    private PtmFactoryWrapper ptmFactoryWrapper;
+    private PtmFactoryWrapper ptmFactoryWrapper;    
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
@@ -80,8 +81,10 @@ public class UtilitiesModificationMapperTest {
         modificationProfile.addFixedModification(phosphorylation);
 
         searchParameters.setModificationProfile(modificationProfile);
-
+        
         try {
+            //reset PtmToPrideMap for consistent testing
+            ptmCvTermMapper.setPtmToPrideMap(new PtmToPrideMap());
             //update mapper with the SearchParameters
             ptmCvTermMapper.updatePtmToPrideMap(searchParameters);
         } catch (FileNotFoundException | ClassNotFoundException ex) {
