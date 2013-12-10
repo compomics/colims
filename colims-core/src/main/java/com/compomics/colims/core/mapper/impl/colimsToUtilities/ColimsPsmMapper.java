@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.*;
 import java.util.List;
 
 import com.compomics.colims.core.exception.MappingException;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component("colimsPsmMapper")
 public class ColimsPsmMapper {
 
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesPsmMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsPsmMapper.class);
     @Autowired
     private ColimsPeptideMapper colimsPeptideMapper;
 

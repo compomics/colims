@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author Niels Hulstaert
+ * @author Kenneth Verheggen
  */
-@Component("utilitiesProteinMapper")
+@Component("colimsProteinMapper")
 public class ColimsProteinMapper {
 
     @Autowired

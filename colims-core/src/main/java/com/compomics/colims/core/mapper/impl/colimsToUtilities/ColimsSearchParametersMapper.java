@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ColimsSearchParametersMapper implements Mapper<SearchParameterSettings, SearchParameters> {
 
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
 
     /**
      * Map the ColimsSearchParametersSettings to the SearchParameters object.

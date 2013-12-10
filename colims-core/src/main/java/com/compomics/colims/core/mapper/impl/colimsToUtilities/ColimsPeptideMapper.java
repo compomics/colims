@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.*;
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
@@ -23,7 +22,7 @@ public class ColimsPeptideMapper {
     @Autowired
     private static final ColimsProteinMapper colimsProteinMapper = new ColimsProteinMapper();
 
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
     public void map(Peptide sourcePeptide, com.compomics.util.experiment.biology.Peptide targetPeptide) throws MappingException {
         //set sequence
