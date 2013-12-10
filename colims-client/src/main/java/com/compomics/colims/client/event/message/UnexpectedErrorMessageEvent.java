@@ -1,4 +1,4 @@
-package com.compomics.colims.client.event;
+package com.compomics.colims.client.event.message;
 
 import javax.swing.JOptionPane;
 

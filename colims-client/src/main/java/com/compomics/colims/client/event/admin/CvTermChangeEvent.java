@@ -1,4 +1,4 @@
-package com.compomics.colims.client.event;
+package com.compomics.colims.client.event.admin;
 
 /**
  * Stub class for passing CV term change events from the

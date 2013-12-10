@@ -1,8 +1,7 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import java.util.Comparator;
 
@@ -10,13 +9,14 @@ import java.util.Comparator;
  *
  * @author Niels Hulstaert
  */
-public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Experiment> {
+public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project> {
 
-    private static final String[] columnNames = {"Id", "Title", "Number", "Number of samples"};
+    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Number of experiments"};
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
-    public static final int NUMBER = 2;
-    public static final int NUMBER_OF_SAMPLES = 3;
+    public static final int LABEL = 2;
+    public static final int OWNER = 3;
+    public static final int NUMBER_OF_EXPERIMENTS = 4;
 
     @Override
     public Class getColumnClass(int column) {
@@ -25,9 +25,11 @@ public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Exper
                 return Long.class;
             case TITLE:
                 return String.class;
-            case NUMBER:
-                return Long.class;
-            case NUMBER_OF_SAMPLES:
+            case LABEL:
+                return String.class;
+            case OWNER:
+                return String.class;
+            case NUMBER_OF_EXPERIMENTS:
                 return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -41,7 +43,7 @@ public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Exper
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -50,16 +52,18 @@ public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Exper
     }
 
     @Override
-    public Object getColumnValue(Experiment experiment, int column) {
+    public Object getColumnValue(Project project, int column) {        
         switch (column) {
             case PROJECT_ID:
-                return experiment.getId();
+                return project.getId();
             case TITLE:
-                return experiment.getTitle();
-            case NUMBER:
-                return experiment.getNumber();
-            case NUMBER_OF_SAMPLES:
-                return experiment.getSamples().size();
+                return project.getTitle();
+            case LABEL:
+                return project.getLabel();
+            case OWNER:
+                return project.getOwner().getName();
+            case NUMBER_OF_EXPERIMENTS:                
+                return project.getExperiments().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

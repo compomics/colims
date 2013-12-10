@@ -4,8 +4,8 @@
  */
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.UserChangeEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;

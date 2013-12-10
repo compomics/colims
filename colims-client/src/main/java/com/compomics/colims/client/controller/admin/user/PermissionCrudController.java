@@ -1,12 +1,12 @@
 package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.DefaultDbEntryMessageEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.PermissionChangeEvent;
-import com.compomics.colims.client.event.RoleChangeEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.admin.PermissionChangeEvent;
+import com.compomics.colims.client.event.admin.RoleChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;

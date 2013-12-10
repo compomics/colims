@@ -2,9 +2,9 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.event.CvTermChangeEvent;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.MessageEvent;
+import com.compomics.colims.client.event.admin.CvTermChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvTermManagementDialog;
