@@ -8,7 +8,7 @@ package com.compomics.colims.core.mapper;
 import com.compomics.colims.core.io.parser.impl.PeptideShakerParameterParser;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.impl.UtilitiesSearchParametersMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.SearchParameterSettings;
 import com.compomics.util.experiment.identification.SearchParameters;
 import org.junit.Assert;

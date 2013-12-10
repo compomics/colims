@@ -44,11 +44,11 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         this.quantificationEngine = quantificationEngine;
     }
 
-    public QuantificationParameterSetting quantificationParameterSetting() {
+    public QuantificationParameterSetting getQuantificationParameterSetting() {
         return quantificationParameterSetting;
     }
 
-    public void setQuantificationParamaterSetting(QuantificationParameterSetting quantificationParameterSetting) {
+    public void setQuantificationParameterSetting(QuantificationParameterSetting quantificationParameterSetting) {
         this.quantificationParameterSetting = quantificationParameterSetting;
     }
 }
