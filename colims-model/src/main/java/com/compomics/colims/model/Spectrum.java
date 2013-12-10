@@ -69,7 +69,9 @@ public class Spectrum extends AbstractDatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<SpectrumFile> spectrumFiles = new ArrayList<>();    
+    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
+    private List<Quantification> quantificationList = new ArrayList<>();
     
     public Spectrum(){
     }

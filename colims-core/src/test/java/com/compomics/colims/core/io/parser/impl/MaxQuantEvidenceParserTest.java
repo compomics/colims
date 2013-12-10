@@ -15,7 +15,12 @@ import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import java.util.ArrayList;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantEvidenceParserTest {
 
     File getFile(final String filename) {
@@ -84,6 +89,7 @@ public class MaxQuantEvidenceParserTest {
         Peptide peptide = new Peptide();
         Map<String, String> values = new HashMap<>();
         values.put(EvidenceHeaders.Oxidation_M_Probabilities.column, "AAM(1)GNFAAFSAIPGVEVR");
+        values.put(EvidenceHeaders.Modifications.column,"1");
         //maxQuantEvidenceParser.linkPeptideToModifications(peptide, values);
 
 
@@ -105,6 +111,7 @@ public class MaxQuantEvidenceParserTest {
         Map<String, String> values = new HashMap<>();
         String modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
         values.put(modificationName, "1");
+        values.put(EvidenceHeaders.Modifications.column,"1");
         for (ModificationMatch match : MaxQuantEvidenceParser.extractModifications(values)) {
             peptide.addModificationMatch(match);
         }

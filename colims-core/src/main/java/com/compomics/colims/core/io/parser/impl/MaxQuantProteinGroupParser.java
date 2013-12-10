@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Davy
  */
+@Component("maxQuantProteinGroupParser")
 public class MaxQuantProteinGroupParser {
 
     /**
@@ -22,26 +24,29 @@ public class MaxQuantProteinGroupParser {
     public static Map<Integer, ProteinMatch> parseMaxQuantProteinGroups(File aProteinGroupsFile) throws IOException, FileNotFoundException {
         Map<Integer, ProteinMatch> proteinGroupMap = new HashMap<>(1000);
         TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile);
-        Map<String, String> proteinGroupLine;
+        Map<String, String> values;
         while (iter.hasNext()) {
-            proteinGroupLine = iter.next();
+            values = iter.next();
             ProteinMatch proteinMatch = new ProteinMatch();
-            String decoyString = proteinGroupLine.get(ProteinGroupHeaders.DECOY.headerName);
-            boolean isDecoy = decoyString.equals("+");
-//Header header = Header.parseFromFASTA(proteinGroupLine.get(ProteinGroupHeaders.FASTAHEADER.headerName));
-            String parsedAccession = proteinGroupLine.get(ProteinGroupHeaders.ACCESSION.headerName);
-            if (parsedAccession.contains(";")) {
-                String[] accessions = parsedAccession.split(";");
-                proteinMatch.setMainMatch(accessions[0]);
-                proteinGroupMap.put(Integer.parseInt(proteinGroupLine.get(ProteinGroupHeaders.ID.headerName)), proteinMatch);
-                for (String anAccession : accessions) {
-                    proteinMatch.addTheoreticProtein(anAccession);
+            if (values.containsKey(ProteinGroupHeaders.DECOY.headerName)) {
+                String decoyString = values.get(ProteinGroupHeaders.DECOY.headerName);
+                boolean isDecoy = decoyString.equals("+");
+            }
+//Header header = Header.parseFromFASTA(values.get(ProteinGroupHeaders.FASTAHEADER.headerName));
+            if (values.containsKey(ProteinGroupHeaders.ACCESSION.headerName) && values.containsKey(ProteinGroupHeaders.ACCESSION.headerName)) {
+                String parsedAccession = values.get(ProteinGroupHeaders.ACCESSION.headerName);
+                if (parsedAccession.contains(";")) {
+                    String[] accessions = parsedAccession.split(";");
+                    proteinMatch.setMainMatch(accessions[0]);
+                    proteinGroupMap.put(Integer.parseInt(values.get(ProteinGroupHeaders.ID.headerName)), proteinMatch);
+                    for (String anAccession : accessions) {
+                        proteinMatch.addTheoreticProtein(anAccession);
+                    }
+                } else {
+                    proteinMatch.setMainMatch(parsedAccession);
+                    proteinMatch.addTheoreticProtein(parsedAccession);
+                    proteinGroupMap.put(Integer.parseInt(values.get(ProteinGroupHeaders.ID.headerName)), proteinMatch);
                 }
-            } else {
-                proteinMatch.setMainMatch(parsedAccession);
-                proteinMatch.addTheoreticProtein(parsedAccession);
-                proteinGroupMap.put(Integer.parseInt(proteinGroupLine.get(ProteinGroupHeaders.ID.headerName)), proteinMatch);
-
             }
         }
         return proteinGroupMap;

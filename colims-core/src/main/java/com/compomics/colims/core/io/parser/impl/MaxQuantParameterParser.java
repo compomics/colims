@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.parser.impl;
 
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
@@ -32,17 +33,25 @@ public class MaxQuantParameterParser {
         TabularFileLineValuesIterator parameterIter = new TabularFileLineValuesIterator(parameterFile);
 
         while (parameterIter.hasNext()) {
+            // for some reason this file was built vertically
             values = parameterIter.next();
-
-            globalParameters.setDiscardLowQualitySpectra(Boolean.getBoolean(values.get(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.column).toLowerCase(Locale.US)));
-            globalParameters.setFastaFile(new File(values.get(ParametersHeaders.FASTA_FILE.column)));
-            globalParameters.setMinPeptideLength(Integer.parseInt(values.get(ParametersHeaders.MIN_PEP_LENGTH.column)));
-
+            if (values.containsKey(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.column)) {
+                globalParameters.setDiscardLowQualitySpectra(Boolean.getBoolean(values.get(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.column).toLowerCase(Locale.US)));
+            } else if (values.containsKey(ParametersHeaders.FASTA_FILE.column)) {
+                globalParameters.setFastaFile(new File(values.get(ParametersHeaders.FASTA_FILE.column)));
+            } else if (values.containsKey(ParametersHeaders.MIN_PEP_LENGTH.column)) {
+                globalParameters.setMinPeptideLength(Integer.parseInt(values.get(ParametersHeaders.MIN_PEP_LENGTH.column)));
+            } else if (values.containsKey(ParametersHeaders.MAX_PEP_PEP.column)) {
+                globalParameters.setMaxEValue(Double.parseDouble(values.get(ParametersHeaders.MAX_PEP_PEP.column)));
+            } else if (values.containsKey(ParametersHeaders.FTMS_MS_MS_TOLERANCE.column)) {
+                globalParameters.setFragmentIonAccuracy(Double.parseDouble(values.get(ParametersHeaders.FTMS_MS_MS_TOLERANCE.column).split(" ")[0]));
+            }
         }
 
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(summaryFile);
 
         while (summaryIter.hasNext()) {
+            SearchParameters runParameters = new SearchParameters();
             values = summaryIter.next();
             //runParams.put(values.get(SummaryHeaders.RAW_FILE.column), (SearchParameters)globalParameters.clone());
             ModificationProfile runModifications = new ModificationProfile();
@@ -54,7 +63,7 @@ public class MaxQuantParameterParser {
 
                 }
             }
-            if (values.containsKey(SummaryHeaders.FIXED_MODS.column)) {
+            if (values.containsKey(SummaryHeaders.VAR_MODS.column)) {
 
                 for (String varMod : values.get(SummaryHeaders.VAR_MODS.column).split(";")) {
                     PTM varPTM = new PTM();
@@ -62,8 +71,11 @@ public class MaxQuantParameterParser {
                     runModifications.addVariableModification(varPTM);
                 }
             }
+            runParameters.setModificationProfile(runModifications);
+            //runParameters.setEnzyme(values.get(SummaryHeaders.PROTEASE.column));
+            MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
+            runParameters.setParametersFile(tarredParameters.getTarredParaMeterFiles());
         }
-
         return runParams;
     }
 
@@ -193,7 +205,7 @@ public class MaxQuantParameterParser {
         RECALIBRATED("Recalibrated"),
         AVERAGE_ABSOLUTE_MASS_DEVIATION("Av. Absolute Mass Deviation"),
         MASS_STANDARD_DEVEVIATION("Mass Standard Deviation"),
-        LABEL_FREE_PARAM("Label free norm param");
+        LABELFREE_INTENSITY_NORMALISATION_FACTOR("Label free norm param");
         public String column;
 
         private SummaryHeaders(String column) {
