@@ -32,15 +32,9 @@ public class ColimsModificationMapper {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
-    @Autowired
-    private PtmCvTermMapper ptmCvTermMapper;
-    @Autowired
-    private ModificationService modificationService;
-    @Autowired
-    private OlsService olsService;
 
     /**
-     * Map the utilities modification matches onto the colims peptide. The
+     * Map the colims modification matches onto the utilities peptide. The
      * utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches

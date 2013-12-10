@@ -8,6 +8,7 @@ import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component("utilitiesProteinMapper")
 public class ColimsProteinMapper {
 
+    @Autowired
     private static final ColimsPeptideMapper colimsPeptideMapper = new ColimsPeptideMapper();
 
     private static final Logger LOGGER = Logger.getLogger(ColimsProteinMapper.class);
