@@ -2,6 +2,7 @@ package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
@@ -25,10 +26,13 @@ public class ColimsPeptideMapper {
     private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
     public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) throws MappingException {
-          LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
+        LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
         ArrayList<ProteinMatch> parentProteins = new ArrayList<ProteinMatch>();
-        colimsProteinMapper.map(sourcePeptide, parentProteins);
+        for (PeptideHasProtein pepHasProtein : sourcePeptide.getPeptideHasProteins()) {
+            colimsProteinMapper.map(pepHasProtein.getProtein(), parentProteins);
+        }
+
         ArrayList<String> parentProteinAccessions = new ArrayList<String>();
         for (ProteinMatch aMatch : parentProteins) {
             parentProteinAccessions.add(aMatch.getMainMatch());

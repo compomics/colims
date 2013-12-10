@@ -29,7 +29,7 @@ public class ColimsModificationMapperTest {
      */
     @Test
     public void testMap() throws Exception {
-        System.out.println("Test mapping from colims to utilities");
+        System.out.println("Test mapping from colims to utilities for Modifications");
         Peptide targetPeptide = new Peptide();
         targetPeptide.setExperimentalMass(210.574);
         targetPeptide.setSequence("MYFHSFLDTFSKYLGSTSCPLLRLSR");
