@@ -12,8 +12,9 @@ public interface Controllable {
     void init();
 
     /**
-     * Show the (main) view controlled by this controller. Normally, one
-     * controller controls one view.
+     * Show the (main) view controlled by this controller and/or perform some
+     * additional actions (clear/reset selection). Normally, one controller
+     * controls one view.
      */
     void showView();
 }

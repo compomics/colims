@@ -1,7 +1,8 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import java.util.Comparator;
 
@@ -9,14 +10,13 @@ import java.util.Comparator;
  *
  * @author Niels Hulstaert
  */
-public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project> {
+public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Experiment> {
 
-    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Number of experiments"};
+    private static final String[] columnNames = {"Id", "Title", "Number", "Number of samples"};
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
-    public static final int LABEL = 2;
-    public static final int OWNER = 3;
-    public static final int NUMBER_OF_EXPERIMENTS = 4;
+    public static final int NUMBER = 2;
+    public static final int NUMBER_OF_SAMPLES = 3;
 
     @Override
     public Class getColumnClass(int column) {
@@ -25,11 +25,9 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
                 return Long.class;
             case TITLE:
                 return String.class;
-            case LABEL:
-                return String.class;
-            case OWNER:
-                return String.class;
-            case NUMBER_OF_EXPERIMENTS:
+            case NUMBER:
+                return Long.class;
+            case NUMBER_OF_SAMPLES:
                 return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -43,7 +41,7 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -52,18 +50,16 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
     }
 
     @Override
-    public Object getColumnValue(Project project, int column) {        
+    public Object getColumnValue(Experiment experiment, int column) {
         switch (column) {
             case PROJECT_ID:
-                return project.getId();
+                return experiment.getId();
             case TITLE:
-                return project.getTitle();
-            case LABEL:
-                return project.getLabel();
-            case OWNER:
-                return project.getOwner().getName();
-            case NUMBER_OF_EXPERIMENTS:                
-                return project.getExperiments().size();
+                return experiment.getTitle();
+            case NUMBER:
+                return experiment.getNumber();
+            case NUMBER_OF_SAMPLES:
+                return experiment.getSamples().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

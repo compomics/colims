@@ -9,10 +9,10 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.model.ExperimentsOverviewTableFormat;
-import com.compomics.colims.client.model.ProjectsOverviewTableFormat;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.format.ExperimentsOverviewTableFormat;
+import com.compomics.colims.client.model.format.ProjectsOverviewTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.client.view.ProjectManagementPanel;
@@ -51,7 +51,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("projectManagementController")
-public class ProjectManagementController {
+public class ProjectManagementController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
     //model
@@ -92,6 +92,11 @@ public class ProjectManagementController {
         initProjectEditDialog();
 
         bindingGroup.bind();
+    }
+    
+    @Override
+    public void showView() {
+        //do nothing
     }
 
     private void initProjectManagementPanel() {
@@ -188,7 +193,7 @@ public class ProjectManagementController {
                         //check if the instrument can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(projectToDelete.getLabel());
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("project", projectToDelete.getLabel());
                             eventBus.post(dbConstraintMessageEvent);
                         } else {
                             //pass the exception
@@ -381,4 +386,5 @@ public class ProjectManagementController {
 
         return defaultExperiment;
     }
+    
 }

@@ -4,9 +4,9 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
-import com.compomics.colims.client.event.CvTermChangeEvent;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.MessageEvent;
+import com.compomics.colims.client.event.admin.CvTermChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.CvTermSummaryListModel;
 import com.compomics.colims.client.model.CvTermTableModel;
 import com.compomics.colims.client.renderer.CvTermSummaryCellRenderer;
@@ -182,7 +182,7 @@ public class MaterialManagementController implements Controllable {
                             //check if the material can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(materialToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("material", materialToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

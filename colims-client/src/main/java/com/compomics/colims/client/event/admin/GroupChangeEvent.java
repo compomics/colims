@@ -1,5 +1,6 @@
-package com.compomics.colims.client.event;
+package com.compomics.colims.client.event.admin;
 
+import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.model.Group;
 
 /**

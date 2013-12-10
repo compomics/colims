@@ -3,13 +3,13 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
-import com.compomics.colims.client.event.GroupChangeEvent;
-import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.UserChangeEvent;
+import com.compomics.colims.client.event.admin.GroupChangeEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
@@ -197,7 +197,7 @@ public class UserCrudController implements Controllable {
                             //check if the user can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(userToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

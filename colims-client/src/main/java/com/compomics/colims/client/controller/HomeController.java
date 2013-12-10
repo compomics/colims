@@ -7,7 +7,7 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.factory.SpectrumPanelGenerator;
-import com.compomics.colims.client.model.SpectrumTableFormat;
+import com.compomics.colims.client.model.format.SpectrumTableFormat;
 import com.compomics.colims.client.view.HomePanel_old;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;

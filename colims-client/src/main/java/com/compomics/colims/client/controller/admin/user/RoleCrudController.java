@@ -2,15 +2,15 @@ package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
 import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
-import com.compomics.colims.client.event.GroupChangeEvent;
-import com.compomics.colims.client.event.MessageEvent;
-import com.compomics.colims.client.event.PermissionChangeEvent;
-import com.compomics.colims.client.event.RoleChangeEvent;
+import com.compomics.colims.client.event.admin.GroupChangeEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.admin.PermissionChangeEvent;
+import com.compomics.colims.client.event.admin.RoleChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
@@ -177,7 +177,7 @@ public class RoleCrudController implements Controllable {
                             //check if the role can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(roleToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception

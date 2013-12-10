@@ -2,9 +2,9 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.event.CvTermChangeEvent;
-import com.compomics.colims.client.event.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.MessageEvent;
+import com.compomics.colims.client.event.admin.CvTermChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvTermManagementDialog;
@@ -176,7 +176,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                         //check if the CV term can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent(cvTermToDelete.getName());
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvTermToDelete.getName());
                             eventBus.post(dbConstraintMessageEvent);
                         } else {
                             //pass the exception
