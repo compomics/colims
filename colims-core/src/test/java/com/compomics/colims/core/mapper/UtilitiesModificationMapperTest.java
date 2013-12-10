@@ -59,14 +59,14 @@ public class UtilitiesModificationMapperTest {
     private String nonUtilitiesPtmName;
 
     @Before
-    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                                
+    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
         pTMFactory.clearFactory();
-        pTMFactory.importModifications(utilitiesMods.getFile(), false);
-        
+        pTMFactory.importModifications(utilitiesMods.getFile(), false, true);
+
         //get PTMs from PTMFactory
-        oxidation = pTMFactory.getPTM("oxidation of m");       
+        oxidation = pTMFactory.getPTM("oxidation of m");
         phosphorylation = pTMFactory.getPTM("phosphorylation of y");
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
@@ -155,7 +155,7 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals("monohydroxylated lysine", modification.getName());
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());                
+                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals("phosphorylated residue")) {
@@ -172,8 +172,7 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
-            }
-            else{
+            } else {
                 Assert.fail();
             }
         }

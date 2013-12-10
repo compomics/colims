@@ -32,6 +32,7 @@ public class ColimsProteinMapper {
      * @throws MappingException
      */
     public void map(Peptide targetPeptide, List<ProteinMatch> proteinMatches) throws MappingException {
+        LOGGER.debug("Mapping proteins from " + targetPeptide.getSequence() + " to new list of ProteinMatch objects");
         for (PeptideHasProtein pepHasProt : targetPeptide.getPeptideHasProteins()) {
             ProteinMatch protMatch = new ProteinMatch();
             PeptideMatch pepMatch = new PeptideMatch();

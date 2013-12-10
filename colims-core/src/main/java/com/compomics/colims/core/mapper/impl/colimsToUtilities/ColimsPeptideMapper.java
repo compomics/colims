@@ -25,6 +25,7 @@ public class ColimsPeptideMapper {
     private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
     public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) throws MappingException {
+          LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
         ArrayList<ProteinMatch> parentProteins = new ArrayList<ProteinMatch>();
         colimsProteinMapper.map(sourcePeptide, parentProteins);
