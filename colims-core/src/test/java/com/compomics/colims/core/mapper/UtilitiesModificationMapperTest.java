@@ -153,8 +153,8 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-            if (modification.getName().equals("monohydroxylated lysine")) {
-                Assert.assertEquals("monohydroxylated lysine", modification.getName());
+            if (modification.getName().equals("monohydroxylated residue")) {
+                Assert.assertEquals("monohydroxylated residue", modification.getName());
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());                
