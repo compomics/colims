@@ -34,13 +34,6 @@ public class PtmCvTermMapper {
      * modification)
      */
     private Map<String, Modification> newModifications = new HashMap<>();
-    /**
-     * Compomics utilities spectrum factory
-     *
-     * @todo think of a good way to import this .cus file from the .compomics
-     * folder
-     */
-    private PTMFactory pTMFactory = PTMFactory.getInstance();
         
     public PtmCvTermMapper() throws FileNotFoundException, IOException, ClassNotFoundException {
         ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();

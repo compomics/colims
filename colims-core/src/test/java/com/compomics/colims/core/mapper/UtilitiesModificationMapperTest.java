@@ -1,5 +1,6 @@
 package com.compomics.colims.core.mapper;
 
+import com.compomics.colims.core.component.PtmFactoryWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -51,7 +52,8 @@ public class UtilitiesModificationMapperTest {
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
     private ModificationService modificationService;
-    private PTMFactory pTMFactory = PTMFactory.getInstance();
+    @Autowired
+    private PtmFactoryWrapper ptmFactoryWrapper;
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
@@ -62,12 +64,12 @@ public class UtilitiesModificationMapperTest {
     public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                                
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
-        pTMFactory.clearFactory();
-        pTMFactory.importModifications(utilitiesMods.getFile(), false);
+        ptmFactoryWrapper.getPtmFactory().clearFactory();
+        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
         
         //get PTMs from PTMFactory
-        oxidation = pTMFactory.getPTM("oxidation of m");       
-        phosphorylation = pTMFactory.getPTM("phosphorylation of y");
+        oxidation = ptmFactoryWrapper.getPtmFactory().getPTM("oxidation of m");       
+        phosphorylation = ptmFactoryWrapper.getPtmFactory().getPTM("phosphorylation of y");
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 

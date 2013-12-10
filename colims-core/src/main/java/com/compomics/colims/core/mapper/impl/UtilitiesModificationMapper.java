@@ -1,5 +1,6 @@
 package com.compomics.colims.core.mapper.impl;
 
+import com.compomics.colims.core.component.PtmFactoryWrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,6 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
@@ -37,19 +37,16 @@ public class UtilitiesModificationMapper {
     private ModificationService modificationService;
     @Autowired
     private OlsService olsService;
-
+    /**
+     * Wrapper around the utilities spectrum factory
+     */ 
+    @Autowired
+    private PtmFactoryWrapper ptmFactoryWrapper;    
     /**
      * The map of new modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();
-    /**
-     * Compomics utilities spectrum factory
-     *
-     * @todo think of a good way to import this .cus file from the .compomics
-     * folder
-     */
-    private PTMFactory pTMFactory = PTMFactory.getInstance();      
+    private Map<String, Modification> newModifications = new HashMap<>();    
     /**
      * Map the utilities modification matches onto the colims peptide. The
      * utilities PTMs are matched first onto CV terms from PSI-MOD.
@@ -153,7 +150,7 @@ public class UtilitiesModificationMapper {
                     //the modification was not found by name in the PSI-MOD ontology
                     //@todo maybe search by mass or not by 'exact' name?
                     //get modification from modification factory
-                    PTM ptM = pTMFactory.getPTM(modificationMatch.getTheoreticPtm());
+                    PTM ptM = ptmFactoryWrapper.getPtmFactory().getPTM(modificationMatch.getTheoreticPtm());
 
                     //check if the PTM is not unknown in the PTMFactory
                     if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
