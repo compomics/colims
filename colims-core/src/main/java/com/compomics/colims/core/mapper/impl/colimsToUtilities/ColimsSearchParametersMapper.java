@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.*;
 import com.compomics.colims.core.mapper.Mapper;
 
 import org.apache.log4j.Logger;

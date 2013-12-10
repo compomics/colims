@@ -2,7 +2,7 @@ package com.compomics.colims.core.io.parser;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.io.parser.impl.MaxQuantMsmsParser;
-import com.compomics.colims.core.mapper.impl.UtilitiesSpectrumMapper;
+import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;

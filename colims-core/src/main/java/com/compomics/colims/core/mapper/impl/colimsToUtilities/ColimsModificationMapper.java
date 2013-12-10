@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 public class ColimsModificationMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsModificationMapper.class);
-    private static final String UNKNOWN_UTILITIES_PTM = "unknown";
-
     /**
      * Map the colims modification matches onto the utilities peptide. The
      * utilities PTMs are matched first onto CV terms from PSI-MOD.
@@ -29,6 +27,7 @@ public class ColimsModificationMapper {
      * @param targetPeptide the colims target peptide
      * @throws MappingException
      */
+    
     public void map(Peptide targetPeptide, ArrayList<ModificationMatch> modificationMatches) throws MappingException {
         for (PeptideHasModification pepHasMod : targetPeptide.getPeptideHasModifications()) {
             String theoreticPTM = pepHasMod.getModification().getAccession();

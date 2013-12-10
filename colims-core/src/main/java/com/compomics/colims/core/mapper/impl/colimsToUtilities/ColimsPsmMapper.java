@@ -6,6 +6,7 @@ import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import org.apache.log4j.Logger;
@@ -26,11 +27,11 @@ public class ColimsPsmMapper {
     public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
         //get best assumption
         for (Peptide aPeptide : spectrum.getPeptides()) {
-            com.compomics.util.experiment.biology.Peptide utilitiesPeptide = new com.compomics.util.experiment.biology.Peptide();
-            colimsPeptideMapper.map(aPeptide, utilitiesPeptide);
-            PeptideAssumption assumption = new PeptideAssumption(utilitiesPeptide, 0, 0, new Charge(1, spectrum.getCharge()), aPeptide.getPsmProbability());
-            SpectrumMatch match = new SpectrumMatch(spectrum.getAccession(), assumption);
-            targetSpectrumMap.add(match);
+            PeptideMatch pepMatch = new PeptideMatch();
+            colimsPeptideMapper.map(aPeptide, pepMatch);
+            PeptideAssumption assumption = new PeptideAssumption(pepMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), aPeptide.getPsmProbability());
+            SpectrumMatch specMatch = new SpectrumMatch(spectrum.getAccession(), assumption);
+            targetSpectrumMap.add(specMatch);
         }
     }
 }

@@ -24,7 +24,7 @@ public class ColimsPeptideMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
-    public void map(Peptide sourcePeptide, com.compomics.util.experiment.biology.Peptide targetPeptide) throws MappingException {
+    public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) throws MappingException {
         //set sequence
         ArrayList<ProteinMatch> parentProteins = new ArrayList<ProteinMatch>();
         colimsProteinMapper.map(sourcePeptide, parentProteins);
@@ -35,18 +35,7 @@ public class ColimsPeptideMapper {
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
         ArrayList<ModificationMatch> modifications = new ArrayList<ModificationMatch>();
         colimsModMapper.map(sourcePeptide, modifications);
-        targetPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);
-    }
-
-    public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) throws MappingException {
-        //set sequence
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide();
-        map(sourcePeptide, assumedPeptide);
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
-        //NEED SPECTRUMMAPPER HERE TO FILL IN THE PEPTIDEMATCH
-        /*
-         colimsSpectrumMapper.map(colimsSpectrum,utilitiesSpectrum);
-         targetPeptideMatch.setMainMatch(utilitiesSpectrum);
-         */
     }
 }

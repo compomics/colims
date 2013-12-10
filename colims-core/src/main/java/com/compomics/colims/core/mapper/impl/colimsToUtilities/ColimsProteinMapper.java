@@ -36,9 +36,8 @@ public class ColimsProteinMapper {
             ProteinMatch protMatch = new ProteinMatch();
             PeptideMatch pepMatch = new PeptideMatch();
             //map the peptide to utilitiespeptides
-            com.compomics.util.experiment.biology.Peptide utilPeptide = new com.compomics.util.experiment.biology.Peptide();
-            colimsPeptideMapper.map(targetPeptide, utilPeptide);
-            pepMatch.setTheoreticPeptide(utilPeptide);
+            PeptideMatch match = new PeptideMatch();
+            colimsPeptideMapper.map(targetPeptide, match);
             //add the peptide to proteinmatches
             protMatch.addPeptideMatch(pepMatch.getKey());
             protMatch.setMainMatch(pepHasProt.getMainGroupProtein().getAccession());
