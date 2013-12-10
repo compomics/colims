@@ -16,16 +16,16 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author Niels Hulstaert
+ * @author Kenneth Verheggen
  */
-@Component("utilitiesPeptideMapper")
+@Component("colimsPeptideMapper")
 public class ColimsPeptideMapper {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
-    public void map(Peptide sourcePeptide, MatchScore psmMatchScore, PSPtmScores ptmScores, com.compomics.util.experiment.biology.Peptide targetPeptide) throws MappingException {
+    public void map(Peptide sourcePeptide, com.compomics.util.experiment.biology.Peptide targetPeptide) throws MappingException {
         //set sequence
         ArrayList<String> parentProteins = new ArrayList<String>();
         for (PeptideHasProtein aParentProtein : sourcePeptide.getPeptideHasProteins()) {
@@ -40,7 +40,6 @@ public class ColimsPeptideMapper {
             ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
             modifications.add(match);
         }
-
         targetPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteins, modifications);
 
     }
