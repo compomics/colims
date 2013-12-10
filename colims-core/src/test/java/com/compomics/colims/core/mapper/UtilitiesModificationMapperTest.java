@@ -51,8 +51,6 @@ public class UtilitiesModificationMapperTest {
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
     private ModificationService modificationService;
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private PTMFactory pTMFactory = PTMFactory.getInstance();
     private SearchParameters searchParameters;
     private PTM oxidation;
@@ -61,15 +59,11 @@ public class UtilitiesModificationMapperTest {
     private String nonUtilitiesPtmName;
 
     @Before
-    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                
-        //copy file from test resources to temporary folder
-        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
-        File tempUtilitiesModsFile = new File(temporaryFolder.getRoot(), "searchGUI_mods.xml");
-        FileUtils.copyURLToFile(utilitiesMods.getURL(), tempUtilitiesModsFile);
-        
+    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                                
         //load mods from test resources instead of user folder
+        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
         pTMFactory.clearFactory();
-        pTMFactory.importModifications(tempUtilitiesModsFile, false);
+        pTMFactory.importModifications(utilitiesMods.getFile(), false);
         
         //get PTMs from PTMFactory
         oxidation = pTMFactory.getPTM("oxidation of m");       
