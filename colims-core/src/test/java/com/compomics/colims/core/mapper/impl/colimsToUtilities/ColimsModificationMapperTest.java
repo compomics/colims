@@ -12,7 +12,11 @@ import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -24,7 +28,7 @@ public class ColimsModificationMapperTest {
     public ColimsModificationMapperTest() {
     }
 
-    /**
+     /**
      * Test of map method, of class ColimsModificationMapper.
      */
     @Test

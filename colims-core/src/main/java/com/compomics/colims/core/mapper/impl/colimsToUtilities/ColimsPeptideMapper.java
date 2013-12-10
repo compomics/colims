@@ -48,7 +48,6 @@ public class ColimsPeptideMapper {
     public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch, ProteinMatch parentProteinMatch) throws MappingException {
         LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
-
         ArrayList<String> parentProteinAccessions = new ArrayList<String>();
         parentProteinAccessions.add(parentProteinMatch.getMainMatch());
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!

@@ -22,7 +22,7 @@ public class ColimsPsmMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsPsmMapper.class);
     @Autowired
-    private ColimsPeptideMapper colimsPeptideMapper;
+    private static final ColimsPeptideMapper colimsPeptideMapper = new ColimsPeptideMapper();
 
     public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle()+ " to new list of SpectrumMatch objects");

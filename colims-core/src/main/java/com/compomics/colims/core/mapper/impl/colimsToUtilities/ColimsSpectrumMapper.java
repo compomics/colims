@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.core.service.impl.SpectrumServiceImpl;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.util.experiment.massspectrometry.Charge;
@@ -13,6 +14,7 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,7 @@ public class ColimsSpectrumMapper {
     private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
 
     @Autowired
-    private SpectrumService spectrumService;
+    private SpectrumService spectrumService = new SpectrumServiceImpl();
 
     /**
      * Map the utilities spectrum onto the colims spectrum.
@@ -54,17 +56,20 @@ public class ColimsSpectrumMapper {
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
         targetSpectrum.setSpectrumTitle(sourceSpectrum.getTitle());
         //Add peaks
+        HashMap<Double, Peak> peakMap = new HashMap<Double, Peak>();
         for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
             try {
                 Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(aFile);
                 for (Double mz : mzAndIntensities.keySet()) {
                     Peak peak = new Peak(mz, mzAndIntensities.get(mz));
                     targetSpectrum.addPeak(peak);
+                    peakMap.put(mz, peak);
                 }
+
             } catch (IOException ex) {
                 LOGGER.error(ex);
             }
         }
-
+        targetSpectrum.setPeakList(peakMap);
     }
 }

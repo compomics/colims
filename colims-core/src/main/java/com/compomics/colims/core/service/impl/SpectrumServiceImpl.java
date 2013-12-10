@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.io.IOManager;
+import com.compomics.colims.core.io.impl.IOManagerImpl;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
@@ -40,7 +41,7 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Autowired
     private SpectrumRepository spectrumRepository;
     @Autowired
-    private IOManager iOManager;
+    private IOManager iOManager = new IOManagerImpl();
 
     @Override
     public List<Spectrum> findSpectraByAnalyticalRunId(Long analyticalRunId) {

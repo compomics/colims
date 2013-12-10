@@ -12,15 +12,10 @@ import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import com.compomics.util.protein.Header;
 import com.compomics.util.protein.Header.DatabaseType;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,22 +25,6 @@ import org.junit.Test;
 public class ColimsPeptideMapperTest {
 
     public ColimsPeptideMapperTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
