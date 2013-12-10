@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 //import com.compomics.util.protein.Header.DatabaseType;
 
 /**
@@ -35,6 +36,7 @@ import org.apache.log4j.Logger;
  * records. The {@link ProteinAccessioncodeParser} is used to retrieve the
  * correct accessioncode to use from a String.
  */
+@Component("maxQuantEvidenceParser")
 public class MaxQuantEvidenceParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantEvidenceParser.class);
@@ -47,7 +49,7 @@ public class MaxQuantEvidenceParser {
      * @param quantificationGroup
      * @throws IOException
      */
-    public static Map<Integer, PeptideAssumption> parse(final File evidenceFile, final QuantificationGroup quantificationGroup) throws IOException {
+    public static Map<Integer, PeptideAssumption> parse(final File evidenceFile) throws IOException {
         // Convert file into some values we can loop over, without reading file in at once
         Map<Integer, PeptideAssumption> parsedPeptideList = new HashMap<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
@@ -121,17 +123,19 @@ public class MaxQuantEvidenceParser {
 
             if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.column)) {
                 proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
-            } 
-            /**else {
-            }*/
-
+            }
+            /**
+             * else { }
+             */
             // Create peptide
             Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
             double score = -1;
-            if (values.get(EvidenceHeaders.Score.column).equalsIgnoreCase("NAN")) {
-                throw new UnparseableException("could not parse score for peptide");
-            } else {
-                score = Double.parseDouble(values.get(EvidenceHeaders.Score.column));
+            if (values.containsKey(EvidenceHeaders.Score.column)) {
+                if (values.get(EvidenceHeaders.Score.column).equalsIgnoreCase("NAN")) {
+                    throw new UnparseableException("could not parse score for peptide");
+                } else {
+                    score = Double.parseDouble(values.get(EvidenceHeaders.Score.column));
+                }
             }
 
             //because I can
@@ -218,34 +222,38 @@ public class MaxQuantEvidenceParser {
         // before the modified AA). The sequence is always surrounded
         // by underscore characters ('_').
         String modifications = values.get(EvidenceHeaders.Modifications.column);
-        if ("Unmodified".equalsIgnoreCase(modifications)) {
+        if (modifications == null) {
             return modificationsForPeptide;
-        }
-
-        // Fields we need to create the PeptideHasModification
-        final int location;
-        final String modificationName;
-
-        // Look for Oxidation (M) Probabilities
-        String oxidationProbabilities = values.get(EvidenceHeaders.Oxidation_M_Probabilities.column);
-        if (oxidationProbabilities != null && oxidationProbabilities.contains("(1)")) {
-            // Find precise location
-            location = oxidationProbabilities.indexOf("(1)") - 1;
-            //in case of multiple modifications in one location, this wil break
-            modificationName = EvidenceHeaders.Oxidation_M_Probabilities.column;
-        } else // Look for Acetyl (Protein N-term)
-        if ("1".equals(values.get(EvidenceHeaders.Acetyl_Protein_N_term.column))) {
-            // N-term has position 0
-            location = 0;
-            modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
         } else {
-            // Unexpected value: throw an exception
-            String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
-            String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
-            throw new IllegalStateException(message);
+            if ("Unmodified".equalsIgnoreCase(modifications)) {
+                return modificationsForPeptide;
+            }
+
+            // Fields we need to create the PeptideHasModification
+            final int location;
+            final String modificationName;
+
+            // Look for Oxidation (M) Probabilities
+            String oxidationProbabilities = values.get(EvidenceHeaders.Oxidation_M_Probabilities.column);
+            if (oxidationProbabilities != null && oxidationProbabilities.contains("(1)")) {
+                // Find precise location
+                location = oxidationProbabilities.indexOf("(1)") - 1;
+                //in case of multiple modifications in one location, this wil break
+                modificationName = EvidenceHeaders.Oxidation_M_Probabilities.column;
+            } else // Look for Acetyl (Protein N-term)
+            if ("1".equals(values.get(EvidenceHeaders.Acetyl_Protein_N_term.column))) {
+                // N-term has position 0
+                location = 0;
+                modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
+            } else {
+                // Unexpected value: throw an exception
+                String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
+                String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
+                throw new IllegalStateException(message);
+            }
+            //TODO parse parameters for fixed and variable modifications
+            modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
         }
-        //TODO parse parameters for fixed and variable modifications
-        modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
         // Retrieve modification from database, or create a new one
         //Modification modification = modificationRepository.findByName(modificationName);
         // if (modification == null) {
@@ -266,6 +274,8 @@ public class MaxQuantEvidenceParser {
         // modification.getPeptideHasModifications().add(peptideHasModification);
         //
         return modificationsForPeptide;
+
+
     }
 }
 
