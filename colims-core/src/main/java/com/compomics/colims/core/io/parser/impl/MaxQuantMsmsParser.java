@@ -16,7 +16,7 @@ import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum}
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
  * the files into Map<String,String>
  * records.
  */
-@Service("maxQuantMsmsParser")
+@Component("maxQuantMsmsParser")
 public class MaxQuantMsmsParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantMsmsParser.class);
@@ -109,7 +109,7 @@ public class MaxQuantMsmsParser {
             String scanNumber = values.get(MsmsHeaders.Scan_Number.column);
 
             String fileName = values.get(MsmsHeaders.Raw_File.column);
-
+            
             String spectrumTitle = String.format("%s-%s", fileName, values.get(MsmsHeaders.Scan_Number.column));
 
             if (addPeakList) {

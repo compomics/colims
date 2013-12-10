@@ -33,11 +33,11 @@ public class MaxQuantParser {
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
     @Autowired
-    MaxQuantMsmsParser msmsParser;
+    MaxQuantMsmsParser maxQuantMsmsParser;
     @Autowired
-    MaxQuantProteinGroupParser proteinGroupParser;
+    MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
-    MaxQuantEvidenceParser evidenceParser;
+    MaxQuantEvidenceParser maxQuantEvidenceParser;
     private static Map<Integer, PeptideAssumption> peptideAssumptions = new HashMap<>();
     private static Map<Integer, MSnSpectrum> msms = new HashMap<>();
     private static Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
@@ -71,12 +71,12 @@ public class MaxQuantParser {
         // Parse msms.txt and create and persist the objects found within
         LOGGER.debug("starting msms parsing");
         Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
-        msms = msmsParser.parse(msmsFile.toFile(), false);
+        msms = maxQuantMsmsParser.parse(msmsFile.toFile(), true);
 
         // Parse evidence.txt and create and persist the objects found within
         LOGGER.debug("starting evidence parsing");
         Path evidenceFile = maxQuantTextFolder.resolve(EVIDENCETXT);
-        peptideAssumptions = MaxQuantEvidenceParser.parse(evidenceFile.toFile(), quantificationGroup);
+        peptideAssumptions = MaxQuantEvidenceParser.parse(evidenceFile.toFile());
 
         //update peptide msms to best scoring msms entry
 
