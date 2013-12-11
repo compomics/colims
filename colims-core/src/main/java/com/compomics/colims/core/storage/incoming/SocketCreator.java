@@ -55,10 +55,11 @@ public class SocketCreator {
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
             out.println(Username + ">.<" + fileLocation);
+            out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
             while ((response = in.readLine()) != null) {
-                state = StorageState.valueOf(response.toUpperCase());
+                state = StorageState.valueOf(response.split(">.<")[1].toUpperCase());
                 success = !state.equals(StorageState.ERROR);
             }
         } catch (UnknownHostException ex) {

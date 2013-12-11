@@ -63,8 +63,9 @@ public class SocketHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = queue.addNewTask(responseArgs[1]);
+            task = queue.addNewTask(responseArgs[1], responseArgs[0]);
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
+            break;
         }
         return task;
     }
