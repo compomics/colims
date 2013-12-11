@@ -11,18 +11,23 @@ import com.compomics.colims.model.Protein;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ColimsProteinMapperTest {
+
+    @Autowired
+    ColimsProteinMapper colimsProteinMapper;
 
     public ColimsProteinMapperTest() {
     }
@@ -37,7 +42,7 @@ public class ColimsProteinMapperTest {
         inputProtein.setAccession("P0C9F1");
         inputProtein.setSequence("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
 
-         List<PeptideHasProtein> peptideHasProtList = new ArrayList<PeptideHasProtein>();
+        List<PeptideHasProtein> peptideHasProtList = new ArrayList<PeptideHasProtein>();
         PeptideHasProtein peptide = new PeptideHasProtein();
         Peptide aPeptide = new Peptide();
         aPeptide.setTheoreticalMass(33.3);
@@ -61,8 +66,7 @@ public class ColimsProteinMapperTest {
         inputProtein.setPeptideHasProteins(peptideHasProtList);
 
         List<ProteinMatch> proteinMatches = new ArrayList<ProteinMatch>();
-        ColimsProteinMapper instance = new ColimsProteinMapper();
-        instance.map(inputProtein, proteinMatches);
+        colimsProteinMapper.map(inputProtein, proteinMatches);
         Assert.assertEquals(proteinMatches.get(0).isDecoy(), false);
         Assert.assertEquals("SRKIQEKKLRKSLKKLNFYHP", proteinMatches.get(0).getPeptideMatches().get(0));
         Assert.assertEquals("GGTYFITENMTNDLIMVVKDSVDKKIKS", proteinMatches.get(0).getPeptideMatches().get(1));

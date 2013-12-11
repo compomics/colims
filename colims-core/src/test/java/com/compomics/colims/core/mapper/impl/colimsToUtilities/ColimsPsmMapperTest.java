@@ -19,13 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ColimsPsmMapperTest {
+
+    @Autowired
+    ColimsPsmMapper colimsPsmMapper;
 
     public ColimsPsmMapperTest() {
     }
@@ -73,9 +82,7 @@ public class ColimsPsmMapperTest {
         spectrum.setPeptides(peptideList);
         spectrum.setCharge(3);
         List<SpectrumMatch> targetSpectrumMap = new ArrayList<SpectrumMatch>();
-        ColimsPsmMapper instance = new ColimsPsmMapper();
-
-        instance.map(spectrum, targetSpectrumMap);
+        colimsPsmMapper.map(spectrum, targetSpectrumMap);
 
         Assert.assertEquals(targetSpectrumMap.isEmpty(), false);
         Assert.assertEquals("fake spectrum 1", targetSpectrumMap.get(0).getKey());

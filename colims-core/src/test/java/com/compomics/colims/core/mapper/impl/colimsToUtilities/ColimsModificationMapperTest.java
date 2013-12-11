@@ -12,23 +12,28 @@ import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ColimsModificationMapperTest {
+
+    @Autowired
+    ColimsModificationMapper colimsModificationMapper;
 
     public ColimsModificationMapperTest() {
     }
 
-     /**
+    /**
      * Test of map method, of class ColimsModificationMapper.
      */
     @Test
@@ -63,11 +68,10 @@ public class ColimsModificationMapperTest {
 
         targetPeptide.setPeptideHasModifications(peptideHasModList);
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<ModificationMatch>();
-        ColimsModificationMapper instance = new ColimsModificationMapper();
-        instance.map(targetPeptide, modificationMatches);
+        colimsModificationMapper.map(targetPeptide, modificationMatches);
 
         Assert.assertEquals(3, modificationMatches.size());
-       
+
         Assert.assertEquals(5, modificationMatches.get(0).getModificationSite());
         Assert.assertEquals(false, modificationMatches.get(0).isVariable());
         Assert.assertEquals("a fake modification 0", modificationMatches.get(0).getTheoreticPtm());

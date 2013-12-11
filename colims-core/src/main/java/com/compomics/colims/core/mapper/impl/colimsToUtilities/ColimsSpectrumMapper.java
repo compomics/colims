@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.core.service.impl.SpectrumServiceImpl;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.util.experiment.massspectrometry.Charge;
@@ -29,7 +28,7 @@ public class ColimsSpectrumMapper {
     private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
 
     @Autowired
-    private SpectrumService spectrumService = new SpectrumServiceImpl();
+    private SpectrumService spectrumService;
 
     /**
      * Map the utilities spectrum onto the colims spectrum.

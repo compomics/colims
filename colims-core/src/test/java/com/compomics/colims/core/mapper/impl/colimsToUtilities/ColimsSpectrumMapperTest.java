@@ -17,13 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ColimsSpectrumMapperTest {
+    
+    @Autowired
+    ColimsSpectrumMapper colimsSpectrumMapper;
+        
+    
 
     public ColimsSpectrumMapperTest() {
     }
@@ -55,8 +66,7 @@ public class ColimsSpectrumMapperTest {
         spectrum.setPeptides(new ArrayList<Peptide>());
 
         MSnSpectrum targetSpectrum = new MSnSpectrum();
-        ColimsSpectrumMapper instance = new ColimsSpectrumMapper();
-        instance.map(spectrum, targetSpectrum);
+        colimsSpectrumMapper.map(spectrum, targetSpectrum);
         Assert.assertEquals(677, targetSpectrum.getPeakList().size());
         Assert.assertEquals("12", targetSpectrum.getScanNumber());
         Assert.assertEquals(1233123.32, targetSpectrum.getPrecursor().getIntensity(), 0.01);

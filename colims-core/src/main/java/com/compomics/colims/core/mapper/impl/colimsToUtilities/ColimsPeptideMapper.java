@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 public class ColimsPeptideMapper {
 
     @Autowired
-    private static final ColimsModificationMapper colimsModMapper = new ColimsModificationMapper();
+    private ColimsModificationMapper colimsModMapper;
     @Autowired
-    private static final ColimsProteinMapper colimsProteinMapper = new ColimsProteinMapper();
+    private ColimsProteinMapper colimsProteinMapper;
 
     private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
