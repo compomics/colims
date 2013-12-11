@@ -56,4 +56,11 @@ public interface GenericService<T, ID extends Serializable> {
      * @param entity
      */
     void delete(final T entity);
+    
+    /**
+     * Count all entities.
+     *
+     * @return the number of entities
+     */
+    long countAll();
 }

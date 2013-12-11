@@ -60,4 +60,9 @@ public class ModificationServiceImpl implements ModificationService {
     public Modification findByAccession(String accession) {
         return modificationRepository.findByAccession(accession);
     }
+
+    @Override
+    public long countAll() {
+        return modificationRepository.countAll();
+    }
 }

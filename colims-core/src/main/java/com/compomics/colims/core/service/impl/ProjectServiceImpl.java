@@ -86,4 +86,9 @@ public class ProjectServiceImpl implements ProjectService {
     public Project findByTitle(String title) {
         return projectRepository.findByTitle(title);
     }
+
+    @Override
+    public long countAll() {
+        return projectRepository.countAll();
+    }
 }

@@ -55,4 +55,9 @@ public class ProteinServiceImpl implements ProteinService {
     public void delete(Protein entity) {
         proteinRepository.delete(entity);
     }
+
+    @Override
+    public long countAll() {
+        return proteinRepository.countAll();
+    }
 }

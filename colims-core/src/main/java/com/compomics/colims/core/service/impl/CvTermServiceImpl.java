@@ -77,5 +77,10 @@ public class CvTermServiceImpl implements CvTermService {
         
         return cvTerms;
     }
+
+    @Override
+    public long countAll() {
+        return cvTermRepository.countAll();
+    }
     
 }

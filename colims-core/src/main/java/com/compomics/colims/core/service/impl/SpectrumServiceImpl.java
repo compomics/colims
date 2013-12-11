@@ -137,4 +137,9 @@ public class SpectrumServiceImpl implements SpectrumService {
 
         return spectrumPeaks;
     }
+
+    @Override
+    public long countAll() {
+        return spectrumRepository.countAll();
+    }
 }

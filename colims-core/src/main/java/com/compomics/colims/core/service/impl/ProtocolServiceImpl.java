@@ -56,4 +56,9 @@ public class ProtocolServiceImpl implements ProtocolService {
     public void saveOrUpdate(final Protocol entity) {
         protocolRepository.saveOrUpdate(entity);
     }
+
+    @Override
+    public long countAll() {
+        return protocolRepository.countAll();
+    }
 }

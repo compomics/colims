@@ -90,5 +90,10 @@ public class UserServiceImpl implements UserService {
             LOGGER.error(hbe, hbe.getCause());
         }
     }
+
+    @Override
+    public long countAll() {
+        return userRepository.countAll();
+    }
     
 }

@@ -94,4 +94,9 @@ public class ExperimentServiceImpl implements ExperimentService {
     public void saveOrUpdate(Experiment entity) {
         experimentRepository.saveOrUpdate(entity);
     }
+
+    @Override
+    public long countAll() {
+        return experimentRepository.countAll();
+    }
 }

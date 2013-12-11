@@ -15,7 +15,6 @@ import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
-import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.GroupRepository;
 
 /**
@@ -85,4 +84,10 @@ public class GroupServiceImpl implements GroupService {
         
         return isDefaultGroup;
     }
+
+    @Override
+    public long countAll() {
+        return groupRepository.countAll();
+    }
+   
 }
