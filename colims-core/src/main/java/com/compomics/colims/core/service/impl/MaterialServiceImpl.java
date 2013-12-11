@@ -56,5 +56,10 @@ public class MaterialServiceImpl implements MaterialService {
     public void saveOrUpdate(final Material entity) {
         materialRepository.saveOrUpdate(entity);
     }       
+
+    @Override
+    public long countAll() {
+        return materialRepository.countAll();
+    }
     
 }

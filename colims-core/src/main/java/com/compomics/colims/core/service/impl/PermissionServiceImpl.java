@@ -87,5 +87,10 @@ public class PermissionServiceImpl implements PermissionService {
         
         return isDefaultPermission;
     }
+
+    @Override
+    public long countAll() {
+        return permissionRepository.countAll();
+    }
         
 }

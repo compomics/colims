@@ -56,5 +56,10 @@ public class InstrumentTypeServiceImpl implements InstrumentTypeService {
     public void saveOrUpdate(InstrumentType entity) {
         instrumentTypeRepository.saveOrUpdate(entity);
     }
+
+    @Override
+    public long countAll() {
+        return instrumentTypeRepository.countAll();
+    }
     
 }
