@@ -22,9 +22,9 @@ import org.hibernate.HibernateException;
  *
  * @author Niels Hulstaert
  */
-@Service("userService")
-@Transactional
-public class UserServiceImpl implements UserService {
+    @Service("userService")
+    @Transactional
+    public class UserServiceImpl implements UserService {
     private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
     
     @Autowired

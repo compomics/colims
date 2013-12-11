@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.parser.impl;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class MaxQuantParser {
      * @param maxQuantTextFolder
      * @throws IOException
      */
-    public void parseMaxQuantTextFolder(final Path maxQuantTextFolder) throws IOException {
+    public void parseMaxQuantTextFolder(final File maxQuantTextFolder) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
 
         //TODO parameters
 
@@ -70,40 +70,45 @@ public class MaxQuantParser {
 
         // Parse msms.txt and create and persist the objects found within
         LOGGER.debug("starting msms parsing");
-        Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
-        msms = maxQuantMsmsParser.parse(msmsFile.toFile(), true);
+        File msmsFile = new File(maxQuantTextFolder, MSMSTXT);
+        msms = maxQuantMsmsParser.parse(msmsFile, true);
 
         // Parse evidence.txt and create and persist the objects found within
         LOGGER.debug("starting evidence parsing");
-        Path evidenceFile = maxQuantTextFolder.resolve(EVIDENCETXT);
-        peptideAssumptions = MaxQuantEvidenceParser.parse(evidenceFile.toFile());
+        File evidenceFile = new File(maxQuantTextFolder, EVIDENCETXT);
+        peptideAssumptions = maxQuantEvidenceParser.parse(evidenceFile);
 
         //update peptide msms to best scoring msms entry
 
         LOGGER.debug("starting protein group parsing");
-        Path proteinGroupsFile = maxQuantTextFolder.resolve(PROTEINGROUPS);
-        proteinMap = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(proteinGroupsFile.toFile());
-
+        File proteinGroupsFile = new File(maxQuantTextFolder, PROTEINGROUPS);
+        proteinMap = maxQuantProteinGroupParser.parse(proteinGroupsFile);
         initialized = true;
     }
 
-    public static Iterator<PeptideAssumption> getIdentificationsFromParsedFile() {
+    public Iterator<PeptideAssumption> getIdentificationsFromParsedFile() {
         return peptideAssumptions.values().iterator();
     }
 
-    public static boolean hasParsedAFile() {
+    public boolean hasParsedAFile() {
         return initialized;
     }
 
-    public static PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
+    public PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
         return peptideAssumptions.get(Integer.parseInt(aSpectrum.getSpectrumKey()));
     }
 
-    public static Iterator<MSnSpectrum> getSpectra() {
+    public Iterator<MSnSpectrum> getSpectra() {
         return msms.values().iterator();
     }
 
-    public static ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
+    public ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
         return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getKey()));
+    }
+
+    public void clearParsedProject() {
+        msms.clear();
+        peptideAssumptions.clear();
+        proteinMap.clear();
     }
 }

@@ -42,13 +42,15 @@ public class MaxQuantMsmsParserTest {
         assertThat(result.get(899).getPrecursor().getIntensity(), is(0.0));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testParseWithoutPeaklist() throws Exception {
         System.out.println("testWithoutPeaklist");
         MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
         Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, false);
         //throws a nullpointer
-        result.get(899).asMgf();
+        String mgf = result.get(899).asMgf();
+        String expectedString = mgf.substring(mgf.indexOf("\n", mgf.indexOf("SCAN")) + 1, mgf.indexOf("END"));
+        assertThat(expectedString.isEmpty(), is(true));
     }
 
     @Test
@@ -64,5 +66,5 @@ public class MaxQuantMsmsParserTest {
         Peak peak = peaks.next();
         assertThat(peak.getMz(), is(1005.48413188591));
         assertThat(peak.getIntensity(), is(34416.9));
-  }
+    }
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.number.IsCloseTo.*;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,13 +28,17 @@ public class MaxQuantIdentificationIntegrationTest {
 
     private File evidenceFile;
     private File proteinGroupFile;
-    private final File quantFile;
+    private File quantFile;
+    @Autowired
+    MaxQuantProteinGroupParser maxQuantProteinGroupParser;
+    @Autowired
+    MaxQuantEvidenceParser maxQuantEvidenceParser;
     /**
      * constructor for running the Identification integration tests
      */
     public MaxQuantIdentificationIntegrationTest() {
         evidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups.txt").getPath());
+        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.txt").getPath());
         quantFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_quant10.tsv").getFile());
         //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("testdata/proteinGroups.txt").getPath());
     }
@@ -47,7 +52,7 @@ public class MaxQuantIdentificationIntegrationTest {
         System.out.println("golden path test");
         //atm cursory test
 
-        Map<Integer, ProteinMatch> proteinGroupMap = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(proteinGroupFile);
+        Map<Integer, ProteinMatch> proteinGroupMap = maxQuantProteinGroupParser.parse(proteinGroupFile);
 
         //first test if the proteingroups are parsed correctly
         assertThat(proteinGroupMap.keySet().size(), is(1760));
@@ -58,7 +63,7 @@ public class MaxQuantIdentificationIntegrationTest {
         assertThat(proteinGroupMap.get(9999), is(nullValue()));
         //assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
 
-        Map<Integer, PeptideAssumption> parsedPeptides = MaxQuantEvidenceParser.parse(evidenceFile);
+        Map<Integer, PeptideAssumption> parsedPeptides = maxQuantEvidenceParser.parse(evidenceFile);
 
         //then test if the peptides were properly parsed
         assertThat(parsedPeptides.size(), is(999));
@@ -115,11 +120,11 @@ public class MaxQuantIdentificationIntegrationTest {
         System.out.println("missing proteingroups file");
 
         //only parse the peptides and see if it throws any kinks next to nullpointers
-        Map<Integer, PeptideAssumption> parsedPeptides = MaxQuantEvidenceParser.parse(evidenceFile);
+        Map<Integer, PeptideAssumption> parsedPeptides = maxQuantEvidenceParser.parse(evidenceFile);
         assertThat(parsedPeptides.get(417).getPeptide().getParentProteins().size(), is(1));
         Map<Integer, ProteinMatch> proteinList = new HashMap<>();
         //it appears the peptides got parsed, now to blow up the proteingroups
-        proteinList = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(new File("this file does not exist"));
+        proteinList = maxQuantProteinGroupParser.parse(new File("this file does not exist"));
         assertThat(proteinList.get(Integer.parseInt(parsedPeptides.get(200).getPeptide().getParentProteins().get(0))), is(nullValue()));
     }
 }

@@ -12,7 +12,6 @@ import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.mapper.Mapper;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.service.impl.UserServiceImpl;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;

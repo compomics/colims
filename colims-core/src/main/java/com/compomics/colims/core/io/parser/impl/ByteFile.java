@@ -11,10 +11,10 @@ import java.net.URI;
 import org.apache.commons.io.IOUtils;
 
 /**
- * a wrapper for the File class that handles in  memory files
+ * a wrapper for the File class that handles in memory files
+ *
  * @author Davy
  */
-
 public class ByteFile extends File {
 
     private byte[] slurpedFile;
@@ -42,7 +42,7 @@ public class ByteFile extends File {
 
     public ByteFile(byte[] fileByteArray) {
         super("not on disk");
-        slurpedFile = fileByteArray;
+        slurpedFile = fileByteArray.clone();
     }
 
     private void slurpFile(File readInFile) throws IOException, FileNotFoundException {
@@ -52,12 +52,17 @@ public class ByteFile extends File {
             slurpedFile = bais.toByteArray();
         }
     }
-    
-    public InputStream getOutputStream() throws FileNotFoundException{
-        if (slurpedFile != null){
+
+    public InputStream getOutputStream() throws FileNotFoundException {
+        if (slurpedFile != null) {
             return new ByteArrayInputStream(slurpedFile);
         } else {
             return new FileInputStream(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

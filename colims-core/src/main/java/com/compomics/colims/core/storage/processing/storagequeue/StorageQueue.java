@@ -19,11 +19,13 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Kenneth Verheggen
  */
+@Component("storageQueue")
 public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable {
 
     private static Connection c;
@@ -33,6 +35,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     private static final Logger LOGGER = Logger.getLogger(StorageQueue.class);
     private static final HashMap<Long, StorageTask> trackerMap = new HashMap<Long, StorageTask>();
 
+    @Autowired
     ColimsFileImporter colimsFileImporter;
 
     private StorageQueue() {

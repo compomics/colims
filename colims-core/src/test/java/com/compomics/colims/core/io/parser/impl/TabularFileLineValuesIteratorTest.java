@@ -15,9 +15,9 @@ public class TabularFileLineValuesIteratorTest {
     }
 
     @Test
-    public void testTabularFileLineValuesIterator() throws IOException {
+    public void testTabularFileLineValuesIterator() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         // Create iterator for ELVI
-        TabularFileLineValuesIterator elvi = new TabularFileLineValuesIterator(getFile("testdata/evidence_subset_10.tsv"));
+        TabularFileLineValuesIterator elvi = new TabularFileLineValuesIterator(getFile("testdata/evidence_subset_10.tsv"),EvidenceHeaders.values());
 
         // Iterate over ELVI and assign values to a list for further inspection
         @SuppressWarnings("unchecked")
@@ -25,22 +25,22 @@ public class TabularFileLineValuesIteratorTest {
 
         // Check properties of first and last item in list
         Map<String, String> first = list.get(0);
-        Assert.assertEquals("0", first.get(EvidenceHeaders.id.column));
-        Assert.assertEquals("0.83092", first.get(EvidenceHeaders.Retention_Length.column));
-        Assert.assertEquals("20242", first.get(EvidenceHeaders.Resolution.column));
-        Assert.assertEquals("pool3C", first.get(EvidenceHeaders.Experiment.column));
-        Assert.assertEquals("", first.get(EvidenceHeaders.Oxidation_M_Site_IDs.column));
-        Assert.assertEquals("0", first.get(EvidenceHeaders.PIF.column));
-        Assert.assertEquals("751", first.get(EvidenceHeaders.Protein_Group_IDs.column));
+        Assert.assertEquals("0", first.get(EvidenceHeaders.id.getColumnName()));
+        Assert.assertEquals("0.83092", first.get(EvidenceHeaders.Retention_Length.getColumnName()));
+        Assert.assertEquals("20242", first.get(EvidenceHeaders.Resolution.getColumnName()));
+        Assert.assertEquals("pool3C", first.get(EvidenceHeaders.Experiment.getColumnName()));
+        Assert.assertEquals("", first.get(EvidenceHeaders.Oxidation_M_Site_IDs.getColumnName()));
+        Assert.assertEquals("0", first.get(EvidenceHeaders.PIF.getColumnName()));
+        Assert.assertEquals("751", first.get(EvidenceHeaders.Protein_Group_IDs.getColumnName()));
 
         Map<String, String> last = list.get(list.size() - 1);
-        Assert.assertEquals("8", last.get(EvidenceHeaders.id.column));
-        Assert.assertEquals("0.9267", last.get(EvidenceHeaders.Retention_Length.column));
-        Assert.assertEquals("21095.4", last.get(EvidenceHeaders.Resolution.column));
-        Assert.assertEquals("pool4A", last.get(EvidenceHeaders.Experiment.column));
-        Assert.assertEquals("", last.get(EvidenceHeaders.Oxidation_M_Site_IDs.column));
-        Assert.assertEquals("0", last.get(EvidenceHeaders.PIF.column));
-        Assert.assertEquals("1110", last.get(EvidenceHeaders.Protein_Group_IDs.column));
+        Assert.assertEquals("8", last.get(EvidenceHeaders.id.getColumnName()));
+        Assert.assertEquals("0.9267", last.get(EvidenceHeaders.Retention_Length.getColumnName()));
+        Assert.assertEquals("21095.4", last.get(EvidenceHeaders.Resolution.getColumnName()));
+        Assert.assertEquals("pool4A", last.get(EvidenceHeaders.Experiment.getColumnName()));
+        Assert.assertEquals("", last.get(EvidenceHeaders.Oxidation_M_Site_IDs.getColumnName()));
+        Assert.assertEquals("0", last.get(EvidenceHeaders.PIF.getColumnName()));
+        Assert.assertEquals("1110", last.get(EvidenceHeaders.Protein_Group_IDs.getColumnName()));
     }
 
     @Test
