@@ -6,6 +6,7 @@ package com.compomics.colims.core.storage.processing.storagequeue;
 
 import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
 import com.compomics.colims.core.storage.enums.StorageState;
+import com.compomics.colims.core.storage.processing.colimsimport.ColimsCpsImporter;
 import com.compomics.colims.core.storage.processing.colimsimport.ColimsFileImporter;
 import java.io.File;
 import java.sql.Connection;
@@ -32,7 +33,6 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     private static final Logger LOGGER = Logger.getLogger(StorageQueue.class);
     private static final HashMap<Long, StorageTask> trackerMap = new HashMap<Long, StorageTask>();
 
-    @Autowired
     ColimsFileImporter colimsFileImporter;
 
     private StorageQueue() {
@@ -70,6 +70,9 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 //TODO ACTUALLY STORE THIS!!!!
                 try {
                     LOGGER.debug("Storing " + taskToStore.getFileLocation() + " to colims");
+                    if (taskToStore.getFileLocation().toLowerCase().endsWith(".cps")) {
+                        colimsFileImporter = new ColimsCpsImporter();
+                    }
                     colimsFileImporter.storeFile(taskToStore.getUserName(), new File(taskToStore.getFileLocation()).getParentFile());
                     updateTask(taskToStore, StorageState.STORED);
                 } catch (Throwable e) {
