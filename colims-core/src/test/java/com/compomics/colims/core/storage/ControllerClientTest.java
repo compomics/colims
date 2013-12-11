@@ -5,22 +5,13 @@
  */
 package com.compomics.colims.core.storage;
 
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.Mapper;
-import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.storage.incoming.SocketCreator;
-import com.compomics.colims.core.storage.processing.colimsimport.ColimsCpsImporter;
 import com.compomics.colims.core.storage.processing.socket.SocketListener;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.repository.AuthenticationBean;
 import java.io.File;
 import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

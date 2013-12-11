@@ -174,7 +174,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
         LOGGER.debug("Resetting tasks that were still running on boot");
         c = getConnection();
         try (Statement stmt = c.createStatement()) {
-            String sql = "UPDATE STORAGETASKS SET STATE ='NEW' WHERE STATE !='COMPLETED' AND STATE !='FAILED' ";
+            String sql = "UPDATE STORAGETASKS SET STATE ='NEW' WHERE (STATE !='COMPLETED' AND STATE !='ERROR')";
             stmt.executeUpdate(sql);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -264,6 +264,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
      */
     public StorageTask addNewTask(String fileLocation, String userName) {
         long key = -1L;
+           c = getConnection();
         try (PreparedStatement stmt = c.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, "NEW");
             stmt.setString(2, fileLocation);
