@@ -13,6 +13,7 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,17 +55,20 @@ public class ColimsSpectrumMapper {
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
         targetSpectrum.setSpectrumTitle(sourceSpectrum.getTitle());
         //Add peaks
+        HashMap<Double, Peak> peakMap = new HashMap<Double, Peak>();
         for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
             try {
                 Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(aFile);
                 for (Double mz : mzAndIntensities.keySet()) {
                     Peak peak = new Peak(mz, mzAndIntensities.get(mz));
                     targetSpectrum.addPeak(peak);
+                    peakMap.put(mz, peak);
                 }
+
             } catch (IOException ex) {
                 LOGGER.error(ex);
             }
         }
-
+        targetSpectrum.setPeakList(peakMap);
     }
 }

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class ColimsProteinMapper {
 
     @Autowired
-    private static final ColimsPeptideMapper colimsPeptideMapper = new ColimsPeptideMapper();
+    private ColimsPeptideMapper colimsPeptideMapper;
 
     private static final Logger LOGGER = Logger.getLogger(ColimsProteinMapper.class);
 
@@ -29,37 +29,19 @@ public class ColimsProteinMapper {
      * to the peptide.
      *
      * @param proteinMatches the utilities list of protein matches
-     * @param targetPeptide the colims peptide
+     * @param sourceProtein the colims protein
      * @throws MappingException
      */
-    public void map2(Peptide targetPeptide, List<ProteinMatch> proteinMatches) throws MappingException {
-        LOGGER.debug("Mapping proteins from " + targetPeptide.getSequence() + " to new list of ProteinMatch objects");
-        for (PeptideHasProtein pepHasProt : targetPeptide.getPeptideHasProteins()) {
-            ProteinMatch protMatch = new ProteinMatch();
-            PeptideMatch pepMatch = new PeptideMatch();
-            //map the peptide to utilitiespeptides
-            PeptideMatch match = new PeptideMatch();
-            colimsPeptideMapper.map(targetPeptide, match);
-            //add the peptide to proteinmatches
-            protMatch.addPeptideMatch(pepMatch.getKey());
-            protMatch.setMainMatch(pepHasProt.getMainGroupProtein().getAccession());
-            protMatch.addPeptideMatch(pepHasProt.getPeptide().getSequence());
-            proteinMatches.add(protMatch);
-        }
-    }
-
-    public void map(Protein targetProtein, List<ProteinMatch> proteinMatches) throws MappingException {
-        LOGGER.debug("Mapping proteins from " + targetProtein.getAccession() + " to new list of ProteinMatch objects");
+    public void map(Protein sourceProtein, List<ProteinMatch> proteinMatches) throws MappingException {
+        LOGGER.debug("Mapping proteins from " + sourceProtein.getAccession() + " to new list of ProteinMatch objects");
         ProteinMatch protMatch = new ProteinMatch();
-        protMatch.setMainMatch(targetProtein.getAccession());
-        for (PeptideHasProtein pepHasProt : targetProtein.getPeptideHasProteins()) {
+        protMatch.setMainMatch(sourceProtein.getAccession());
+        for (PeptideHasProtein pepHasProt : sourceProtein.getPeptideHasProteins()) {
             PeptideMatch pepMatch = new PeptideMatch();
             //map the peptide to utilitiespeptides
-            PeptideMatch match = new PeptideMatch();
-            colimsPeptideMapper.map(pepHasProt.getPeptide(), match);
+            colimsPeptideMapper.map(pepHasProt.getPeptide(), pepMatch, protMatch);
             //add the peptide to proteinmatches
             protMatch.addPeptideMatch(pepMatch.getKey());
-            protMatch.addPeptideMatch(pepHasProt.getPeptide().getSequence());
         }
         proteinMatches.add(protMatch);
     }
