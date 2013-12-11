@@ -8,13 +8,10 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
-import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.format.ExperimentsOverviewTableFormat;
 import com.compomics.colims.client.model.format.ProjectsOverviewTableFormat;
-import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
@@ -22,26 +19,17 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -61,15 +49,15 @@ public class ProjectManagementController implements Controllable {
     private EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private BindingGroup bindingGroup;
     private ObservableList<User> userBindingList;
-    private Project projectToEdit;
     //view
     private ProjectManagementPanel projectManagementPanel;
-    private ProjectEditDialog projectEditDialog;
+    //child controller
+    @Autowired
+    private ProjectEditController projectEditController;
     //parent controller
     @Autowired
-    private ColimsController mainController;
+    private ColimsController colimsController;
     //services
     @Autowired
     private ProjectService projectService;
@@ -86,21 +74,11 @@ public class ProjectManagementController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
-        bindingGroup = new BindingGroup();
-
-        initProjectManagementPanel();
-        initProjectEditDialog();
-
-        bindingGroup.bind();
-    }
-    
-    @Override
-    public void showView() {
-        //do nothing
-    }
-
-    private void initProjectManagementPanel() {
+        //init view
         projectManagementPanel = new ProjectManagementPanel();
+        
+        //init child controllers
+        projectEditController.init();
 
         //init projects table
         projects.addAll(projectService.findAllWithEagerFetching());
@@ -152,11 +130,7 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectToEdit = createDefaultProject();
-                updateProjectEditDialog();
-
-                projectEditDialog.setLocationRelativeTo(null);
-                projectEditDialog.setVisible(true);
+                projectEditController.updateView(createDefaultProject());
             }
         });
 
@@ -165,12 +139,7 @@ public class ProjectManagementController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 Project selectedProject = getSelectedProject();
                 if (selectedProject != null) {
-                    projectToEdit = selectedProject;
-
-                    updateProjectEditDialog();
-
-                    projectEditDialog.setLocationRelativeTo(null);
-                    projectEditDialog.setVisible(true);
+                    projectEditController.updateView(selectedProject);
                 } else {
                     eventBus.post(new MessageEvent("project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
@@ -215,76 +184,48 @@ public class ProjectManagementController implements Controllable {
             public void actionPerformed(ActionEvent e) {
             }
         });
-
     }
 
-    private void initProjectEditDialog() {
-        projectEditDialog = new ProjectEditDialog(mainController.getColimsFrame(), true);
+    @Override
+    public void showView() {
+        //do nothing
+    }
 
-        //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());
+    /**
+     * Get the row index of the selected project in the projects table
+     *
+     * @return
+     */
+    public int getSelectedProjectIndex() {
+        return projectsSelectionModel.getLeadSelectionIndex();
+    }
 
-        //add binding
-        userBindingList = ObservableCollections.observableList(userService.findAll());
+    /**
+     * Set the selected project in the projects table
+     *
+     * @param index
+     */
+    public void setProjectSelection(int index) {
+        projectsSelectionModel.clearSelection();
+        projectsSelectionModel.setLeadSelectionIndex(index);
+    }
 
-        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
-        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
+    /**
+     * Add a project to the projects table
+     *
+     * @param project
+     */
+    public void addProject(Project project) {
+        projects.add(project);
+    }
 
-        //add action listeners
-        projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                List<User> addedUsers = projectEditDialog.getUserDualList().getAddedItems();
-
-                projectToEdit.setUsers(addedUsers);
-            }
-        });
-
-        projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //update projectToEdit with dialog input
-                updateProjectToEdit();
-
-                //validate project
-                List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
-                //check for a new project if the project title already exists in the db                
-                if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
-                    validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
-                            + "\n" + "please choose another project title.");
-                }
-                int index = 0;
-                if (validationMessages.isEmpty()) {
-                    if (projectToEdit.getId() != null) {
-                        projectService.update(projectToEdit);
-                        index = projectsSelectionModel.getLeadSelectionIndex();
-                    } else {
-                        projectService.save(projectToEdit);
-                        //add project to overview table
-                        projects.add(projectToEdit);
-                        index = projects.size() - 1;
-                    }
-                    projectEditDialog.getSaveOrUpdateButton().setText("update");
-
-                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in project list in management overview dialog
-                    projectsSelectionModel.clearSelection();
-                    projectsSelectionModel.setLeadSelectionIndex(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectEditDialog.dispose();
-            }
-        });
+    /**
+     * Get the number of projects in the projects table
+     *
+     * @return
+     */
+    public int getProjectsSize() {
+        return projects.size();
     }
 
     /**
@@ -292,7 +233,7 @@ public class ProjectManagementController implements Controllable {
      *
      * @return the selected project, null if no project is selected
      */
-    private Project getSelectedProject() {
+    public Project getSelectedProject() {
         Project selectedProject = null;
 
         EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
@@ -301,56 +242,6 @@ public class ProjectManagementController implements Controllable {
         }
 
         return selectedProject;
-    }
-
-    /**
-     * Update the project edit dialog with the selected project in the project
-     * overview table.
-     */
-    private void updateProjectEditDialog() {
-        if (projectToEdit.getId() != null) {
-            projectEditDialog.getSaveOrUpdateButton().setText("update");
-        } else {
-            projectEditDialog.getSaveOrUpdateButton().setText("save");
-        }
-
-        projectEditDialog.getTitleTextField().setText(projectToEdit.getTitle());
-        projectEditDialog.getLabelTextField().setText(projectToEdit.getLabel());
-
-        //set the selected item in the owner combobox        
-        projectEditDialog.getOwnerComboBox().setSelectedItem(projectToEdit.getOwner());
-        projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
-        //populate user dual list
-        projectEditDialog.getUserDualList().populateLists(userService.findAll(), projectToEdit.getUsers());
-    }
-
-    /**
-     * Update the instance fields of the projectToEdit variable with the dialog
-     * input.
-     *
-     */
-    private void updateProjectToEdit() {
-        projectToEdit.setTitle(projectEditDialog.getTitleTextField().getText());
-        projectToEdit.setLabel(projectEditDialog.getLabelTextField().getText());
-        projectToEdit.setOwner(userBindingList.get(projectEditDialog.getOwnerComboBox().getSelectedIndex()));
-        projectToEdit.setDescription(projectEditDialog.getDescriptionTextArea().getText());
-        //the users have been update by the duallist listener
-    }
-
-    /**
-     * Check if a project with the given project title exists in the database.
-     *
-     * @param project the project
-     * @return does the project title exist
-     */
-    private boolean isExistingProjectTitle(Project project) {
-        boolean isExistingProjectTitle = true;
-        Project foundProject = projectService.findByTitle(project.getTitle());
-        if (foundProject == null) {
-            isExistingProjectTitle = false;
-        }
-
-        return isExistingProjectTitle;
     }
 
     /**
@@ -382,9 +273,8 @@ public class ProjectManagementController implements Controllable {
         Experiment defaultExperiment = new Experiment();
 
         defaultExperiment.setTitle("default experiment title");
-        defaultExperiment.setNumber(1L);        
+        defaultExperiment.setNumber(1L);
 
         return defaultExperiment;
     }
-    
 }

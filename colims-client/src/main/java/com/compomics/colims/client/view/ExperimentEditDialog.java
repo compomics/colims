@@ -29,7 +29,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
     }
 
     public JComboBox getOwnerComboBox() {
-        return ownerComboBox;
+        return protocolComboBox;
     }
 
     public JTextArea getDescriptionTextArea() {
@@ -65,8 +65,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         descriptionScrollPanel = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
         labelLabel = new javax.swing.JLabel();
-        ownerLabel = new javax.swing.JLabel();
-        ownerComboBox = new javax.swing.JComboBox();
+        protocolLabel = new javax.swing.JLabel();
+        protocolComboBox = new javax.swing.JComboBox();
         userDualList = new com.compomics.colims.client.compoment.DualList();
         userDualListLabel = new javax.swing.JLabel();
         saveOrUpdateButton = new javax.swing.JButton();
@@ -91,7 +91,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
         labelLabel.setText("number");
 
-        ownerLabel.setText("owner");
+        protocolLabel.setText("protocol");
 
         userDualListLabel.setText("users");
 
@@ -131,10 +131,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                                 .addGap(44, 44, 44)
                                 .addComponent(numberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(experimentEditPanelLayout.createSequentialGroup()
-                                .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(userDualListLabel)
-                                    .addComponent(ownerLabel))
-                                .addGap(48, 48, 48)
+                                .addComponent(userDualListLabel)
+                                .addGap(52, 52, 52)
                                 .addComponent(userDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentEditPanelLayout.createSequentialGroup()
@@ -143,10 +141,12 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentEditPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(protocolLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                         .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ownerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(protocolComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(titleTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -176,10 +176,10 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                             .addComponent(titleTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addGap(18, 18, 18)
-                        .addComponent(ownerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                        .addComponent(ownerLabel)
-                        .addGap(50, 50, 50)
+                        .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(protocolComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(protocolLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                         .addComponent(userDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -210,8 +210,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelLabel;
     private javax.swing.JTextField numberTextField;
-    private javax.swing.JComboBox ownerComboBox;
-    private javax.swing.JLabel ownerLabel;
+    private javax.swing.JComboBox protocolComboBox;
+    private javax.swing.JLabel protocolLabel;
     private javax.swing.JButton saveOrUpdateButton;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
