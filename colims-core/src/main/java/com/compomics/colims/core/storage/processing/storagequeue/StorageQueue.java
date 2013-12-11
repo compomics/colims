@@ -212,6 +212,37 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
 
     /**
      *
+     * @param taskID the taskID that needs to be searched
+     * @param fromDatabase boolean to flag retrieval from database or trackermap
+     * @return a storagetask object
+     */
+    public StorageTask getTask(long taskID, boolean fromDatabase) {
+        StorageTask task = null;
+        if (fromDatabase) {
+            c = getConnection();
+            String sql = "SELECT * FROM STORAGETASKS WHERE TASKID =?";
+            try (PreparedStatement stmt = c.prepareStatement(sql)) {
+                stmt.setLong(1, taskID);
+                ResultSet rs = stmt.executeQuery(sql);
+                if (rs.next()) {
+                    task = new StorageTask(taskID, rs.getString("FILELOCATION"));
+                    task.setState(StorageState.valueOf(rs.getString("STATE")));
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+                return getTask(taskID, false);
+            } finally {
+                releaseConnection();
+
+            }
+        } else {
+            task = trackerMap.get(taskID);
+        }
+        return task;
+    }
+
+    /**
+     *
      * @param fileLocation the path to the file that needs to be stored. This
      * filepath has to be visible for the controller!
      * @return a generated StorageTask Object that has already been stored in
