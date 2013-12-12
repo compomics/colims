@@ -17,6 +17,7 @@ public class StorageTask implements Comparable {
     private final String fileLocation;
     private final String userName;
     private StorageState state = StorageState.WAITING;
+    private long sampleID;
 
     /**
      *
@@ -25,10 +26,19 @@ public class StorageTask implements Comparable {
      * @param fileLocation the path to the file that needs to be stored
      * @param userName the owner of the experiment that will be stored
      */
-    public StorageTask(long taskID, String fileLocation, String userName) {
+    public StorageTask(long taskID, String fileLocation, String userName, long sampleID) {
         this.taskID = taskID;
         this.fileLocation = fileLocation;
         this.userName = userName;
+        this.sampleID = sampleID;
+    }
+
+    public long getSampleID() {
+        return sampleID;
+    }
+
+    public void setSampleID(long sampleID) {
+        this.sampleID = sampleID;
     }
 
     public long getTaskID() {

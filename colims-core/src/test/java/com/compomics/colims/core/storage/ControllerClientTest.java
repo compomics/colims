@@ -28,9 +28,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 public class ControllerClientTest {
 
- @Autowired
- SocketListener socketListener;
- 
+    @Autowired
+    SocketListener socketListener;
+
     private Thread listener;
 
     public ControllerClientTest() {
@@ -41,7 +41,7 @@ public class ControllerClientTest {
         listener = new Thread(new Runnable() {
             @Override
             public void run() {
-               socketListener.launch(45678);
+                socketListener.launch(45678);
             }
         });
         listener.start();
@@ -60,7 +60,7 @@ public class ControllerClientTest {
         System.out.println("Test communication between client and controller");
         SocketCreator creator = new SocketCreator("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_2.cps").getFile();
-        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath());
+        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1);
         Assert.assertTrue(success);
     }
 

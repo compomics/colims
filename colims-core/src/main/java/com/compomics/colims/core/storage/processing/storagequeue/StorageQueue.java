@@ -74,7 +74,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 try {
                     LOGGER.debug("Storing " + taskToStore.getFileLocation() + " to colims");
                     File fileToStore = new File(taskToStore.getFileLocation());
-                     ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
+                    ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
                     if (colimsFileImporter.validate(fileToStore.getParentFile())) {
                         colimsFileImporter.storeFile(taskToStore.getUserName(), fileToStore.getParentFile());
                         updateTask(taskToStore, StorageState.STORED);
@@ -146,6 +146,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     + "(TASKID INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + " FILELOCATION TEXT NULL, "
                     + " USERNAME TEXT NULL, "
+                    + " SAMPLEID INTEGER NULL,"
                     + " STATE TEXT)";
             stmt.executeUpdate(sql);
         } catch (Exception e) {
@@ -178,9 +179,10 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 long taskId = rs.getLong("TASKID");
+                long sampleId = rs.getLong("SAMPLEID");
                 String fileLocation = rs.getString("FILELOCATION");
                 String userName = rs.getString("USERNAME");
-                this.offer(new StorageTask(taskId, fileLocation, userName));
+                this.offer(new StorageTask(taskId, fileLocation, userName, sampleId));
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -225,7 +227,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             stmt.setLong(1, taskID);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                task = new StorageTask(taskID, rs.getString("FILELOCATION"), rs.getString("USERNAME"));
+                task = new StorageTask(taskID, rs.getString("FILELOCATION"), rs.getString("USERNAME"), rs.getLong("SAMPLEID"));
                 task.setState(StorageState.valueOf(rs.getString("STATE")));
             }
         } catch (Exception e) {
@@ -244,13 +246,14 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
      * @return a generated StorageTask Object that has already been stored in
      * both the queue and the underlying database
      */
-    public StorageTask addNewTask(String fileLocation, String userName) {
+    public StorageTask addNewTask(String fileLocation, String userName, long sampleID) {
         long key = -1L;
         c = getConnection();
-        try (PreparedStatement stmt = c.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = c.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME,SAMPLEID) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, "WAITING");
             stmt.setString(2, fileLocation);
             stmt.setString(3, userName);
+            stmt.setLong(4, sampleID);
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -262,7 +265,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             e.printStackTrace();
         } finally {
             releaseConnection();
-            StorageTask task = new StorageTask(key, fileLocation, userName);
+            StorageTask task = new StorageTask(key, fileLocation, userName, sampleID);
             offer(task);
             return task;
         }

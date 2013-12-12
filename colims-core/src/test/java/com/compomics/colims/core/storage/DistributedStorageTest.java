@@ -16,12 +16,17 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Kenneth
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class DistributedStorageTest {
 
     private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/test/ColimsController/");
@@ -55,7 +60,7 @@ public class DistributedStorageTest {
 
         System.out.println("Test offer file to store");
         StorageTask task = null;
-        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1");
+        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1);
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
         storageQueue.disconnect();
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");

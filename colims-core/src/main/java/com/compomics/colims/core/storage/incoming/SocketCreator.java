@@ -47,14 +47,14 @@ public class SocketCreator {
      * imported to colims
      * @return if the method was succesfull storing the file
      */
-    public boolean storeFile(String Username, String fileLocation) {
+    public boolean storeFile(String Username, String fileLocation, long sampleID) {
         boolean success = false;
         Socket socket = null;
         try {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(Username + ">.<" + fileLocation);
+            out.println(Username + ">.<" + fileLocation + ">.<" + sampleID);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
