@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Peptide;
+import java.util.List;
 
 /**
  *
@@ -14,5 +15,5 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @param spectrumID the spectrum id
      * @return list of spectra for analyticalRun, that may be empty
      */
-    Peptide findPeptideBySpectrumId(final Long spectrumID);
+    List<Peptide> findPeptideBySpectrumId(final Long spectrumID);
 }

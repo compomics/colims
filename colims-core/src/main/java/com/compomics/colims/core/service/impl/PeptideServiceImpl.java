@@ -57,7 +57,7 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public Peptide findBySpectrumId(long spectrumId) {
+    public List<Peptide> findBySpectrumId(long spectrumId) {
         return peptideRepository.findPeptideBySpectrumId(spectrumId);
     }
 

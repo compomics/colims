@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Peptide;
+import java.util.List;
 
 /**
  *
@@ -12,7 +13,7 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * Find a protein by the accession.
      *
      * @param spectrumId the spectrums id
-     * @return the found peptide
+     * @return the found peptides
      */
-    Peptide findBySpectrumId(long spectrumId);
+    List<Peptide> findBySpectrumId(long spectrumId);
 }
