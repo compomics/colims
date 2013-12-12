@@ -122,21 +122,26 @@ public class DualList<T> extends javax.swing.JPanel {
         addItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                List<T> oldAddedItems = getAddedItems();
+
                 List selectedItems = availableItemList.getSelectedValuesList();
-
-                for (Object selectedObject : selectedItems) {
-                    T selectedItem = (T) selectedObject;
-
-                    //add to addedItemBindingList and sort
-                    addedItemBindingList.add(selectedItem);
+                if (!selectedItems.isEmpty()) {
+                    for (Object selectedObject : selectedItems) {
+                        T selectedItem = (T) selectedObject;
+                        //add to addedItemBindingList
+                        addedItemBindingList.add(selectedItem);
+                        //remove from availableItemBindingList
+                        availableItemBindingList.remove(selectedItem);
+                    }
+                    //sort
                     sort(addedItemBindingList);
-                    //remove from availableItemBindingList
-                    availableItemBindingList.remove(selectedItem);
-
+                    
                     //check button states
-                    checkButtonStates();
+                    checkButtonStates();                    
 
-                    DualList.this.firePropertyChange(CHANGED, false, true);
+                    List<T> newAddedItems = getAddedItems();
+                    //notify listeners
+                    DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
                 }
             }
         });
@@ -144,21 +149,26 @@ public class DualList<T> extends javax.swing.JPanel {
         removeItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                List<T> oldAddedItems = getAddedItems();
+
                 List selectedItems = addedItemList.getSelectedValuesList();
-
-                for (Object selectedObject : selectedItems) {
-                    T selectedItem = (T) selectedObject;
-
-                    //add to availableItemBindingList and sort
-                    availableItemBindingList.add(selectedItem);
+                if (!selectedItems.isEmpty()) {
+                    for (Object selectedObject : selectedItems) {
+                        T selectedItem = (T) selectedObject;
+                        //add to availableItemBindingList and sort
+                        availableItemBindingList.add(selectedItem);
+                        //remove from addedItemBindingList
+                        addedItemBindingList.remove(selectedItem);
+                    }                    
+                    //sort
                     sort(availableItemBindingList);
-                    //remove from addedItemBindingList
-                    addedItemBindingList.remove(selectedItem);
-
+                    
                     //check button states
                     checkButtonStates();
 
-                    DualList.this.firePropertyChange(CHANGED, false, true);
+                    List<T> newAddedItems = getAddedItems();
+                    //notify listeners
+                    DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
                 }
             }
         });

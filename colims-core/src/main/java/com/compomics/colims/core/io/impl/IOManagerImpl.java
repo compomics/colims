@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import com.compomics.colims.core.io.IOManager;
+import java.util.zip.GZIPOutputStream;
 
 /**
  *
@@ -26,6 +27,27 @@ public class IOManagerImpl implements IOManager {
     @Override
     public byte[] readBytesFromFile(File file) throws IOException {
         return FileUtils.readFileToByteArray(file);
+    }
+
+    @Override
+    public byte[] readZippedBytesFromFile(File file) throws IOException {
+        byte[] zippedBytes = null;
+
+        //get file as byte array
+        byte[] bytes = readBytesFromFile(file);
+
+        //gzip the byte array
+        try (ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
+                GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
+            gZIPOutputStream.write(bytes);
+
+            gZIPOutputStream.flush();
+            gZIPOutputStream.finish();
+
+            zippedBytes = zippedByteArrayOutputStream.toByteArray();
+        }
+
+        return zippedBytes;
     }
 
     @Override

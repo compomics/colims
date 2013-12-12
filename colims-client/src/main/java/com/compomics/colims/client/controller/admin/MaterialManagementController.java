@@ -274,7 +274,7 @@ public class MaterialManagementController implements Controllable {
                 CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
                 Material material = getSelectedMaterial();
-                List<MaterialCvTerm> addedItems = materialEditDialog.getCvTermDualList().getAddedItems();
+                List<MaterialCvTerm> addedItems = (List<MaterialCvTerm>) evt.getNewValue();
 
                 //check for property
                 if (selectedcvTermType.equals(CvTermType.SPECIES)) {

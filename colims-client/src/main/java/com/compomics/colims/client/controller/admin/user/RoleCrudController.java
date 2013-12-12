@@ -196,7 +196,7 @@ public class RoleCrudController implements Controllable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //change permissions of the selected role                                    
-                List<Permission> addedPermissions = userManagementDialog.getPermissionDualList().getAddedItems();
+                List<Permission> addedPermissions = (List<Permission>) evt.getNewValue();
 
                 //add permissions to the selected role
                 Role selectedRole = getSelectedRole();

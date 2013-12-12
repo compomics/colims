@@ -49,7 +49,6 @@ public class ProjectManagementController implements Controllable {
     private EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private ObservableList<User> userBindingList;
     //view
     private ProjectManagementPanel projectManagementPanel;
     //child controller
@@ -61,8 +60,6 @@ public class ProjectManagementController implements Controllable {
     //services
     @Autowired
     private ProjectService projectService;
-    @Autowired
-    private UserService userService;
     @Autowired
     private EventBus eventBus;
 
@@ -205,7 +202,7 @@ public class ProjectManagementController implements Controllable {
      *
      * @param index
      */
-    public void setProjectSelection(int index) {
+    public void setSelectedProject(int index) {
         projectsSelectionModel.clearSelection();
         projectsSelectionModel.setLeadSelectionIndex(index);
     }

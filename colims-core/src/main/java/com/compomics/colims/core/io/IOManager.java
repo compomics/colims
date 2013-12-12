@@ -20,6 +20,14 @@ public interface IOManager {
      * @return the byte array
      */
     byte[] readBytesFromFile(File file) throws IOException;
+    
+    /**
+     * Reads the byte array from a given file and GZIP.
+     *
+     * @param file the file
+     * @return the byte array
+     */
+    byte[] readZippedBytesFromFile(File file) throws IOException;
 
     /**
      * Write the byte array to file.

@@ -203,7 +203,7 @@ public class GroupCrudController implements Controllable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //change roles of the selected group                                    
-                List<Role> addedRoles = userManagementDialog.getRoleDualList().getAddedItems();
+                List<Role> addedRoles = (List<Role>) evt.getNewValue();
 
                 //add roles to the selected group
                 Group selectedGroup = getSelectedGroup();

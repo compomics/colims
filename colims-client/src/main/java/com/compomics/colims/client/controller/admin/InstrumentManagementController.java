@@ -291,7 +291,7 @@ public class InstrumentManagementController implements Controllable {
                 CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
 
                 Instrument instrument = getSelectedInstrument();
-                List<InstrumentCvTerm> addedItems = instrumentEditDialog.getCvTermDualList().getAddedItems();
+                List<InstrumentCvTerm> addedItems = (List<InstrumentCvTerm>) evt.getNewValue();
 
                 //check for property
                 if (selectedcvTermType.equals(CvTermType.SOURCE)) {

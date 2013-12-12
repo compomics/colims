@@ -30,10 +30,10 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("projectEditController")
-public class ProjectEditController implements Controllable {
+@Component("experimentEditController")
+public class ExperimentEditController implements Controllable {
 
-    private static final Logger LOGGER = Logger.getLogger(ProjectEditController.class);
+    private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
     //model   
     private BindingGroup bindingGroup;
     private ObservableList<User> userBindingList;

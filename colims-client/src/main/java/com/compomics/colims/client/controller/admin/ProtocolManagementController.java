@@ -277,10 +277,10 @@ public class ProtocolManagementController implements Controllable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //get selected cvTermType                        
-                CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
-
+                CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();                
+                
                 Protocol protocol = getSelectedProtocol();
-                List<ProtocolCvTerm> addedItems = protocolEditDialog.getCvTermDualList().getAddedItems();
+                List<ProtocolCvTerm> addedItems = (List<ProtocolCvTerm>) evt.getNewValue();
 
                 //check for property
                 if (selectedcvTermType.equals(CvTermType.REDUCTION)) {

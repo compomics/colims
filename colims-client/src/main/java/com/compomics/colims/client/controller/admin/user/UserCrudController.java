@@ -216,7 +216,7 @@ public class UserCrudController implements Controllable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //change groups of the selected user                                    
-                List<Group> addedGroups = userManagementDialog.getGroupDualList().getAddedItems();
+                List<Group> addedGroups = (List<Group>) evt.getNewValue();
 
                 //add groups to the selected user
                 User selectedUser = getSelectedUser();
