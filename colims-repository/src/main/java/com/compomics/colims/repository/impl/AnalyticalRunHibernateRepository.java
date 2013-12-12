@@ -13,7 +13,7 @@ import org.hibernate.criterion.Restrictions;
  *
  * @author Kenneth Verheggen
  */
-@Repository("sampleRepository")
+@Repository("analyticalRunRepository")
 public class AnalyticalRunHibernateRepository extends GenericHibernateRepository<AnalyticalRun, Long> implements AnalyticalRunRepository {
 
     @Override

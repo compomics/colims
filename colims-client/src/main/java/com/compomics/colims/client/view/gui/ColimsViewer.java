@@ -1,13 +1,19 @@
 package com.compomics.colims.client.view.gui;
 
+import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsPeptideMapper;
+import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsSpectrumMapper;
+import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.Spectrum;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.IonFactory;
@@ -20,6 +26,7 @@ import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
@@ -33,7 +40,6 @@ import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.gui.export_graphics.ExportGraphicsDialog;
 import com.compomics.util.gui.export_graphics.ExportGraphicsDialogParent;
-import com.compomics.util.io.PklFile;
 import com.compomics.util.preferences.AnnotationPreferences;
 import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
@@ -51,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
@@ -61,19 +68,23 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 /**
  * A simple front end to colims.
  *
  * @author Harald Barsnes
+ *  * @author Kenneth Verheggen
  */
-public class colims_attempt extends javax.swing.JFrame implements ExportGraphicsDialogParent {
+@Service("colimsViewer")
+public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDialogParent {
 
     @Autowired
     ProjectService projectService;
@@ -85,6 +96,14 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
     SampleService sampleService;
     @Autowired
     SpectrumService spectrumServiceImpl;
+    @Autowired
+    AnalyticalRunService analyticalRunService;
+    @Autowired
+    ColimsSpectrumMapper colimsSpectrumMapper;
+    @Autowired
+    ColimsPeptideMapper colimsPeptideMapper;
+
+    private static final Logger LOGGER = Logger.getLogger(ColimsViewer.class);
 
     /**
      * Turns of the gradient painting for the bar charts.
@@ -137,17 +156,36 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      * The label with for the numbers in the jsparklines columns.
      */
     private int labelWidth = 50;
-    private HashMap<Object, Object> tables;
+    private final LinkedList<JTable> tables = new LinkedList<>();
+    private long selectedProjectId;
+    private long selectedExperimentID;
+    private long selectedSampleID;
+    private List<AnalyticalRun> runList;
+    private List<Sample> samplesList;
+    private List<Experiment> experimentList;
+    private List<Project> projectList;
+    private int selectedRun;
+    private List<Spectrum> spectrumList;
+    private Spectrum selectedSpectrum;
 
+    
     /**
      * Creates a new colims GUI.
      */
-    public colims_attempt() {
+    public void init() {
         initComponents();
-
+        tables.add(projectsTable);
+        tables.add(experimentsTable);
+        tables.add(samplesTable);
+        tables.add(runsTable);
+        int counter = 0;
+        for (JTable aTable : tables) {
+            addMouseListeners(aTable, counter);
+            counter++;
+        }
         //LOAD THE PROJECTS INTO THE JTABLE
         loadProjectTable();
-
+        cascadeTables(0, 1);
         // @TODO: these should be set according to the current selection
         annotationPreferences.setFragmentIonAccuracy(0.02);
         annotationPreferences.addIonType(Ion.IonType.PEPTIDE_FRAGMENT_ION, PeptideFragmentIon.B_ION);
@@ -1171,7 +1209,11 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      */
     private void errorPlotTypeCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errorPlotTypeCheckBoxMenuItemActionPerformed
         useRelativeError = !errorPlotTypeCheckBoxMenuItem.isSelected();
-        updateSpectrum();
+        try {
+            updateSpectrum();
+        } catch (MappingException ex) {
+            LOGGER.error(ex);
+        }
     }//GEN-LAST:event_errorPlotTypeCheckBoxMenuItemActionPerformed
 
     /**
@@ -1275,7 +1317,13 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
 
         if (row != -1) {
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-            updateSpectrum(row);
+            try {
+                selectedSpectrum = spectrumList.get(row);
+                updateSpectrum(row, selectedSpectrum);
+                updateAnnotationPreferences();
+            } catch (MappingException ex) {
+                LOGGER.error(ex);
+            }
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         }
     }//GEN-LAST:event_psmTableMouseReleased
@@ -1300,7 +1348,7 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
                     JOptionPane.WARNING_MESSAGE);
         }
 
-        new colims_attempt();
+        new ColimsViewer();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1455,8 +1503,8 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      * Updates the spectrum annotation. Used when the user updates the
      * annotation accuracy.
      */
-    public void updateSpectrum() {
-        updateSpectrum(psmTable.getSelectedRow());
+    public void updateSpectrum() throws MappingException {
+        updateSpectrum(psmTable.getSelectedRow(), selectedSpectrum);
     }
 
     /**
@@ -1464,32 +1512,20 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      *
      * @param row the row index of the PSM
      */
-    private void updateSpectrum(int row) {
+    private void updateSpectrum(int row, Spectrum chosenSpectrum) throws MappingException {
 
         if (row != -1) {
 
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
             if (displaySpectrum) {
-
+                MSnSpectrum currentSpectrum = new MSnSpectrum();
+                colimsSpectrumMapper.map(chosenSpectrum, currentSpectrum);
                 try {
-                    File spectrumFile = new ClassPathResource("/gui/example/colims_test_spectrum.pkl").getFile();
-                    //File spectrumFile = new File("C:/Users/hba041/colims_test_spectrum.pkl");
-                    PklFile pklFile = new PklFile(spectrumFile);
-                    double[] intensities = pklFile.getIntensityValues();
-                    double[] mz = pklFile.getMzValues();
 
-                    HashMap<Double, Peak> peakMap = new HashMap<Double, Peak>();
-                    for (int i = 0; i < intensities.length; i++) {
-                        peakMap.put(mz[i], new Peak(mz[i], intensities[i]));
+                    HashMap<Double, Peak> peakMap = currentSpectrum.getPeakMap();
 
-                    }
-
-                    ArrayList<Charge> charges = new ArrayList<Charge>();
-                    charges.add(new Charge(Charge.PLUS, 2));
-
-                    // @TODO: get the spectrum
-                    MSnSpectrum currentSpectrum = new MSnSpectrum(2, new Precursor(1652.29494, 1088.50244, charges), "My title", peakMap, "My file");
+                    ArrayList<Charge> charges = currentSpectrum.getPrecursor().getPossibleCharges();
 
                     if (currentSpectrum != null) {
 
@@ -1519,8 +1555,14 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
 
                             //PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption(); // @TODO: re-add me!
                             //Peptide currentPeptide = new Peptide("LYGSAGPPPTGEEDTAEKDEL", new ArrayList<ModificationMatch>()); //peptideAssumption.getPeptide(); // @TODO: re-add me!
-                            Peptide currentPeptide = new Peptide("LYGSAGPPPTGEEDTAEKDEL", new ArrayList<String>(), new ArrayList<ModificationMatch>()); //peptideAssumption.getPeptide(); // @TODO: re-add me!
-                            int identificationCharge = 2; // spectrumMatch.getBestPeptideAssumption().getIdentificationCharge().value; // @TODO: re-add me!
+                            PeptideMatch currentPeptideMatch = new PeptideMatch();
+                            colimsPeptideMapper.map(chosenSpectrum.getPeptides().get(0), currentPeptideMatch);
+
+                            Peptide currentPeptide = currentPeptideMatch.getTheoreticPeptide();
+
+                            //peptideAssumption.getPeptide(); // @TODO: re-add me!
+                            int identificationCharge = chosenSpectrum.getCharge();
+// spectrumMatch.getBestPeptideAssumption().getIdentificationCharge().value; // @TODO: re-add me!
 
                             // @TODO: re-add the line below
                             //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
@@ -1754,7 +1796,15 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      * Updates the annotations in the selected tab.
      */
     public void updateSpectrumAnnotations() {
-        updateSpectrum();
+        try {
+            updateSpectrum();
+        } catch (MappingException ex) {
+            //    LOGGER.error(ex);
+            JOptionPane.showMessageDialog(this,
+                    "Error retrieving data.",
+                    "A mapping exception has occured ! : " + System.lineSeparator() + ex.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -1981,7 +2031,7 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
     }
 
     private void loadProjectTable() {
-        List<Project> projectList = projectService.findAll();
+        projectList = projectService.findAll();
         DefaultTableModel tableModel = (DefaultTableModel) projectsTable.getModel();
         int counter = 1;
         for (Project aProject : projectList) {
@@ -1994,7 +2044,8 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
     }
 
     private void loadExperimentTable(long projectID) {
-        List<Experiment> experimentList = experimentService.findAll();
+        experimentList = experimentService.getExperimentsByProjectId(projectID);
+        selectedProjectId = projectID;
         DefaultTableModel tableModel = (DefaultTableModel) experimentsTable.getModel();
         int counter = 1;
         for (Experiment anExperiment : experimentList) {
@@ -2005,22 +2056,48 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
     }
 
     private void loadSampleTable(long experimentID) {
-        List<Sample> samplesList = sampleService.findSampleByExperimentId(experimentID);
+        samplesList = sampleService.findSampleByExperimentId(experimentID);
+        selectedExperimentID = experimentID;
         DefaultTableModel tableModel = (DefaultTableModel) samplesTable.getModel();
         int counter = 1;
         for (Sample aSample : samplesList) {
             tableModel.addRow(new String[]{String.valueOf(counter), aSample.getName()});
             counter++;
         }
-        projectsTable.setModel(tableModel);
+        samplesTable.setModel(tableModel);
     }
 
-    private void initTables(Project project) {
-        tables = new HashMap<>();
-        tables.put(0, projectsTable);
-        tables.put(1, experimentsTable);
-        tables.put(2, samplesTable);
-        tables.put(3, runsTable);
+    private void loadRunsTable(long sampleID) {
+        runList = analyticalRunService.findAnalyticalRunsBySampleId(sampleID);
+        DefaultTableModel tableModel = (DefaultTableModel) runsTable.getModel();
+        selectedSampleID = sampleID;
+        int counter = 1;
+        for (AnalyticalRun aRun : runList) {
+            tableModel.addRow(new String[]{String.valueOf(counter), aRun.getName()});
+            counter++;
+        }
+        loadPsmTable(0);
+        runsTable.setModel(tableModel);
+    }
+
+    private void loadPsmTable(long aRun) {
+        spectrumList = runList.get((int) aRun).getSpectrums();
+        DefaultTableModel tableModel = (DefaultTableModel) psmTable.getModel();
+        selectedRun = spectrumList.indexOf(aRun);
+        int counter = 1;
+        for (Spectrum aSpectrum : spectrumList) {
+            com.compomics.colims.model.Peptide aPeptideLine = aSpectrum.getPeptides().get(0);
+            tableModel.addRow(new String[]{String.valueOf(counter),
+                aPeptideLine.getPeptideHasProteins().get(0).getMainGroupProtein().getAccession(),
+                aPeptideLine.getSequence(),
+                aSpectrum.getTitle(),
+                String.valueOf(aSpectrum.getMzRatio()),
+                String.valueOf(aSpectrum.getCharge()),
+                String.valueOf(aSpectrum.getIntensity()),
+                String.valueOf(aSpectrum.getRetentionTime())});
+            counter++;
+        }
+        psmTable.setModel(tableModel);
     }
 
     private void cascadeTables(int startingLevel, long value) {
@@ -2037,12 +2114,25 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
                     value = 1;
                 case 3:
                     loadRunsTable(value);
+                    value = 1;
+                case 4:
+                    loadPsmTable(value);
+                    updateSpectrumAnnotations();
             }
         }
     }
 
-    private void loadRunsTable(long value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void addMouseListeners(final JTable table, final int level) {
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = table.rowAtPoint(e.getPoint());
+                    int col = 0;
+                    long selectedValue = (Long) table.getValueAt(row, col);
+                    cascadeTables(level, selectedValue);
+                }
+            }
+        });
     }
-
 }
