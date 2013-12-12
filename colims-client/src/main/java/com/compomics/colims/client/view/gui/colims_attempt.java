@@ -1,10 +1,13 @@
 package com.compomics.colims.client.view.gui;
 
+import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Sample;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.IonFactory;
@@ -52,6 +55,7 @@ import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
@@ -76,9 +80,12 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
     @Autowired
     PeptideService peptideService;
     @Autowired
+    ExperimentService experimentService;
+    @Autowired
     SampleService sampleService;
     @Autowired
     SpectrumService spectrumServiceImpl;
+
     /**
      * Turns of the gradient painting for the bar charts.
      */
@@ -130,6 +137,7 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
      * The label with for the numbers in the jsparklines columns.
      */
     private int labelWidth = 50;
+    private HashMap<Object, Object> tables;
 
     /**
      * Creates a new colims GUI.
@@ -1981,13 +1989,60 @@ public class colims_attempt extends javax.swing.JFrame implements ExportGraphics
             counter++;
         }
         projectsTable.setModel(tableModel);
+        loadExperimentTable(1);
+        loadSampleTable(1);
     }
 
     private void loadExperimentTable(long projectID) {
+        List<Experiment> experimentList = experimentService.findAll();
+        DefaultTableModel tableModel = (DefaultTableModel) experimentsTable.getModel();
+        int counter = 1;
+        for (Experiment anExperiment : experimentList) {
+            tableModel.addRow(new String[]{String.valueOf(counter), anExperiment.getTitle()});
+            counter++;
+        }
+        projectsTable.setModel(tableModel);
+    }
 
+    private void loadSampleTable(long experimentID) {
+        List<Sample> samplesList = sampleService.findSampleByExperimentId(experimentID);
+        DefaultTableModel tableModel = (DefaultTableModel) samplesTable.getModel();
+        int counter = 1;
+        for (Sample aSample : samplesList) {
+            tableModel.addRow(new String[]{String.valueOf(counter), aSample.getName()});
+            counter++;
+        }
+        projectsTable.setModel(tableModel);
     }
 
     private void initTables(Project project) {
-
+        tables = new HashMap<>();
+        tables.put(0, projectsTable);
+        tables.put(1, experimentsTable);
+        tables.put(2, samplesTable);
+        tables.put(3, runsTable);
     }
+
+    private void cascadeTables(int startingLevel, long value) {
+        for (int i = startingLevel; i == tables.size(); i++) {
+            switch (i) {
+                case 0:
+                    loadProjectTable();
+                    value = 1;
+                case 1:
+                    loadExperimentTable(value);
+                    value = 1;
+                case 2:
+                    loadSampleTable(value);
+                    value = 1;
+                case 3:
+                    loadRunsTable(value);
+            }
+        }
+    }
+
+    private void loadRunsTable(long value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

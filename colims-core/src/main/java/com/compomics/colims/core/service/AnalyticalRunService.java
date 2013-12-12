@@ -4,14 +4,14 @@
  */
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.AnalyticalRun;
 import java.util.List;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public interface SampleService extends GenericService<Sample, Long> {
+public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {
 
-    public List<Sample> findSampleByExperimentId(Long experimentId);
+    public List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleId);
 }

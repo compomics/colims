@@ -23,6 +23,11 @@ public class SampleServiceImpl implements SampleService {
     private SampleRepository sampleRepository;
 
     @Override
+    public List<Sample> findSampleByExperimentId(Long experimentId) {
+        return sampleRepository.findSampleByExperimentId(experimentId);
+    }
+
+    @Override
     public Sample findById(Long id) {
         return sampleRepository.findById(id);
     }
