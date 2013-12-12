@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  * @author Davy Maddelein
  */
 @Component("colimsCpsImporter")
-public class ColimsCpsImporter implements ColimsFileImporter {
+public class ColimsMaxQuantImporter implements ColimsFileImporter {
 
     @Autowired
     UserService userService;
@@ -44,31 +44,14 @@ public class ColimsCpsImporter implements ColimsFileImporter {
 
     /**
      *
-     * @param cpsFileFolder the folder where the resultfiles of the peptideshaker search
-     * are located in
+     * @param quantFolder the folder where the resultfiles of the quant search are located in
      * @return if the folder contains all required files
      */
     @Override
-    public boolean validate(File cpsFileFolder) {
-        boolean validatedCps = false;
-        boolean validatedMGF = false;
-        boolean validatedFasta = false;
-        for (File aFile : cpsFileFolder.listFiles()) {
-            if (aFile.getName().endsWith(".cps")) {
-                validatedCps = true;
-            }
-            if (aFile.getName().endsWith(".mgf")) {
-                validatedMGF = true;
-            }
-            if (aFile.getName().endsWith(".fasta")) {
-                validatedFasta = true;
-            }
-        }
-        return (validatedCps
-                && validatedMGF
-                && validatedFasta);
+    public boolean validate(File quantFolder){
+        return true;
     }
-
+    
     @Override
     public void storeFile(String username, File cpsFileFolder) throws PeptideShakerIOException, MappingException {
         User user = userService.findByName(username);

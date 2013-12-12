@@ -4,11 +4,14 @@
  */
 package com.compomics.colims.core.storage.processing.storagequeue;
 
+import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.colimsimport.ColimsCpsImporter;
 import com.compomics.colims.core.storage.processing.colimsimport.ColimsFileImporter;
+import com.compomics.colims.core.storage.processing.colimsimport.ColimsImporterFactory;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -73,12 +76,19 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 //TODO ACTUALLY STORE THIS!!!!
                 try {
                     LOGGER.debug("Storing " + taskToStore.getFileLocation() + " to colims");
-                    if (taskToStore.getFileLocation().toLowerCase().endsWith(".cps")) {
-                        colimsFileImporter = new ColimsCpsImporter();
+                    File fileToStore = new File(taskToStore.getFileLocation());
+                    colimsFileImporter = ColimsImporterFactory.getImporter(fileToStore);
+                    if (colimsFileImporter.validate(fileToStore)) {
+                        colimsFileImporter.storeFile(taskToStore.getUserName(), fileToStore.getParentFile());
+                        updateTask(taskToStore, StorageState.STORED);
+                    } else {
+                        updateTask(taskToStore, StorageState.ERROR);
                     }
-                    colimsFileImporter.storeFile(taskToStore.getUserName(), new File(taskToStore.getFileLocation()).getParentFile());
-                    updateTask(taskToStore, StorageState.STORED);
-                } catch (Throwable e) {
+                } catch (MappingException e) {
+                    updateTask(taskToStore, StorageState.ERROR);
+                } catch (PeptideShakerIOException e) {
+                    updateTask(taskToStore, StorageState.ERROR);
+                } catch (IOException e) {
                     updateTask(taskToStore, StorageState.ERROR);
                 } finally {
                     try {
@@ -264,7 +274,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
      */
     public StorageTask addNewTask(String fileLocation, String userName) {
         long key = -1L;
-           c = getConnection();
+        c = getConnection();
         try (PreparedStatement stmt = c.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, "NEW");
             stmt.setString(2, fileLocation);

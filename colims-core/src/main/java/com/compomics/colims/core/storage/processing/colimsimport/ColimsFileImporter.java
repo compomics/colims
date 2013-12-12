@@ -15,5 +15,7 @@ import java.io.File;
  */
 public interface ColimsFileImporter {
 
-    public void storeFile(String username, File cpsFileFolder) throws PeptideShakerIOException, MappingException;
+    public void storeFile(String username, File fileFolder) throws PeptideShakerIOException, MappingException;
+    
+    public boolean validate(File fileFolder);
 }

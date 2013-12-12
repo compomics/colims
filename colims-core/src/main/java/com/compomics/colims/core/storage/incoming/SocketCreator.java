@@ -51,7 +51,7 @@ public class SocketCreator {
         boolean success = false;
         Socket socket = null;
         try {
-            LOGGER.debug(masterIPAddress + ":" + masterPort);
+            LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
             out.println(Username + ">.<" + fileLocation);
@@ -66,9 +66,6 @@ public class SocketCreator {
             LOGGER.error(ex);
             success = false;
         } catch (IOException ex) {
-            LOGGER.error(ex);
-            success = false;
-        } catch (Throwable ex) {
             LOGGER.error(ex);
             success = false;
         } finally {
