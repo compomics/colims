@@ -54,7 +54,7 @@ public class ColimsMaxQuantImporter implements ColimsFileImporter {
     }
     
     @Override
-    public void storeFile(String username, File cpsFileFolder) throws PeptideShakerIOException, MappingException {
+    public void storeFile(String username, File cpsFileFolder,long sampleId) throws PeptideShakerIOException, MappingException {
         User user = userService.findByName(username);
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);

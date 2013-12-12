@@ -12,9 +12,11 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.mapper.Mapper;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.io.File;
@@ -33,6 +35,8 @@ public class ColimsCpsImporter implements ColimsFileImporter {
 
     @Autowired
     UserService userService;
+    @Autowired
+    SampleService sampleService;
     @Autowired
     AuthenticationBean authenticationBean;
     PeptideShakerImport peptideShakerImport;
@@ -77,16 +81,19 @@ public class ColimsCpsImporter implements ColimsFileImporter {
     }
 
     @Override
-    public void storeFile(String username, File cpsFileFolder) throws PeptideShakerIOException, MappingException {
+    public void storeFile(String username, File cpsFileFolder, long sampleID) throws PeptideShakerIOException, MappingException {
         User user = userService.findByName(username);
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
+
+        Sample sample = sampleService.findById(sampleID);
+
         String label = "default";
         for (File fileInFolder : cpsFileFolder.listFiles()) {
             if (fileInFolder.getName().contains(".cps")) {
                 label = fileInFolder.getName().replace(".cps", "");
                 if (label.length() > 20) {
-                    label = label.substring(label.length()-19, label.length());
+                    label = label.substring(label.length() - 19, label.length());
                 }
                 peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(fileInFolder);
             }
@@ -103,15 +110,27 @@ public class ColimsCpsImporter implements ColimsFileImporter {
         experiment = new Experiment();
         utilitiesExperimentMapper.map(peptideShakerImport, experiment);
 
-        Project project = new Project();
-        project.setDescription("test description");
-        project.setTitle("project title");
-        project.setOwner(user);
-        project.setLabel(label);
-        List<Experiment> experiments = new ArrayList<>();
-        experiments.add(experiment);
-        experiment.setProject(project);
+        List<AnalyticalRun> analyticalRunForThisSample = new ArrayList<>();
+        analyticalRunForThisSample.add(new AnalyticalRun());
 
-        projectService.save(project);
+        for (AnalyticalRun anAnalyticalRun : analyticalRunForThisSample) {
+            anAnalyticalRun.setSample(sample);
+        }
+
+        sample.setAnalyticalRuns(analyticalRunForThisSample);
+
+        sampleService.save(sample);
+        /*
+         experiment = new Experiment();
+         utilitiesExperimentMapper.map(peptideShakerImport, experiment);
+         Project project = new Project();
+         project.setDescription("test description");
+         project.setTitle("project title");
+         project.setOwner(user);
+         project.setLabel(label);
+         List<Experiment> experiments = new ArrayList<>();
+         experiments.add(experiment);
+         experiment.setProject(project);
+         projectService.save(project);*/
     }
 }

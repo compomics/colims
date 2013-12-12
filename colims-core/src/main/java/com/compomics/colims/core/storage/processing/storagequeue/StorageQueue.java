@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,16 +77,12 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     File fileToStore = new File(taskToStore.getFileLocation());
                     ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
                     if (colimsFileImporter.validate(fileToStore.getParentFile())) {
-                        colimsFileImporter.storeFile(taskToStore.getUserName(), fileToStore.getParentFile());
+                        colimsFileImporter.storeFile(taskToStore.getUserName(), fileToStore.getParentFile(), taskToStore.getSampleID());
                         updateTask(taskToStore, StorageState.STORED);
                     } else {
                         updateTask(taskToStore, StorageState.ERROR);
                     }
-                } catch (MappingException e) {
-                    updateTask(taskToStore, StorageState.ERROR);
-                } catch (PeptideShakerIOException e) {
-                    updateTask(taskToStore, StorageState.ERROR);
-                } catch (IOException e) {
+                } catch (IOException | PeptideShakerIOException | MappingException ex) {
                     updateTask(taskToStore, StorageState.ERROR);
                 } finally {
                     try {
