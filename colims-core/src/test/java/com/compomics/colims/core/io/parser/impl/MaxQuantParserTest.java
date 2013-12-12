@@ -69,7 +69,7 @@ public class MaxQuantParserTest {
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
         result = maxQuantParser.getIdentificationsFromParsedFile();
         assertThat(result.iterator().hasNext(), is(true));
-        assertThat(result.size(),is(515));
+        assertThat(result.size(), both(is(774)).and(is(maxQuantParser.getSpectra().size())));
     }
 
     /**
@@ -92,7 +92,7 @@ public class MaxQuantParserTest {
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
         result = maxQuantParser.getSpectra();
         assertThat(result.iterator().hasNext(), is(true));
-        assertThat(result.size(),is(775));
+        assertThat(result.size(), is(774));
     }
 
     /**

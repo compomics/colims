@@ -32,7 +32,7 @@ public class MaxQuantParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
     private static final String EVIDENCETXT = "evidence.txt";
-    private static final String PROTEINGROUPS = "proteingroups.txt";
+    private static final String PROTEINGROUPS = "proteinGroups.txt";
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
     @Autowired
