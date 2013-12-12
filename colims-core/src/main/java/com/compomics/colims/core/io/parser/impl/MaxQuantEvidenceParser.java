@@ -47,8 +47,8 @@ public class MaxQuantEvidenceParser {
      * modifications within to the quantificationGroup.
      *
      * @param evidenceFile
-     * @param quantificationGroup
      * @throws IOException
+     * @return a Map with key the best msms id and value the peptideAssumption
      */
     public Map<Integer, PeptideAssumption> parse(final File evidenceFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         // Convert file into some values we can loop over, without reading file in at once
@@ -58,29 +58,28 @@ public class MaxQuantEvidenceParser {
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
-            try {
-                PeptideAssumption assumption = createPeptide(values);
-                //linkPeptideToProtein(peptide, values);
-                //linkPeptideToModifications(peptide, values);
-                Integer bestMsMs;
-                if (values.containsKey(EvidenceHeaders.best_MS_MS_ID.getColumnName())) {
-                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.best_MS_MS_ID.getColumnName()));
-                } else {
-                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";")[0]);
+            PeptideAssumption assumption = createPeptide(values);
+            //linkPeptideToProtein(peptide, values);
+            //linkPeptideToModifications(peptide, values);
+            if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName())) {
+                String[] msmsIds = values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";");
+                for (String msmsId : msmsIds) {
+                    if (parsedPeptideList.containsKey(Integer.parseInt(msmsId))){
+                        throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
+                    }
+                    parsedPeptideList.put(Integer.parseInt(msmsId), assumption);
                 }
-
-                parsedPeptideList.put(bestMsMs, assumption);
-            } catch (UnparseableException upe) {
-                //TODO decide what to do with this
-                LOGGER.error(upe);
+            } else {
+                throw new UnparseableException("no spectrum found for an identified peptide");
             }
-            // QuantificationGroupHasPeptide
-            // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
-            //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
-            //quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
-            //quantificationGroupHasPeptide.setPeptide(peptide);
-            // TODO Store QuantificationGroupHasPeptide instances
         }
+        // QuantificationGroupHasPeptide
+        // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
+        //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
+        //quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
+        //quantificationGroupHasPeptide.setPeptide(peptide);
+        // TODO Store QuantificationGroupHasPeptide instances
+
         return parsedPeptideList;
     }
 
@@ -253,7 +252,7 @@ public class MaxQuantEvidenceParser {
                         }
                     }
                     // Find precise location
-                } else if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
+                } if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
 
                     if ("1".equals(modificationString)) {
                         // N-term has position 0
@@ -268,6 +267,7 @@ public class MaxQuantEvidenceParser {
                 String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
                 throw new IllegalStateException(message);
             }
+
             //TODO parse parameters for fixed and variable modifications
         }
         // Retrieve modification from database, or create a new one
