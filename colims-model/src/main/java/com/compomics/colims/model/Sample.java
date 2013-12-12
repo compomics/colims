@@ -27,7 +27,7 @@ import javax.persistence.Table;
 public class Sample extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Basic(optional = true)
     @Column(name = "name")
     private String name;
@@ -48,9 +48,9 @@ public class Sample extends AbstractDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "sample_has_material",
             joinColumns = {
-        @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
+                @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
@@ -60,7 +60,7 @@ public class Sample extends AbstractDatabaseEntity {
 
     public Sample(String name) {
         this.name = name;
-    }    
+    }
 
     public String getName() {
         return name;
