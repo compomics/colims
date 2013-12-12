@@ -66,7 +66,7 @@ public class MaxQuantIdentificationIntegrationTest {
         Map<Integer, PeptideAssumption> parsedPeptides = maxQuantEvidenceParser.parse(evidenceFile);
 
         //then test if the peptides were properly parsed
-        assertThat(parsedPeptides.size(), is(999));
+        assertThat(parsedPeptides.size(), is(2408));
         assertThat(parsedPeptides.get(4).getPeptide().getSequence(),is(not(nullValue())));
         assertThat(parsedPeptides.get(4).getPeptide().getSequence(), is("AAAAGENEEWTTDYPHFADVADQEGFPAIATMYR"));
         assertThat(parsedPeptides.get(4).getPeptide().getParentProteins().size(), is(2));
@@ -79,12 +79,12 @@ public class MaxQuantIdentificationIntegrationTest {
         //acetyl only
         assertThat(parsedPeptides.get(175),is(not(nullValue())));
         assertThat(parsedPeptides.get(175).getPeptide().getModificationMatches().size(), is(1));
-        assertThat(parsedPeptides.get(175).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("Acetyl (Protein N-term)"));
+        assertThat(parsedPeptides.get(175).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("acetyl (protein n-term)"));
         //is N-term
         assertThat(parsedPeptides.get(175).getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
         //oxidation only
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().size(), is(1));
-        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("Oxidation (M) Probabilities"));
+        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m) probabilities"));
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(10));
         //both (don't have an entry for this yet)
 

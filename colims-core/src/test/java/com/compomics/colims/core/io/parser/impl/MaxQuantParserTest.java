@@ -1,11 +1,8 @@
 package com.compomics.colims.core.io.parser.impl;
 
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -44,6 +41,7 @@ public class MaxQuantParserTest {
     public void testParseMaxQuantTextFolder() throws Exception {
         System.out.println("parseMaxQuantTextFolder");
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        assertThat(maxQuantParser.hasParsedAFile(), is(true));
     }
 
     /**
@@ -66,11 +64,12 @@ public class MaxQuantParserTest {
     @Test
     public void testGetIdentificationsFromParsedFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getIdentificationsFromParsedFile");
-        Iterator result = maxQuantParser.getIdentificationsFromParsedFile();
-        assertThat(result.hasNext(), is(false));
+        Collection result = maxQuantParser.getIdentificationsFromParsedFile();
+        assertThat(result.iterator().hasNext(), is(false));
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
         result = maxQuantParser.getIdentificationsFromParsedFile();
-        assertThat(result.hasNext(), is(true));
+        assertThat(result.iterator().hasNext(), is(true));
+        assertThat(result.size(),is(515));
     }
 
     /**
@@ -79,18 +78,21 @@ public class MaxQuantParserTest {
     @Test
     public void testGetIdentificationForSpectrum() {
         System.out.println("getIdentificationForSpectrum");
-        MSnSpectrum aSpectrum = null;
-//        PeptideAssumption result = MaxQuantParser.getIdentificationForSpectrum(aSpectrum);
+        //PeptideAssumption result = MaxQuantParser.getIdentificationForSpectrum(aSpectrum);
     }
 
     /**
      * Test of getSpectra method, of class MaxQuantParser.
      */
     @Test
-    public void testGetSpectra() {
+    public void testGetSpectra() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getSpectra");
-        Iterator result = maxQuantParser.getSpectra();
-        assertThat(result.hasNext(), is(false));
+        Collection result = maxQuantParser.getSpectra();
+        assertThat(result.iterator().hasNext(), is(false));
+        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        result = maxQuantParser.getSpectra();
+        assertThat(result.iterator().hasNext(), is(true));
+        assertThat(result.size(),is(775));
     }
 
     /**

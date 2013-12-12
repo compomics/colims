@@ -22,9 +22,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantEvidenceParserTest {
 
-    File getFile(final String filename) {
-        return new File(getClass().getClassLoader().getResource(filename).getFile());
-    }
     @Autowired
     MaxQuantEvidenceParser maxQuantEvidenceParser;
     @Autowired

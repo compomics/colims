@@ -141,13 +141,19 @@ public class MaxQuantColimsInsertTest {
         int startSpectraCount = spectrumService.findAll().size();
         System.out.println("start amount of spectra = " + startSpectraCount);
         spectrumMap = maxQuantMsMsParser.parse(maxQuantMsMsFile, true);
+        List<Spectrum> spectrumHolder = new ArrayList<>();
         for (MSnSpectrum spectrum : spectrumMap.values()) {
             Spectrum colimsSpectrum = new Spectrum();
             utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
-            spectrumService.save(colimsSpectrum);
+            spectrumHolder.add(colimsSpectrum);
         }
-        int endAmountOfSpectra = spectrumService.findAll().size();
+        for (Spectrum spectrum : spectrumHolder){
+            spectrumService.save(spectrum);
+        }
+        List<Spectrum> storedSpectra = spectrumService.findAll();
+        int endAmountOfSpectra = storedSpectra.size();
         System.out.println("end amount of spectra is " + endAmountOfSpectra);
         assertThat(endAmountOfSpectra, is(both(not(startSpectraCount)).and(is(999))));
+        assertThat(storedSpectra.get(138).getTitle(),is (spectrumHolder.get(138).getTitle()));
     }
 }
