@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.colimsimport;
+package com.compomics.colims.core.storage.processing.colimsimport.impl;
 
+import com.compomics.colims.core.storage.processing.colimsimport.ColimsFileImporter;
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
@@ -24,9 +25,9 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author Davy Maddelein
+ * @author Kenneth Verheggen
  */
-@Component("colimsCpsImporter")
+@Component("colimsMaxQuantImporter")
 public class ColimsMaxQuantImporter implements ColimsFileImporter {
 
     @Autowired
@@ -77,6 +78,7 @@ public class ColimsMaxQuantImporter implements ColimsFileImporter {
             }
             experiment = new Experiment();
             utilitiesExperimentMapper.map(peptideShakerImport, experiment);
+            
             Project project = new Project();
             project.setDescription("test description");
             project.setTitle("project title");

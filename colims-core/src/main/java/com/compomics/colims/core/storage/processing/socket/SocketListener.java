@@ -4,20 +4,28 @@
  */
 package com.compomics.colims.core.storage.processing.socket;
 
+import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.core.storage.processing.storagequeue.StorageQueue;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Kenneth
  */
+@Component("socketListener")
 public class SocketListener {
+
+    @Autowired
+    StorageQueue storageQueue;
+    @Autowired
+    SocketHandler socketHandler;
 
     private int port = 24567;
     private ServerSocket serverSocket;
@@ -26,26 +34,10 @@ public class SocketListener {
 
     /**
      *
-     * @param port the port on which this serversocket should listen
-     */
-    public SocketListener(int port) {
-        this.port = port;
-    }
-
-    /**
-     * Creates a socketlistener that runs on a port. Allows the clients to
-     * connect here
-     */
-    public SocketListener() {
-
-    }
-
-    /**
-     *
      * This method starts the socketListener and the StorageQueue
      */
-    public void launch() {
-
+    public void launch(int port) {
+        this.port = port;
         LOGGER.info("Booting colims storage controller on port " + port);
         try {
             serverSocket = new ServerSocket(port);
@@ -54,18 +46,28 @@ public class SocketListener {
         }
 
         LOGGER.debug("Starting Queue");
-        Thread storingThread = new Thread(StorageQueue.getInstance());
+        Thread storingThread = new Thread(storageQueue);
         storingThread.start();
 
         LOGGER.debug("Accepting sockets: It's go time!");
         handleAllIncomingSockets();
     }
 
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
     private void handleAllIncomingSockets() {
         while (true) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                threadService.submit(new SocketHandler(incomingSocket));
+                socketHandler = (SocketHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("socketHandler");
+                socketHandler.setSocket(incomingSocket);
+                threadService.submit(socketHandler);
             } catch (IOException ex) {
                 LOGGER.error(ex);
             } finally {

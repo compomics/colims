@@ -10,9 +10,13 @@ import com.compomics.colims.core.storage.processing.storagequeue.StorageQueue;
 import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -20,27 +24,45 @@ import static org.junit.Assert.*;
  */
 public class DistributedStorageTest {
 
-    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/test/ColimsController/");
+
+    @Autowired
+    StorageQueue storageQueue;
 
     public DistributedStorageTest() {
+    }
+
+    @Before
+    public void clearDbBefore() throws IOException {
+        FileUtils.deleteDirectory(testTaskDbAddress);
+    }
+
+    @After
+    public void clearDbAfter() throws IOException, SQLException {
+        try {
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        } catch (IOException e) {
+            storageQueue.disconnect();
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        }
     }
 
     /**
      * Test of offer method, of class StorageQueue.
      */
     @Test
-    public void testOfferAndRetrieve() throws IOException {
-        FileUtils.deleteDirectory(testTaskDbAddress);
+    public void testOfferAndRetrieve() throws IOException, SQLException {
+
         System.out.println("Test offer file to store");
         StorageTask task = null;
-        StorageQueue instance = StorageQueue.getInstance(testTaskDbAddress.getAbsolutePath());
-        task = instance.addNewTask("myFiles/testingFile.cps", "admin1");
-        StorageTask taskFromDb = instance.getTask(task.getTaskID(), true);
+        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1");
+        StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
+        storageQueue.disconnect();
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");
         assertEquals(taskFromDb.getTaskID(), 1);
         assertEquals(taskFromDb.getState(), StorageState.WAITING);
         assertEquals(taskFromDb.getUserName(), "admin1");
-        assertEquals(instance.peek().getTaskID(), 1);
+        assertEquals(storageQueue.peek().getTaskID(), 1);
     }
 
 }

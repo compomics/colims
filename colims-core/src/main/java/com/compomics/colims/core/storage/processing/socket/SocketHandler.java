@@ -17,27 +17,35 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Kenneth Verheggen
  */
+
+@Component("socketHandler")
+@Scope("prototype")
 public class SocketHandler implements Runnable {
 
+    @Autowired
+    StorageQueue storageQueue;
     private static final Logger LOGGER = Logger.getLogger(SocketHandler.class);
-    private final Socket socket;
-    private final StorageQueue queue = StorageQueue.getInstance();
+    private Socket socket;
+
     private BufferedReader in;
 
-    /**
-     *
-     * @param incomingSocket the incoming socket that needs to be handled
-     */
-    public SocketHandler(Socket incomingSocket) {
-        this.socket = incomingSocket;
-
+    public Socket getSocket() {
+        return socket;
     }
 
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    
     @Override
     public void run() {
         try {
@@ -63,7 +71,7 @@ public class SocketHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = queue.addNewTask(responseArgs[1], responseArgs[0]);
+            task = storageQueue.addNewTask(responseArgs[1], responseArgs[0]);
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
             break;
         }

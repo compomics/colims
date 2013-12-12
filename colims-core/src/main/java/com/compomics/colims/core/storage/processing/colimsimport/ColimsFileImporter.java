@@ -11,7 +11,7 @@ import java.io.File;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
 public interface ColimsFileImporter {
 
