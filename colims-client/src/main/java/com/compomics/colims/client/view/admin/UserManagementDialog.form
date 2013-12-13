@@ -130,7 +130,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addUserButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteUserButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <Component id="userListScrollPane" pref="158" max="32767" attributes="0"/>
@@ -457,7 +457,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addGroupButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteGroupButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <Component id="groupListScrollPane" pref="158" max="32767" attributes="0"/>
@@ -744,7 +744,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addRoleButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteRoleButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <Component id="roleListScrollPane" alignment="0" pref="158" max="32767" attributes="0"/>
@@ -1031,7 +1031,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="addPermissionButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deletePermissionButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <Component id="permissionListScrollPane" alignment="0" pref="158" max="32767" attributes="0"/>

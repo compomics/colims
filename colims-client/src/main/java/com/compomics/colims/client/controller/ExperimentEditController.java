@@ -3,10 +3,14 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
+import com.compomics.colims.client.view.ExperimentEditDialog;
 import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
@@ -36,10 +40,11 @@ public class ExperimentEditController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
     //model   
     private BindingGroup bindingGroup;
-    private ObservableList<User> userBindingList;
-    private Project projectToEdit;
+    private ObservableList<Protocol> protocolBindingList;
+    private Experiment experimentToEdit;
     //view
-    private ProjectEditDialog projectEditDialog;
+    private ExperimentEditDialog experimentEditDialog;
+    private 
     //parent controller
     @Autowired
     private ProjectManagementController projectManagementController;
@@ -49,12 +54,12 @@ public class ExperimentEditController implements Controllable {
     @Autowired
     private ProjectService projectService;
     @Autowired
-    private UserService userService;
+    private ProtocolService protocolService;
     @Autowired
     private EventBus eventBus;
 
-    public ProjectEditDialog getProjectEditDialog() {
-        return projectEditDialog;
+    public ExperimentEditDialog getExperimentEditDialog() {
+        return experimentEditDialog;
     }
 
     public void init() {
@@ -62,58 +67,55 @@ public class ExperimentEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
+        experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);
 
         bindingGroup = new BindingGroup();
 
-        //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());
-
         //add binding
-        userBindingList = ObservableCollections.observableList(userService.findAll());
+        protocolBindingList = ObservableCollections.observableList(protocolService.findAll());
 
-        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
+        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, protocolBindingList, experimentEditDialog.getProtocolComboBox());
         bindingGroup.addBinding(instrumentTypeComboBoxBinding);
 
         bindingGroup.bind();
 
-        //add action listeners
-        projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+        //add action listeners                
+        experimentEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 List<User> addedUsers = (List<User>) evt.getNewValue();
 
-                projectToEdit.setUsers(addedUsers);
+                experimentToEdit.setUsers(addedUsers);
             }
         });
 
-        projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
+        experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //update projectToEdit with dialog input
-                updateProjectToEdit();                
+                updateExperimentToEdit();
 
                 //validate project
-                List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
+                List<String> validationMessages = GuiUtils.validateEntity(experimentToEdit);
                 //check for a new project if the project title already exists in the db                
-                if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
-                    validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
+                if (experimentToEdit.getId() == null && isExistingProjectTitle(experimentToEdit)) {
+                    validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
                             + "\n" + "please choose another project title.");
                 }
                 int index = 0;
                 if (validationMessages.isEmpty()) {
-                    if (projectToEdit.getId() != null) {
-                        projectService.update(projectToEdit);
+                    if (experimentToEdit.getId() != null) {
+                        projectService.update(experimentToEdit);
                         index = projectManagementController.getSelectedProjectIndex();
                     } else {
-                        projectService.save(projectToEdit);
+                        projectService.save(experimentToEdit);
                         //add project to overview table
-                        projectManagementController.addProject(projectToEdit);
+                        projectManagementController.addProject(experimentToEdit);
                         index = projectManagementController.getProjectsSize() - 1;
                     }
-                    projectEditDialog.getSaveOrUpdateButton().setText("update");
+                    experimentEditDialog.getSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + experimentToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in project list in management overview dialog
@@ -125,18 +127,18 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
+        experimentEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectEditDialog.dispose();
+                experimentEditDialog.dispose();
             }
         });
     }
 
     @Override
     public void showView() {
-        projectEditDialog.setLocationRelativeTo(null);
-        projectEditDialog.setVisible(true);
+        experimentEditDialog.setLocationRelativeTo(null);
+        experimentEditDialog.setVisible(true);
     }
 
     /**
@@ -144,35 +146,35 @@ public class ExperimentEditController implements Controllable {
      * overview table.
      */
     public void updateView(Project project) {
-        projectToEdit = project;
-        
-        if (projectToEdit.getId() != null) {
-            projectEditDialog.getSaveOrUpdateButton().setText("update");
+        experimentToEdit = project;
+
+        if (experimentToEdit.getId() != null) {
+            experimentEditDialog.getSaveOrUpdateButton().setText("update");
         } else {
-            projectEditDialog.getSaveOrUpdateButton().setText("save");
+            experimentEditDialog.getSaveOrUpdateButton().setText("save");
         }
 
-        projectEditDialog.getTitleTextField().setText(projectToEdit.getTitle());
-        projectEditDialog.getLabelTextField().setText(projectToEdit.getLabel());
+        experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());
+        experimentEditDialog.getNumberTextField().setText(experimentToEdit.get);
 
         //set the selected item in the owner combobox        
-        projectEditDialog.getOwnerComboBox().setSelectedItem(projectToEdit.getOwner());
-        projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
+        experimentEditDialog.getOwnerComboBox().setSelectedItem(experimentToEdit.getOwner());
+        experimentEditDialog.getDescriptionTextArea().setText(experimentToEdit.getDescription());
         //populate user dual list
-        projectEditDialog.getUserDualList().populateLists(userService.findAll(), projectToEdit.getUsers());
-        
+        experimentEditDialog.getUserDualList().populateLists(protocolService.findAll(), experimentToEdit.getUsers());
+
         showView();
     }
 
     /**
-     * Update the instance fields of the selected project in the projects table
+     * Update the instance fields of the selected experiment in the experiments table
      *
      */
-    private void updateProjectToEdit() {
-        projectToEdit.setTitle(projectEditDialog.getTitleTextField().getText());
-        projectToEdit.setLabel(projectEditDialog.getLabelTextField().getText());
-        projectToEdit.setOwner(userBindingList.get(projectEditDialog.getOwnerComboBox().getSelectedIndex()));
-        projectToEdit.setDescription(projectEditDialog.getDescriptionTextArea().getText());
+    private void updateExperimentToEdit() {
+        experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
+        experimentToEdit.setNumber(experimentEditDialog.getLabelTextField().getText());
+        experimentToEdit.setOwner(userBindingList.get(experimentEditDialog.getOwnerComboBox().getSelectedIndex()));
+        experimentToEdit.setDescription(experimentEditDialog.getDescriptionTextArea().getText());
         //the users have been updated by the duallist listener
     }
 

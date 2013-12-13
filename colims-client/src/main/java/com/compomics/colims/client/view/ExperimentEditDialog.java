@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view;
 
-import com.compomics.colims.client.compoment.DualList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
@@ -50,6 +49,10 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
     public JTextField getTitleTextField() {
         return titleTextField;
+    }
+
+    public JComboBox getProtocolComboBox() {
+        return protocolComboBox;
     }        
     
     /**
