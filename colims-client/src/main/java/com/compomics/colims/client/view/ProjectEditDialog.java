@@ -73,7 +73,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("CoLims login");
+        setTitle("project metadata management");
 
         projectEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
