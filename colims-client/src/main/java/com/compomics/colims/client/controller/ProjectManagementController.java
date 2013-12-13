@@ -240,6 +240,59 @@ public class ProjectManagementController implements Controllable {
 
         return selectedProject;
     }
+    
+    /**
+     * Get the row index of the selected experiment in the experiments table
+     *
+     * @return
+     */
+    public int getSelectedExperimentIndex() {
+        return experimentsSelectionModel.getLeadSelectionIndex();
+    }
+
+    /**
+     * Set the selected experiment in the experiments table
+     *
+     * @param index
+     */
+    public void setSelectedExperiment(int index) {
+        experimentsSelectionModel.clearSelection();
+        experimentsSelectionModel.setLeadSelectionIndex(index);
+    }
+
+    /**
+     * Add a project to the projects table
+     *
+     * @param project
+     */
+    public void addExperiment(Experiment experiment) {
+        experiments.add(experiment);
+    }
+
+    /**
+     * Get the number of experiments in the experiments table
+     *
+     * @return
+     */
+    public int getExperimentsSize() {
+        return experiments.size();
+    }
+
+    /**
+     * Get the selected experiment from the experiment overview table.
+     *
+     * @return the selected experiment, null if no experiment is selected
+     */
+    public Experiment getSelectedExperiment() {
+        Experiment selectedExperiment = null;
+
+        EventList<Experiment> selectedExperiments = experimentsSelectionModel.getSelected();
+        if (!selectedExperiments.isEmpty()) {
+            selectedExperiment = selectedExperiments.get(0);
+        }
+
+        return selectedExperiment;
+    }
 
     /**
      * Create a default project, with some default properties.

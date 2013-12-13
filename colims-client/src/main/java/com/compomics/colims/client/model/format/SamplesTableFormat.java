@@ -2,31 +2,31 @@ package com.compomics.colims.client.model.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Sample;
 import java.util.Comparator;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Experiment> {
+public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
 
-    private static final String[] columnNames = {"Id", "Title", "Number", "Number of samples"};
-    public static final int EXPERIMENT_ID = 0;
-    public static final int TITLE = 1;
-    public static final int NUMBER = 2;
-    public static final int NUMBER_OF_SAMPLES = 3;
+    private static final String[] columnNames = {"Id", "Name", "Condition", "Number of runs"};
+    public static final int SAMPLE_ID = 0;
+    public static final int NAME = 1;
+    public static final int CONDITION = 2;
+    public static final int NUMBER_OF_RUNS = 3;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case EXPERIMENT_ID:
+            case SAMPLE_ID:
                 return Long.class;
-            case TITLE:
+            case NAME:
                 return String.class;
-            case NUMBER:
-                return Long.class;
-            case NUMBER_OF_SAMPLES:
+            case CONDITION:
+                return String.class;
+            case NUMBER_OF_RUNS:
                 return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -49,16 +49,16 @@ public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Exper
     }
 
     @Override
-    public Object getColumnValue(Experiment experiment, int column) {
+    public Object getColumnValue(Sample sample, int column) {
         switch (column) {
-            case EXPERIMENT_ID:
-                return experiment.getId();
-            case TITLE:
-                return experiment.getTitle();
-            case NUMBER:
-                return experiment.getNumber();
-            case NUMBER_OF_SAMPLES:
-                return experiment.getSamples().size();
+            case SAMPLE_ID:
+                return sample.getId();
+            case NAME:
+                return sample.getName();
+            case CONDITION:
+                return sample.getCondition();
+            case NUMBER_OF_RUNS:
+                return sample.getAnalyticalRuns().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

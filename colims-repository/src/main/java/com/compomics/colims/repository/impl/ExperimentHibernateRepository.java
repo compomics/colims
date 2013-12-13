@@ -26,4 +26,9 @@ public class ExperimentHibernateRepository extends GenericHibernateRepository<Ex
         List<Experiment> list = subCriteria.add(Restrictions.eq("id", projectId)).list();
         return list;
     }
+    
+    @Override
+    public Experiment findByTitle(String title) {
+        return findUniqueByCriteria(Restrictions.eq("title", title));
+    }
 }

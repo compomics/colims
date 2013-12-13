@@ -166,7 +166,6 @@ public class ProjectEditController implements Controllable {
 
     /**
      * Update the instance fields of the selected project in the projects table
-     *
      */
     private void updateProjectToEdit() {
         projectToEdit.setTitle(projectEditDialog.getTitleTextField().getText());

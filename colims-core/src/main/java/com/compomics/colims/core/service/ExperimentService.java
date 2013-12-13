@@ -30,4 +30,12 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @return the list of experiments
      */
     List<Experiment> getExperimentsByProjectId(Long projectId);
+    
+    /**
+     * Find the experiment by title.
+     *
+     * @param title the experiment title
+     * @return the found experiment
+     */
+    Experiment findByTitle(String title);
 }

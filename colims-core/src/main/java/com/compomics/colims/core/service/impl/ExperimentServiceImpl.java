@@ -101,6 +101,11 @@ public class ExperimentServiceImpl implements ExperimentService {
 
     @Override
     public List<Experiment> getExperimentsByProjectId(Long projectId) {
-    return experimentRepository.getExperimentsByProjectId(projectId);
+        return experimentRepository.getExperimentsByProjectId(projectId);
+    }
+
+    @Override
+    public Experiment findByTitle(String title) {
+        return experimentRepository.findByTitle(title);
     }
 }
