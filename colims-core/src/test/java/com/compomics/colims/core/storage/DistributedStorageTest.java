@@ -57,16 +57,16 @@ public class DistributedStorageTest {
      */
     @Test
     public void testOfferAndRetrieve() throws IOException, SQLException {
-
         System.out.println("Test offer file to store");
         StorageTask task = null;
-        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1);
+        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1");
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
         storageQueue.disconnect();
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");
         assertEquals(taskFromDb.getTaskID(), 1);
         assertEquals(taskFromDb.getState(), StorageState.WAITING);
         assertEquals(taskFromDb.getUserName(), "admin1");
+        assertEquals(taskFromDb.getInstrumentId(), "instrument_1");
         assertEquals(storageQueue.peek().getTaskID(), 1);
     }
 

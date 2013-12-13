@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -43,6 +45,7 @@ public class Experiment extends AbstractDatabaseEntity {
     @ManyToOne
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     private Project project;
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")

@@ -55,7 +55,6 @@ INSERT INTO `experiment` (id, creation_date, modification_date, user_name, descr
 -- insert test sample
 INSERT INTO `sample` (id, creation_date, modification_date, user_name, l_experiment_id, l_protocol_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin',1,1);
 
-
 -- insert test material cv terms
 INSERT INTO `material_cv_term` (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_1','MS','species_1', 'PSI Mass Spectrometry','SPECIES'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_2','MS','tissue_1', 'PSI Mass Spectrometry','TISSUE'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_3','MS','cell_type_1', 'PSI Mass Spectrometry','CELL_TYPE'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_4','MS','compartment', 'PSI Mass Spectrometry','COMPARTMENT');
 

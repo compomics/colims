@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
  *
  * @author Kenneth
  */
-@Component("socketListener")
+@Component("storageController")
 public class StorageController {
 
     @Autowired
     StorageQueue storageQueue;
     @Autowired
-    StorageHandler socketHandler;
+    StorageHandler storageHandler;
 
     private int port = 24567;
     private ServerSocket serverSocket;
@@ -65,9 +65,9 @@ public class StorageController {
         while (true) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                socketHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("socketHandler");
-                socketHandler.setSocket(incomingSocket);
-                threadService.submit(socketHandler);
+                storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
+                storageHandler.setSocket(incomingSocket);
+                threadService.submit(storageHandler);
             } catch (IOException ex) {
                 LOGGER.error(ex);
             } finally {

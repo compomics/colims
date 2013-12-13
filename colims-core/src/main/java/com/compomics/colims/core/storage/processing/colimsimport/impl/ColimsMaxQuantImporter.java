@@ -30,18 +30,6 @@ import org.springframework.stereotype.Component;
 @Component("colimsMaxQuantImporter")
 public class ColimsMaxQuantImporter implements ColimsFileImporter {
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    AuthenticationBean authenticationBean;
-    PeptideShakerImport peptideShakerImport;
-    @Autowired
-    PeptideShakerIO peptideShakerIO;
-    @Autowired
-    Mapper utilitiesExperimentMapper;
-    @Autowired
-    ProjectService projectService;
-    Experiment experiment;
 
     /**
      *
@@ -54,40 +42,8 @@ public class ColimsMaxQuantImporter implements ColimsFileImporter {
     }
     
     @Override
-    public void storeFile(String username, File cpsFileFolder,long sampleId) throws PeptideShakerIOException, MappingException {
-        User user = userService.findByName(username);
-        userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
-        int cpsCounter = 0;
-
-        for (File cpsFolder : cpsFileFolder.listFiles()) {
-            cpsCounter++;
-            for (File fileInFolder : cpsFolder.listFiles()) {
-                if (fileInFolder.getName().contains(".cps")) {
-                    peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(fileInFolder);
-                }
-            }
-            List<File> mgfFiles = new ArrayList<>();
-            for (File fileInFolder : cpsFolder.listFiles()) {
-                if (fileInFolder.getName().contains(".mgf")) {
-                    mgfFiles.add(fileInFolder);
-                    peptideShakerImport.setMgfFiles(mgfFiles);
-                } else if (fileInFolder.getName().contains(".fasta")) {
-                    peptideShakerImport.setFastaFile(fileInFolder);
-                }
-            }
-            experiment = new Experiment();
-            utilitiesExperimentMapper.map(peptideShakerImport, experiment);
-            
-            Project project = new Project();
-            project.setDescription("test description");
-            project.setTitle("project title");
-            project.setLabel(String.valueOf(cpsCounter++));
-            List<Experiment> experiments = new ArrayList<>();
-            experiments.add(experiment);
-            experiment.setProject(project);
-
-            projectService.save(project);
+    public void storeFile(String username, File cpsFileFolder,long sampleId,String instrumentName) throws PeptideShakerIOException, MappingException {
+       
         }
     }
-}
+
