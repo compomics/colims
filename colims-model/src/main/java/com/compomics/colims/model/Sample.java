@@ -17,6 +17,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -52,6 +54,7 @@ public class Sample extends AbstractDatabaseEntity {
             inverseJoinColumns = {
                 @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
