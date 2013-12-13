@@ -1,5 +1,6 @@
 package com.compomics.colims.core.mapper;
 
+import com.compomics.colims.core.component.PtmFactoryWrapper;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -13,28 +14,29 @@ import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.User;
+import com.compomics.colims.repository.AuthenticationBean;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
+import org.junit.Before;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
@@ -55,7 +57,26 @@ public class PeptideShakerImportMapperTest {
     private SampleService sampleService;
     @Autowired
     private AnalyticalRunService analyticalRunService;
+    @Autowired
+    private PtmFactoryWrapper ptmFactoryWrapper;
+    @Autowired
+    private AuthenticationBean authenticationBean;
+    @Autowired
+    private UserService userService;
+    
 
+    @Before
+    public void setup() throws FileNotFoundException, IOException, XmlPullParserException {                                
+        //load mods from test resources instead of user folder
+        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
+        ptmFactoryWrapper.getPtmFactory().clearFactory();
+        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);        
+        
+        //set admin user in authentication bean
+        User adminUser = userService.findByName("admin1");
+        authenticationBean.setCurrentUser(adminUser);
+    }
+    
     @Test
     public void testMap() throws IOException, PeptideShakerIOException, MappingException, SQLException, ClassNotFoundException, FileNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
         //import PeptideShaker .cps file
@@ -71,7 +92,7 @@ public class PeptideShakerImportMapperTest {
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
         Assert.assertNotNull(testAnalyticalRun);
-        Assert.assertNotNull(testAnalyticalRun.getSample());
+        Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
         Assert.assertEquals(4706, testAnalyticalRun.getSpectrums().size());
 
@@ -105,13 +126,13 @@ public class PeptideShakerImportMapperTest {
             }
         }
         
-        //get sample from db
-        Sample sample = sampleService.findAll().get(0);
-        
-        //set sample and persist
-        for(AnalyticalRun analyticalRun : analyticalRuns){
-            analyticalRun.setSample(sample);
-            analyticalRunService.save(analyticalRun);
-        }
+//        //get sample from db
+//        Sample sample = sampleService.findAll().get(0);
+//        
+//        //set sample and persist
+//        for(AnalyticalRun analyticalRun : analyticalRuns){
+//            analyticalRun.setSample(sample);
+//            analyticalRunService.save(analyticalRun);
+//        }
     }
 }

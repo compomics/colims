@@ -15,7 +15,6 @@ import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,12 +70,10 @@ public class UtilitiesPsmMapper {
         //iterate over protein keys        
         try {
             for (String proteinKey : sourcePeptide.getParentProteins()) {
-
-                ProteinMatch proteinMatch = null;
+                ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
                 if (proteinMatch != null) {
                     proteinMatches.add(proteinMatch);
                 }
-                proteinMatch = ms2Identification.getProteinMatch(proteinKey);
             }
         } catch (IllegalArgumentException ex) {
             LOGGER.error(ex.getMessage(), ex);

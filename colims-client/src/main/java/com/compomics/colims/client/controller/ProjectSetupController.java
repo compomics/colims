@@ -46,7 +46,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("projectSetupController")
+//@Component("projectSetupController")
 public class ProjectSetupController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectSetupController.class);
