@@ -672,10 +672,10 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
 
         projectsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(1), "A", "Project 1"},
-                { new Integer(2), "B", "Project 2"},
-                { new Integer(3), "B", "Project 3"},
-                { new Integer(4), "C", "Project 4"}
+                { new Integer(1), "Heart", "Membrane proteins of the normal human heart"},
+                { new Integer(2), "Bloodplasma", "Human plasma dataset, Tao-Plasma-GC-12_17May04_Andro_0404-2_4-20"},
+                { new Integer(3), "Cellzome148", "Cellzome_Abl_inhibitors_NatureBiotechnology_exp148"},
+                { new Integer(4), "Cellzome147", "Cellzome_Abl_inhibitors_NatureBiotechnology_exp147"}
             },
             new String [] {
                 "", "Label", "Title"
@@ -721,10 +721,10 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
 
         experimentsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(1), "Exp A"},
-                { new Integer(2), "Exp B"},
-                { new Integer(3), "Exp C"},
-                { new Integer(4), "Exp D"}
+                { new Integer(1), "Patient 1"},
+                { new Integer(2), "Patient 2"},
+                { new Integer(3), "Patient 3"},
+                { new Integer(4), "Control"}
             },
             new String [] {
                 "", "Title"
@@ -770,10 +770,11 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
 
         samplesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(1), "Sample A"},
-                { new Integer(2), "Sample B"},
-                { new Integer(3), "Sample C"},
-                { new Integer(4), "Sample D"}
+                { new Integer(1), "Pre-Treatment"},
+                { new Integer(2), "Day 7"},
+                { new Integer(3), "Day 14"},
+                { new Integer(4), "Day 21"},
+                { new Integer(5), "Post-Treatment"}
             },
             new String [] {
                 "", "Name"
@@ -868,10 +869,19 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
 
         psmTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(1), "Q10586", "ABC", "spectrum_1",  new Double(970.48),  new Integer(2),  new Double(639526.0),  new Double(1646.55402)},
-                { new Integer(2), "Q10586", "ABC", "spectrum_2",  new Double(926.11),  new Integer(3),  new Double(973623.1875),  new Double(1646.74992)},
-                { new Integer(3), "Q10586", "ABC", "spectrum_3",  new Double(899.42),  new Integer(2),  new Double(1608097.75),  new Double(1646.90436)},
-                { new Integer(4), "Q10586", "ABC", "spectrum_4",  new Double(886.96),  new Integer(2),  new Double(615790.3125),  new Double(1647.13464)}
+                { new Integer(1), "P45379", "IERRRAERAEQQRIRNEREKERQNRLAEER", "spectrum_1",  new Double(970.48),  new Integer(2),  new Double(639526.0),  new Double(1646.55402)},
+                { new Integer(2), "P45379", "KILAERRKVLAIDHLNEDQ", "spectrum_2",  new Double(926.11),  new Integer(3),  new Double(973623.1875),  new Double(1646.74992)},
+                { new Integer(3), "P45379", "VEEEEDWREDEDEQEEAAEEDAEAEA", "spectrum_3",  new Double(899.42),  new Integer(2),  new Double(1608097.75),  new Double(1646.90436)},
+                { new Integer(4), "P45379", "YIQKQAQTERKS", "spectrum_4",  new Double(886.96),  new Integer(2),  new Double(615790.3125),  new Double(1647.13464)},
+                { new Integer(5), "P19429", "LSTRCQPLELAGLGFAELQD", "spectrum_5",  new Double(881.32),  new Integer(2),  new Double(691234.593),  new Double(1648.312)},
+                { new Integer(6), "P19429", "NREVGDWRKNIDALS", "spectrum_6",  new Double(843.29),  new Integer(2),  new Double(678964.673),  new Double(1648.921)},
+                { new Integer(7), "P19429", "RRRSSNYRAYATEPHAKKK", "spectrum_7",  new Double(841.21),  new Integer(3),  new Double(1357983.851),  new Double(1649.412)},
+                { new Integer(8), "P19429", "IADLTQKIFDLRGKFKRPTL", "spectrum_8",  new Double(838.91),  new Integer(2),  new Double(491244.731),  new Double(1650.032)},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "", "Accession", "Sequence", "Title", "m/z", "Charge", "Intensity", "RT"
