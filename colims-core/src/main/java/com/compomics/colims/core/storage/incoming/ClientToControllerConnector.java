@@ -33,7 +33,8 @@ public class ClientToControllerConnector {
      * @param masterIPAddress the IP-address of the storing-node (127.0.0.1 =
      * default)
      * @param masterPort the port that is listening on the storing node (24567 =
-     * ClientToControllerConnector */
+     * ClientToControllerConnector
+     */
     public ClientToControllerConnector(String masterIPAddress, int masterPort) {
         this.masterIPAddress = masterIPAddress;
         this.masterPort = masterPort;
@@ -46,14 +47,14 @@ public class ClientToControllerConnector {
      * imported to colims
      * @return if the method was succesfull storing the file
      */
-    public boolean storeFile(String Username, String fileLocation, long sampleID) {
+    public boolean storeFile(String Username, String fileLocation, long sampleID, String instrumentName) {
         boolean success = false;
         Socket socket = null;
         try {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(Username + ">.<" + fileLocation + ">.<" + sampleID);
+            out.println(Username + ">.<" + fileLocation + ">.<" + sampleID + ">.<" + instrumentName);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
