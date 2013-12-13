@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.mapper;
+package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
 import com.compomics.colims.core.io.parser.impl.PeptideShakerParameterParser;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;

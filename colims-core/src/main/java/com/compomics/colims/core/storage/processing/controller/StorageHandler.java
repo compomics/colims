@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Kenneth Verheggen
  */
-@Component("socketHandler")
+@Component("storageHandler")
 @Scope("prototype")
 public class StorageHandler implements Runnable {
 
@@ -69,7 +69,10 @@ public class StorageHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = storageQueue.addNewTask(responseArgs[1], responseArgs[0], Long.parseLong(responseArgs[2]));
+            task = storageQueue.addNewTask(responseArgs[1]
+                    , responseArgs[0]
+                    , Long.parseLong(responseArgs[2])
+                    , responseArgs[3]);
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
             break;
         }

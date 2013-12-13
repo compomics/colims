@@ -1,4 +1,4 @@
-package com.compomics.colims.core.mapper;
+package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;

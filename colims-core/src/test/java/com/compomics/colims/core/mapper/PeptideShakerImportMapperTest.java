@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesExperimentMapper;
 import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -41,17 +40,17 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class UtilitiesExperimentMapperTest {
+public class PeptideShakerImportMapperTest {
 
     @Autowired
-    private Mapper utilitiesExperimentMapper;
+    private PeptideShakerImportMapper peptideShakerImportMapper;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
     private ProjectService projectService;
 
     @Test
-    public void testExperimentMapper() throws IOException, PeptideShakerIOException, MappingException {
+    public void testMap() throws IOException, PeptideShakerIOException, MappingException {
 //        //import PeptideShaker .cps file
 //        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_3.cps").getFile());
 //        //set mgf files and fasta file

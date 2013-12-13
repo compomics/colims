@@ -1,4 +1,4 @@
-package com.compomics.colims.core.mapper;
+package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
 import com.compomics.colims.core.component.PtmFactoryWrapper;
 import java.io.IOException;
