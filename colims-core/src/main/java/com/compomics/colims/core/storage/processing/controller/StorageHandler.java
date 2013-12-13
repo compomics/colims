@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.socket;
+package com.compomics.colims.core.storage.processing.controller;
 
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.storagequeue.StorageQueue;
-import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component("socketHandler")
 @Scope("prototype")
-public class SocketHandler implements Runnable {
+public class StorageHandler implements Runnable {
 
     @Autowired
     StorageQueue storageQueue;
-    private static final Logger LOGGER = Logger.getLogger(SocketHandler.class);
+    private static final Logger LOGGER = Logger.getLogger(StorageHandler.class);
     private Socket socket;
 
     private BufferedReader in;

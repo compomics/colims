@@ -6,8 +6,8 @@
 package com.compomics.colims.core.storage;
 
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.storagequeue.StorageQueue;
-import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;

@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.storagequeue;
+package com.compomics.colims.core.storage.processing.controller.storagequeue;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.storage.processing.storagequeue.storagetask.StorageTask;
 import com.compomics.colims.core.storage.enums.StorageState;
 import com.compomics.colims.core.storage.processing.colimsimport.ColimsFileImporter;
 import com.compomics.colims.core.storage.processing.colimsimport.factory.ColimsImporterFactory;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,9 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

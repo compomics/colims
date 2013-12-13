@@ -51,4 +51,9 @@ public class IOManagerImpl implements IOManager {
         //then write to file
         writeBytesToFile(unzippedBytes, file);
     }
+
+    @Override
+    public File zip(File folder) {
+        return null;       
+    }
 }

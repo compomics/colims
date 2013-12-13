@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.socket;
+package com.compomics.colims.core.storage.processing.controller;
 
 import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.core.storage.processing.storagequeue.StorageQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,16 +20,16 @@ import org.springframework.stereotype.Component;
  * @author Kenneth
  */
 @Component("socketListener")
-public class SocketListener {
+public class StorageController {
 
     @Autowired
     StorageQueue storageQueue;
     @Autowired
-    SocketHandler socketHandler;
+    StorageHandler socketHandler;
 
     private int port = 24567;
     private ServerSocket serverSocket;
-    private final Logger LOGGER = Logger.getLogger(SocketListener.class);
+    private final Logger LOGGER = Logger.getLogger(StorageController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
 
     /**
@@ -65,7 +65,7 @@ public class SocketListener {
         while (true) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                socketHandler = (SocketHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("socketHandler");
+                socketHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("socketHandler");
                 socketHandler.setSocket(incomingSocket);
                 threadService.submit(socketHandler);
             } catch (IOException ex) {

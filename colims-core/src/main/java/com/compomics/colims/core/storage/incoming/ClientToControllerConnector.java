@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth Verheggen
  */
-public class SocketCreator {
+public class ClientToControllerConnector {
 
-    private final static Logger LOGGER = Logger.getLogger(SocketCreator.class);
+    private final static Logger LOGGER = Logger.getLogger(ClientToControllerConnector.class);
     private String masterIPAddress = "127.0.0.1";
     private int masterPort = 24567;
     private StorageState state = StorageState.WAITING;
@@ -33,9 +33,8 @@ public class SocketCreator {
      * @param masterIPAddress the IP-address of the storing-node (127.0.0.1 =
      * default)
      * @param masterPort the port that is listening on the storing node (24567 =
-     * default)
-     */
-    public SocketCreator(String masterIPAddress, int masterPort) {
+     * ClientToControllerConnector */
+    public ClientToControllerConnector(String masterIPAddress, int masterPort) {
         this.masterIPAddress = masterIPAddress;
         this.masterPort = masterPort;
     }
