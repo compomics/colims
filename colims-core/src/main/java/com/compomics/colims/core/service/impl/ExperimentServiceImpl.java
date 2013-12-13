@@ -23,7 +23,6 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
-import java.util.logging.Level;
 
 /**
  *
@@ -98,5 +97,10 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public long countAll() {
         return experimentRepository.countAll();
+    }
+
+    @Override
+    public List<Experiment> getExperimentsByProjectId(Long projectId) {
+    return experimentRepository.getExperimentsByProjectId(projectId);
     }
 }

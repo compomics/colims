@@ -82,6 +82,11 @@ public class PtmCvTermMapper {
         cvTerm = ptmToPrideMap.getCVTerm(ptmName);
         
         if(cvTerm == null){
+            //look in the default CV terms
+            cvTerm = PtmToPrideMap.getDefaultCVTerm(ptmName);
+        }
+        
+        if(cvTerm == null){
             //look in ptmToCvTerms map
             cvTerm = ptmToCvTerms.get(ptmName);
         }

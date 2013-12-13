@@ -70,12 +70,10 @@ public class UtilitiesPsmMapper {
         //iterate over protein keys        
         try {
             for (String proteinKey : sourcePeptide.getParentProteins()) {
-
-                ProteinMatch proteinMatch = null;
+                ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
                 if (proteinMatch != null) {
                     proteinMatches.add(proteinMatch);
                 }
-                proteinMatch = ms2Identification.getProteinMatch(proteinKey);
             }
         } catch (IllegalArgumentException ex) {
             LOGGER.error(ex.getMessage(), ex);

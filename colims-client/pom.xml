@@ -52,6 +52,11 @@
             <artifactId>ols-dialog</artifactId>
             <version>3.4.0</version>
         </dependency>
-            
+        
+        <dependency>
+            <groupId>no.uib</groupId>
+            <artifactId>jsparklines</artifactId>
+            <version>0.6.4</version>
+        </dependency>
     </dependencies>
 </project>

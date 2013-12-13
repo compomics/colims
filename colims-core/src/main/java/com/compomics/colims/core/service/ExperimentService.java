@@ -23,4 +23,11 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @return the list of experiments
      */
     void importMzMlExperiments(List<File> mzMlFiles) throws IOException;
+      /**
+     * Gets the experiments from the given project 
+     *
+     * @param mzMlFiles the given mzML files
+     * @return the list of experiments
+     */
+    List<Experiment> getExperimentsByProjectId(Long projectId);
 }

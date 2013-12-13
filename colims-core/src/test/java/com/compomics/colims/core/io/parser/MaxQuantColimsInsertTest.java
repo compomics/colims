@@ -1,9 +1,12 @@
 package com.compomics.colims.core.io.parser;
 
 import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.io.parser.impl.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.parser.impl.MaxQuantMsmsParser;
+import com.compomics.colims.core.io.parser.impl.UnparseableException;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.io.File;
@@ -16,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.User;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
@@ -39,6 +44,10 @@ public class MaxQuantColimsInsertTest {
     private MaxQuantMsmsParser maxQuantMsMsParser;
     @Autowired
     private SpectrumService spectrumService;
+    @Autowired
+    private AuthenticationBean authenticationBean;
+    @Autowired
+    private UserService userService;
     private File maxQuantMsMsFile;
     private Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
 
@@ -47,18 +56,18 @@ public class MaxQuantColimsInsertTest {
     }
 
     @Test
-    public void testSpectrumInsertion() throws IOException, MappingException {
+    public void testSpectrumMapping() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
         List<Spectrum> mappedSpectra = new ArrayList<>();
         spectrumMap = maxQuantMsMsParser.parse(maxQuantMsMsFile, true);
-        int spectrumArrayindex=-1;
+        int spectrumArrayindex = -1;
         for (Integer msmsKey : spectrumMap.keySet()) {
             MSnSpectrum spectrum = spectrumMap.get(msmsKey);
             Spectrum colimsSpectrum = new Spectrum();
             utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
-            //hack to make the get work for the expected result and be able to test against static values
+            //convoluted way to get the expected result and be able to test against static values
             mappedSpectra.add(colimsSpectrum);
-            if (msmsKey == 899){
-               spectrumArrayindex = mappedSpectra.size()-1;
+            if (msmsKey == 899) {
+                spectrumArrayindex = mappedSpectra.size() - 1;
             }
         }
         assertThat(mappedSpectra.size(), is(999));
@@ -122,5 +131,29 @@ public class MaxQuantColimsInsertTest {
             Assert.assertTrue(spectrumPeaks.containsKey(mzRatio));
             Assert.assertEquals(peaks.get(mzRatio).intensity, spectrumPeaks.get(mzRatio), 0.001);
         }
+    }
+
+    @Test
+    public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
+        User user = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(user);
+        authenticationBean.setCurrentUser(user);
+        int startSpectraCount = spectrumService.findAll().size();
+        System.out.println("start amount of spectra = " + startSpectraCount);
+        spectrumMap = maxQuantMsMsParser.parse(maxQuantMsMsFile, true);
+        List<Spectrum> spectrumHolder = new ArrayList<>();
+        for (MSnSpectrum spectrum : spectrumMap.values()) {
+            Spectrum colimsSpectrum = new Spectrum();
+            utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
+            spectrumHolder.add(colimsSpectrum);
+        }
+        for (Spectrum spectrum : spectrumHolder){
+            spectrumService.save(spectrum);
+        }
+        List<Spectrum> storedSpectra = spectrumService.findAll();
+        int endAmountOfSpectra = storedSpectra.size();
+        System.out.println("end amount of spectra is " + endAmountOfSpectra);
+        assertThat(endAmountOfSpectra, is(both(not(startSpectraCount)).and(is(999))));
+        assertThat(storedSpectra.get(138).getTitle(),is (spectrumHolder.get(138).getTitle()));
     }
 }

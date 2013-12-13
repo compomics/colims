@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("ptmFactoryBean")
+@Component("ptmFactoryWrapper")
 public class PtmFactoryWrapper {
 
     /**

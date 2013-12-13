@@ -33,39 +33,39 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
     @Basic(optional = true)
     @Column(name = "enzyme")
     private String enzyme;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "max_missed_cleavages")
     private int maxMissedCleavages;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance")
     private double precMassTolerance;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "precursor_lower_charge")
     private int precursorLowerCharge;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "precursor_upper_charge")
     private int precursorUpperCharge;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance_unit")
     @Enumerated(EnumType.ORDINAL)
     private PrecursorAccuracyType precMassToleranceUnit;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance")
     private double fragMassTolerance;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance_unit")
     @Enumerated(EnumType.ORDINAL)
     private PrecursorAccuracyType fragMassToleranceUnit;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "fragment_ion_1_type")
     private int fragmentIon1Type;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "fragment_ion_2_type")
     private int fragmentIon2Type;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "evalue_cutoff")
     private double evalueCutoff;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "hitlist_length")
     private int hitlistLength;
 

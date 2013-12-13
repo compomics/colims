@@ -52,4 +52,6 @@ public interface IOManager {
      * @param file the file to be written to
      */
     void unzipAndWriteBytesToFile(byte[] bytes, File file) throws IOException;
+    
+    File zip(File folder) throws IOException;
 }

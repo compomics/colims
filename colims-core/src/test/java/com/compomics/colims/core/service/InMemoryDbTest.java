@@ -35,7 +35,7 @@ public class InMemoryDbTest {
     @Autowired
     private MzMLParser mzMLParser;
     @Autowired
-    private ExperimentService experimentService;
+    private SampleService experimentService;
 
     /**
      * A simple H2 db test.

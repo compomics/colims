@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.parser.impl;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +11,12 @@ import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -29,7 +32,7 @@ public class MaxQuantParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
     private static final String EVIDENCETXT = "evidence.txt";
-    private static final String PROTEINGROUPS = "proteingroups.txt";
+    private static final String PROTEINGROUPS = "proteinGroups.txt";
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
     @Autowired
@@ -42,6 +45,7 @@ public class MaxQuantParser {
     private static Map<Integer, MSnSpectrum> msms = new HashMap<>();
     private static Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
     private static boolean initialized = false;
+    private Map<String, List<MSnSpectrum>> spectraPerRunMap = new HashMap<>();
 
     /**
      * Parse a folder containing the MaxQuant txt output files, using the
@@ -50,7 +54,11 @@ public class MaxQuantParser {
      * @param maxQuantTextFolder
      * @throws IOException
      */
-    public void parseMaxQuantTextFolder(final Path maxQuantTextFolder) throws IOException {
+    public void parseMaxQuantTextFolder(final File maxQuantTextFolder) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+        parseMaxQuantTextFolder(maxQuantTextFolder, false);
+    }
+
+    public void parseMaxQuantTextFolder(final File maxQuantTextFolder, boolean indexPerRun) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
 
         //TODO parameters
 
@@ -70,40 +78,80 @@ public class MaxQuantParser {
 
         // Parse msms.txt and create and persist the objects found within
         LOGGER.debug("starting msms parsing");
-        Path msmsFile = maxQuantTextFolder.resolve(MSMSTXT);
-        msms = maxQuantMsmsParser.parse(msmsFile.toFile(), true);
+        File msmsFile = new File(maxQuantTextFolder, MSMSTXT);
+        msms = maxQuantMsmsParser.parse(msmsFile, true);
+
+        if (indexPerRun) {
+            if (getSpectraPerRun().isEmpty()) {
+                throw new UnparseableException("could not connect spectra to any run");
+            }
+        }
 
         // Parse evidence.txt and create and persist the objects found within
         LOGGER.debug("starting evidence parsing");
-        Path evidenceFile = maxQuantTextFolder.resolve(EVIDENCETXT);
-        peptideAssumptions = MaxQuantEvidenceParser.parse(evidenceFile.toFile());
+        File evidenceFile = new File(maxQuantTextFolder, EVIDENCETXT);
+        peptideAssumptions = maxQuantEvidenceParser.parse(evidenceFile);
 
         //update peptide msms to best scoring msms entry
 
         LOGGER.debug("starting protein group parsing");
-        Path proteinGroupsFile = maxQuantTextFolder.resolve(PROTEINGROUPS);
-        proteinMap = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(proteinGroupsFile.toFile());
-
-        initialized = true;
+        File proteinGroupsFile = new File(maxQuantTextFolder, PROTEINGROUPS);
+        proteinMap = maxQuantProteinGroupParser.parse(proteinGroupsFile);
+        if (msms.keySet().isEmpty() || peptideAssumptions.keySet().isEmpty() || proteinMap.keySet().isEmpty()) {
+            throw new UnparseableException("one of the parsed files could not be read properly");
+        } else {
+            initialized = true;
+        }
     }
 
-    public static Iterator<PeptideAssumption> getIdentificationsFromParsedFile() {
-        return peptideAssumptions.values().iterator();
+    /**
+     *
+     * @return
+     */
+    public Collection<PeptideAssumption> getIdentificationsFromParsedFile() {
+        return Collections.unmodifiableCollection(peptideAssumptions.values());
     }
 
-    public static boolean hasParsedAFile() {
+    public boolean hasParsedAFile() {
         return initialized;
     }
 
-    public static PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
+    public PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
         return peptideAssumptions.get(Integer.parseInt(aSpectrum.getSpectrumKey()));
     }
 
-    public static Iterator<MSnSpectrum> getSpectra() {
-        return msms.values().iterator();
+    public Collection<MSnSpectrum> getSpectra() {
+        return Collections.unmodifiableCollection(msms.values());
     }
 
-    public static ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
+    public Collection<ProteinMatch> getProteinsFromParsedFile() {
+        return Collections.unmodifiableCollection(proteinMap.values());
+    }
+
+    public ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
         return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getKey()));
+    }
+
+    public Map<String, List<MSnSpectrum>> getSpectraPerRun() {
+        if (spectraPerRunMap.isEmpty()) {
+            for (MSnSpectrum spectrum : getSpectra()) {
+                if (spectraPerRunMap.containsKey(spectrum.getFileName())) {
+                    spectraPerRunMap.get(spectrum.getFileName()).add(spectrum);
+                } else {
+                    List<MSnSpectrum> spectraList = new ArrayList<>();
+                    spectraList.add(spectrum);
+                    spectraPerRunMap.put(spectrum.getFileName(), spectraList);
+                }
+            }
+        }
+        return spectraPerRunMap;
+    }
+
+    public void clearParsedProject() {
+        msms.clear();
+        peptideAssumptions.clear();
+        proteinMap.clear();
+        spectraPerRunMap.clear();
+        initialized = false;
     }
 }

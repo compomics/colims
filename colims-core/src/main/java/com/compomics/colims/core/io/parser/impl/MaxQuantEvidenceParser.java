@@ -22,6 +22,7 @@ import com.compomics.util.experiment.quantification.matches.PeptideQuantificatio
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 //import com.compomics.util.protein.Header.DatabaseType;
@@ -46,40 +47,39 @@ public class MaxQuantEvidenceParser {
      * modifications within to the quantificationGroup.
      *
      * @param evidenceFile
-     * @param quantificationGroup
      * @throws IOException
+     * @return a Map with key the best msms id and value the peptideAssumption
      */
-    public static Map<Integer, PeptideAssumption> parse(final File evidenceFile) throws IOException {
+    public Map<Integer, PeptideAssumption> parse(final File evidenceFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         // Convert file into some values we can loop over, without reading file in at once
         Map<Integer, PeptideAssumption> parsedPeptideList = new HashMap<>();
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile);
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile, EvidenceHeaders.values());
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
-            try {
-                PeptideAssumption assumption = createPeptide(values);
-                //linkPeptideToProtein(peptide, values);
-                //linkPeptideToModifications(peptide, values);
-                Integer bestMsMs;
-                if (values.containsKey(EvidenceHeaders.best_MS_MS_ID.column)) {
-                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.best_MS_MS_ID.column));
-                } else {
-                    bestMsMs = Integer.parseInt(values.get(EvidenceHeaders.MS_MS_IDs.column).split(";")[0]);
+            PeptideAssumption assumption = createPeptide(values);
+            //linkPeptideToProtein(peptide, values);
+            //linkPeptideToModifications(peptide, values);
+            if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName())) {
+                String[] msmsIds = values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";");
+                for (String msmsId : msmsIds) {
+                    if (parsedPeptideList.containsKey(Integer.parseInt(msmsId))){
+                        throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
+                    }
+                    parsedPeptideList.put(Integer.parseInt(msmsId), assumption);
                 }
-
-                parsedPeptideList.put(bestMsMs, assumption);
-            } catch (UnparseableException upe) {
-                //TODO decide what to do with this
-                LOGGER.error(upe);
+            } else {
+                throw new UnparseableException("no spectrum found for an identified peptide");
             }
-            // QuantificationGroupHasPeptide
-            // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
-            //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
-            //quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
-            //quantificationGroupHasPeptide.setPeptide(peptide);
-            // TODO Store QuantificationGroupHasPeptide instances
         }
+        // QuantificationGroupHasPeptide
+        // XXX "de peptiden die tot een quantificationgroup behoren zijn gelinkt door de peptide ID identifier"
+        //QuantificationGroupHasPeptide quantificationGroupHasPeptide = new QuantificationGroupHasPeptide();
+        //quantificationGroupHasPeptide.setQuantificationGroup(quantificationGroup);
+        //quantificationGroupHasPeptide.setPeptide(peptide);
+        // TODO Store QuantificationGroupHasPeptide instances
+
         return parsedPeptideList;
     }
 
@@ -108,12 +108,12 @@ public class MaxQuantEvidenceParser {
      * @throws UnparseableException if something went wrong while parsing the
      * evidence row
      */
-    public static PeptideAssumption createPeptide(final Map<String, String> values) throws UnparseableException {
-        if (values.get(EvidenceHeaders.MS_MS_IDs.column).isEmpty()) {
+    public final PeptideAssumption createPeptide(final Map<String, String> values) throws UnparseableException, HeaderEnumNotInitialisedException {
+        if (values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).isEmpty()) {
             //can't have evidence without proof
             throw new UnparseableException("peptide does not have an MS/MS scan");
         } else {
-            String sequence = values.get(EvidenceHeaders.Sequence.column);
+            String sequence = values.get(EvidenceHeaders.Sequence.getColumnName());
 
             // The charge corrected mass of the precursor ion.
             //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
@@ -121,8 +121,8 @@ public class MaxQuantEvidenceParser {
 
             ArrayList<String> proteinIds = new ArrayList<>();
 
-            if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.column)) {
-                proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.column).split(";")));
+            if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.getColumnName())) {
+                proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.getColumnName()).split(";")));
             }
             /**
              * else { }
@@ -130,19 +130,19 @@ public class MaxQuantEvidenceParser {
             // Create peptide
             Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
             double score = -1;
-            if (values.containsKey(EvidenceHeaders.Score.column)) {
-                if (values.get(EvidenceHeaders.Score.column).equalsIgnoreCase("NAN")) {
+            if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
+                if (values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
                     throw new UnparseableException("could not parse score for peptide");
                 } else {
-                    score = Double.parseDouble(values.get(EvidenceHeaders.Score.column));
+                    score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
                 }
             }
 
             //because I can
             Charge identificationCharge = null;
 
-            if (values.containsKey(EvidenceHeaders.Charge.column)) {
-                identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.column)));
+            if (values.containsKey(EvidenceHeaders.Charge.getColumnName())) {
+                identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.getColumnName())));
             }
 
             //99 is missing value according to statistics --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
@@ -157,13 +157,13 @@ public class MaxQuantEvidenceParser {
      * @param values
      * @return
      */
-    public static PeptideQuantification createPeptideQuantification(final Map<String, String> values) {
+    public final PeptideQuantification createPeptideQuantification(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
         //String peptideId
-        String peptideID = values.get(EvidenceHeaders.Peptide_ID.column);
+        String peptideID = values.get(EvidenceHeaders.Peptide_ID.getColumnName());
         // The id of the peptide quant
-        int id = Integer.parseInt(values.get(EvidenceHeaders.id.column));
+        int id = Integer.parseInt(values.get(EvidenceHeaders.id.getColumnName()));
         // The normalized ratio
-        double ratio = Double.parseDouble(values.get(EvidenceHeaders.Normalized_Ratio.column));
+        double ratio = Double.parseDouble(values.get(EvidenceHeaders.Normalized_Ratio.getColumnName()));
         //create utilities Ratio object
         Ratio utilitiesRatio = new Ratio(id, ratio);
         // Create peptidequantification
@@ -215,13 +215,13 @@ public class MaxQuantEvidenceParser {
      * @param peptide
      * @param values
      */
-    public static ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) {
+    public final ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
         ArrayList<ModificationMatch> modificationsForPeptide = new ArrayList<>();
         // Sequence representation including the post-translational
         // modifications (abbreviation of the modification in brackets
         // before the modified AA). The sequence is always surrounded
         // by underscore characters ('_').
-        String modifications = values.get(EvidenceHeaders.Modifications.column);
+        String modifications = values.get(EvidenceHeaders.Modifications.getColumnName());
         if (modifications == null) {
             return modificationsForPeptide;
         } else {
@@ -230,29 +230,45 @@ public class MaxQuantEvidenceParser {
             }
 
             // Fields we need to create the PeptideHasModification
-            final int location;
-            final String modificationName;
+            int location;
+            String modificationName;
 
             // Look for Oxidation (M) Probabilities
-            String oxidationProbabilities = values.get(EvidenceHeaders.Oxidation_M_Probabilities.column);
-            if (oxidationProbabilities != null && oxidationProbabilities.contains("(1)")) {
-                // Find precise location
-                location = oxidationProbabilities.indexOf("(1)") - 1;
-                //in case of multiple modifications in one location, this wil break
-                modificationName = EvidenceHeaders.Oxidation_M_Probabilities.column;
-            } else // Look for Acetyl (Protein N-term)
-            if ("1".equals(values.get(EvidenceHeaders.Acetyl_Protein_N_term.column))) {
-                // N-term has position 0
-                location = 0;
-                modificationName = EvidenceHeaders.Acetyl_Protein_N_term.column;
+            String modificationString;
+            if (values.containsKey(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName()) || values.containsKey(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) {
+                if ((modificationString = values.get(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName())) != null) {
+                    if (modificationString.contains("(")) {
+                        int previousLocation = 0;
+                        modificationName = EvidenceHeaders.Oxidation_M_Probabilities.getColumnName();
+                        String[] oxidationLocations = modificationString.split("\\(");
+                        for (int i = 0; i < oxidationLocations.length - 1; i++) {
+                            if (oxidationLocations[i].contains(")")) {
+                                oxidationLocations[i] = oxidationLocations[i].replaceFirst(".*\\)", "");
+                            }
+                            location = oxidationLocations[i].length() - 1;
+                            //TODO make colims modificationmatch and psptmscoring meta object
+                            modificationsForPeptide.add(new ModificationMatch(modificationName, true, location + previousLocation));
+                            previousLocation = location + previousLocation;
+                        }
+                    }
+                    // Find precise location
+                } if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
+
+                    if ("1".equals(modificationString)) {
+                        // N-term has position 0
+                        location = 0;
+                        modificationName = EvidenceHeaders.Acetyl_Protein_N_term.getColumnName();
+                        modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
+                    }
+                }
             } else {
                 // Unexpected value: throw an exception
-                String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.column);
+                String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.getColumnName());
                 String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
                 throw new IllegalStateException(message);
             }
+
             //TODO parse parameters for fixed and variable modifications
-            modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
         }
         // Retrieve modification from database, or create a new one
         //Modification modification = modificationRepository.findByName(modificationName);
@@ -284,66 +300,92 @@ public class MaxQuantEvidenceParser {
  * headers are likely to change with each new version of MaxQuant. Their order
  * is also likely to change between files regardless of MaxQuant version.
  */
-enum EvidenceHeaders {
+enum EvidenceHeaders implements HeaderEnum {
 
-    id("id"),
-    Protein_Group_IDs("Protein Group IDs"),
-    Peptide_ID("Peptide ID"),
-    Mod_Peptide_ID("Mod. Peptide ID"),
-    MS_MS_IDs("MS/MS IDs"),
-    AIF_MS_MS_IDs("AIF MS/MS IDs"),
-    Oxidation_M_Site_IDs("Oxidation (M) Site IDs"),
-    Sequence("Sequence"),
-    Length("Length"),
-    Modifications("Modifications"),
-    Modified_Sequence("Modified Sequence"),
-    Oxidation_M_Probabilities("Oxidation (M) Probabilities"),
-    Oxidation_M_Score_Diffs("Oxidation (M) Score Diffs"),
-    Acetyl_Protein_N_term("Acetyl (Protein N-term)"),
-    Oxidation_M("Oxidation (M)"),
-    Proteins("Proteins"),
-    Leading_Proteins("Leading Proteins"),
-    Leading_Razor_Protein("Leading Razor Protein"),
-    Gene_Names("Gene Names"),
-    Protein_Names("Protein Names"),
-    Protein_Descriptions("Protein Descriptions"),
-    Uniprot("Uniprot"),
-    Type("Type"),
-    Raw_File("Raw File"),
-    Fraction("Fraction"),
-    Experiment("Experiment"),
-    Charge("Charge"),
-    m_z("m/z"),
-    Mass("Mass"),
-    Resolution("Resolution"),
-    Uncalibrated_Calibrated_m_z_ppm("Uncalibrated - Calibrated m/z [ppm]"),
-    Mass_Error_ppm("Mass Error [ppm]"),
-    Uncalibrated_Mass_Error_ppm("Uncalibrated Mass Error [ppm]"),
-    Retention_Time("Retention Time"),
-    Retention_Length("Retention Length"),
-    Calibrated_Retention_Time("Calibrated Retention Time"),
-    Retention_Time_Calibration("Retention Time Calibration"),
-    Match_Time_Difference("Match Time Difference"),
-    PIF("PIF"),
-    Fraction_of_total_spectrum("Fraction of total spectrum"),
-    Base_peak_fraction("Base peak fraction"),
-    PEP("PEP"),
-    MS_MS_Count("MS/MS Count"),
-    MS_MS_Scan_Number("MS/MS Scan Number"),
-    Score("Score"),
-    Delta_score("Delta score"),
-    Combinatorics("Combinatorics"),
-    Intensity("Intensity"),
-    Reverse("Reverse"),
-    Contaminant("Contaminant"),
-    Normalized_Ratio("Ratio H/L normalized"),
-    best_MS_MS_ID("Best MS/MS");
+    id(new String[]{"id"}),
+    Protein_Group_IDs(new String[]{"Protein Group IDs"}),
+    Peptide_ID(new String[]{"Peptide ID"}),
+    Mod_Peptide_ID(new String[]{"Mod. Peptide ID"}),
+    MS_MS_IDs(new String[]{"MS/MS IDs"}),
+    AIF_MS_MS_IDs(new String[]{"AIF MS/MS IDs"}),
+    Oxidation_M_Site_IDs(new String[]{"Oxidation (M) Site IDs"}),
+    Sequence(new String[]{"Sequence"}),
+    Length(new String[]{"Length"}),
+    Modifications(new String[]{"Modifications"}),
+    Modified_Sequence(new String[]{"Modified Sequence"}),
+    Oxidation_M_Probabilities(new String[]{"Oxidation (M) Probabilities"}),
+    Oxidation_M_Score_Diffs(new String[]{"Oxidation (M) Score Diffs"}),
+    Acetyl_Protein_N_term(new String[]{"Acetyl (Protein N-term)"}),
+    Oxidation_M(new String[]{"Oxidation (M)"}),
+    Proteins(new String[]{"Proteins"}),
+    Leading_Proteins(new String[]{"Leading Proteins"}),
+    Leading_Razor_Protein(new String[]{"Leading Razor Protein"}),
+    Gene_Names(new String[]{"Gene Names"}),
+    Protein_Names(new String[]{"Protein Names"}),
+    Protein_Descriptions(new String[]{"Protein Descriptions"}),
+    Uniprot(new String[]{"Uniprot"}),
+    Type(new String[]{"Type"}),
+    Raw_File(new String[]{"Raw File"}),
+    Fraction(new String[]{"Fraction"}),
+    Experiment(new String[]{"Experiment"}),
+    Charge(new String[]{"Charge"}),
+    m_z(new String[]{"m/z"}),
+    Mass(new String[]{"Mass"}),
+    Resolution(new String[]{"Resolution"}),
+    Uncalibrated_Calibrated_m_z_ppm(new String[]{"Uncalibrated - Calibrated m/z [ppm]"}),
+    Mass_Error_ppm(new String[]{"Mass Error [ppm]"}),
+    Uncalibrated_Mass_Error_ppm(new String[]{"Uncalibrated Mass Error [ppm]"}),
+    Retention_Time(new String[]{"Retention Time"}),
+    Retention_Length(new String[]{"Retention Length"}),
+    Calibrated_Retention_Time(new String[]{"Calibrated Retention Time"}),
+    Retention_Time_Calibration(new String[]{"Retention Time Calibration"}),
+    Match_Time_Difference(new String[]{"Match Time Difference"}),
+    PIF(new String[]{"PIF"}),
+    Fraction_of_total_spectrum(new String[]{"Fraction of total spectrum"}),
+    Base_peak_fraction(new String[]{"Base peak fraction"}),
+    PEP(new String[]{"PEP"}),
+    MS_MS_Count(new String[]{"MS/MS Count"}),
+    MS_MS_Scan_Number(new String[]{"MS/MS Scan Number"}),
+    Score(new String[]{"Score"}),
+    Delta_score(new String[]{"Delta score"}),
+    Combinatorics(new String[]{"Combinatorics"}),
+    Intensity(new String[]{"Intensity"}),
+    Reverse(new String[]{"Reverse"}),
+    Contaminant(new String[]{"Contaminant"}),
+    Normalized_Ratio(new String[]{"Ratio H/L normalized"}),
+    best_MS_MS_ID(new String[]{"Best MS/MS"});
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
-    protected String column;
+    protected String[] columnNames;
+    protected int columnReference = -1;
 
-    private EvidenceHeaders(final String fieldname) {
-        column = fieldname;
+    private EvidenceHeaders(final String[] fieldnames) {
+        columnNames = fieldnames;
+    }
+
+    @Override
+    public final String[] returnPossibleColumnNames() {
+        return columnNames;
+    }
+
+    @Override
+    public final void setColumnReference(int columnReference) {
+        this.columnReference = columnReference;
+    }
+
+    @Override
+    public final String getColumnName() throws HeaderEnumNotInitialisedException {
+        if (columnNames != null) {
+            if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
+                return columnNames[0];
+            } else if (columnNames.length < 0) {
+                throw new HeaderEnumNotInitialisedException("header enum not initialised");
+            } else {
+                return columnNames[columnReference].toLowerCase(Locale.US);
+            }
+        } else {
+            throw new HeaderEnumNotInitialisedException("array was null");
+        }
     }
 }

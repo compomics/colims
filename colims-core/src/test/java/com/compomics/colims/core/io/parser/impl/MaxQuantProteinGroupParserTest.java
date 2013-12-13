@@ -6,14 +6,23 @@ import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Davy
  */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantProteinGroupParserTest {
 
     File shortTestFile;
+    @Autowired
+    MaxQuantProteinGroupParser maxQuantProteinGroupParser;
 
     public MaxQuantProteinGroupParserTest() {
         ClassLoader loader = getClass().getClassLoader();
@@ -25,10 +34,10 @@ public class MaxQuantProteinGroupParserTest {
      * MaxQuantProteinGroupParser.
      */
     @Test
-    public void testParseMaxQuantProteinGroups() throws Exception {
+    public void testParse() throws Exception {
         System.out.println("parseMaxQuantProteinGroups");
         File aProteinGroupsFile = shortTestFile;
-        Map<Integer, ProteinMatch> result = MaxQuantProteinGroupParser.parseMaxQuantProteinGroups(aProteinGroupsFile);
+        Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(aProteinGroupsFile);
         assertThat(result.keySet().size(), is(10));
         assertThat(result.get(1722).getMainMatch(), is("Q9Y105"));
         assertThat(result.get(1722).getNProteins(), both(is(result.get(1722).getTheoreticProteinsAccessions().size())).and(is(1)));
