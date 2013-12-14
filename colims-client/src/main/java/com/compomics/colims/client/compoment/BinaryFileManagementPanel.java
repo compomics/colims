@@ -147,6 +147,10 @@ public class BinaryFileManagementPanel extends javax.swing.JPanel {
         deleteButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        binaryFileListScrollPane.setOpaque(false);
+
         binaryFileList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         binaryFileListScrollPane.setViewportView(binaryFileList);
 

@@ -15,13 +15,13 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
      * Creates new form LoginDialog
      */
     public ExperimentEditDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);   
-        
+        super(parent, modal);
+
+        initComponents();
+
         samplesTableScrollPane.getViewport().setOpaque(false);
         samplesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        
-        initComponents();
-    } 
+    }
 
     public JButton getAttachmentsEditButton() {
         return attachmentsEditButton;
@@ -69,8 +69,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
     public JTable getSamplesTable() {
         return samplesTable;
-    }    
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -207,6 +207,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
         samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("samples"));
         samplesPanel.setOpaque(false);
+
+        samplesTableScrollPane.setOpaque(false);
 
         samplesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

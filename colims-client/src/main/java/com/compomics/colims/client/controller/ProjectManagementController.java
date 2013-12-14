@@ -13,8 +13,8 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.format.ExperimentsOverviewTableFormat;
 import com.compomics.colims.client.model.format.ProjectsOverviewTableFormat;
 import com.compomics.colims.client.view.ProjectManagementPanel;
+import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
@@ -29,7 +29,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.observablecollections.ObservableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -54,12 +53,16 @@ public class ProjectManagementController implements Controllable {
     //child controller
     @Autowired
     private ProjectEditController projectEditController;
+    @Autowired
+    private ExperimentEditController experimentEditController;
     //parent controller
     @Autowired
     private ColimsController colimsController;
     //services
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private ExperimentService experimentService;
     @Autowired
     private EventBus eventBus;
 
@@ -76,6 +79,7 @@ public class ProjectManagementController implements Controllable {
         
         //init child controllers
         projectEditController.init();
+        experimentEditController.init();
 
         //init projects table
         projects.addAll(projectService.findAllWithEagerFetching());
@@ -156,7 +160,7 @@ public class ProjectManagementController implements Controllable {
                         projects.remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
                     } catch (DataIntegrityViolationException dive) {
-                        //check if the instrument can be deleted without breaking existing database relations,
+                        //check if the project can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
                             DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("project", projectToDelete.getLabel());
@@ -173,12 +177,46 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                experimentEditController.updateView(createDefaultExperiment());
             }
         });
 
         projectManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Experiment selectedExperiment = getSelectedExperiment();
+                if (selectedExperiment != null) {
+                    experimentEditController.updateView(selectedExperiment);
+                } else {
+                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        });
+        
+        projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Experiment experimentToDelete = getSelectedExperiment();
+
+                if (experimentToDelete != null) {
+                    try {
+                        experimentService.delete(experimentToDelete);
+
+                        //remove from overview table and clear selection
+                        experiments.remove(experimentToDelete);
+                        experimentsSelectionModel.clearSelection();
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the experiment can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("experiment", Long.toString(experimentToDelete.getNumber()));
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                }
             }
         });
     }

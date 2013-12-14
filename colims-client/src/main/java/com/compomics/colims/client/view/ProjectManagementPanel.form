@@ -181,9 +181,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="addExperimentButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="editExperimentButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="addExperimentButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteExperimentButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="experimentsTableScrollPane" alignment="0" pref="636" max="32767" attributes="0"/>
                   </Group>
@@ -200,6 +202,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addExperimentButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="editExperimentButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="deleteExperimentButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -262,6 +265,21 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="deleteExperimentButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="delete"/>
+            <Property name="toolTipText" type="java.lang.String" value="add a new experiment"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

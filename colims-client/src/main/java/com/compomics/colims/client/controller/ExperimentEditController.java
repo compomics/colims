@@ -1,17 +1,25 @@
 package com.compomics.colims.client.controller;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.swing.AdvancedTableModel;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
+import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
 import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.AbstractBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Protocol;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
@@ -40,11 +48,13 @@ public class ExperimentEditController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
     //model   
-    private ObservableList<Protocol> protocolBindingList;
+    private EventList<Sample> samples = new BasicEventList<>();
+    private AdvancedTableModel<Sample> samplesTableModel;
+    private DefaultEventSelectionModel<Sample> samplesSelectionModel;
     private Experiment experimentToEdit;
     //view
     private ExperimentEditDialog experimentEditDialog;
-    //private 
+    private ExperimentBinaryFileDialog experimentBinaryFileDialog;
     //parent controller
     @Autowired
     private ProjectManagementController projectManagementController;
@@ -68,6 +78,7 @@ public class ExperimentEditController implements Controllable {
 
         //init view
         experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);
+        experimentBinaryFileDialog = new ExperimentBinaryFileDialog(colimsController.getColimsFrame(), true);
 
         //add action listeners                        
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
@@ -78,10 +89,10 @@ public class ExperimentEditController implements Controllable {
 
                 //validate project
                 List<String> validationMessages = GuiUtils.validateEntity(experimentToEdit);
-                //check for a new project if the project title already exists in the db                
+                //check for a new experiment if the experiment title already exists in the db                
                 if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
                     validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
-                            + "\n" + "please choose another project title.");
+                            + "\n" + "please choose another experiment title.");
                 }
                 int index = 0;
                 if (validationMessages.isEmpty()) {
@@ -90,7 +101,7 @@ public class ExperimentEditController implements Controllable {
                         index = projectManagementController.getSelectedExperimentIndex();
                     } else {
                         experimentService.save(experimentToEdit);
-                        //add project to overview table
+                        //add experiment to overview table
                         projectManagementController.addExperiment(experimentToEdit);
                         index = projectManagementController.getExperimentsSize() - 1;
                     }
@@ -137,14 +148,18 @@ public class ExperimentEditController implements Controllable {
 
         experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());
         experimentEditDialog.getNumberTextField().setText(Long.toString(experimentToEdit.getNumber()));
-
         experimentEditDialog.getDescriptionTextArea().setText(experimentToEdit.getDescription());
+        experimentEditDialog.getStorageLocationTextField().setText(experimentToEdit.getStorageLocation());
+
+        //fill project experiments table                        
+        GlazedLists.replaceAll(samples, experimentToEdit.getSamples(), false);
 
         showView();
     }
 
     /**
-     * Update the instance fields of the selected experiment in the experiments table
+     * Update the instance fields of the selected experiment in the experiments
+     * table
      */
     private void updateExperimentToEdit() {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
@@ -153,7 +168,8 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Check if a experiment with the given experiment title exists in the database.
+     * Check if a experiment with the given experiment title exists in the
+     * database.
      *
      * @param experiment the experiment
      * @return does the experiment title exist

@@ -48,7 +48,11 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
     public JButton getDeleteProjectButton() {
         return deleteProjectButton;
-    }        
+    }
+
+    public JButton getDeleteExperimentButton() {
+        return deleteExperimentButton;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,6 +74,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         editExperimentButton = new javax.swing.JButton();
         experimentsTableScrollPane = new javax.swing.JScrollPane();
         experimentsTable = new javax.swing.JTable();
+        deleteExperimentButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -171,6 +176,12 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         experimentsTable.setOpaque(false);
         experimentsTableScrollPane.setViewportView(experimentsTable);
 
+        deleteExperimentButton.setText("delete");
+        deleteExperimentButton.setToolTipText("add a new experiment");
+        deleteExperimentButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        deleteExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        deleteExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout experimentsOverviewPanelLayout = new javax.swing.GroupLayout(experimentsOverviewPanel);
         experimentsOverviewPanel.setLayout(experimentsOverviewPanelLayout);
         experimentsOverviewPanelLayout.setHorizontalGroup(
@@ -180,9 +191,11 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 .addGroup(experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(experimentsOverviewPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(deleteExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(experimentsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -194,7 +207,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(experimentsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteExperimentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -222,6 +236,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addExperimentButton;
     private javax.swing.JButton addProjectButton;
+    private javax.swing.JButton deleteExperimentButton;
     private javax.swing.JButton deleteProjectButton;
     private javax.swing.JButton editExperimentButton;
     private javax.swing.JButton editProjectButton;

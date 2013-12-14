@@ -1,5 +1,7 @@
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
+
 /**
  *
  * @author Niels Hulstaert
@@ -14,6 +16,10 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
         initComponents();
     }
 
+    public BinaryFileManagementPanel getBinaryFileManagementPanel() {
+        return binaryFileManagementPanel;
+    }        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -23,7 +29,7 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        binaryFileManagementPanel1 = new com.compomics.colims.client.compoment.BinaryFileManagementPanel();
+        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -31,11 +37,11 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(binaryFileManagementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(binaryFileManagementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -83,6 +89,6 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.compomics.colims.client.compoment.BinaryFileManagementPanel binaryFileManagementPanel1;
+    private com.compomics.colims.client.compoment.BinaryFileManagementPanel binaryFileManagementPanel;
     // End of variables declaration//GEN-END:variables
 }
