@@ -4,18 +4,21 @@ import com.compomics.colims.model.AbstractBinaryFile;
 import com.compomics.colims.model.enums.BinaryFileType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -47,6 +50,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
      */
     private Class<T> type;
     private JFileChooser fileChooser = new FileChooser();
+    private JFileChooser exportDirectoryChooser = new FileChooser();
     private BindingGroup bindingGroup;
     private ObservableList<T> binaryFileBindingList;
     private int previouslySelectedIndex = -1;
@@ -69,8 +73,8 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         }
 
         clear();
-        binaryFileBindingList.addAll(binaryFiles);       
-    }    
+        binaryFileBindingList.addAll(binaryFiles);
+    }
 
     /**
      * Init the component
@@ -90,6 +94,11 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         //select multiple file
         fileChooser.setMultiSelectionEnabled(Boolean.FALSE);
 
+        //select only directories
+        exportDirectoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //select multiple file
+        exportDirectoryChooser.setMultiSelectionEnabled(Boolean.FALSE);
+
         //init bindings
         bindingGroup = new BindingGroup();
 
@@ -102,14 +111,14 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         //add action listeners  
         binaryFileList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {                
+            public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedIndex = binaryFileList.getSelectedIndex();
-                    if(selectedIndex != -1){
+                    if (selectedIndex != -1) {
                         //set selected item in combobox
                         binaryFileTypeComboBox.setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
                     }
-                                        
+
                     previouslySelectedIndex = selectedIndex;
                 }
             }
@@ -128,6 +137,25 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
                         binaryFileList.updateUI();
 
                         BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
+                    }
+                }
+            }
+        });
+
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (binaryFileList.getSelectedIndex() != -1) {
+                    T binaryFileToExport = (T) binaryFileList.getSelectedValue();
+                    //in response to the button click, show open dialog 
+                    int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        try {
+                            File exportDirectory = fileChooser.getCurrentDirectory();
+                            exportBinaryFile(exportDirectory, binaryFileToExport);
+                        } catch (IOException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
+                        }
                     }
                 }
             }
@@ -175,8 +203,8 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
                 }
             }
         });
-    }    
-    
+    }
+
     /**
      * Clear the file list
      */
@@ -191,9 +219,9 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
      * @param file
      */
     private T getBinaryFile(File file) throws IOException, InstantiationException, IllegalAccessException {
-        T t = type.newInstance();
-        t.setFileName(file.getName());
-        t.setBinaryFileType(BinaryFileType.TEXT);
+        T binaryFile = type.newInstance();
+        binaryFile.setFileName(file.getName());
+        binaryFile.setBinaryFileType(BinaryFileType.TEXT);
 
         //get file as byte array
         byte[] bytes = FileUtils.readFileToByteArray(file);
@@ -206,10 +234,30 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
             gZIPOutputStream.flush();
             gZIPOutputStream.finish();
 
-            t.setContent(zippedByteArrayOutputStream.toByteArray());
+            binaryFile.setContent(zippedByteArrayOutputStream.toByteArray());
         }
 
-        return t;
+        return binaryFile;
+    }
+
+    /**
+     * Export the binary file to file
+     *
+     * @param exportDirectory
+     * @param binaryFile
+     */
+    private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                GZIPInputStream gZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(binaryFile.getContent()))) {
+            //unzip
+            //this method uses a buffer internally
+            IOUtils.copy(gZIPInputStream, byteArrayOutputStream);
+
+            byte[] unzippedBytes = byteArrayOutputStream.toByteArray();
+
+            //write to file        
+            FileUtils.writeByteArrayToFile(new File(exportDirectory, binaryFile.getFileName()), unzippedBytes);
+        }
     }
 
     /**
@@ -224,9 +272,10 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         binaryFileListScrollPane = new javax.swing.JScrollPane();
         binaryFileList = new javax.swing.JList();
         deleteButton = new javax.swing.JButton();
-        addButton = new javax.swing.JButton();
+        exportButton = new javax.swing.JButton();
         binaryFileTypeComboBox = new javax.swing.JComboBox();
         typeLabel = new javax.swing.JLabel();
+        addButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -240,12 +289,17 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         deleteButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        exportButton.setText("export");
+        exportButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        exportButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        exportButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        typeLabel.setText("type");
+
         addButton.setText("add");
         addButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        typeLabel.setText("type");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -253,30 +307,33 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(binaryFileListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(binaryFileListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(exportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(binaryFileTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(typeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(typeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(typeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(binaryFileTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(binaryFileListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(binaryFileListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -285,6 +342,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
     private javax.swing.JScrollPane binaryFileListScrollPane;
     private javax.swing.JComboBox binaryFileTypeComboBox;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JButton exportButton;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
 }

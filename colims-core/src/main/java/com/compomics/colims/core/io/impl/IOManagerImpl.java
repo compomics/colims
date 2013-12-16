@@ -57,12 +57,18 @@ public class IOManagerImpl implements IOManager {
 
     @Override
     public byte[] unzip(byte[] bytes) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] unzippedBytes = null;
 
-        //this method uses a buffer internally
-        IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(bytes)), byteArrayOutputStream);
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                GZIPInputStream gZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
+            //unzip
+            //this method uses a buffer internally
+            IOUtils.copy(gZIPInputStream, byteArrayOutputStream);
 
-        return byteArrayOutputStream.toByteArray();
+            unzippedBytes = byteArrayOutputStream.toByteArray();
+        }
+
+        return unzippedBytes;
     }
 
     @Override
@@ -76,6 +82,6 @@ public class IOManagerImpl implements IOManager {
 
     @Override
     public File zip(File folder) {
-        return null;       
+        return null;
     }
 }
