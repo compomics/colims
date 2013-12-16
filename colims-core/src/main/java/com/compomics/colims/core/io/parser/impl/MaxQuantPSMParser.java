@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.parser.impl;
 
+import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.model.Modification;
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 //import com.compomics.util.protein.Header.DatabaseType;
 
+
 /**
  * Parser for MaxQuant evidence.txt output files, that creates {@link Peptide}s,
  * {@link Protein}s and {@link Modification}s and links them with eachother and
@@ -38,9 +40,9 @@ import org.springframework.stereotype.Component;
  * correct accessioncode to use from a String.
  */
 @Component("maxQuantEvidenceParser")
-public class MaxQuantEvidenceParser {
+public class MaxQuantPSMParser {
 
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantEvidenceParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantPSMParser.class);
 
     /**
      * Parse the evidenceFile and add the peptides, protein references and
@@ -64,7 +66,7 @@ public class MaxQuantEvidenceParser {
             if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName())) {
                 String[] msmsIds = values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";");
                 for (String msmsId : msmsIds) {
-                    if (parsedPeptideList.containsKey(Integer.parseInt(msmsId))){
+                    if (parsedPeptideList.containsKey(Integer.parseInt(msmsId))) {
                         throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
                     }
                     parsedPeptideList.put(Integer.parseInt(msmsId), assumption);
@@ -130,12 +132,18 @@ public class MaxQuantEvidenceParser {
             // Create peptide
             Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
             double score = -1;
+            double pep = -1;
             if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
                 if (values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
                     throw new UnparseableException("could not parse score for peptide");
                 } else {
                     score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
                 }
+            }
+            if (values.containsKey(EvidenceHeaders.PEP.getColumnName())) {
+                pep = Double.parseDouble(values.get(EvidenceHeaders.PEP.getColumnName()));
+            } else {
+                throw new UnparseableException("could not parse posterior error propbability");
             }
 
             //because I can
@@ -147,6 +155,7 @@ public class MaxQuantEvidenceParser {
 
             //99 is missing value according to statistics --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
             PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
+            assumption.addUrParam(new MatchScore(score, pep));
             return assumption;
         }
     }
@@ -252,7 +261,8 @@ public class MaxQuantEvidenceParser {
                         }
                     }
                     // Find precise location
-                } if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
+                }
+                if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
 
                     if ("1".equals(modificationString)) {
                         // N-term has position 0
@@ -294,7 +304,6 @@ public class MaxQuantEvidenceParser {
 
     }
 }
-
 /**
  * Refer to headers in MaxQuant evidence.txt output files by enum values, as
  * headers are likely to change with each new version of MaxQuant. Their order

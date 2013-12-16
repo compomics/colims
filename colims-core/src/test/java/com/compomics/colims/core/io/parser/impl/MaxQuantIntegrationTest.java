@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class MaxQuantIdentificationIntegrationTest {
+public class MaxQuantIntegrationTest {
 
     private File evidenceFile;
     private File proteinGroupFile;
@@ -32,11 +32,11 @@ public class MaxQuantIdentificationIntegrationTest {
     @Autowired
     MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
-    MaxQuantEvidenceParser maxQuantEvidenceParser;
+    MaxQuantPSMParser maxQuantEvidenceParser;
     /**
      * constructor for running the Identification integration tests
      */
-    public MaxQuantIdentificationIntegrationTest() {
+    public MaxQuantIntegrationTest() {
         evidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
         proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.txt").getPath());
         quantFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_quant10.tsv").getFile());

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.google.common.io.LineReader;
-import java.util.Enumeration;
 import java.util.Locale;
 
 /**

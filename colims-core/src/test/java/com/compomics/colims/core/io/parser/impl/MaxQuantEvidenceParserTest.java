@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io.parser.impl;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class MaxQuantEvidenceParserTest {
 
     @Autowired
-    MaxQuantEvidenceParser maxQuantEvidenceParser;
+    MaxQuantPSMParser maxQuantEvidenceParser;
     @Autowired
     ModificationRepository modificationRepository;
 

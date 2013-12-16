@@ -11,6 +11,7 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
+import com.google.common.collect.HashBiMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -27,9 +28,9 @@ import org.springframework.stereotype.Component;
  * records.
  */
 @Component("maxQuantMsmsParser")
-public class MaxQuantMsmsParser {
+public class MaxQuantSpectrumParser {
 
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantMsmsParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumParser.class);
 
     private HashMap<Double, Peak> parsePeakList(String peaklist, String intensities, String masses) {
         HashMap<Double, Peak> peakMap = new HashMap<>();
@@ -88,7 +89,7 @@ public class MaxQuantMsmsParser {
                 spectrumMap.put(id, spectrum);
             }
         }
-        return spectrumMap;
+        return HashBiMap.create(spectrumMap);
     }
 
     /**
@@ -137,6 +138,7 @@ public class MaxQuantMsmsParser {
         }
         MSnSpectrum spectrum = new MSnSpectrum(2, precursor, spectrumTitle, peakList, fileName);
         spectrum.setScanNumber(scanNumber);
+
         return spectrum;
     }
 // Create Quantification object and link to the quantificationGroup

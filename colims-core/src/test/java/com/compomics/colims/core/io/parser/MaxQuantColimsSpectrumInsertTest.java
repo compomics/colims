@@ -2,7 +2,7 @@ package com.compomics.colims.core.io.parser;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.io.parser.impl.HeaderEnumNotInitialisedException;
-import com.compomics.colims.core.io.parser.impl.MaxQuantMsmsParser;
+import com.compomics.colims.core.io.parser.impl.MaxQuantSpectrumParser;
 import com.compomics.colims.core.io.parser.impl.UnparseableException;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
@@ -36,12 +36,12 @@ import org.junit.Assert;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class MaxQuantColimsInsertTest {
+public class MaxQuantColimsSpectrumInsertTest {
 
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    private MaxQuantMsmsParser maxQuantMsMsParser;
+    private MaxQuantSpectrumParser maxQuantMsMsParser;
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
@@ -51,7 +51,7 @@ public class MaxQuantColimsInsertTest {
     private File maxQuantMsMsFile;
     private Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
 
-    public MaxQuantColimsInsertTest() {
+    public MaxQuantColimsSpectrumInsertTest() {
         maxQuantMsMsFile = new File(getClass().getClassLoader().getResource("testdata/msms_subset_1000.tsv").getPath());
     }
 
