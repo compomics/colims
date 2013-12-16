@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,8 +30,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class DistributedStorageTest {
 
-    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/test/ColimsController/");
-
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private static final Logger LOGGER = Logger.getLogger(DistributedStorageTest.class);
     @Autowired
     StorageQueue storageQueue;
 
@@ -38,8 +39,12 @@ public class DistributedStorageTest {
     }
 
     @Before
-    public void clearDbBefore() throws IOException {
-        FileUtils.deleteDirectory(testTaskDbAddress);
+    public void clearDbBefore() {
+        try {
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        } catch (IOException ex) {
+       
+        }
     }
 
     @After
