@@ -23,23 +23,28 @@ import org.jdesktop.swingbinding.SwingBindings;
  *
  * @author Niels Hulstaert
  */
-public class BinaryFileManagementPanel extends javax.swing.JPanel {
-    
+public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends javax.swing.JPanel {
+
     private static final Logger LOGGER = Logger.getLogger(BinaryFileManagementPanel.class);
-    private static final String ADDED = "added";
-    private static final String REMOVED = "removed";
+    public static final String ADDED = "added";
+    public static final String REMOVED = "removed";
     //model
+    /**
+     * Keep a reference to the class type for new instance creation
+     */
+    private Class<T> type;
     private JFileChooser fileChooser;
     private BindingGroup bindingGroup;
-    private ObservableList<AbstractBinaryFile> binaryFileBindingList;
+    private ObservableList<T> binaryFileBindingList;
 
     /**
      * Creates new form BinaryFileManagementPanel
      */
-    public BinaryFileManagementPanel() {
+    public BinaryFileManagementPanel(Class<T> type) {
+        this.type = type;
         initComponents();
     }
-    
+
     public void init() {
         //select only files
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -48,40 +53,45 @@ public class BinaryFileManagementPanel extends javax.swing.JPanel {
 
         //init bindings
         bindingGroup = new BindingGroup();
-        
+
         binaryFileBindingList = ObservableCollections.observableList(new ArrayList());
         JListBinding binaryFileListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, binaryFileBindingList, binaryFileList);
         bindingGroup.addBinding(binaryFileListBinding);
-        
+
         bindingGroup.bind();
-        
+
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<AbstractBinaryFile> binaryFiles = new ArrayList<>();
-                
+                List<T> binaryFilesToAdd = new ArrayList<>();
+
                 //in response to the button click, show open dialog 
                 int returnVal = fileChooser.showOpenDialog(BinaryFileManagementPanel.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {                    
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
                     for (File selectedFile : fileChooser.getSelectedFiles()) {
                         try {
-                            AbstractBinaryFile binaryFile = getBinaryFile(selectedFile);
-                            binaryFiles.add(binaryFile);
-                        } catch (IOException ex) {
-                            LOGGER.error(ex.getMessage(), ex);                            
+                            T t = getBinaryFile(selectedFile);
+                            binaryFilesToAdd.add(t);
+                        } catch (IOException | InstantiationException | IllegalAccessException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
                         }
-                    }                    
+                    }
                 }
-                if(!binaryFiles.isEmpty()){
-                    BinaryFileManagementPanel.this.firePropertyChange(ADDED, null, binaryFiles);
-                }                                                
+                if (!binaryFilesToAdd.isEmpty()) {
+                    BinaryFileManagementPanel.this.firePropertyChange(ADDED, null, binaryFilesToAdd);
+                }
             }
         });
-        
+
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BinaryFileManagementPanel.this.firePropertyChange(REMOVED, null, true);
+                if (binaryFileList.getSelectedIndex() != -1) {
+                    List<T> binaryFilesToRemove = new ArrayList<>();
+                    binaryFilesToRemove.addAll(binaryFileList.getSelectedValuesList());
+
+                    BinaryFileManagementPanel.this.firePropertyChange(REMOVED, null, binaryFilesToRemove);
+                }
             }
         });
     }
@@ -98,23 +108,23 @@ public class BinaryFileManagementPanel extends javax.swing.JPanel {
      *
      * @return
      */
-    private List<AbstractBinaryFile> getBinaryFiles() {
-        List<AbstractBinaryFile> binaryFiles = new ArrayList<>();
-        for (AbstractBinaryFile binaryFile : binaryFileBindingList) {
-            binaryFiles.add(binaryFile);
+    private List<T> getBinaryFiles() {
+        List<T> binaryFiles = new ArrayList<>();
+        for (T t : binaryFileBindingList) {
+            binaryFiles.add(t);
         }
-        
+
         return binaryFiles;
     }
 
     /**
-     * Make a new AbstractBinaryFile instance from the file input.
+     * Make a new T instance from the file input.
      *
      * @param file
      */
-    private AbstractBinaryFile getBinaryFile(File file) throws IOException {
-        AbstractBinaryFile binaryFile = new AbstractBinaryFile();
-        binaryFile.setFileName(file.getName());
+    private T getBinaryFile(File file) throws IOException, InstantiationException, IllegalAccessException {
+        T t = type.newInstance();
+        t.setFileName(file.getName());
 
         //get file as byte array
         byte[] bytes = FileUtils.readFileToByteArray(file);
@@ -123,14 +133,14 @@ public class BinaryFileManagementPanel extends javax.swing.JPanel {
         try (ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
             gZIPOutputStream.write(bytes);
-            
+
             gZIPOutputStream.flush();
             gZIPOutputStream.finish();
-            
-            binaryFile.setContent(zippedByteArrayOutputStream.toByteArray());
-        }        
-        
-        return binaryFile;
+
+            t.setContent(zippedByteArrayOutputStream.toByteArray());
+        }
+
+        return t;
     }
 
     /**

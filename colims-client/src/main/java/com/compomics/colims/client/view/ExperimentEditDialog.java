@@ -104,7 +104,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         addSampleButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("CoLims login");
+        setTitle("experiment metadata management");
 
         experimentEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 

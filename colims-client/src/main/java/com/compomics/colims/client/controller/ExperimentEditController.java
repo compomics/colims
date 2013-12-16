@@ -5,23 +5,17 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
-import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
-import com.compomics.colims.client.view.ProjectEditDialog;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AbstractBinaryFile;
 import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Protocol;
+import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,12 +24,6 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -116,6 +104,37 @@ public class ExperimentEditController implements Controllable {
                     MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
+            }
+        });
+        
+        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADDED, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                List<ExperimentBinaryFile> binaryFilesToAdd = (List<ExperimentBinaryFile>) evt.getNewValue();
+                
+                experimentToEdit.getBinaryFiles().addAll(binaryFilesToAdd);
+            }
+        });
+        
+        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVED, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                List<ExperimentBinaryFile> binaryFilesToRemove = (List<ExperimentBinaryFile>) evt.getNewValue();
+                
+//                if(experimentToEdit.getBinaryFiles().){
+//                    
+//                }
+            }
+        });
+        
+        experimentEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                experimentBinaryFileDialog.setLocationRelativeTo(null);
+                experimentBinaryFileDialog.setVisible(true);
             }
         });
 
