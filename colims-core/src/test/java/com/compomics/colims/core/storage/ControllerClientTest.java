@@ -62,6 +62,7 @@ public class ControllerClientTest {
 
     @After
     public void stopListener() throws IOException {
+        storageController.disconnect();
         listener.interrupt();
         try {
             FileUtils.deleteDirectory(testTaskDbAddress);
@@ -76,10 +77,12 @@ public class ControllerClientTest {
     @Test
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
+        Assert.fail("Not yet finished");
         ClientToControllerConnector creator = new ClientToControllerConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
-        Assert.assertTrue(success);
+        //Assert.assertTrue(success);
+
     }
 
 }

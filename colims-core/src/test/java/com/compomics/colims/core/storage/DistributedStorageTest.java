@@ -43,7 +43,7 @@ public class DistributedStorageTest {
         try {
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
-            LOGGER.error(ex);
+       
         }
     }
 

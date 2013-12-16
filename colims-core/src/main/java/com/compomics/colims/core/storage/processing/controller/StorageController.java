@@ -9,6 +9,7 @@ import com.compomics.colims.core.storage.processing.controller.storagequeue.Stor
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
@@ -31,6 +32,7 @@ public class StorageController {
     private ServerSocket serverSocket;
     private final Logger LOGGER = Logger.getLogger(StorageController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
+    private boolean disconnected = false;
 
     /**
      *
@@ -53,6 +55,22 @@ public class StorageController {
         handleAllIncomingSockets();
     }
 
+    public void disconnect() {
+        disconnected = true;
+        try {
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+        }
+        try {
+            storageQueue.disconnect();
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+        }
+    }
+
     public int getPort() {
         return port;
     }
@@ -62,7 +80,7 @@ public class StorageController {
     }
 
     private void handleAllIncomingSockets() {
-        while (true) {
+        while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
                 storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
@@ -76,6 +94,14 @@ public class StorageController {
                 } catch (InterruptedException ex) {
                     LOGGER.error(ex);
                 }
+            }
+        }
+        if (!serverSocket.isClosed()) {
+            try {
+                serverSocket.close();
+            } catch (IOException ex) {
+                LOGGER.error(ex);
+                serverSocket = null;
             }
         }
     }
