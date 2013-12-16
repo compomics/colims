@@ -4,10 +4,6 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.exception.MappingException;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.io.IOManager;
 import com.compomics.colims.core.io.parser.MzMLParser;
@@ -23,6 +18,9 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
+import com.compomics.colims.repository.impl.AbstractBinaryFileHibernateRepository;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -36,9 +34,7 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Autowired
     private ExperimentRepository experimentRepository;
     @Autowired
-    private MzMLParser mzMLIOService;
-    @Autowired
-    private IOManager ioManager;
+    private AbstractBinaryFileHibernateRepository abstractBinaryFileHibernateRepository;
 
     @Override
     public Experiment findById(Long id) {
@@ -58,30 +54,6 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public void delete(Experiment entity) {
         experimentRepository.delete(entity);
-    }
-
-    @Override
-    public void importMzMlExperiments(List<File> mzMlFiles) throws IOException {
-        //import files in mzMLIOService
-        mzMLIOService.importMzMLFiles(mzMlFiles);
-
-        //iterate over the files and parse them
-        for (File mzMLFile : mzMlFiles) {
-            Experiment experiment = new Experiment();
-            try {
-                experiment = mzMLIOService.parseMzmlFile(mzMLFile.getName());
-            } catch (MzMLUnmarshallerException | MappingException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            }
-            experiment.setBinaryFiles(new ArrayList<ExperimentBinaryFile>());
-
-            //add the file to the Experiment entity as BinaryFile entity
-            ExperimentBinaryFile binaryFile = new ExperimentBinaryFile(ioManager.readBytesFromFile(mzMLFile));
-            experiment.getBinaryFiles().add(binaryFile);
-
-            //save experiment to db
-            experimentRepository.save(experiment);
-        }
     }
 
     @Override
@@ -107,5 +79,28 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public Experiment findByTitle(String title) {
         return experimentRepository.findByTitle(title);
+    }
+
+    @Override
+    public void fetchBinaryFiles(Experiment experiment) {
+        try {
+            //attach the experiment to the new session
+            experimentRepository.saveOrUpdate(experiment);
+            if (!Hibernate.isInitialized(experiment.getBinaryFiles())) {
+                Hibernate.initialize(experiment.getBinaryFiles());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
+    }
+
+    @Override
+    public void saveBinaryFile(ExperimentBinaryFile experimentBinaryFile) {
+        abstractBinaryFileHibernateRepository.save(experimentBinaryFile);
+    }
+    
+    @Override
+    public void deleteBinaryFile(ExperimentBinaryFile experimentBinaryFile) {
+        abstractBinaryFileHibernateRepository.delete(experimentBinaryFile);
     }
 }

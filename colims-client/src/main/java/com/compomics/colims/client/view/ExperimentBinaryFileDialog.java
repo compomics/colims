@@ -1,7 +1,9 @@
 package com.compomics.colims.client.view;
 
-import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
-import com.compomics.colims.model.ExperimentBinaryFile;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  *
@@ -10,16 +12,64 @@ import com.compomics.colims.model.ExperimentBinaryFile;
 public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form ExperimentBinaryFileDialog
+     * Creates new form LoginDialog
      */
     public ExperimentBinaryFileDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+
         initComponents();
+
+        samplesTableScrollPane.getViewport().setOpaque(false);
+        samplesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
 
-    public BinaryFileManagementPanel getBinaryFileManagementPanel() {
-        return binaryFileManagementPanel;
-    }        
+    public JButton getAttachmentsEditButton() {
+        return attachmentsEditButton;
+    }
+
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+
+    public JTextArea getDescriptionTextArea() {
+        return descriptionTextArea;
+    }
+
+    public JTextField getAttachementsTextField() {
+        return attachementsTextField;
+    }
+
+    public JTextField getNumberTextField() {
+        return numberTextField;
+    }
+
+    public JButton getSaveOrUpdateButton() {
+        return saveOrUpdateButton;
+    }
+
+    public JTextField getStorageLocationTextField() {
+        return storageLocationTextField;
+    }
+
+    public JTextField getTitleTextField() {
+        return titleTextField;
+    }
+
+    public JButton getAddSampleButton() {
+        return addSampleButton;
+    }
+
+    public JButton getDeleteSampleButton() {
+        return deleteSampleButton;
+    }
+
+    public JButton getEditSampleButton() {
+        return editSampleButton;
+    }
+
+    public JTable getSamplesTable() {
+        return samplesTable;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,26 +80,22 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        binaryFileManagementPanel = new BinaryFileManagementPanel(ExperimentBinaryFile.class);
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("binary files management");
+        setTitle("experiment metadata management");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGap(0, 387, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 288, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile> binaryFileManagementPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,6 +1,5 @@
 package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
-import com.compomics.colims.core.mapper.Mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import eu.isas.peptideshaker.myparameters.PSParameter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.log4j.Logger;
@@ -79,7 +77,7 @@ public class UtilitiesProteinMapper {
                         peptideHasProteins.add(peptideHasProtein);
                         //set entity relations
                         peptideHasProtein.setProtein(mainMatchedProtein);
-                        peptideHasProtein.setPeptide(targetPeptide);
+                        peptideHasProtein.setPeptide(targetPeptide);                        
                     }
                 }
             }
