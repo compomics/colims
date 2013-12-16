@@ -9,6 +9,10 @@ import com.compomics.colims.core.storage.incoming.ClientToControllerConnector;
 import com.compomics.colims.core.storage.processing.controller.StorageController;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,11 +37,20 @@ public class ControllerClientTest {
 
     private Thread listener;
 
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private static final Logger LOGGER = Logger.getLogger(ControllerClientTest.class);
+
     public ControllerClientTest() {
     }
 
     @Before
     public void startListener() {
+        try {
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+            LOGGER.debug("Could not delete file...");
+        }
         listener = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -48,8 +61,13 @@ public class ControllerClientTest {
     }
 
     @After
-    public void stopListener() {
+    public void stopListener() throws IOException {
         listener.interrupt();
+        try {
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        } catch (IOException e) {
+            FileUtils.deleteDirectory(testTaskDbAddress);
+        }
     }
 
     /**
@@ -59,7 +77,7 @@ public class ControllerClientTest {
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
         ClientToControllerConnector creator = new ClientToControllerConnector("127.0.0.1", 45678);
-        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_2.cps").getFile();
+        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
         Assert.assertTrue(success);
     }

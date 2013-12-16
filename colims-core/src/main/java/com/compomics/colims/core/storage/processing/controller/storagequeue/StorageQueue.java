@@ -139,7 +139,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
         c = getConnection();
         try (Statement stmt = c.createStatement()) {
             String sql
-                    = "CREATE TABLE STORAGETASKS "
+                    = "CREATE TABLE IF NOT EXISTS STORAGETASKS "
                     + "(TASKID INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + " FILELOCATION TEXT NULL, "
                     + " USERNAME TEXT NULL, "
