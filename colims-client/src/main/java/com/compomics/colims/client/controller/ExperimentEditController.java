@@ -10,9 +10,9 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
+import com.compomics.colims.core.service.AbstractBinaryFileService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.model.AbstractBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Sample;
@@ -53,7 +53,7 @@ public class ExperimentEditController implements Controllable {
     @Autowired
     private ExperimentService experimentService;
     @Autowired
-    private ProtocolService protocolService;
+    private AbstractBinaryFileService abstractBinaryFileService;
     @Autowired
     private EventBus eventBus;
 
@@ -66,7 +66,7 @@ public class ExperimentEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);        
+        experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);
         experimentBinaryFileDialog = new ExperimentBinaryFileDialog(colimsController.getColimsFrame(), true);
         experimentBinaryFileDialog.getBinaryFileManagementPanel().init(ExperimentBinaryFile.class);
 
@@ -118,7 +118,7 @@ public class ExperimentEditController implements Controllable {
                 binaryFileToAdd.setExperiment(experimentToEdit);
 
                 //save binary file
-                experimentService.saveBinaryFile(binaryFileToAdd);
+                abstractBinaryFileService.save(binaryFileToAdd);
 
                 experimentToEdit.getBinaryFiles().add(binaryFileToAdd);
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -132,21 +132,24 @@ public class ExperimentEditController implements Controllable {
 
                 if (experimentToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
                     experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
-                }                
-                
+                }
+
                 //remove binary file
-                experimentService.deleteBinaryFile(binaryFileToRemove);
+                abstractBinaryFileService.delete(binaryFileToRemove);
 
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
         });
-        
+
         experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
 
-                System.out.println("test");
+                //update binary file
+                abstractBinaryFileService.update(binaryFileToUpdate);
+
+                experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
         });
 
@@ -240,5 +243,17 @@ public class ExperimentEditController implements Controllable {
         concatenatedString = joiner.join(experimentToEdit.getBinaryFiles());
 
         return concatenatedString;
+    }
+
+    private ExperimentBinaryFile getBinaryFileById(Long Id) {
+        ExperimentBinaryFile foundExperimentBinaryFile = null;
+
+        for (ExperimentBinaryFile experimentBinaryFile : experimentToEdit.getBinaryFiles()) {
+            if (experimentBinaryFile.getId().equals(Id)) {
+                foundExperimentBinaryFile = experimentBinaryFile;
+            }
+        }
+
+        return foundExperimentBinaryFile;
     }
 }

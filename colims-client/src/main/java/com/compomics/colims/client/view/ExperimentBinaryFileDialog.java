@@ -1,5 +1,7 @@
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
+import com.compomics.colims.model.ExperimentBinaryFile;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -17,59 +19,12 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     public ExperimentBinaryFileDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
-        initComponents();
-
-        samplesTableScrollPane.getViewport().setOpaque(false);
-        samplesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        initComponents();       
     }
 
-    public JButton getAttachmentsEditButton() {
-        return attachmentsEditButton;
-    }
-
-    public JButton getCancelButton() {
-        return cancelButton;
-    }
-
-    public JTextArea getDescriptionTextArea() {
-        return descriptionTextArea;
-    }
-
-    public JTextField getAttachementsTextField() {
-        return attachementsTextField;
-    }
-
-    public JTextField getNumberTextField() {
-        return numberTextField;
-    }
-
-    public JButton getSaveOrUpdateButton() {
-        return saveOrUpdateButton;
-    }
-
-    public JTextField getStorageLocationTextField() {
-        return storageLocationTextField;
-    }
-
-    public JTextField getTitleTextField() {
-        return titleTextField;
-    }
-
-    public JButton getAddSampleButton() {
-        return addSampleButton;
-    }
-
-    public JButton getDeleteSampleButton() {
-        return deleteSampleButton;
-    }
-
-    public JButton getEditSampleButton() {
-        return editSampleButton;
-    }
-
-    public JTable getSamplesTable() {
-        return samplesTable;
-    }
+    public BinaryFileManagementPanel<ExperimentBinaryFile> getBinaryFileManagementPanel() {
+        return binaryFileManagementPanel;
+    }           
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,22 +35,49 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        binaryFileManagementParentPanel = new javax.swing.JPanel();
+        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile>();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("experiment metadata management");
+        setBackground(new java.awt.Color(240, 240, 240));
+
+        binaryFileManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        binaryFileManagementPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        javax.swing.GroupLayout binaryFileManagementParentPanelLayout = new javax.swing.GroupLayout(binaryFileManagementParentPanel);
+        binaryFileManagementParentPanel.setLayout(binaryFileManagementParentPanelLayout);
+        binaryFileManagementParentPanelLayout.setHorizontalGroup(
+            binaryFileManagementParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(binaryFileManagementParentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        binaryFileManagementParentPanelLayout.setVerticalGroup(
+            binaryFileManagementParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(binaryFileManagementParentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 387, Short.MAX_VALUE)
+            .addComponent(binaryFileManagementParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addComponent(binaryFileManagementParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile> binaryFileManagementPanel;
+    private javax.swing.JPanel binaryFileManagementParentPanel;
     // End of variables declaration//GEN-END:variables
 }

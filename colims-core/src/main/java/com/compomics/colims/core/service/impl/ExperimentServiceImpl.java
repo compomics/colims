@@ -93,14 +93,4 @@ public class ExperimentServiceImpl implements ExperimentService {
             LOGGER.error(hbe, hbe.getCause());
         }
     }
-
-    @Override
-    public void saveBinaryFile(ExperimentBinaryFile experimentBinaryFile) {
-        abstractBinaryFileHibernateRepository.save(experimentBinaryFile);
-    }
-    
-    @Override
-    public void deleteBinaryFile(ExperimentBinaryFile experimentBinaryFile) {
-        abstractBinaryFileHibernateRepository.delete(experimentBinaryFile);
-    }
 }

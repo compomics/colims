@@ -37,18 +37,4 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @param experiment
      */
     void fetchBinaryFiles(Experiment experiment);
-
-    /**
-     * Save the experiment binary file
-     *
-     * @param experimentBinaryFile
-     */
-    void saveBinaryFile(ExperimentBinaryFile experimentBinaryFile);
-    
-    /**
-     * Delete the experiment binary file
-     *
-     * @param experimentBinaryFile
-     */
-    void deleteBinaryFile(ExperimentBinaryFile experimentBinaryFile);
 }

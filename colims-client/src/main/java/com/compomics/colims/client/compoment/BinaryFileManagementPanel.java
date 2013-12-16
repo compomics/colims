@@ -21,6 +21,7 @@ import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.BindingListener;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -48,14 +49,12 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
     private JFileChooser fileChooser = new FileChooser();
     private BindingGroup bindingGroup;
     private ObservableList<T> binaryFileBindingList;
-    private List<BinaryFileType> fileTypes;
+    private int previouslySelectedIndex = -1;
 
     /**
      * Creates new form BinaryFileManagementPanel
      */
     public BinaryFileManagementPanel() {
-        fileTypes = Arrays.asList(BinaryFileType.values());
-
         initComponents();
     }
 
@@ -70,15 +69,8 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         }
 
         clear();
-        binaryFileBindingList.addAll(binaryFiles);
-    }
-
-    /**
-     * Clear the file list
-     */
-    public void clear() {
-        binaryFileBindingList.clear();
-    }
+        binaryFileBindingList.addAll(binaryFiles);       
+    }    
 
     /**
      * Init the component
@@ -86,6 +78,13 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
      * @param type
      */
     public void init(Class<T> type) {
+        this.type = type;
+
+        //fill combobox
+        for (BinaryFileType binaryFileType : BinaryFileType.values()) {
+            binaryFileTypeComboBox.addItem(binaryFileType);
+        }
+
         //select only files
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         //select multiple file
@@ -98,27 +97,20 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         JListBinding binaryFileListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, binaryFileBindingList, binaryFileList);
         bindingGroup.addBinding(binaryFileListBinding);
 
-        Binding binaryFileTypeBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, binaryFileList, ELProperty.create("${selectedElement.binaryFileType}"), binaryFileTypeComboBox, BeanProperty.create("selectedItem"), "type");
-        bindingGroup.addBinding(binaryFileTypeBinding);
-
-        JComboBoxBinding fileTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, fileTypes, binaryFileTypeComboBox);
-        bindingGroup.addBinding(fileTypeComboBoxBinding);
-
         bindingGroup.bind();
 
+        //add action listeners  
         binaryFileList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(ListSelectionEvent e) {                
                 if (!e.getValueIsAdjusting()) {
                     int selectedIndex = binaryFileList.getSelectedIndex();
-                    if (selectedIndex != -1) {
-                        binaryFileTypeComboBox.setSelectedItem(binaryFileBindingList.get(selectedIndex));
-                        if (binaryFileBindingList.get(selectedIndex).getId() != null) {
-                            binaryFileTypeComboBox.setEnabled(false);
-                        } else {
-                            binaryFileTypeComboBox.setEnabled(true);
-                        }
+                    if(selectedIndex != -1){
+                        //set selected item in combobox
+                        binaryFileTypeComboBox.setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
                     }
+                                        
+                    previouslySelectedIndex = selectedIndex;
                 }
             }
         });
@@ -128,8 +120,15 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = binaryFileList.getSelectedIndex();
                 if (selectedIndex != -1) {
-                    T binaryFileToUpdate = binaryFileBindingList.get(selectedIndex);
-                    BinaryFileManagementPanel.this.firePropertyChange(ADD, null, binaryFileToUpdate);
+                    if (previouslySelectedIndex == selectedIndex) {
+                        T binaryFileToUpdate = binaryFileBindingList.get(selectedIndex);
+                        binaryFileToUpdate.setBinaryFileType((BinaryFileType) binaryFileTypeComboBox.getSelectedItem());
+
+                        //update GUI
+                        binaryFileList.updateUI();
+
+                        BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
+                    }
                 }
             }
         });
@@ -144,12 +143,16 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         binaryFileToAdd = getBinaryFile(fileChooser.getSelectedFile());
-                        binaryFileBindingList.add(binaryFileToAdd);
                     } catch (IOException | InstantiationException | IllegalAccessException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                     }
                 }
                 if (binaryFileToAdd != null) {
+                    binaryFileBindingList.add(binaryFileToAdd);
+
+                    //set selected index
+                    binaryFileList.setSelectedIndex(binaryFileBindingList.size() - 1);
+
                     BinaryFileManagementPanel.this.firePropertyChange(ADD, null, binaryFileToAdd);
                 }
             }
@@ -162,24 +165,24 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
                     T binaryFileToRemove = (T) binaryFileList.getSelectedValue();
 
                     binaryFileBindingList.remove(binaryFileToRemove);
+
+                    //set selected index
+                    if (!binaryFileBindingList.isEmpty()) {
+                        binaryFileList.setSelectedIndex(0);
+                    }
+
                     BinaryFileManagementPanel.this.firePropertyChange(REMOVE, null, binaryFileToRemove);
                 }
             }
         });
-    }
-
+    }    
+    
     /**
-     * Get the binary files as a list
-     *
-     * @return
+     * Clear the file list
      */
-    private List<T> getBinaryFiles() {
-        List<T> binaryFiles = new ArrayList<>();
-        for (T t : binaryFileBindingList) {
-            binaryFiles.add(t);
-        }
-
-        return binaryFiles;
+    private void clear() {
+        previouslySelectedIndex = -1;
+        binaryFileBindingList.clear();
     }
 
     /**
@@ -190,7 +193,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
     private T getBinaryFile(File file) throws IOException, InstantiationException, IllegalAccessException {
         T t = type.newInstance();
         t.setFileName(file.getName());
-        t.setBinaryFileType(fileTypes.get(binaryFileTypeComboBox.getSelectedIndex()));
+        t.setBinaryFileType(BinaryFileType.TEXT);
 
         //get file as byte array
         byte[] bytes = FileUtils.readFileToByteArray(file);
@@ -223,6 +226,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         deleteButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
         binaryFileTypeComboBox = new javax.swing.JComboBox();
+        typeLabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -241,6 +245,8 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         addButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        typeLabel.setText("type");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -252,15 +258,18 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(binaryFileTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(binaryFileTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(typeLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(binaryFileTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,5 +285,6 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
     private javax.swing.JScrollPane binaryFileListScrollPane;
     private javax.swing.JComboBox binaryFileTypeComboBox;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
 }
