@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.controller;
+package com.compomics.colims.core.searches.controller;
 
 import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.storage.processing.controller.StorageHandler;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,23 +21,23 @@ import org.springframework.stereotype.Component;
  *
  * @author Kenneth
  */
-@Component("storageController")
-public class StorageController {
+@Component("searchController")
+public class SearchController {
 
     @Autowired
     SearchQueue storageQueue;
     @Autowired
-    StorageHandler storageHandler;
+    SearchHandler storageHandler;
 
     private int port = 24567;
     private ServerSocket serverSocket;
-    private final Logger LOGGER = Logger.getLogger(StorageController.class);
+    private final Logger LOGGER = Logger.getLogger(SearchController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
     private boolean disconnected = false;
 
     /**
      *
-     * This method starts the socketListener and the SearchQueue
+     * This method starts the socketListener and the StorageQueue
      */
     public void launch(int port) {
         this.port = port;
@@ -83,7 +84,7 @@ public class StorageController {
         while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
+                storageHandler = (SearchHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchHandler");
                 storageHandler.setSocket(incomingSocket);
                 threadService.submit(storageHandler);
             } catch (IOException ex) {

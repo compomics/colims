@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth Verheggen
  */
 @Component("storageQueue")
-public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable {
+public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable {
 
     @Autowired
     ColimsImporterFactory colimsImporterFactory;
@@ -36,14 +36,14 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     private static Connection c;
     private static boolean connectionLocked = false;
     private static File adress;
-    private static final Logger LOGGER = Logger.getLogger(StorageQueue.class);
+    private static final Logger LOGGER = Logger.getLogger(SearchQueue.class);
 
-    private StorageQueue() {
+    private SearchQueue() {
         this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
         setUpTables();
     }
 
-    private StorageQueue(String dbAddress) {
+    private SearchQueue(String dbAddress) {
         this.adress = new File(dbAddress);
         setUpTables();
     }
@@ -102,7 +102,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     }
 
     private Connection getConnection() {
-        while (StorageQueue.connectionLocked == true) {
+        while (SearchQueue.connectionLocked == true) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
@@ -120,12 +120,12 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 LOGGER.error(ex);
             }
         }
-        StorageQueue.connectionLocked = true;
+        SearchQueue.connectionLocked = true;
         return c;
     }
 
     private void releaseConnection() {
-        StorageQueue.connectionLocked = false;
+        SearchQueue.connectionLocked = false;
     }
 
     public void disconnect() throws SQLException {

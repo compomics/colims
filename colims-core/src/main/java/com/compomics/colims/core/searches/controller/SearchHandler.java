@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.processing.controller;
+package com.compomics.colims.core.searches.controller;
 
 import com.compomics.colims.core.storage.enums.StorageState;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
@@ -27,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component("storageHandler")
 @Scope("prototype")
-public class StorageHandler implements Runnable {
+public class SearchHandler implements Runnable {
 
     @Autowired
-    SearchQueue storageQueue;
-    private static final Logger LOGGER = Logger.getLogger(StorageHandler.class);
+    SearchQueue searchQueue;
+    private static final Logger LOGGER = Logger.getLogger(SearchHandler.class);
     private Socket socket;
 
     private BufferedReader in;
@@ -69,7 +69,7 @@ public class StorageHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = storageQueue.addNewTask(responseArgs[1]
+            task = searchQueue.addNewTask(responseArgs[1]
                     , responseArgs[0]
                     , Long.parseLong(responseArgs[2])
                     , responseArgs[3]);

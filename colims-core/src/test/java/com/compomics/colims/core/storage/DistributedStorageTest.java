@@ -6,7 +6,7 @@
 package com.compomics.colims.core.storage;
 
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class DistributedStorageTest {
     private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
     private static final Logger LOGGER = Logger.getLogger(DistributedStorageTest.class);
     @Autowired
-    StorageQueue storageQueue;
+    SearchQueue storageQueue;
 
     public DistributedStorageTest() {
     }
@@ -58,7 +58,7 @@ public class DistributedStorageTest {
     }
 
     /**
-     * Test of offer method, of class StorageQueue.
+     * Test of offer method, of class SearchQueue.
      */
     @Test
     public void testOfferAndRetrieve() throws IOException, SQLException {
