@@ -14,6 +14,7 @@ import com.compomics.colims.core.storage.processing.controller.storagequeue.Stor
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
@@ -38,16 +39,15 @@ public class Respin {
     private RespinProperties respProps;
     private StorageQueue searchQueue;
 
-    public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId) throws RespinException, Exception {
-       
+    public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier) throws RespinException, Exception {
+
         //load respinProperties
         File respinPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
         RespinProperties.setPropertiesFile(respinPropertiesFile);
         RespinProperties.reload();
-        
-  
+
         searchQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchQueue");
-       
+
         this.mgfFile = mgf;
         this.paramFile = searchparameters;
         this.fastaFile = fasta;
@@ -58,7 +58,7 @@ public class Respin {
             prepareLogging();
             LOGGER = Logger.getLogger(Respin.class);
             respProps = RespinProperties.getInstance();
-            System.out.println("PROCESS_UPDATE>>>PARSING_ARGUMENTS");
+            notifier.println("PARSING_ARGUMENTS");
             //------------------------------------------------------------------------------
 
             //------------------------------------------------------------------------------
@@ -67,11 +67,11 @@ public class Respin {
                 RespinProcess process = new RespinProcess(command);
                 for (RespinState state : RespinState.values()) {
                     if (!state.equals(RespinState.CLOSED) & !state.equals(RespinState.ERROR)) {
-                        System.out.println("PROCESS_UPDATE>>>" + state.toString().toUpperCase());
+                        notifier.println(state.toString().toUpperCase());
                         state.prceed(process);
                     }
                 }
-                System.out.println("PROCESS_UPDATE>>>PROCESS_COMPLETED");
+                notifier.println("PROCESS_UPDATE>>>PROCESS_COMPLETED");
             } else {
                 throw new RespinException("No valid commandline !");
             }

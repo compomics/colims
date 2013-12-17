@@ -8,14 +8,12 @@ package com.compomics.colims.core.searches.worker;
 import com.compomics.colims.core.config.distributedconfiguration.worker.WorkerProperties;
 import com.compomics.colims.core.searches.respin.control.common.Respin;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
@@ -28,7 +26,7 @@ public class ColimsWorker {
     private static final Logger LOGGER = Logger.getLogger(ColimsWorker.class);
     private WorkerProperties workerProperties;
     private BufferedReader in;
-    private BufferedWriter out;
+    private PrintWriter out;
 
     public void launch() throws IOException {
         //load respinProperties
@@ -42,7 +40,7 @@ public class ColimsWorker {
                 try {
                     in = new BufferedReader(new InputStreamReader(
                             socket.getInputStream()));
-                    out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    out = new PrintWriter(socket.getOutputStream());
                     String response;
                     while ((response = in.readLine()) != null) {
                         String[] responseArgs = response.split(">.<");
@@ -60,9 +58,9 @@ public class ColimsWorker {
                             public void run() {
                                 Respin respin = new Respin();
                                 try {
-                                    respin.launch(mgf, param, fasta, outputDir, searchName);
+                                    respin.launch(mgf, param, fasta, outputDir, searchName, out);
                                 } catch (Exception ex) {
-                                  LOGGER.error(ex);
+                                    LOGGER.error(ex);
                                 }
                             }
                         });
