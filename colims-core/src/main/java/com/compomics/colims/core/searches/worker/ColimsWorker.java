@@ -44,11 +44,13 @@ public class ColimsWorker {
                     String response;
                     while ((response = in.readLine()) != null) {
                         String[] responseArgs = response.split(">.<");
-                        String userName = responseArgs[0];
-                        final String searchName = responseArgs[1];
-                        final File mgf = new File(responseArgs[2]);
-                        final File param = new File(responseArgs[3]);
-                        final File fasta = new File(responseArgs[4]);
+                        final String userName = responseArgs[0];
+                        final String instrumentName = responseArgs[1];
+                        final long sampleId = Long.parseLong(responseArgs[2]);
+                        final String searchName = responseArgs[3];
+                        final File mgf = new File(responseArgs[4]);
+                        final File param = new File(responseArgs[5]);
+                        final File fasta = new File(responseArgs[6]);
                         final File outputDir = new File(workerProperties.getStoragePath(), userName + "/" + searchName + "/");
                         if (!outputDir.exists()) {
                             outputDir.mkdirs();
@@ -58,7 +60,7 @@ public class ColimsWorker {
                             public void run() {
                                 Respin respin = new Respin();
                                 try {
-                                    respin.launch(mgf, param, fasta, outputDir, searchName, out);
+                                    respin.launch(userName, instrumentName, sampleId, mgf, param, fasta, outputDir, searchName, out, true);
                                 } catch (Exception ex) {
                                     LOGGER.error(ex);
                                 }

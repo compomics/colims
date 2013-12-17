@@ -23,25 +23,47 @@ public class SearchTask implements Comparable {
     private String userName;
     private String searchName;
     private RespinState state = RespinState.NEW;
+    private String instrument;
+    private long sampleID;
 
-    public SearchTask(long taskID, String mgfLocation, String fastaLocation, String parameterLocation, String userName, String searchName) {
+    public SearchTask(long taskID, String mgfLocation, String fastaLocation, String parameterLocation, String userName, String searchName, String instrument, long sampleID) {
         this.taskID = taskID;
         this.mgfLocation = mgfLocation;
         this.fastaLocation = fastaLocation;
         this.parameterLocation = parameterLocation;
         this.userName = userName;
         this.searchName = searchName;
+        this.instrument = instrument;
+        this.sampleID = sampleID;
     }
 
-    public SearchTask(long taskID, String mgfLocation, String parameterLocation, String userName, String searchName) throws IOException, ClassNotFoundException {
+    public SearchTask(long taskID, String mgfLocation, String parameterLocation, String userName, String searchName, String instrument, long sampleID) throws ClassNotFoundException, IOException {
         this.taskID = taskID;
         this.mgfLocation = mgfLocation;
         this.fastaLocation = SearchParameters.getIdentificationParameters(new File(parameterLocation)).getFastaFile().getAbsolutePath();
         this.parameterLocation = parameterLocation;
         this.userName = userName;
         this.searchName = searchName;
+        this.instrument = instrument;
+        this.sampleID = sampleID;
     }
 
+    public String getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(String instrument) {
+        this.instrument = instrument;
+    }
+
+    public long getSampleID() {
+        return sampleID;
+    }
+
+    public void setSampleID(long sampleID) {
+        this.sampleID = sampleID;
+    } 
+    
     public long getTaskID() {
         return taskID;
     }
@@ -90,14 +112,14 @@ public class SearchTask implements Comparable {
         this.searchName = searchName;
     }
 
-    public void setState(RespinState state){
+    public void setState(RespinState state) {
         this.state = state;
     }
-    
-    public RespinState getState(){
+
+    public RespinState getState() {
         return this.state;
     }
-    
+
     @Override
     public int compareTo(Object o) {
         if (o instanceof SearchTask) {

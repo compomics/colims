@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.controller.searches.searchqueue;
+package com.compomics.colims.core.searches.controller.searches;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
@@ -58,38 +58,6 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
         return nextTask;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            //RUN FROM COLIMS !!!!
-            SearchTask taskToRun = poll();
-            if (taskToRun != null) {
-                updateTask(taskToRun, RespinState.STARTUP);
-                try {
-                    Respin respin = new Respin();
-
-                    respin.launch(new File(taskToRun.getMgfLocation()), new File(taskToRun.getParameterLocation()), new File(taskToRun.getFastaLocation()), outputDir, taskToRun.getSearchName());
-                } catch (IOException | PeptideShakerIOException | MappingException ex) {
-                    updateTask(taskToRun, RespinState.ERROR);
-                } catch (Exception ex) {
-                    LOGGER.error(ex);
-                } finally {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        LOGGER.error(ex);
-                    }
-                }
-            } else {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                    LOGGER.error(ex);
-                }
-            }
-        }
-    }
-
     private Connection getConnection() {
         while (this.connectionLocked == true) {
             try {
@@ -135,7 +103,9 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
                     + " PARAMLOCATION TEXT NULL, "
                     + " FASTALOCATION INTEGER NULL,"
                     + " USERNAME TEXT NULL,"
-                    + " SEARCHNAME TEXT)";
+                    + " INSTRUMENT TEXT NULL,"
+                    + " SAMPLEID INT NULL,"
+                    + " SEARCHNAME TEXT NULL)";
             stmt.executeUpdate(sql);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -172,7 +142,9 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
                 String fastaLocation = rs.getString("FASTALOCATION");
                 String userName = rs.getString("USERNAME");
                 String searchName = rs.getString("SEARCHNAME");
-                this.offer(new SearchTask(taskId, mgfLocation, parameterLocation, fastaLocation, userName, searchName));
+                String instrumentName = rs.getString("INSTRUMENT");
+                long sampleID = rs.getLong("SAMPLEID");
+                this.offer(new SearchTask(taskId, mgfLocation, parameterLocation, fastaLocation, userName, searchName, instrumentName, sampleID));
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -211,7 +183,9 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
                         rs.getString("PARAMLOCATION"),
                         rs.getString("FASTALOCATION"),
                         rs.getString("USERNAME"),
-                        rs.getString("SEARCHNAME"));
+                        rs.getString("SEARCHNAME"),
+                        rs.getString("INSTRUMENT"),
+                        rs.getLong("SAMPLEID"));
                 task.setState(RespinState.valueOf(rs.getString("STATE")));
             }
         } catch (Exception e) {
@@ -223,17 +197,18 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
         return task;
     }
 
-
-    public SearchTask addNewTask(String mgfFileLocation, String paramFileLocation, String fastaFileLocation, String userName, String searchName) {
+    public SearchTask addNewTask(String mgfFileLocation, String paramFileLocation, String fastaFileLocation, String userName, String searchName, String instrumentName, long sampleID) {
         long key = -1L;
         connection = getConnection();
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO SEARCHTASKS(STATE,MGFLOCATION,PARAMLOCATION,FASTALOCATION,USERNAME,SEARCHNAME) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO SEARCHTASKS(STATE,MGFLOCATION,PARAMLOCATION,FASTALOCATION,USERNAME,SEARCHNAME,INSTRUMENT,SAMPLEID) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, "NEW");
             stmt.setString(2, mgfFileLocation);
             stmt.setString(3, paramFileLocation);
             stmt.setString(4, fastaFileLocation);
             stmt.setString(5, userName);
             stmt.setString(6, searchName);
+            stmt.setString(7, instrumentName);
+            stmt.setLong(8, sampleID);
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -245,10 +220,15 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
             e.printStackTrace();
         } finally {
             releaseConnection();
-            SearchTask task = new SearchTask(key, mgfFileLocation, paramFileLocation, fastaFileLocation, userName, searchName);
+            SearchTask task = new SearchTask(key, mgfFileLocation, paramFileLocation, fastaFileLocation, userName, searchName, instrumentName, sampleID);
             offer(task);
             return task;
         }
+    }
+
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

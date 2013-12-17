@@ -1,9 +1,11 @@
 package com.compomics.colims.core.searches.respin.model.processes.respinprocess;
 
 import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.StorageProperties;
 import com.compomics.colims.core.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.core.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.core.searches.respin.control.validation.SearchParamValidator;
+import com.compomics.colims.core.storage.incoming.ClientForStorageConnector;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
@@ -35,7 +38,6 @@ public class RespinCommandLine {
     private int minPepLength = 5;
     private int misCleavages = 2;
     private ProcessRunner runner;
-   
 
     public RespinCommandLine(File mgfFile, File searchParameterFile, String projectID) {
         try {
@@ -296,5 +298,28 @@ public class RespinCommandLine {
 
     public File getMGF() {
         return mgf;
+    }
+
+    public void storeColimsResults(String userName, long sampleId, String instrumentName) throws IOException {
+        File storagePropertiesFile = new ClassPathResource("distributed/config/storage.properties").getFile();
+        StorageProperties.setPropertiesFile(storagePropertiesFile);
+        StorageProperties.reload();
+        File[] resultFiles = new File(System.getProperty("user.home") + "/.compomics/respin/temp_results/").listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                LOGGER.debug(pathname.getAbsolutePath().toLowerCase());
+                if (pathname.getAbsolutePath().toLowerCase().endsWith(".cps")) {
+                    return true;
+                } else {
+                    pathname.delete();
+                    return false;
+                }
+            }
+        });
+
+        for (File aFile : resultFiles) {
+            ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
+            boolean success = creator.storeFile(userName, aFile.getAbsolutePath(), sampleId, instrumentName);
+        }
     }
 }

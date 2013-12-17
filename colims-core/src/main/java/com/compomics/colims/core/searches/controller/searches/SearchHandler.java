@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.searches.controller.searches;
 
-import com.compomics.colims.core.searches.controller.searches.searchqueue.SearchQueue;
 import com.compomics.colims.core.searches.controller.searches.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.storage.enums.StorageState;
 import java.io.BufferedReader;
@@ -69,7 +68,15 @@ public class SearchHandler implements Runnable {
         SearchTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = searchQueue.addNewTask(responseArgs[0], responseArgs[1], responseArgs[2], responseArgs[3], responseArgs[4]);
+            task = searchQueue.addNewTask(
+                    responseArgs[0],
+                    responseArgs[1],
+                    responseArgs[2],
+                    responseArgs[3],
+                    responseArgs[4],
+                    responseArgs[5],
+                    Long.parseLong(responseArgs[6])
+            );
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned a search");
             break;
         }

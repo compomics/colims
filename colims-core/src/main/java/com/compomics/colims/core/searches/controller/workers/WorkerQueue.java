@@ -4,12 +4,10 @@
  */
 package com.compomics.colims.core.searches.controller.workers;
 
-import com.compomics.colims.core.searches.controller.searches.searchqueue.SearchQueue;
+import com.compomics.colims.core.searches.controller.searches.SearchQueue;
 import com.compomics.colims.core.searches.controller.searches.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.searches.controller.workers.worker.Worker;
-import java.io.File;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -81,9 +79,12 @@ public class WorkerQueue extends PriorityQueue<Worker> implements Runnable {
         }
     }
 
+    //long taskID, String mgfLocation, String parameterLocation, String userName, String searchName, String instrument, long sampleID
     private void sendToWorker(SearchTask task, Worker worker) {
         PrintWriter writer = new PrintWriter(worker.getOutputStream());
         writer.println(task.getUserName() + ">.<"
+                + task.getInstrument() + ">.<"
+                + task.getSampleID() + ">.<"
                 + task.getSearchName() + ">.<"
                 + task.getMgfLocation() + ">.<"
                 + task.getParameterLocation() + ">.<"

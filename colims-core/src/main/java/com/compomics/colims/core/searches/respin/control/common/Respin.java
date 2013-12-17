@@ -12,6 +12,7 @@ import com.compomics.colims.core.searches.respin.model.processes.respinprocess.R
 import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.util.experiment.biology.EnzymeFactory;
+import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,7 +41,7 @@ public class Respin {
     private StorageQueue searchQueue;
     private PrintWriter notifier;
 
-    public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier) throws RespinException, Exception {
+    public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier, boolean storeAfterRun) throws RespinException, Exception {
 
         //load respinProperties
         File respinPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
@@ -75,6 +76,9 @@ public class Respin {
                     }
                 }
                 notifySocket("PROCESS_COMPLETED");
+                if (storeAfterRun) {
+                    command.storeColimsResults(projectId, sampleId, projectId);
+                }
             } else {
                 throw new RespinException("No valid commandline !");
             }
@@ -124,6 +128,7 @@ public class Respin {
             mgfFile = localMgfFile;
             fastaFile = localFastaFile;
             paramFile = localParamFile;
+
         } catch (IOException e) {
             //Does it matter? 
             LOGGER.error(e);

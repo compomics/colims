@@ -21,7 +21,7 @@ public enum RespinState {
     ERROR {
                 @Override
                 public void prceed(RespinProcess entity) throws RespinException {
-                    
+
                 }
 
                 @Override

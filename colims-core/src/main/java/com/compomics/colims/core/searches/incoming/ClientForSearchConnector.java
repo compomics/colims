@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.searches.incoming;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.config.distributedconfiguration.client.SearchProperties;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
 import com.compomics.colims.core.storage.enums.StorageState;
@@ -55,14 +54,20 @@ public class ClientForSearchConnector {
         this.masterPort = SearchProperties.getInstance().getSearchControllerPort();
     }
 
-    public boolean storeFile(String mgfFile, String paramFile, String fastaFile, String userName, String searchName) {
+    public boolean storeFile(String mgfFile, String paramFile, String fastaFile, String userName, String searchName, String instrumentName, long sampleID) {
         boolean success = false;
         Socket socket = null;
         try {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(mgfFile + ">.<" + paramFile + ">.<" + fastaFile + ">.<" + userName + ">.<" + searchName);
+            out.println(mgfFile + ">.<"
+                    + paramFile + ">.<"
+                    + fastaFile + ">.<"
+                    + userName + ">.<"
+                    + searchName + ">.<"
+                    + instrumentName + ">.<"
+                    + sampleID);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
