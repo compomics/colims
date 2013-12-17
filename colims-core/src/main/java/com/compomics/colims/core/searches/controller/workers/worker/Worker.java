@@ -49,6 +49,8 @@ public class Worker implements Comparable {
         return outputStream;
     }
 
+    //TODO make a listening loop here that waits for returning state messages to set them in the worker?    
+    
     @Override
     public int compareTo(Object o) {
         if (o instanceof Worker) {

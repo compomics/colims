@@ -38,6 +38,7 @@ public class Respin {
     private RespinCommandLine command;
     private RespinProperties respProps;
     private StorageQueue searchQueue;
+    private PrintWriter notifier;
 
     public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier) throws RespinException, Exception {
 
@@ -47,7 +48,7 @@ public class Respin {
         RespinProperties.reload();
 
         searchQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchQueue");
-
+        this.notifier = notifier;
         this.mgfFile = mgf;
         this.paramFile = searchparameters;
         this.fastaFile = fasta;
@@ -58,7 +59,7 @@ public class Respin {
             prepareLogging();
             LOGGER = Logger.getLogger(Respin.class);
             respProps = RespinProperties.getInstance();
-            notifier.println("PARSING_ARGUMENTS");
+            notifySocket("PARSING_ARGUMENTS");
             //------------------------------------------------------------------------------
 
             //------------------------------------------------------------------------------
@@ -67,11 +68,13 @@ public class Respin {
                 RespinProcess process = new RespinProcess(command);
                 for (RespinState state : RespinState.values()) {
                     if (!state.equals(RespinState.CLOSED) & !state.equals(RespinState.ERROR)) {
-                        notifier.println(state.toString().toUpperCase());
+                        notifySocket(state.toString().toUpperCase());
                         state.prceed(process);
+                    } else if (state.equals(RespinState.ERROR)) {
+                        notifySocket("AN ERROR OCCURRED !");
                     }
                 }
-                notifier.println("PROCESS_UPDATE>>>PROCESS_COMPLETED");
+                notifySocket("PROCESS_COMPLETED");
             } else {
                 throw new RespinException("No valid commandline !");
             }
@@ -136,4 +139,13 @@ public class Respin {
         //  loggingFile.createNewFile();
         System.setProperty("respin.logging.file", loggingFile.getAbsolutePath());
     }
+
+    private void notifySocket(String message) {
+        //if possible
+        if (notifier != null) {
+            notifier.println(message);
+            notifier.flush();
+        }
+    }
+
 }
