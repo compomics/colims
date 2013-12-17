@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.config.distributedconfiguration.client;
+package com.compomics.colims.core.config.distributedconfiguration.worker;
 
+import com.compomics.colims.core.config.distributedconfiguration.client.*;
 import com.compomics.colims.core.config.distributedconfiguration.DistributedProperties;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,15 +18,15 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth
  */
-public class StorageProperties implements DistributedProperties {
+public class WorkerProperties implements DistributedProperties {
 
     private static final PropertiesConfiguration properties = new PropertiesConfiguration();
     private static File propertiesFile;
     private static final Logger LOGGER = Logger.getLogger(SearchProperties.class);
-    private static StorageProperties storageProperties;
+    private static WorkerProperties searchProperties;
 
     public static void setPropertiesFile(File propertiesFile) {
-        StorageProperties.propertiesFile = propertiesFile;
+        WorkerProperties.propertiesFile = propertiesFile;
     }
 
     public static void reload() throws FileNotFoundException {
@@ -51,15 +52,15 @@ public class StorageProperties implements DistributedProperties {
         }
     }
 
-    private StorageProperties() {
+    private WorkerProperties() {
     }
 
-    public static StorageProperties getInstance() throws IOException {
-        if (storageProperties == null) {
-            storageProperties = new StorageProperties();
-            storageProperties.initiate();
+    public static WorkerProperties getInstance() throws IOException {
+        if (searchProperties == null) {
+            searchProperties = new WorkerProperties();
+            searchProperties.initiate();
         }
-        return storageProperties;
+        return searchProperties;
     }
 
     @Override
@@ -71,20 +72,20 @@ public class StorageProperties implements DistributedProperties {
         }
     }
 
-    /**
-     *
-     */
-    @Override
     public void setDefaultProperties() {
         properties.setProperty("search.ip", "127.0.0.1");
         properties.setProperty("search.port", 45679);
     }
 
-    public String getStorageControllerIP() {
-        return properties.getProperty("search.ip").toString();
+     public String getStoragePath() {
+        return properties.getProperty("storage.path").toString();
     }
-
-    public int getStorageControllerPort() {
+    
+    public String getWorkerControllerIp() {
+        return properties.getProperty("search.ip").toString();
+    }  
+    
+    public int getWorkerControllerPort() {
         return (Integer) properties.getProperty("search.port");
     }
 }

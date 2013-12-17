@@ -88,6 +88,8 @@ public class WorkerQueue extends PriorityQueue<Worker> implements Runnable {
                 + task.getMgfLocation() + ">.<"
                 + task.getParameterLocation() + ">.<"
                 + task.getFastaLocation());
+        writer.println();
+        writer.flush();
     }
 
 }

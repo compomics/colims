@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.core.config.distributedconfiguration.client;
 
+import com.compomics.colims.core.config.distributedconfiguration.DistributedProperties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

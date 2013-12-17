@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.compomics.colims.core.config.distributedconfiguration.client;
+package com.compomics.colims.core.config.distributedconfiguration;
 
 /**
  *
