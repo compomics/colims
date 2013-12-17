@@ -3,6 +3,7 @@ package com.compomics.colims.client.model.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Sample;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
 /**
@@ -11,11 +12,14 @@ import java.util.Comparator;
  */
 public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
 
-    private static final String[] columnNames = {"Id", "Name", "Condition", "Number of runs"};
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String[] columnNames = {"Id", "Name", "Condition", "Protocol", "Created", "# runs"};
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
     public static final int CONDITION = 2;
-    public static final int NUMBER_OF_RUNS = 3;
+    public static final int PROTOCOL = 3;
+    public static final int CREATED = 4;
+    public static final int NUMBER_OF_RUNS = 5;
 
     @Override
     public Class getColumnClass(int column) {
@@ -25,6 +29,10 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
             case NAME:
                 return String.class;
             case CONDITION:
+                return String.class;
+            case PROTOCOL:
+                return String.class;
+            case CREATED:
                 return String.class;
             case NUMBER_OF_RUNS:
                 return Integer.class;
@@ -40,7 +48,7 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return columnNames.length;
     }
 
     @Override
@@ -57,6 +65,10 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
                 return sample.getName();
             case CONDITION:
                 return sample.getCondition();
+            case PROTOCOL:
+                return sample.getProtocol();    
+            case CREATED:
+                return DATE_FORMAT.format(sample.getCreationdate());        
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

@@ -3,7 +3,9 @@ package com.compomics.colims.client.model.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Project;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  *
@@ -11,12 +13,14 @@ import java.util.Comparator;
  */
 public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project> {
 
-    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Number of experiments"};
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Created", "# experiments"};
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
     public static final int LABEL = 2;
     public static final int OWNER = 3;
-    public static final int NUMBER_OF_EXPERIMENTS = 4;
+    public static final int CREATED = 4;
+    public static final int NUMBER_OF_EXPERIMENTS = 5;
 
     @Override
     public Class getColumnClass(int column) {
@@ -28,6 +32,8 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
             case LABEL:
                 return String.class;
             case OWNER:
+                return String.class;
+            case CREATED:
                 return String.class;
             case NUMBER_OF_EXPERIMENTS:
                 return Integer.class;
@@ -43,7 +49,7 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return columnNames.length;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
     }
 
     @Override
-    public Object getColumnValue(Project project, int column) {        
+    public Object getColumnValue(Project project, int column) {
         switch (column) {
             case PROJECT_ID:
                 return project.getId();
@@ -62,7 +68,9 @@ public class ProjectsOverviewTableFormat implements AdvancedTableFormat<Project>
                 return project.getLabel();
             case OWNER:
                 return project.getOwner().getName();
-            case NUMBER_OF_EXPERIMENTS:                
+            case CREATED:
+                return DATE_FORMAT.format(project.getCreationdate());    
+            case NUMBER_OF_EXPERIMENTS:
                 return project.getExperiments().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);

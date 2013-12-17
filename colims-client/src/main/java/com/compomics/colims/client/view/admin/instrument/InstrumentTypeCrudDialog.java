@@ -1,6 +1,6 @@
 package com.compomics.colims.client.view.admin.instrument;
 
-import java.awt.Frame;
+import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -16,7 +16,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
     /**
      * Creates new form InstrumentCvDialog
      */
-    public InstrumentTypeCrudDialog(Frame parent, boolean modal) {
+    public InstrumentTypeCrudDialog(Dialog parent, boolean modal) {
         super(parent, modal);
         
         initComponents();

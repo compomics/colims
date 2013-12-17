@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view.admin;
 
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;

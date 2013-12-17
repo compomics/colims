@@ -89,6 +89,14 @@ public class ProjectManagementController implements Controllable {
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
         projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
+        
+        //set column widths
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.PROJECT_ID).setPreferredWidth(5);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.LABEL).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.OWNER).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.CREATED).setPreferredWidth(50);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectsOverviewTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
@@ -97,6 +105,13 @@ public class ProjectManagementController implements Controllable {
         experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
         experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
+        
+        //set column widths
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentsOverviewTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentsOverviewTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentsOverviewTableFormat.NUMBER).setPreferredWidth(100);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentsOverviewTableFormat.CREATED).setPreferredWidth(50);        
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentsOverviewTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
 
         //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(

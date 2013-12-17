@@ -1,25 +1,25 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
-import com.compomics.colims.model.ExperimentBinaryFile;
+import com.compomics.colims.model.SampleBinaryFile;
 import java.awt.Dialog;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
+public class SampleBinaryFileDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form LoginDialog
      */
-    public ExperimentBinaryFileDialog(Dialog parent, boolean modal) {
+    public SampleBinaryFileDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
         initComponents();       
     }
 
-    public BinaryFileManagementPanel<ExperimentBinaryFile> getBinaryFileManagementPanel() {
+    public BinaryFileManagementPanel<SampleBinaryFile> getBinaryFileManagementPanel() {
         return binaryFileManagementPanel;
     }           
 
@@ -33,7 +33,7 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         binaryFileManagementParentPanel = new javax.swing.JPanel();
-        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile>();
+        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<SampleBinaryFile>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("experiment metadata management");
@@ -74,7 +74,7 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile> binaryFileManagementPanel;
+    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<SampleBinaryFile> binaryFileManagementPanel;
     private javax.swing.JPanel binaryFileManagementParentPanel;
     // End of variables declaration//GEN-END:variables
 }

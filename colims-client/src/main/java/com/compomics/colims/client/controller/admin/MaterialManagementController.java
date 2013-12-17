@@ -63,7 +63,7 @@ public class MaterialManagementController implements Controllable {
     private MaterialEditDialog materialEditDialog;
     //parent controller
     @Autowired
-    private ColimsController mainController;
+    private ColimsController colimsController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -117,7 +117,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     private void initMaterialManagementDialog() {
-        materialManagementDialog = new MaterialManagementDialog(mainController.getColimsFrame(), true);
+        materialManagementDialog = new MaterialManagementDialog(colimsController.getColimsFrame(), true);
 
         //add binding
         materialBindingList = ObservableCollections.observableList(materialService.findAll());
@@ -219,7 +219,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     private void initMaterialEditDialog() {
-        materialEditDialog = new MaterialEditDialog(mainController.getColimsFrame(), true);
+        materialEditDialog = new MaterialEditDialog(materialManagementDialog, true);
 
         //init dual list
         materialEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());

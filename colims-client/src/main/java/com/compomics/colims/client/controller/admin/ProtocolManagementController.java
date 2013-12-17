@@ -64,7 +64,7 @@ public class ProtocolManagementController implements Controllable {
     private ProtocolEditDialog protocolEditDialog;
     //parent controller
     @Autowired
-    private ColimsController mainController;
+    private ColimsController colimsController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -118,7 +118,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     private void initProtocolManagementDialog() {
-        protocolManagementDialog = new ProtocolManagementDialog(mainController.getColimsFrame(), true);
+        protocolManagementDialog = new ProtocolManagementDialog(colimsController.getColimsFrame(), true);
 
         //add binding
         protocolBindingList = ObservableCollections.observableList(protocolService.findAll());
@@ -225,7 +225,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     private void initProtocolEditDialog() {
-        protocolEditDialog = new ProtocolEditDialog(mainController.getColimsFrame(), true);
+        protocolEditDialog = new ProtocolEditDialog(protocolManagementDialog, true);
 
         //init dual list
         protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
