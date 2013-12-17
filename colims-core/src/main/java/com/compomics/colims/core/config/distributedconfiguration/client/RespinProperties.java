@@ -18,7 +18,7 @@ import org.springframework.core.io.Resource;
  *
  * @author Kenneth
  */
-public class RespinProperties {
+public class RespinProperties implements DistributedProperties {
 
     private static PropertiesConfiguration properties = new PropertiesConfiguration();
     private static final File respinDirectory = new File(System.getProperty("user.home") + "/.compomics/respin/");
@@ -80,7 +80,8 @@ public class RespinProperties {
         }
     }
 
-    private void setDefaultProperties() {
+    @Override
+    public void setDefaultProperties() {
         setSearchGUIJarPath("");
         setPeptideShakerJarPath("");
         setSearchGUIFolder(new File(getSearchGUIJarPath()).getParent());

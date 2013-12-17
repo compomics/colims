@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth
  */
-public class SearchProperties {
+public class SearchProperties implements DistributedProperties {
 
     private static final PropertiesConfiguration properties = new PropertiesConfiguration();
     private static File propertiesFile;
@@ -61,6 +61,7 @@ public class SearchProperties {
         return searchProperties;
     }
 
+    @Override
     public void save() {
         try {
             properties.save(propertiesFile);
@@ -69,7 +70,7 @@ public class SearchProperties {
         }
     }
 
-    private void setDefaultProperties() {
+    public void setDefaultProperties() {
         properties.setProperty("search.ip", "127.0.0.1");
         properties.setProperty("search.port", 45679);
     }
