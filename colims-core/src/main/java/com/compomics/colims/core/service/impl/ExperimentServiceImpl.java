@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import com.compomics.colims.core.io.IOManager;
-import com.compomics.colims.core.io.parser.MzMLParser;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
 import com.compomics.colims.repository.impl.AbstractBinaryFileHibernateRepository;

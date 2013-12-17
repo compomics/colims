@@ -1,35 +1,22 @@
 package com.compomics.colims.client.compoment;
 
+import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.model.AbstractBinaryFile;
 import com.compomics.colims.model.enums.BinaryFileType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.BindingListener;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.jmol.export.dialog.FileChooser;
@@ -223,19 +210,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         binaryFile.setFileName(file.getName());
         binaryFile.setBinaryFileType(BinaryFileType.TEXT);
 
-        //get file as byte array
-        byte[] bytes = FileUtils.readFileToByteArray(file);
-
-        //gzip the byte array
-        try (ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
-            gZIPOutputStream.write(bytes);
-
-            gZIPOutputStream.flush();
-            gZIPOutputStream.finish();
-
-            binaryFile.setContent(zippedByteArrayOutputStream.toByteArray());
-        }
+        binaryFile.setContent(IOUtils.readZippedBytesFromFile(file));
 
         return binaryFile;
     }
@@ -247,17 +222,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
      * @param binaryFile
      */
     private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPInputStream gZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(binaryFile.getContent()))) {
-            //unzip
-            //this method uses a buffer internally
-            IOUtils.copy(gZIPInputStream, byteArrayOutputStream);
-
-            byte[] unzippedBytes = byteArrayOutputStream.toByteArray();
-
-            //write to file        
-            FileUtils.writeByteArrayToFile(new File(exportDirectory, binaryFile.getFileName()), unzippedBytes);
-        }
+        IOUtils.unzipAndWriteBytesToFile(binaryFile.getContent(), exportDirectory);
     }
 
     /**
@@ -285,11 +250,13 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         binaryFileListScrollPane.setViewportView(binaryFileList);
 
         deleteButton.setText("delete");
+        deleteButton.setToolTipText("delete the selected attachment");
         deleteButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         exportButton.setText("export");
+        exportButton.setToolTipText("export the selected file");
         exportButton.setMaximumSize(new java.awt.Dimension(80, 25));
         exportButton.setMinimumSize(new java.awt.Dimension(80, 25));
         exportButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -297,6 +264,7 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
         typeLabel.setText("type");
 
         addButton.setText("add");
+        addButton.setToolTipText("add an attachment");
         addButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addButton.setPreferredSize(new java.awt.Dimension(80, 25));
