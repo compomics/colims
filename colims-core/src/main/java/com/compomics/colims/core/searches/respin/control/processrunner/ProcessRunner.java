@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.core.searches.respin.control.processrunner;
 
-import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.searches.respin.model.processes.common.CommandExceptionGuard;
 import com.compomics.colims.core.searches.respin.model.processes.peptideshaker.PeptideShakerProcess;
 import com.compomics.colims.core.searches.respin.model.processes.searchgui.SearchGuiProcess;

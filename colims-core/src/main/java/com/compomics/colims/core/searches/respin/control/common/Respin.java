@@ -5,7 +5,7 @@
 package com.compomics.colims.core.searches.respin.control.common;
 
 import com.compomics.colims.core.searches.controller.SearchHandler;
-import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.searches.respin.model.exception.RespinException;
 import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinCommandLine;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
@@ -19,6 +19,7 @@ import java.io.IOException;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
@@ -39,6 +40,13 @@ public class Respin {
     private StorageQueue searchQueue;
 
     public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId) throws RespinException, Exception {
+       
+        //load respinProperties
+        File respinPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
+        RespinProperties.setPropertiesFile(respinPropertiesFile);
+        RespinProperties.reload();
+        
+  
         searchQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchQueue");
        
         this.mgfFile = mgf;

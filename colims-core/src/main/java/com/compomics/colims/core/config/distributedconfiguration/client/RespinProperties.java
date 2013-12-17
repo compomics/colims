@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.respin.control.configuration;
+package com.compomics.colims.core.config.distributedconfiguration.client;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,8 @@ import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  *
@@ -20,7 +22,7 @@ public class RespinProperties {
 
     private static PropertiesConfiguration properties = new PropertiesConfiguration();
     private static final File respinDirectory = new File(System.getProperty("user.home") + "/.compomics/respin/");
-    private static File propertiesFile = new File(respinDirectory, "respin.properties");
+    private static File propertiesFile;
     private static final Logger LOGGER = Logger.getLogger(RespinProperties.class);
     private static RespinProperties respinProps;
 

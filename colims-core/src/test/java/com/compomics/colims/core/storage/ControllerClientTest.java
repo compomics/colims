@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.storage;
 
-import com.compomics.colims.core.storage.incoming.ClientForSearchConnector;
+import com.compomics.colims.core.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.core.storage.processing.controller.StorageController;
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class ControllerClientTest {
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
         Assert.fail("Not yet finished");
-        ClientForSearchConnector creator = new ClientForSearchConnector("127.0.0.1", 45678);
+        ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
         //Assert.assertTrue(success);

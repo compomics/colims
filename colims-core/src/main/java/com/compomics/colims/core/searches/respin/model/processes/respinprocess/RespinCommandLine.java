@@ -1,6 +1,6 @@
 package com.compomics.colims.core.searches.respin.model.processes.respinprocess;
 
-import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.core.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.core.searches.respin.control.validation.SearchParamValidator;

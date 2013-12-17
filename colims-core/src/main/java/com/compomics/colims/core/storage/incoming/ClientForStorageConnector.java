@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.storage.incoming;
 
+import com.compomics.colims.core.config.distributedconfiguration.client.StorageProperties;
 import com.compomics.colims.core.storage.enums.StorageState;
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,14 +15,15 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public class ClientForSearchConnector {
+public class ClientForStorageConnector {
 
-    private final static Logger LOGGER = Logger.getLogger(ClientForSearchConnector.class);
+    private final static Logger LOGGER = Logger.getLogger(ClientForStorageConnector.class);
     private String masterIPAddress = "127.0.0.1";
     private int masterPort = 24567;
     private StorageState state = StorageState.WAITING;
@@ -35,9 +37,19 @@ public class ClientForSearchConnector {
      * @param masterPort the port that is listening on the storing node (24567 =
      * ClientToControllerConnector
      */
-    public ClientForSearchConnector(String masterIPAddress, int masterPort) {
+    public ClientForStorageConnector(String masterIPAddress, int masterPort) {
         this.masterIPAddress = masterIPAddress;
         this.masterPort = masterPort;
+    }
+
+    public ClientForStorageConnector() throws IOException {
+        this.state = StorageState.WAITING;
+        //load respinProperties
+        File searchPropertiesFile = new ClassPathResource("distributed/config/storage.properties").getFile();
+        StorageProperties.setPropertiesFile(searchPropertiesFile);
+        StorageProperties.reload();
+        this.masterIPAddress = StorageProperties.getInstance().getStorageControllerIP();
+        this.masterPort = StorageProperties.getInstance().getStorageControllerPort();
     }
 
     /**

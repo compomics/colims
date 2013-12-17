@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.core.searches.respin.model.processes.searchgui;
 
-import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.searches.respin.model.memory.MemoryManager;
 import com.compomics.colims.core.searches.respin.model.processes.common.RespinProcess;
 import java.io.File;
