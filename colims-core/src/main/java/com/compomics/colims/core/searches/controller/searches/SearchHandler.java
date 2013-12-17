@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.controller;
+package com.compomics.colims.core.searches.controller.searches;
 
-import com.compomics.colims.core.searches.controller.searchqueue.SearchQueue;
-import com.compomics.colims.core.searches.controller.searchqueue.searchtask.SearchTask;
+import com.compomics.colims.core.searches.controller.searches.searchqueue.SearchQueue;
+import com.compomics.colims.core.searches.controller.searches.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;

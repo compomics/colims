@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.searches.respin.control.common;
 
-import com.compomics.colims.core.searches.controller.SearchHandler;
 import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.core.searches.respin.model.exception.RespinException;
 import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinCommandLine;

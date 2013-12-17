@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.controller.searchqueue;
+package com.compomics.colims.core.searches.controller.searches.searchqueue;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.searches.controller.searchqueue.searchtask.SearchTask;
+import com.compomics.colims.core.searches.controller.searches.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.searches.respin.control.common.Respin;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
 import java.io.File;

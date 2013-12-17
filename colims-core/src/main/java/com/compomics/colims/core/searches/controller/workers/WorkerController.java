@@ -2,14 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.controller;
+package com.compomics.colims.core.searches.controller.workers;
 
-import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
+import com.compomics.colims.core.searches.controller.workers.worker.Worker;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
@@ -20,18 +18,15 @@ import org.springframework.stereotype.Component;
  *
  * @author Kenneth
  */
-@Component("searchController")
-public class SearchController {
+@Component("workController")
+public class WorkerController {
 
     @Autowired
-    StorageQueue searchQueue;
-    @Autowired
-    SearchHandler searchHandler;
+    WorkerQueue workerQueue;
 
     private int port = 24568;
     private ServerSocket serverSocket;
-    private final Logger LOGGER = Logger.getLogger(SearchController.class);
-    private final ExecutorService threadService = Executors.newCachedThreadPool();
+    private final Logger LOGGER = Logger.getLogger(WorkerController.class);
     private boolean disconnected = false;
 
     /**
@@ -48,8 +43,6 @@ public class SearchController {
         }
 
         LOGGER.debug("Starting Queue");
-        Thread storingThread = new Thread(searchQueue);
-        storingThread.start();
 
         LOGGER.debug("Accepting sockets: It's searching time!");
         handleAllIncomingSockets();
@@ -62,11 +55,6 @@ public class SearchController {
                 serverSocket.close();
             }
         } catch (IOException ex) {
-            LOGGER.error(ex);
-        }
-        try {
-            searchQueue.disconnect();
-        } catch (SQLException ex) {
             LOGGER.error(ex);
         }
     }
@@ -83,9 +71,7 @@ public class SearchController {
         while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                searchHandler = (SearchHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchHandler");
-                searchHandler.setSocket(incomingSocket);
-                threadService.submit(searchHandler);
+                workerQueue.offer(new Worker(incomingSocket));
             } catch (IOException ex) {
                 LOGGER.error(ex);
             } finally {
