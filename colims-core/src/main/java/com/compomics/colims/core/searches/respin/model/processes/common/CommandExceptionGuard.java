@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.processes.common;
+package com.compomics.colims.core.searches.respin.model.processes.common;
 
-import com.compomics.colims.core.searches.pipeline.respin.model.memory.MemoryManager;
+import com.compomics.colims.core.searches.respin.model.memory.MemoryManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

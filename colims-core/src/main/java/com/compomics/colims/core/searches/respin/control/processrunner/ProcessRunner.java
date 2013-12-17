@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.control.processrunner;
+package com.compomics.colims.core.searches.respin.control.processrunner;
 
-import com.compomics.colims.core.searches.pipeline.respin.control.configuration.RespinProperties;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.common.CommandExceptionGuard;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.peptideshaker.PeptideShakerProcess;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.searchgui.SearchGuiProcess;
+import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.searches.respin.model.processes.common.CommandExceptionGuard;
+import com.compomics.colims.core.searches.respin.model.processes.peptideshaker.PeptideShakerProcess;
+import com.compomics.colims.core.searches.respin.model.processes.searchgui.SearchGuiProcess;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;

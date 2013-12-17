@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.control.validation;
+package com.compomics.colims.core.searches.respin.control.validation;
 
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.identification.SearchParameters;

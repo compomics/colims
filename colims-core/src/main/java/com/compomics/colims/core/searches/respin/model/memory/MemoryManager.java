@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.memory;
+package com.compomics.colims.core.searches.respin.model.memory;
 
 import java.lang.management.ManagementFactory;
 import org.apache.log4j.Logger;

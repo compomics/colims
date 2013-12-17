@@ -6,10 +6,10 @@ package com.compomics.colims.core.searches.controller.storagequeue;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.searches.controller.storagequeue.searchtask.SearchTask;
+import com.compomics.colims.core.searches.respin.control.common.Respin;
+import com.compomics.colims.core.searches.respin.model.enums.RespinState;
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.colimsimport.ColimsFileImporter;
-import com.compomics.colims.core.storage.processing.colimsimport.factory.ColimsImporterFactory;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,27 +19,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-@Component("storageQueue")
-public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable {
+@Component("searchQueue")
+public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
 
-    @Autowired
-    ColimsImporterFactory colimsImporterFactory;
-
-    private static Connection c;
-    private static boolean connectionLocked = false;
-    private static File adress;
-    private static final Logger LOGGER = Logger.getLogger(SearchQueue.class);
+    private Connection connection;
+    private boolean connectionLocked = false;
+    private File adress;
+    private final Logger LOGGER = Logger.getLogger(SearchQueue.class);
+    private File outputDir;
 
     private SearchQueue() {
-        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsSearchController/");
         setUpTables();
     }
 
@@ -49,15 +47,15 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
     }
 
     @Override
-    public boolean offer(StorageTask task) {
+    public boolean offer(SearchTask task) {
         return super.offer(task);
     }
 
     @Override
-    public StorageTask poll() {
-        StorageTask nextTask = super.poll();
+    public SearchTask poll() {
+        SearchTask nextTask = super.poll();
         if (nextTask != null) {
-            updateTask(nextTask, StorageState.PROGRESS);
+            updateTask(nextTask, RespinState.STARTUP);
         }
         return nextTask;
     }
@@ -66,24 +64,17 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
     public void run() {
         while (true) {
             //STORE TO COLIMS !!!!
-            StorageTask taskToStore = poll();
-            if (taskToStore != null) {
-                updateTask(taskToStore, StorageState.PROGRESS);
+            SearchTask taskToRun = poll();
+            if (taskToRun != null) {
+                updateTask(taskToRun, RespinState.STARTUP);
                 try {
-                    LOGGER.debug("Storing " + taskToStore.getFileLocation() + " to colims");
-                    File fileToStore = new File(taskToStore.getFileLocation());
-                    ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
-                    if (colimsFileImporter.validate(fileToStore.getParentFile())) {
-                        colimsFileImporter.storeFile(taskToStore.getUserName(), 
-                                fileToStore.getParentFile(), 
-                                taskToStore.getSampleID(),
-                                taskToStore.getInstrumentId());
-                        updateTask(taskToStore, StorageState.STORED);
-                    } else {
-                        updateTask(taskToStore, StorageState.ERROR);
-                    }
+                    Respin respin = new Respin();
+
+                    respin.launch(new File(taskToRun.getMgfLocation()), new File(taskToRun.getParameterLocation()), new File(taskToRun.getFastaLocation()), outputDir, taskToRun.getSearchName());
                 } catch (IOException | PeptideShakerIOException | MappingException ex) {
-                    updateTask(taskToStore, StorageState.ERROR);
+                    updateTask(taskToRun, RespinState.ERROR);
+                } catch (Exception ex) {
+                    LOGGER.error(ex);
                 } finally {
                     try {
                         Thread.sleep(500);
@@ -102,50 +93,51 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
     }
 
     private Connection getConnection() {
-        while (SearchQueue.connectionLocked == true) {
+        while (this.connectionLocked == true) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
                 LOGGER.error(ex);
             }
         }
-        if (c == null) {
+        if (connection == null) {
             try {
                 if (!adress.exists()) {
                     adress.mkdirs();
                 }
                 Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/colimsController.db");
+                connection = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/colimsController.db");
             } catch (ClassNotFoundException | SQLException ex) {
                 LOGGER.error(ex);
             }
         }
-        SearchQueue.connectionLocked = true;
-        return c;
+        this.connectionLocked = true;
+        return connection;
     }
 
     private void releaseConnection() {
-        SearchQueue.connectionLocked = false;
+        this.connectionLocked = false;
     }
 
     public void disconnect() throws SQLException {
-        if (!c.isClosed()) {
-            c.close();
+        if (!connection.isClosed()) {
+            connection.close();
         }
     }
 
     private void setUpTables() {
         LOGGER.debug("Setting up database tables");
-        c = getConnection();
-        try (Statement stmt = c.createStatement()) {
+        connection = getConnection();
+        try (Statement stmt = connection.createStatement()) {
             String sql
-                    = "CREATE TABLE IF NOT EXISTS STORAGETASKS "
+                    = "CREATE TABLE IF NOT EXISTS SEARCHTASKS "
                     + "(TASKID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + " FILELOCATION TEXT NULL, "
-                    + " USERNAME TEXT NULL, "
-                    + " SAMPLEID INTEGER NULL,"
-                    + " INSTRUMENTNAME TEXT NULL,"
-                    + " STATE TEXT)";
+                    + " STATE TEXT NULL, "
+                    + " MGFLOCATION TEXT NULL, "
+                    + " PARAMLOCATION TEXT NULL, "
+                    + " FASTALOCATION INTEGER NULL,"
+                    + " USERNAME TEXT NULL,"
+                    + " SEARCHNAME TEXT)";
             stmt.executeUpdate(sql);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -158,9 +150,9 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
 
     private void resetTasks() {
         LOGGER.debug("Resetting tasks that were still running on boot");
-        c = getConnection();
-        try (Statement stmt = c.createStatement()) {
-            String sql = "UPDATE STORAGETASKS SET STATE ='WAITING' WHERE (STATE !='COMPLETED' AND STATE !='ERROR')";
+        connection = getConnection();
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "UPDATE SEARCHTASKS SET STATE ='NEW' WHERE (STATE !='COMPLETED' AND STATE !='ERROR')";
             stmt.executeUpdate(sql);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -171,17 +163,18 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
 
     private void loadTasks() {
         LOGGER.debug("Loading tasks from file into queue");
-        c = getConnection();
-        try (Statement stmt = c.createStatement()) {
-            String sql = "SELECT * FROM STORAGETASKS WHERE STATE ='WAITING'";
+        connection = getConnection();
+        try (Statement stmt = connection.createStatement()) {
+            String sql = "SELECT * FROM SEARCHTASKS WHERE STATE ='NEW'";
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 long taskId = rs.getLong("TASKID");
-                long sampleId = rs.getLong("SAMPLEID");
-                String instrumentId = rs.getString("INSTRUMENTNAME");
-                String fileLocation = rs.getString("FILELOCATION");
+                String mgfLocation = rs.getString("MGFLOCATION");
+                String parameterLocation = rs.getString("PARAMLOCATION");
+                String fastaLocation = rs.getString("FASTALOCATION");
                 String userName = rs.getString("USERNAME");
-                this.offer(new StorageTask(taskId, fileLocation, userName, sampleId, instrumentId));
+                String searchName = rs.getString("SEARCHNAME");
+                this.offer(new SearchTask(taskId, mgfLocation, parameterLocation, fastaLocation, userName, searchName));
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -190,18 +183,13 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
         }
     }
 
-    /**
-     *
-     * @param task the storagetask that needs to be updated
-     * @param storageState the state the storagetask will be updated to
-     */
-    public void updateTask(StorageTask task, StorageState storageState) {
-        task.setState(storageState);
-        c = getConnection();
+    public void updateTask(SearchTask task, RespinState respinState) {
+        task.setState(respinState);
+        connection = getConnection();
         long taskID = task.getTaskID();
         String state = task.getState().toString();
-        String sql = "UPDATE STORAGETASKS SET STATE =? WHERE TASKID=?";
-        try (PreparedStatement stmt = c.prepareStatement(sql)) {
+        String sql = "UPDATE SEARCHTASKS SET STATE =? WHERE TASKID=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, state);
             stmt.setLong(2, taskID);
             stmt.executeUpdate();
@@ -212,26 +200,21 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
         }
     }
 
-    /**
-     *
-     * @param taskID the taskID that needs to be searched
-     * @param fromDatabase boolean to flag retrieval from database or trackermap
-     * @return a storagetask object
-     */
-    public StorageTask getTask(long taskID) {
-        StorageTask task = null;
-        c = getConnection();
+    public SearchTask getTask(long taskID) {
+        SearchTask task = null;
+        connection = getConnection();
         String sql = "SELECT * FROM STORAGETASKS WHERE TASKID =?";
-        try (PreparedStatement stmt = c.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, taskID);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                task = new StorageTask(taskID,
-                        rs.getString("FILELOCATION"),
+                task = new SearchTask(taskID,
+                        rs.getString("MGFLOCATION"),
+                        rs.getString("PARAMLOCATION"),
+                        rs.getString("FASTALOCATION"),
                         rs.getString("USERNAME"),
-                        rs.getLong("SAMPLEID"),
-                        rs.getString("INSTRUMENTNAME"));
-                task.setState(StorageState.valueOf(rs.getString("STATE")));
+                        rs.getString("SEARCHNAME"));
+                task.setState(RespinState.valueOf(rs.getString("STATE")));
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -245,19 +228,20 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
     /**
      *
      * @param fileLocation the path to the file that needs to be stored. This
-     * filepath has to be visible for the controller!
-     * @return a generated StorageTask Object that has already been stored in
-     * both the queue and the underlying database
+ filepath has to be visible for the connectionontroller!
+     * @return a generated StorageTask Objeconnectiont that has already been stored in
+ both the queue and the underlying database
      */
-    public StorageTask addNewTask(String fileLocation, String userName, long sampleID, String instrumentID) {
+    public SearchTask addNewTask(String mgfFileLocation, String paramFileLocation, String fastaFileLocation, String userName, String searchName) {
         long key = -1L;
-        c = getConnection();
-        try (PreparedStatement stmt = c.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME,SAMPLEID,INSTRUMENTNAME) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, "WAITING");
-            stmt.setString(2, fileLocation);
-            stmt.setString(3, userName);
-            stmt.setLong(4, sampleID);
-            stmt.setString(5, instrumentID);
+        connection = getConnection();
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO SEARCHTASKS(STATE,MGFLOCATION,PARAMLOCATION,FASTALOCATION,USERNAME,SEARCHNAME) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, "NEW");
+            stmt.setString(2, mgfFileLocation);
+            stmt.setString(3, paramFileLocation);
+            stmt.setString(4, fastaFileLocation);
+            stmt.setString(5, userName);
+            stmt.setString(6, searchName);
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -269,7 +253,7 @@ public class SearchQueue extends PriorityQueue<StorageTask> implements Runnable 
             e.printStackTrace();
         } finally {
             releaseConnection();
-            StorageTask task = new StorageTask(key, fileLocation, userName, sampleID, instrumentID);
+            SearchTask task = new SearchTask(key, mgfFileLocation, paramFileLocation, fastaFileLocation, userName, searchName);
             offer(task);
             return task;
         }

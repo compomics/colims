@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.enums;
+package com.compomics.colims.core.searches.respin.model.enums;
 
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess.RespinProcess;
-import com.compomics.colims.core.searches.pipeline.respin.model.exception.RespinException;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess.RespinCommandLine;
+import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinProcess;
+import com.compomics.colims.core.searches.respin.model.exception.RespinException;
+import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinCommandLine;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -18,6 +18,28 @@ import org.apache.log4j.Logger;
  */
 public enum RespinState {
 
+    ERROR {
+                @Override
+                public void prceed(RespinProcess entity) throws RespinException {
+                    
+                }
+
+                @Override
+                public String toString() {
+                    return "Failed";
+                }
+            },
+    NEW {
+                @Override
+                public void prceed(RespinProcess entity) throws RespinException {
+                    entity.state = STARTUP;
+                }
+
+                @Override
+                public String toString() {
+                    return "Waiting for start of search";
+                }
+            },
     STARTUP {
                 @Override
                 public void prceed(RespinProcess entity) throws RespinException {

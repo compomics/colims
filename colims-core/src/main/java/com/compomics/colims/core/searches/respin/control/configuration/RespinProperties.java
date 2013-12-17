@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.control.configuration;
+package com.compomics.colims.core.searches.respin.control.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;

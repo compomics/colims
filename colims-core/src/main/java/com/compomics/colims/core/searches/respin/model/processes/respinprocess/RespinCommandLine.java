@@ -1,9 +1,9 @@
-package com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess;
+package com.compomics.colims.core.searches.respin.model.processes.respinprocess;
 
-import com.compomics.colims.core.searches.pipeline.respin.control.configuration.RespinProperties;
-import com.compomics.colims.core.searches.pipeline.respin.control.processrunner.ProcessEnum;
-import com.compomics.colims.core.searches.pipeline.respin.control.processrunner.ProcessRunner;
-import com.compomics.colims.core.searches.pipeline.respin.control.validation.SearchParamValidator;
+import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.searches.respin.control.processrunner.ProcessEnum;
+import com.compomics.colims.core.searches.respin.control.processrunner.ProcessRunner;
+import com.compomics.colims.core.searches.respin.control.validation.SearchParamValidator;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;

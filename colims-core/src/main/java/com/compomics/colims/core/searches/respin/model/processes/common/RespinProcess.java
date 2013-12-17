@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.processes.common;
+package com.compomics.colims.core.searches.respin.model.processes.common;
 
 import java.io.IOException;
 import java.util.List;

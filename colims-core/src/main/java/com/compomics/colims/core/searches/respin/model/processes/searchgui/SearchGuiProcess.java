@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.processes.searchgui;
+package com.compomics.colims.core.searches.respin.model.processes.searchgui;
 
-import com.compomics.colims.core.searches.pipeline.respin.control.configuration.RespinProperties;
-import com.compomics.colims.core.searches.pipeline.respin.model.memory.MemoryManager;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.common.RespinProcess;
+import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.searches.respin.model.memory.MemoryManager;
+import com.compomics.colims.core.searches.respin.model.processes.common.RespinProcess;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

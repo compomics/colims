@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess;
+package com.compomics.colims.core.searches.respin.model.processes.respinprocess;
 
-import com.compomics.colims.core.searches.pipeline.respin.model.enums.RespinState;
-import com.compomics.colims.core.searches.pipeline.respin.model.exception.RespinException;
+import com.compomics.colims.core.searches.respin.model.enums.RespinState;
+import com.compomics.colims.core.searches.respin.model.exception.RespinException;
 import org.apache.log4j.Logger;
 
 /**

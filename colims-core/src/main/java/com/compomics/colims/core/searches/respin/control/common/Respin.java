@@ -2,20 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.pipeline.respin.control.common;
+package com.compomics.colims.core.searches.respin.control.common;
 
-import com.compomics.colims.core.searches.pipeline.respin.control.configuration.RespinProperties;
-import com.compomics.colims.core.searches.pipeline.respin.model.exception.RespinException;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess.RespinCommandLine;
-import com.compomics.colims.core.searches.pipeline.respin.model.enums.RespinState;
-import com.compomics.colims.core.searches.pipeline.respin.model.processes.respinprocess.RespinProcess;
+import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
+import com.compomics.colims.core.searches.respin.model.exception.RespinException;
+import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinCommandLine;
+import com.compomics.colims.core.searches.respin.model.enums.RespinState;
+import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinProcess;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -25,15 +24,15 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class Respin {
 
-    private static Logger LOGGER = Logger.getLogger(Respin.class);
-    private static File fastaFile;
-    private static File paramFile;
-    private static File mgfFile;
-    private static String projectID;
-    private static final EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
-    private static File outputDir;
-    private static RespinCommandLine command;
-    private static RespinProperties respProps;
+    private Logger LOGGER = Logger.getLogger(Respin.class);
+    private File fastaFile;
+    private File paramFile;
+    private File mgfFile;
+    private String projectID;
+    private final EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
+    private File outputDir;
+    private RespinCommandLine command;
+    private RespinProperties respProps;
 
     public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId) throws RespinException, Exception {
         this.mgfFile = mgf;
@@ -54,7 +53,7 @@ public class Respin {
                 makeLocalCopies();
                 RespinProcess process = new RespinProcess(command);
                 for (RespinState state : RespinState.values()) {
-                    if (!state.equals(RespinState.CLOSED)) {
+                    if (!state.equals(RespinState.CLOSED) & !state.equals(RespinState.ERROR)) {
                         System.out.println("PROCESS_UPDATE>>>" + state.toString().toUpperCase());
                         state.prceed(process);
                     }
@@ -70,7 +69,7 @@ public class Respin {
         }
     }
 
-    private static boolean initRespin() throws ParseException, XmlPullParserException, IOException {
+    private boolean initRespin() throws ParseException, XmlPullParserException, IOException {
         //setup the commandline
         command = new RespinCommandLine(mgfFile, paramFile, fastaFile, projectID);
         //INITIATE THE REQUIRED FACTORIES
@@ -92,7 +91,7 @@ public class Respin {
         return true;
     }
 
-    public static void makeLocalCopies() {
+    private void makeLocalCopies() {
         try {
             File inputParentFolder = new File(System.getProperty("user.home") + "/.compomics/respin/temp_input/");
             FileUtils.deleteDirectory(inputParentFolder);
@@ -116,7 +115,7 @@ public class Respin {
 
     }
 
-    public static void prepareLogging() throws IOException {
+    private void prepareLogging() throws IOException {
         File loggingFile = new File(System.getProperty("user.home") + "/.compomics/respin/temp_results/respin.log");
         if (loggingFile.exists()) {
             loggingFile.delete();
