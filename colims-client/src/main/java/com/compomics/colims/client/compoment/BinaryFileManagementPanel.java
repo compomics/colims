@@ -221,8 +221,8 @@ public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends jav
      * @param exportDirectory
      * @param binaryFile
      */
-    private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {
-        IOUtils.unzipAndWriteBytesToFile(binaryFile.getContent(), exportDirectory);
+    private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {        
+        IOUtils.unzipAndWriteBytesToFile(binaryFile.getContent(), new File(exportDirectory, binaryFile.getFileName()));
     }
 
     /**
