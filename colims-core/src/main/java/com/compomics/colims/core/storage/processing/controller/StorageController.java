@@ -5,7 +5,7 @@
 package com.compomics.colims.core.storage.processing.controller;
 
 import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class StorageController {
 
     @Autowired
-    SearchQueue storageQueue;
+    StorageQueue storageQueue;
     @Autowired
     StorageHandler storageHandler;
 
@@ -36,7 +36,7 @@ public class StorageController {
 
     /**
      *
-     * This method starts the socketListener and the SearchQueue
+     * This method starts the socketListener and the StorageQueue
      */
     public void launch(int port) {
         this.port = port;

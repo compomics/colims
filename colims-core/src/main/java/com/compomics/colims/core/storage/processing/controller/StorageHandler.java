@@ -5,7 +5,7 @@
 package com.compomics.colims.core.storage.processing.controller;
 
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 public class StorageHandler implements Runnable {
 
     @Autowired
-    SearchQueue storageQueue;
+    StorageQueue storageQueue;
     private static final Logger LOGGER = Logger.getLogger(StorageHandler.class);
     private Socket socket;
 

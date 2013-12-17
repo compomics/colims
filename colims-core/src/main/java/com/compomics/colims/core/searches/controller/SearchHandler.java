@@ -4,8 +4,9 @@
  */
 package com.compomics.colims.core.searches.controller;
 
+import com.compomics.colims.core.searches.controller.searchqueue.SearchQueue;
+import com.compomics.colims.core.searches.controller.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
 import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Kenneth Verheggen
  */
-@Component("storageHandler")
+@Component("searchHandler")
 @Scope("prototype")
 public class SearchHandler implements Runnable {
 
@@ -51,7 +52,7 @@ public class SearchHandler implements Runnable {
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
             //read the task from the socket that just sent it
-            StorageTask task = readTaskFromInputStream(inputStream);
+            SearchTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
             if (task != null) {
                 writeTaskStateToOutputStream(outputStream, task);
@@ -63,23 +64,20 @@ public class SearchHandler implements Runnable {
         }
     }
 
-    private StorageTask readTaskFromInputStream(InputStream inputStream) throws IOException {
+    private SearchTask readTaskFromInputStream(InputStream inputStream) throws IOException {
         in = new BufferedReader(new InputStreamReader(inputStream));
         String response;
-        StorageTask task = null;
+        SearchTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = searchQueue.addNewTask(responseArgs[1]
-                    , responseArgs[0]
-                    , Long.parseLong(responseArgs[2])
-                    , responseArgs[3]);
-            LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
+            task = searchQueue.addNewTask(responseArgs[0], responseArgs[1], responseArgs[2], responseArgs[3], responseArgs[4]);
+            LOGGER.debug("User :" + responseArgs[0] + " has successfully planned a search");
             break;
         }
         return task;
     }
 
-    private void writeTaskStateToOutputStream(OutputStream outputStream, StorageTask task) throws IOException {
+    private void writeTaskStateToOutputStream(OutputStream outputStream, SearchTask task) throws IOException {
         try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(outputStream))) {
             while (socket.isConnected()) {
                 out.write(task.getTaskID() + ">.<" + task.getState());

@@ -5,8 +5,7 @@
 package com.compomics.colims.core.searches.controller;
 
 import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.core.storage.processing.controller.StorageHandler;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.SearchQueue;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,11 +24,11 @@ import org.springframework.stereotype.Component;
 public class SearchController {
 
     @Autowired
-    SearchQueue storageQueue;
+    StorageQueue searchQueue;
     @Autowired
-    SearchHandler storageHandler;
+    SearchHandler searchHandler;
 
-    private int port = 24567;
+    private int port = 24568;
     private ServerSocket serverSocket;
     private final Logger LOGGER = Logger.getLogger(SearchController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
@@ -41,7 +40,7 @@ public class SearchController {
      */
     public void launch(int port) {
         this.port = port;
-        LOGGER.info("Booting colims storage controller on port " + port);
+        LOGGER.info("Booting colims search controller on port " + port);
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
@@ -49,10 +48,10 @@ public class SearchController {
         }
 
         LOGGER.debug("Starting Queue");
-        Thread storingThread = new Thread(storageQueue);
+        Thread storingThread = new Thread(searchQueue);
         storingThread.start();
 
-        LOGGER.debug("Accepting sockets: It's go time!");
+        LOGGER.debug("Accepting sockets: It's searching time!");
         handleAllIncomingSockets();
     }
 
@@ -66,7 +65,7 @@ public class SearchController {
             LOGGER.error(ex);
         }
         try {
-            storageQueue.disconnect();
+            searchQueue.disconnect();
         } catch (SQLException ex) {
             LOGGER.error(ex);
         }
@@ -84,9 +83,9 @@ public class SearchController {
         while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                storageHandler = (SearchHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchHandler");
-                storageHandler.setSocket(incomingSocket);
-                threadService.submit(storageHandler);
+                searchHandler = (SearchHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchHandler");
+                searchHandler.setSocket(incomingSocket);
+                threadService.submit(searchHandler);
             } catch (IOException ex) {
                 LOGGER.error(ex);
             } finally {

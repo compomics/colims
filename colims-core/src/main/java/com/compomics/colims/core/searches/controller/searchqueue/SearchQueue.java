@@ -2,14 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.controller.storagequeue;
+package com.compomics.colims.core.searches.controller.searchqueue;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.searches.controller.storagequeue.searchtask.SearchTask;
+import com.compomics.colims.core.searches.controller.searchqueue.searchtask.SearchTask;
 import com.compomics.colims.core.searches.respin.control.common.Respin;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
-import com.compomics.colims.core.storage.enums.StorageState;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.PriorityQueue;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +61,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
     @Override
     public void run() {
         while (true) {
-            //STORE TO COLIMS !!!!
+            //RUN FROM COLIMS !!!!
             SearchTask taskToRun = poll();
             if (taskToRun != null) {
                 updateTask(taskToRun, RespinState.STARTUP);
@@ -225,13 +223,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
         return task;
     }
 
-    /**
-     *
-     * @param fileLocation the path to the file that needs to be stored. This
- filepath has to be visible for the connectionontroller!
-     * @return a generated StorageTask Objeconnectiont that has already been stored in
- both the queue and the underlying database
-     */
+
     public SearchTask addNewTask(String mgfFileLocation, String paramFileLocation, String fastaFileLocation, String userName, String searchName) {
         long key = -1L;
         connection = getConnection();

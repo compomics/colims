@@ -4,11 +4,14 @@
  */
 package com.compomics.colims.core.searches.respin.control.common;
 
+import com.compomics.colims.core.searches.controller.SearchHandler;
 import com.compomics.colims.core.searches.respin.control.configuration.RespinProperties;
 import com.compomics.colims.core.searches.respin.model.exception.RespinException;
 import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinCommandLine;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
 import com.compomics.colims.core.searches.respin.model.processes.respinprocess.RespinProcess;
+import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +36,11 @@ public class Respin {
     private File outputDir;
     private RespinCommandLine command;
     private RespinProperties respProps;
+    private StorageQueue searchQueue;
 
     public void launch(File mgf, File searchparameters, File fasta, File outputFolder, String projectId) throws RespinException, Exception {
+        searchQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchQueue");
+       
         this.mgfFile = mgf;
         this.paramFile = searchparameters;
         this.fastaFile = fasta;

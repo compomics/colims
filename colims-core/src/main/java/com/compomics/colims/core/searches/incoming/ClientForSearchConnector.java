@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage.incoming;
+package com.compomics.colims.core.searches.incoming;
 
 import com.compomics.colims.core.storage.enums.StorageState;
 import java.io.BufferedReader;
@@ -19,11 +19,11 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth Verheggen
  */
-public class ClientToControllerConnector {
+public class ClientForSearchConnector {
 
-    private final static Logger LOGGER = Logger.getLogger(ClientToControllerConnector.class);
+    private final static Logger LOGGER = Logger.getLogger(ClientForSearchConnector.class);
     private String masterIPAddress = "127.0.0.1";
-    private int masterPort = 24567;
+    private int masterPort = 24568;
     private StorageState state = StorageState.WAITING;
     private BufferedReader in;
     private PrintWriter out;
@@ -35,33 +35,28 @@ public class ClientToControllerConnector {
      * @param masterPort the port that is listening on the storing node (24567 =
      * ClientToControllerConnector
      */
-    public ClientToControllerConnector(String masterIPAddress, int masterPort) {
+    public ClientForSearchConnector(String masterIPAddress, int masterPort) {
         this.masterIPAddress = masterIPAddress;
         this.masterPort = masterPort;
     }
 
-    /**
-     *
-     * @param Username the user that wants to store the tasks
-     * @param fileLocation the filelocation of the file that needs to be
-     * imported to colims
-     * @return if the method was succesfull storing the file
-     */
-    public boolean storeFile(String Username, String fileLocation, long sampleID, String instrumentName) {
+    public boolean storeFile(String mgfFile, String paramFile, String fastaFile, String userName, String searchName) {
         boolean success = false;
         Socket socket = null;
         try {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(Username + ">.<" + fileLocation + ">.<" + sampleID + ">.<" + instrumentName);
+            out.println(mgfFile + ">.<" + paramFile + ">.<" + fastaFile + ">.<" + userName + ">.<" + searchName);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
-            while ((response = in.readLine()) != null) {
+            /*while ((response = in.readLine()) != null) {
                 state = StorageState.valueOf(response.split(">.<")[1].toUpperCase());
                 success = !state.equals(StorageState.ERROR);
-            }
+            }*/
+            //TODO ELABORATE ON THIS
+            success = true;
         } catch (UnknownHostException ex) {
             LOGGER.error(ex);
             success = false;
@@ -69,12 +64,6 @@ public class ClientToControllerConnector {
             LOGGER.error(ex);
             success = false;
         } finally {
-            String fileName = new File(fileLocation).getName();
-            if (success) {
-                LOGGER.debug("Succesfully stored " + fileName + " into the db");
-            } else {
-                LOGGER.error("Could not store " + fileName + " into the db");
-            }
             //Failsave method to prevent socket from staying open  = resource-leak
             LOGGER.debug("Closing socket with master");
             if (socket != null) {
