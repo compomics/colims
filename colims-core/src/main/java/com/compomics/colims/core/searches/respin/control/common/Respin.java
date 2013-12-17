@@ -38,7 +38,6 @@ public class Respin {
     private File outputDir;
     private RespinCommandLine command;
     private RespinProperties respProps;
-    private StorageQueue searchQueue;
     private PrintWriter notifier;
 
     public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier, boolean storeAfterRun) throws RespinException, Exception {
@@ -48,7 +47,6 @@ public class Respin {
         RespinProperties.setPropertiesFile(respinPropertiesFile);
         RespinProperties.reload();
 
-        searchQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchQueue");
         this.notifier = notifier;
         this.mgfFile = mgf;
         this.paramFile = searchparameters;

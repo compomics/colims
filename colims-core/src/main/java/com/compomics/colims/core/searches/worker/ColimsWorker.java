@@ -27,6 +27,7 @@ public class ColimsWorker {
     private WorkerProperties workerProperties;
     private BufferedReader in;
     private PrintWriter out;
+    private boolean storeAfterRun = true;
 
     public void launch() throws IOException {
         //load respinProperties
@@ -60,7 +61,7 @@ public class ColimsWorker {
                             public void run() {
                                 Respin respin = new Respin();
                                 try {
-                                    respin.launch(userName, instrumentName, sampleId, mgf, param, fasta, outputDir, searchName, out, true);
+                                    respin.launch(userName, instrumentName, sampleId, mgf, param, fasta, outputDir, searchName, out, storeAfterRun);
                                 } catch (Exception ex) {
                                     LOGGER.error(ex);
                                 }
@@ -69,12 +70,7 @@ public class ColimsWorker {
                         respinThread.start();
                         break;
                     }
-                } catch (UnknownHostException ex) {
-                    LOGGER.error(ex);
-                } catch (IOException ex) {
-                    LOGGER.error(ex);
-                } catch (Throwable ex) {
-                    ex.printStackTrace();
+                } catch (IOException | NumberFormatException ex) {
                     LOGGER.error(ex);
                 } finally {
                     //Failsave method to prevent socket from staying open  = resource-leak
