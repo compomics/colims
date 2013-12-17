@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.worker;
+package com.compomics.colims.core.searches.controller.workers;
 
 import com.compomics.colims.core.config.distributedconfiguration.worker.WorkerProperties;
 import com.compomics.colims.core.searches.respin.control.common.Respin;

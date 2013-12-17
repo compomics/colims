@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.searches.incoming;
+package com.compomics.colims.core.searches.controller.searches.incoming;
 
 import com.compomics.colims.core.config.distributedconfiguration.client.SearchProperties;
 import com.compomics.colims.core.searches.respin.model.enums.RespinState;
