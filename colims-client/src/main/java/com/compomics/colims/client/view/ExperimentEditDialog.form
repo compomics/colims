@@ -84,7 +84,7 @@
         <Component class="javax.swing.JButton" name="saveOrUpdateButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="save"/>
-            <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing project"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -99,7 +99,7 @@
         <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="cancel"/>
-            <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing project"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -222,7 +222,7 @@
             <Component class="javax.swing.JButton" name="attachmentsEditButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
-                <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing project"/>
+                <Property name="toolTipText" type="java.lang.String" value="edit the binary attachments"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>

@@ -109,13 +109,13 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         experimentEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         saveOrUpdateButton.setText("save");
-        saveOrUpdateButton.setToolTipText("edit the metadata of an existing project");
+        saveOrUpdateButton.setToolTipText("");
         saveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         cancelButton.setText("cancel");
-        cancelButton.setToolTipText("edit the metadata of an existing project");
+        cancelButton.setToolTipText("");
         cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
         cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
         cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -130,7 +130,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         storageLocationLabel.setText("storage location");
 
         attachmentsEditButton.setText("edit...");
-        attachmentsEditButton.setToolTipText("edit the metadata of an existing project");
+        attachmentsEditButton.setToolTipText("edit the binary attachments");
         attachmentsEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
         attachmentsEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
         attachmentsEditButton.setPreferredSize(new java.awt.Dimension(80, 25));

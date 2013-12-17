@@ -9,9 +9,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 
@@ -23,12 +20,7 @@ import javax.persistence.MappedSuperclass;
 public class AbstractBinaryFile extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)   
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;  
+  
     @Basic(optional = false)
     @Column(name = "file_name", nullable = false)
     protected String fileName;
@@ -45,14 +37,6 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
     
     public AbstractBinaryFile(byte[] content) {
         this.content = content;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public BinaryFileType getBinaryFileType() {
@@ -78,5 +62,10 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
+    @Override
+    public String toString() {
+        return fileName + " (" + binaryFileType + ")";
+    }        
         
 }
