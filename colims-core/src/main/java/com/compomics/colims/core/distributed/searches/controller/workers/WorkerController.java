@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.core.distributed.searches.controller.workers;
 
-import com.compomics.colims.core.config.distributedconfiguration.worker.WorkerProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.controller.workers.worker.Worker;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class WorkerController {
     private ServerSocket serverSocket;
     private final Logger LOGGER = Logger.getLogger(WorkerController.class);
     private boolean disconnected = false;
-    private WorkerProperties workProperties;
+    private DistributedProperties workProperties;
 
     /**
      *
@@ -38,11 +38,7 @@ public class WorkerController {
      * @param port
      */
     public void launch() throws IOException {
-        File workPropertiesFile = new ClassPathResource("distributed/config/worker.properties").getFile();
-        WorkerProperties.setPropertiesFile(workPropertiesFile);
-        WorkerProperties.reload();
-        workProperties = WorkerProperties.getInstance();
-        this.port = workProperties.getWorkerControllerPort();
+        this.port = workProperties.getWorkerPort();
         LOGGER.info("Booting colims worker controller on port " + port);
         try {
             serverSocket = new ServerSocket(port);

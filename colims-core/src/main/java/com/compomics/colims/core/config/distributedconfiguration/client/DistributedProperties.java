@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.config.distributedconfiguration.client;
 
-import com.compomics.colims.core.config.distributedconfiguration.DistributedProperties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,15 +16,15 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth
  */
-public class StorageProperties implements DistributedProperties {
+public class DistributedProperties {
 
     private static final PropertiesConfiguration properties = new PropertiesConfiguration();
     private static File propertiesFile;
-    private static final Logger LOGGER = Logger.getLogger(SearchProperties.class);
-    private static StorageProperties storageProperties;
+    private static final Logger LOGGER = Logger.getLogger(DistributedProperties.class);
+    private static DistributedProperties searchProperties;
 
     public static void setPropertiesFile(File propertiesFile) {
-        StorageProperties.propertiesFile = propertiesFile;
+        DistributedProperties.propertiesFile = propertiesFile;
     }
 
     public static void reload() throws FileNotFoundException {
@@ -51,18 +50,17 @@ public class StorageProperties implements DistributedProperties {
         }
     }
 
-    private StorageProperties() {
+    private DistributedProperties() {
     }
 
-    public static StorageProperties getInstance() throws IOException {
-        if (storageProperties == null) {
-            storageProperties = new StorageProperties();
-            storageProperties.initiate();
+    public static DistributedProperties getInstance() throws IOException {
+        if (searchProperties == null) {
+            searchProperties = new DistributedProperties();
+            searchProperties.initiate();
         }
-        return storageProperties;
+        return searchProperties;
     }
 
-    @Override
     public void save() {
         try {
             properties.save(propertiesFile);
@@ -71,20 +69,31 @@ public class StorageProperties implements DistributedProperties {
         }
     }
 
-    /**
-     *
-     */
-    @Override
+    /**/
     public void setDefaultProperties() {
-        properties.setProperty("search.ip", "127.0.0.1");
-        properties.setProperty("search.port", 45679);
+        properties.setProperty("master.ip", "127.0.0.1");
+        properties.setProperty("master.search.port", 45679);
+        properties.setProperty("master.storage.port", 45678);
+        properties.setProperty("master.worker.port", 45680);
+        properties.setProperty("worker.storage.path", "C:/Users/Kenneth/.compomics/tempExample/");
     }
 
-    public String getStorageControllerIP() {
-        return properties.getProperty("search.ip").toString();
+    public String getControllerIP() {
+        return properties.getProperty("master.ip").toString();
     }
 
-    public int getStorageControllerPort() {
-        return (Integer) properties.getProperty("search.port");
+    public int getSearchPort() {
+        return (Integer) properties.getProperty("master.search.port");
+    }
+
+    public int getStoragePort() {
+        return (Integer) properties.getProperty("master.storage.port");
+    }
+
+    public int getWorkerPort() {
+        return (Integer) properties.getProperty("master.worker.port");
+    }
+    public int getStoragePath() {
+        return (Integer) properties.getProperty("worker.storage.path");
     }
 }

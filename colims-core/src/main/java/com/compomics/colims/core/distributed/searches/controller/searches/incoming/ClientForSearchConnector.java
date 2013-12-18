@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.distributed.searches.controller.searches.incoming;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.SearchProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.respin.model.enums.RespinState;
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
 import java.io.BufferedReader;
@@ -47,11 +47,8 @@ public class ClientForSearchConnector {
     public ClientForSearchConnector() throws IOException {
         this.state = RespinState.NEW;
         //load respinProperties
-        File searchPropertiesFile = new ClassPathResource("distributed/config/search.properties").getFile();
-        SearchProperties.setPropertiesFile(searchPropertiesFile);
-        SearchProperties.reload();
-        this.masterIPAddress = SearchProperties.getInstance().getSearchControllerIP();
-        this.masterPort = SearchProperties.getInstance().getSearchControllerPort();
+        this.masterIPAddress = DistributedProperties.getInstance().getControllerIP();
+        this.masterPort = DistributedProperties.getInstance().getSearchPort();
     }
 
     public boolean storeFile(String mgfFile, String paramFile, String fastaFile, String userName, String searchName, String instrumentName, long sampleID) {

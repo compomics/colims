@@ -4,11 +4,9 @@
  */
 package com.compomics.colims.core.distributed.storage.processing.controller;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.StorageProperties;
-import com.compomics.colims.core.config.distributedconfiguration.worker.WorkerProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,18 +34,14 @@ public class StorageController {
     private final Logger LOGGER = Logger.getLogger(StorageController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
     private boolean disconnected = false;
-    private StorageProperties workProperties;
+    private DistributedProperties workProperties;
 
     /**
      *
      * This method starts the socketListener and the StorageQueue
      */
     public void launch() throws IOException {
-        File storagePropertiesFile = new ClassPathResource("distributed/config/storage.properties").getFile();
-        StorageProperties.setPropertiesFile(storagePropertiesFile);
-        StorageProperties.reload();
-        workProperties = StorageProperties.getInstance();
-        this.port = workProperties.getStorageControllerPort();
+        this.port = workProperties.getStoragePort();
         LOGGER.info("Booting colims storage controller on port " + port);
         try {
             serverSocket = new ServerSocket(port);

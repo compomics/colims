@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.config.distributedconfiguration.client;
 
-import com.compomics.colims.core.config.distributedconfiguration.DistributedProperties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,14 +11,12 @@ import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 /**
  *
  * @author Kenneth
  */
-public class RespinProperties implements DistributedProperties {
+public class RespinProperties  {
 
     private static PropertiesConfiguration properties = new PropertiesConfiguration();
     private static final File respinDirectory = new File(System.getProperty("user.home") + "/.compomics/respin/");
@@ -81,7 +78,7 @@ public class RespinProperties implements DistributedProperties {
         }
     }
 
-    @Override
+
     public void setDefaultProperties() {
         setSearchGUIJarPath("");
         setPeptideShakerJarPath("");

@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.distributed.searches.controller.workers;
 
-import com.compomics.colims.core.config.distributedconfiguration.worker.WorkerProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.respin.control.common.Respin;
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import org.apache.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -23,20 +22,18 @@ import org.springframework.core.io.ClassPathResource;
 public class ColimsWorker {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsWorker.class);
-    private WorkerProperties workerProperties;
+    private DistributedProperties workerProperties;
     private BufferedReader in;
     private PrintWriter out;
     private boolean storeAfterRun = true;
 
     public void launch() throws IOException {
         //load respinProperties
-        File workerPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
-        WorkerProperties.setPropertiesFile(workerPropertiesFile);
-        WorkerProperties.reload();
-        workerProperties = WorkerProperties.getInstance();
+
+        workerProperties = DistributedProperties.getInstance();
         while (true) {
             try {
-                Socket socket = new Socket(workerProperties.getWorkerControllerIp(), workerProperties.getWorkerControllerPort());
+                Socket socket = new Socket(workerProperties.getControllerIP(), workerProperties.getWorkerPort());
                 try {
                     in = new BufferedReader(new InputStreamReader(
                             socket.getInputStream()));
@@ -51,7 +48,7 @@ public class ColimsWorker {
                         final File mgf = new File(responseArgs[4]);
                         final File param = new File(responseArgs[5]);
                         final File fasta = new File(responseArgs[6]);
-                        final File outputDir = new File(workerProperties.getStoragePath(), userName + "/" + searchName + "/");
+                        final File outputDir = new File(workerProperties.getStoragePath() + "/" + userName + "/" + searchName + "/");
                         if (!outputDir.exists()) {
                             outputDir.mkdirs();
                         }

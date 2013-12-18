@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.distributed.storage.incoming;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.StorageProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -45,11 +44,8 @@ public class ClientForStorageConnector {
     public ClientForStorageConnector() throws IOException {
         this.state = StorageState.WAITING;
         //load respinProperties
-        File searchPropertiesFile = new ClassPathResource("distributed/config/storage.properties").getFile();
-        StorageProperties.setPropertiesFile(searchPropertiesFile);
-        StorageProperties.reload();
-        this.masterIPAddress = StorageProperties.getInstance().getStorageControllerIP();
-        this.masterPort = StorageProperties.getInstance().getStorageControllerPort();
+        this.masterIPAddress = DistributedProperties.getInstance().getControllerIP();
+        this.masterPort = DistributedProperties.getInstance().getStoragePort();
     }
 
     /**

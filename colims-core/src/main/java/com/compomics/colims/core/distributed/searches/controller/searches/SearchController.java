@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.core.distributed.searches.controller.searches;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.SearchProperties;
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import java.io.File;
@@ -36,18 +36,16 @@ public class SearchController {
     private final Logger LOGGER = Logger.getLogger(SearchController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
     private boolean disconnected = false;
-    private SearchProperties searchProperties;
+    private DistributedProperties searchProperties;
 
     /**
      *
      * This method starts the socketListener and the StorageQueue
      */
     public void launch() throws IOException {
-        File searchPropertiesFile = new ClassPathResource("distributed/config/search.properties").getFile();
-        SearchProperties.setPropertiesFile(searchPropertiesFile);
-        SearchProperties.reload();
-        searchProperties = SearchProperties.getInstance();
-        this.port = searchProperties.getSearchControllerPort();
+     
+        searchProperties = DistributedProperties.getInstance();
+        this.port = searchProperties.getSearchPort();
         LOGGER.info("Booting colims search controller on port " + port);
         try {
             serverSocket = new ServerSocket(port);

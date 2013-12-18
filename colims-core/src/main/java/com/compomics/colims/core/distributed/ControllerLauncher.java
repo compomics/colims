@@ -5,11 +5,14 @@
  */
 package com.compomics.colims.core.distributed;
 
+import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.controller.searches.SearchController;
 import com.compomics.colims.core.distributed.searches.controller.workers.WorkerController;
 import com.compomics.colims.core.distributed.storage.processing.controller.StorageController;
+import java.io.File;
 import java.io.IOException;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -28,6 +31,9 @@ public class ControllerLauncher {
     }
 
     public void launch() throws IOException {
+        File distPropertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
+        DistributedProperties.setPropertiesFile(distPropertiesFile);
+        DistributedProperties.reload();
         LOGGER.debug("Starting threads to handle searchtasks");
         SearchController searchController = new SearchController();
         searchController.launch();

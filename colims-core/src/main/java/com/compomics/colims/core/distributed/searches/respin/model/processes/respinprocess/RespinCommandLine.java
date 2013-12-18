@@ -1,7 +1,6 @@
 package com.compomics.colims.core.distributed.searches.respin.model.processes.respinprocess;
 
 import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
-import com.compomics.colims.core.config.distributedconfiguration.client.StorageProperties;
 import com.compomics.colims.core.distributed.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.core.distributed.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.core.distributed.searches.respin.control.validation.SearchParamValidator;
@@ -301,9 +300,7 @@ public class RespinCommandLine {
     }
 
     public void storeColimsResults(String userName, long sampleId, String instrumentName) throws IOException {
-        File storagePropertiesFile = new ClassPathResource("distributed/config/storage.properties").getFile();
-        StorageProperties.setPropertiesFile(storagePropertiesFile);
-        StorageProperties.reload();
+
         File[] resultFiles = new File(System.getProperty("user.home") + "/.compomics/respin/temp_results/").listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
