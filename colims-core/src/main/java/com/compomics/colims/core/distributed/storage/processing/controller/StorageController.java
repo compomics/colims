@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth
  */
 @Component("storageController")
-public class StorageController {
+public class StorageController implements Runnable{
 
     @Autowired
     StorageQueue storageQueue;
@@ -40,7 +40,8 @@ public class StorageController {
      *
      * This method starts the socketListener and the StorageQueue
      */
-    public void launch() throws IOException {
+    @Override
+    public void run(){
         this.port = workProperties.getStoragePort();
         LOGGER.info("Booting colims storage controller on port " + port);
         try {
@@ -53,7 +54,7 @@ public class StorageController {
         Thread storingThread = new Thread(storageQueue);
         storingThread.start();
 
-        LOGGER.debug("Accepting sockets: It's go time!");
+        LOGGER.debug("Accepting sockets: It's storage time!");
         handleAllIncomingSockets();
     }
 

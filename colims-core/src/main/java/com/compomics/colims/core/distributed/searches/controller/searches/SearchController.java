@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth
  */
 @Component("searchController")
-public class SearchController {
+public class SearchController implements Runnable {
 
     @Autowired
     StorageQueue searchQueue;
@@ -42,12 +43,12 @@ public class SearchController {
      *
      * This method starts the socketListener and the StorageQueue
      */
-    public void launch() throws IOException {
-     
-        searchProperties = DistributedProperties.getInstance();
-        this.port = searchProperties.getSearchPort();
-        LOGGER.info("Booting colims search controller on port " + port);
+    @Override
+    public void run() {
         try {
+            searchProperties = DistributedProperties.getInstance();
+            this.port = searchProperties.getSearchPort();
+            LOGGER.info("Booting colims search controller on port " + port);
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
             LOGGER.error(ex);

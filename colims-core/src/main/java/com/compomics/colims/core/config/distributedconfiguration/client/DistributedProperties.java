@@ -79,21 +79,22 @@ public class DistributedProperties {
     }
 
     public String getControllerIP() {
-        return properties.getProperty("master.ip").toString();
+        return properties.getString("master.ip").toString();
     }
 
     public int getSearchPort() {
-        return (Integer) properties.getProperty("master.search.port");
+        return properties.getInt("master.search.port");
     }
 
     public int getStoragePort() {
-        return (Integer) properties.getProperty("master.storage.port");
+        return properties.getInt("master.storage.port");
     }
 
     public int getWorkerPort() {
-        return (Integer) properties.getProperty("master.worker.port");
+        return properties.getInt("master.worker.port");
     }
-    public int getStoragePath() {
-        return (Integer) properties.getProperty("worker.storage.path");
+
+    public String getStoragePath() {
+        return properties.getString("worker.storage.path");
     }
 }

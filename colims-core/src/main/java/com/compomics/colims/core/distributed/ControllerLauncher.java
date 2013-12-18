@@ -7,10 +7,14 @@ package com.compomics.colims.core.distributed;
 
 import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.controller.searches.SearchController;
+import com.compomics.colims.core.distributed.searches.controller.searches.SearchHandler;
 import com.compomics.colims.core.distributed.searches.controller.workers.WorkerController;
 import com.compomics.colims.core.distributed.storage.processing.controller.StorageController;
+import com.compomics.colims.core.spring.ApplicationContextProvider;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
@@ -20,7 +24,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class ControllerLauncher {
 
-    private static Logger LOGGER = Logger.getLogger(ControllerLauncher.class);
+    private static final Logger LOGGER = Logger.getLogger(ControllerLauncher.class);
 
     public static void main(String[] args) {
         try {
@@ -29,20 +33,37 @@ public class ControllerLauncher {
             LOGGER.error(ex);
         }
     }
+    private SearchController searchController;
+    private WorkerController workerController;
+    private StorageController storageController;
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     public void launch() throws IOException {
         File distPropertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
         DistributedProperties.setPropertiesFile(distPropertiesFile);
         DistributedProperties.reload();
+
+        searchController = (SearchController) ApplicationContextProvider.getInstance().getApplicationContext().getBean("searchController");
+        workerController = (WorkerController) ApplicationContextProvider.getInstance().getApplicationContext().getBean("workerController");
+        storageController = (StorageController) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageController");
+
         LOGGER.debug("Starting threads to handle searchtasks");
-        SearchController searchController = new SearchController();
-        searchController.launch();
+        executor.execute(searchController);
         LOGGER.debug("Starting threads to handle workers");
-        WorkerController workController = new WorkerController();
-        workController.launch();
+        executor.execute(workerController);
         LOGGER.debug("Starting threads to handle storage requests");
-        StorageController storeController = new StorageController();
-        storeController.launch();
+        executor.execute(storageController);
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+
+        }
+        LOGGER.debug("All controllers have shut down");
     }
 
+    public void shutdownControllers(){
+        executor.shutdownNow();
+    }
+    
+    
 }

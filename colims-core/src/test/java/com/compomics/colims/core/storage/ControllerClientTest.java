@@ -52,16 +52,7 @@ public class ControllerClientTest {
             LOGGER.error(ex);
             LOGGER.debug("Could not delete file...");
         }
-        listener = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    storageController.launch();
-                } catch (IOException ex) {
-                    LOGGER.error(ex);
-                }
-            }
-        });
+        listener = new Thread(storageController);
         listener.start();
     }
 

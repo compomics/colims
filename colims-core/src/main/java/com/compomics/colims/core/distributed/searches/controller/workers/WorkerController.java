@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth
  */
 @Component("workController")
-public class WorkerController {
+public class WorkerController implements Runnable {
 
     @Autowired
     WorkerQueue workerQueue;
@@ -37,10 +37,11 @@ public class WorkerController {
      *
      * @param port
      */
-    public void launch() throws IOException {
-        this.port = workProperties.getWorkerPort();
-        LOGGER.info("Booting colims worker controller on port " + port);
+    @Override
+    public void run() {
         try {
+            this.port = workProperties.getWorkerPort();
+            LOGGER.info("Booting colims worker controller on port " + port);
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
             LOGGER.error(ex);
