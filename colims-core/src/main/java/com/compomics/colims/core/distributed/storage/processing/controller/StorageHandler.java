@@ -47,13 +47,12 @@ public class StorageHandler implements Runnable {
     @Override
     public void run() {
         try {
-            socket.setKeepAlive(true);
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
             //read the task from the socket that just sent it
             StorageTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
-            if (task != null) {
+            if (task != null & !socket.isClosed() & !socket.isOutputShutdown()) {
                 writeTaskStateToOutputStream(outputStream, task);
             }
         } catch (SocketException ex) {

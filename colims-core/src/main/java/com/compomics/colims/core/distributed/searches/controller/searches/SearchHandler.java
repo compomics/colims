@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.distributed.searches.controller.searches;
 
-
 import com.compomics.colims.core.distributed.searches.controller.searches.searchtask.SearchTask;
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
 import java.io.BufferedReader;
@@ -47,13 +46,12 @@ public class SearchHandler implements Runnable {
     @Override
     public void run() {
         try {
-            socket.setKeepAlive(true);
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
             //read the task from the socket that just sent it
             SearchTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
-            if (task != null) {
+            if (task != null & !socket.isClosed() & !socket.isOutputShutdown()) {
                 writeTaskStateToOutputStream(outputStream, task);
             }
         } catch (SocketException ex) {
