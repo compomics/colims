@@ -13,14 +13,11 @@ import java.util.Comparator;
 public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Condition", "Protocol", "Created", "# runs"};
+    private static final String[] columnNames = {"Id", "Name", "# runs"};
     private static final String NOT_APPLICABLE = "N/A";
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
-    public static final int CONDITION = 2;
-    public static final int PROTOCOL = 3;
-    public static final int CREATED = 4;
-    public static final int NUMBER_OF_RUNS = 5;
+    public static final int NUMBER_OF_RUNS = 2;
 
     @Override
     public Class getColumnClass(int column) {
@@ -28,12 +25,6 @@ public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
             case SAMPLE_ID:
                 return Long.class;
             case NAME:
-                return String.class;
-            case CONDITION:
-                return String.class;
-            case PROTOCOL:
-                return String.class;
-            case CREATED:
                 return String.class;
             case NUMBER_OF_RUNS:
                 return Integer.class;
@@ -63,15 +54,7 @@ public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
             case SAMPLE_ID:
                 return sample.getId();
             case NAME:
-                return sample.getName();
-            case CONDITION:
-                String condition = (sample.getCondition() != null) ? sample.getCondition() : NOT_APPLICABLE;
-                return condition;
-            case PROTOCOL:
-                String protocol = (sample.getProtocol() != null) ? sample.getProtocol().toString() : NOT_APPLICABLE;
-                return protocol;    
-            case CREATED:
-                return DATE_FORMAT.format(sample.getCreationdate());        
+                return sample.getName();       
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

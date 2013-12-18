@@ -87,7 +87,7 @@ public class ExperimentEditController implements Controllable {
         //init child controller
         sampleEditController.init();
 
-        //init projects experiment table
+        //init experiment samples table
         SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
         samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
         experimentEditDialog.getSamplesTable().setModel(samplesTableModel);

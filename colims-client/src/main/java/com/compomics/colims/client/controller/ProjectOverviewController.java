@@ -7,33 +7,28 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
-import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
-import com.compomics.colims.client.view.ProjectManagementPanel;
+import com.compomics.colims.client.model.tableformat.AnalyticalRunSimpleTableFormat;
+import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
+import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
+import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
+import com.compomics.colims.client.model.tableformat.SpectrumTableFormat;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
+import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
+import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.google.common.eventbus.EventBus;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -57,6 +52,9 @@ public class ProjectOverviewController implements Controllable {
     private EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
+    private EventList<Spectrum> spectra = new BasicEventList<>();
+    private AdvancedTableModel<Spectrum> spectraTableModel;
+    private DefaultEventSelectionModel<Spectrum> spectraSelectionModel;
     //view
     private ProjectOverviewPanel projectOverviewPanel;
     //parent controller
@@ -66,59 +64,91 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private ProjectService projectService;
     @Autowired
-    private ExperimentService experimentService;
+    private AnalyticalRunService analyticalRunService;
     @Autowired
     private EventBus eventBus;
 
     public ProjectOverviewPanel getProjectOverviewPanel() {
         return projectOverviewPanel;
-    }    
+    }
 
     public void init() {
         //register to event bus
         eventBus.register(this);
 
         //init view
-        projectOverviewPanel = new ProjectOverviewPanel();               
+        projectOverviewPanel = new ProjectOverviewPanel(colimsController.getColimsFrame());
 
         //init projects table
         projects.addAll(projectService.findAllWithEagerFetching());
         SortedList<Project> sortedProjects = new SortedList<>(projects, new IdComparator());
-        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectManagementTableFormat());
-        projectManagementPanel.getProjectsTable().setModel(projectsTableModel);
+        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectSimpleTableFormat());
+        projectOverviewPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
         projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
-        
+        projectOverviewPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
+
         //set column widths
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(100);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(100);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(50);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setPreferredWidth(10);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.TITLE).setPreferredWidth(100);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.LABEL).setPreferredWidth(50);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(20);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
-        experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentManagementTableFormat());
-        projectManagementPanel.getExperimentsTable().setModel(experimentsTableModel);
+        experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentSimpleTableFormat());
+        projectOverviewPanel.getExperimentsTable().setModel(experimentsTableModel);
         experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
         experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
-        
+        projectOverviewPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
+
         //set column widths
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);        
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setPreferredWidth(10);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.TITLE).setPreferredWidth(100);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER).setPreferredWidth(20);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(20);
 
-        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
-        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
-                projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
-        TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-                projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
+        //init experiment samples table
+        SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
+        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleSimpleTableFormat());
+        projectOverviewPanel.getSamplesTable().setModel(samplesTableModel);
+        samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
+        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        projectOverviewPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
 
+        //set column widths
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setPreferredWidth(10);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NAME).setPreferredWidth(100);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setPreferredWidth(20);
+
+        //init sample analyticalruns table
+        SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
+        analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunSimpleTableFormat());
+        projectOverviewPanel.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
+        analyticalRunsSelectionModel = new DefaultEventSelectionModel<>(sortedAnalyticalRuns);
+        analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        projectOverviewPanel.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
+
+        //set column widths
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setPreferredWidth(10);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NAME).setPreferredWidth(50);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.START_DATE).setPreferredWidth(50);        
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(20);
+
+        //init sample analyticalruns table
+        SortedList<Spectrum> sortedSpectra = new SortedList<>(spectra, new IdComparator());
+        spectraTableModel = GlazedListsSwing.eventTableModel(sortedSpectra, new SpectrumTableFormat());
+        projectOverviewPanel.getPsmTable().setModel(spectraTableModel);
+        spectraSelectionModel = new DefaultEventSelectionModel<>(sortedSpectra);
+        spectraSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        projectOverviewPanel.getPsmTable().setSelectionModel(spectraSelectionModel);
+
+        //set column widths
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setPreferredWidth(10);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NAME).setPreferredWidth(50);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.START_DATE).setPreferredWidth(50);        
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(20);
+        
         //add action listeners
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -126,7 +156,7 @@ public class ProjectOverviewController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Project selectedProject = getSelectedProject();
                     if (selectedProject != null) {
-                        //fill project experiments table                        
+                        //fill experiments table                        
                         GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
                     } else {
                         GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
@@ -139,97 +169,43 @@ public class ProjectOverviewController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
-                }
-            }
-        });
-
-        projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectEditController.updateView(createDefaultProject());
-            }
-        });
-
-        projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Project selectedProject = getSelectedProject();
-                if (selectedProject != null) {
-                    projectEditController.updateView(selectedProject);
-                } else {
-                    eventBus.post(new MessageEvent("project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        projectManagementPanel.getDeleteProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Project projectToDelete = getSelectedProject();
-
-                if (projectToDelete != null) {
-                    try {
-                        projectService.delete(projectToDelete);
-
-                        //remove from overview table and clear selection
-                        projects.remove(projectToDelete);
-                        projectsSelectionModel.clearSelection();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the project can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("project", projectToDelete.getLabel());
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
+                    Experiment selectedExperiment = getSelectedExperiment();
+                    if (selectedExperiment != null) {
+                        //fill samples table                        
+                        GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
+                    } else {
+                        GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
                     }
                 }
             }
         });
 
-        projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
+        samplesSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                experimentEditController.updateView(createDefaultExperiment());
-            }
-        });
-
-        projectManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Experiment selectedExperiment = getSelectedExperiment();
-                if (selectedExperiment != null) {
-                    experimentEditController.updateView(selectedExperiment);
-                } else {
-                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    Sample selectedSample = getSelectedSample();
+                    if (selectedSample != null) {
+                        //fill samples table                        
+                        GlazedLists.replaceAll(analyticalRuns, selectedSample.getAnalyticalRuns(), false);
+                    } else {
+                        GlazedLists.replaceAll(analyticalRuns, new ArrayList<AnalyticalRun>(), false);
+                    }
                 }
             }
         });
-        
-        projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
+
+        analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                Experiment experimentToDelete = getSelectedExperiment();
-
-                if (experimentToDelete != null) {
-                    try {
-                        experimentService.delete(experimentToDelete);
-
-                        //remove from overview table and clear selection
-                        experiments.remove(experimentToDelete);
-                        experimentsSelectionModel.clearSelection();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the experiment can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("experiment", Long.toString(experimentToDelete.getNumber()));
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+                    if (selectedAnalyticalRun != null) {
+                        analyticalRunService.fetchSpectra(selectedAnalyticalRun);
+                        //fill samples table                        
+                        GlazedLists.replaceAll(spectra, selectedAnalyticalRun.getSpectrums(), false);
+                    } else {
+                        GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
                     }
                 }
             }
@@ -242,48 +218,11 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected project in the projects table
-     *
-     * @return
-     */
-    public int getSelectedProjectIndex() {
-        return projectsSelectionModel.getLeadSelectionIndex();
-    }
-
-    /**
-     * Set the selected project in the projects table
-     *
-     * @param index
-     */
-    public void setSelectedProject(int index) {
-        projectsSelectionModel.clearSelection();
-        projectsSelectionModel.setLeadSelectionIndex(index);
-    }
-
-    /**
-     * Add a project to the projects table
-     *
-     * @param project
-     */
-    public void addProject(Project project) {
-        projects.add(project);
-    }
-
-    /**
-     * Get the number of projects in the projects table
-     *
-     * @return
-     */
-    public int getProjectsSize() {
-        return projects.size();
-    }
-
-    /**
      * Get the selected project from the project overview table.
      *
      * @return the selected project, null if no project is selected
      */
-    public Project getSelectedProject() {
+    private Project getSelectedProject() {
         Project selectedProject = null;
 
         EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
@@ -293,50 +232,13 @@ public class ProjectOverviewController implements Controllable {
 
         return selectedProject;
     }
-    
-    /**
-     * Get the row index of the selected experiment in the experiments table
-     *
-     * @return
-     */
-    public int getSelectedExperimentIndex() {
-        return experimentsSelectionModel.getLeadSelectionIndex();
-    }
 
     /**
-     * Set the selected experiment in the experiments table
-     *
-     * @param index
-     */
-    public void setSelectedExperiment(int index) {
-        experimentsSelectionModel.clearSelection();
-        experimentsSelectionModel.setLeadSelectionIndex(index);
-    }
-
-    /**
-     * Add a project to the projects table
-     *
-     * @param project
-     */
-    public void addExperiment(Experiment experiment) {
-        experiments.add(experiment);
-    }
-
-    /**
-     * Get the number of experiments in the experiments table
-     *
-     * @return
-     */
-    public int getExperimentsSize() {
-        return experiments.size();
-    }
-
-    /**
-     * Get the selected experiment from the experiment overview table.
+     * Get the selected experiment from the experiment table.
      *
      * @return the selected experiment, null if no experiment is selected
      */
-    public Experiment getSelectedExperiment() {
+    private Experiment getSelectedExperiment() {
         Experiment selectedExperiment = null;
 
         EventList<Experiment> selectedExperiments = experimentsSelectionModel.getSelected();
@@ -348,36 +250,34 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Create a default project, with some default properties.
+     * Get the selected sample from the sample table.
      *
-     * @return the default project
+     * @return the selected sample, null if no sample is selected
      */
-    private Project createDefaultProject() {
-        Project defaultProject = new Project();
+    private Sample getSelectedSample() {
+        Sample selectedSample = null;
 
-        defaultProject.setTitle("default project title");
-        defaultProject.setLabel("def_label");
-
-        //set default owner, i.e. the user with the most projects
-        User userWithMostProjectOwns = projectService.getUserWithMostProjectOwns();
-        if (userWithMostProjectOwns != null) {
-            defaultProject.setOwner(userWithMostProjectOwns);
+        EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+        if (!selectedSamples.isEmpty()) {
+            selectedSample = selectedSamples.get(0);
         }
 
-        return defaultProject;
+        return selectedSample;
     }
 
     /**
-     * Create a default experiment, with some default properties.
+     * Get the selected analytical run from the analytical run table.
      *
-     * @return the default experiment
+     * @return the selected analytical run, null if no analytical is selected
      */
-    private Experiment createDefaultExperiment() {
-        Experiment defaultExperiment = new Experiment();
+    private AnalyticalRun getSelectedAnalyticalRun() {
+        AnalyticalRun selectedAnalyticalRun = null;
 
-        defaultExperiment.setTitle("default experiment title");
-        defaultExperiment.setNumber(1L);
+        EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+        if (!selectedAnalyticalRuns.isEmpty()) {
+            selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
+        }
 
-        return defaultExperiment;
+        return selectedAnalyticalRun;
     }
 }

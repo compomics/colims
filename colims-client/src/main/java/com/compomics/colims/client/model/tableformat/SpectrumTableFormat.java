@@ -9,7 +9,7 @@ import java.util.Comparator;
  *
  * @author Niels Hulstaert
  */
-public class SpectrumTableFormat implements AdvancedTableFormat<Object> {
+public class SpectrumTableFormat implements AdvancedTableFormat<Spectrum> {
 
     private static final String[] columnNames = {"Id", "Accession", "Precursor charge", "Precursor M/Z ratio", "Peptide sequence"};
     public static final int SPECTRUM_ID = 0;
@@ -43,7 +43,7 @@ public class SpectrumTableFormat implements AdvancedTableFormat<Object> {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return columnNames.length;
     }
 
     @Override
@@ -52,8 +52,7 @@ public class SpectrumTableFormat implements AdvancedTableFormat<Object> {
     }
 
     @Override
-    public Object getColumnValue(Object baseObject, int column) {
-        Spectrum spectrum = (Spectrum) baseObject;
+    public Object getColumnValue(Spectrum spectrum, int column) {
         switch (column) {
             case SPECTRUM_ID:
                 return spectrum.getId();

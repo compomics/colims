@@ -99,7 +99,7 @@ public class SampleEditController implements Controllable {
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
         
-        //init projects experiment table
+        //init sample analyticalruns table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
         analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
         sampleEditDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);

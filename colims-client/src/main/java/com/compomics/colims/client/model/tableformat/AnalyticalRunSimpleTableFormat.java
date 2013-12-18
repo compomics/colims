@@ -15,12 +15,11 @@ import java.util.Comparator;
 public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<AnalyticalRun> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Start date", "Created", "# spectra"};
+    private static final String[] columnNames = {"Id", "Name", "Start date", "# spec"};
     public static final int RUN_ID = 0;
     public static final int NAME = 1;
     public static final int START_DATE = 2;
-    public static final int CREATED = 3;
-    public static final int NUMBER_OF_SPECTRA = 4;
+    public static final int NUMBER_OF_SPECTRA = 3;
     private SpectrumService spectrumService;
 
     public AnalyticalRunSimpleTableFormat() {
@@ -35,8 +34,6 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
             case NAME:
                 return String.class;
             case START_DATE:
-                return String.class;
-            case CREATED:
                 return String.class;
             case NUMBER_OF_SPECTRA:
                 return Long.class;
@@ -70,8 +67,6 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
             case START_DATE:
                  String startDateString = (analyticalRun.getStartDate() != null) ? DATE_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
                  return startDateString;
-            case CREATED:
-                return DATE_FORMAT.format(analyticalRun.getCreationdate());
             case NUMBER_OF_SPECTRA:
                 return spectrumService.countSpectraByAnalyticalRun(analyticalRun);
             default:

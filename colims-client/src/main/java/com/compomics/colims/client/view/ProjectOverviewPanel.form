@@ -1,6 +1,365 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Container class="javax.swing.JMenuBar" name="annotationMenuBar">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
+          </Border>
+        </Property>
+        <Property name="opaque" type="boolean" value="false"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="splitterMenu5">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="ionsMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Ions"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="aIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="a"/>
+                <Property name="toolTipText" type="java.lang.String" value="a-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="bIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="b"/>
+                <Property name="toolTipText" type="java.lang.String" value="b-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="cIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="c"/>
+                <Property name="toolTipText" type="java.lang.String" value="c-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator6">
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="xIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="x"/>
+                <Property name="toolTipText" type="java.lang.String" value="x-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="yIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="y"/>
+                <Property name="toolTipText" type="java.lang.String" value="y-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="yIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="zIonCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="z"/>
+                <Property name="toolTipText" type="java.lang.String" value="z-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zIonCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu8">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="otherMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Other"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="precursorCheckMenu">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Precursor"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="precursorCheckMenuActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="immoniumIonsCheckMenu">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Immonium"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="immoniumIonsCheckMenuActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="reporterIonsCheckMenu">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Reporter"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reporterIonsCheckMenuActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="lossSplitter">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="lossMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Loss"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator7">
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="adaptCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Adapt"/>
+                <Property name="toolTipText" type="java.lang.String" value="Adapt losses to sequence and modifications"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adaptCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="chargeMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Charge"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="deNovoMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="De Novo"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="forwardIonsDeNovoCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="f-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="forwardIonsDeNovoCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="rewindIonsDeNovoCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="r-ions"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rewindIonsDeNovoCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator19">
+            </MenuItem>
+            <MenuItem class="javax.swing.JRadioButtonMenuItem" name="deNovoChargeOneJRadioButtonMenuItem">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Single Charge"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deNovoChargeOneJRadioButtonMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JRadioButtonMenuItem" name="deNovoChargeTwoJRadioButtonMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Double Charge"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deNovoChargeTwoJRadioButtonMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu9">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="settingsMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Settings"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="allCheckBoxMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Show All Peaks"/>
+                <Property name="toolTipText" type="java.lang.String" value="Show all peaks or just the annotated peaks"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="allCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator5">
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="automaticAnnotationCheckBoxMenuItem">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Automatic Annotation"/>
+                <Property name="toolTipText" type="java.lang.String" value="Use automatic annotation"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="automaticAnnotationCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="errorPlotTypeCheckBoxMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Shift+Ctrl+A"/>
+                </Property>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Absolute Mass Error Plot"/>
+                <Property name="toolTipText" type="java.lang.String" value="Plot the mass error in Da or ppm "/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="errorPlotTypeCheckBoxMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu4">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="exportGraphicsMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Export"/>
+          </Properties>
+          <SubComponents>
+            <Menu class="javax.swing.JMenu" name="exportSpectrumMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Figure"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="exportSpectrumGraphicsJMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Spectrum"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportSpectrumGraphicsJMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportSpectrumAndPlotsGraphicsJMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Spectrum &amp; Plots"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JPopupMenu$Separator" name="exportSpectrumGraphicsSeparator">
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportSequenceFragmentationGraphicsJMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Sequence Fragmentation"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportSequenceFragmentationGraphicsJMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportIntensityHistogramGraphicsJMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Intensity Histogram"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportIntensityHistogramGraphicsJMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportMassErrorPlotGraphicsJMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Mass Error Plot"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMassErrorPlotGraphicsJMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JMenuItem" name="exportSpectrumValuesJMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Spectrum as MGF"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportSpectrumValuesJMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu6">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="helpJMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Help"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="helpMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Help"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="helpMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="splitterMenu7">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="|"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Menu>
+      </SubComponents>
+    </Container>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+    </Property>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -27,7 +386,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="samplesPanel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="runsPanel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="analyticalRunsPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="experimentsPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -43,19 +402,19 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="psmPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="projectsPanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="psmPanel" max="32767" attributes="0"/>
+                  <Component id="projectsPanel" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Component id="experimentsPanel" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="samplesPanel" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="runsPanel" max="32767" attributes="0"/>
+                      <Component id="analyticalRunsPanel" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="spectrumMainPanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="spectrumMainPanel" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
@@ -67,10 +426,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Projects"/>
+            <TitledBorder title="projects"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[306, 176]"/>
+        </Property>
       </Properties>
 
       <Layout>
@@ -95,6 +457,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="projectsScrollPane">
+          <Properties>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -125,8 +490,8 @@
                     </Column>
                   </Table>
                 </Property>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="-1"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[150, 64]"/>
                 </Property>
               </Properties>
             </Component>
@@ -138,10 +503,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Experiments"/>
+            <TitledBorder title="experiments"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[306, 176]"/>
+        </Property>
       </Properties>
 
       <Layout>
@@ -158,7 +526,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="experimentsScrollPane" pref="110" max="32767" attributes="0"/>
+                  <Component id="experimentsScrollPane" pref="131" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -166,6 +534,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="experimentsScrollPane">
+          <Properties>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -190,9 +561,6 @@
                     </Column>
                   </Table>
                 </Property>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="-1"/>
-                </Property>
               </Properties>
             </Component>
           </SubComponents>
@@ -203,10 +571,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Samples"/>
+            <TitledBorder title="samples"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[306, 176]"/>
+        </Property>
       </Properties>
 
       <Layout>
@@ -223,7 +594,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="samplesScrollPane" pref="110" max="32767" attributes="0"/>
+                  <Component id="samplesScrollPane" pref="131" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -231,6 +602,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="samplesScrollPane">
+          <Properties>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -255,23 +629,23 @@
                     </Column>
                   </Table>
                 </Property>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="-1"/>
-                </Property>
               </Properties>
             </Component>
           </SubComponents>
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="runsPanel">
+    <Container class="javax.swing.JPanel" name="analyticalRunsPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Runs"/>
+            <TitledBorder title="analytical runs"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[306, 176]"/>
+        </Property>
       </Properties>
 
       <Layout>
@@ -279,7 +653,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="runsScrollPane" pref="274" max="32767" attributes="0"/>
+                  <Component id="analyticalRunsScrollPane" pref="274" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -288,21 +662,24 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="runsScrollPane" pref="111" max="32767" attributes="0"/>
+                  <Component id="analyticalRunsScrollPane" pref="131" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="runsScrollPane">
+        <Container class="javax.swing.JScrollPane" name="analyticalRunsScrollPane">
+          <Properties>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="runsTable">
+            <Component class="javax.swing.JTable" name="analyticalRunsTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="2" rowCount="4">
@@ -320,9 +697,6 @@
                     </Column>
                   </Table>
                 </Property>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="-1"/>
-                </Property>
               </Properties>
             </Component>
           </SubComponents>
@@ -333,7 +707,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Peptide Spectrum Matches"/>
+            <TitledBorder title="peptide spectrum matches"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -344,7 +718,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="psmScrollPane" pref="532" max="32767" attributes="0"/>
+                  <Component id="psmScrollPane" pref="1011" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -353,7 +727,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="psmScrollPane" pref="27" max="32767" attributes="0"/>
+                  <Component id="psmScrollPane" pref="131" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -361,6 +735,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="psmScrollPane">
+          <Properties>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -421,9 +798,6 @@
                     </Column>
                   </Table>
                 </Property>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="-1"/>
-                </Property>
               </Properties>
               <Events>
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="psmTableMouseReleased"/>
@@ -437,7 +811,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Spectrum"/>
+            <TitledBorder title="spectrum"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -446,7 +820,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="1031" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
@@ -485,13 +859,13 @@
                       <Component id="spectrumJToolBar" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="spectrumSplitPane" alignment="0" pref="1011" max="32767" attributes="0"/>
+                  <Component id="spectrumSplitPane" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="spectrumSplitPane" pref="555" max="32767" attributes="0"/>
+                      <Component id="spectrumSplitPane" pref="489" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="spectrumJToolBar" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -563,7 +937,7 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="spectrumPaddingPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="spectrumJPanel" alignment="0" pref="532" max="32767" attributes="0"/>
+                          <Component id="spectrumJPanel" alignment="0" pref="1011" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -571,7 +945,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="spectrumPaddingPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="spectrumJPanel" pref="324" max="32767" attributes="0"/>
+                              <Component id="spectrumJPanel" pref="386" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
