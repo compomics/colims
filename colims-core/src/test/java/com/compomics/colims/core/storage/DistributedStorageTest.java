@@ -5,9 +5,10 @@
  */
 package com.compomics.colims.core.storage;
 
-import com.compomics.colims.core.storage.enums.StorageState;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.StorageQueue;
-import com.compomics.colims.core.storage.processing.controller.storagequeue.storagetask.StorageTask;
+import com.compomics.colims.core.distributed.storage.enums.StorageState;
+import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
+import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
+import com.compomics.colims.core.spring.ApplicationContextProvider;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,7 +19,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,13 +26,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  * @author Kenneth
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+/*@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})*/
 public class DistributedStorageTest {
 
-    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController");
     private static final Logger LOGGER = Logger.getLogger(DistributedStorageTest.class);
-    @Autowired
     StorageQueue storageQueue;
 
     public DistributedStorageTest() {
@@ -43,7 +42,7 @@ public class DistributedStorageTest {
         try {
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
-       
+
         }
     }
 
@@ -64,9 +63,10 @@ public class DistributedStorageTest {
     public void testOfferAndRetrieve() throws IOException, SQLException {
         System.out.println("Test offer file to store");
         StorageTask task = null;
+        storageQueue = new StorageQueue();//(StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
         task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1");
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
-        storageQueue.disconnect();
+        assertTrue(taskFromDb != null);
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");
         assertEquals(taskFromDb.getTaskID(), 1);
         assertEquals(taskFromDb.getState(), StorageState.WAITING);

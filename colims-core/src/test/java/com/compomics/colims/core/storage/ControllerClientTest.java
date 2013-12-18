@@ -5,11 +5,12 @@
  */
 package com.compomics.colims.core.storage;
 
-import com.compomics.colims.core.storage.incoming.ClientToControllerConnector;
-import com.compomics.colims.core.storage.processing.controller.StorageController;
+import com.compomics.colims.core.distributed.storage.incoming.ClientForStorageConnector;
+import com.compomics.colims.core.distributed.storage.processing.controller.StorageController;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -37,7 +38,7 @@ public class ControllerClientTest {
 
     private Thread listener;
 
-    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController/");
     private static final Logger LOGGER = Logger.getLogger(ControllerClientTest.class);
 
     public ControllerClientTest() {
@@ -51,17 +52,12 @@ public class ControllerClientTest {
             LOGGER.error(ex);
             LOGGER.debug("Could not delete file...");
         }
-        listener = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                storageController.launch(45678);
-            }
-        });
+        listener = new Thread(storageController);
         listener.start();
     }
 
     @After
-    public void stopListener() throws IOException {
+    public void stopListener() throws IOException, SQLException {
         storageController.disconnect();
         listener.interrupt();
         try {
@@ -77,11 +73,11 @@ public class ControllerClientTest {
     @Test
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
-        Assert.fail("Not yet finished");
-        ClientToControllerConnector creator = new ClientToControllerConnector("127.0.0.1", 45678);
+       // Assert.fail("Not yet finished");
+        ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
-        //Assert.assertTrue(success);
+        Assert.assertTrue(success);
 
     }
 
