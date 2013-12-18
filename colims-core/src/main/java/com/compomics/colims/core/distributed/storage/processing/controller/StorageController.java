@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth
  */
 @Component("storageController")
-public class StorageController implements Runnable{
+public class StorageController implements Runnable {
 
     @Autowired
     StorageQueue storageQueue;
@@ -41,10 +41,11 @@ public class StorageController implements Runnable{
      * This method starts the socketListener and the StorageQueue
      */
     @Override
-    public void run(){
-        this.port = workProperties.getStoragePort();
-        LOGGER.info("Booting colims storage controller on port " + port);
+    public void run() {
         try {
+            workProperties = DistributedProperties.getInstance();
+            this.port = workProperties.getStoragePort();
+            LOGGER.info("Booting colims storage controller on port " + port);
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
             LOGGER.error(ex);

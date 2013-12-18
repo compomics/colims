@@ -6,20 +6,18 @@ package com.compomics.colims.core.distributed.searches.controller.workers;
 
 import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.distributed.searches.controller.workers.worker.Worker;
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Kenneth
  */
-@Component("workController")
+@Component("workerController")
 public class WorkerController implements Runnable {
 
     @Autowired
@@ -40,6 +38,7 @@ public class WorkerController implements Runnable {
     @Override
     public void run() {
         try {
+            workProperties = DistributedProperties.getInstance();
             this.port = workProperties.getWorkerPort();
             LOGGER.info("Booting colims worker controller on port " + port);
             serverSocket = new ServerSocket(port);

@@ -7,17 +7,14 @@ package com.compomics.colims.core.distributed.searches.controller.searches;
 import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
