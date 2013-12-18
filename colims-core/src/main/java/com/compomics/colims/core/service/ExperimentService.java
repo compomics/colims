@@ -4,11 +4,10 @@
  */
 package com.compomics.colims.core.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.ExperimentBinaryFile;
 
 /**
  *
@@ -17,20 +16,13 @@ import com.compomics.colims.model.Experiment;
 public interface ExperimentService extends GenericService<Experiment, Long> {
 
     /**
-     * Gets the experiments from the given files and stores them in the db.
-     *
-     * @param mzMlFiles the given mzML files
-     * @return the list of experiments
-     */
-    void importMzMlExperiments(List<File> mzMlFiles) throws IOException;
-      /**
-     * Gets the experiments from the given project 
+     * Gets the experiments from the given project
      *
      * @param mzMlFiles the given mzML files
      * @return the list of experiments
      */
     List<Experiment> getExperimentsByProjectId(Long projectId);
-    
+
     /**
      * Find the experiment by title.
      *
@@ -38,4 +30,11 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @return the found experiment
      */
     Experiment findByTitle(String title);
+
+    /**
+     * Fetch the experiment binary files
+     *
+     * @param experiment
+     */
+    void fetchBinaryFiles(Experiment experiment);
 }

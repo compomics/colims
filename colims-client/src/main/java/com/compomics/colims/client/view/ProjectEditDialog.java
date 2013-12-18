@@ -94,13 +94,13 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         userDualListLabel.setText("users");
 
         saveOrUpdateButton.setText("save");
-        saveOrUpdateButton.setToolTipText("edit the metadata of an existing project");
+        saveOrUpdateButton.setToolTipText("");
         saveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         cancelButton.setText("cancel");
-        cancelButton.setToolTipText("edit the metadata of an existing project");
+        cancelButton.setToolTipText("");
         cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
         cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
         cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));

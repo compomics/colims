@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.core.io.IOManager;
-import com.compomics.colims.core.io.impl.IOManagerImpl;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
@@ -40,8 +39,6 @@ public class SpectrumServiceImpl implements SpectrumService {
     private static final String IONS_END = "END IONS";
     @Autowired
     private SpectrumRepository spectrumRepository;
-    @Autowired
-    private IOManager iOManager = new IOManagerImpl();
 
     @Override
     public List<Spectrum> findSpectraByAnalyticalRunId(Long analyticalRunId) {
@@ -101,7 +98,7 @@ public class SpectrumServiceImpl implements SpectrumService {
 
     @Override
     public Map<Double, Double> getSpectrumPeaks(SpectrumFile spectrumFile) throws IOException {
-        byte[] unzippedBytes = iOManager.unzip(spectrumFile.getContent());
+        byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(unzippedBytes)));) {

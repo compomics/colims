@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.IOManager;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
@@ -36,11 +35,7 @@ public class UtilitiesSpectrumMapperTest {
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    private IOManager iOManager;
-    @Autowired
     private SpectrumService spectrumService;
-//    @Rule
-//    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void testMapSpectrum() throws MappingException, IOException, FileNotFoundException, ClassNotFoundException, MzMLUnmarshallerException {
