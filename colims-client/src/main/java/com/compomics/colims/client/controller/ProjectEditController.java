@@ -62,14 +62,14 @@ public class ProjectEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
-
-        bindingGroup = new BindingGroup();
+        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);        
 
         //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());
-
+        projectEditDialog.getUserDualList().init(new UserNameComparator());        
+        
         //add binding
+        bindingGroup = new BindingGroup();
+        
         userBindingList = ObservableCollections.observableList(userService.findAll());
 
         JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());

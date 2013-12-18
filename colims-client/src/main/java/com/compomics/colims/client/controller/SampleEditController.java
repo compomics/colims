@@ -6,18 +6,24 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
+import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
 import com.compomics.colims.core.service.AbstractBinaryFileService;
+import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ExperimentBinaryFile;
+import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SampleBinaryFile;
+import com.compomics.colims.model.User;
+import com.compomics.colims.model.comparator.MaterialNameComparator;
+import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
@@ -63,6 +69,8 @@ public class SampleEditController implements Controllable {
     @Autowired
     private SampleService sampleService;
     @Autowired
+    private MaterialService materialService;
+    @Autowired
     private ProtocolService protocolService;
     @Autowired
     private AbstractBinaryFileService abstractBinaryFileService;
@@ -81,9 +89,12 @@ public class SampleEditController implements Controllable {
         sampleEditDialog = new SampleEditDialog(experimentEditController.getExperimentEditDialog(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
-        
+
+        //init dual list
+        sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
+
         bindingGroup = new BindingGroup();
-        
+
         //add binding
         protocolBindingList = ObservableCollections.observableList(protocolService.findAll());
 
@@ -92,7 +103,16 @@ public class SampleEditController implements Controllable {
 
         bindingGroup.bind();
 
-        //add action listeners                        
+        //add action listeners 
+        sampleEditDialog.getMaterialDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                List<Material> addedMaterials = (List<Material>) evt.getNewValue();
+
+                sampleToEdit.setMaterials(addedMaterials);
+            }
+        });
+
         sampleEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,11 +223,13 @@ public class SampleEditController implements Controllable {
 
         if (sampleToEdit.getId() != null) {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
-            //fetch experiment binary files
+            //fetch sample binary files
             sampleService.fetchBinaryFiles(sampleToEdit);
+            //fetch sample materials
+            sampleService.fetchMaterials(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
-        }                
+        }
 
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
         sampleEditDialog.getConditionTextField().setText(sampleToEdit.getCondition());
@@ -216,7 +238,10 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getStorageLocationTextField().setText(sampleToEdit.getStorageLocation());
         sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
 
-        //fill project experiments table                        
+        //populate user dual list
+        sampleEditDialog.getMaterialDualList().populateLists(materialService.findAll(), sampleToEdit.getMaterials());
+
+        //fill analytical runs table                        
         GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
 
         showView();

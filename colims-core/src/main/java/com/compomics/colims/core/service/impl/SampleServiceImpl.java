@@ -68,7 +68,7 @@ public class SampleServiceImpl implements SampleService {
     @Override
     public void fetchBinaryFiles(Sample sample) {
         try {
-            //attach the experiment to the new session
+            //attach the sample to the new session
             sampleRepository.saveOrUpdate(sample);
             if (!Hibernate.isInitialized(sample.getBinaryFiles())) {
                 Hibernate.initialize(sample.getBinaryFiles());
@@ -81,6 +81,19 @@ public class SampleServiceImpl implements SampleService {
     @Override
     public Protocol getMostUsedProtocol() {
         return sampleRepository.getMostUsedProtocol();
+    }
+
+    @Override
+    public void fetchMaterials(Sample sample) {
+        try {
+            //attach the sample to the new session
+            sampleRepository.saveOrUpdate(sample);
+            if (!Hibernate.isInitialized(sample.getMaterials())) {
+                Hibernate.initialize(sample.getMaterials());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
     }
     
 }

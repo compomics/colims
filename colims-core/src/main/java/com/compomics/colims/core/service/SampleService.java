@@ -17,11 +17,18 @@ public interface SampleService extends GenericService<Sample, Long> {
     public List<Sample> findSampleByExperimentId(Long experimentId);
     
     /**
-     * Fetch the experiment binary files
+     * Fetch the sample binary files
      *
-     * @param experiment
+     * @param sample
      */
     void fetchBinaryFiles(Sample sample);
+    
+    /**
+     * Fetch the sample materials
+     *
+     * @param sample
+     */
+    void fetchMaterials(Sample sample);
     
     /**
      * Get the most used protocol.
