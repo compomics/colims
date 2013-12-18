@@ -31,7 +31,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
     private File outputDir;
 
     private SearchQueue() {
-        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsSearchController/");
+        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/SearchController/");
         setUpTables();
     }
 
@@ -68,7 +68,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
                     adress.mkdirs();
                 }
                 Class.forName("org.sqlite.JDBC");
-                connection = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/colimsController.db");
+                connection = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/SearchController.db");
             } catch (ClassNotFoundException | SQLException ex) {
                 LOGGER.error(ex);
             }
@@ -85,6 +85,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
         if (!connection.isClosed()) {
             connection.close();
         }
+        connection = null;
     }
 
     private void setUpTables() {

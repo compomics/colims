@@ -51,13 +51,10 @@ public class SearchHandler implements Runnable {
             //read the task from the socket that just sent it
             SearchTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
-            if (task != null & !socket.isClosed() & !socket.isOutputShutdown()) {
+            if (task != null && !socket.isClosed() && !socket.isOutputShutdown()) {
                 writeTaskStateToOutputStream(outputStream, task);
             }
-        } catch (SocketException ex) {
-            LOGGER.error(ex);
         } catch (IOException ex) {
-            LOGGER.error(ex);
         }
     }
 
@@ -92,9 +89,6 @@ public class SearchHandler implements Runnable {
                     break;
                 }
             }
-            in.close();
         }
-        socket.close();
     }
-
 }

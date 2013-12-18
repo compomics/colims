@@ -38,7 +38,7 @@ public class ControllerClientTest {
 
     private Thread listener;
 
-    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController/");
     private static final Logger LOGGER = Logger.getLogger(ControllerClientTest.class);
 
     public ControllerClientTest() {
@@ -57,7 +57,7 @@ public class ControllerClientTest {
     }
 
     @After
-    public void stopListener() throws IOException {
+    public void stopListener() throws IOException, SQLException {
         storageController.disconnect();
         listener.interrupt();
         try {
@@ -73,11 +73,11 @@ public class ControllerClientTest {
     @Test
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
-        Assert.fail("Not yet finished");
+       // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
-        //Assert.assertTrue(success);
+        Assert.assertTrue(success);
 
     }
 

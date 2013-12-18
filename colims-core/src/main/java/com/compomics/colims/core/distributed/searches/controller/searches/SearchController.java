@@ -51,7 +51,7 @@ public class SearchController implements Runnable {
             LOGGER.error(ex);
         }
 
-        LOGGER.debug("Starting Queue");
+        LOGGER.debug("Starting Search Queue");
         Thread searchQueueThread = new Thread(searchQueue);
         searchQueueThread.start();
 
@@ -59,20 +59,12 @@ public class SearchController implements Runnable {
         handleAllIncomingSockets();
     }
 
-    public void disconnect() {
+    public void disconnect() throws IOException, SQLException {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
+        searchQueue.disconnect();
         disconnected = true;
-        try {
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-        }
-        try {
-            searchQueue.disconnect();
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-        }
     }
 
     public int getPort() {
@@ -91,21 +83,6 @@ public class SearchController implements Runnable {
                 searchHandler.setSocket(incomingSocket);
                 threadService.submit(searchHandler);
             } catch (IOException ex) {
-                LOGGER.error(ex);
-            } finally {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    LOGGER.error(ex);
-                }
-            }
-        }
-        if (!serverSocket.isClosed()) {
-            try {
-                serverSocket.close();
-            } catch (IOException ex) {
-                LOGGER.error(ex);
-                serverSocket = null;
             }
         }
     }

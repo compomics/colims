@@ -51,7 +51,7 @@ public class StorageController implements Runnable {
             LOGGER.error(ex);
         }
 
-        LOGGER.debug("Starting Queue");
+        LOGGER.debug("Starting Storage Queue");
         Thread storingThread = new Thread(storageQueue);
         storingThread.start();
 
@@ -59,20 +59,12 @@ public class StorageController implements Runnable {
         handleAllIncomingSockets();
     }
 
-    public void disconnect() {
+    public void disconnect() throws IOException, SQLException {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
+        storageQueue.disconnect();
         disconnected = true;
-        try {
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-        }
-        try {
-            storageQueue.disconnect();
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-        }
     }
 
     public int getPort() {
@@ -91,21 +83,6 @@ public class StorageController implements Runnable {
                 storageHandler.setSocket(incomingSocket);
                 threadService.submit(storageHandler);
             } catch (IOException ex) {
-                LOGGER.error(ex);
-            } finally {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    LOGGER.error(ex);
-                }
-            }
-        }
-        if (!serverSocket.isClosed()) {
-            try {
-                serverSocket.close();
-            } catch (IOException ex) {
-                LOGGER.error(ex);
-                serverSocket = null;
             }
         }
     }

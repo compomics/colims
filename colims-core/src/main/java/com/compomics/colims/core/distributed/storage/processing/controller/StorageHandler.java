@@ -52,13 +52,11 @@ public class StorageHandler implements Runnable {
             //read the task from the socket that just sent it
             StorageTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
-            if (task != null & !socket.isClosed() & !socket.isOutputShutdown()) {
+            if (task != null && !socket.isClosed() && !socket.isOutputShutdown()) {
                 writeTaskStateToOutputStream(outputStream, task);
             }
-        } catch (SocketException ex) {
-            LOGGER.error(ex);
         } catch (IOException ex) {
-            LOGGER.error(ex);
+
         }
     }
 
@@ -68,10 +66,7 @@ public class StorageHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
-            task = storageQueue.addNewTask(responseArgs[1]
-                    , responseArgs[0]
-                    , Long.parseLong(responseArgs[2])
-                    , responseArgs[3]);
+            task = storageQueue.addNewTask(responseArgs[1], responseArgs[0], Long.parseLong(responseArgs[2]), responseArgs[3]);
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
             break;
         }
@@ -88,9 +83,7 @@ public class StorageHandler implements Runnable {
                     break;
                 }
             }
-            in.close();
         }
-        socket.close();
     }
 
 }

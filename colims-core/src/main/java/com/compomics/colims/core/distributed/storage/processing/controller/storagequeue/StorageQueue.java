@@ -38,12 +38,13 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     private static File adress;
     private static final Logger LOGGER = Logger.getLogger(StorageQueue.class);
 
-    private StorageQueue() {
-        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/");
+    public StorageQueue() {
+        this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController/");
+
         setUpTables();
     }
 
-    private StorageQueue(String dbAddress) {
+    public StorageQueue(String dbAddress) {
         this.adress = new File(dbAddress);
         setUpTables();
     }
@@ -74,8 +75,8 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     File fileToStore = new File(taskToStore.getFileLocation());
                     ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
                     if (colimsFileImporter.validate(fileToStore.getParentFile())) {
-                        colimsFileImporter.storeFile(taskToStore.getUserName(), 
-                                fileToStore.getParentFile(), 
+                        colimsFileImporter.storeFile(taskToStore.getUserName(),
+                                fileToStore.getParentFile(),
                                 taskToStore.getSampleID(),
                                 taskToStore.getInstrumentId());
                         updateTask(taskToStore, StorageState.STORED);
@@ -115,7 +116,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     adress.mkdirs();
                 }
                 Class.forName("org.sqlite.JDBC");
-                connection = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/colimsController.db");
+                connection = DriverManager.getConnection("jdbc:sqlite:" + adress.getAbsolutePath() + "/StorageController.db");
             } catch (ClassNotFoundException | SQLException ex) {
                 LOGGER.error(ex);
             }
@@ -132,6 +133,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
         if (!connection.isClosed()) {
             connection.close();
         }
+        connection = null;
     }
 
     private void setUpTables() {
@@ -215,10 +217,11 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     /**
      *
      * @param taskID the taskID that needs to be searconnectionhed
-     * @param fromDatabase boolean to flag retrieval from database or traconnectionkermap
+     * @param fromDatabase boolean to flag retrieval from database or
+     * traconnectionkermap
      * @return a storagetask objeconnectiont
      */
-    public StorageTask getTask(long taskID) {
+    public StorageTask getTask(long taskID) throws SQLException {
         StorageTask task = null;
         connection = getConnection();
         String sql = "SELECT * FROM STORAGETASKS WHERE TASKID =?";
@@ -233,8 +236,6 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                         rs.getString("INSTRUMENTNAME"));
                 task.setState(StorageState.valueOf(rs.getString("STATE")));
             }
-        } catch (Exception e) {
-            LOGGER.error(e);
         } finally {
             releaseConnection();
 
@@ -245,9 +246,9 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
     /**
      *
      * @param fileLocation the path to the file that needs to be stored. This
- filepath has to be visible for the connectionontroller!
-     * @return a generated StorageTask Objeconnectiont that has already been stored in
- both the queue and the underlying database
+     * filepath has to be visible for the connectionontroller!
+     * @return a generated StorageTask Objeconnectiont that has already been
+     * stored in both the queue and the underlying database
      */
     public StorageTask addNewTask(String fileLocation, String userName, long sampleID, String instrumentID) {
         long key = -1L;
@@ -266,7 +267,6 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             stmt.close();
         } catch (SQLException e) {
             LOGGER.error(e);
-            e.printStackTrace();
         } finally {
             releaseConnection();
             StorageTask task = new StorageTask(key, fileLocation, userName, sampleID, instrumentID);

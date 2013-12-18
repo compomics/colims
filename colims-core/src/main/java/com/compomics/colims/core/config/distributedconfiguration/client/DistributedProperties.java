@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -36,7 +37,7 @@ public class DistributedProperties {
     }
 
     private void initiate() throws IOException {
-
+        propertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
         if (!propertiesFile.exists()) {
             propertiesFile.getParentFile().mkdirs();
             propertiesFile.createNewFile();
@@ -76,6 +77,7 @@ public class DistributedProperties {
         properties.setProperty("master.storage.port", 45678);
         properties.setProperty("master.worker.port", 45680);
         properties.setProperty("worker.storage.path", "C:/Users/Kenneth/.compomics/tempExample/");
+        save();
     }
 
     public String getControllerIP() {
