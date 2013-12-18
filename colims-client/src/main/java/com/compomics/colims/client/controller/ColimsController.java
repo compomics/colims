@@ -49,6 +49,8 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
+    private ProjectOverviewController projectOverviewController;
+    @Autowired
     private UserManagementController userManagementController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
@@ -106,6 +108,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init child controllers
         projectManagementController.init();
+        projectOverviewController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -114,7 +117,8 @@ public class ColimsController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        colimsFrame.getHomeParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
 
         //add action listeners                
         //add menu item action listeners

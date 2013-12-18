@@ -1,40 +1,42 @@
-package com.compomics.colims.client.model.format;
+package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.Project;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
+public class ProjectManagementTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Condition", "Protocol", "Created", "# runs"};
-    public static final int SAMPLE_ID = 0;
-    public static final int NAME = 1;
-    public static final int CONDITION = 2;
-    public static final int PROTOCOL = 3;
+    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Created", "# experiments"};
+    private static final String NOT_APPLICABLE = "N/A";
+    public static final int PROJECT_ID = 0;
+    public static final int TITLE = 1;
+    public static final int LABEL = 2;
+    public static final int OWNER = 3;
     public static final int CREATED = 4;
-    public static final int NUMBER_OF_RUNS = 5;
+    public static final int NUMBER_OF_EXPERIMENTS = 5;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case SAMPLE_ID:
+            case PROJECT_ID:
                 return Long.class;
-            case NAME:
+            case TITLE:
                 return String.class;
-            case CONDITION:
+            case LABEL:
                 return String.class;
-            case PROTOCOL:
+            case OWNER:
                 return String.class;
             case CREATED:
                 return String.class;
-            case NUMBER_OF_RUNS:
+            case NUMBER_OF_EXPERIMENTS:
                 return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -57,20 +59,20 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
     }
 
     @Override
-    public Object getColumnValue(Sample sample, int column) {
+    public Object getColumnValue(Project project, int column) {
         switch (column) {
-            case SAMPLE_ID:
-                return sample.getId();
-            case NAME:
-                return sample.getName();
-            case CONDITION:
-                return sample.getCondition();
-            case PROTOCOL:
-                return sample.getProtocol();    
+            case PROJECT_ID:
+                return project.getId();
+            case TITLE:
+                return project.getTitle();
+            case LABEL:
+                return project.getLabel();
+            case OWNER:
+                return project.getOwner().getName();
             case CREATED:
-                return DATE_FORMAT.format(sample.getCreationdate());        
-            case NUMBER_OF_RUNS:
-                return sample.getAnalyticalRuns().size();
+                return DATE_FORMAT.format(project.getCreationdate());    
+            case NUMBER_OF_EXPERIMENTS:
+                return project.getExperiments().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

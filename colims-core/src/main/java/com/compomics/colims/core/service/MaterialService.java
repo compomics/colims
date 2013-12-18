@@ -4,7 +4,7 @@ import com.compomics.colims.model.Material;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface MaterialService extends GenericService<Material, Long> {
 

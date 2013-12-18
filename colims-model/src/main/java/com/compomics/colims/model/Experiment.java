@@ -32,15 +32,15 @@ public class Experiment extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "title", nullable = false, unique = true)
     private String title;
-    @Basic(optional = true)
-    @Column(name = "number", nullable = true)
+    @Basic(optional = false)
+    @Column(name = "number", nullable = false)
     private Long number;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
     @Basic(optional = true)
-    @Column(name = "storage_location")
+    @Column(name = "storage_location", nullable = true)
     private String storageLocation;
     @ManyToOne
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")

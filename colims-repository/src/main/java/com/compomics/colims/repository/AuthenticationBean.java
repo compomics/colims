@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 @Component("authenticationBean")
 public class AuthenticationBean {

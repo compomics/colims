@@ -7,7 +7,7 @@ import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface PeptideShakerIO {
 

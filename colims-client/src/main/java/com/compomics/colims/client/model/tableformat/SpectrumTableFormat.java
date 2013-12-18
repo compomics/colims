@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model.format;
+package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;

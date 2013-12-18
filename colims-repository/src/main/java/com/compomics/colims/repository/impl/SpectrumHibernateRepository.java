@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.AnalyticalRun;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.SpectrumRepository;
+import org.hibernate.criterion.Projections;
 
 /**
  *
@@ -22,5 +24,15 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
         @SuppressWarnings("unchecked")
         List<Spectrum> list = subCriteria.add(Restrictions.eq("id", analyticalRunId)).list();
         return list;
+    }
+
+    @Override
+    public Long countSpectraByAnalyticalRun(AnalyticalRun analyticalRun) {
+        Long numberOfSpectra = 0L;
+        
+        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        numberOfSpectra = ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).longValue();
+        
+        return numberOfSpectra;
     }
 }

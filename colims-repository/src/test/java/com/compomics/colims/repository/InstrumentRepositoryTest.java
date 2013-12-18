@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.model.enums.CvTermType;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.junit.Before;
 
@@ -28,6 +26,7 @@ import org.junit.Before;
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class InstrumentRepositoryTest {
 
     @Autowired

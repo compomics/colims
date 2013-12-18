@@ -5,7 +5,7 @@ import com.compomics.colims.core.exception.MappingException;
 /**
  * interface for mapping POJO to POJO
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface Mapper<S, T> {
 

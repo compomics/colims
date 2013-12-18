@@ -4,7 +4,7 @@ import com.compomics.colims.model.Protocol;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface ProtocolService extends GenericService<Protocol, Long> {
 

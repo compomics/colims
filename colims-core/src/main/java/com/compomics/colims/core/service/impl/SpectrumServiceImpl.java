@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
@@ -138,5 +139,10 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public long countAll() {
         return spectrumRepository.countAll();
+    }
+
+    @Override
+    public Long countSpectraByAnalyticalRun(AnalyticalRun analyticalRun) {
+        return spectrumRepository.countSpectraByAnalyticalRun(analyticalRun);
     }
 }

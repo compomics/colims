@@ -2,7 +2,7 @@ package com.compomics.colims.model.enums;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public enum FragmentationType {
     

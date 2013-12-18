@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.AnalyticalRun;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface SpectrumService extends GenericService<Spectrum, Long> {
 
@@ -38,4 +39,12 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * @return
      */
     Map<Double, Double> getSpectrumPeaks(SpectrumFile spectrumFile) throws IOException;
+    
+     /**
+     * Count the spectra associated to the given analytical run
+     *
+     * @param analyticalRunId the analytical run id
+     * @return the number of spectra
+     */
+    Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun);
 }

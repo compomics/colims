@@ -30,14 +30,14 @@ public class Sample extends AbstractDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @Basic(optional = true)
-    @Column(name = "name")
+    @Basic(optional = false)
+    @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = true)
-    @Column(name = "sample_condition")
+    @Column(name = "sample_condition", nullable = true)
     private String condition;
     @Basic(optional = true)
-    @Column(name = "storage_location")
+    @Column(name = "storage_location", nullable = true)
     private String storageLocation;
     @ManyToOne
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")

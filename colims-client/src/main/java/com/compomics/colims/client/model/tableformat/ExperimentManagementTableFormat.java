@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model.format;
+package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
@@ -11,10 +11,11 @@ import java.util.Date;
  *
  * @author Niels Hulstaert
  */
-public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Experiment> {
+public class ExperimentManagementTableFormat implements AdvancedTableFormat<Experiment> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] columnNames = {"Id", "Title", "Number", "Created", "# samples"};
+    private static final String NOT_APPLICABLE = "N/A";
     public static final int EXPERIMENT_ID = 0;
     public static final int TITLE = 1;
     public static final int NUMBER = 2;

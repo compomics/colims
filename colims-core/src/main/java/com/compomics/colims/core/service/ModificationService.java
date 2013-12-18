@@ -4,7 +4,7 @@ import com.compomics.colims.model.Modification;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface ModificationService extends GenericService<Modification, Long> {
 

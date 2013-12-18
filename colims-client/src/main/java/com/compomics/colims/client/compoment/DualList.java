@@ -15,7 +15,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class DualList<T> extends javax.swing.JPanel {
 

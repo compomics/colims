@@ -10,7 +10,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.format.SamplesTableFormat;
+import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
@@ -89,19 +89,19 @@ public class ExperimentEditController implements Controllable {
 
         //init projects experiment table
         SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
-        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SamplesTableFormat());
+        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
         experimentEditDialog.getSamplesTable().setModel(samplesTableModel);
         samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
         samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         experimentEditDialog.getSamplesTable().setSelectionModel(samplesSelectionModel);
         
         //set column widths
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.SAMPLE_ID).setPreferredWidth(5);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.NAME).setPreferredWidth(200);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.CONDITION).setPreferredWidth(100);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.PROTOCOL).setPreferredWidth(100);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.CREATED).setPreferredWidth(50);        
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SamplesTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(5);
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(200);
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setPreferredWidth(100);
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(100);
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);        
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
 
         //add action listeners                        
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
