@@ -13,18 +13,25 @@ import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import java.util.ArrayList;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class MaxQuantEvidenceParserTest {
+public class MaxQuantPSMParserTest {
 
     @Autowired
     MaxQuantPSMParser maxQuantEvidenceParser;
     @Autowired
     ModificationRepository modificationRepository;
+
+    @Before
+    public void clearModifications() {
+        //reset the modifications in the parser, this happens automatically in the parse method
+        maxQuantEvidenceParser.clearModificationsList();
+    }
 
     @Test
     public void testCreatePeptide() throws UnparseableException, HeaderEnumNotInitialisedException {
@@ -48,12 +55,12 @@ public class MaxQuantEvidenceParserTest {
         // Compare values
         Assert.assertEquals(sequence, peptide.getPeptide().getSequence());
         //Assert.assertEquals(mass, peptide.getMass(), 0.001);
-        
+
     }
-    
+
     @Test
-    public void testCreatePeptideMultipleMsMsAndProteinGroupValues() throws HeaderEnumNotInitialisedException{
-    String sequence = "ABCDEFG";
+    public void testCreatePeptideMultipleMsMsAndProteinGroupValues() throws HeaderEnumNotInitialisedException {
+        String sequence = "ABCDEFG";
         double mass = 123.45;
         String ProteinString = "gi|150003706|ref|YP_001298450.1| rubrerythrin [Bacteroides vulgatus ATCC 8482];gi|294777471|ref|ZP_06742922.1| rubrerythrin [Bacteroides vulgatus PC510]";
         String multipleProteinIDS = "1000;2000;3000";
@@ -67,7 +74,7 @@ public class MaxQuantEvidenceParserTest {
         values.put(EvidenceHeaders.Modifications.getColumnName(), "Unmodified");
         values.put(EvidenceHeaders.Score.getColumnName(), "77");
         values.put(EvidenceHeaders.MS_MS_IDs.getColumnName(), multipleMsMsIds);
-        
+
     }
 
     @Test
@@ -75,12 +82,13 @@ public class MaxQuantEvidenceParserTest {
         // Setup arguments
         Peptide peptide = new Peptide();
         Map<String, String> values = new HashMap<>();
-        values.put(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName(), "AAM(1)GNFAAFSAIPGVEVR");
-        values.put(EvidenceHeaders.Modifications.getColumnName(),"1");
+        values.put(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName().toLowerCase(), "AAM(1)GNFAAFSAIPGVEVR");
+        values.put(EvidenceHeaders.Oxidation_M.getColumnName().toLowerCase(), "1");
+        values.put(EvidenceHeaders.Modifications.getColumnName().toLowerCase(), "1");
         //maxQuantEvidenceParser.linkPeptideToModifications(peptide, values);
-
-
-        peptide.addModificationMatch(maxQuantEvidenceParser.extractModifications(values).get(0));
+        maxQuantEvidenceParser.addModification(EvidenceHeaders.Oxidation_M.getColumnName());
+        List<ModificationMatch> oxidationResults = maxQuantEvidenceParser.extractModifications(values);
+        peptide.addModificationMatch(oxidationResults.get(0));
 
 
         // Check modification value matches what we expect
@@ -88,7 +96,7 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals(1, modifications.size());
         ModificationMatch pepHasMod = modifications.get(0);
         Assert.assertEquals(2, pepHasMod.getModificationSite());
-        Assert.assertEquals(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName(), pepHasMod.getTheoreticPtm());
+        Assert.assertEquals(EvidenceHeaders.Oxidation_M.getColumnName(), pepHasMod.getTheoreticPtm());
     }
 
     @Test
@@ -98,7 +106,8 @@ public class MaxQuantEvidenceParserTest {
         Map<String, String> values = new HashMap<>();
         String modificationName = EvidenceHeaders.Acetyl_Protein_N_term.getColumnName();
         values.put(modificationName, "1");
-        values.put(EvidenceHeaders.Modifications.getColumnName(),"1");
+        values.put(EvidenceHeaders.Modifications.getColumnName(), "1");
+        maxQuantEvidenceParser.addModification(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName());
         for (ModificationMatch match : maxQuantEvidenceParser.extractModifications(values)) {
             peptide.addModificationMatch(match);
         }

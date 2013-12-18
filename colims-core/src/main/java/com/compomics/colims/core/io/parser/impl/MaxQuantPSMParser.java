@@ -6,15 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-//import com.compomics.colims.model.Modification;
-//import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.biology.Peptide;
-//import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
-//import com.compomics.colims.model.Protein;
 import com.compomics.util.experiment.biology.Protein;
 import com.compomics.colims.model.QuantificationGroup;
-//import com.compomics.colims.model.QuantificationGroupHasPeptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
@@ -22,12 +17,13 @@ import com.compomics.util.experiment.quantification.Ratio;
 import com.compomics.util.experiment.quantification.matches.PeptideQuantification;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 //import com.compomics.util.protein.Header.DatabaseType;
-
 
 /**
  * Parser for MaxQuant evidence.txt output files, that creates {@link Peptide}s,
@@ -43,6 +39,7 @@ import org.springframework.stereotype.Component;
 public class MaxQuantPSMParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantPSMParser.class);
+    private List<String> modificationList = new ArrayList<>();
 
     /**
      * Parse the evidenceFile and add the peptides, protein references and
@@ -53,6 +50,16 @@ public class MaxQuantPSMParser {
      * @return a Map with key the best msms id and value the peptideAssumption
      */
     public Map<Integer, PeptideAssumption> parse(final File evidenceFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+        //temporary solution until switched to properties based handling of headers instead of enums
+        List<String> modificationHeaderEnums = new ArrayList<>();
+        modificationHeaderEnums.add(EvidenceHeaders.Oxidation_M.getColumnName());
+        modificationHeaderEnums.add(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName());
+        modificationHeaderEnums.add(EvidenceHeaders.Acetyl_K.getColumnName());
+        return parse(evidenceFile, modificationHeaderEnums);
+    }
+
+    public Map<Integer, PeptideAssumption> parse(File evidenceFile, List<String> modificationsPresent) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+        modificationList = modificationsPresent;
         // Convert file into some values we can loop over, without reading file in at once
         Map<Integer, PeptideAssumption> parsedPeptideList = new HashMap<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile, EvidenceHeaders.values());
@@ -134,26 +141,21 @@ public class MaxQuantPSMParser {
             double score = -1;
             double pep = -1;
             if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
-                if (values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
-                    throw new UnparseableException("could not parse score for peptide");
-                } else {
+                if (!values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
                     score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
                 }
             }
             if (values.containsKey(EvidenceHeaders.PEP.getColumnName())) {
                 pep = Double.parseDouble(values.get(EvidenceHeaders.PEP.getColumnName()));
-            } else {
-                throw new UnparseableException("could not parse posterior error propbability");
             }
-
-            //because I can
+            //we do what we can because we must
             Charge identificationCharge = null;
 
             if (values.containsKey(EvidenceHeaders.Charge.getColumnName())) {
                 identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.getColumnName())));
             }
 
-            //99 is missing value according to statistics --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
+            //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
             PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
             assumption.addUrParam(new MatchScore(score, pep));
             return assumption;
@@ -180,6 +182,14 @@ public class MaxQuantPSMParser {
         // add the ratio to the quant object
         pepQuant.addRatio(id, utilitiesRatio);
         return pepQuant;
+    }
+
+    public void addModification(String aModification) {
+        modificationList.add(aModification);
+    }
+
+    public void clearModificationsList() {
+        modificationList.clear();
     }
 
     /**
@@ -238,72 +248,56 @@ public class MaxQuantPSMParser {
                 return modificationsForPeptide;
             }
 
-            // Fields we need to create the PeptideHasModification
-            int location;
-            String modificationName;
 
-            // Look for Oxidation (M) Probabilities
-            String modificationString;
-            if (values.containsKey(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName()) || values.containsKey(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) {
-                if ((modificationString = values.get(EvidenceHeaders.Oxidation_M_Probabilities.getColumnName())) != null) {
-                    if (modificationString.contains("(")) {
-                        int previousLocation = 0;
-                        modificationName = EvidenceHeaders.Oxidation_M_Probabilities.getColumnName();
-                        String[] oxidationLocations = modificationString.split("\\(");
-                        for (int i = 0; i < oxidationLocations.length - 1; i++) {
-                            if (oxidationLocations[i].contains(")")) {
-                                oxidationLocations[i] = oxidationLocations[i].replaceFirst(".*\\)", "");
-                            }
-                            location = oxidationLocations[i].length() - 1;
-                            //TODO make colims modificationmatch and psptmscoring meta object
-                            modificationsForPeptide.add(new ModificationMatch(modificationName, true, location + previousLocation));
-                            previousLocation = location + previousLocation;
+            for (String modificationHeader : modificationList) {
+                int location = -1;
+                String modificationString;
+
+                modificationHeader = modificationHeader.toLowerCase(Locale.US);
+
+                if ((modificationString = values.get(modificationHeader)) != null) {
+                    // modification found
+                    // N-term check
+                    if (modificationHeader.contains("n-term")) {
+                        if ("1".equals(modificationString)) {
+                            // N-term has position 0
+                            location = 0;
+                            modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location));
                         }
                     }
-                    // Find precise location
-                }
-                if ((modificationString = values.get(EvidenceHeaders.Acetyl_Protein_N_term.getColumnName())) != null) {
 
-                    if ("1".equals(modificationString)) {
-                        // N-term has position 0
-                        location = 0;
-                        modificationName = EvidenceHeaders.Acetyl_Protein_N_term.getColumnName();
-                        modificationsForPeptide.add(new ModificationMatch(modificationName, true, location));
+                    //C-term check
+                    if (modificationHeader.contains("c-term")) {
+                        if ("1".equals(modificationString)) {
+                            // C-term has position end of sequence
+                            location = values.get(EvidenceHeaders.Sequence.getColumnName()).length() + 1;
+                            modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location));
+                        }
+                    }
+                    //means the modification is in the sequence and we have to check the most likely location
+                    if ((modificationString = values.get(modificationHeader + " probabilities")) != null) {
+                        if (modificationString.contains("(")) {
+                            modificationString = modificationString.replaceAll("_", "");
+                            int previousLocation = 0;
+                            String[] modificationLocations = modificationString.split("\\(");
+                            for (int i = 0; i < modificationLocations.length - 1; i++) {
+                                if (modificationLocations[i].contains(")")) {
+                                    modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
+                                }
+                                location = modificationLocations[i].length() - 1;
+                                modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location + previousLocation));
+                                previousLocation = location + previousLocation;
+                            }
+                        }
                     }
                 }
-            } else {
-                // Unexpected value: throw an exception
-                String modifiedSequence = values.get(EvidenceHeaders.Modified_Sequence.getColumnName());
-                String message = String.format("Unexpected, unhandled modification '%s' in sequence '%s'", modifications, modifiedSequence);
-                throw new IllegalStateException(message);
             }
-
             //TODO parse parameters for fixed and variable modifications
         }
-        // Retrieve modification from database, or create a new one
-        //Modification modification = modificationRepository.findByName(modificationName);
-        // if (modification == null) {
-        // modification = new Modification(modificationName);
-        // TODO figure out where to get values for: monoIsotopicMass, averageMass
-        // Persist modification
-        // modificationRepository.save(modification);
-        //}
-
-        // Create PeptideHasModification
-        //PeptideHasModification peptideHasModification = new PeptideHasModification();
-        //peptideHasModification.setLocation(location);
-        // peptideHasModification.setModification(modification);
-        //peptideHasModification.setPeptide(peptide);
-        // TODO Persist the PeptideHasModification instance using a new to create Hibernate Repository
-        // Store the PeptideHasModification in both peptide and modification
-        //peptide.getPeptideHasModifications().add(peptideHasModification);
-        // modification.getPeptideHasModifications().add(peptideHasModification);
-        //
         return modificationsForPeptide;
-
-
     }
 }
+
 /**
  * Refer to headers in MaxQuant evidence.txt output files by enum values, as
  * headers are likely to change with each new version of MaxQuant. Their order
@@ -325,6 +319,9 @@ enum EvidenceHeaders implements HeaderEnum {
     Oxidation_M_Probabilities(new String[]{"Oxidation (M) Probabilities"}),
     Oxidation_M_Score_Diffs(new String[]{"Oxidation (M) Score Diffs"}),
     Acetyl_Protein_N_term(new String[]{"Acetyl (Protein N-term)"}),
+    Acetyl_K(new String[]{"Acetyl (K)"}),
+    Acetyl_K_Probabilities(new String[]{"Acetyl (K) Probabilities"}),
+    Acetyl_K_Score_Diffs(new String[]{"Acetyl (K) Score Diffs"}),
     Oxidation_M(new String[]{"Oxidation (M)"}),
     Proteins(new String[]{"Proteins"}),
     Leading_Proteins(new String[]{"Leading Proteins"}),
@@ -366,8 +363,8 @@ enum EvidenceHeaders implements HeaderEnum {
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
-    protected String[] columnNames;
-    protected int columnReference = -1;
+    private String[] columnNames;
+    private int columnReference = -1;
 
     private EvidenceHeaders(final String[] fieldnames) {
         columnNames = fieldnames;
@@ -387,7 +384,7 @@ enum EvidenceHeaders implements HeaderEnum {
     public final String getColumnName() throws HeaderEnumNotInitialisedException {
         if (columnNames != null) {
             if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
-                return columnNames[0];
+                return columnNames[0].toLowerCase(Locale.US);
             } else if (columnNames.length < 0) {
                 throw new HeaderEnumNotInitialisedException("header enum not initialised");
             } else {

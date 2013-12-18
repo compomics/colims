@@ -38,7 +38,7 @@ public class MaxQuantIntegrationTest {
      */
     public MaxQuantIntegrationTest() {
         evidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.txt").getPath());
+        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.tsv").getPath());
         quantFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_quant10.tsv").getFile());
         //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("testdata/proteinGroups.txt").getPath());
     }

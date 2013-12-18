@@ -41,6 +41,8 @@ public class MaxQuantParser {
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
     private MaxQuantPSMParser maxQuantEvidenceParser;
+    @Autowired
+    private MaxQuantParameterParser maxQuantParameterParser;
     private Map<Integer, PeptideAssumption> peptideAssumptions = new HashMap<>();
     private Map<Integer, MSnSpectrum> msms = new HashMap<>();
     private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
@@ -77,6 +79,10 @@ public class MaxQuantParser {
         // TODO Store quantificationGroup; we are currently missing a Hibernate Repository to do so, so skip for now
 
         // Parse msms.txt and create and persist the objects found within
+
+        LOGGER.debug("starting parameter and summary parsing");
+        
+        
         LOGGER.debug("starting msms parsing");
         File msmsFile = new File(maxQuantTextFolder, MSMSTXT);
         msms = maxQuantMsmsParser.parse(msmsFile, true);
