@@ -9,10 +9,7 @@ import com.compomics.colims.core.distributed.searches.respin.model.exception.Res
 import com.compomics.colims.core.distributed.searches.respin.model.processes.respinprocess.RespinCommandLine;
 import com.compomics.colims.core.distributed.searches.respin.model.enums.RespinState;
 import com.compomics.colims.core.distributed.searches.respin.model.processes.respinprocess.RespinProcess;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.util.experiment.biology.EnzymeFactory;
-import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -75,7 +72,7 @@ public class Respin {
                 }
                 notifySocket("PROCESS_COMPLETED");
                 if (storeAfterRun) {
-                    command.storeColimsResults(projectId, sampleId, projectId);
+                    command.storeColimsResults(userName, sampleId, projectId);
                 }
             } else {
                 throw new RespinException("No valid commandline !");
