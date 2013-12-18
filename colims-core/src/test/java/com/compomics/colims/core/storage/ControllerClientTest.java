@@ -5,11 +5,12 @@
  */
 package com.compomics.colims.core.storage;
 
-import com.compomics.colims.core.storage.incoming.ClientForStorageConnector;
-import com.compomics.colims.core.storage.processing.controller.StorageController;
+import com.compomics.colims.core.distributed.storage.incoming.ClientForStorageConnector;
+import com.compomics.colims.core.distributed.storage.processing.controller.StorageController;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -54,7 +55,11 @@ public class ControllerClientTest {
         listener = new Thread(new Runnable() {
             @Override
             public void run() {
-                storageController.launch(45678);
+                try {
+                    storageController.launch();
+                } catch (IOException ex) {
+                    LOGGER.error(ex);
+                }
             }
         });
         listener.start();
