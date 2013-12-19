@@ -17,9 +17,9 @@ import org.jmol.export.dialog.FileChooser;
 public class RunStorageDialog extends javax.swing.JPanel {
 
     String storageExtension = ".cps";
-    File fastaFile;
-    private File sourceInputFile;
-    private File mgfFile;
+    private File fastaFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
+    private File sourceInputFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
+    private File mgfFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
 
     /**
      * Creates new form RunStorageDialog
@@ -251,8 +251,10 @@ public class RunStorageDialog extends javax.swing.JPanel {
                 return "The Fasta file used to run this project";
             }
         });
+        fc.setCurrentDirectory(fastaFile.getParentFile());
         fc.showDialog(this, "Select");
         fastaFile = fc.getSelectedFile();
+        tfFasta.setText(fastaFile.getAbsolutePath());
     }//GEN-LAST:event_btnFastaActionPerformed
 
     private void btnCpsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCpsActionPerformed
@@ -269,11 +271,13 @@ public class RunStorageDialog extends javax.swing.JPanel {
                     return "The cps file used to run this project";
                 }
             });
+            fc.setCurrentDirectory(sourceInputFile.getParentFile());
             fc.showDialog(this, "Select");
             sourceInputFile = fc.getSelectedFile();
         } else if (jRbMaxQuant.isSelected()) {
             //TODO ALLOW DIRECTORIES HERE
             JFileChooser fc = new FileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
@@ -285,9 +289,11 @@ public class RunStorageDialog extends javax.swing.JPanel {
                     return "The cps file used to run this project";
                 }
             });
+            fc.setCurrentDirectory(sourceInputFile.getParentFile());
             fc.showDialog(this, "Select");
             sourceInputFile = fc.getSelectedFile();
         }
+        tfInputFolder.setText(sourceInputFile.getAbsolutePath());
     }//GEN-LAST:event_btnCpsActionPerformed
 
     private void btnMGFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMGFActionPerformed
@@ -303,9 +309,12 @@ public class RunStorageDialog extends javax.swing.JPanel {
                 return "The mgf file used to run this project";
             }
         });
+        fc.setCurrentDirectory(mgfFile.getParentFile());
         fc.showDialog(this, "Select");
         mgfFile = fc.getSelectedFile();
+        tfMgf.setText(mgfFile.getAbsolutePath());
     }//GEN-LAST:event_btnMGFActionPerformed
+
 
     private void btnStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStoreActionPerformed
         //connect to the storage controller with the required parameters...
