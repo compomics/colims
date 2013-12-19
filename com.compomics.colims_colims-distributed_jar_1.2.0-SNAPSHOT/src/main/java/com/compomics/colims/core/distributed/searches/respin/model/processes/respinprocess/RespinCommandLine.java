@@ -4,6 +4,7 @@ import com.compomics.colims.core.config.distributedconfiguration.client.RespinPr
 import com.compomics.colims.core.distributed.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.core.distributed.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.core.distributed.searches.respin.control.validation.SearchParamValidator;
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import com.compomics.colims.core.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
@@ -316,7 +317,7 @@ public class RespinCommandLine {
 
         for (File aFile : resultFiles) {
             ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
-            boolean success = creator.storeFile(userName, aFile.getAbsolutePath(), sampleId, instrumentName);
+            boolean success = creator.storeFile(userName, aFile.getAbsolutePath(), sampleId, instrumentName,StorageType.PEPTIDESHAKER);
         }
     }
 }

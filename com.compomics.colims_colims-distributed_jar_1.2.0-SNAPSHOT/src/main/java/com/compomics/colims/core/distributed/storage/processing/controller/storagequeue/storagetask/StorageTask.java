@@ -6,6 +6,7 @@
 package com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.storagetask;
 
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 
 /**
  *
@@ -19,6 +20,7 @@ public class StorageTask implements Comparable {
     private StorageState state = StorageState.WAITING;
     private long sampleID;
     private String instrumentId;
+    private StorageType type;
 
     /**
      *
@@ -29,12 +31,21 @@ public class StorageTask implements Comparable {
      * @param sampleID
      * @param instrumentId
      */
-    public StorageTask(long taskID, String fileLocation, String userName, long sampleID, String instrumentId) {
+    public StorageTask(long taskID, String fileLocation, String userName, long sampleID, String instrumentId, StorageType type) {
         this.taskID = taskID;
         this.fileLocation = fileLocation;
         this.userName = userName;
         this.sampleID = sampleID;
         this.instrumentId = instrumentId;
+        this.type = type;
+    }
+
+    public StorageType getType() {
+        return type;
+    }
+
+    public void setType(StorageType type) {
+        this.type = type;
     }
 
     public String getInstrumentId() {

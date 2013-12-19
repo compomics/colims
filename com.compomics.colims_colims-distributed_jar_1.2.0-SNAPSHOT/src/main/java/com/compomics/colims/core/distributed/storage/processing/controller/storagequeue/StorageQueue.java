@@ -7,6 +7,7 @@ package com.compomics.colims.core.distributed.storage.processing.controller.stor
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import com.compomics.colims.core.distributed.storage.processing.colimsimport.ColimsFileImporter;
 import com.compomics.colims.core.distributed.storage.processing.colimsimport.factory.ColimsImporterFactory;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
@@ -29,31 +30,31 @@ import org.springframework.stereotype.Component;
  */
 @Component("storageQueue")
 public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable {
-    
+
     @Autowired
     ColimsImporterFactory colimsImporterFactory;
-    
+
     private static Connection connection;
     private static boolean connectionLocked = false;
     private static File adress;
     private static final Logger LOGGER = Logger.getLogger(StorageQueue.class);
-    
+
     public StorageQueue() {
         this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController/");
-        
+
         setUpTables();
     }
-    
+
     public StorageQueue(String dbAddress) {
         this.adress = new File(dbAddress);
         setUpTables();
     }
-    
+
     @Override
     public boolean offer(StorageTask task) {
         return super.offer(task);
     }
-    
+
     @Override
     public StorageTask poll() {
         StorageTask nextTask = super.poll();
@@ -62,7 +63,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
         }
         return nextTask;
     }
-    
+
     @Override
     public void run() {
         while (true) {
@@ -73,7 +74,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 try {
                     LOGGER.debug("Storing " + taskToStore.getFileLocation() + " to colims");
                     File fileToStore = new File(taskToStore.getFileLocation());
-                    ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(fileToStore);
+                    ColimsFileImporter colimsFileImporter = colimsImporterFactory.getImporter(taskToStore.getType());
                     if (colimsFileImporter.validate(fileToStore.getParentFile())) {
                         colimsFileImporter.storeFile(taskToStore.getUserName(),
                                 fileToStore.getParentFile(),
@@ -101,7 +102,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             }
         }
     }
-    
+
     private Connection getConnection() {
         while (StorageQueue.connectionLocked == true) {
             try {
@@ -124,18 +125,18 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
         StorageQueue.connectionLocked = true;
         return connection;
     }
-    
+
     private void releaseConnection() {
         StorageQueue.connectionLocked = false;
     }
-    
+
     public void disconnect() throws SQLException {
         if (!connection.isClosed()) {
             connection.close();
         }
         connection = null;
     }
-    
+
     private void setUpTables() {
         LOGGER.debug("Setting up database tables");
         connection = getConnection();
@@ -157,7 +158,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             loadTasks();
         }
     }
-    
+
     private void resetTasks() {
         LOGGER.debug("Resetting tasks that were still running on boot");
         connection = getConnection();
@@ -170,7 +171,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             releaseConnection();
         }
     }
-    
+
     private void loadTasks() {
         LOGGER.debug("Loading tasks from file into queue");
         connection = getConnection();
@@ -183,7 +184,8 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                 String instrumentId = rs.getString("INSTRUMENTNAME");
                 String fileLocation = rs.getString("FILELOCATION");
                 String userName = rs.getString("USERNAME");
-                this.offer(new StorageTask(taskId, fileLocation, userName, sampleId, instrumentId));
+                StorageType type = StorageType.valueOf(rs.getString("TYPE"));
+                this.offer(new StorageTask(taskId, fileLocation, userName, sampleId, instrumentId, type));
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -233,16 +235,17 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                         rs.getString("FILELOCATION"),
                         rs.getString("USERNAME"),
                         rs.getLong("SAMPLEID"),
-                        rs.getString("INSTRUMENTNAME"));
+                        rs.getString("INSTRUMENTNAME"),
+                        StorageType.valueOf(rs.getString("TYPE").toUpperCase()));
                 task.setState(StorageState.valueOf(rs.getString("STATE")));
             }
         } finally {
             releaseConnection();
-            
+
         }
         return task;
     }
-    
+
     public StorageTask getTask(String userName, String fileLocation) throws SQLException {
         StorageTask task = null;
         connection = getConnection();
@@ -257,12 +260,13 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                         rs.getString("FILELOCATION"),
                         rs.getString("USERNAME"),
                         rs.getLong("SAMPLEID"),
-                        rs.getString("INSTRUMENTNAME"));
+                        rs.getString("INSTRUMENTNAME"),
+                        StorageType.valueOf(rs.getString("TYPE").toUpperCase()));
                 task.setState(StorageState.valueOf(rs.getString("STATE")));
             }
         } finally {
             releaseConnection();
-            
+
         }
         return task;
     }
@@ -274,15 +278,16 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
      * @return a generated StorageTask Objeconnectiont that has already been
      * stored in both the queue and the underlying database
      */
-    public StorageTask addNewTask(String fileLocation, String userName, long sampleID, String instrumentID) {
+    public StorageTask addNewTask(String fileLocation, String userName, long sampleID, String instrumentID, String type) {
         long key = -1L;
         connection = getConnection();
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME,SAMPLEID,INSTRUMENTNAME) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO STORAGETASKS(STATE,FILELOCATION,USERNAME,SAMPLEID,INSTRUMENTNAME,TYPE) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, "WAITING");
             stmt.setString(2, fileLocation);
             stmt.setString(3, userName);
             stmt.setLong(4, sampleID);
             stmt.setString(5, instrumentID);
+            stmt.setString(6, type);
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -293,10 +298,10 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
             LOGGER.error(e);
         } finally {
             releaseConnection();
-            StorageTask task = new StorageTask(key, fileLocation, userName, sampleID, instrumentID);
+            StorageTask task = new StorageTask(key, fileLocation, userName, sampleID, instrumentID, StorageType.valueOf(type.toUpperCase()));
             offer(task);
             return task;
         }
     }
-    
+
 }

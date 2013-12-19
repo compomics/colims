@@ -5,6 +5,7 @@
 package com.compomics.colims.core.distributed.storage.processing.controller;
 
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
@@ -82,10 +83,11 @@ public class StorageHandler implements Runnable {
                     LOGGER.error(ex);
                     break;
                 }
+            } else {
+                task = storageQueue.addNewTask(responseArgs[1], responseArgs[0], Long.parseLong(responseArgs[2]), responseArgs[3],responseArgs[responseArgs.length]);
+                LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
+                break;
             }
-            task = storageQueue.addNewTask(responseArgs[1], responseArgs[0], Long.parseLong(responseArgs[2]), responseArgs[3]);
-            LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
-            break;
         }
         return task;
     }

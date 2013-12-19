@@ -6,6 +6,7 @@
 package com.compomics.colims.core.storage;
 
 import com.compomics.colims.core.distributed.storage.enums.StorageState;
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.colims.core.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import com.compomics.colims.core.spring.ApplicationContextProvider;
@@ -64,7 +65,7 @@ public class DistributedStorageTest {
         System.out.println("Test offer file to store");
         StorageTask task = null;
         storageQueue = new StorageQueue();//(StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
-        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1");
+        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1",StorageType.PEPTIDESHAKER.toString());
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
         assertTrue(taskFromDb != null);
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");

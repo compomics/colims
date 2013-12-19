@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.storage;
 
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import com.compomics.colims.core.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.core.distributed.storage.processing.controller.StorageController;
 import java.io.File;
@@ -76,9 +77,8 @@ public class ControllerClientTest {
        // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
-        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1");
+        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);
         Assert.assertTrue(success);
-
     }
 
 }

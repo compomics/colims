@@ -5,10 +5,15 @@
  */
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.jmol.export.dialog.FileChooser;
+import com.compomics.colims.core.distributed.storage.incoming.*;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -16,10 +21,12 @@ import org.jmol.export.dialog.FileChooser;
  */
 public class RunStorageDialog extends javax.swing.JPanel {
 
+    private static Logger LOGGER = Logger.getLogger(RunStorageDialog.class);
     String storageExtension = ".cps";
     private File fastaFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
     private File sourceInputFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
     private File mgfFile = new File(System.getProperty("user.home") + "/.compomics/dummy");
+    private StorageType type = StorageType.PEPTIDESHAKER;
 
     /**
      * Creates new form RunStorageDialog
@@ -224,6 +231,7 @@ public class RunStorageDialog extends javax.swing.JPanel {
         btnMGF.setVisible(false);
         lbMgf.setVisible(false);
         btnCps.setText("Quant folder");
+        type = StorageType.MAX_QUANT;
     }//GEN-LAST:event_jRbMaxQuantActionPerformed
 
     private void jRbPeptideShakerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRbPeptideShakerActionPerformed
@@ -232,6 +240,7 @@ public class RunStorageDialog extends javax.swing.JPanel {
         btnMGF.setVisible(true);
         lbMgf.setVisible(true);
         btnCps.setText("Peptideshaker File");
+        type = StorageType.PEPTIDESHAKER;
     }//GEN-LAST:event_jRbPeptideShakerActionPerformed
 
     private void tfFastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfFastaActionPerformed
@@ -317,7 +326,21 @@ public class RunStorageDialog extends javax.swing.JPanel {
 
 
     private void btnStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStoreActionPerformed
-        //connect to the storage controller with the required parameters...
+        try {
+            //connect to the storage controller with the required parameters...
+            ClientForStorageConnector connector = new ClientForStorageConnector();
+            connector.storeFile(storageExtension, storageExtension, WIDTH, storageExtension, type);
+            JOptionPane.showMessageDialog(this,
+                    "Your project has been planned to be stored in colims shortly.",
+                    "Succesfully scheduled",
+                    JOptionPane.PLAIN_MESSAGE);
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+            JOptionPane.showMessageDialog(this,
+                    "An error occurred while submitting : " + ex.getMessage(),
+                    "Error submitting to storagecontroller",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnStoreActionPerformed
 
 
