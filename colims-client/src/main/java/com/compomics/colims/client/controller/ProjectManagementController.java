@@ -49,7 +49,7 @@ public class ProjectManagementController implements Controllable {
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
     //view
-    private ProjectManagementPanel projectsManagementPanel;
+    private ProjectManagementPanel projectManagementPanel;
     //child controller
     @Autowired
     private ProjectEditController projectEditController;
@@ -67,7 +67,7 @@ public class ProjectManagementController implements Controllable {
     private EventBus eventBus;
 
     public ProjectManagementPanel getProjectManagementPanel() {
-        return projectsManagementPanel;
+        return projectManagementPanel;
     }
 
     public void init() {
@@ -75,7 +75,7 @@ public class ProjectManagementController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectsManagementPanel = new ProjectManagementPanel();
+        projectManagementPanel = new ProjectManagementPanel();
         
         //init child controllers
         projectEditController.init();
@@ -85,39 +85,39 @@ public class ProjectManagementController implements Controllable {
         projects.addAll(projectService.findAllWithEagerFetching());
         SortedList<Project> sortedProjects = new SortedList<>(projects, new IdComparator());
         projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectManagementTableFormat());
-        projectsManagementPanel.getProjectsTable().setModel(projectsTableModel);
+        projectManagementPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
         projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        projectsManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
+        projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
         
         //set column widths
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(100);
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(100);
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(50);
-        projectsManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(50);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
         experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentManagementTableFormat());
-        projectsManagementPanel.getExperimentsTable().setModel(experimentsTableModel);
+        projectManagementPanel.getExperimentsTable().setModel(experimentsTableModel);
         experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
         experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        projectsManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
+        projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
         
         //set column widths
-        projectsManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
-        projectsManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectsManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
-        projectsManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);        
-        projectsManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);        
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
 
-        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
+        //set sorting
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
-                projectsManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
+                projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-                projectsManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
+                projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -143,14 +143,14 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        projectsManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 projectEditController.updateView(createDefaultProject());
             }
         });
 
-        projectsManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Project selectedProject = getSelectedProject();
@@ -162,7 +162,7 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        projectsManagementPanel.getDeleteProjectButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getDeleteProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Project projectToDelete = getSelectedProject();
@@ -189,14 +189,14 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        projectsManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 experimentEditController.updateView(createDefaultExperiment());
             }
         });
 
-        projectsManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Experiment selectedExperiment = getSelectedExperiment();
@@ -208,7 +208,7 @@ public class ProjectManagementController implements Controllable {
             }
         });
         
-        projectsManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
+        projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Experiment experimentToDelete = getSelectedExperiment();

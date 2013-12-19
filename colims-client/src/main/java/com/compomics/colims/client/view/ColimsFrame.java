@@ -84,6 +84,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setExtendedState(1);
         setMinimumSize(new java.awt.Dimension(700, 700));
 
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N

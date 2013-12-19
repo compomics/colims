@@ -14,8 +14,7 @@ import java.util.Date;
 public class ProjectManagementTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Created", "# experiments"};
-    private static final String NOT_APPLICABLE = "N/A";
+    private static final String[] columnNames = {"Id", "Title", "Label", "Owner", "Created", "# experiments"};    
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
     public static final int LABEL = 2;

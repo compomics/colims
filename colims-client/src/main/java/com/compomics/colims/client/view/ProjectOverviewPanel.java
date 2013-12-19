@@ -202,19 +202,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
      * Set the table properties.
      */
     private void setTableProperties() {
-
-        // the index columns
-        projectsTable.getColumn("").setMaxWidth(50);
-        projectsTable.getColumn("").setMinWidth(50);
-        experimentsTable.getColumn("").setMaxWidth(50);
-        experimentsTable.getColumn("").setMinWidth(50);
-        samplesTable.getColumn("").setMaxWidth(50);
-        samplesTable.getColumn("").setMinWidth(50);
-        analyticalRunsTable.getColumn("").setMaxWidth(50);
-        analyticalRunsTable.getColumn("").setMinWidth(50);
-        psmTable.getColumn("").setMaxWidth(50);
-        psmTable.getColumn("").setMinWidth(50);
-
+        
         // sparklines for the psm table
         psmTable.getColumn("m/z").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL, 100d, utilitiesUserPreferences.getSparklineColor()));
         psmTable.getColumn("Charge").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL, 4d, utilitiesUserPreferences.getSparklineColor()));

@@ -14,7 +14,6 @@ public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] columnNames = {"Id", "Name", "# runs"};
-    private static final String NOT_APPLICABLE = "N/A";
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
     public static final int NUMBER_OF_RUNS = 2;

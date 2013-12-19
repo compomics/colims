@@ -7,6 +7,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -94,14 +95,18 @@ public class ExperimentEditController implements Controllable {
         samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
         samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         experimentEditDialog.getSamplesTable().setSelectionModel(samplesSelectionModel);
-        
+
         //set column widths
         experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(5);
         experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(200);
         experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setPreferredWidth(100);
         experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(100);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);        
+        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);
         experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
+
+        //set sorting       
+        TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
+                experimentEditDialog.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners                        
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
@@ -268,7 +273,7 @@ public class ExperimentEditController implements Controllable {
             //fetch experiment binary files
             experimentService.fetchBinaryFiles(experimentToEdit);
         } else {
-            experimentEditDialog.getSaveOrUpdateButton().setText("save");                        
+            experimentEditDialog.getSaveOrUpdateButton().setText("save");
         }
 
         experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());

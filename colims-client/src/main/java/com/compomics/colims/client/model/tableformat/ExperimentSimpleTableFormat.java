@@ -15,7 +15,6 @@ public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experime
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] columnNames = {"Id", "Title", "Number", "# samp"};
-    private static final String NOT_APPLICABLE = "N/A";
     public static final int EXPERIMENT_ID = 0;
     public static final int TITLE = 1;
     public static final int NUMBER = 2;
@@ -29,7 +28,7 @@ public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experime
             case TITLE:
                 return String.class;
             case NUMBER:
-                return Long.class;  
+                return Long.class;
             case NUMBER_OF_SAMPLES:
                 return Integer.class;
             default:
@@ -60,7 +59,7 @@ public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experime
             case TITLE:
                 return experiment.getTitle();
             case NUMBER:
-                return experiment.getNumber();  
+                return experiment.getNumber();
             case NUMBER_OF_SAMPLES:
                 return experiment.getSamples().size();
             default:

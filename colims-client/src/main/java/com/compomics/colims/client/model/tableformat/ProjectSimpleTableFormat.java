@@ -15,7 +15,6 @@ public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] columnNames = {"Id", "Title", "Label", "# exp"};
-    private static final String NOT_APPLICABLE = "N/A";
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
     public static final int LABEL = 2;
