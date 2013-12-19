@@ -99,3 +99,4 @@ colims-repository/nb-configuration.xml
 colims-repository/nbactions.xml
 colims-client/derby.log
 colims-core/src/test/resources/uniprot_sprot_101104_human_concat.fasta.cui
+/com.compomics.colims_colims-distributed_jar_1.2.0-SNAPSHOT/target/
