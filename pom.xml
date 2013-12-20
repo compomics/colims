@@ -244,4 +244,18 @@
             </plugin>
         </plugins>
     </reporting>
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <property_file.source>classpath</property_file.source>    
+            </properties>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <property_file.source>file</property_file.source> 
+            </properties>   
+        </profile>
+    </profiles>
 </project>

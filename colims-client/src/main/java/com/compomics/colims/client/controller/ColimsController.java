@@ -26,8 +26,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -64,8 +66,8 @@ public class ColimsController implements Controllable, ActionListener {
     private UserService userService;
     @Autowired
     private EventBus eventBus;
-//    @Autowired
-//    private LocalSessionFactoryBean sessionFactoryBean;
+    @Autowired
+    private LocalSessionFactoryBean sessionFactory;
 
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
@@ -75,7 +77,7 @@ public class ColimsController implements Controllable, ActionListener {
      * Controller init method.
      */
     public void init() {
-//        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
+//        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
 //        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
 //        schemaExport.setFormat(true);
 //        schemaExport.setDelimiter(";");
