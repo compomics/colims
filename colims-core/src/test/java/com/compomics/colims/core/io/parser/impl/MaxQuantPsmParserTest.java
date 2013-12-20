@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class MaxQuantIntegrationTest {
+public class MaxQuantPsmParserTest {
 
     private File evidenceFile;
     private File proteinGroupFile;
@@ -36,9 +36,9 @@ public class MaxQuantIntegrationTest {
     /**
      * constructor for running the Identification integration tests
      */
-    public MaxQuantIntegrationTest() {
+    public MaxQuantPsmParserTest() {
         evidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.txt").getPath());
+        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.tsv").getPath());
         quantFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_quant10.tsv").getFile());
         //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("testdata/proteinGroups.txt").getPath());
     }
@@ -84,7 +84,7 @@ public class MaxQuantIntegrationTest {
         assertThat(parsedPeptides.get(175).getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
         //oxidation only
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().size(), is(1));
-        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m) probabilities"));
+        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(10));
         //both (don't have an entry for this yet)
 

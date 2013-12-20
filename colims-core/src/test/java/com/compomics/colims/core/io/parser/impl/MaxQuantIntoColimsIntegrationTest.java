@@ -4,7 +4,6 @@ import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesPeptideMapper;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesPeptideMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
@@ -18,7 +17,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
@@ -81,7 +79,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     @Test
     public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("Max Quant storage integration test");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder, true);
+        maxQuantParser.parseMaxQuantTextFolder(testFolder);
         User user = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
@@ -130,6 +128,6 @@ public class MaxQuantIntoColimsIntegrationTest {
             targetRun.setSpectrums(mappedSpectra);
         }
         maxQuantSample.setAnalyticalRuns(colimsRuns);
-        experimentService.save(experiment);
+        //experimentService.save(experiment);
     }
 }
