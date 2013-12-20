@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth
  */
-public class RunStorageDialog extends javax.swing.JPanel {
+public class RunStorageDialog extends javax.swing.JDialog {
 
     private static Logger LOGGER = Logger.getLogger(RunStorageDialog.class);
     String storageExtension = ".cps";
@@ -31,7 +31,8 @@ public class RunStorageDialog extends javax.swing.JPanel {
     /**
      * Creates new form RunStorageDialog
      */
-    public RunStorageDialog() {
+    public RunStorageDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
         buttonGroup1.add(jRbMaxQuant);
         buttonGroup1.add(jRbPeptideShaker);
