@@ -54,14 +54,14 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantImport aMaxQuantImport, Sample sampleRanThroughMaxQuant) throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException {
+    public List<AnalyticalRun> map(MaxQuantImport aMaxQuantImport) throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantFolder().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
         
         //just in case
         maxQuantParser.clearParsedProject();
-
-        maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantFolder(), true);
+        
+        maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantFolder());
         
         for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();

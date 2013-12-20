@@ -79,7 +79,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     @Test
     public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("Max Quant storage integration test");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder, true);
+        maxQuantParser.parseMaxQuantTextFolder(testFolder);
         User user = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
@@ -128,6 +128,6 @@ public class MaxQuantIntoColimsIntegrationTest {
             targetRun.setSpectrums(mappedSpectra);
         }
         maxQuantSample.setAnalyticalRuns(colimsRuns);
-        experimentService.save(experiment);
+        //experimentService.save(experiment);
     }
 }

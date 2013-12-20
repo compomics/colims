@@ -26,7 +26,7 @@ public class MaxQuantProteinGroupParserTest {
 
     public MaxQuantProteinGroupParserTest() {
         ClassLoader loader = getClass().getClassLoader();
-        shortTestFile = new File(loader.getResource("testdata/proteingroups_subset_10.tsv").getFile());
+        shortTestFile = new File(loader.getResource("testdata/proteingroups_subset.tsv").getFile());
     }
 
     /**
@@ -38,7 +38,7 @@ public class MaxQuantProteinGroupParserTest {
         System.out.println("parseMaxQuantProteinGroups");
         File aProteinGroupsFile = shortTestFile;
         Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(aProteinGroupsFile);
-        assertThat(result.keySet().size(), is(10));
+        assertThat(result.keySet().size(), is(1760));
         assertThat(result.get(1722).getMainMatch(), is("Q9Y105"));
         assertThat(result.get(1722).getNProteins(), both(is(result.get(1722).getTheoreticProteinsAccessions().size())).and(is(1)));
         //assertThat(result.get(1726).isDecoy(), is(false));

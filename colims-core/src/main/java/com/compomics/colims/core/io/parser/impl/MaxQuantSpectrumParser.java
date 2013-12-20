@@ -11,7 +11,6 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
-import com.google.common.collect.HashBiMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -77,7 +76,7 @@ public class MaxQuantSpectrumParser {
     public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
         // Convert file into some values we can loop over, without reading file in at once
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile,MsmsHeaders.values());
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, MsmsHeaders.values());
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
@@ -86,10 +85,13 @@ public class MaxQuantSpectrumParser {
                 Integer id = Integer.parseInt(values.get(MsmsHeaders.id.getColumnName()));
 
                 MSnSpectrum spectrum = parseSpectrum(values, addPeakList);
+                SpectrumIntUrParameterShizzleStuff nastyworkaround = new SpectrumIntUrParameterShizzleStuff();
+                nastyworkaround.spectrumid = id;
+                spectrum.addUrParam(nastyworkaround);
                 spectrumMap.put(id, spectrum);
             }
         }
-        return HashBiMap.create(spectrumMap);
+        return spectrumMap;
     }
 
     /**
@@ -253,7 +255,7 @@ public class MaxQuantSpectrumParser {
         public final String getColumnName() throws HeaderEnumNotInitialisedException {
             if (columnNames != null) {
                 if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
-                    return columnNames[0];
+                    return columnNames[0].toLowerCase(Locale.US);
                 } else if (columnNames.length < 0) {
                     throw new HeaderEnumNotInitialisedException("header enum not initialised");
                 } else {

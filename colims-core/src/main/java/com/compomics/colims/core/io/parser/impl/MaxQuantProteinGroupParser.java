@@ -27,7 +27,7 @@ public class MaxQuantProteinGroupParser {
      */
     public Map<Integer, ProteinMatch> parse(File aProteinGroupsFile) throws IOException, FileNotFoundException, HeaderEnumNotInitialisedException, UnparseableException {
         Map<Integer, ProteinMatch> proteinGroupMap = new HashMap<>(1000);
-        TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile,ProteinGroupHeaders.values());
+        TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile, ProteinGroupHeaders.values());
         Map<String, String> values;
         while (iter.hasNext()) {
             values = iter.next();
@@ -128,7 +128,7 @@ public class MaxQuantProteinGroupParser {
         public final String getColumnName() throws HeaderEnumNotInitialisedException {
             if (columnNames != null) {
                 if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
-                    return columnNames[0];
+                    return columnNames[0].toLowerCase(Locale.US);
                 } else if (columnNames.length < 0) {
                     throw new HeaderEnumNotInitialisedException("header enum not initialised");
                 } else {

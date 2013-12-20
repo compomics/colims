@@ -17,7 +17,6 @@ import com.compomics.util.experiment.quantification.Ratio;
 import com.compomics.util.experiment.quantification.matches.PeptideQuantification;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,10 +57,22 @@ public class MaxQuantPSMParser {
         return parse(evidenceFile, modificationHeaderEnums);
     }
 
+    /**
+     * parses an evidence file with the given modifications
+     *
+     * @param evidenceFile the file to parse
+     * @param modificationsPresent the modifications to check for
+     * @return a {@code Map} key: the msms id and value the peptide assumption
+     * @throws IOException if the evidence file could not be read
+     * @throws HeaderEnumNotInitialisedException if a header was not initialised
+     * properly and does not have a default value
+     * @throws UnparseableException if vital information was missing from the
+     * evidence file
+     */
     public Map<Integer, PeptideAssumption> parse(File evidenceFile, List<String> modificationsPresent) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         modificationList = modificationsPresent;
         // Convert file into some values we can loop over, without reading file in at once
-        Map<Integer, PeptideAssumption> parsedPeptideList = new HashMap<>();
+        Map<Integer, PeptideAssumption> parsedPeptideMap = new HashMap<>();
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(evidenceFile, EvidenceHeaders.values());
 
         // Create and persist objects for all lines in file
@@ -73,10 +84,10 @@ public class MaxQuantPSMParser {
             if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName())) {
                 String[] msmsIds = values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";");
                 for (String msmsId : msmsIds) {
-                    if (parsedPeptideList.containsKey(Integer.parseInt(msmsId))) {
+                    if (parsedPeptideMap.containsKey(Integer.parseInt(msmsId))) {
                         throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
                     }
-                    parsedPeptideList.put(Integer.parseInt(msmsId), assumption);
+                    parsedPeptideMap.put(Integer.parseInt(msmsId), assumption);
                 }
             } else {
                 throw new UnparseableException("no spectrum found for an identified peptide");
@@ -89,7 +100,7 @@ public class MaxQuantPSMParser {
         //quantificationGroupHasPeptide.setPeptide(peptide);
         // TODO Store QuantificationGroupHasPeptide instances
 
-        return parsedPeptideList;
+        return parsedPeptideMap;
     }
 
     /**
@@ -103,11 +114,11 @@ public class MaxQuantPSMParser {
      *
      * public final List<Peptide> parse(final File evidenceFile, final File
      * proteinGroupFile, final QuantificationGroup quantificationGroup) throws
-     * IOException { List<Peptide> parsedPeptideList = new ArrayList<>();
+     * IOException { List<Peptide> parsedPeptideMap = new ArrayList<>();
      * TabularFileLineValuesIterator valuesIterator = new
      * TabularFileLineValuesIterator(evidenceFile);
      *
-     * return parsedPeptideList; }
+     * return parsedPeptideMap; }
      */
     /**
      * Create a new peptide instance from the values contained in the map.
@@ -143,6 +154,10 @@ public class MaxQuantPSMParser {
             if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
                 if (!values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
                     score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
+                }
+            } else if (values.containsKey(EvidenceHeaders.Delta_score.getColumnName())) {
+                if (!values.get(EvidenceHeaders.Delta_score.getColumnName()).equalsIgnoreCase("NAN")) {
+                    score = Double.parseDouble(values.get(EvidenceHeaders.Delta_score.getColumnName()));
                 }
             }
             if (values.containsKey(EvidenceHeaders.PEP.getColumnName())) {
@@ -260,9 +275,14 @@ public class MaxQuantPSMParser {
                     // N-term check
                     if (modificationHeader.contains("n-term")) {
                         if ("1".equals(modificationString)) {
+                            MaxQuantPtmScoring score = new MaxQuantPtmScoring();
                             // N-term has position 0
                             location = 0;
-                            modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location));
+                            score.setDeltaScore(100.0);
+                            score.setScore(100.0);
+                            ModificationMatch match = new ModificationMatch(modificationHeader, true, location);
+                            match.addUrParam(score);
+                            modificationsForPeptide.add(match);
                         }
                     }
 
@@ -270,8 +290,13 @@ public class MaxQuantPSMParser {
                     if (modificationHeader.contains("c-term")) {
                         if ("1".equals(modificationString)) {
                             // C-term has position end of sequence
+                            MaxQuantPtmScoring score = new MaxQuantPtmScoring();
                             location = values.get(EvidenceHeaders.Sequence.getColumnName()).length() + 1;
-                            modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location));
+                            score.setDeltaScore(100.0);
+                            score.setScore(100.0);
+                            ModificationMatch match = new ModificationMatch(modificationHeader, true, location);
+                            match.addUrParam(score);
+                            modificationsForPeptide.add(match);
                         }
                     }
                     //means the modification is in the sequence and we have to check the most likely location
@@ -280,12 +305,22 @@ public class MaxQuantPSMParser {
                             modificationString = modificationString.replaceAll("_", "");
                             int previousLocation = 0;
                             String[] modificationLocations = modificationString.split("\\(");
+                            String[] modificationDeltaScores = null;
+                            if (values.containsKey(modificationHeader + " score diffs")) {
+                                modificationDeltaScores = values.get(modificationHeader + " score diffs").split("\\(");
+                            }
                             for (int i = 0; i < modificationLocations.length - 1; i++) {
                                 if (modificationLocations[i].contains(")")) {
+                                    MaxQuantPtmScoring score = new MaxQuantPtmScoring();
+                                    score.setDeltaScore(Double.parseDouble(modificationLocations[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
+                                    score.setScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
                                     modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
+                                    location = modificationLocations[i].length() - 1;
+                                    ModificationMatch match = new ModificationMatch(modificationHeader, true, location);
+                                    match.addUrParam(score);
+                                    modificationsForPeptide.add(match);
                                 }
-                                location = modificationLocations[i].length() - 1;
-                                modificationsForPeptide.add(new ModificationMatch(modificationHeader, true, location + previousLocation));
+
                                 previousLocation = location + previousLocation;
                             }
                         }

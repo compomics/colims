@@ -57,10 +57,6 @@ public class MaxQuantParser {
      * @throws IOException
      */
     public void parseMaxQuantTextFolder(final File maxQuantTextFolder) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
-        parseMaxQuantTextFolder(maxQuantTextFolder, false);
-    }
-
-    public void parseMaxQuantTextFolder(final File maxQuantTextFolder, boolean indexPerRun) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
 
         //TODO parameters
 
@@ -81,25 +77,23 @@ public class MaxQuantParser {
         // Parse msms.txt and create and persist the objects found within
 
         LOGGER.debug("starting parameter and summary parsing");
-        
-        
+
+
         LOGGER.debug("starting msms parsing");
         File msmsFile = new File(maxQuantTextFolder, MSMSTXT);
         msms = maxQuantMsmsParser.parse(msmsFile, true);
 
-        if (indexPerRun) {
-            for (MSnSpectrum spectrum : getSpectra()) {
-                if (spectraPerRunMap.containsKey(spectrum.getFileName())) {
-                    spectraPerRunMap.get(spectrum.getFileName()).addASpectrum(spectrum);
-                } else {
-                    MaxQuantAnalyticalRun maxQuantRun = new MaxQuantAnalyticalRun();
-                    maxQuantRun.addASpectrum(spectrum);
-                    spectraPerRunMap.put((spectrum.getFileName()), maxQuantRun);
-                }
+        for (MSnSpectrum spectrum : getSpectraFromParsedFile()) {
+            if (spectraPerRunMap.containsKey(spectrum.getFileName())) {
+                spectraPerRunMap.get(spectrum.getFileName()).addASpectrum(spectrum);
+            } else {
+                MaxQuantAnalyticalRun maxQuantRun = new MaxQuantAnalyticalRun();
+                maxQuantRun.addASpectrum(spectrum);
+                spectraPerRunMap.put((spectrum.getFileName()), maxQuantRun);
             }
-            if (spectraPerRunMap.isEmpty()) {
-                throw new UnparseableException("could not connect spectra to any run");
-            }
+        }
+        if (spectraPerRunMap.isEmpty()) {
+            throw new UnparseableException("could not connect spectra to any run");
         }
 
         // Parse evidence.txt and create and persist the objects found within
@@ -120,8 +114,10 @@ public class MaxQuantParser {
     }
 
     /**
+     * get all the {@code PeptideAssumption}s that were parsed from the max
+     * quant folder
      *
-     * @return
+     * @return a {@code Collection} of all the {@code PeptideAssumption}s
      */
     public Collection<PeptideAssumption> getIdentificationsFromParsedFile() {
         return Collections.unmodifiableCollection(peptideAssumptions.values());
@@ -131,11 +127,19 @@ public class MaxQuantParser {
         return initialized;
     }
 
+    /**
+     * fetch the associated identification with a spectrum, null if not present
+     *
+     * @param aSpectrum the spectrum to fetch the identification for
+     * @return the {@code PeptideAssumption} connected to the spectrum
+     * @throws NumberFormatException if the spectrum is not present in the
+     * parsed file
+     */
     public PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
-        return peptideAssumptions.get((Integer) ((HashBiMap) msms).inverse().get(aSpectrum));
+        return peptideAssumptions.get(((SpectrumIntUrParameterShizzleStuff) aSpectrum.getUrParam(new SpectrumIntUrParameterShizzleStuff())).spectrumid);
     }
 
-    public Collection<MSnSpectrum> getSpectra() {
+    public Collection<MSnSpectrum> getSpectraFromParsedFile() {
         return Collections.unmodifiableCollection(msms.values());
     }
 
@@ -143,8 +147,18 @@ public class MaxQuantParser {
         return Collections.unmodifiableCollection(proteinMap.values());
     }
 
+    /**
+     * gets the parsed protein hit that is the most likely according to max
+     * quant for the parsed identification
+     *
+     * @param aPeptideAssumption the identification to get the protein for
+     * @return the protein with the best association for the given parsed
+     * identification
+     * @throws NumberFormatException if the identification is not present in the
+     * parsed files
+     */
     public ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
-        return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getKey()));
+        return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getParentProteins().get(0)));
     }
 
     public Collection<ProteinMatch> getProteinHitsForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
