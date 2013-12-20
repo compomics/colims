@@ -42,7 +42,7 @@ public class MaxQuantQuantificationParser {
 
             double heavyIntensity = 0.0;
             if (heavyIntensityAsString != null) {
-                if (!heavyIntensityAsString.isEmpty() & !heavyIntensityAsString.equalsIgnoreCase("nan")) {
+                if (!heavyIntensityAsString.isEmpty() && !heavyIntensityAsString.equalsIgnoreCase("nan")) {
                     heavyIntensity = Double.parseDouble(heavyIntensityAsString);
                 }
             }

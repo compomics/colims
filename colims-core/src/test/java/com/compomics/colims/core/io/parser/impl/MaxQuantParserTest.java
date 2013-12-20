@@ -1,8 +1,13 @@
 package com.compomics.colims.core.io.parser.impl;
 
+import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.matches.ProteinMatch;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -10,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 import org.junit.After;
 
 /**
@@ -31,7 +37,6 @@ public class MaxQuantParserTest {
 
     public MaxQuantParserTest() {
         testFolder = new File(getClass().getClassLoader().getResource("testdata").getPath());
-        //testFolder = new File("C:\\Users\\Davy\\Desktop\\java\\colims\\colims-core\\target\\test-classes\\testdata\\");
     }
 
     /**
@@ -51,11 +56,11 @@ public class MaxQuantParserTest {
     public void testHasParsedAFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("hasParsedAFile");
         maxQuantParser.clearParsedProject();
-        boolean expResult = false;
-        assertThat(maxQuantParser.hasParsedAFile(), is(expResult));
-        expResult = true;
+        assertThat(maxQuantParser.hasParsedAFile(), is(false));
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
-        assertThat(maxQuantParser.hasParsedAFile(), is(expResult));
+        assertThat(maxQuantParser.hasParsedAFile(), is(true));
+        maxQuantParser.clearParsedProject();
+        assertThat(maxQuantParser.hasParsedAFile(), is(false));
     }
 
     /**
@@ -69,28 +74,91 @@ public class MaxQuantParserTest {
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
         result = maxQuantParser.getIdentificationsFromParsedFile();
         assertThat(result.iterator().hasNext(), is(true));
-        assertThat(result.size(), both(is(774)).and(is(maxQuantParser.getSpectra().size())));
+        assertThat(result.size(), both(is(774)).and(is(maxQuantParser.getSpectraFromParsedFile().size())));
     }
 
     /**
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
      */
     @Test
-    public void testGetIdentificationForSpectrum() {
+    public void testGetIdentificationForSpectrum() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getIdentificationForSpectrum");
+        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        assertThat(maxQuantParser.getIdentificationsFromParsedFile().size(), is(774));
+        ArrayList<MSnSpectrum> spectra = new ArrayList<>(maxQuantParser.getSpectraFromParsedFile());
+        PeptideAssumption testAssumption = maxQuantParser.getIdentificationForSpectrum(spectra.get(4));
+        assertThat(testAssumption.getPeptide().getSequence(), is(not(nullValue())));
+        assertThat(testAssumption.getPeptide().getSequence(), is("AADIIDGLRK"));
+        assertThat(testAssumption.getPeptide().getParentProteins().size(), is(1));
+        assertThat(testAssumption.getPeptide().getMass(), closeTo(1070.6084, 0.0001));
+
+        //is unmodified
+        assertThat(testAssumption.getPeptide().getModificationMatches().isEmpty(), is(true));
+
+        //test modifications
+        //acetyl only
+        MSnSpectrum togetSpectrum = new MSnSpectrum();
+        SpectrumIntUrParameterShizzleStuff testId = new SpectrumIntUrParameterShizzleStuff();
+        testId.spectrumid = 46;
+        togetSpectrum.addUrParam(testId);
+        testAssumption = maxQuantParser.getIdentificationForSpectrum(togetSpectrum);
+        assertThat(testAssumption, is(not(nullValue())));
+        assertThat(testAssumption.getPeptide().getModificationMatches().size(), is(1));
+        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("acetyl (protein n-term)"));
+        //is N-term
+        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
+
+        //oxidation only
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 36;
+        testAssumption = maxQuantParser.getIdentificationForSpectrum(togetSpectrum);
+        assertThat(testAssumption.getPeptide().getModificationMatches().size(), is(1));
+        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
+        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(2));
+
+        //multiple oxidations spectra id 37
+
+
+        //both (don't have an entry for this yet) 442
+
+
+        //and test if the assumptions were parsed correctly
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 487;
+        assertThat(maxQuantParser.getIdentificationForSpectrum(togetSpectrum).getScore(), is(58.676));
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 605;
+        assertThat(maxQuantParser.getIdentificationForSpectrum(togetSpectrum).getScore(), is(101.64));
+
+        //test link between protein groups and peptides
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 275;
+        Iterator<ProteinMatch> proteinIter = maxQuantParser.getProteinHitsForIdentification(maxQuantParser.getIdentificationForSpectrum(togetSpectrum)).iterator();
+        ProteinMatch testProtein = proteinIter.next();
+        assertThat(testProtein.getMainMatch(), is("P62917"));
+        //assertThat(maxQuantParser.getIdentificationForSpectrum(spectra.get(2246)).getPeptide().getParentProteins().size(), is(2));
+        //assertThat(Integer.parseInt(maxQuantParser.getIdentificationForSpectrum(spectra.get(2246)).getPeptide().getParentProteins().get(1)), is(1100));
+
+        //Map<Integer, List<Quantification>> quantificationMap = MaxQuantQuantificationParser.parseMaxQuantQuantification(quantFile);
+
+        //first test if the quantifications are parsed correctly
+        //assertThat(quantificationMap.keySet().size(), is(15));
+
+        // assertThat(quantificationMap.get(11).get(0).getIntensity(), is(2169200.0));
+        // assertThat(quantificationMap.get(11).get(1).getIntensity(), is(2294200.0));
+
+        // assertThat(quantificationMap.get(11).get(1).getWeight(), is(QuantificationWeight.HEAVY));
+        // assertThat(quantificationMap.get(11).get(0).getWeight(), is(QuantificationWeight.LIGHT));
+
         //PeptideAssumption result = MaxQuantParser.getIdentificationForSpectrum(aSpectrum);
     }
 
     /**
-     * Test of getSpectra method, of class MaxQuantParser.
+     * Test of getSpectraFromParsedFile method, of class MaxQuantParser.
      */
     @Test
     public void testGetSpectra() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getSpectra");
-        Collection result = maxQuantParser.getSpectra();
+        Collection result = maxQuantParser.getSpectraFromParsedFile();
         assertThat(result.iterator().hasNext(), is(false));
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
-        result = maxQuantParser.getSpectra();
+        result = maxQuantParser.getSpectraFromParsedFile();
         assertThat(result.iterator().hasNext(), is(true));
         assertThat(result.size(), is(774));
     }
@@ -100,8 +168,16 @@ public class MaxQuantParserTest {
      * MaxQuantParser.
      */
     @Test
-    public void testGetBestProteinHitForIdentification() {
+    public void testGetBestProteinHitForIdentification() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getBestProteinHitForIdentification");
-//        ProteinMatch result = MaxQuantParser.getBestProteinHitForIdentification(new PeptideAssumption(new com.compomics.util.experiment.biology.Peptide(), 1, 99, null, 99));
+        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        com.compomics.util.experiment.biology.Peptide testPeptide = new com.compomics.util.experiment.biology.Peptide();
+        testPeptide.setParentProteins(new ArrayList<String>() {
+            {
+                this.add("354");
+            }
+        });
+        ProteinMatch result = maxQuantParser.getBestProteinHitForIdentification(new PeptideAssumption(testPeptide, 1, 1, null, -1.0));
+        assertThat(result, is(notNullValue()));
     }
 }

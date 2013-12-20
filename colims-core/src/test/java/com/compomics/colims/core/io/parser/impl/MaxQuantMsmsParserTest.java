@@ -25,12 +25,12 @@ public class MaxQuantMsmsParserTest {
     }
 
     /**
-     * Test of parse method, of class MaxQuantMsmsParser.
+     * Test of parse method, of class MaxQuantSpectrumParser.
      */
     @Test
     public void testParse() throws Exception {
         System.out.println("parseTest");
-        MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
+        MaxQuantSpectrumParser instance = new MaxQuantSpectrumParser();
         Map<Integer, MSnSpectrum> result = instance.parse(msmsFile);
         assertThat(result.keySet().size(), is(999));
         assertThat(Integer.parseInt(result.get(899).getScanNumber()), is(58732));
@@ -45,7 +45,7 @@ public class MaxQuantMsmsParserTest {
     @Test
     public void testParseWithoutPeaklist() throws Exception {
         System.out.println("testWithoutPeaklist");
-        MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
+        MaxQuantSpectrumParser instance = new MaxQuantSpectrumParser();
         Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, false);
         //throws a nullpointer
         String mgf = result.get(899).asMgf();
@@ -57,7 +57,7 @@ public class MaxQuantMsmsParserTest {
     public void testParseWithPeaklist() throws Exception {
         System.out.println("parseWithPeaklist");
         boolean addPeakList = true;
-        MaxQuantMsmsParser instance = new MaxQuantMsmsParser();
+        MaxQuantSpectrumParser instance = new MaxQuantSpectrumParser();
         Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, addPeakList);
         assertThat(result.keySet().size(), is(999));
         assertThat(result.get(899).getPeakList().size(), is(22));

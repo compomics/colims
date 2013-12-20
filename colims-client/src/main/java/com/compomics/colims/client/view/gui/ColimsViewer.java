@@ -9,6 +9,7 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
@@ -32,7 +33,6 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import com.compomics.util.gui.UtilitiesGUIDefaults;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
@@ -68,13 +68,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -168,7 +168,6 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
     private List<Spectrum> spectrumList;
     private Spectrum selectedSpectrum;
 
-    
     /**
      * Creates a new colims GUI.
      */
@@ -1342,23 +1341,9 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-
-        // set the look and feel
-        boolean numbusLookAndFeelSet = false;
-        try {
-            numbusLookAndFeelSet = UtilitiesGUIDefaults.setLookAndFeel();
-        } catch (Exception e) {
-            // ignore
-        }
-
-        if (!numbusLookAndFeelSet) {
-            JOptionPane.showMessageDialog(null,
-                    "Failed to set the default look and feel. Using backup look and feel.\n"
-                    + "colims will work but not look as good as it should...", "Look and Feel",
-                    JOptionPane.WARNING_MESSAGE);
-        }
-
-        new ColimsViewer();
+        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+        ColimsViewer colimsViewer = (ColimsViewer) applicationContext.getBean("colimsViewer");
+        colimsViewer.init();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

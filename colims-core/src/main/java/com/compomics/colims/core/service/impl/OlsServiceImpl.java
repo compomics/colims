@@ -35,23 +35,22 @@ public class OlsServiceImpl implements OlsService {
 
         return modification;
     }
-    
+
     @Override
     public List<Modification> findModifiationByName(String name) {
         List<Modification> modifications = new ArrayList<>();
-        
+
         //find the modifications by name        
         Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
         if (modificationsTerms.getItem() != null) {
             //get the modificiations
             for (MapItem mapItem : modificationsTerms.getItem()) {
                 Modification modification = findModifiationByAccession(mapItem.getKey().toString());
-                if(modification != null){
+                if (modification != null) {
                     modifications.add(modification);
                 }
             }
         }
-        
         return modifications;
     }
 
@@ -88,5 +87,4 @@ public class OlsServiceImpl implements OlsService {
 
         return modification;
     }
-    
 }

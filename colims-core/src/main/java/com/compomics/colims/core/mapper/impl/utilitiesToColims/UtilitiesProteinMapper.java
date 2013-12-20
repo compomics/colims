@@ -32,7 +32,7 @@ public class UtilitiesProteinMapper {
     /**
      * The map of new proteins (key: protein accession, value: the protein)
      */
-    private Map<String, Protein> newProteins = new HashMap<>();
+    public Map<String, Protein> newProteins = new HashMap<>();
 
     /**
      * Map the utilities protein related objects to colims proteins and add them
@@ -102,7 +102,7 @@ public class UtilitiesProteinMapper {
      * @throws FileNotFoundException
      * @throws ClassNotFoundException
      */
-    private Protein getProtein(String proteinAccession) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
+    public Protein getProtein(String proteinAccession) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
         Protein targetProtein;
 
         //first, look in the newly added proteins map

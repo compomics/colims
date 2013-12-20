@@ -114,7 +114,7 @@ public class UtilitiesModificationMapper {
                 peptideHasModification.setPeptide(targetPeptide);
             } else {
                 LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
-                throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+              //  throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
             }
         }
 
