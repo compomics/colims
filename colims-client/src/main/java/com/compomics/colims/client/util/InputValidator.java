@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.client.util;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.DistributedProperties;
+import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

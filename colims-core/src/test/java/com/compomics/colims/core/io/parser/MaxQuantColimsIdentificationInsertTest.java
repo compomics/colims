@@ -29,6 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -51,20 +52,21 @@ public class MaxQuantColimsIdentificationInsertTest {
     private SequenceFactory sequenceFactory;
     private File maxQuantEvidenceFile;
     private File maxQuantProteinGroupsFile;
-    private File funUniversitySequenceFactoryFastaFile;
+    private File proteinGroupsFastaFile;
 
     public MaxQuantColimsIdentificationInsertTest() throws AAAAAAAAAAAAAARGHException {
         maxQuantEvidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        maxQuantProteinGroupsFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.txt").getPath());
-        funUniversitySequenceFactoryFastaFile = new File(getClass().getClassLoader().getResource("testdata/fastafastafasta.fasta").getPath());
+        maxQuantProteinGroupsFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.tsv").getPath());
+        proteinGroupsFastaFile = new File(getClass().getClassLoader().getResource("testdata/testfasta.fasta").getPath());
         sequenceFactory = SequenceFactory.getInstance();
         try {
-            sequenceFactory.loadFastaFile(funUniversitySequenceFactoryFastaFile);
+            sequenceFactory.loadFastaFile(proteinGroupsFastaFile);
         } catch (IOException | ClassNotFoundException | StringIndexOutOfBoundsException | IllegalArgumentException ex) {
             throw new AAAAAAAAAAAAAARGHException("FUUUUUUUUU");
         }
     }
 
+    @Ignore
     @Test
     public void testIdentificationMapping() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException, AAAAAAAAAAAAAARGHException {
         List<Peptide> mappedPeptides = new ArrayList<>();

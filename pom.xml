@@ -12,7 +12,7 @@
         <module>colims-repository</module>
         <module>colims-core</module>
         <module>colims-client</module>
-        <module>com.compomics.colims_colims-distributed_jar_1.2.0-SNAPSHOT</module>
+        <module>colims-distributed</module>
     </modules>
     <name>colims</name>
     <url>https://code.google.com/p/colims/</url>

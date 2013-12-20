@@ -6,12 +6,12 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.util.InputValidator;
-import com.compomics.colims.core.distributed.storage.enums.StorageType;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.jmol.export.dialog.FileChooser;
-import com.compomics.colims.core.distributed.storage.incoming.*;
+import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

@@ -29,6 +29,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 
 /**
  *
@@ -133,6 +134,7 @@ public class MaxQuantColimsSpectrumInsertTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
         User user = userService.findByName("admin1");

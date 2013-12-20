@@ -95,7 +95,7 @@ public class MaxQuantPeptideParserTest {
         ArrayList<ModificationMatch> modifications = peptide.getModificationMatches();
         Assert.assertEquals(1, modifications.size());
         ModificationMatch pepHasMod = modifications.get(0);
-        Assert.assertEquals(2, pepHasMod.getModificationSite());
+        Assert.assertEquals(3, pepHasMod.getModificationSite());
         Assert.assertEquals(EvidenceHeaders.Oxidation_M.getColumnName(), pepHasMod.getTheoreticPtm());
     }
 

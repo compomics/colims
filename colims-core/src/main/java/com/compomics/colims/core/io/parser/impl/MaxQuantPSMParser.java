@@ -309,18 +309,22 @@ public class MaxQuantPSMParser {
                             if (values.containsKey(modificationHeader + " score diffs")) {
                                 modificationDeltaScores = values.get(modificationHeader + " score diffs").split("\\(");
                             }
-                            for (int i = 0; i < modificationLocations.length - 1; i++) {
+                            for (int i = 0; i < modificationLocations.length; i++) {
                                 if (modificationLocations[i].contains(")")) {
                                     MaxQuantPtmScoring score = new MaxQuantPtmScoring();
-                                    score.setDeltaScore(Double.parseDouble(modificationLocations[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
+                                    if (modificationDeltaScores != null) {
+                                        score.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
+                                    } else {
+                                        score.setDeltaScore(-1.0);
+                                    }
                                     score.setScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
+
                                     modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-                                    location = modificationLocations[i].length() - 1;
+                                    location = modificationLocations[i -1].length();
                                     ModificationMatch match = new ModificationMatch(modificationHeader, true, location);
                                     match.addUrParam(score);
                                     modificationsForPeptide.add(match);
                                 }
-
                                 previousLocation = location + previousLocation;
                             }
                         }

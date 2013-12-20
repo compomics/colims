@@ -113,7 +113,7 @@ public class MaxQuantParserTest {
         testAssumption = maxQuantParser.getIdentificationForSpectrum(togetSpectrum);
         assertThat(testAssumption.getPeptide().getModificationMatches().size(), is(1));
         assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
-        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(1));
+        assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(2));
 
         //multiple oxidations spectra id 37
 
