@@ -39,14 +39,15 @@ public class UtilitiesModificationMapper {
     private OlsService olsService;
     /**
      * Wrapper around the utilities spectrum factory
-     */ 
+     */
     @Autowired
-    private PtmFactoryWrapper ptmFactoryWrapper;    
+    private PtmFactoryWrapper ptmFactoryWrapper;
     /**
      * The map of new modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();    
+    private Map<String, Modification> newModifications = new HashMap<>();
+
     /**
      * Map the utilities modification matches onto the colims peptide. The
      * utilities PTMs are matched first onto CV terms from PSI-MOD.
@@ -114,7 +115,7 @@ public class UtilitiesModificationMapper {
                 peptideHasModification.setPeptide(targetPeptide);
             } else {
                 LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
-              //  throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+                throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
             }
         }
 
