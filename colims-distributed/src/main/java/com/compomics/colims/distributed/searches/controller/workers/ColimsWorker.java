@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 /**
@@ -27,7 +28,7 @@ public class ColimsWorker {
     private PrintWriter out;
     private boolean storeAfterRun = true;
 
-    public void launch() throws IOException {
+    public void launch() throws IOException, URISyntaxException {
         //load respinProperties
 
         workerProperties = DistributedProperties.getInstance();

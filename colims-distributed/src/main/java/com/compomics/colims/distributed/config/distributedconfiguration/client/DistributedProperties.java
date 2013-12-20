@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -36,12 +37,15 @@ public class DistributedProperties {
         }
     }
 
-    private void initiate() throws IOException {
-        propertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
+    private void initiate() throws IOException, URISyntaxException {
+        File jarFolder =  new File(DistributedProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+        propertiesFile = new File(jarFolder, "config/distributed.properties");
+        //  propertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
         if (!propertiesFile.exists()) {
             propertiesFile.getParentFile().mkdirs();
             propertiesFile.createNewFile();
             setDefaultProperties();
+            save();
         } else {
             try {
                 properties.load(new FileInputStream(propertiesFile));
@@ -54,7 +58,7 @@ public class DistributedProperties {
     private DistributedProperties() {
     }
 
-    public static DistributedProperties getInstance() throws IOException {
+    public static DistributedProperties getInstance() throws IOException, URISyntaxException {
         if (searchProperties == null) {
             searchProperties = new DistributedProperties();
             searchProperties.initiate();
@@ -64,6 +68,9 @@ public class DistributedProperties {
 
     public void save() {
         try {
+            if (propertiesFile == null) {
+                propertiesFile = new File(DistributedProperties.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/config/config.properties");
+            }
             properties.save(propertiesFile);
         } catch (ConfigurationException ex) {
             LOGGER.error(ex);
