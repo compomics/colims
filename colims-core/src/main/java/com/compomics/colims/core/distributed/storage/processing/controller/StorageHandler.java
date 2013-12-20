@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -35,6 +37,8 @@ public class StorageHandler implements Runnable {
     private Socket socket;
 
     private BufferedReader in;
+    private InputStream inputStream;
+    private OutputStream outputStream;
 
     public Socket getSocket() {
         return socket;
@@ -47,8 +51,8 @@ public class StorageHandler implements Runnable {
     @Override
     public void run() {
         try {
-            InputStream inputStream = socket.getInputStream();
-            OutputStream outputStream = socket.getOutputStream();
+            inputStream = socket.getInputStream();
+            outputStream = socket.getOutputStream();
             //read the task from the socket that just sent it
             StorageTask task = readTaskFromInputStream(inputStream);
             //write output from the task back to the client?
@@ -66,6 +70,19 @@ public class StorageHandler implements Runnable {
         StorageTask task = null;
         while ((response = in.readLine()) != null) {
             String[] responseArgs = response.split(">.<");
+            //if the last item is a poll_state statement, send back the state of the taskID
+            if (responseArgs[responseArgs.length].equalsIgnoreCase("poll_state")) {
+                String userID = responseArgs[0];
+                String fileLocation = responseArgs[1];
+                StorageState state;
+                try {
+                    state = storageQueue.getTask(userID, fileLocation).getState();
+                    writeTaskStateToOutputStream(outputStream, state);
+                } catch (SQLException ex) {
+                    LOGGER.error(ex);
+                    break;
+                }
+            }
             task = storageQueue.addNewTask(responseArgs[1], responseArgs[0], Long.parseLong(responseArgs[2]), responseArgs[3]);
             LOGGER.debug("User :" + responseArgs[0] + " has successfully planned storing");
             break;
@@ -82,6 +99,16 @@ public class StorageHandler implements Runnable {
                 if (task.getState().equals(StorageState.STORED) || task.getState().equals(StorageState.ERROR)) {
                     break;
                 }
+            }
+        }
+    }
+
+    private void writeTaskStateToOutputStream(OutputStream outputStream, StorageState state) throws IOException {
+        try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(outputStream))) {
+            while (socket.isConnected()) {
+                out.write(state.toString());
+                out.newLine();
+                out.flush();
             }
         }
     }
