@@ -15,7 +15,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class DualList<T> extends javax.swing.JPanel {
 
@@ -223,33 +223,16 @@ public class DualList<T> extends javax.swing.JPanel {
         removeItemButton = new javax.swing.JButton();
 
         setOpaque(false);
-        setLayout(new java.awt.GridBagLayout());
 
         availableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Available"));
         availableScrollPane.setOpaque(false);
 
         availableScrollPane.setViewportView(availableItemList);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(availableScrollPane, gridBagConstraints);
-
         addedScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Added"));
         addedScrollPane.setOpaque(false);
 
         addedScrollPane.setViewportView(addedItemList);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(addedScrollPane, gridBagConstraints);
 
         buttonParentPanel.setOpaque(false);
         buttonParentPanel.setLayout(new java.awt.GridBagLayout());
@@ -293,12 +276,23 @@ public class DualList<T> extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         buttonParentPanel.add(buttonPanel, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weighty = 1.0;
-        add(buttonParentPanel, gridBagConstraints);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(availableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonParentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addedScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(availableScrollPane)
+            .addComponent(buttonParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(addedScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemButton;

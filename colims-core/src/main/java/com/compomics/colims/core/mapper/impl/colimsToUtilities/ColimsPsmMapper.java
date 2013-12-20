@@ -25,7 +25,7 @@ public class ColimsPsmMapper {
     private ColimsPeptideMapper colimsPeptideMapper;
 
     public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
-        LOGGER.debug("Mapping spectrum from " + spectrum.getTitle()+ " to new list of SpectrumMatch objects");
+        LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         //get best assumption
         for (Peptide aPeptide : spectrum.getPeptides()) {
             PeptideMatch pepMatch = new PeptideMatch();
@@ -34,5 +34,5 @@ public class ColimsPsmMapper {
             SpectrumMatch specMatch = new SpectrumMatch(spectrum.getAccession(), assumption);
             targetSpectrumMap.add(specMatch);
         }
-    }
+    }    
 }

@@ -11,7 +11,6 @@ import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Group;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -22,13 +21,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -48,6 +47,8 @@ public class ColimsController implements Controllable, ActionListener {
     //child controllers    
     @Autowired
     private ProjectManagementController projectManagementController;
+    @Autowired
+    private ProjectOverviewController projectOverviewController;
     @Autowired
     private UserManagementController userManagementController;
     @Autowired
@@ -106,6 +107,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init child controllers
         projectManagementController.init();
+        projectOverviewController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -114,7 +116,8 @@ public class ColimsController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        colimsFrame.getHomeParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
 
         //add action listeners                
         //add menu item action listeners
@@ -162,6 +165,7 @@ public class ColimsController implements Controllable, ActionListener {
     public void showView() {
         colimsFrame.setLocationRelativeTo(null);
         colimsFrame.setVisible(true);
+        colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     @Override

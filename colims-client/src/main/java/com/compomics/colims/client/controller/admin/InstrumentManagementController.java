@@ -68,7 +68,7 @@ public class InstrumentManagementController implements Controllable {
     private InstrumentTypeCrudDialog instrumentTypeCrudDialog;
     //parent controller
     @Autowired
-    private ColimsController mainController;
+    private ColimsController colimsController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     //services
@@ -125,7 +125,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     private void initInstrumentManagementDialog() {
-        instrumentManagementDialog = new InstrumentManagementDialog(mainController.getColimsFrame(), true);
+        instrumentManagementDialog = new InstrumentManagementDialog(colimsController.getColimsFrame(), true);
 
         //add binding
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
@@ -228,7 +228,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     private void initInstrumentEditDialog() {
-        instrumentEditDialog = new InstrumentEditDialog(mainController.getColimsFrame(), true);
+        instrumentEditDialog = new InstrumentEditDialog(instrumentManagementDialog, true);
 
         //init dual list
         instrumentEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
@@ -393,7 +393,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     private void initInstrumentTypeCrudDialog() {
-        instrumentTypeCrudDialog = new InstrumentTypeCrudDialog(mainController.getColimsFrame(), true);
+        instrumentTypeCrudDialog = new InstrumentTypeCrudDialog(instrumentEditDialog, true);
 
         instrumentTypeBindingList = ObservableCollections.observableList(instrumentTypeService.findAll());
         JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentTypeCrudDialog.getInstrumentTypeList());

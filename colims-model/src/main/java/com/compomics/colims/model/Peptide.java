@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -28,9 +30,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Peptide extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Basic(optional = false)
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
@@ -54,6 +55,7 @@ public class Peptide extends AbstractDatabaseEntity {
     private Spectrum spectrum;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
@@ -116,7 +118,7 @@ public class Peptide extends AbstractDatabaseEntity {
 
     public void setPsmPostErrorProbability(Double psmPostErrorProbability) {
         this.psmPostErrorProbability = psmPostErrorProbability;
-    }           
+    }
 
     public List<PeptideHasModification> getPeptideHasModifications() {
         return peptideHasModifications;

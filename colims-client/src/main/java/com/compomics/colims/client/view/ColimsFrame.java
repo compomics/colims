@@ -20,8 +20,12 @@ public class ColimsFrame extends javax.swing.JFrame {
         this.getContentPane().setBackground(Color.WHITE);
     }
 
-    public JPanel getHomeParentPanel() {
-        return homeParentPanel;
+    public JPanel getProjectsManagementParentPanel() {
+        return projectsManagementParentPanel;
+    }
+
+    public JPanel getProjectsOverviewParentPanel() {
+        return projectsOverviewParentPanel;
     }
 
     public JMenuItem getUserManagementMenuItem() {
@@ -46,16 +50,16 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getInstrumentManagementMenuItem() {
         return instrumentManagementMenuItem;
-    }   
+    }
 
     public JMenuItem getMaterialManagementMenuItem() {
         return materialManagementMenuItem;
-    }     
+    }
 
     public JMenuItem getProtocolManagementMenuItem() {
         return protocolManagementMenuItem;
-    }        
-      
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,7 +70,8 @@ public class ColimsFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         mainTabbedPane = new javax.swing.JTabbedPane();
-        homeParentPanel = new javax.swing.JPanel();
+        projectsManagementParentPanel = new javax.swing.JPanel();
+        projectsOverviewParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         viewMenu = new javax.swing.JMenu();
         homeMenuItem = new javax.swing.JMenuItem();
@@ -79,13 +84,17 @@ public class ColimsFrame extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setExtendedState(1);
         setMinimumSize(new java.awt.Dimension(700, 700));
 
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N
 
-        homeParentPanel.setOpaque(false);
-        homeParentPanel.setLayout(new java.awt.GridBagLayout());
-        mainTabbedPane.addTab("Home", homeParentPanel);
+        projectsManagementParentPanel.setOpaque(false);
+        projectsManagementParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Projects management", projectsManagementParentPanel);
+
+        projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Projects overview", projectsOverviewParentPanel);
 
         viewMenu.setText("View");
 
@@ -136,12 +145,13 @@ public class ColimsFrame extends javax.swing.JFrame {
     private javax.swing.JMenu adminMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem homeMenuItem;
-    private javax.swing.JPanel homeParentPanel;
     private javax.swing.JMenuItem instrumentManagementMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JMenu managementMenu;
     private javax.swing.JMenuItem materialManagementMenuItem;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel projectsManagementParentPanel;
+    private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;

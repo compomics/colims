@@ -2,21 +2,21 @@ package com.compomics.colims.client.view.admin.protocol;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.model.ProtocolCvTerm;
-import java.awt.Frame;
+import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class ProtocolEditDialog extends javax.swing.JDialog {
     
     /**
      * Creates new form InstrumentCvDialog
      */
-    public ProtocolEditDialog(Frame parent, boolean modal) {
+    public ProtocolEditDialog(Dialog parent, boolean modal) {
         super(parent, modal);
         
         initComponents();

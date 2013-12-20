@@ -10,8 +10,8 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.format.ExperimentsOverviewTableFormat;
-import com.compomics.colims.client.model.format.ProjectsOverviewTableFormat;
+import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
+import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
@@ -84,21 +84,36 @@ public class ProjectManagementController implements Controllable {
         //init projects table
         projects.addAll(projectService.findAllWithEagerFetching());
         SortedList<Project> sortedProjects = new SortedList<>(projects, new IdComparator());
-        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectsOverviewTableFormat());
+        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectManagementTableFormat());
         projectManagementPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
         projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
+        
+        //set column widths
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(100);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(50);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
-        experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentsOverviewTableFormat());
+        experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentManagementTableFormat());
         projectManagementPanel.getExperimentsTable().setModel(experimentsTableModel);
         experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
         experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
+        
+        //set column widths
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);        
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
 
-        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
+        //set sorting
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(

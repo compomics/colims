@@ -15,9 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,6 +22,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -35,9 +34,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Spectrum extends AbstractDatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-    
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     private String accession;
@@ -59,23 +57,24 @@ public class Spectrum extends AbstractDatabaseEntity {
     @Column(name = "intensity")
     private Double intensity;
     @Column(name = "retention_time")
-    private Double retentionTime;    
+    private Double retentionTime;
     @Column(name = "fragmentation_type")
-    @Enumerated(EnumType.STRING)    
+    @Enumerated(EnumType.STRING)
     private FragmentationType fragmentationType;
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne
     private AnalyticalRun analyticalRun;
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<Quantification> quantificationList = new ArrayList<>();
-    
-    public Spectrum(){
+    private List<Quantification> quantifications = new ArrayList<>();
+
+    public Spectrum() {
     }
-    
+
     public String getAccession() {
         return accession;
     }
@@ -146,7 +145,7 @@ public class Spectrum extends AbstractDatabaseEntity {
 
     public void setFragmentationType(FragmentationType fragmentationType) {
         this.fragmentationType = fragmentationType;
-    }        
+    }
 
     public AnalyticalRun getAnalyticalRun() {
         return analyticalRun;
@@ -170,7 +169,15 @@ public class Spectrum extends AbstractDatabaseEntity {
 
     public void setSpectrumFiles(List<SpectrumFile> spectrumFiles) {
         this.spectrumFiles = spectrumFiles;
-    }           
+    }
+
+    public List<Quantification> getQuantifications() {
+        return quantifications;
+    }
+
+    public void setQuantifications(List<Quantification> quantifications) {
+        this.quantifications = quantifications;
+    }
 
     @Override
     public int hashCode() {
@@ -193,5 +200,4 @@ public class Spectrum extends AbstractDatabaseEntity {
         }
         return true;
     }
-        
 }

@@ -2,7 +2,7 @@ package com.compomics.colims.client.view.admin.instrument;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.model.InstrumentCvTerm;
-import java.awt.Frame;
+import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JList;
@@ -10,14 +10,14 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class InstrumentEditDialog extends javax.swing.JDialog {
     
     /**
      * Creates new form InstrumentCvDialog
      */
-    public InstrumentEditDialog(Frame parent, boolean modal) {
+    public InstrumentEditDialog(Dialog parent, boolean modal) {
         super(parent, modal);
         
         initComponents();

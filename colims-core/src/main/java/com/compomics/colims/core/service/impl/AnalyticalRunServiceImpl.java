@@ -5,6 +5,8 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,19 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     @Override
     public long countAll() {
         return analyticalRunRepository.countAll();
+    }
+
+    @Override
+    public void fetchSpectra(AnalyticalRun analyticalRun) {
+        try {
+            //attach the analytical run to the new session
+            analyticalRunRepository.saveOrUpdate(analyticalRun);
+            if (!Hibernate.isInitialized(analyticalRun.getSpectrums())) {
+                Hibernate.initialize(analyticalRun.getSpectrums());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
     }
 
 }

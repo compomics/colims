@@ -41,7 +41,7 @@ public class ColimsPeptideMapper {
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
         ArrayList<ModificationMatch> modifications = new ArrayList<ModificationMatch>();
         colimsModMapper.map(sourcePeptide, modifications);
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);        
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 

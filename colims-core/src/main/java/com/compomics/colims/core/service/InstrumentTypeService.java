@@ -4,7 +4,7 @@ import com.compomics.colims.model.InstrumentType;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface InstrumentTypeService extends GenericService<InstrumentType, Long> {
     

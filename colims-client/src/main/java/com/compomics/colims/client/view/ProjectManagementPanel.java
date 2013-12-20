@@ -5,7 +5,7 @@ import javax.swing.JTable;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class ProjectManagementPanel extends javax.swing.JPanel {
 

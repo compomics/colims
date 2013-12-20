@@ -2,21 +2,21 @@ package com.compomics.colims.client.view.admin.material;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.model.MaterialCvTerm;
-import java.awt.Frame;
+import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class MaterialEditDialog extends javax.swing.JDialog {
     
     /**
      * Creates new form InstrumentCvDialog
      */
-    public MaterialEditDialog(Frame parent, boolean modal) {
+    public MaterialEditDialog(Dialog parent, boolean modal) {
         super(parent, modal);
         
         initComponents();

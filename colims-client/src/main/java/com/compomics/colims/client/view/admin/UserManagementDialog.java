@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class UserManagementDialog extends javax.swing.JDialog {
 

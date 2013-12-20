@@ -14,4 +14,11 @@ import java.util.List;
 public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {
 
     public List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleId);
+    
+    /**
+     * Fetch the spectra
+     *
+     * @param analyticalRun
+     */
+    void fetchSpectra(AnalyticalRun analyticalRun);
 }

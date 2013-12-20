@@ -2,10 +2,7 @@ package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.model.ExperimentBinaryFile;
-import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.awt.Dialog;
 
 /**
  *
@@ -16,7 +13,7 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public ExperimentBinaryFileDialog(java.awt.Frame parent, boolean modal) {
+    public ExperimentBinaryFileDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
         initComponents();       

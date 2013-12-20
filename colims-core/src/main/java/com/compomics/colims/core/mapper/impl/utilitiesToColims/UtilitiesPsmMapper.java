@@ -75,16 +75,7 @@ public class UtilitiesPsmMapper {
                     proteinMatches.add(proteinMatch);
                 }
             }
-        } catch (IllegalArgumentException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
         }

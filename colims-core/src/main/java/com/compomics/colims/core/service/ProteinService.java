@@ -4,7 +4,7 @@ import com.compomics.colims.model.Protein;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface ProteinService extends GenericService<Protein, Long> {
     

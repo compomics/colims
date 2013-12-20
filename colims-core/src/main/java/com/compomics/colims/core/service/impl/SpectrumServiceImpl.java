@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
@@ -19,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -139,4 +141,53 @@ public class SpectrumServiceImpl implements SpectrumService {
     public long countAll() {
         return spectrumRepository.countAll();
     }
+
+    @Override
+    public Long countSpectraByAnalyticalRun(AnalyticalRun analyticalRun) {
+        return spectrumRepository.countSpectraByAnalyticalRun(analyticalRun);
+    }
+
+    @Override
+    public Double getMinimumRetentionTime(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMinimumRetentionTime(analyticalRun);
+    }
+
+    @Override
+    public Double getMaximumRetentionTime(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMaximumRetentionTime(analyticalRun);
+    }
+
+    @Override
+    public Double getMinimumMzRatio(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMinimumMzRatio(analyticalRun);
+    }
+
+    @Override
+    public Double getMaximumMzRatio(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMaximumMzRatio(analyticalRun);
+    }
+
+    @Override
+    public Integer getMinimumCharge(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMinimumCharge(analyticalRun);
+    }
+
+    @Override
+    public Integer getMaximumCharge(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getMaximumCharge(analyticalRun);
+    }
+
+    @Override
+    public void fetchSpectrumFiles(Spectrum spectrum) {
+        try {
+            //attach the spectrum to the new session
+            spectrumRepository.saveOrUpdate(spectrum);
+            if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
+                Hibernate.initialize(spectrum.getSpectrumFiles());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
+    }
+
 }

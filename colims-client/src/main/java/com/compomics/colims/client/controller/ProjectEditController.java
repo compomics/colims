@@ -62,18 +62,18 @@ public class ProjectEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
-
-        bindingGroup = new BindingGroup();
+        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);        
 
         //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());
-
+        projectEditDialog.getUserDualList().init(new UserNameComparator());        
+        
         //add binding
+        bindingGroup = new BindingGroup();
+        
         userBindingList = ObservableCollections.observableList(userService.findAll());
 
-        JComboBoxBinding instrumentTypeComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
-        bindingGroup.addBinding(instrumentTypeComboBoxBinding);
+        JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
+        bindingGroup.addBinding(ownerComboBoxBinding);
 
         bindingGroup.bind();
 
@@ -154,7 +154,6 @@ public class ProjectEditController implements Controllable {
 
         projectEditDialog.getTitleTextField().setText(projectToEdit.getTitle());
         projectEditDialog.getLabelTextField().setText(projectToEdit.getLabel());
-
         //set the selected item in the owner combobox        
         projectEditDialog.getOwnerComboBox().setSelectedItem(projectToEdit.getOwner());
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());

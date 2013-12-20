@@ -1,21 +1,22 @@
-package com.compomics.colims.client.model.format;
+package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Sample;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
+public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
 
-    private static final String[] columnNames = {"Id", "Name", "Condition", "Number of runs"};
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String[] columnNames = {"Id", "Name", "# runs"};
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
-    public static final int CONDITION = 2;
-    public static final int NUMBER_OF_RUNS = 3;
+    public static final int NUMBER_OF_RUNS = 2;
 
     @Override
     public Class getColumnClass(int column) {
@@ -23,8 +24,6 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
             case SAMPLE_ID:
                 return Long.class;
             case NAME:
-                return String.class;
-            case CONDITION:
                 return String.class;
             case NUMBER_OF_RUNS:
                 return Integer.class;
@@ -40,7 +39,7 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return columnNames.length;
     }
 
     @Override
@@ -54,9 +53,7 @@ public class SamplesTableFormat implements AdvancedTableFormat<Sample> {
             case SAMPLE_ID:
                 return sample.getId();
             case NAME:
-                return sample.getName();
-            case CONDITION:
-                return sample.getCondition();
+                return sample.getName();       
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

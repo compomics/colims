@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface Controllable {
 

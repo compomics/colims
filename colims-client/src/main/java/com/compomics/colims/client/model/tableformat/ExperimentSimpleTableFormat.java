@@ -1,17 +1,20 @@
-package com.compomics.colims.client.model.format;
+package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Experiment;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Experiment> {
+public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experiment> {
 
-    private static final String[] columnNames = {"Id", "Title", "Number", "Number of samples"};
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String[] columnNames = {"Id", "Title", "Number", "# samp"};
     public static final int EXPERIMENT_ID = 0;
     public static final int TITLE = 1;
     public static final int NUMBER = 2;
@@ -40,7 +43,7 @@ public class ExperimentsOverviewTableFormat implements AdvancedTableFormat<Exper
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return columnNames.length;
     }
 
     @Override

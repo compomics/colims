@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 public class ColimsSpectrumMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
-
     @Autowired
     private SpectrumService spectrumService;
 
@@ -55,20 +54,17 @@ public class ColimsSpectrumMapper {
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
         targetSpectrum.setSpectrumTitle(sourceSpectrum.getTitle());
         //Add peaks
-        HashMap<Double, Peak> peakMap = new HashMap<Double, Peak>();
         for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
             try {
                 Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(aFile);
                 for (Double mz : mzAndIntensities.keySet()) {
                     Peak peak = new Peak(mz, mzAndIntensities.get(mz));
                     targetSpectrum.addPeak(peak);
-                    peakMap.put(mz, peak);
                 }
-
             } catch (IOException ex) {
                 LOGGER.error(ex);
+                throw new MappingException(ex);
             }
         }
-        targetSpectrum.setPeakList(peakMap);
     }
 }

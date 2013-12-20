@@ -50,7 +50,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     private CvTermManagementDialog cvTermManagementDialog;
     //parent controller
     @Autowired
-    private ColimsController mainController;
+    private ColimsController colimsController;
     @Autowired
     private EventBus eventBus;
     //services
@@ -66,7 +66,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     @Override
     public void init() {
         //get view
-        cvTermManagementDialog = new CvTermManagementDialog(mainController.getColimsFrame(), true);
+        cvTermManagementDialog = new CvTermManagementDialog(colimsController.getColimsFrame(), true);
 
         //register to event bus
         eventBus.register(this);

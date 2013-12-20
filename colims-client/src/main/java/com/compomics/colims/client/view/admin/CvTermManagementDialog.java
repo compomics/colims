@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view.admin;
 
-import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,7 +9,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class CvTermManagementDialog extends javax.swing.JDialog {
     

@@ -1,10 +1,13 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SampleService;
+import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.repository.SampleRepository;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,4 +65,35 @@ public class SampleServiceImpl implements SampleService {
         return sampleRepository.countAll();
     }
 
+    @Override
+    public void fetchBinaryFiles(Sample sample) {
+        try {
+            //attach the sample to the new session
+            sampleRepository.saveOrUpdate(sample);
+            if (!Hibernate.isInitialized(sample.getBinaryFiles())) {
+                Hibernate.initialize(sample.getBinaryFiles());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
+    }
+
+    @Override
+    public Protocol getMostUsedProtocol() {
+        return sampleRepository.getMostUsedProtocol();
+    }
+
+    @Override
+    public void fetchMaterials(Sample sample) {
+        try {
+            //attach the sample to the new session
+            sampleRepository.saveOrUpdate(sample);
+            if (!Hibernate.isInitialized(sample.getMaterials())) {
+                Hibernate.initialize(sample.getMaterials());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
+    }
+    
 }

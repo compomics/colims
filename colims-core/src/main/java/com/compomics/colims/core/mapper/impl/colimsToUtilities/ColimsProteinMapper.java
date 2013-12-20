@@ -19,10 +19,9 @@ import org.springframework.stereotype.Component;
 @Component("colimsProteinMapper")
 public class ColimsProteinMapper {
 
+    private static final Logger LOGGER = Logger.getLogger(ColimsProteinMapper.class);
     @Autowired
     private ColimsPeptideMapper colimsPeptideMapper;
-
-    private static final Logger LOGGER = Logger.getLogger(ColimsProteinMapper.class);
 
     /**
      * Map the utilities protein related objects to colims proteins and add them

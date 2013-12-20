@@ -8,7 +8,7 @@ import javax.swing.JTable;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public class InstrumentManagementDialog extends javax.swing.JDialog {
     

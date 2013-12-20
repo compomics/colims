@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface PeptideService extends GenericService<Peptide, Long> {
 
@@ -16,4 +16,11 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @return the found peptides
      */
     List<Peptide> findBySpectrumId(long spectrumId);
+    
+    /*
+     * Fetch the peptide peptideHasModifications
+     * 
+     * @param peptide
+     */
+    void fetchPeptideHasModificiations(Peptide peptide);
 }

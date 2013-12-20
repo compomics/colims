@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface CvTermService extends GenericService<CvTerm, Long> {
 

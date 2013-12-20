@@ -5,7 +5,7 @@ import com.compomics.colims.model.UnknownAAException;
 
 /**
  *
- * @author niels
+ * @author Niels Hulstaert
  */
 public interface IonLadderMassesCalculator {
     
