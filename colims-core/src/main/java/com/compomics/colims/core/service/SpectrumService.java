@@ -99,4 +99,11 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * @return
      */
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
+    
+    /*
+     * Fetch the spectrum spectrumFiles
+     * 
+     * @param spectrum
+     */
+    void fetchSpectrumFiles(Spectrum spectrum);
 }

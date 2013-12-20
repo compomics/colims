@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -174,6 +175,19 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public Integer getMaximumCharge(AnalyticalRun analyticalRun) {
         return spectrumRepository.getMaximumCharge(analyticalRun);
+    }
+
+    @Override
+    public void fetchSpectrumFiles(Spectrum spectrum) {
+        try {
+            //attach the sample to the new session
+            spectrumRepository.saveOrUpdate(spectrum);
+            if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
+                Hibernate.initialize(spectrum.getSpectrumFiles());
+            }
+        } catch (HibernateException hbe) {
+            LOGGER.error(hbe, hbe.getCause());
+        }
     }
 
 }

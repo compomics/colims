@@ -1,5 +1,6 @@
 package com.compomics.colims.client.view;
 
+import com.compomics.colims.client.controller.ProjectOverviewController;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.IonFactory;
@@ -74,6 +75,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
      */
     private JFrame colimsFrame;
     /**
+     * The controller
+     */
+    private ProjectOverviewController projectOverviewController;
+    /**
      * The compomics PTM factory.
      */
     private PTMFactory ptmFactory = PTMFactory.getInstance();
@@ -101,15 +106,11 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     /**
      * The utilities user preferences.
      */
-    private UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+    private UtilitiesUserPreferences utilitiesUserPreferences;
     /**
      * Boolean indicating whether the spectrum shall be displayed.
      */
-    private boolean displaySpectrum = true;
-    /**
-     * The spectrum annotator.
-     */
-    private SpectrumAnnotator spectrumAnnotator = new SpectrumAnnotator();
+    private boolean displaySpectrum = true;    
     /**
      * The last folder opened by the user. Defaults to user.home.
      */
@@ -122,8 +123,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     /**
      * Creates new form ProjectOverviewPanel1
      */
-    public ProjectOverviewPanel(JFrame colimsFrame) {
+    public ProjectOverviewPanel(JFrame colimsFrame, ProjectOverviewController projectOverviewController, UtilitiesUserPreferences utilitiesUserPreferences) {
         this.colimsFrame = colimsFrame;
+        this.projectOverviewController = projectOverviewController;
+        this.utilitiesUserPreferences = utilitiesUserPreferences;
 
         initComponents();
 
@@ -135,7 +138,6 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
         annotationPreferences.addSelectedCharge(1);
 
         setUpGui();
-        setTableProperties();
     }
 
     public JTable getExperimentsTable() {
@@ -156,6 +158,26 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
     public JTable getPsmTable() {
         return psmTable;
+    } 
+
+    public JPanel getSpectrumJPanel() {
+        return spectrumJPanel;
+    }
+
+    public JPanel getSecondarySpectrumPlotsJPanel() {
+        return secondarySpectrumPlotsJPanel;
+    }
+
+    public JPanel getSpectrumMainPanel() {
+        return spectrumMainPanel;
+    }   
+
+    public AnnotationPreferences getAnnotationPreferences() {
+        return annotationPreferences;
+    }       
+
+    public SearchParameters getSearchParameters() {
+        return searchParameters;
     }        
 
     /**
@@ -196,34 +218,6 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
         // show the annotation menu bar
         spectrumAnnotationMenuPanel.add(annotationMenuBar);
-    }
-
-    /**
-     * Set the table properties.
-     */
-    private void setTableProperties() {
-        
-        // sparklines for the psm table
-        psmTable.getColumn("m/z").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL, 100d, utilitiesUserPreferences.getSparklineColor()));
-        psmTable.getColumn("Charge").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL, 4d, utilitiesUserPreferences.getSparklineColor()));
-        psmTable.getColumn("Intensity").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL, 2000000d, utilitiesUserPreferences.getSparklineColor()));
-        psmTable.getColumn("RT").setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL, 0d,
-                2000d, 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
-
-        // @TODO: use the following whenever the run selection changes
-//        psmTable.getColumn("RT").setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL, SpectrumFactory.getInstance().getMinRT(),
-//                SpectrumFactory.getInstance().getMaxRT(), SpectrumFactory.getInstance().getMaxRT() / 50,
-//                utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
-//        psmTable.getColumn("Int").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-//                            SpectrumFactory.getInstance().getMaxIntensity(), utilitiesUserPreferences.getSparklineColor()));
-//        psmTable.getColumn("Charge").setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-//                            (double) ((PSMaps) identification.getUrParam(new PSMaps())).getPsmSpecificMap().getMaxCharge(), utilitiesUserPreferences.getSparklineColor()));
-//        ((JSparklinesBarChartTableCellRenderer) psmTable.getColumn("m/z").getCellRenderer()).setMaxValue(maxMz);
-        ((JSparklinesBarChartTableCellRenderer) psmTable.getColumn("m/z").getCellRenderer()).showNumberAndChart(true, labelWidth);
-        ((JSparklinesBarChartTableCellRenderer) psmTable.getColumn("Charge").getCellRenderer()).showNumberAndChart(true, labelWidth - 30);
-        ((JSparklinesBarChartTableCellRenderer) psmTable.getColumn("Intensity").getCellRenderer()).showNumberAndChart(true, labelWidth);
-        ((JSparklinesIntervalChartTableCellRenderer) psmTable.getColumn("RT").getCellRenderer()).showNumberAndChart(true, labelWidth + 5);
-        ((JSparklinesIntervalChartTableCellRenderer) psmTable.getColumn("RT").getCellRenderer()).showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 
     /**
@@ -1008,7 +1002,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
         if (row != -1) {
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-            updateSpectrum(row);
+            projectOverviewController.updateSpectrum();
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         }
     }//GEN-LAST:event_psmTableMouseReleased
@@ -1236,175 +1230,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
      * annotation accuracy.
      */
     public void updateSpectrum() {
-        updateSpectrum(psmTable.getSelectedRow());
+        projectOverviewController.updateSpectrum();
     }
 
-    /**
-     * Update the spectrum to the currently selected PSM.
-     *
-     * @param row the row index of the PSM
-     */
-    private void updateSpectrum(int row) {
-
-        if (row != -1) {
-
-            this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
-            if (displaySpectrum) {
-
-                try {
-                    File spectrumFile = new ClassPathResource("/gui/example/colims_test_spectrum.pkl").getFile();
-                    //File spectrumFile = new File("C:/Users/hba041/colims_test_spectrum.pkl");
-                    PklFile pklFile = new PklFile(spectrumFile);
-                    double[] intensities = pklFile.getIntensityValues();
-                    double[] mz = pklFile.getMzValues();
-
-                    HashMap<Double, Peak> peakMap = new HashMap<Double, Peak>();
-                    for (int i = 0; i < intensities.length; i++) {
-                        peakMap.put(mz[i], new Peak(mz[i], intensities[i]));
-
-                    }
-
-                    ArrayList<Charge> charges = new ArrayList<Charge>();
-                    charges.add(new Charge(Charge.PLUS, 2));
-
-                    // @TODO: get the spectrum
-                    MSnSpectrum currentSpectrum = new MSnSpectrum(2, new Precursor(1652.29494, 1088.50244, charges), "My title", peakMap, "My file");
-
-                    if (currentSpectrum != null) {
-
-                        Collection<Peak> peaks = currentSpectrum.getPeakList();
-
-                        if (peaks == null || peaks.isEmpty()) {
-                            // do nothing, peaks list not found
-                        } else {
-
-                            // add the data to the spectrum panel
-                            Precursor precursor = currentSpectrum.getPrecursor();
-                            SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match
-
-                            SpectrumPanel spectrumPanel = new SpectrumPanel(
-                                    currentSpectrum.getMzValuesAsArray(), currentSpectrum.getIntensityValuesAsArray(),
-                                    precursor.getMz(),
-                                    currentSpectrum.getPrecursor().getPossibleChargesAsString(),
-                                    //spectrumMatch.getBestPeptideAssumption().getIdentificationCharge().toString(), // @TODO: re-add me!
-                                    "", 40, false, false, false, 2, false);
-                            //spectrumPanel.setKnownMassDeltas(peptideShakerGUI.getCurrentMassDeltas()); // @TODO: re-add me!
-                            spectrumPanel.setDeltaMassWindow(annotationPreferences.getFragmentIonAccuracy());
-                            spectrumPanel.setBorder(null);
-                            spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
-                            spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
-                            spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
-                            spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
-
-                            //PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption(); // @TODO: re-add me!
-                            //Peptide currentPeptide = new Peptide("LYGSAGPPPTGEEDTAEKDEL", new ArrayList<ModificationMatch>()); //peptideAssumption.getPeptide(); // @TODO: re-add me!
-                            Peptide currentPeptide = new Peptide("LYGSAGPPPTGEEDTAEKDEL", new ArrayList<String>(), new ArrayList<ModificationMatch>()); //peptideAssumption.getPeptide(); // @TODO: re-add me!
-                            int identificationCharge = 2; // spectrumMatch.getBestPeptideAssumption().getIdentificationCharge().value; // @TODO: re-add me!
-
-                            // @TODO: re-add the line below
-                            //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
-                            ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(annotationPreferences.getIonTypes(),
-                                    annotationPreferences.getNeutralLosses(),
-                                    annotationPreferences.getValidatedCharges(),
-                                    identificationCharge,
-                                    currentSpectrum, currentPeptide,
-                                    currentSpectrum.getIntensityLimit(annotationPreferences.getAnnotationIntensityLimit()),
-                                    annotationPreferences.getFragmentIonAccuracy(), false);
-                            spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
-                            //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
-
-//                            if (!currentSpectrumKey.equalsIgnoreCase(spectrumKey)) {
-//                                if (annotationPreferences.useAutomaticAnnotation()) {
-//                                    annotationPreferences.setNeutralLossesSequenceDependant(true);
-//                                }
-//                            }
-                            updateAnnotationMenus(identificationCharge, currentPeptide);
-
-                            //currentSpectrumKey = spectrumKey; // @TODO: re-add me
-                            // show all or just the annotated peaks
-                            spectrumPanel.showAnnotatedPeaksOnly(!annotationPreferences.showAllPeaks());
-                            spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
-
-                            int forwardIon = searchParameters.getIonSearched1();
-                            int rewindIon = searchParameters.getIonSearched2();
-
-                            // add de novo sequencing
-                            spectrumPanel.addAutomaticDeNovoSequencing(currentPeptide, annotations,
-                                    forwardIon, rewindIon, annotationPreferences.getDeNovoCharge(),
-                                    annotationPreferences.showForwardIonDeNovoTags(),
-                                    annotationPreferences.showRewindIonDeNovoTags());
-
-                            // add the spectrum panel to the frame
-                            spectrumJPanel.removeAll();
-                            spectrumJPanel.add(spectrumPanel);
-                            spectrumJPanel.revalidate();
-                            spectrumJPanel.repaint();
-
-                            // create the sequence fragment ion view
-                            secondarySpectrumPlotsJPanel.removeAll();
-                            SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-                                    getTaggedPeptideSequence(
-                                    currentPeptide, //peptideAssumption.getPeptide(), // @TODO: re-add me!!
-                                    false, false, false),
-                                    annotations, true, searchParameters.getModificationProfile(), forwardIon, rewindIon);
-                            sequenceFragmentationPanel.setMinimumSize(new Dimension(sequenceFragmentationPanel.getPreferredSize().width, sequenceFragmentationPanel.getHeight()));
-                            sequenceFragmentationPanel.setOpaque(true);
-                            sequenceFragmentationPanel.setBackground(Color.WHITE);
-                            secondarySpectrumPlotsJPanel.add(sequenceFragmentationPanel);
-
-                            // create the intensity histograms
-                            secondarySpectrumPlotsJPanel.add(new IntensityHistogram(
-                                    annotations, annotationPreferences.getFragmentIonTypes(), currentSpectrum,
-                                    annotationPreferences.getAnnotationIntensityLimit(),
-                                    annotationPreferences.getValidatedCharges().contains(1),
-                                    annotationPreferences.getValidatedCharges().contains(2),
-                                    annotationPreferences.getValidatedCharges().contains(3)));
-
-                            // create the miniature mass error plot
-                            MassErrorPlot massErrorPlot = new MassErrorPlot(
-                                    annotations, annotationPreferences.getFragmentIonTypes(), currentSpectrum,
-                                    annotationPreferences.getFragmentIonAccuracy(),
-                                    annotationPreferences.getValidatedCharges().contains(1),
-                                    annotationPreferences.getValidatedCharges().contains(2),
-                                    annotationPreferences.getValidatedCharges().contains(3),
-                                    useRelativeError);
-
-                            //if (massErrorPlot.getNumberOfDataPointsInPlot() > 0) {
-                            secondarySpectrumPlotsJPanel.add(massErrorPlot);
-                            //}
-
-                            // update the UI
-                            secondarySpectrumPlotsJPanel.revalidate();
-                            secondarySpectrumPlotsJPanel.repaint();
-
-                            // update the panel border title
-                            //updateSpectrumPanelBorderTitle(currentSpectrum); // @TODO: re-add later
-                            spectrumMainPanel.revalidate();
-                            spectrumMainPanel.repaint();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace(); // @TODO: add better error handling
-                }
-            }
-
-            this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        } else {
-            // nothing to display, empty previous results
-            spectrumJPanel.removeAll();
-            spectrumJPanel.revalidate();
-            spectrumJPanel.repaint();
-
-            secondarySpectrumPlotsJPanel.removeAll();
-            secondarySpectrumPlotsJPanel.revalidate();
-            secondarySpectrumPlotsJPanel.repaint();
-
-            ((TitledBorder) spectrumMainPanel.getBorder()).setTitle("Spectrum & Fragment Ions");
-            spectrumMainPanel.repaint();
-        }
-    }
+    
 
     /**
      * Returns the spectrum panel.
