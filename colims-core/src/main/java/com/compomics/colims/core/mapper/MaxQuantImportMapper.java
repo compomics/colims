@@ -8,16 +8,22 @@ import com.compomics.colims.core.io.parser.impl.UnparseableException;
 import com.compomics.colims.core.io.parser.model.MaxQuantImport;
 import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesPsmMapper;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesPsmMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.util.db.ObjectsCache;
+import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,14 +37,25 @@ public class MaxQuantImportMapper {
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    private UtilitiesPsmMapper utilitiesPsmMapper;
-    @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
     private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
-    
+    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    /**
+     * Compomics utilities sequence factory
+     */
+    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    /**
+     * The map of new proteins (key: protein accession, value: the protein)
+     */
+    private Map<String, Protein> newProteins = new HashMap<>();
+    /**
+     * The cache used to store objects.
+     */
+    private ObjectsCache objectsCache;
+
     /**
      * method to import a max quant search into colims
      *
@@ -54,36 +71,57 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantImport aMaxQuantImport) throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException {
+    public List<AnalyticalRun> map(MaxQuantImport aMaxQuantImport) throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantFolder().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
-        
+
         //just in case
         maxQuantParser.clearParsedProject();
-        
+        clearMappingResources();
+        loadFastaFile(aMaxQuantImport.getFastaFileUsed());
+
         maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantFolder());
-        
+
         for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();
-            
+
             maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
-            
+
             List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
-            
+
             for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
                 Spectrum targetSpectrum = new Spectrum();
-                
+
                 //for the spectra we can just use the standard utilities mapper
                 //@TODO get the fragmentation type 
                 utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
                 mappedSpectra.add(targetSpectrum);
-                
+
                 //
-                maxQuantUtilitiesPsmMapper.map(aParsedSpectrum,maxQuantParser,targetSpectrum);
+                maxQuantUtilitiesPsmMapper.map(aParsedSpectrum, maxQuantParser, targetSpectrum);
             }
             targetRun.setSpectrums(mappedSpectra);
         }
 
         return mappedRuns;
+    }
+
+    private void clearMappingResources() throws IOException, SQLException {
+        spectrumFactory.clearFactory();
+        sequenceFactory.clearFactory();
+        objectsCache = new ObjectsCache();
+        objectsCache.setAutomatedMemoryManagement(true);
+        newProteins.clear();
+    }
+
+    /**
+     * Load the fasta file in the SequenceFactory.
+     *
+     * @param fastaFile the fasta file
+     */
+    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+        LOGGER.debug("Start loading FASTA file.");
+        sequenceFactory.loadFastaFile(fastaFile);
+        LOGGER.debug("Finish loading FASTA file.");
     }
 }
