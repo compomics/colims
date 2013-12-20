@@ -13,8 +13,10 @@ import org.jmol.export.dialog.FileChooser;
 import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
@@ -449,6 +451,8 @@ public class RunStorageDialog extends javax.swing.JDialog {
                     "An error occurred while submitting : " + ex.getMessage(),
                     "Error submitting to storagecontroller",
                     JOptionPane.ERROR_MESSAGE);
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(RunStorageDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnStoreActionPerformed
 

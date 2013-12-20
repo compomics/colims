@@ -80,21 +80,21 @@ public class ControllerLauncher {
         DistributedProperties.reload();
         // create Options object
         Options options = new Options();
-        options.addOption("st", true, "port that will listen for clients requesting to store");
-        options.addOption("se", true, "port that will listen for clients requesting tosearch");
-        options.addOption("wo", true, "port that will listen for new working units");
+        options.addOption("se", true, "port that will listen for clients requesting to search  (default 45678)");
+        options.addOption("st", true, "port that will listen for clients requesting to store  (default 45679)");
+        options.addOption("wo", true, "port that will listen for new working units  (default 45680)");
 
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
-        if (cmd.hasOption("storage_port")) {
+        if (cmd.hasOption("st")) {
             DistributedProperties.getInstance().setStoragePort(Integer.parseInt(cmd.getOptionValue("storage_port")));
         }
 
-        if (cmd.hasOption("search_port")) {
+        if (cmd.hasOption("se")) {
             DistributedProperties.getInstance().setStoragePort(Integer.parseInt(cmd.getOptionValue("search_port")));
         }
 
-        if (cmd.hasOption("worker_port")) {
+        if (cmd.hasOption("wo")) {
             DistributedProperties.getInstance().setStoragePort(Integer.parseInt(cmd.getOptionValue("worker_port")));
         }
 
