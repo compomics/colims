@@ -55,14 +55,14 @@ public class RunStorageDialog extends javax.swing.JDialog {
         lbMgf = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jRbPeptideShaker = new javax.swing.JRadioButton();
-        jLabel2 = new javax.swing.JLabel();
+        lbInputSource = new javax.swing.JLabel();
         jRbMaxQuant = new javax.swing.JRadioButton();
         tfInputFolder = new javax.swing.JTextField();
         tfMgf = new javax.swing.JTextField();
-        btnStore = new javax.swing.JButton();
         btnFasta = new javax.swing.JButton();
         tfFasta = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        btnStore = new javax.swing.JButton();
 
         jLayeredPane1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -91,19 +91,12 @@ public class RunStorageDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel2.setText("Peptideshaker file");
+        lbInputSource.setText("Peptideshaker file");
 
         jRbMaxQuant.setText("MaxQuant");
         jRbMaxQuant.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRbMaxQuantActionPerformed(evt);
-            }
-        });
-
-        btnStore.setText("Store");
-        btnStore.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStoreActionPerformed(evt);
             }
         });
 
@@ -122,43 +115,50 @@ public class RunStorageDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Type ");
 
+        btnStore.setText("Store");
+        btnStore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStoreActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
         jLayeredPane1.setLayout(jLayeredPane1Layout);
         jLayeredPane1Layout.setHorizontalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane1Layout.createSequentialGroup()
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel1))
+                        .addComponent(jLabel1)
                         .addGap(18, 18, 18)
+                        .addComponent(jRbPeptideShaker)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRbMaxQuant))
+                    .addComponent(btnStore, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane1Layout.createSequentialGroup()
                         .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                                .addComponent(jRbPeptideShaker)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRbMaxQuant))
-                            .addComponent(tfFasta, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                        .addComponent(lbMgf)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfMgf, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfInputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnStore)
-                    .addComponent(btnMGF)
-                    .addComponent(btnCps)
-                    .addComponent(btnFasta)))
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(tfFasta))
+                            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                                .addComponent(lbMgf)
+                                .addGap(18, 18, 18)
+                                .addComponent(tfMgf, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                                .addComponent(lbInputSource)
+                                .addGap(18, 18, 18)
+                                .addComponent(tfInputFolder)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnMGF)
+                            .addComponent(btnCps)
+                            .addComponent(btnFasta))))
+                .addContainerGap())
         );
 
-        jLayeredPane1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, lbMgf});
-
-        jLayeredPane1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {tfFasta, tfInputFolder, tfMgf});
+        jLayeredPane1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel3, lbInputSource, lbMgf});
 
         jLayeredPane1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCps, btnFasta, btnMGF});
 
@@ -175,18 +175,18 @@ public class RunStorageDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(tfFasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFasta))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(lbInputSource)
                     .addComponent(tfInputFolder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCps))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbMgf)
                     .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(tfMgf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnMGF)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(btnStore))
         );
 
@@ -199,30 +199,29 @@ public class RunStorageDialog extends javax.swing.JDialog {
         jLayeredPane1.setLayer(lbMgf, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jRbPeptideShaker, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(lbInputSource, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jRbMaxQuant, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(tfInputFolder, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(tfMgf, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(btnStore, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnFasta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(tfFasta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(btnStore, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLayeredPane1)
-                .addContainerGap())
+                .addComponent(jLayeredPane1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -231,7 +230,7 @@ public class RunStorageDialog extends javax.swing.JDialog {
         tfMgf.setVisible(false);
         btnMGF.setVisible(false);
         lbMgf.setVisible(false);
-        btnCps.setText("Quant folder");
+        lbInputSource.setText("Quant folder");
         type = StorageType.MAX_QUANT;
     }//GEN-LAST:event_jRbMaxQuantActionPerformed
 
@@ -240,7 +239,7 @@ public class RunStorageDialog extends javax.swing.JDialog {
         tfMgf.setVisible(true);
         btnMGF.setVisible(true);
         lbMgf.setVisible(true);
-        btnCps.setText("Peptideshaker File");
+        lbInputSource.setText("Peptideshaker File");
         type = StorageType.PEPTIDESHAKER;
     }//GEN-LAST:event_jRbPeptideShakerActionPerformed
 
@@ -352,11 +351,11 @@ public class RunStorageDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnStore;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JRadioButton jRbMaxQuant;
     private javax.swing.JRadioButton jRbPeptideShaker;
+    private javax.swing.JLabel lbInputSource;
     private javax.swing.JLabel lbMgf;
     private javax.swing.JTextField tfFasta;
     private javax.swing.JTextField tfInputFolder;
