@@ -32,7 +32,7 @@ public class UtilitiesPsmMapper {
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
-    public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {           
+    public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
@@ -75,22 +75,13 @@ public class UtilitiesPsmMapper {
                     proteinMatches.add(proteinMatch);
                 }
             }
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } 
-    //map proteins
-    MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
+        }
+        //map proteins
+        MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
 
-    utilitiesProteinMapper.map (proteinMatches, peptideMatchScore, targetPeptide);
-}
+        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+    }
 }

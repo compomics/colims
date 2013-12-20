@@ -28,12 +28,12 @@ public class ColimsModificationMapper {
      * @param targetPeptide the colims target peptide
      * @throws MappingException
      */
-    public void map(Peptide targetPeptide, ArrayList<ModificationMatch> modificationMatches) throws MappingException {
+    public void map(Peptide targetPeptide, ArrayList<ModificationMatch> modificationMatches) {
         LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");
-        for (PeptideHasModification pepHasMod : targetPeptide.getPeptideHasModifications()) {
-            String theoreticPTM = pepHasMod.getModification().getAccession();
-            boolean isVariable = pepHasMod.getModificationType().equals(ModificationType.VARIABLE);
-            int modificationSite = pepHasMod.getLocation();
+        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+            String theoreticPTM = peptideHasModification.getModification().getAccession();
+            boolean isVariable = peptideHasModification.getModificationType().equals(ModificationType.VARIABLE);
+            int modificationSite = peptideHasModification.getLocation();
             ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
             modificationMatches.add(match);
         }

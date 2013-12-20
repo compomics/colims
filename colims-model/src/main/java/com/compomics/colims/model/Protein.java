@@ -122,4 +122,9 @@ public class Protein extends AbstractDatabaseEntity {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return accession;
+    }    
 }

@@ -24,26 +24,15 @@ public class ColimsPsmMapper {
     @Autowired
     private ColimsPeptideMapper colimsPeptideMapper;
 
-//    public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
-//        LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
-//        //get best assumption
-//        for (Peptide aPeptide : spectrum.getPeptides()) {
-//            PeptideMatch pepMatch = new PeptideMatch();
-//            colimsPeptideMapper.map(aPeptide, pepMatch);
-//            PeptideAssumption assumption = new PeptideAssumption(pepMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), aPeptide.getPsmProbability());
-//            SpectrumMatch specMatch = new SpectrumMatch(spectrum.getAccession(), assumption);
-//            targetSpectrumMap.add(specMatch);
-//        }
-//    }
-
-    public void map(Spectrum spectrum, SpectrumMatch spectrumMatch) throws MappingException {
+    public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
-        //for the moment, get the first peptide and set it as the best assumption
-        Peptide peptide = spectrum.getPeptides().get(0);
-        PeptideMatch pepMatch = new PeptideMatch();
-        colimsPeptideMapper.map(peptide, pepMatch);
-        PeptideAssumption assumption = new PeptideAssumption(pepMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), peptide.getPsmProbability());
-        //set best assumption
-        spectrumMatch.setBestAssumption(assumption);
-    }
+        //get best assumption
+        for (Peptide aPeptide : spectrum.getPeptides()) {
+            PeptideMatch pepMatch = new PeptideMatch();
+            colimsPeptideMapper.map(aPeptide, pepMatch);
+            PeptideAssumption assumption = new PeptideAssumption(pepMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), aPeptide.getPsmProbability());
+            SpectrumMatch specMatch = new SpectrumMatch(spectrum.getAccession(), assumption);
+            targetSpectrumMap.add(specMatch);
+        }
+    }    
 }

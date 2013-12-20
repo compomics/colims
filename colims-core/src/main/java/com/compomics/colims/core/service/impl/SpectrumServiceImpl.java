@@ -180,7 +180,7 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public void fetchSpectrumFiles(Spectrum spectrum) {
         try {
-            //attach the sample to the new session
+            //attach the spectrum to the new session
             spectrumRepository.saveOrUpdate(spectrum);
             if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
                 Hibernate.initialize(spectrum.getSpectrumFiles());
