@@ -148,6 +148,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     + " USERNAME TEXT NULL, "
                     + " SAMPLEID INTEGER NULL,"
                     + " INSTRUMENTNAME TEXT NULL,"
+                    + " TYPE TEXT NULL,"
                     + " STATE TEXT)";
             stmt.executeUpdate(sql);
         } catch (Exception e) {

@@ -99,4 +99,30 @@ public class DistributedProperties {
     public String getStoragePath() {
         return properties.getString("worker.storage.path");
     }
+
+    public void setControllerIP(int ip) {
+        properties.setProperty("master.ip", ip);
+        save();
+    }
+
+    public void setWorkerPort(int ip) {
+        properties.setProperty("master.worker.port", ip);
+        save();
+    }
+
+    public void setSearchPort(int ip) {
+        properties.setProperty("master.search.port", ip);
+        save();
+    }
+
+    public void setStoragePort(int ip) {
+        properties.setProperty("master.storage.port", ip);
+        save();
+    }
+
+    public void setStoragePath(String path) {
+        properties.setProperty("worker.storage.path", path);
+        save();
+    }
+
 }
