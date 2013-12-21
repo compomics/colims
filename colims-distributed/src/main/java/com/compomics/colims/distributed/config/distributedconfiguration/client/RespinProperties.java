@@ -39,7 +39,7 @@ public class RespinProperties {
 
     private void initiate() throws IOException, URISyntaxException {
         File jarFolder = new File(com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-        propertiesFile = new File(jarFolder, "config/distributed.properties");
+        propertiesFile = new File(jarFolder, "config/respin.properties");
         //  propertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
         if (!propertiesFile.exists()) {
             propertiesFile.getParentFile().mkdirs();
