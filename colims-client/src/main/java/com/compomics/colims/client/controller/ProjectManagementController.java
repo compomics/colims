@@ -8,6 +8,9 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
@@ -177,6 +180,7 @@ public class ProjectManagementController implements Controllable {
                         //remove from overview table and clear selection
                         projects.remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
+                        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, false, projectToDelete));
                     } catch (DataIntegrityViolationException dive) {
                         //check if the project can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -227,6 +231,7 @@ public class ProjectManagementController implements Controllable {
                         //remove from overview table and clear selection
                         experiments.remove(experimentToDelete);
                         experimentsSelectionModel.clearSelection();
+                        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, false, experimentToDelete));
                     } catch (DataIntegrityViolationException dive) {
                         //check if the experiment can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -274,6 +279,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addProject(Project project) {
         projects.add(project);
+        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.CREATED, false, project));
     }
 
     /**
@@ -327,6 +333,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addExperiment(Experiment experiment) {
         experiments.add(experiment);
+        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, false, experiment));
     }
 
     /**

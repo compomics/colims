@@ -9,6 +9,8 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
@@ -239,6 +241,7 @@ public class ExperimentEditController implements Controllable {
                         //remove from overview table and clear selection
                         samples.remove(sampleToDelete);
                         samplesSelectionModel.clearSelection();
+                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, false, sampleToDelete));
                     } catch (DataIntegrityViolationException dive) {
                         //check if the sample can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -314,6 +317,7 @@ public class ExperimentEditController implements Controllable {
      */
     public void addSample(Sample sample) {
         samples.add(sample);
+        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.CREATED, false, sample));
     }
 
     /**
