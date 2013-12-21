@@ -39,11 +39,6 @@ public class Respin {
 
     public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier, boolean storeAfterRun) throws RespinException, Exception {
 
-        //load respinProperties
-        File respinPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
-        RespinProperties.setPropertiesFile(respinPropertiesFile);
-        RespinProperties.reload();
-
         this.notifier = notifier;
         this.mgfFile = mgf;
         this.paramFile = searchparameters;
