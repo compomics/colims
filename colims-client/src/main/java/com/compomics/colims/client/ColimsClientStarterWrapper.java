@@ -10,11 +10,10 @@ import org.apache.log4j.Logger;
  *
  * @author Davy
  */
-public class ColimsClientStarterWrapper extends CompomicsWrapper{
-    
-        // Class specific log4j logger for ParserStarter instances.
-    private static Logger logger = Logger.getLogger(ColimsClientStarterWrapper.class);
+public class ColimsClientStarterWrapper extends CompomicsWrapper {
 
+    // Class specific log4j logger for ParserStarter instances.
+    private static Logger logger = Logger.getLogger(ColimsClientStarterWrapper.class);
 
     /**
      * Starts the launcher by calling the launch method. Use this as the main
@@ -25,16 +24,14 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper{
     public ColimsClientStarterWrapper(String[] args) {
         try {
             File jarFile = new File(ColimsClientStarterWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            // get the splash 
 
             String mainClass = "com.compomics.colims.client.ColimsClientStarter";
-            
-            //String mainClass = "com.compomics.thermo_msf_parser_GUI.Thermo_msf_parserGUI";
+
             StringBuilder fileLocations = new StringBuilder();
-            String[] argsAddedTo = Arrays.copyOf(args, args.length+1);
+            String[] argsAddedTo = Arrays.copyOf(args, args.length + 1);
             System.out.println(argsAddedTo.length);
-            argsAddedTo[argsAddedTo.length -1] = fileLocations.toString();
-            launchTool("Colims client", jarFile, null, mainClass, argsAddedTo);
+            argsAddedTo[argsAddedTo.length - 1] = fileLocations.toString();
+            launchTool("Colims-client", jarFile, null, mainClass, argsAddedTo);
         } catch (URISyntaxException ex) {
             logger.error(ex);
         }
@@ -49,5 +46,4 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper{
     public static void main(String[] args) {
         new ColimsClientStarterWrapper(args);
     }
-    
 }

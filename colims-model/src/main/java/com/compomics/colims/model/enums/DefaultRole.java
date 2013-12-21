@@ -4,16 +4,16 @@ package com.compomics.colims.model.enums;
  *
  * @author Niels Hulstaert
  */
-public enum DefaultGroup {
+public enum DefaultRole {
     
     ADMIN("admin");
     
     /**
-     * The name of the default group in the database.
+     * The name of the default role in the database.
      */
     private final String dbEntry;
     
-    private DefaultGroup(String dbEntry){
+    private DefaultRole(String dbEntry){
         this.dbEntry = dbEntry;
     }
 

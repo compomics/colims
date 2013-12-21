@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.config.PropertiesConfigurationHolder;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
@@ -100,8 +101,9 @@ public class ColimsController implements Controllable, ActionListener {
         //register to event bus
         eventBus.register(this);
 
-        //init login view       
+        //init views       
         colimsFrame = new ColimsFrame();
+        colimsFrame.setTitle("Colims " + getVersion());
         loginDialog = new LoginDialog(colimsFrame, true);
 
         //workaround for better beansbinding logging issue
@@ -143,21 +145,19 @@ public class ColimsController implements Controllable, ActionListener {
             }
         });
 
-//        //show login dialog
-//        loginDialog.setLocationRelativeTo(null);
-//        loginDialog.setVisible(true);
-        //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("admin1");
-        userService.fetchAuthenticationRelations(currentUser);
-        authenticationBean.setCurrentUser(currentUser);
-
-
-        if (authenticationBean.isAdmin()) {
-            initAdminSection();
-        } else {
-            //disable admin menu
-            colimsFrame.getAdminMenu().setEnabled(false);
-        }
+        //show login dialog
+        loginDialog.setLocationRelativeTo(null);
+        loginDialog.setVisible(true);
+//        //while developing, set a default user in the AuthenticationBean
+//        User currentUser = userService.findByName("admin1");
+//        userService.fetchAuthenticationRelations(currentUser);
+//        authenticationBean.setCurrentUser(currentUser);
+//        if (authenticationBean.isAdmin()) {
+//            initAdminSection();
+//        } else {
+//            //disable admin menu
+//            colimsFrame.getAdminMenu().setEnabled(false);
+//        }
 
         //@todo move this call to showview
         showView();
@@ -217,6 +217,15 @@ public class ColimsController implements Controllable, ActionListener {
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
+    
+    /**
+     * Retrieves the version number set in the pom file.
+     *
+     * @return the version number of PeptideShaker
+     */
+    private String getVersion() {
+        return PropertiesConfigurationHolder.getInstance().getString("colims-client.version", "UNKNOWN");
+    }
 
     private void onLogin() {
         //check if a user with given user name and password is found in the db    
@@ -226,7 +235,8 @@ public class ColimsController implements Controllable, ActionListener {
             LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
             loginDialog.dispose();
 
-            //set current user in authentication bean                
+            //set current user in authentication bean 
+            userService.fetchAuthenticationRelations(currentUser);
             authenticationBean.setCurrentUser(currentUser);
 
             if (authenticationBean.isAdmin()) {

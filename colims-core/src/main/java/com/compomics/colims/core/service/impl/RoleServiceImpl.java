@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.RoleService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
+import com.compomics.colims.model.enums.DefaultRole;
 import com.compomics.colims.repository.RoleRepository;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -74,6 +74,20 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public long countAll() {
         return roleRepository.countAll();
+    }
+
+    @Override
+    public boolean isDefaultRole(Role role) {
+         boolean isDefaultRole = false;
+        
+        for(DefaultRole defaultRole : DefaultRole.values()){
+            if(role.getName().equals(defaultRole.getDbEntry())){
+                isDefaultRole = true;
+                break;
+            }
+        }
+        
+        return isDefaultRole;
     }
        
 }
