@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.config.distributedconfiguration.client;
+package com.compomics.colims.distributed.config.distributedconfiguration.client;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth
  */
-public class RespinProperties  {
+public class RespinProperties {
 
     private static PropertiesConfiguration properties = new PropertiesConfiguration();
     private static final File respinDirectory = new File(System.getProperty("user.home") + "/.compomics/respin/");
@@ -36,8 +37,10 @@ public class RespinProperties  {
         }
     }
 
-    private void initiate() throws IOException {
-
+    private void initiate() throws IOException, URISyntaxException {
+        File jarFolder = new File(com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+        propertiesFile = new File(jarFolder, "config/distributed.properties");
+        //  propertiesFile = new ClassPathResource("distributed/config/distribute.properties").getFile();
         if (!propertiesFile.exists()) {
             propertiesFile.getParentFile().mkdirs();
             propertiesFile.createNewFile();
@@ -54,7 +57,7 @@ public class RespinProperties  {
     private RespinProperties() {
     }
 
-    public static RespinProperties getInstance() throws IOException {
+    public static RespinProperties getInstance() throws IOException, URISyntaxException {
         if (respinProps == null) {
             respinProps = new RespinProperties();
             respinProps.initiate();
@@ -77,7 +80,6 @@ public class RespinProperties  {
             LOGGER.error(ex);
         }
     }
-
 
     public void setDefaultProperties() {
         setSearchGUIJarPath("");
