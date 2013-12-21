@@ -144,7 +144,7 @@ public class PermissionCrudController implements Controllable {
                     //check if permission is already has an id.
                     //If so, delete the permission from the db.
                     if (permissionToDelete.getId() != null) {
-                        //check if the group is a default group
+                        //check if the permission is a default permission
                         if (!permissionService.isDefaultPermission(permissionToDelete)) {
                             try {
                                 permissionService.delete(permissionToDelete);
