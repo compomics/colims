@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
@@ -42,7 +43,7 @@ public class ClientForStorageConnector {
         this.masterPort = masterPort;
     }
 
-    public ClientForStorageConnector() throws IOException {
+    public ClientForStorageConnector() throws IOException, URISyntaxException {
         this.state = StorageState.WAITING;
         //load respinProperties
         this.masterIPAddress = DistributedProperties.getInstance().getControllerIP();

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,7 +39,7 @@ public class ClientForPollingConnector {
         this.masterPort = masterPort;
     }
 
-    public ClientForPollingConnector() throws IOException {
+    public ClientForPollingConnector() throws IOException, URISyntaxException {
         //load respinProperties
         this.masterIPAddress = DistributedProperties.getInstance().getControllerIP();
         this.masterPort = DistributedProperties.getInstance().getStoragePort();

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
@@ -42,7 +43,7 @@ public class ClientForSearchConnector {
         this.masterPort = masterPort;
     }
 
-    public ClientForSearchConnector() throws IOException {
+    public ClientForSearchConnector() throws IOException, URISyntaxException {
         this.state = RespinState.NEW;
         //load respinProperties
         this.masterIPAddress = DistributedProperties.getInstance().getControllerIP();

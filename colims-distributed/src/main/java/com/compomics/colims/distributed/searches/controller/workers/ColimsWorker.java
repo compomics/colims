@@ -5,14 +5,23 @@
  */
 package com.compomics.colims.distributed.searches.controller.workers;
 
+import com.compomics.colims.distributed.ControllerLauncher;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.distributed.searches.respin.control.common.Respin;
+import com.compomics.colims.distributed.spring.ApplicationContextProvider;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -27,7 +36,44 @@ public class ColimsWorker {
     private PrintWriter out;
     private boolean storeAfterRun = true;
 
-    public void launch() throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        ApplicationContextProvider.getInstance().getApplicationContext();
+        LOGGER.setLevel(Level.ERROR);
+        try {
+            if (parseArgs(args)) {
+                new ColimsWorker().launch();
+            } else {
+                LOGGER.error("Could not launch the controllers, please try again with different parameters");
+            }
+        } catch (IOException | URISyntaxException | ParseException ex) {
+            LOGGER.error("An error has occurred : ");
+            LOGGER.error(ex);
+            ex.printStackTrace();
+        }
+    }
+
+    private static boolean parseArgs(String[] args) throws IOException, ParseException, URISyntaxException {
+        boolean parseAble = true;
+        DistributedProperties.getInstance().setDefaultProperties();
+        DistributedProperties.reload();
+        // create Options object
+        Options options = new Options();
+        options.addOption("wo", true, "port that new working units will connect to (default 45680)");
+
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
+        if (cmd.hasOption("wo")) {
+            DistributedProperties.getInstance().setStoragePort(Integer.parseInt(cmd.getOptionValue("worker_port")));
+        }
+        if (cmd.hasOption("ci")) {
+            DistributedProperties.getInstance().setControllerIP(Integer.parseInt(cmd.getOptionValue("worker_port")));
+        }
+        
+        System.out.println("Connecting to " + DistributedProperties.getInstance().getControllerIP() + " on port " + DistributedProperties.getInstance().getWorkerPort());
+        return parseAble;
+    }
+
+    public void launch() throws IOException, URISyntaxException {
         //load respinProperties
 
         workerProperties = DistributedProperties.getInstance();

@@ -27,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.compomics.colims.distributed.playgroud.Playground.java</mainClass>
+                            <mainClass>com.compomics.colims.distributed.ControllerLauncher</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
@@ -36,6 +36,75 @@
                     </outputDirectory>
                 </configuration>
             </plugin>
+            <!-- Dependency plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/lib</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Resources plugin -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <!-- Copy start resources to test resources before testing.  -->
+                    <execution>
+                        <id>copy-test-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>src/test/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy the resources -->
+                    <execution>
+                        <id>copy-package-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>
+                                        ./
+                                    </directory>
+                                    <includes>
+                                        <include>config/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
 
@@ -44,6 +113,11 @@
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-model</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.compomics.colims</groupId>
+            <artifactId>colims-core</artifactId>
         </dependency>
         
         <dependency>
@@ -149,10 +223,10 @@
             <version>3.7.2</version>
         </dependency>
         <dependency>
-            <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-core</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <artifactId>commons-cli</artifactId>
+            <groupId>commons-cli</groupId>
             <type>jar</type>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 </project>

@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.core.storage;
+package com.compomics.colims.distributed.storage;
 
 
+import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.distributed.searches.controller.searches.SearchController;
 import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.distributed.storage.processing.controller.StorageController;
@@ -31,11 +33,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-
 public class ControllerClientTest {
-
-    @Autowired
-    StorageController storageController;
+@Autowired
+StorageController storageController;
 
     private Thread listener;
 
@@ -48,6 +48,7 @@ public class ControllerClientTest {
     @Before
     public void startListener() {
         try {
+         
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
             LOGGER.error(ex);

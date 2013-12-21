@@ -10,9 +10,11 @@ import com.compomics.colims.distributed.config.distributedconfiguration.client.D
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +50,8 @@ public class SearchController implements Runnable {
             LOGGER.info("Booting colims search controller on port " + port);
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
+            LOGGER.error(ex);
+        } catch (URISyntaxException ex) {
             LOGGER.error(ex);
         }
 

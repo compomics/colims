@@ -9,7 +9,9 @@ import com.compomics.colims.distributed.searches.controller.workers.worker.Worke
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,8 @@ public class WorkerController implements Runnable {
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
             LOGGER.error(ex);
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(WorkerController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         LOGGER.debug("Starting Worker Queue");
