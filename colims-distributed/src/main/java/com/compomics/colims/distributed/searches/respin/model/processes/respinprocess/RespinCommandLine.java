@@ -1,6 +1,6 @@
 package com.compomics.colims.distributed.searches.respin.model.processes.respinprocess;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
+import com.compomics.colims.distributed.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.distributed.searches.respin.control.validation.SearchParamValidator;
@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -57,6 +59,8 @@ public class RespinCommandLine {
             tempDir.mkdirs();
         } catch (IOException ex) {
             LOGGER.error(ex);
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(RespinCommandLine.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             this.mgf = mgfFile;
             this.searchParamFile = searchParameterFile;
@@ -82,6 +86,8 @@ public class RespinCommandLine {
             tempDir.mkdirs();
         } catch (IOException ex) {
             LOGGER.error(ex);
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(RespinCommandLine.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             this.mgf = mgfFile;
             this.searchParamFile = searchParameterFile;
@@ -278,10 +284,9 @@ public class RespinCommandLine {
                     }
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException|URISyntaxException ex) {
             LOGGER.error(ex);
-        }
-
+        } 
     }
 
     public RespinCommandLine setOutputDir(File outputDir) {
