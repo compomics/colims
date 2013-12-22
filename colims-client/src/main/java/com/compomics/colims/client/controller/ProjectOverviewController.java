@@ -8,13 +8,16 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
-import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsPsmMapper;
 import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.mapper.impl.colimsToUtilities.PsmMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
@@ -40,6 +43,7 @@ import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.preferences.AnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -299,6 +303,48 @@ public class ProjectOverviewController implements Controllable {
     @Override
     public void showView() {
         //do nothing
+    }
+
+    /**
+     * Listen to a ProjectChangeEvent and update the projects table.
+     *
+     * @param projectChangeEvent the projectChangeEvent
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+            projects.add(projectChangeEvent.getProject());
+        } else if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            projects.remove(projectChangeEvent.getProject());
+        }
+    }
+
+    /**
+     * Listen to a ExperimentChangeEvent and update the experiments table.
+     *
+     * @param experimentChangeEvent the experimentChangeEvent
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+            experiments.add(experimentChangeEvent.getExperiment());
+        } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            experiments.remove(experimentChangeEvent.getExperiment());
+        }
+    }
+
+    /**
+     * Listen to a SampleChangeEvent and update the samples table.
+     *
+     * @param projectChangeEvent the projectChangeEvent
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+            samples.add(sampleChangeEvent.getSample());
+        } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            samples.remove(sampleChangeEvent.getSample());
+        }
     }
 
     /**
