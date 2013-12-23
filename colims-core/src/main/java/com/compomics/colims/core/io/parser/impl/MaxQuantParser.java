@@ -9,9 +9,9 @@ import com.compomics.colims.model.QuantificationFile;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.google.common.collect.HashBiMap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public class MaxQuantParser {
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
     @Autowired
-    private MaxQuantSpectrumParser maxQuantMsmsParser;
+    private MaxQuantSpectrumParser maxQuantSpectrumParser;
     @Autowired
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
@@ -48,6 +48,7 @@ public class MaxQuantParser {
     private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
     private Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
     private boolean initialized = false;
+    private Map<String, SearchParameters> analysisSearchParameters;
 
     /**
      * Parse a folder containing the MaxQuant txt output files, using the
@@ -59,7 +60,6 @@ public class MaxQuantParser {
     public void parseMaxQuantTextFolder(final File maxQuantTextFolder) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
 
         //TODO parameters
-
         // Create a single QuantificationFile file to the argument folder, and store it in the database
         QuantificationFile quantificationFile = new QuantificationFile();
         // TODO Probably store the folder name in quantificationFile, but there are no such fields available
@@ -75,13 +75,12 @@ public class MaxQuantParser {
         // TODO Store quantificationGroup; we are currently missing a Hibernate Repository to do so, so skip for now
 
         // Parse msms.txt and create and persist the objects found within
-
         LOGGER.debug("starting parameter and summary parsing");
-
+        analysisSearchParameters = maxQuantParameterParser.parse(maxQuantTextFolder);
 
         LOGGER.debug("starting msms parsing");
         File msmsFile = new File(maxQuantTextFolder, MSMSTXT);
-        msms = maxQuantMsmsParser.parse(msmsFile, true);
+        msms = maxQuantSpectrumParser.parse(msmsFile, true);
 
         for (MSnSpectrum spectrum : getSpectraFromParsedFile()) {
             if (spectraPerRunMap.containsKey(spectrum.getFileName())) {
@@ -102,7 +101,6 @@ public class MaxQuantParser {
         peptideAssumptions = maxQuantEvidenceParser.parse(evidenceFile);
 
         //update peptide msms to best scoring msms entry
-
         LOGGER.debug("starting protein group parsing");
         File proteinGroupsFile = new File(maxQuantTextFolder, PROTEINGROUPS);
         proteinMap = maxQuantProteinGroupParser.parse(proteinGroupsFile);
@@ -173,11 +171,16 @@ public class MaxQuantParser {
         return Collections.unmodifiableCollection(spectraPerRunMap.values());
     }
 
+    public SearchParameters getParametersForRun(MaxQuantAnalyticalRun aParsedRun) {
+        return analysisSearchParameters.get(aParsedRun.getAnalyticalRunName());
+    }
+
     public void clearParsedProject() {
         msms.clear();
         peptideAssumptions.clear();
         proteinMap.clear();
         spectraPerRunMap.clear();
+        analysisSearchParameters.clear();
         initialized = false;
     }
 }

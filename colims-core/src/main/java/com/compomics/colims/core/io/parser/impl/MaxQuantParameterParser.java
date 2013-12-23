@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io.parser.impl;
 
-import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
@@ -21,13 +20,15 @@ public class MaxQuantParameterParser {
     /**
      * parses the settings for the search per run searched
      *
-     * @param parameterFile global parameters file
-     * @param summaryFile file containing settings per run
+     * @param maxQuantTextFolder the folder containing the textual max quant
+     * output files
      * @return a {@code Map} that, for each raw file, contains the settings for
      * that search
      * @throws IOException
      */
-    public static Map<String, SearchParameters> parse(File parameterFile, File summaryFile) throws IOException {
+    public Map<String, SearchParameters> parse(File maxQuantTextFolder) throws IOException {
+        File parameterFile = new File(maxQuantTextFolder, "parameters.txt");
+        File summaryFile = new File(maxQuantTextFolder, "summary.txt");
 
         Map<String, String> values;
         Map<String, SearchParameters> runParams = new HashMap<>();
@@ -82,7 +83,7 @@ public class MaxQuantParameterParser {
     }
 
     //DAMN YOU MAX QUUAAAAAANT
-    private enum ParametersHeaders {
+    private enum ParametersHeaders implements HeaderEnum{
 
         VERSION("Version"),
         FIXED_MODIFICATIONS("Fixed modifications"),
@@ -156,6 +157,21 @@ public class MaxQuantParameterParser {
 
         private ParametersHeaders(String column) {
             this.column = column;
+        }
+
+        @Override
+        public String[] returnPossibleColumnNames() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void setColumnReference(int columnReference) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String getColumnName() throws HeaderEnumNotInitialisedException {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 

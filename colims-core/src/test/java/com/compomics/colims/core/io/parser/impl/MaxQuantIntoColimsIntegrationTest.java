@@ -52,6 +52,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     private AuthenticationBean authenticationBean;
     @Autowired
     private ProjectService projectService;
+    // unused autowires, needed for asserts that will be added later
     @Autowired
     private ExperimentService experimentService;
     @Autowired
@@ -105,6 +106,7 @@ public class MaxQuantIntoColimsIntegrationTest {
                 this.add(maxQuantSample);
             }
         });
+        //TODO change this with the normal mapper
         List<AnalyticalRun> colimsRuns = new ArrayList<>(maxQuantParser.getRuns().size());
         for (MaxQuantAnalyticalRun aRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();

@@ -42,7 +42,7 @@ public class MaxQuantColimsSpectrumInsertTest {
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    private MaxQuantSpectrumParser maxQuantMsMsParser;
+    private MaxQuantSpectrumParser maxQuantSpectrumParser;
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
@@ -59,7 +59,7 @@ public class MaxQuantColimsSpectrumInsertTest {
     @Test
     public void testSpectrumMapping() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
         List<Spectrum> mappedSpectra = new ArrayList<>();
-        spectrumMap = maxQuantMsMsParser.parse(maxQuantMsMsFile, true);
+        spectrumMap = maxQuantSpectrumParser.parse(maxQuantMsMsFile, true);
         int spectrumArrayindex = -1;
         for (Integer msmsKey : spectrumMap.keySet()) {
             MSnSpectrum spectrum = spectrumMap.get(msmsKey);
@@ -142,7 +142,7 @@ public class MaxQuantColimsSpectrumInsertTest {
         authenticationBean.setCurrentUser(user);
         int startSpectraCount = spectrumService.findAll().size();
         System.out.println("start amount of spectra = " + startSpectraCount);
-        spectrumMap = maxQuantMsMsParser.parse(maxQuantMsMsFile, true);
+        spectrumMap = maxQuantSpectrumParser.parse(maxQuantMsMsFile, true);
         List<Spectrum> spectrumHolder = new ArrayList<>();
         for (MSnSpectrum spectrum : spectrumMap.values()) {
             Spectrum colimsSpectrum = new Spectrum();

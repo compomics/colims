@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  * the files into Map<String,String>
  * records.
  */
-@Component("maxQuantMsmsParser")
+@Component("maxQuantSpectrumParser")
 public class MaxQuantSpectrumParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumParser.class);
