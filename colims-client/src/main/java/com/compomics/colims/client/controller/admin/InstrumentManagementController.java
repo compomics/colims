@@ -109,6 +109,7 @@ public class InstrumentManagementController implements Controllable {
         //clear selection
         instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
 
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), instrumentManagementDialog);
         instrumentManagementDialog.setVisible(true);
     }
 
@@ -136,10 +137,10 @@ public class InstrumentManagementController implements Controllable {
         instrumentManagementDialog.getInstrumentList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                if (!e.getValueIsAdjusting()) {                    
+                    if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1 
+                            && instrumentBindingList.get(instrumentManagementDialog.getInstrumentList().getSelectedIndex()) != null) {
                         Instrument selectedInstrument = instrumentBindingList.get(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
-
                         //check if the instrument has an ID.
                         //If so, change the save button text and the info state label.
                         if (selectedInstrument.getId() != null) {
@@ -150,8 +151,12 @@ public class InstrumentManagementController implements Controllable {
 
                         //init CvTermModel
                         List<CvTerm> cvTerms = new ArrayList<>();
-                        cvTerms.add(selectedInstrument.getSource());
-                        cvTerms.add(selectedInstrument.getDetector());
+                        if (selectedInstrument.getSource() != null) {
+                            cvTerms.add(selectedInstrument.getSource());
+                        }
+                        if (selectedInstrument.getDetector() != null) {
+                            cvTerms.add(selectedInstrument.getDetector());
+                        }
                         for (InstrumentCvTerm analyzer : selectedInstrument.getAnalyzers()) {
                             cvTerms.add(analyzer);
                         }
@@ -168,9 +173,14 @@ public class InstrumentManagementController implements Controllable {
         instrumentManagementDialog.getAddInstrumentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Instrument defaultInstrument = createDefaultInstrument();
-                instrumentBindingList.add(defaultInstrument);
-                instrumentManagementDialog.getInstrumentList().setSelectedIndex(instrumentBindingList.size() - 1);
+//                Instrument defaultInstrument = createDefaultInstrument();
+//                instrumentBindingList.add(defaultInstrument);
+//                instrumentManagementDialog.getInstrumentList().setSelectedIndex(instrumentBindingList.size() - 1);
+                
+                updateInstrumentEditDialog(createDefaultInstrument());
+                //show dialog
+                    GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+                    instrumentEditDialog.setVisible(true);
             }
         });
 
@@ -212,7 +222,7 @@ public class InstrumentManagementController implements Controllable {
                 if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
                     updateInstrumentEditDialog(getSelectedInstrument());
                     //show dialog
-                    instrumentEditDialog.setLocationRelativeTo(null);
+                    GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
                     instrumentEditDialog.setVisible(true);
                 }
             }
@@ -279,7 +289,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getInstrumentTypesCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentTypeCrudDialog.setLocationRelativeTo(null);
+                GuiUtils.centerDialogOnComponent(instrumentEditDialog, instrumentTypeCrudDialog);
                 instrumentTypeCrudDialog.setVisible(true);
             }
         });
@@ -385,8 +395,7 @@ public class InstrumentManagementController implements Controllable {
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
-                    cvTermManagementController.getCvTermManagementDialog().setLocationRelativeTo(null);
-                    cvTermManagementController.getCvTermManagementDialog().setVisible(true);
+                    cvTermManagementController.showView();
                 }
             }
         });
@@ -590,7 +599,6 @@ public class InstrumentManagementController implements Controllable {
         if (!instrumentTypes.isEmpty()) {
             defaultInstrument.setInstrumentType(instrumentTypes.get(0));
         }
-        defaultInstrument.setInstrumentType(instrumentTypes.get(0));
         //find sources
         List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
         if (!sources.isEmpty()) {

@@ -212,7 +212,7 @@ public class SampleEditController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
 
-                sampleBinaryFileDialog.setLocationRelativeTo(null);
+                GuiUtils.centerDialogOnComponent(sampleEditDialog, sampleBinaryFileDialog);
                 sampleBinaryFileDialog.setVisible(true);
             }
         });
@@ -227,7 +227,7 @@ public class SampleEditController implements Controllable {
 
     @Override
     public void showView() {
-        sampleEditDialog.setLocationRelativeTo(null);
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), sampleEditDialog);
         sampleEditDialog.setVisible(true);
     }
 

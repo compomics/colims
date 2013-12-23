@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -16,7 +15,6 @@ import com.compomics.colims.client.view.admin.protocol.ProtocolManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.model.CvTerm;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;
@@ -102,6 +100,7 @@ public class ProtocolManagementController implements Controllable {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
 
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), protocolManagementDialog);
         protocolManagementDialog.setVisible(true);
     }
 
@@ -130,9 +129,9 @@ public class ProtocolManagementController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
+                    if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1
+                            && protocolBindingList.get(protocolManagementDialog.getProtocolList().getSelectedIndex()) != null) {
                         Protocol selectedProtocol = protocolBindingList.get(protocolManagementDialog.getProtocolList().getSelectedIndex());
-
                         //check if the protocol has an ID.
                         //If so, change the save button text and the info state label.
                         if (selectedProtocol.getId() != null) {
@@ -209,7 +208,7 @@ public class ProtocolManagementController implements Controllable {
                 if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
                     updateProtocolEditDialog(getSelectedProtocol());
                     //show dialog
-                    protocolEditDialog.setLocationRelativeTo(null);
+                    GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
                     protocolEditDialog.setVisible(true);
                 }
             }
@@ -277,8 +276,8 @@ public class ProtocolManagementController implements Controllable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //get selected cvTermType                        
-                CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();                
-                
+                CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
+
                 Protocol protocol = getSelectedProtocol();
                 List<ProtocolCvTerm> addedItems = (List<ProtocolCvTerm>) evt.getNewValue();
 
@@ -374,8 +373,7 @@ public class ProtocolManagementController implements Controllable {
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
-                    cvTermManagementController.getCvTermManagementDialog().setLocationRelativeTo(null);
-                    cvTermManagementController.getCvTermManagementDialog().setVisible(true);
+                    cvTermManagementController.showView();
                 }
             }
         });

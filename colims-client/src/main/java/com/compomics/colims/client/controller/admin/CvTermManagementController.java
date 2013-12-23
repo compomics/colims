@@ -211,6 +211,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         //clear selection
         cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
         
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), cvTermManagementDialog);
         cvTermManagementDialog.setVisible(true);
     }        
 

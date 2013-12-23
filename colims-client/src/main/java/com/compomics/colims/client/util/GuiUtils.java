@@ -32,14 +32,14 @@ public class GuiUtils {
     private GuiUtils() { }
 
     /**
-     * Center the dialog on the parent frame
+     * Center the dialog on the parent component
      *
-     * @param parentFrame the parent frame
+     * @param parentComponent the parent component
      * @param dialog the dialog
      */
-    public static void centerDialogOnFrame(final JFrame parentFrame, final JDialog dialog) {
-        Point topLeft = parentFrame.getLocationOnScreen();
-        Dimension parentSize = parentFrame.getSize();
+    public static void centerDialogOnComponent(final Component parentComponent, final JDialog dialog) {
+        Point topLeft = parentComponent.getLocationOnScreen();
+        Dimension parentSize = parentComponent.getSize();
 
         Dimension dialogSize = dialog.getSize();
 
