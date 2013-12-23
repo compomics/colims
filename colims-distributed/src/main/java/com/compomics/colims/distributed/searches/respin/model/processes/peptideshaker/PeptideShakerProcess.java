@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.distributed.searches.respin.model.processes.peptideshaker;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
+import com.compomics.colims.distributed.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.distributed.searches.respin.model.memory.MemoryManager;
 import com.compomics.colims.distributed.searches.respin.model.processes.common.RespinProcess;
 import com.compomics.software.CommandLineUtils;
@@ -13,8 +13,10 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -36,7 +38,7 @@ public class PeptideShakerProcess implements RespinProcess {
         this.maxPrecursorError = maxPrecursorError;
         try {
             respinProps = RespinProperties.getInstance();
-        } catch (IOException ex) {
+        } catch (IOException | URISyntaxException ex) {
             LOGGER.error(ex);
         }
     }

@@ -11,6 +11,7 @@ import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.PermissionChangeEvent;
 import com.compomics.colims.client.event.admin.RoleChangeEvent;
+import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
@@ -74,7 +75,7 @@ public class RoleCrudController implements Controllable {
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
-        
+
         //init dual list
         userManagementDialog.getPermissionDualList().init(new PermissionNameComparator());
 
@@ -167,22 +168,28 @@ public class RoleCrudController implements Controllable {
                     //check if role is already has an id.
                     //If so, delete the role from the db.
                     if (roleToDelete.getId() != null) {
-                        try {
-                            roleService.delete(roleToDelete);
-                            eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
+                        //check if the role is a default role
+                        if (!roleService.isDefaultRole(roleToDelete)) {
+                            try {
+                                roleService.delete(roleToDelete);
+                                eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
 
-                            roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                            userManagementDialog.getRoleList().getSelectionModel().clearSelection();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the role can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
+                                roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
+                                userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+                            } catch (DataIntegrityViolationException dive) {
+                                //check if the role can be deleted without breaking existing database relations,
+                                //i.e. are there any constraints violations
+                                if (dive.getCause() instanceof ConstraintViolationException) {
+                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
+                                    eventBus.post(dbConstraintMessageEvent);
+                                } else {
+                                    //pass the exception
+                                    throw dive;
+                                }
                             }
+                        } else {
+                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("role", roleToDelete.getName());
+                            eventBus.post(defaultDbEntryMessageEvent);
                         }
                     } else {
                         roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
@@ -315,7 +322,7 @@ public class RoleCrudController implements Controllable {
         return selectedRole;
     }
 
-   /**
+    /**
      * Reset the selection in the role list.
      */
     private void resetSelection() {

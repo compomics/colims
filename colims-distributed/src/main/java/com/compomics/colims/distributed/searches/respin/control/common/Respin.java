@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.distributed.searches.respin.control.common;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
+import com.compomics.colims.distributed.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.distributed.searches.respin.model.exception.RespinException;
 import com.compomics.colims.distributed.searches.respin.model.processes.respinprocess.RespinCommandLine;
 import com.compomics.colims.distributed.searches.respin.model.enums.RespinState;
@@ -38,11 +38,6 @@ public class Respin {
     private PrintWriter notifier;
 
     public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier, boolean storeAfterRun) throws RespinException, Exception {
-
-        //load respinProperties
-        File respinPropertiesFile = new ClassPathResource("distributed/config/respin.properties").getFile();
-        RespinProperties.setPropertiesFile(respinPropertiesFile);
-        RespinProperties.reload();
 
         this.notifier = notifier;
         this.mgfFile = mgf;

@@ -4,13 +4,15 @@
  */
 package com.compomics.colims.distributed.searches.respin.model.processes.searchgui;
 
-import com.compomics.colims.core.config.distributedconfiguration.client.RespinProperties;
+import com.compomics.colims.distributed.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.distributed.searches.respin.model.memory.MemoryManager;
 import com.compomics.colims.distributed.searches.respin.model.processes.common.RespinProcess;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
@@ -32,7 +34,7 @@ public class SearchGuiProcess implements RespinProcess {
         try {
             respinProps = RespinProperties.getInstance();
             outputFolder = respinProps.getTempResultDirectory();
-        } catch (IOException ex) {
+        } catch (IOException | URISyntaxException ex) {
             LOGGER.error(ex);
         }
     }

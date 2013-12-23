@@ -18,6 +18,14 @@ public interface RoleService extends GenericService<Role, Long> {
      * @param name the role name
      * @return the found role
      */
-    Role findByName(String name);        
+    Role findByName(String name);  
+    
+    /**
+     * Check if the role is a default role.
+     *
+     * @param role the role
+     * @return
+     */
+    boolean isDefaultRole(Role role);
     
 }

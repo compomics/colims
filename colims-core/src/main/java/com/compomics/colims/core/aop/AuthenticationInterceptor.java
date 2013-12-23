@@ -23,7 +23,7 @@ public class AuthenticationInterceptor {
     @Before("execution(* com.compomics.colims.core.service.*.save(..))")
     public void beforeCreateOperation(JoinPoint joinPoint) {
         if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)){
-            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no save permission.");
+            throw new PermissionException("User " + authenticationBean.getCurrentUser() + " has no save permission.");
         }
         
     }
@@ -31,14 +31,14 @@ public class AuthenticationInterceptor {
     @Before("execution(* com.compomics.colims.core.service.*.update(..))")
     public void beforeUpdateOperation(JoinPoint joinPoint) {
         if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.UPDATE)){
-            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no update permission.");
+            throw new PermissionException("User " + authenticationBean.getCurrentUser() + " has no update permission.");
         }
     }
 
     @Before("execution(* com.compomics.colims.core.service.*.delete(..))")
     public void beforeDeleteOperation(JoinPoint joinPoint) throws PermissionException {
         if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)){
-            throw new PermissionException("User" + authenticationBean.getCurrentUser() + " has no delete permission.");
+            throw new PermissionException("User " + authenticationBean.getCurrentUser() + " has no delete permission.");
         }
     }
 

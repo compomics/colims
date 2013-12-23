@@ -8,6 +8,9 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
@@ -15,6 +18,7 @@ import com.compomics.colims.client.model.tableformat.ProjectManagementTableForma
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
@@ -64,6 +68,8 @@ public class ProjectManagementController implements Controllable {
     @Autowired
     private ExperimentService experimentService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private EventBus eventBus;
 
     public ProjectManagementPanel getProjectManagementPanel() {
@@ -76,7 +82,7 @@ public class ProjectManagementController implements Controllable {
 
         //init view
         projectManagementPanel = new ProjectManagementPanel();
-        
+
         //init child controllers
         projectEditController.init();
         experimentEditController.init();
@@ -89,7 +95,7 @@ public class ProjectManagementController implements Controllable {
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
         projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
-        
+
         //set column widths
         projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
         projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
@@ -105,12 +111,12 @@ public class ProjectManagementController implements Controllable {
         experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
         experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
-        
+
         //set column widths
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);        
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
 
         //set sorting
@@ -174,6 +180,7 @@ public class ProjectManagementController implements Controllable {
                         //remove from overview table and clear selection
                         projects.remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
+                        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, false, projectToDelete));
                     } catch (DataIntegrityViolationException dive) {
                         //check if the project can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -192,7 +199,11 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                experimentEditController.updateView(createDefaultExperiment());
+                if (getSelectedProject() != null) {
+                    experimentEditController.updateView(createDefaultExperiment());
+                } else {
+                    eventBus.post(new MessageEvent("experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
+                }
             }
         });
 
@@ -207,7 +218,7 @@ public class ProjectManagementController implements Controllable {
                 }
             }
         });
-        
+
         projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -220,6 +231,7 @@ public class ProjectManagementController implements Controllable {
                         //remove from overview table and clear selection
                         experiments.remove(experimentToDelete);
                         experimentsSelectionModel.clearSelection();
+                        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, false, experimentToDelete));
                     } catch (DataIntegrityViolationException dive) {
                         //check if the experiment can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -267,6 +279,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addProject(Project project) {
         projects.add(project);
+        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.CREATED, false, project));
     }
 
     /**
@@ -293,7 +306,7 @@ public class ProjectManagementController implements Controllable {
 
         return selectedProject;
     }
-    
+
     /**
      * Get the row index of the selected experiment in the experiments table
      *
@@ -320,6 +333,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addExperiment(Experiment experiment) {
         experiments.add(experiment);
+        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, false, experiment));
     }
 
     /**
@@ -362,6 +376,8 @@ public class ProjectManagementController implements Controllable {
         User userWithMostProjectOwns = projectService.getUserWithMostProjectOwns();
         if (userWithMostProjectOwns != null) {
             defaultProject.setOwner(userWithMostProjectOwns);
+        } else {
+            defaultProject.setOwner(userService.findAll().get(0));
         }
 
         return defaultProject;
