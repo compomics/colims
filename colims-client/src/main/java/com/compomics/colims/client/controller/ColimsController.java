@@ -157,10 +157,7 @@ public class ColimsController implements Controllable, ActionListener {
 //        } else {
 //            //disable admin menu
 //            colimsFrame.getAdminMenu().setEnabled(false);
-//        }
-
-        //@todo move this call to showview
-        showView();
+//        }        
     }
 
     @Override
