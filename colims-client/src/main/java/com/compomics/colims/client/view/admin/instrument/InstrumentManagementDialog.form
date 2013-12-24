@@ -32,7 +32,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="516" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="492" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Component id="instrumentCrudPanel" alignment="0" max="32767" attributes="0"/>
           </Group>
@@ -69,9 +69,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentOverviewPanel" pref="213" max="32767" attributes="0"/>
+                  <Component id="instrumentOverviewPanel" pref="189" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentDetailPanel" min="-2" pref="239" max="-2" attributes="0"/>
+                  <Component id="instrumentDetailPanel" pref="239" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="cancelInstrumentManagementButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -116,7 +116,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="instrumentListScrollPane" alignment="0" pref="168" max="32767" attributes="0"/>
+                          <Component id="instrumentListScrollPane" alignment="0" pref="144" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="addInstrumentButton" min="-2" max="-2" attributes="0"/>
@@ -217,8 +217,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="instrumentDetailsTableScrollPane" min="-2" pref="194" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="instrumentDetailsTableScrollPane" pref="194" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
