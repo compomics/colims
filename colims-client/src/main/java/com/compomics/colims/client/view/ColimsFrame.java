@@ -36,8 +36,8 @@ public class ColimsFrame extends javax.swing.JFrame {
         return mainTabbedPane;
     }
 
-    public JMenu getHelpMenu() {
-        return helpMenu;
+    public JMenuItem getHelpMenuItem() {
+        return helpMenuItem;
     }
 
     public JMenuItem getHomeMenuItem() {
@@ -82,9 +82,9 @@ public class ColimsFrame extends javax.swing.JFrame {
         materialManagementMenuItem = new javax.swing.JMenuItem();
         protocolManagementMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
+        helpMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setExtendedState(1);
         setMinimumSize(new java.awt.Dimension(700, 700));
 
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N
@@ -124,6 +124,10 @@ public class ColimsFrame extends javax.swing.JFrame {
         menuBar.add(adminMenu);
 
         helpMenu.setText("Help");
+
+        helpMenuItem.setText("help");
+        helpMenu.add(helpMenuItem);
+
         menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
@@ -144,6 +148,7 @@ public class ColimsFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu adminMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JMenuItem homeMenuItem;
     private javax.swing.JMenuItem instrumentManagementMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;

@@ -135,7 +135,7 @@ public class ProjectEditController implements Controllable {
 
     @Override
     public void showView() {
-        projectEditDialog.setLocationRelativeTo(null);
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), projectEditDialog);
         projectEditDialog.setVisible(true);
     }
 

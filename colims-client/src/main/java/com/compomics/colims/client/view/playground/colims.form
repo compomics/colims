@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.6" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.6" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JMenuBar" name="annotationMenuBar">
       <Properties>
@@ -512,43 +512,21 @@
                           <Data value="4"/>
                         </Column>
                         <Column editable="false" title="Label" type="java.lang.String">
-                          <Data value="Heart"/>
-                          <Data value="Bloodplasma"/>
-                          <Data value="Cellzome148"/>
-                          <Data value="Cellzome147"/>
+                          <Data value="A"/>
+                          <Data value="B"/>
+                          <Data value="B"/>
+                          <Data value="C"/>
                         </Column>
                         <Column editable="false" title="Title" type="java.lang.String">
-                          <Data value="Membrane proteins of the normal human heart"/>
-                          <Data value="Human plasma dataset, Tao-Plasma-GC-12_17May04_Andro_0404-2_4-20"/>
-                          <Data value="Cellzome_Abl_inhibitors_NatureBiotechnology_exp148"/>
-                          <Data value="Cellzome_Abl_inhibitors_NatureBiotechnology_exp147"/>
+                          <Data value="Project 1"/>
+                          <Data value="Project 2"/>
+                          <Data value="Project 3"/>
+                          <Data value="Project 4"/>
                         </Column>
                       </Table>
                     </Property>
-                    <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-                      <TableColumnModel selectionModel="0">
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
-                      </TableColumnModel>
-                    </Property>
                     <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                       <JTableSelectionModel selectionMode="0"/>
-                    </Property>
-                    <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                      <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -605,10 +583,10 @@
                           <Data value="4"/>
                         </Column>
                         <Column editable="false" title="Title" type="java.lang.Object">
-                          <Data value="Patient 1"/>
-                          <Data value="Patient 2"/>
-                          <Data value="Patient 3"/>
-                          <Data value="Control"/>
+                          <Data value="Exp A"/>
+                          <Data value="Exp B"/>
+                          <Data value="Exp C"/>
+                          <Data value="Exp D"/>
                         </Column>
                       </Table>
                     </Property>
@@ -662,20 +640,18 @@
                 <Component class="javax.swing.JTable" name="samplesTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="2" rowCount="5">
+                      <Table columnCount="2" rowCount="4">
                         <Column editable="false" title="" type="java.lang.Integer">
                           <Data value="1"/>
                           <Data value="2"/>
                           <Data value="3"/>
                           <Data value="4"/>
-                          <Data value="5"/>
                         </Column>
                         <Column editable="false" title="Name" type="java.lang.String">
-                          <Data value="Pre-Treatment"/>
-                          <Data value="Day 7"/>
-                          <Data value="Day 14"/>
-                          <Data value="Day 21"/>
-                          <Data value="Post-Treatment"/>
+                          <Data value="Sample A"/>
+                          <Data value="Sample B"/>
+                          <Data value="Sample C"/>
+                          <Data value="Sample D"/>
                         </Column>
                       </Table>
                     </Property>
@@ -794,126 +770,54 @@
                 <Component class="javax.swing.JTable" name="psmTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="8" rowCount="13">
+                      <Table columnCount="8" rowCount="4">
                         <Column editable="false" title="" type="java.lang.Integer">
                           <Data value="1"/>
                           <Data value="2"/>
                           <Data value="3"/>
                           <Data value="4"/>
-                          <Data value="5"/>
-                          <Data value="6"/>
-                          <Data value="7"/>
-                          <Data value="8"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                         <Column editable="false" title="Accession" type="java.lang.String">
-                          <Data value="P45379"/>
-                          <Data value="P45379"/>
-                          <Data value="P45379"/>
-                          <Data value="P45379"/>
-                          <Data value="P19429"/>
-                          <Data value="P19429"/>
-                          <Data value="P19429"/>
-                          <Data value="P19429"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
+                          <Data value="Q10586"/>
+                          <Data value="Q10586"/>
+                          <Data value="Q10586"/>
+                          <Data value="Q10586"/>
                         </Column>
                         <Column editable="false" title="Sequence" type="java.lang.String">
-                          <Data value="IERRRAERAEQQRIRNEREKERQNRLAEER"/>
-                          <Data value="KILAERRKVLAIDHLNEDQ"/>
-                          <Data value="VEEEEDWREDEDEQEEAAEEDAEAEA"/>
-                          <Data value="YIQKQAQTERKS"/>
-                          <Data value="LSTRCQPLELAGLGFAELQD"/>
-                          <Data value="NREVGDWRKNIDALS"/>
-                          <Data value="RRRSSNYRAYATEPHAKKK"/>
-                          <Data value="IADLTQKIFDLRGKFKRPTL"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
+                          <Data value="ABC"/>
+                          <Data value="ABC"/>
+                          <Data value="ABC"/>
+                          <Data value="ABC"/>
                         </Column>
                         <Column editable="false" title="Title" type="java.lang.String">
                           <Data value="spectrum_1"/>
                           <Data value="spectrum_2"/>
                           <Data value="spectrum_3"/>
                           <Data value="spectrum_4"/>
-                          <Data value="spectrum_5"/>
-                          <Data value="spectrum_6"/>
-                          <Data value="spectrum_7"/>
-                          <Data value="spectrum_8"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                         <Column editable="false" title="m/z" type="java.lang.Double">
                           <Data value="970.48"/>
                           <Data value="926.11"/>
                           <Data value="899.42"/>
                           <Data value="886.96"/>
-                          <Data value="881.32"/>
-                          <Data value="843.29"/>
-                          <Data value="841.21"/>
-                          <Data value="838.91"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                         <Column editable="false" title="Charge" type="java.lang.Integer">
                           <Data value="2"/>
                           <Data value="3"/>
                           <Data value="2"/>
                           <Data value="2"/>
-                          <Data value="2"/>
-                          <Data value="2"/>
-                          <Data value="3"/>
-                          <Data value="2"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                         <Column editable="false" title="Intensity" type="java.lang.Double">
                           <Data value="639526.0"/>
                           <Data value="973623.1875"/>
                           <Data value="1608097.75"/>
                           <Data value="615790.3125"/>
-                          <Data value="691234.593"/>
-                          <Data value="678964.673"/>
-                          <Data value="1357983.851"/>
-                          <Data value="491244.731"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                         <Column editable="false" title="RT" type="java.lang.Double">
                           <Data value="1646.55402"/>
                           <Data value="1646.74992"/>
                           <Data value="1646.90436"/>
                           <Data value="1647.13464"/>
-                          <Data value="1648.312"/>
-                          <Data value="1648.921"/>
-                          <Data value="1649.412"/>
-                          <Data value="1650.032"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
-                          <Data value="null"/>
                         </Column>
                       </Table>
                     </Property>

@@ -198,7 +198,7 @@ public class ExperimentEditController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
 
-                experimentBinaryFileDialog.setLocationRelativeTo(null);
+                GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentEditDialog);
                 experimentBinaryFileDialog.setVisible(true);
             }
         });
@@ -260,7 +260,7 @@ public class ExperimentEditController implements Controllable {
 
     @Override
     public void showView() {
-        experimentEditDialog.setLocationRelativeTo(null);
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), experimentEditDialog);
         experimentEditDialog.setVisible(true);
     }
 

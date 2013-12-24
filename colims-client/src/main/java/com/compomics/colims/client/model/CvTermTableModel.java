@@ -52,9 +52,9 @@ public class CvTermTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         CvTerm selectedCvTerm = cvTerms.get(rowIndex);
-
+                
         switch (columnIndex) {
-            case TYPE_INDEX:
+            case TYPE_INDEX:                
                 return selectedCvTerm.getcvTermType();
             case ONTOLOGY_LABEL_INDEX:
                 return selectedCvTerm.getLabel();

@@ -7,8 +7,10 @@ import com.compomics.colims.client.controller.admin.InstrumentManagementControll
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
+import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.core.exception.PermissionException;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
@@ -47,6 +49,7 @@ public class ColimsController implements Controllable, ActionListener {
     //views
     private ColimsFrame colimsFrame;
     private LoginDialog loginDialog;
+    private MainHelpDialog mainHelpDialog;
     //child controllers    
     @Autowired
     private ProjectManagementController projectManagementController;
@@ -105,6 +108,7 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame = new ColimsFrame();
         colimsFrame.setTitle("Colims " + getVersion());
         loginDialog = new LoginDialog(colimsFrame, true);
+        mainHelpDialog = new MainHelpDialog(colimsFrame, true);
 
         //workaround for better beansbinding logging issue
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
@@ -126,6 +130,7 @@ public class ColimsController implements Controllable, ActionListener {
         //add action listeners                
         //add menu item action listeners
         colimsFrame.getHomeMenuItem().addActionListener(this);
+        colimsFrame.getHelpMenuItem().addActionListener(this);
 
         loginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
@@ -162,16 +167,18 @@ public class ColimsController implements Controllable, ActionListener {
 
     @Override
     public void showView() {
+        colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         colimsFrame.setLocationRelativeTo(null);
         colimsFrame.setVisible(true);
-        colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
-        if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
+        if (menuItemLabel.equals(colimsFrame.getHomeMenuItem().getText())) {
+            colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
+        } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
             userManagementController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.showView();
@@ -179,6 +186,9 @@ public class ColimsController implements Controllable, ActionListener {
             materialManagementController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getProtocolManagementMenuItem().getText())) {
             protocolManagementController.showView();
+        } else if (menuItemLabel.equals(colimsFrame.getHelpMenuItem().getText())) {
+            GuiUtils.centerDialogOnComponent(colimsFrame, mainHelpDialog);
+            mainHelpDialog.setVisible(true);
         }
     }
 
@@ -214,7 +224,7 @@ public class ColimsController implements Controllable, ActionListener {
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
-    
+
     /**
      * Retrieves the version number set in the pom file.
      *
@@ -243,8 +253,7 @@ public class ColimsController implements Controllable, ActionListener {
                 colimsFrame.getAdminMenu().setEnabled(false);
             }
 
-            colimsFrame.setLocationRelativeTo(null);
-            colimsFrame.setVisible(true);
+            showView();
         } else {
             showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
             loginDialog.getUserNameTextField().setText("");

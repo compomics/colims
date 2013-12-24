@@ -79,7 +79,7 @@ public class MaterialManagementController implements Controllable {
 
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
-    }    
+    }
 
     @Override
     public void init() {
@@ -95,15 +95,16 @@ public class MaterialManagementController implements Controllable {
 
         bindingGroup.bind();
     }
-    
+
     @Override
     public void showView() {
         //clear selection
         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-        
-        materialManagementDialog.setVisible(true);        
-    } 
-    
+
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), materialManagementDialog);
+        materialManagementDialog.setVisible(true);
+    }
+
     /**
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the MaterialManagementDialog is visible,
@@ -129,9 +130,9 @@ public class MaterialManagementController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
+                    if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1
+                            && materialBindingList.get(materialManagementDialog.getMaterialList().getSelectedIndex()) != null) {
                         Material selectedMaterial = materialBindingList.get(materialManagementDialog.getMaterialList().getSelectedIndex());
-
                         //check if the material has an ID.
                         //If so, change the save button text and the info state label.
                         if (selectedMaterial.getId() != null) {
@@ -203,7 +204,7 @@ public class MaterialManagementController implements Controllable {
                 if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
                     updateMaterialEditDialog(getSelectedMaterial());
                     //show dialog
-                    materialEditDialog.setLocationRelativeTo(null);
+                    GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
                     materialEditDialog.setVisible(true);
                 }
             }
@@ -223,11 +224,11 @@ public class MaterialManagementController implements Controllable {
 
         //init dual list
         materialEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
-        
+
         //add binding
         Binding materialNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, materialManagementDialog.getMaterialList(), ELProperty.create("${selectedElement.name}"), materialEditDialog.getNameTextField(), BeanProperty.create("text"), "materialNameBinding");
         bindingGroup.addBinding(materialNameBinding);
-        
+
         //set model and renderer
         cvTermSummaryListModel = new CvTermSummaryListModel();
         materialEditDialog.getCvTermSummaryList().setModel(cvTermSummaryListModel);
@@ -371,8 +372,7 @@ public class MaterialManagementController implements Controllable {
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
-                    cvTermManagementController.getCvTermManagementDialog().setLocationRelativeTo(null);
-                    cvTermManagementController.getCvTermManagementDialog().setVisible(true);
+                    cvTermManagementController.showView();
                 }
             }
         });
@@ -453,11 +453,11 @@ public class MaterialManagementController implements Controllable {
         //add the multiple CV terms
         EnumMap<CvTermType, List<MaterialCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
         cvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
-        
+
         //clear selection in CV term summary list
         materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
     }
-    
+
     /**
      * Clear the material detail fields
      */
