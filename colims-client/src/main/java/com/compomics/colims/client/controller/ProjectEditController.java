@@ -57,6 +57,7 @@ public class ProjectEditController implements Controllable {
         return projectEditDialog;
     }
 
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);

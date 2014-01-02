@@ -87,6 +87,7 @@ public class ProjectSetupController implements Controllable {
     /**
      * Controller init method.
      */
+    @Override
     public void init() {
         //init view
         projectSetupPanel = new ProjectSetupPanel();

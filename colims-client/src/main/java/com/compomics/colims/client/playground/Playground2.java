@@ -31,7 +31,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  *
  * @author Niels Hulstaert
  */
-public class Playground {
+public class Playground2 {
 
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, PeptideShakerIOException {
         try {

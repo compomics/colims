@@ -84,6 +84,7 @@ public class SampleEditController implements Controllable {
         return sampleEditDialog;
     }
 
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -144,6 +145,9 @@ public class SampleEditController implements Controllable {
                         sampleService.update(sampleToEdit);
                         index = experimentEditController.getSelectedSampleIndex();
                     } else {
+                        //set experiment
+                        sampleToEdit.setExperiment(experimentEditController.getExperimentToEdit());
+                        
                         sampleService.save(sampleToEdit);
                         //add experiment to overview table
                         experimentEditController.addSample(sampleToEdit);
@@ -182,7 +186,7 @@ public class SampleEditController implements Controllable {
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
+                SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
 
                 if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
                     sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);

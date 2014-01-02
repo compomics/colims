@@ -78,6 +78,11 @@ public class ExperimentEditController implements Controllable {
         return experimentEditDialog;
     }
 
+    public Experiment getExperimentToEdit() {
+        return experimentToEdit;
+    }        
+
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -130,6 +135,9 @@ public class ExperimentEditController implements Controllable {
                         experimentService.update(experimentToEdit);
                         index = projectManagementController.getSelectedExperimentIndex();
                     } else {
+                        //set project
+                        experimentToEdit.setProject(projectManagementController.getSelectedProject());
+                        
                         experimentService.save(experimentToEdit);
                         //add experiment to overview table
                         projectManagementController.addExperiment(experimentToEdit);

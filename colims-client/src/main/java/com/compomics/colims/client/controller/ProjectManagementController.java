@@ -11,6 +11,7 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.ProjectChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
@@ -24,6 +25,7 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ public class ProjectManagementController implements Controllable {
         return projectManagementPanel;
     }
 
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -359,7 +362,7 @@ public class ProjectManagementController implements Controllable {
         }
 
         return selectedExperiment;
-    }
+    }        
 
     /**
      * Create a default project, with some default properties.
@@ -395,5 +398,15 @@ public class ProjectManagementController implements Controllable {
         defaultExperiment.setNumber(1L);
 
         return defaultExperiment;
+    }
+    
+    /**
+     * Listen to a SampleChangeEvent and update the samples table.
+     *
+     * @param projectChangeEvent the projectChangeEvent
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        System.out.println("test");
     }
 }

@@ -80,6 +80,7 @@ public class ColimsController implements Controllable, ActionListener {
     /**
      * Controller init method.
      */
+    @Override
     public void init() {
 //        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
 //        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
