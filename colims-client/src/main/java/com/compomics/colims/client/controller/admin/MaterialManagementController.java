@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -16,6 +15,7 @@ import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;
@@ -58,6 +58,7 @@ public class MaterialManagementController implements Controllable {
     private CvTermSummaryListModel<MaterialCvTerm> cvTermSummaryListModel;
     private ObservableList<Material> materialBindingList;
     private BindingGroup bindingGroup;
+    private Material materialToEdit;
     //view
     private MaterialManagementDialog materialManagementDialog;
     private MaterialEditDialog materialEditDialog;
@@ -130,23 +131,24 @@ public class MaterialManagementController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1
-                            && materialBindingList.get(materialManagementDialog.getMaterialList().getSelectedIndex()) != null) {
-                        Material selectedMaterial = materialBindingList.get(materialManagementDialog.getMaterialList().getSelectedIndex());
-                        //check if the material has an ID.
-                        //If so, change the save button text and the info state label.
-                        if (selectedMaterial.getId() != null) {
-                            materialManagementDialog.getMaterialStateInfoLabel().setText("");
-                        } else {
-                            materialManagementDialog.getMaterialStateInfoLabel().setText("This material hasn't been persisted to the database.");
-                        }
+                    int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
+                    if (selectedIndex != -1 && materialBindingList.get(selectedIndex) != null) {
+                        Material selectedMaterial = materialBindingList.get(selectedIndex);
 
                         //init CvTermModel
                         List<CvTerm> cvTerms = new ArrayList<>();
-                        cvTerms.add(selectedMaterial.getSpecies());
-                        cvTerms.add(selectedMaterial.getCellType());
-                        cvTerms.add(selectedMaterial.getTissue());
-                        cvTerms.add(selectedMaterial.getCompartment());
+                        if (selectedMaterial.getSpecies() != null) {
+                            cvTerms.add(selectedMaterial.getSpecies());
+                        }
+                        if (selectedMaterial.getCellType() != null) {
+                            cvTerms.add(selectedMaterial.getCellType());
+                        }
+                        if (selectedMaterial.getTissue() != null) {
+                            cvTerms.add(selectedMaterial.getTissue());
+                        }
+                        if (selectedMaterial.getCompartment() != null) {
+                            cvTerms.add(selectedMaterial.getCompartment());
+                        }
                         CvTermTableModel cvTermTableModel = new CvTermTableModel(cvTerms);
                         materialManagementDialog.getMaterialDetailsTable().setModel(cvTermTableModel);
                     } else {
@@ -274,44 +276,43 @@ public class MaterialManagementController implements Controllable {
                 //get selected cvTermType                        
                 CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                Material material = getSelectedMaterial();
                 List<MaterialCvTerm> addedItems = (List<MaterialCvTerm>) evt.getNewValue();
 
                 //check for property
                 if (selectedcvTermType.equals(CvTermType.SPECIES)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm species = addedItems.get(0);
-                        material.setSpecies(species);
+                        materialToEdit.setSpecies(species);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, species);
                     } else {
-                        material.setSpecies(null);
+                        materialToEdit.setSpecies(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.TISSUE)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm tissue = addedItems.get(0);
-                        material.setTissue(tissue);
+                        materialToEdit.setTissue(tissue);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, tissue);
                     } else {
-                        material.setTissue(null);
+                        materialToEdit.setTissue(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CELL_TYPE)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm cellType = addedItems.get(0);
-                        material.setCellType(cellType);
+                        materialToEdit.setCellType(cellType);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, cellType);
                     } else {
-                        material.setCellType(null);
+                        materialToEdit.setCellType(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.COMPARTMENT)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm compartment = addedItems.get(0);
-                        material.setCompartment(compartment);
+                        materialToEdit.setCompartment(compartment);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, compartment);
                     } else {
-                        material.setCompartment(null);
+                        materialToEdit.setCompartment(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, null);
                     }
                 }
@@ -322,27 +323,33 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog.getMaterialSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Material selectedMaterial = getSelectedMaterial();
+                //update with dialog input
+                updateMaterialToEdit();
+
                 //validate material
-                List<String> validationMessages = GuiUtils.validateEntity(selectedMaterial);
+                List<String> validationMessages = GuiUtils.validateEntity(materialToEdit);
                 //check for a new material if the material name already exists in the db                
-                if (selectedMaterial.getId() == null && isExistingMaterialName(selectedMaterial)) {
-                    validationMessages.add(selectedMaterial.getName() + " already exists in the database,"
+                if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
+                    validationMessages.add(materialToEdit.getName() + " already exists in the database,"
                             + "\n" + "please choose another material name.");
                 }
+                int index = 0;
                 if (validationMessages.isEmpty()) {
-                    if (selectedMaterial.getId() != null) {
-                        materialService.update(selectedMaterial);
+                    if (materialToEdit.getId() != null) {
+                        materialService.update(materialToEdit);
+                        index = materialManagementDialog.getMaterialList().getSelectedIndex();
                     } else {
-                        materialService.save(selectedMaterial);
+                        materialService.save(materialToEdit);
+                        //add instrument to overview list
+                        materialBindingList.add(materialToEdit);
+                        index = materialBindingList.size() - 1;
                     }
                     materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + selectedMaterial.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in material list in management overview dialog
-                    int index = materialManagementDialog.getMaterialList().getSelectedIndex();
                     materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     materialManagementDialog.getMaterialList().setSelectedIndex(index);
                 } else {
@@ -436,19 +443,37 @@ public class MaterialManagementController implements Controllable {
         return defaultMaterial;
     }
 
+    /**
+     * Update the materialToEdit with input from the materialEditDialog
+     */
+    public void updateMaterialToEdit() {
+        materialToEdit.setName(materialEditDialog.getNameTextField().getText());
+    }
+
+    /**
+     * Update the material edit dialog with the given material
+     *
+     * @param material
+     */
     private void updateMaterialEditDialog(Material material) {
-        if (material.getId() != null) {
+        materialToEdit = material;
+
+        //check if the material has an ID.
+        //If so, change the save button text and the info state label.
+        if (materialToEdit.getId() != null) {
             materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
+            materialEditDialog.getMaterialStateInfoLabel().setText("");
         } else {
             materialEditDialog.getMaterialSaveOrUpdateButton().setText("save");
+            materialEditDialog.getMaterialStateInfoLabel().setText("This material hasn't been persisted to the database.");
         }
 
         //add the single CV terms
         EnumMap<CvTermType, MaterialCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class);
-        singleCvTerms.put(CvTermType.SPECIES, material.getSpecies());
-        singleCvTerms.put(CvTermType.TISSUE, material.getTissue());
-        singleCvTerms.put(CvTermType.CELL_TYPE, material.getCellType());
-        singleCvTerms.put(CvTermType.COMPARTMENT, material.getCompartment());
+        singleCvTerms.put(CvTermType.SPECIES, materialToEdit.getSpecies());
+        singleCvTerms.put(CvTermType.TISSUE, materialToEdit.getTissue());
+        singleCvTerms.put(CvTermType.CELL_TYPE, materialToEdit.getCellType());
+        singleCvTerms.put(CvTermType.COMPARTMENT, materialToEdit.getCompartment());
 
         //add the multiple CV terms
         EnumMap<CvTermType, List<MaterialCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
@@ -462,7 +487,6 @@ public class MaterialManagementController implements Controllable {
      * Clear the material detail fields
      */
     private void clearMaterialDetailFields() {
-        materialManagementDialog.getMaterialStateInfoLabel().setText("");
         materialManagementDialog.getMaterialDetailsTable().setModel(new CvTermTableModel());
     }
 }

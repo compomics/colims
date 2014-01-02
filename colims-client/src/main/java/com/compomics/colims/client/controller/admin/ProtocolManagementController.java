@@ -57,6 +57,7 @@ public class ProtocolManagementController implements Controllable {
     private CvTermSummaryListModel<ProtocolCvTerm> cvTermSummaryListModel;
     private ObservableList<Protocol> protocolBindingList;
     private BindingGroup bindingGroup;
+    private Protocol protocolToEdit;
     //view
     private ProtocolManagementDialog protocolManagementDialog;
     private ProtocolEditDialog protocolEditDialog;
@@ -129,22 +130,21 @@ public class ProtocolManagementController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1
-                            && protocolBindingList.get(protocolManagementDialog.getProtocolList().getSelectedIndex()) != null) {
-                        Protocol selectedProtocol = protocolBindingList.get(protocolManagementDialog.getProtocolList().getSelectedIndex());
-                        //check if the protocol has an ID.
-                        //If so, change the save button text and the info state label.
-                        if (selectedProtocol.getId() != null) {
-                            protocolManagementDialog.getProtocolStateInfoLabel().setText("");
-                        } else {
-                            protocolManagementDialog.getProtocolStateInfoLabel().setText("This protocol hasn't been persisted to the database.");
-                        }
+                    int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                    if (selectedIndex != -1 && protocolBindingList.get(selectedIndex) != null) {
+                        Protocol selectedProtocol = protocolBindingList.get(selectedIndex);
 
                         //init CvTermModel
                         List<CvTerm> cvTerms = new ArrayList<>();
-                        cvTerms.add(selectedProtocol.getReduction());
-                        cvTerms.add(selectedProtocol.getEnzyme());
-                        cvTerms.add(selectedProtocol.getCellBased());
+                        if (selectedProtocol.getReduction() != null) {
+                            cvTerms.add(selectedProtocol.getReduction());
+                        }
+                        if (selectedProtocol.getEnzyme() != null) {
+                            cvTerms.add(selectedProtocol.getEnzyme());
+                        }
+                        if (selectedProtocol.getCellBased() != null) {
+                            cvTerms.add(selectedProtocol.getCellBased());
+                        }
                         for (ProtocolCvTerm chemicalLabeling : selectedProtocol.getChemicalLabels()) {
                             cvTerms.add(chemicalLabeling);
                         }
@@ -278,42 +278,41 @@ public class ProtocolManagementController implements Controllable {
                 //get selected cvTermType                        
                 CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                Protocol protocol = getSelectedProtocol();
                 List<ProtocolCvTerm> addedItems = (List<ProtocolCvTerm>) evt.getNewValue();
 
                 //check for property
                 if (selectedcvTermType.equals(CvTermType.REDUCTION)) {
                     if (!addedItems.isEmpty()) {
                         ProtocolCvTerm reduction = addedItems.get(0);
-                        protocol.setReduction(reduction);
+                        protocolToEdit.setReduction(reduction);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.REDUCTION, reduction);
                     } else {
-                        protocol.setReduction(null);
+                        protocolToEdit.setReduction(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.REDUCTION, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.ENZYME)) {
                     if (!addedItems.isEmpty()) {
                         ProtocolCvTerm enzyme = addedItems.get(0);
-                        protocol.setEnzyme(enzyme);
+                        protocolToEdit.setEnzyme(enzyme);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.ENZYME, enzyme);
                     } else {
-                        protocol.setEnzyme(null);
+                        protocolToEdit.setEnzyme(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.ENZYME, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CELL_BASED)) {
                     if (!addedItems.isEmpty()) {
                         ProtocolCvTerm cellBased = addedItems.get(0);
-                        protocol.setCellBased(cellBased);
+                        protocolToEdit.setCellBased(cellBased);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_BASED, cellBased);
                     } else {
-                        protocol.setCellBased(null);
+                        protocolToEdit.setCellBased(null);
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_BASED, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CHEMICAL_LABELING)) {
-                    protocol.setChemicalLabels(addedItems);
+                    protocolToEdit.setChemicalLabels(addedItems);
                     cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 } else if (selectedcvTermType.equals(CvTermType.OTHER)) {
-                    protocol.setOtherCvTerms(addedItems);
+                    protocolToEdit.setOtherCvTerms(addedItems);
                     cvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
                 }
 
@@ -323,27 +322,33 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog.getProtocolSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Protocol selectedProtocol = getSelectedProtocol();
+                //update with dialog input
+                updateProtocolToEdit();
+
                 //validate protocol
-                List<String> validationMessages = GuiUtils.validateEntity(selectedProtocol);
+                List<String> validationMessages = GuiUtils.validateEntity(protocolToEdit);
                 //check for a new protocol if the protocol name already exists in the db                
-                if (selectedProtocol.getId() == null && isExistingProtocolName(selectedProtocol)) {
-                    validationMessages.add(selectedProtocol.getName() + " already exists in the database,"
+                if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
+                    validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
                             + "\n" + "please choose another protocol name.");
                 }
+                int index = 0;
                 if (validationMessages.isEmpty()) {
-                    if (selectedProtocol.getId() != null) {
-                        protocolService.update(selectedProtocol);
+                    if (protocolToEdit.getId() != null) {
+                        protocolService.update(protocolToEdit);
+                        index = protocolManagementDialog.getProtocolList().getSelectedIndex();
                     } else {
-                        protocolService.save(selectedProtocol);
+                        protocolService.save(protocolToEdit);
+                        //add protocol to overview list
+                        protocolBindingList.add(protocolToEdit);
+                        index = protocolBindingList.size() - 1;
                     }
                     protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
 
-                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + selectedProtocol.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
-                    int index = protocolManagementDialog.getProtocolList().getSelectedIndex();
                     protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     protocolManagementDialog.getProtocolList().setSelectedIndex(index);
                 } else {
@@ -417,23 +422,43 @@ public class ProtocolManagementController implements Controllable {
         return defaultProtocol;
     }
 
+    /**
+     * Update the protocolToEdit with input from the protocolEditDialog
+     */
+    public void updateProtocolToEdit() {
+        protocolToEdit.setName(protocolEditDialog.getNameTextField().getText());
+    }
+
+    /**
+     * Update the protocol edit dialog with the given protocol
+     *
+     * @param protocol
+     */
     private void updateProtocolEditDialog(Protocol protocol) {
-        if (protocol.getId() != null) {
+        protocolToEdit = protocol;
+
+        //check if the protocol has an ID.
+        //If so, change the save button text and the info state label.
+        if (protocolToEdit.getId() != null) {
             protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
+            protocolEditDialog.getProtocolStateInfoLabel().setText("");
         } else {
             protocolEditDialog.getProtocolSaveOrUpdateButton().setText("save");
+            protocolEditDialog.getProtocolStateInfoLabel().setText("This protocol hasn't been persisted to the database.");
         }
+
+        protocolEditDialog.getNameTextField().setText(protocolToEdit.getName());
 
         //add the single CV terms
         EnumMap<CvTermType, ProtocolCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class);
-        singleCvTerms.put(CvTermType.REDUCTION, protocol.getReduction());
-        singleCvTerms.put(CvTermType.ENZYME, protocol.getEnzyme());
-        singleCvTerms.put(CvTermType.CELL_BASED, protocol.getCellBased());
+        singleCvTerms.put(CvTermType.REDUCTION, protocolToEdit.getReduction());
+        singleCvTerms.put(CvTermType.ENZYME, protocolToEdit.getEnzyme());
+        singleCvTerms.put(CvTermType.CELL_BASED, protocolToEdit.getCellBased());
 
         //add the multiple CV terms
         EnumMap<CvTermType, List<ProtocolCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
-        multipleCvTerms.put(CvTermType.CHEMICAL_LABELING, protocol.getChemicalLabels());
-        multipleCvTerms.put(CvTermType.OTHER, protocol.getOtherCvTerms());
+        multipleCvTerms.put(CvTermType.CHEMICAL_LABELING, protocolToEdit.getChemicalLabels());
+        multipleCvTerms.put(CvTermType.OTHER, protocolToEdit.getOtherCvTerms());
         cvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
 
         //clear selection in CV term summary list
@@ -444,7 +469,6 @@ public class ProtocolManagementController implements Controllable {
      * Clear the protocol detail fields
      */
     private void clearProtocolDetailFields() {
-        protocolManagementDialog.getProtocolStateInfoLabel().setText("");
         protocolManagementDialog.getProtocolDetailsTable().setModel(new CvTermTableModel());
     }
 }
