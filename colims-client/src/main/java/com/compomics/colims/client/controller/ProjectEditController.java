@@ -108,8 +108,10 @@ public class ProjectEditController implements Controllable {
                         index = projectManagementController.getSelectedProjectIndex();
                     } else {
                         projectService.save(projectToEdit);
+                        
                         //add project to overview table
                         projectManagementController.addProject(projectToEdit);
+                        
                         index = projectManagementController.getProjectsSize() - 1;
                     }
                     projectEditDialog.getSaveOrUpdateButton().setText("update");

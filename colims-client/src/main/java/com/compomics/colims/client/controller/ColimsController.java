@@ -1,5 +1,7 @@
 package com.compomics.colims.client.controller;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import com.compomics.colims.client.config.PropertiesConfigurationHolder;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
@@ -12,8 +14,10 @@ import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.core.exception.PermissionException;
+import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Project;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -46,6 +50,7 @@ public class ColimsController implements Controllable, ActionListener {
     //model
     @Autowired
     private AuthenticationBean authenticationBean;
+    private EventList<Project> projects = new BasicEventList<>();
     //views
     private ColimsFrame colimsFrame;
     private LoginDialog loginDialog;
@@ -69,6 +74,8 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private UserService userService;
     @Autowired
+    private ProjectService projectService;
+    @Autowired
     private EventBus eventBus;
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
@@ -76,6 +83,10 @@ public class ColimsController implements Controllable, ActionListener {
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
     }
+
+    public EventList<Project> getProjects() {
+        return projects;
+    }        
 
     /**
      * Controller init method.
@@ -113,6 +124,9 @@ public class ColimsController implements Controllable, ActionListener {
 
         //workaround for better beansbinding logging issue
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
+        
+        //find all projects
+        projects.addAll(projectService.findAllWithEagerFetching());
 
         //init child controllers
         projectManagementController.init();
@@ -152,18 +166,19 @@ public class ColimsController implements Controllable, ActionListener {
         });
 
         //show login dialog
-        loginDialog.setLocationRelativeTo(null);
-        loginDialog.setVisible(true);
-//        //while developing, set a default user in the AuthenticationBean
-//        User currentUser = userService.findByName("admin1");
-//        userService.fetchAuthenticationRelations(currentUser);
-//        authenticationBean.setCurrentUser(currentUser);
-//        if (authenticationBean.isAdmin()) {
-//            initAdminSection();
-//        } else {
-//            //disable admin menu
-//            colimsFrame.getAdminMenu().setEnabled(false);
-//        }        
+//        loginDialog.setLocationRelativeTo(null);
+//        loginDialog.setVisible(true);
+        //while developing, set a default user in the AuthenticationBean
+        User currentUser = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(currentUser);
+        authenticationBean.setCurrentUser(currentUser);
+        if (authenticationBean.isAdmin()) {
+            initAdminSection();
+        } else {
+            //disable admin menu
+            colimsFrame.getAdminMenu().setEnabled(false);
+        }     
+        showView();
     }
 
     @Override

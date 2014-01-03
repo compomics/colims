@@ -139,8 +139,10 @@ public class ExperimentEditController implements Controllable {
                         experimentToEdit.setProject(projectManagementController.getSelectedProject());
                         
                         experimentService.save(experimentToEdit);
+                        
                         //add experiment to overview table
                         projectManagementController.addExperiment(experimentToEdit);
+                        
                         index = projectManagementController.getExperimentsSize() - 1;
                     }
                     experimentEditDialog.getSaveOrUpdateButton().setText("update");
@@ -250,6 +252,10 @@ public class ExperimentEditController implements Controllable {
                         samples.remove(sampleToDelete);
                         samplesSelectionModel.clearSelection();
                         eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, false, sampleToDelete));
+                        
+                        //remove sample from the selected experiment
+                        experimentToEdit.getSamples().remove(sampleToDelete);
+                        experimentEditDialog.getSamplesTable().updateUI();
                     } catch (DataIntegrityViolationException dive) {
                         //check if the sample can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -323,8 +329,11 @@ public class ExperimentEditController implements Controllable {
      *
      * @param sample
      */
-    public void addSample(Sample sample) {
-        samples.add(sample);
+    public void addSample(Sample sample) {                
+        samples.add(sample);         
+        
+        experimentToEdit.getSamples().add(sample);
+        
         eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.CREATED, false, sample));
     }
 
@@ -361,7 +370,7 @@ public class ExperimentEditController implements Controllable {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
         experimentToEdit.setNumber(Long.parseLong(experimentEditDialog.getNumberTextField().getText()));
         experimentToEdit.setDescription(experimentEditDialog.getDescriptionTextArea().getText());
-        experimentToEdit.setStorageLocation(experimentEditDialog.getStorageLocationTextField().getText());
+        experimentToEdit.setStorageLocation(experimentEditDialog.getStorageLocationTextField().getText());        
     }
 
     /**

@@ -149,8 +149,10 @@ public class SampleEditController implements Controllable {
                         sampleToEdit.setExperiment(experimentEditController.getExperimentToEdit());
                         
                         sampleService.save(sampleToEdit);
-                        //add experiment to overview table
+                        
+                        //add sample to overview table
                         experimentEditController.addSample(sampleToEdit);
+                        
                         index = experimentEditController.getSamplesSize() - 1;
                     }
                     sampleEditDialog.getSaveOrUpdateButton().setText("update");
