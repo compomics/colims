@@ -73,7 +73,7 @@ public class ProjectManagementController implements Controllable {
 
     public ProjectManagementPanel getProjectManagementPanel() {
         return projectManagementPanel;
-    }           
+    }
 
     @Override
     public void init() {
@@ -190,6 +190,8 @@ public class ProjectManagementController implements Controllable {
                             throw dive;
                         }
                     }
+                } else {
+                    eventBus.post(new MessageEvent("project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -230,9 +232,9 @@ public class ProjectManagementController implements Controllable {
                         experiments.remove(experimentToDelete);
                         experimentsSelectionModel.clearSelection();
                         eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, false, experimentToDelete));
-                        
+
                         //remove experiment from the selected project and update the table
-                        getSelectedProject().getExperiments().remove(experimentToDelete);                        
+                        getSelectedProject().getExperiments().remove(experimentToDelete);
                         projectManagementPanel.getProjectsTable().updateUI();
                     } catch (DataIntegrityViolationException dive) {
                         //check if the experiment can be deleted without breaking existing database relations,
@@ -245,6 +247,8 @@ public class ProjectManagementController implements Controllable {
                             throw dive;
                         }
                     }
+                } else {
+                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -332,13 +336,13 @@ public class ProjectManagementController implements Controllable {
      *
      * @param experiment
      */
-    public void addExperiment(Experiment experiment) {                
-        experiments.add(experiment);        
-        
+    public void addExperiment(Experiment experiment) {
+        experiments.add(experiment);
+
         //add the experiment to the selected project and update the projects table
         getSelectedProject().getExperiments().add(experiment);
         projectManagementPanel.getProjectsTable().updateUI();
-        
+
         eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, false, experiment));
     }
 
@@ -365,7 +369,7 @@ public class ProjectManagementController implements Controllable {
         }
 
         return selectedExperiment;
-    }        
+    }
 
     /**
      * Create a default project, with some default properties.
@@ -402,5 +406,4 @@ public class ProjectManagementController implements Controllable {
 
         return defaultExperiment;
     }
-        
 }

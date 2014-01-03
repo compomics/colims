@@ -223,7 +223,7 @@ public class SampleEditController implements Controllable {
             }
         });
 
-        sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
+        sampleEditDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sampleEditDialog.dispose();

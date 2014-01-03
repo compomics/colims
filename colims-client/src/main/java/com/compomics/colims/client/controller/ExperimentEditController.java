@@ -80,7 +80,7 @@ public class ExperimentEditController implements Controllable {
 
     public Experiment getExperimentToEdit() {
         return experimentToEdit;
-    }        
+    }
 
     @Override
     public void init() {
@@ -137,12 +137,12 @@ public class ExperimentEditController implements Controllable {
                     } else {
                         //set project
                         experimentToEdit.setProject(projectManagementController.getSelectedProject());
-                        
+
                         experimentService.save(experimentToEdit);
-                        
+
                         //add experiment to overview table
                         projectManagementController.addExperiment(experimentToEdit);
-                        
+
                         index = projectManagementController.getExperimentsSize() - 1;
                     }
                     experimentEditDialog.getSaveOrUpdateButton().setText("update");
@@ -213,7 +213,7 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        experimentEditDialog.getCancelButton().addActionListener(new ActionListener() {
+        experimentEditDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 experimentEditDialog.dispose();
@@ -252,7 +252,7 @@ public class ExperimentEditController implements Controllable {
                         samples.remove(sampleToDelete);
                         samplesSelectionModel.clearSelection();
                         eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, false, sampleToDelete));
-                        
+
                         //remove sample from the selected experiment
                         experimentToEdit.getSamples().remove(sampleToDelete);
                         experimentEditDialog.getSamplesTable().updateUI();
@@ -267,6 +267,8 @@ public class ExperimentEditController implements Controllable {
                             throw dive;
                         }
                     }
+                } else {
+                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -329,11 +331,11 @@ public class ExperimentEditController implements Controllable {
      *
      * @param sample
      */
-    public void addSample(Sample sample) {                
-        samples.add(sample);         
-        
+    public void addSample(Sample sample) {
+        samples.add(sample);
+
         experimentToEdit.getSamples().add(sample);
-        
+
         eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.CREATED, false, sample));
     }
 
@@ -370,7 +372,7 @@ public class ExperimentEditController implements Controllable {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
         experimentToEdit.setNumber(Long.parseLong(experimentEditDialog.getNumberTextField().getText()));
         experimentToEdit.setDescription(experimentEditDialog.getDescriptionTextArea().getText());
-        experimentToEdit.setStorageLocation(experimentEditDialog.getStorageLocationTextField().getText());        
+        experimentToEdit.setStorageLocation(experimentEditDialog.getStorageLocationTextField().getText());
     }
 
     /**

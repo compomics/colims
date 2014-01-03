@@ -55,7 +55,7 @@ public class UserManagementController implements Controllable {
         permissionCrudController.init();
 
         //add action listeners
-        userManagementDialog.getCancelButton().addActionListener(new ActionListener() {
+        userManagementDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 userManagementDialog.dispose();
