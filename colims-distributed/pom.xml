@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <name>colims-distributed</name>

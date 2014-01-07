@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>colims-client</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <name>colims-client</name>
@@ -128,7 +128,7 @@
                 </configuration>
             </plugin>
             
-            <!-- Pack sources on build -->
+<!--             Pack sources on build 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -144,7 +144,7 @@
                 </executions>
             </plugin>
 
-            <!-- Create javadoc on build -->
+             Create javadoc on build 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -159,7 +159,7 @@
                 </executions>
             </plugin>            
             
-            <!-- Zip the jar file and the dependencies -->
+             Zip the jar file and the dependencies 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.3</version>
@@ -172,16 +172,16 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <!-- this is used for inheritance merges -->
+                         this is used for inheritance merges 
                         <phase>package</phase>
-                        <!-- append to the packaging phase. -->
+                         append to the packaging phase. 
                         <goals>
                             <goal>single</goal>
-                            <!-- goals == mojos -->
+                             goals == mojos 
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>               -->
         </plugins>               
     </build>       
 
