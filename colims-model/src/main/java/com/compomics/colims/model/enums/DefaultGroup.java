@@ -6,7 +6,7 @@ package com.compomics.colims.model.enums;
  */
 public enum DefaultGroup {
     
-    ADMIN("admin");
+    ADMIN("admin"), DISTRIBUTED("distributed");
     
     /**
      * The name of the default group in the database.

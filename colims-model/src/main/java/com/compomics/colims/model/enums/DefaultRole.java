@@ -6,7 +6,7 @@ package com.compomics.colims.model.enums;
  */
 public enum DefaultRole {
     
-    ADMIN("admin");
+    ADMIN("admin"), DISTRIBUTED("distributed");
     
     /**
      * The name of the default role in the database.
