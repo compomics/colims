@@ -202,13 +202,20 @@ public class ExperimentEditController implements Controllable {
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
         });
+        
+        experimentBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                experimentBinaryFileDialog.dispose();
+            }
+        });
 
         experimentEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
 
-                GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentEditDialog);
+                GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentBinaryFileDialog);
                 experimentBinaryFileDialog.setVisible(true);
             }
         });

@@ -19,7 +19,6 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
@@ -147,12 +146,12 @@ public class SampleEditController implements Controllable {
                     } else {
                         //set experiment
                         sampleToEdit.setExperiment(experimentEditController.getExperimentToEdit());
-                        
+
                         sampleService.save(sampleToEdit);
-                        
+
                         //add sample to overview table
                         experimentEditController.addSample(sampleToEdit);
-                        
+
                         index = experimentEditController.getSamplesSize() - 1;
                     }
                     sampleEditDialog.getSaveOrUpdateButton().setText("update");
@@ -210,6 +209,13 @@ public class SampleEditController implements Controllable {
                 abstractBinaryFileService.update(binaryFileToUpdate);
 
                 sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+            }
+        });
+
+        sampleBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sampleBinaryFileDialog.dispose();
             }
         });
 
