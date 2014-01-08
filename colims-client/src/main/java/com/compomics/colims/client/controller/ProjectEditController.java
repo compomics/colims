@@ -63,14 +63,14 @@ public class ProjectEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);        
+        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
 
         //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());        
-        
+        projectEditDialog.getUserDualList().init(new UserNameComparator());
+
         //add binding
         bindingGroup = new BindingGroup();
-        
+
         userBindingList = ObservableCollections.observableList(userService.findAll());
 
         JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
@@ -92,7 +92,7 @@ public class ProjectEditController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //update projectToEdit with dialog input
-                updateProjectToEdit();                
+                updateProjectToEdit();
 
                 //validate project
                 List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
@@ -108,14 +108,14 @@ public class ProjectEditController implements Controllable {
                         index = projectManagementController.getSelectedProjectIndex();
                     } else {
                         projectService.save(projectToEdit);
-                        
+
                         //add project to overview table
                         projectManagementController.addProject(projectToEdit);
-                        
-                        index = projectManagementController.getProjectsSize() - 1;
-                    }
-                    projectEditDialog.getSaveOrUpdateButton().setText("update");
 
+                        index = projectManagementController.getProjectsSize() - 1;
+
+                        projectEditDialog.getSaveOrUpdateButton().setText("update");
+                    }
                     MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -148,7 +148,7 @@ public class ProjectEditController implements Controllable {
      */
     public void updateView(Project project) {
         projectToEdit = project;
-        
+
         if (projectToEdit.getId() != null) {
             projectEditDialog.getSaveOrUpdateButton().setText("update");
         } else {
@@ -162,7 +162,7 @@ public class ProjectEditController implements Controllable {
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
         //populate user dual list
         projectEditDialog.getUserDualList().populateLists(userService.findAll(), projectToEdit.getUsers());
-        
+
         showView();
     }
 

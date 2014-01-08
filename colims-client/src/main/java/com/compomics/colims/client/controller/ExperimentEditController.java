@@ -144,9 +144,11 @@ public class ExperimentEditController implements Controllable {
                         projectManagementController.addExperiment(experimentToEdit);
 
                         index = projectManagementController.getExperimentsSize() - 1;
-                    }
-                    experimentEditDialog.getSaveOrUpdateButton().setText("update");
-
+                        
+                        experimentEditDialog.getSaveOrUpdateButton().setText("update");
+                        updateSampleButtonsState(true);
+                    }                    
+                    
                     MessageEvent messageEvent = new MessageEvent("experiment persist confirmation", "Experiment " + experimentToEdit.getNumber() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -202,7 +204,7 @@ public class ExperimentEditController implements Controllable {
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
         });
-        
+
         experimentBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -296,10 +298,12 @@ public class ExperimentEditController implements Controllable {
 
         if (experimentToEdit.getId() != null) {
             experimentEditDialog.getSaveOrUpdateButton().setText("update");
+            updateSampleButtonsState(true);
             //fetch experiment binary files
             experimentService.fetchBinaryFiles(experimentToEdit);
         } else {
             experimentEditDialog.getSaveOrUpdateButton().setText("save");
+            updateSampleButtonsState(false);
         }
 
         experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());
@@ -428,5 +432,16 @@ public class ExperimentEditController implements Controllable {
         }
 
         return defaultSample;
+    }
+
+    /**
+     * Update the state (enables/disabled) of the sample related buttons
+     *
+     * @param enable the enable the buttons boolean
+     */
+    private void updateSampleButtonsState(boolean enable) {
+        experimentEditDialog.getEditSampleButton().setEnabled(enable);
+        experimentEditDialog.getAddSampleButton().setEnabled(enable);
+        experimentEditDialog.getDeleteSampleButton().setEnabled(enable);
     }
 }

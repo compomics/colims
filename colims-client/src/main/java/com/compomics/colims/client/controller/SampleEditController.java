@@ -153,9 +153,10 @@ public class SampleEditController implements Controllable {
                         experimentEditController.addSample(sampleToEdit);
 
                         index = experimentEditController.getSamplesSize() - 1;
-                    }
-                    sampleEditDialog.getSaveOrUpdateButton().setText("update");
-
+                        
+                        sampleEditDialog.getSaveOrUpdateButton().setText("update");                        
+                        updateAnalyticalRunButtonsState(true);
+                    }                    
                     MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -252,12 +253,14 @@ public class SampleEditController implements Controllable {
 
         if (sampleToEdit.getId() != null) {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
+            updateAnalyticalRunButtonsState(true);
             //fetch sample binary files
             sampleService.fetchBinaryFiles(sampleToEdit);
             //fetch sample materials
             sampleService.fetchMaterials(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
+            updateAnalyticalRunButtonsState(false);
         }
 
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
@@ -300,5 +303,16 @@ public class SampleEditController implements Controllable {
         concatenatedString = joiner.join(sampleToEdit.getBinaryFiles());
 
         return concatenatedString;
+    }
+    
+    /**
+     * Update the state (enables/disabled) of the analytical run related buttons
+     *
+     * @param enable the enable the buttons boolean
+     */
+    private void updateAnalyticalRunButtonsState(boolean enable) {
+        sampleEditDialog.getEditAnalyticalRunButton().setEnabled(enable);
+        sampleEditDialog.getAddAnalyticalRunButton().setEnabled(enable);
+        sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
     }
 }

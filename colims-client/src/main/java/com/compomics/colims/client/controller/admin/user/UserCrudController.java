@@ -10,6 +10,7 @@ import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
+import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
@@ -187,23 +188,28 @@ public class UserCrudController implements Controllable {
                     //check if the user is already has an id.
                     //If so, delete the user from the db.
                     if (userToDelete.getId() != null) {
-                        try {
-                            userService.delete(userToDelete);
-                            eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+                        //check if the user is a default user
+                        if (!userService.isDefaultUser(userToDelete)) {
+                            try {
+                                userService.delete(userToDelete);
+                                eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
 
-                            userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                            userManagementDialog.getUserList().getSelectionModel().clearSelection();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the user can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
+                                userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                                userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                            } catch (DataIntegrityViolationException dive) {
+                                //check if the user can be deleted without breaking existing database relations,
+                                //i.e. are there any constraints violations
+                                if (dive.getCause() instanceof ConstraintViolationException) {
+                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
+                                    eventBus.post(dbConstraintMessageEvent);
+                                } else {
+                                    //pass the exception
+                                    throw dive;
+                                }
                             }
                         }
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
                     } else {
                         userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
                         resetSelection();

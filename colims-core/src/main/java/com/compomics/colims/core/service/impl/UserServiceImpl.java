@@ -7,13 +7,13 @@ package com.compomics.colims.core.service.impl;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.LockOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
+import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -22,11 +22,11 @@ import org.hibernate.HibernateException;
  *
  * @author Niels Hulstaert
  */
-    @Service("userService")
-    @Transactional
-    public class UserServiceImpl implements UserService {
+@Service("userService")
+@Transactional
+public class UserServiceImpl implements UserService {
+
     private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
-    
     @Autowired
     private UserRepository userRepository;
 
@@ -95,5 +95,18 @@ import org.hibernate.HibernateException;
     public long countAll() {
         return userRepository.countAll();
     }
-    
+
+    @Override
+    public boolean isDefaultUser(User user) {
+        boolean isDefaultUser = false;
+
+        for (DefaultUser defaultUser : DefaultUser.values()) {
+            if (user.getName().equals(defaultUser.getDbEntry())) {
+                isDefaultUser = true;
+                break;
+            }
+        }
+
+        return isDefaultUser;
+    }
 }
