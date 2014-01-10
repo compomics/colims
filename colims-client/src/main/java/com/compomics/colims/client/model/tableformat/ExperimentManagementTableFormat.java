@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Experiment;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
 
 /**
  *
