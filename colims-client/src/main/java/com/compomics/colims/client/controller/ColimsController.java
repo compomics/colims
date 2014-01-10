@@ -166,19 +166,19 @@ public class ColimsController implements Controllable, ActionListener {
         });
 
         //show login dialog
-//        loginDialog.setLocationRelativeTo(null);
-//        loginDialog.setVisible(true);
+        loginDialog.setLocationRelativeTo(null);
+        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("admin");
-        userService.fetchAuthenticationRelations(currentUser);
-        authenticationBean.setCurrentUser(currentUser);
-        if (authenticationBean.isAdmin()) {
-            initAdminSection();
-        } else {
-            //disable admin menu
-            colimsFrame.getAdminMenu().setEnabled(false);
-        }     
-        showView();
+//        User currentUser = userService.findByName("admin");
+//        userService.fetchAuthenticationRelations(currentUser);
+//        authenticationBean.setCurrentUser(currentUser);
+//        if (authenticationBean.isAdmin()) {
+//            initAdminSection();
+//        } else {
+//            //disable admin menu
+//            colimsFrame.getAdminMenu().setEnabled(false);
+//        }     
+//        showView();
     }
 
     @Override

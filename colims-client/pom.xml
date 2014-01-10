@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>colims-client</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.2.2-SNAPSHOT</version>
+        <version>1.2.2</version>
     </parent>
 
     <name>colims-client</name>
