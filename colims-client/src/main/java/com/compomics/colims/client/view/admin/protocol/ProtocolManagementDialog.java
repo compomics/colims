@@ -2,7 +2,6 @@ package com.compomics.colims.client.view.admin.protocol;
 
 import java.awt.Frame;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTable;
 
@@ -13,9 +12,9 @@ import javax.swing.JTable;
 public class ProtocolManagementDialog extends javax.swing.JDialog {
     
     /**
-     * Creates new form ProtocolCvDialog
+     * Creates new form ProtocolCvDialog.
      */
-    public ProtocolManagementDialog(Frame parent, boolean modal) {
+    public ProtocolManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();

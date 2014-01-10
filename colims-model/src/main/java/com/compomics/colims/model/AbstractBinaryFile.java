@@ -35,7 +35,7 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
 
     public AbstractBinaryFile(){}
     
-    public AbstractBinaryFile(byte[] content) {
+    public AbstractBinaryFile(final byte[] content) {
         this.content = content;
     }
 
@@ -43,7 +43,7 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
         return binaryFileType;
     }
 
-    public void setBinaryFileType(BinaryFileType binaryFileType) {
+    public void setBinaryFileType(final BinaryFileType binaryFileType) {
         this.binaryFileType = binaryFileType;
     }    
 
@@ -51,7 +51,7 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(final byte[] content) {
         this.content = content;
     }
 
@@ -59,7 +59,7 @@ public class AbstractBinaryFile extends AbstractDatabaseEntity {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 

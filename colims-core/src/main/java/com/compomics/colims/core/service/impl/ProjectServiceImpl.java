@@ -30,7 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Override
-    public Project findById(Long id) {
+    public Project findById(final Long id) {
         return projectRepository.findById(id);
     }
 
@@ -40,22 +40,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void save(Project entity) {
+    public void save(final Project entity) {
         projectRepository.save(entity);
     }
 
     @Override
-    public void delete(Project entity) {
+    public void delete(final Project entity) {
         projectRepository.delete(entity);
     }
 
     @Override
-    public void update(Project entity) {
+    public void update(final Project entity) {
         projectRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Project entity) {
+    public void saveOrUpdate(final Project entity) {
         projectRepository.saveOrUpdate(entity);
     }
 
@@ -83,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project findByTitle(String title) {
+    public Project findByTitle(final String title) {
         return projectRepository.findByTitle(title);
     }
 

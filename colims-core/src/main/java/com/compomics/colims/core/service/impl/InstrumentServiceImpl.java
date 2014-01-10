@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.repository.InstrumentRepository;
-import org.hibernate.Hibernate;
-import org.hibernate.LockOptions;
 
 /**
  *

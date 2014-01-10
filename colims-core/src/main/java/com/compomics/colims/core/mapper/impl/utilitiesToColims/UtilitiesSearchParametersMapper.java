@@ -27,7 +27,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
      * @param searchParameters
       */
     @Override
-    public void map(SearchParameters searchParameters, SearchParameterSettings colimsSearchParametersSettings) {
+    public void map(final SearchParameters searchParameters, final SearchParameterSettings colimsSearchParametersSettings) {
         FastaDb fastaDb = new FastaDb();
         fastaDb.setFileName(searchParameters.getFastaFile().getName());
         //TODO GET THE CHECKSUM

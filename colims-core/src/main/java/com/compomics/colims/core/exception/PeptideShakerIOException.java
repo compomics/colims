@@ -11,19 +11,19 @@ public class PeptideShakerIOException extends Exception {
     public PeptideShakerIOException() {
     }
 
-    public PeptideShakerIOException(String message) {
+    public PeptideShakerIOException(final String message) {
         super(message);
     }
 
-    public PeptideShakerIOException(String message, Throwable cause) {
+    public PeptideShakerIOException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public PeptideShakerIOException(Throwable cause) {
+    public PeptideShakerIOException(final Throwable cause) {
         super(cause);
     }
 
-    public PeptideShakerIOException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public PeptideShakerIOException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
         

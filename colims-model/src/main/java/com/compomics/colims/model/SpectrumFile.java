@@ -7,9 +7,6 @@ package com.compomics.colims.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -38,7 +35,7 @@ public class SpectrumFile extends AbstractDatabaseEntity {
         return spectrum;
     }
 
-    public void setSpectrum(Spectrum spectrum) {
+    public void setSpectrum(final Spectrum spectrum) {
         this.spectrum = spectrum;
     }
 
@@ -46,7 +43,7 @@ public class SpectrumFile extends AbstractDatabaseEntity {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(final byte[] content) {
         this.content = content;
     }
 }

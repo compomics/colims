@@ -9,19 +9,19 @@ public class PermissionException extends RuntimeException {
         super();
     }
 
-    public PermissionException(String message) {
+    public PermissionException(final String message) {
         super(message);
     }
 
-    public PermissionException(String message, Throwable cause) {
+    public PermissionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public PermissionException(Throwable cause) {
+    public PermissionException(final Throwable cause) {
         super(cause);
     }
 
-    public PermissionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public PermissionException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

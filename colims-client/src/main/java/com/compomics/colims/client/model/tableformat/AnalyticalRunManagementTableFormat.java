@@ -15,7 +15,7 @@ import java.util.Comparator;
 public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<AnalyticalRun> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Start date", "Created", "# spectra"};
+    private static final String[] COLUMN_NAMES = {"Id", "Name", "Start date", "Created", "# spectra"};
     public static final int RUN_ID = 0;
     public static final int NAME = 1;
     public static final int START_DATE = 2;
@@ -28,7 +28,7 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
     }    
     
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case RUN_ID:
                 return Long.class;
@@ -46,22 +46,22 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(AnalyticalRun analyticalRun, int column) {
+    public Object getColumnValue(final AnalyticalRun analyticalRun, final int column) {
         switch (column) {
             case RUN_ID:
                 return analyticalRun.getId();

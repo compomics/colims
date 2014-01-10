@@ -31,7 +31,7 @@ public class HibernateCacheMonitor {
     }
 
     @Around("dataAccessOperation()")
-    public Object log(ProceedingJoinPoint pjp) throws Throwable {
+    public Object log(final ProceedingJoinPoint pjp) throws Throwable {
         if (!LOGGER.isDebugEnabled()) {
             return pjp.proceed();
         }

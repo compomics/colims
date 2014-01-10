@@ -46,7 +46,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }        
 
@@ -54,7 +54,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
         return userName;
     }
 
-    public void setUserName(String username) {
+    public void setUserName(final String username) {
         this.userName = username;
     }
 
@@ -62,7 +62,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
         return creationDate != null ? new Date(creationDate.getTime()) : null;
     }
 
-    public void setCreationdate(Date creationdate) {
+    public void setCreationdate(final Date creationdate) {
         this.creationDate = new Date(creationdate.getTime());
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractDatabaseEntity implements Serializable {
         return modificationDate != null ? new Date(modificationDate.getTime()) : null;
     }
 
-    public void setModificationdate(Date aModificationdate) {
+    public void setModificationdate(final Date aModificationdate) {
         modificationDate = new Date(aModificationdate.getTime());
     }
 }

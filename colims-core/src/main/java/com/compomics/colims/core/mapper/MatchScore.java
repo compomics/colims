@@ -11,7 +11,7 @@ public class MatchScore implements UrParameter {
     private Double probability;
     private Double postErrorProbability;
 
-    public MatchScore(Double probability, Double postErrorProbability) {
+    public MatchScore(final Double probability, final Double postErrorProbability) {
         this.probability = probability;
         this.postErrorProbability = postErrorProbability;
     }
@@ -20,7 +20,7 @@ public class MatchScore implements UrParameter {
         return probability;
     }
 
-    public void setProbability(Double probability) {
+    public void setProbability(final Double probability) {
         this.probability = probability;
     }
 
@@ -28,7 +28,7 @@ public class MatchScore implements UrParameter {
         return postErrorProbability;
     }
 
-    public void setPostErrorProbability(Double postErrorProbability) {
+    public void setPostErrorProbability(final Double postErrorProbability) {
         this.postErrorProbability = postErrorProbability;
     }
 

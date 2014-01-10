@@ -27,20 +27,20 @@ public class CustomPersistEventListener implements PersistEventListener {
     private AuthenticationBean authenticationBean;
 
     @Override
-    public void onPersist(PersistEvent event) throws HibernateException {
+    public void onPersist(final PersistEvent event) throws HibernateException {
         LOGGER.debug("Entering onPersist(PersistEvent event)");
 
         onListen(event.getObject());
     }
 
     @Override
-    public void onPersist(PersistEvent event, Map map) throws HibernateException {
+    public void onPersist(final PersistEvent event, final Map map) throws HibernateException {
         LOGGER.debug("Entering onPersist(PersistEvent event, Map map)");
         
         onPersist(event);
     }     
         
-    private void onListen(Object object) {
+    private void onListen(final Object object) {
         if (object instanceof AbstractDatabaseEntity) {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
 

@@ -1,6 +1,7 @@
 package com.compomics.colims.client.view;
 
 import java.awt.Color;
+import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -14,7 +15,7 @@ public class LoginDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public LoginDialog(java.awt.Frame parent, boolean modal) {
+    public LoginDialog(final Frame parent, final boolean modal) {
         super(parent, modal);  
         
         initComponents();

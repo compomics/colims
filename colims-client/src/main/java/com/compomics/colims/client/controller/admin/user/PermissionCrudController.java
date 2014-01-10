@@ -88,18 +88,18 @@ public class PermissionCrudController implements Controllable {
         //add listeners
         userManagementDialog.getRoleNameTextField().addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(final FocusEvent e) {
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 userManagementDialog.getRoleList().updateUI();
             }
         });
 
         userManagementDialog.getPermissionList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
                         Permission selectedPermission = getSelectedPermission();
@@ -128,7 +128,7 @@ public class PermissionCrudController implements Controllable {
 
         userManagementDialog.getAddPermissionButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Permission newPermission = new Permission("name");
                 permissionBindingList.add(newPermission);
                 userManagementDialog.getPermissionNameTextField().setEnabled(true);
@@ -138,7 +138,7 @@ public class PermissionCrudController implements Controllable {
 
         userManagementDialog.getDeletePermissionButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
                     Permission permissionToDelete = getSelectedPermission();
                     //check if permission is already has an id.
@@ -177,7 +177,7 @@ public class PermissionCrudController implements Controllable {
 
         userManagementDialog.getPermissionSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Permission selectedPermission = getSelectedPermission();
                 //validate permission
                 List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
@@ -222,7 +222,7 @@ public class PermissionCrudController implements Controllable {
      * @param roleChangeEvent the RoleChangeEvent
      */
     @Subscribe
-    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+    public void onRoleChangeEvent(final RoleChangeEvent roleChangeEvent) {
         if (roleChangeEvent.areChildrenAffected()) {
             permissionBindingList.clear();
             permissionBindingList.addAll(permissionService.findAll());
@@ -236,7 +236,7 @@ public class PermissionCrudController implements Controllable {
      * @param permission the selected permission
      * @return does the permission name exist
      */
-    private boolean isExistingPermissionName(Permission permission) {
+    private boolean isExistingPermissionName(final Permission permission) {
         boolean isExistingPermissionName = true;
         Permission foundPermission = permissionService.findByName(permission.getName());
         if (foundPermission == null) {

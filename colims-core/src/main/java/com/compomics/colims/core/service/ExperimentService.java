@@ -7,7 +7,6 @@ package com.compomics.colims.core.service;
 import java.util.List;
 
 import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.ExperimentBinaryFile;
 
 /**
  *

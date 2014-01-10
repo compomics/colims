@@ -25,12 +25,12 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     private AnalyticalRunRepository analyticalRunRepository;
 
     @Override
-    public List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleId) {
+    public List<AnalyticalRun> findAnalyticalRunsBySampleId(final Long sampleId) {
         return analyticalRunRepository.findAnalyticalRunsBySampleId(sampleId);
     }
 
     @Override
-    public AnalyticalRun findById(Long id) {
+    public AnalyticalRun findById(final Long id) {
         return analyticalRunRepository.findById(id);
     }
 
@@ -40,22 +40,22 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     }
 
     @Override
-    public void save(AnalyticalRun entity) {
+    public void save(final AnalyticalRun entity) {
         analyticalRunRepository.save(entity);
     }
 
     @Override
-    public void update(AnalyticalRun entity) {
+    public void update(final AnalyticalRun entity) {
         analyticalRunRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(AnalyticalRun entity) {
+    public void saveOrUpdate(final AnalyticalRun entity) {
         analyticalRunRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(AnalyticalRun entity) {
+    public void delete(final AnalyticalRun entity) {
         analyticalRunRepository.delete(entity);
     }
 
@@ -65,7 +65,7 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     }
 
     @Override
-    public void fetchSpectra(AnalyticalRun analyticalRun) {
+    public void fetchSpectra(final AnalyticalRun analyticalRun) {
         try {
             //attach the analytical run to the new session
             analyticalRunRepository.saveOrUpdate(analyticalRun);

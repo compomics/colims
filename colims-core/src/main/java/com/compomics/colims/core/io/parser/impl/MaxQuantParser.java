@@ -136,7 +136,7 @@ public class MaxQuantParser {
      * parsed file
      */
     public PeptideAssumption getIdentificationForSpectrum(MSnSpectrum aSpectrum) throws NumberFormatException {
-        return peptideAssumptions.get(((SpectrumIntUrParameterShizzleStuff) aSpectrum.getUrParam(new SpectrumIntUrParameterShizzleStuff())).spectrumid);
+        return peptideAssumptions.get(((SpectrumIntUrParameterShizzleStuff) aSpectrum.getUrParam(new SpectrumIntUrParameterShizzleStuff())).getSpectrumid());
     }
 
     public Collection<MSnSpectrum> getSpectraFromParsedFile() {

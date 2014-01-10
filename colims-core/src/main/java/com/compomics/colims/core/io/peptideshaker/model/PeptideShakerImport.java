@@ -25,7 +25,7 @@ import com.compomics.util.experiment.MsExperiment;
     private File fastaFile;
     private MsExperiment msExperiment;
 
-    public PeptideShakerImport(MsExperiment msExperiment, File dbDirectory) {
+    public PeptideShakerImport(final MsExperiment msExperiment, final File dbDirectory) {
         this.dbDirectory = dbDirectory;
         this.msExperiment = msExperiment;
     }
@@ -34,7 +34,7 @@ import com.compomics.util.experiment.MsExperiment;
         return dbDirectory;
     }
 
-    public void setDbDirectory(File dbDirectory) {
+    public void setDbDirectory(final File dbDirectory) {
         this.dbDirectory = dbDirectory;
     }
 
@@ -42,7 +42,7 @@ import com.compomics.util.experiment.MsExperiment;
         return mgfFiles;
     }
 
-    public void setMgfFiles(List<File> mgfFiles) {
+    public void setMgfFiles(final List<File> mgfFiles) {
         this.mgfFiles = mgfFiles;
     }
 
@@ -50,7 +50,7 @@ import com.compomics.util.experiment.MsExperiment;
         return fastaFile;
     }
 
-    public void setFastaFile(File fastaFile) {
+    public void setFastaFile(final File fastaFile) {
         this.fastaFile = fastaFile;
     }
 
@@ -58,7 +58,7 @@ import com.compomics.util.experiment.MsExperiment;
         return msExperiment;
     }
 
-    public void setMsExperiment(MsExperiment msExperiment) {
+    public void setMsExperiment(final MsExperiment msExperiment) {
         this.msExperiment = msExperiment;
     }
 
@@ -69,7 +69,7 @@ import com.compomics.util.experiment.MsExperiment;
      * @param mgfFileName the mgf file name
      * @return the found mgf file
      */
-    public File getMgfFileByName(String mgfFileName) {
+    public File getMgfFileByName(final String mgfFileName) {
         File foundMgfFile = null;
         if (mgfFiles != null) {
             for (File mgfFile : mgfFiles) {

@@ -21,7 +21,7 @@ public abstract class EntityChangeEvent {
      */
     protected boolean childrenAffected;
 
-    public EntityChangeEvent(Type type, boolean childrenAffected) {
+    public EntityChangeEvent(final Type type, final boolean childrenAffected) {
         this.type = type;
         this.childrenAffected = childrenAffected;
     }    

@@ -13,7 +13,7 @@ import java.util.Comparator;
 public class ExperimentManagementTableFormat implements AdvancedTableFormat<Experiment> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Title", "Number", "Created", "# samples"};
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Number", "Created", "# samples"};
     private static final String NOT_APPLICABLE = "N/A";
     public static final int EXPERIMENT_ID = 0;
     public static final int TITLE = 1;
@@ -22,7 +22,7 @@ public class ExperimentManagementTableFormat implements AdvancedTableFormat<Expe
     public static final int NUMBER_OF_SAMPLES = 4;
 
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case EXPERIMENT_ID:
                 return Long.class;
@@ -40,22 +40,22 @@ public class ExperimentManagementTableFormat implements AdvancedTableFormat<Expe
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(Experiment experiment, int column) {
+    public Object getColumnValue(final Experiment experiment, final int column) {
         switch (column) {
             case EXPERIMENT_ID:
                 return experiment.getId();

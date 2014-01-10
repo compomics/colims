@@ -10,7 +10,7 @@ public class ProgressEvent {
     private String description;
     private double progress;
 
-    public ProgressEvent(double progress, String description) {
+    public ProgressEvent(final double progress, final String description) {
         this.progress = progress;
         this.description = description;
     }
@@ -19,7 +19,7 @@ public class ProgressEvent {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }    
     
@@ -27,7 +27,7 @@ public class ProgressEvent {
         return progress;
     }
 
-    public void setProgress(double progress) {
+    public void setProgress(final double progress) {
         this.progress = progress;
     }        
 

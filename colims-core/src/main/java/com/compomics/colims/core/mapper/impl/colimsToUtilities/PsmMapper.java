@@ -23,7 +23,7 @@ public class PsmMapper {
     @Autowired
     private PeptideMapper peptideMapper;
 
-    public void map(Spectrum spectrum, SpectrumMatch spectrumMatch) throws MappingException {
+    public void map(final Spectrum spectrum, final SpectrumMatch spectrumMatch) throws MappingException {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         
         //for the moment, get the first peptide and set it as the best assumption

@@ -9,7 +9,7 @@ public class ExperimentChangeEvent extends EntityChangeEvent {
 
     private Experiment experiment;
 
-    public ExperimentChangeEvent(Type type, boolean childrenAffected, Experiment experiment) {
+    public ExperimentChangeEvent(final Type type, final boolean childrenAffected, final Experiment experiment) {
         super(type, childrenAffected);
         this.experiment = experiment;
     }

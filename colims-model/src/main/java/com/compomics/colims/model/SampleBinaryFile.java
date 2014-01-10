@@ -25,7 +25,7 @@ public class SampleBinaryFile extends AbstractBinaryFile {
         return sample;
     }
 
-    public void setSample(Sample sample) {
+    public void setSample(final Sample sample) {
         this.sample = sample;
     }    
     

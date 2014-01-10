@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.repository.ProtocolRepository;
-import org.hibernate.LockOptions;
 
 /**
  *

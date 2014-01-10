@@ -31,11 +31,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ColimsSpectrumMapperTest {
-    
+
     @Autowired
-    ColimsSpectrumMapper colimsSpectrumMapper;
-        
-    
+    private ColimsSpectrumMapper colimsSpectrumMapper;
 
     public ColimsSpectrumMapperTest() {
     }
@@ -74,5 +72,4 @@ public class ColimsSpectrumMapperTest {
         Assert.assertEquals(123.12, targetSpectrum.getPrecursor().getMz(), 0.01);
         Assert.assertEquals(new Charge(1, 3), targetSpectrum.getPrecursor().getPossibleCharges().get(0));
     }
-
 }

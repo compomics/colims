@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.repository.InstrumentTypeRepository;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -23,7 +22,7 @@ public class InstrumentTypeServiceImpl implements InstrumentTypeService {
     private InstrumentTypeRepository instrumentTypeRepository;
     
     @Override
-    public InstrumentType findById(Long id) {
+    public InstrumentType findById(final Long id) {
         return instrumentTypeRepository.findById(id);
     }
 
@@ -33,27 +32,27 @@ public class InstrumentTypeServiceImpl implements InstrumentTypeService {
     }
 
     @Override
-    public void save(InstrumentType entity) {
+    public void save(final InstrumentType entity) {
         instrumentTypeRepository.save(entity);
     }
 
     @Override
-    public void delete(InstrumentType entity) {
+    public void delete(final InstrumentType entity) {
         instrumentTypeRepository.delete(entity);
     }
 
     @Override
-    public InstrumentType findByName(String name) {
+    public InstrumentType findByName(final String name) {
         return instrumentTypeRepository.findByName(name);
     }
 
     @Override
-    public void update(InstrumentType entity) {
+    public void update(final InstrumentType entity) {
         instrumentTypeRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(InstrumentType entity) {
+    public void saveOrUpdate(final InstrumentType entity) {
         instrumentTypeRepository.saveOrUpdate(entity);
     }
 

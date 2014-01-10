@@ -26,12 +26,12 @@ public class SampleServiceImpl implements SampleService {
     private SampleRepository sampleRepository;
 
     @Override
-    public List<Sample> findSampleByExperimentId(Long experimentId) {
+    public List<Sample> findSampleByExperimentId(final Long experimentId) {
         return sampleRepository.findSampleByExperimentId(experimentId);
     }
 
     @Override
-    public Sample findById(Long id) {
+    public Sample findById(final Long id) {
         return sampleRepository.findById(id);
     }
 
@@ -41,22 +41,22 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public void save(Sample entity) {
+    public void save(final Sample entity) {
         sampleRepository.save(entity);
     }
 
     @Override
-    public void update(Sample entity) {
+    public void update(final Sample entity) {
         sampleRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Sample entity) {
+    public void saveOrUpdate(final Sample entity) {
         sampleRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(Sample entity) {
+    public void delete(final Sample entity) {
         sampleRepository.delete(entity);
     }
 
@@ -66,7 +66,7 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public void fetchBinaryFiles(Sample sample) {
+    public void fetchBinaryFiles(final Sample sample) {
         try {
             //attach the sample to the new session
             sampleRepository.saveOrUpdate(sample);
@@ -84,7 +84,7 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public void fetchMaterials(Sample sample) {
+    public void fetchMaterials(final Sample sample) {
         try {
             //attach the sample to the new session
             sampleRepository.saveOrUpdate(sample);

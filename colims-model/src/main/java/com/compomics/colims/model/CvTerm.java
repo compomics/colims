@@ -37,7 +37,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
     public CvTerm() {
     }
 
-    public CvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+    public CvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         this.cvTermType = cvTermType;
         this.ontology = ontology;
         this.label = label;
@@ -49,7 +49,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
         return ontology;
     }
 
-    public void setOntology(String ontology) {
+    public void setOntology(final String ontology) {
         this.ontology = ontology;
     }
 
@@ -57,7 +57,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
         return label;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
@@ -65,7 +65,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
         return accession;
     }
 
-    public void setAccession(String accession) {
+    public void setAccession(final String accession) {
         this.accession = accession;
     }
 
@@ -73,7 +73,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -81,7 +81,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
         return cvTermType;
     }
 
-    public void setcvTermType(CvTermType cvTermType) {
+    public void setcvTermType(final CvTermType cvTermType) {
         this.cvTermType = cvTermType;
     }        
 
@@ -96,7 +96,7 @@ public abstract class CvTerm extends AbstractDatabaseEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }

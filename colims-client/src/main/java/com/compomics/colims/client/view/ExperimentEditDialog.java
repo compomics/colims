@@ -1,5 +1,6 @@
 package com.compomics.colims.client.view;
 
+import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -14,7 +15,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public ExperimentEditDialog(java.awt.Frame parent, boolean modal) {
+    public ExperimentEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();

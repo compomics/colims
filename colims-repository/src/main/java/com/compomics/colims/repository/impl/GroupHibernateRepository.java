@@ -20,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 public class GroupHibernateRepository extends GenericHibernateRepository<Group, Long> implements GroupRepository {
 
     @Override
-    public Group findByName(String name) {
+    public Group findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }
 

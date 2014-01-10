@@ -20,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 public class ExperimentHibernateRepository extends GenericHibernateRepository<Experiment, Long> implements ExperimentRepository {
 
     @Override
-    public List<Experiment> getExperimentsByProjectId(Long projectId) {
+    public List<Experiment> getExperimentsByProjectId(final Long projectId) {
         Criteria subCriteria = createCriteria().createCriteria("l_project_id");
         @SuppressWarnings("unchecked")
         List<Experiment> list = subCriteria.add(Restrictions.eq("id", projectId)).list();
@@ -28,7 +28,7 @@ public class ExperimentHibernateRepository extends GenericHibernateRepository<Ex
     }
     
     @Override
-    public Experiment findByTitle(String title) {
+    public Experiment findByTitle(final String title) {
         return findUniqueByCriteria(Restrictions.eq("title", title));
     }
 }

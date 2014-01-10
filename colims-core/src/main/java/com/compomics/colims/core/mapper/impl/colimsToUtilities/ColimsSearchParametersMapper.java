@@ -29,7 +29,7 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
      * @param searchParameters
      */
     @Override
-    public void map(SearchParameterSettings colimsSearchParametersSettings, SearchParameters searchParameters) {
+    public void map(final SearchParameterSettings colimsSearchParametersSettings, final SearchParameters searchParameters) {
       LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
         searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
         //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?
@@ -55,7 +55,7 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
      *
      * @param fragmentIonType
      */
-    private String getCorrectLetter(int fragmentIonType) {
+    private String getCorrectLetter(final int fragmentIonType) {
         String ionLetter = "a";
         switch (fragmentIonType) {
             case 0:

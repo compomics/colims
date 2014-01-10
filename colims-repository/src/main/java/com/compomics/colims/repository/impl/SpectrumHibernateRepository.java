@@ -27,7 +27,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Long countSpectraByAnalyticalRun(AnalyticalRun analyticalRun) {
+    public Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun) {
         Long numberOfSpectra = 0L;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -37,7 +37,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
     
     @Override
-    public Double getMinimumRetentionTime(AnalyticalRun analyticalRun) {
+    public Double getMinimumRetentionTime(final AnalyticalRun analyticalRun) {
         Double minimumRetentionTime = 0.0;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -47,7 +47,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Double getMaximumRetentionTime(AnalyticalRun analyticalRun) {
+    public Double getMaximumRetentionTime(final AnalyticalRun analyticalRun) {
         Double maximumRetentionTime = 0.0;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -57,7 +57,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
     
     @Override
-    public Double getMinimumMzRatio(AnalyticalRun analyticalRun) {
+    public Double getMinimumMzRatio(final AnalyticalRun analyticalRun) {
         Double minimumMzRatio = 0.0;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -67,7 +67,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Double getMaximumMzRatio(AnalyticalRun analyticalRun) {
+    public Double getMaximumMzRatio(final AnalyticalRun analyticalRun) {
         Double maximumMzRatio = 0.0;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -77,7 +77,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
         
     @Override
-    public Integer getMinimumCharge(AnalyticalRun analyticalRun) {
+    public Integer getMinimumCharge(final AnalyticalRun analyticalRun) {
         Integer minimumCharge = 1;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
@@ -87,7 +87,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Integer getMaximumCharge(AnalyticalRun analyticalRun) {
+    public Integer getMaximumCharge(final AnalyticalRun analyticalRun) {
         Integer maximumCharge = 1;
         
         Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));

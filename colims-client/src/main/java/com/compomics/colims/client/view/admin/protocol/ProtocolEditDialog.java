@@ -17,7 +17,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     /**
      * Creates new form InstrumentCvDialog
      */
-    public ProtocolEditDialog(Dialog parent, boolean modal) {
+    public ProtocolEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();

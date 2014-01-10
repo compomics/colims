@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Project;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
 
 /**
  *
@@ -14,14 +13,14 @@ import java.util.Date;
 public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Title", "Label", "# exp"};
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Label", "# exp"};
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
     public static final int LABEL = 2;
     public static final int NUMBER_OF_EXPERIMENTS = 3;
 
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case PROJECT_ID:
                 return Long.class;
@@ -37,22 +36,22 @@ public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(Project project, int column) {
+    public Object getColumnValue(final Project project, final int column) {
         switch (column) {
             case PROJECT_ID:
                 return project.getId();

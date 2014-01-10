@@ -13,7 +13,7 @@ public enum DefaultRole {
      */
     private final String dbEntry;
     
-    private DefaultRole(String dbEntry){
+    private DefaultRole(final String dbEntry){
         this.dbEntry = dbEntry;
     }
 

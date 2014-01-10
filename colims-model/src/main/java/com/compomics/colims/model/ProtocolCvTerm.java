@@ -15,7 +15,7 @@ public class ProtocolCvTerm extends CvTerm {
     public ProtocolCvTerm() {
     }
 
-    public ProtocolCvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+    public ProtocolCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }
 

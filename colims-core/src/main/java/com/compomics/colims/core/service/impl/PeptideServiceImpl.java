@@ -23,10 +23,10 @@ public class PeptideServiceImpl implements PeptideService {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideServiceImpl.class);
     @Autowired
-    PeptideRepository peptideRepository;
+    private PeptideRepository peptideRepository;
 
     @Override
-    public Peptide findById(Long id) {
+    public Peptide findById(final Long id) {
         return peptideRepository.findById(id);
     }
 
@@ -36,22 +36,22 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public void save(Peptide entity) {
+    public void save(final Peptide entity) {
         peptideRepository.save(entity);
     }
 
     @Override
-    public void update(Peptide entity) {
+    public void update(final Peptide entity) {
         peptideRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Peptide entity) {
+    public void saveOrUpdate(final Peptide entity) {
         peptideRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(Peptide entity) {
+    public void delete(final Peptide entity) {
         peptideRepository.delete(entity);
     }
 
@@ -61,12 +61,12 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<Peptide> findBySpectrumId(long spectrumId) {
+    public List<Peptide> findBySpectrumId(final long spectrumId) {
         return peptideRepository.findPeptideBySpectrumId(spectrumId);
     }
 
     @Override
-    public void fetchPeptideHasModificiations(Peptide peptide) {
+    public void fetchPeptideHasModificiations(final Peptide peptide) {
         try {
             //attach the peptide to the new session
             peptideRepository.saveOrUpdate(peptide);

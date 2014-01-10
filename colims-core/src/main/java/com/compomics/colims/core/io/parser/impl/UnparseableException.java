@@ -6,7 +6,7 @@ package com.compomics.colims.core.io.parser.impl;
  */
 public class UnparseableException extends Exception{
     
-    public UnparseableException(String exceptionString){
+    public UnparseableException(final String exceptionString){
         super(exceptionString);
     }
     

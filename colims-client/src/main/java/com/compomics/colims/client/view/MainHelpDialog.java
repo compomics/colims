@@ -1,13 +1,12 @@
 package com.compomics.colims.client.view;
 
-import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.swing.BorderFactory;
 import org.apache.log4j.Logger;
 
 /**
@@ -15,26 +14,26 @@ import org.apache.log4j.Logger;
  * @author Niels Hulstaert
  */
 public class MainHelpDialog extends javax.swing.JDialog {
-    
+
     private static final Logger LOGGER = Logger.getLogger(MainHelpDialog.class);
     private URI uri;
 
     /**
      * Creates new form LoginDialog
      */
-    public MainHelpDialog(java.awt.Frame parent, boolean modal) {
+    public MainHelpDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
-        
+
         try {
             uri = new URI("https://code.google.com/p/colims/");
         } catch (URISyntaxException ex) {
             LOGGER.error(ex);
-        }               
-        
+        }
+
         initComponents();
 
         helpMessageScrollPane.getViewport().setOpaque(false);
-        
+
         init();
     }
 
@@ -44,20 +43,20 @@ public class MainHelpDialog extends javax.swing.JDialog {
     private void init() {
         uriButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().browse(uri);
-                    } catch (IOException ex) {                        
+                    } catch (IOException ex) {
                         LOGGER.error(ex);
                     }
-                } else { /* TODO: error handling */ }
+                }
             }
         });
-        
+
         closeButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 MainHelpDialog.this.dispose();
             }
         });

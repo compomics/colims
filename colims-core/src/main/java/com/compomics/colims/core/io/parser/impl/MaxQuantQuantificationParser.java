@@ -52,7 +52,7 @@ public class MaxQuantQuantificationParser {
 
             double lightIntensity = 0.0;
             if (heavyIntensityAsString != null) {
-                if (!lightIntensityAsString.isEmpty() & !lightIntensityAsString.equalsIgnoreCase("nan")) {
+                if (!lightIntensityAsString.isEmpty() && !lightIntensityAsString.equalsIgnoreCase("nan")) {
                     lightIntensity = Double.parseDouble(lightIntensityAsString);
                 }
             }

@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ColimsPeptideMapperTest {
 
     @Autowired
-    ColimsPeptideMapper colimsPeptideMapper;
+    private ColimsPeptideMapper colimsPeptideMapper;
 
     public ColimsPeptideMapperTest() {
     }

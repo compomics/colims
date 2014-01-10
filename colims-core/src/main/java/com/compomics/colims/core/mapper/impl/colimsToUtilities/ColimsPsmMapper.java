@@ -24,7 +24,7 @@ public class ColimsPsmMapper {
     @Autowired
     private ColimsPeptideMapper colimsPeptideMapper;
 
-    public void map(Spectrum spectrum, List<SpectrumMatch> targetSpectrumMap) throws MappingException {
+    public void map(final Spectrum spectrum, final List<SpectrumMatch> targetSpectrumMap) throws MappingException {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         //get best assumption
         for (Peptide aPeptide : spectrum.getPeptides()) {

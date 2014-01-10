@@ -30,7 +30,7 @@ public class GroupServiceImpl implements GroupService {
     private GroupRepository groupRepository;
 
     @Override
-    public Group findById(Long id) {
+    public Group findById(final Long id) {
         return groupRepository.findById(id);
     }
 
@@ -40,12 +40,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void save(Group entity) {
+    public void save(final Group entity) {
         groupRepository.save(entity);
     }
 
     @Override
-    public void delete(Group entity) {
+    public void delete(final Group entity) {
         //attach the group to the new session
         groupRepository.saveOrUpdate(entity);
         //remove entity relations
@@ -57,22 +57,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void update(Group entity) {
+    public void update(final Group entity) {
         groupRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Group entity) {
+    public void saveOrUpdate(final Group entity) {
         groupRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public Group findByName(String name) {
+    public Group findByName(final String name) {
         return groupRepository.findByName(name);
     }
 
     @Override
-    public boolean isDefaultGroup(Group group) {
+    public boolean isDefaultGroup(final Group group) {
         boolean isDefaultGroup = false;
         
         for(DefaultGroup defaultGroup : DefaultGroup.values()){

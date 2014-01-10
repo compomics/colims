@@ -24,7 +24,7 @@ public class ExperimentBinaryFile extends AbstractBinaryFile {
     public ExperimentBinaryFile() {
     }
 
-    public ExperimentBinaryFile(byte[] content) {
+    public ExperimentBinaryFile(final byte[] content) {
         super(content);
     }
 
@@ -32,7 +32,7 @@ public class ExperimentBinaryFile extends AbstractBinaryFile {
         return experiment;
     }
 
-    public void setExperiment(Experiment experiment) {
+    public void setExperiment(final Experiment experiment) {
         this.experiment = experiment;
     }
 }

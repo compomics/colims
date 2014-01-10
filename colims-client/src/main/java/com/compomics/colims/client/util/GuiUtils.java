@@ -91,7 +91,7 @@ public class GuiUtils {
      */
     public static <T> List<String> validateEntity(final T t) {
         List<String> validationMessages = new ArrayList<>();
-
+        
         ValidatorFactory entityValidator = Validation.buildDefaultValidatorFactory();
         Validator validator = entityValidator.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(t);

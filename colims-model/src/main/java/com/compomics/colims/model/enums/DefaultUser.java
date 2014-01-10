@@ -13,7 +13,7 @@ public enum DefaultUser {
      */
     private final String dbEntry;
     
-    private DefaultUser(String dbEntry){
+    private DefaultUser(final String dbEntry){
         this.dbEntry = dbEntry;
     }
 

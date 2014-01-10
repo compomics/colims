@@ -1,6 +1,5 @@
 package com.compomics.colims.client.factory;
 
-import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.core.logic.IonLadderMassesCalculator;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.UnknownAAException;
@@ -24,7 +23,7 @@ public class SpectrumPanelGenerator {
     @Autowired
     private IonLadderMassesCalculator ionLadderCalculator;
 
-    public SpectrumPanel getSpectrumPanel(double mzRatio, int charge, Map<Double, Double> spectrumPeaks, Peptide peptide) {
+    public SpectrumPanel getSpectrumPanel(final double mzRatio, final int charge, final Map<Double, Double> spectrumPeaks, final Peptide peptide) {
         //initialize new SpectrumPanel
         SpectrumPanel spectrumPanel = new SpectrumPanel(
                 Doubles.toArray(spectrumPeaks.keySet()),
@@ -51,7 +50,7 @@ public class SpectrumPanelGenerator {
      * @param peptide the peptide
      * @return the vector of peak annotations
      */
-    private Vector<DefaultSpectrumAnnotation> getPeakAnnotations(Peptide peptide) {
+    private Vector<DefaultSpectrumAnnotation> getPeakAnnotations(final Peptide peptide) {
         Vector<DefaultSpectrumAnnotation> peakAnnotations = new Vector();
         try {
 
@@ -75,7 +74,7 @@ public class SpectrumPanelGenerator {
         return peakAnnotations;
     }
 
-    private void addPeakAnnotations(Vector<DefaultSpectrumAnnotation> peakAnnotations, String ionType, double[] ionLadderMasses, int charge) {
+    private void addPeakAnnotations(final Vector<DefaultSpectrumAnnotation> peakAnnotations, final String ionType, final double[] ionLadderMasses, final int charge) {
         for (int i = 0; i < ionLadderMasses.length; i++) {
             String label = ionType;
             label += (i + 1);
@@ -90,7 +89,7 @@ public class SpectrumPanelGenerator {
         }
     }
 
-    private String getIonChargeString(int ionCharge) {
+    private String getIonChargeString(final int ionCharge) {
         StringBuilder ionChargeStringBuilder = new StringBuilder();
         for (int i = 0; i < ionCharge; i++) {
             ionChargeStringBuilder.append("+");

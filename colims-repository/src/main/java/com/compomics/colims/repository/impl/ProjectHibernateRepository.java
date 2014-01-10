@@ -43,7 +43,7 @@ public class ProjectHibernateRepository extends GenericHibernateRepository<Proje
     }
 
     @Override
-    public Project findByTitle(String title) {
+    public Project findByTitle(final String title) {
         return findUniqueByCriteria(Restrictions.eq("title", title));
     }
 }

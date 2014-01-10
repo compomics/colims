@@ -2,7 +2,6 @@ package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
 import java.util.ArrayList;
 
-import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
@@ -28,7 +27,7 @@ public class ColimsModificationMapper {
      * @param targetPeptide the colims target peptide
      * @throws MappingException
      */
-    public void map(Peptide targetPeptide, ArrayList<ModificationMatch> modificationMatches) {
+    public void map(final Peptide targetPeptide, final ArrayList<ModificationMatch> modificationMatches) {
         LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");
         for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
             String theoreticPTM = peptideHasModification.getModification().getAccession();

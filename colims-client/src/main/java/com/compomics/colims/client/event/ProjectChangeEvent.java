@@ -9,7 +9,7 @@ public class ProjectChangeEvent extends EntityChangeEvent {
 
     private Project project;
 
-    public ProjectChangeEvent(Type type, boolean childrenAffected, Project project) {
+    public ProjectChangeEvent(final Type type, final boolean childrenAffected, final Project project) {
         super(type, childrenAffected);
         this.project = project;
     }

@@ -7,7 +7,6 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.GenericJDBCException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
@@ -18,7 +17,7 @@ public class ColimsClientStarter {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch();
     }
 

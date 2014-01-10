@@ -31,12 +31,12 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User findById(Long userId) {
+    public User findById(final Long userId) {
         return userRepository.findById(userId);
     }
 
     @Override
-    public void save(User user) {
+    public void save(final User user) {
         userRepository.save(user);
     }
 
@@ -46,12 +46,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(User user) {
+    public void delete(final User user) {
         userRepository.delete(user);
     }
 
     @Override
-    public User findByLoginCredentials(String name, String password) {
+    public User findByLoginCredentials(final String name, final String password) {
         User user = userRepository.findByName(name);
         if (user != null) {
             if (user.getPassword().equals(password)) {
@@ -62,24 +62,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByName(String name) {
+    public User findByName(final String name) {
         return userRepository.findByName(name);
     }
 
     @Override
-    public void update(User entity) {
+    public void update(final User entity) {
         //attach the user to the new session
         //userRepository.saveOrUpdate(entity);
         userRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void saveOrUpdate(User entity) {
+    public void saveOrUpdate(final User entity) {
         userRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void fetchAuthenticationRelations(User user) {
+    public void fetchAuthenticationRelations(final User user) {
         try {
             //attach the user to the new session
             userRepository.saveOrUpdate(user);
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isDefaultUser(User user) {
+    public boolean isDefaultUser(final User user) {
         boolean isDefaultUser = false;
 
         for (DefaultUser defaultUser : DefaultUser.values()) {

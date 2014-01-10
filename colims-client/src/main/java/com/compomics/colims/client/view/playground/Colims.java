@@ -61,7 +61,7 @@ import org.springframework.core.io.ClassPathResource;
  *
  * @author Harald Barsnes
  */
-public class colims extends javax.swing.JFrame implements ExportGraphicsDialogParent {
+public class Colims extends javax.swing.JFrame implements ExportGraphicsDialogParent {
 
     /**
      * Turns of the gradient painting for the bar charts.
@@ -76,7 +76,7 @@ public class colims extends javax.swing.JFrame implements ExportGraphicsDialogPa
     /**
      * The annotation preferences.
      */
-    AnnotationPreferences annotationPreferences = new AnnotationPreferences(); // @TODO: set the preferences
+    private AnnotationPreferences annotationPreferences = new AnnotationPreferences(); // @TODO: set the preferences
     /**
      * The neutral loss menus.
      */
@@ -118,7 +118,7 @@ public class colims extends javax.swing.JFrame implements ExportGraphicsDialogPa
     /**
      * Creates a new colims GUI.
      */
-    public colims() {
+    public Colims() {
         initComponents();
 
         // @TODO: these should be set according to the current selection
@@ -1273,9 +1273,8 @@ public class colims extends javax.swing.JFrame implements ExportGraphicsDialogPa
                     JOptionPane.WARNING_MESSAGE);
         }
 
-        new colims();
+        new Colims();
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem aIonCheckBoxMenuItem;
     private javax.swing.JCheckBoxMenuItem adaptCheckBoxMenuItem;
@@ -1538,8 +1537,8 @@ public class colims extends javax.swing.JFrame implements ExportGraphicsDialogPa
                             secondarySpectrumPlotsJPanel.removeAll();
                             SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
                                     getTaggedPeptideSequence(
-                                            currentPeptide, //peptideAssumption.getPeptide(), // @TODO: re-add me!!
-                                            false, false, false),
+                                    currentPeptide, //peptideAssumption.getPeptide(), // @TODO: re-add me!!
+                                    false, false, false),
                                     annotations, true, searchParameters.getModificationProfile(), forwardIon, rewindIon);
                             sequenceFragmentationPanel.setMinimumSize(new Dimension(sequenceFragmentationPanel.getPreferredSize().width, sequenceFragmentationPanel.getHeight()));
                             sequenceFragmentationPanel.setOpaque(true);
@@ -1552,8 +1551,7 @@ public class colims extends javax.swing.JFrame implements ExportGraphicsDialogPa
                                     annotationPreferences.getAnnotationIntensityLimit(),
                                     annotationPreferences.getValidatedCharges().contains(1),
                                     annotationPreferences.getValidatedCharges().contains(2),
-                                    annotationPreferences.getValidatedCharges().contains(3)
-                            ));
+                                    annotationPreferences.getValidatedCharges().contains(3)));
 
                             // create the miniature mass error plot
                             MassErrorPlot massErrorPlot = new MassErrorPlot(

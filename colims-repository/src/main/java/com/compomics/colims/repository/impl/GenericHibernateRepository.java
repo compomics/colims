@@ -13,7 +13,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
-import org.hibernate.metamodel.source.annotations.entity.EntityClass;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.compomics.colims.repository.GenericRepository;

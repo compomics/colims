@@ -21,7 +21,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
      *
      * @param args the arguments to pass to the tool
      */
-    public ColimsClientStarterWrapper(String[] args) {
+    public ColimsClientStarterWrapper(final String[] args) {
         try {
             File jarFile = new File(ColimsClientStarterWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
@@ -43,7 +43,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new ColimsClientStarterWrapper(args);
     }
 }

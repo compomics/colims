@@ -32,10 +32,10 @@ public class ProgressConsoleMonitor {
     }
     
     @Subscribe
-    public void onProgressEvent(ProgressEvent progressEvent){
+    public void onProgressEvent(final ProgressEvent progressEvent){
         if(progressEvent.getProgress() - previousProgressValue > STEP_VALUE){
             //print the progress to the console
-            System.out.println("------------------ " + progressEvent.getDescription() + " : " + progressEvent.getProgress());
+            //System.out.println("------------------ " + progressEvent.getDescription() + " : " + progressEvent.getProgress());
             previousProgressValue = progressEvent.getProgress();
         }         
     }

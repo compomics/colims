@@ -24,7 +24,7 @@ public class CustomSaveEventListener extends DefaultSaveEventListener {
     private AuthenticationBean authenticationBean;
 
     @Override
-    public void onSaveOrUpdate(SaveOrUpdateEvent event) {
+    public void onSaveOrUpdate(final SaveOrUpdateEvent event) {
         LOGGER.debug("Entering onSaveOrUpdate");
 
         onListen(event.getObject());
@@ -32,7 +32,7 @@ public class CustomSaveEventListener extends DefaultSaveEventListener {
         super.onSaveOrUpdate(event);
     }
 
-    private void onListen(Object object) {
+    private void onListen(final Object object) {
         if (object instanceof AbstractDatabaseEntity) {
             AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
 

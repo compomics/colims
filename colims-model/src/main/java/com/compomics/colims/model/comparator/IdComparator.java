@@ -15,7 +15,7 @@ public class IdComparator implements Comparator<AbstractDatabaseEntity>, Seriali
     private static final long serialVersionUID = 1L;
     
     @Override
-    public int compare(AbstractDatabaseEntity ade1, AbstractDatabaseEntity ade2) {
+    public int compare(final AbstractDatabaseEntity ade1, final AbstractDatabaseEntity ade2) {
         return Long.compare(ade1.getId(), ade2.getId());
     }
 

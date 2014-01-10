@@ -81,7 +81,7 @@ public class ProjectEditController implements Controllable {
         //add action listeners
         projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 List<User> addedUsers = (List<User>) evt.getNewValue();
 
                 projectToEdit.setUsers(addedUsers);
@@ -90,7 +90,7 @@ public class ProjectEditController implements Controllable {
 
         projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update projectToEdit with dialog input
                 updateProjectToEdit();
 
@@ -130,7 +130,7 @@ public class ProjectEditController implements Controllable {
 
         projectEditDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 projectEditDialog.dispose();
             }
         });
@@ -146,7 +146,7 @@ public class ProjectEditController implements Controllable {
      * Update the project edit dialog with the selected project in the project
      * overview table.
      */
-    public void updateView(Project project) {
+    public void updateView(final Project project) {
         projectToEdit = project;
 
         if (projectToEdit.getId() != null) {
@@ -183,7 +183,7 @@ public class ProjectEditController implements Controllable {
      * @param project the project
      * @return does the project title exist
      */
-    private boolean isExistingProjectTitle(Project project) {
+    private boolean isExistingProjectTitle(final Project project) {
         boolean isExistingProjectTitle = true;
         Project foundProject = projectService.findByTitle(project.getTitle());
         if (foundProject == null) {

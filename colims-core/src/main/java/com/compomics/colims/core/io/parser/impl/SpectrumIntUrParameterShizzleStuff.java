@@ -6,9 +6,18 @@ import com.compomics.util.experiment.personalization.UrParameter;
  *
  * @author Davy
  */
-public class SpectrumIntUrParameterShizzleStuff implements UrParameter{
-    public int spectrumid;
+public class SpectrumIntUrParameterShizzleStuff implements UrParameter {
 
+    private int spectrumid;
+
+    public int getSpectrumid() {
+        return spectrumid;
+    }
+
+    public void setSpectrumid(final int spectrumid) {
+        this.spectrumid = spectrumid;
+    }
+    
     @Override
     public String getFamilyName() {
         return "maxquantparser";
@@ -17,5 +26,6 @@ public class SpectrumIntUrParameterShizzleStuff implements UrParameter{
     @Override
     public int getIndex() {
         return 4782389;
-    }
+    }    
+        
 }

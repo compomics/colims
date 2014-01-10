@@ -16,7 +16,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public SampleEditDialog(Dialog parent, boolean modal) {
+    public SampleEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();

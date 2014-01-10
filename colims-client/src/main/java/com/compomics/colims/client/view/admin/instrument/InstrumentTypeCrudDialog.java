@@ -14,9 +14,9 @@ import javax.swing.JTextField;
 public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
     
     /**
-     * Creates new form InstrumentCvDialog
+     * Creates new form InstrumentCvDialog.
      */
-    public InstrumentTypeCrudDialog(Dialog parent, boolean modal) {
+    public InstrumentTypeCrudDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();

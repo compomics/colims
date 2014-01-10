@@ -2,7 +2,6 @@ package com.compomics.colims.client.view.admin.material;
 
 import java.awt.Frame;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTable;
 
@@ -11,15 +10,15 @@ import javax.swing.JTable;
  * @author Niels Hulstaert
  */
 public class MaterialManagementDialog extends javax.swing.JDialog {
-    
+
     /**
      * Creates new form MaterialCvDialog
      */
-    public MaterialManagementDialog(Frame parent, boolean modal) {
+    public MaterialManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
-        
+
         initComponents();
-        
+
         materialDetailsTableScrollPane.getViewport().setOpaque(false);
         setLocationRelativeTo(parent);
     }
@@ -34,7 +33,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
 
     public JList getMaterialList() {
         return materialList;
-    }  
+    }
 
     public JTable getMaterialDetailsTable() {
         return materialDetailsTable;
@@ -42,11 +41,11 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
 
     public JButton getEditMaterialButton() {
         return materialEditButton;
-    }        
+    }
 
     public JButton getCloseMaterialManagementButton() {
         return closeMaterialManagementButton;
-    }            
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -199,7 +198,6 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addMaterialButton;
     private javax.swing.JButton closeMaterialManagementButton;
@@ -213,5 +211,4 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane materialListScrollPane;
     private javax.swing.JPanel materialOverviewPanel;
     // End of variables declaration//GEN-END:variables
-    
 }

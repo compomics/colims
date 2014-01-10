@@ -13,7 +13,7 @@ public enum DefaultGroup {
      */
     private final String dbEntry;
     
-    private DefaultGroup(String dbEntry){
+    private DefaultGroup(final String dbEntry){
         this.dbEntry = dbEntry;
     }
 

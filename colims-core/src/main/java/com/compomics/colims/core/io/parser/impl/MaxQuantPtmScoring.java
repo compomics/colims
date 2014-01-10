@@ -15,7 +15,7 @@ public class MaxQuantPtmScoring implements UrParameter {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(final double score) {
         this.score = score;
     }
 
@@ -23,7 +23,7 @@ public class MaxQuantPtmScoring implements UrParameter {
         return deltaScore;
     }
 
-    public void setDeltaScore(double deltaScore) {
+    public void setDeltaScore(final double deltaScore) {
         this.deltaScore = deltaScore;
     }
 

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption, Peptide> {
 
     @Autowired
-    UtilitiesPeptideMapper utilitiesPeptideMapper;
+    private UtilitiesPeptideMapper utilitiesPeptideMapper;
 
     /**
      * maps the source max quant peptide assumption to the target colims peptide
@@ -39,7 +39,7 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
      * @throws MappingException should any mapping problems arise
      */
     @Override
-    public void map(PeptideAssumption source, Peptide target) throws MappingException {
+    public void map(final PeptideAssumption source, final Peptide target) throws MappingException {
         final MatchScore matchScore = (MatchScore) source.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY));
         PSPtmScores ptmScores = new PSPtmScores();
         for (ModificationMatch match : source.getPeptide().getModificationMatches()) {

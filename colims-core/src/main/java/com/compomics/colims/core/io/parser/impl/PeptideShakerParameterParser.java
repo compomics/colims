@@ -39,7 +39,7 @@ public class PeptideShakerParameterParser {
      * @param msExperiment
      * @return
      */
-    public SearchParameters parseToSearchParameters(PeptideShakerImport source) {
+    public SearchParameters parseToSearchParameters(final PeptideShakerImport source) {
         if (source == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
@@ -57,7 +57,7 @@ public class PeptideShakerParameterParser {
      * @param msExperiment
      * @return PeptideshakerSettings
      */
-    public PeptideShakerSettings loadExperimentSettings(MsExperiment experiment) {
+    public PeptideShakerSettings loadExperimentSettings(final MsExperiment experiment) {
         experimentSettings = new PeptideShakerSettings();
         
         if (experiment.getUrParam(experimentSettings) instanceof PSSettings) {

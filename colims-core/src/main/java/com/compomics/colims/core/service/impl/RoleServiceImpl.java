@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
-    public Role findById(Long id) {
+    public Role findById(final Long id) {
         return roleRepository.findById(id);
     }
 
@@ -40,12 +40,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void save(Role entity) {
+    public void save(final Role entity) {
         roleRepository.save(entity);
     }
 
     @Override
-    public void delete(Role entity) {
+    public void delete(final Role entity) {
         //attach the role to the new session
         roleRepository.saveOrUpdate(entity);
         //remove entity relations
@@ -57,17 +57,17 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void update(Role entity) {
+    public void update(final Role entity) {
         roleRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Role entity) {
+    public void saveOrUpdate(final Role entity) {
         roleRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public Role findByName(String name) {
+    public Role findByName(final String name) {
         return roleRepository.findByName(name);
     }
 
@@ -77,7 +77,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean isDefaultRole(Role role) {
+    public boolean isDefaultRole(final Role role) {
          boolean isDefaultRole = false;
         
         for(DefaultRole defaultRole : DefaultRole.values()){

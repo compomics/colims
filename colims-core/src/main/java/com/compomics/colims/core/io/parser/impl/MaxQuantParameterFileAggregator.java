@@ -22,22 +22,22 @@ public class MaxQuantParameterFileAggregator {
     private TarArchiveOutputStream tOut;
 
     /**
-     * this class tries to emulate a tarball in memory, also returns tarballs if
-     * needed
+     * This class tries to emulate a tarball in memory, also returns tarballs if
+     * needed.
      *
      * @param aSummaryFile
      * @param aParametersFile
      */
-    public MaxQuantParameterFileAggregator(File aSummaryFile, File aParametersFile) throws IOException, FileNotFoundException {
+    public MaxQuantParameterFileAggregator(final File aSummaryFile, final File aParametersFile) throws IOException, FileNotFoundException {
         this.summaryFile = new ByteFile(aSummaryFile);
         this.parametersFile = new ByteFile(aParametersFile);
     }
 
-    public void setParametersFile(File aParametersFile) throws FileNotFoundException, IOException {
+    public void setParametersFile(final File aParametersFile) throws FileNotFoundException, IOException {
         this.parametersFile = new ByteFile(aParametersFile);
-    } 
+    }
 
-    public void setSummaryFile(File aSummaryFile) throws FileNotFoundException, IOException {
+    public void setSummaryFile(final File aSummaryFile) throws FileNotFoundException, IOException {
         this.summaryFile = new ByteFile(aSummaryFile);
     }
 
@@ -62,7 +62,7 @@ public class MaxQuantParameterFileAggregator {
      *
      * @throws IOException If anything goes wrong
      */
-    private static void addFileToTar(TarArchiveOutputStream tOut, File fileToTar, boolean tarIfFolder) throws IOException {
+    private static void addFileToTar(final TarArchiveOutputStream tOut, final File fileToTar, final boolean tarIfFolder) throws IOException {
         String entryName = fileToTar.getParentFile().getAbsolutePath() + fileToTar.getName();
         TarArchiveEntry tarEntry = new TarArchiveEntry(fileToTar, entryName);
         tOut.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);

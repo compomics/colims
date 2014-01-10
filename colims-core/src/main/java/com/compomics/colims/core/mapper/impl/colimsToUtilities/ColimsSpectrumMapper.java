@@ -13,7 +13,6 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,12 +35,13 @@ public class ColimsSpectrumMapper {
      * @param targetSpectrum the utilities MSnSpectrum
      * @throws MappingException
      */
-    public void map(Spectrum sourceSpectrum, MSnSpectrum targetSpectrum) throws MappingException {
-        LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getTitle());
-
+    public void map(final Spectrum sourceSpectrum, final MSnSpectrum targetSpectrum) throws MappingException {        
         if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
+        
+        LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getTitle());
+        
         //Build the precursor
         double retentionTime = sourceSpectrum.getRetentionTime();
         double moverz = sourceSpectrum.getMzRatio();

@@ -10,15 +10,15 @@ public class AASequenceMassUnknownException extends Exception {
     public AASequenceMassUnknownException() {
     }
 
-    public AASequenceMassUnknownException(String msg) {
+    public AASequenceMassUnknownException(final String msg) {
         super(msg);
     }
 
-    public AASequenceMassUnknownException(String msg, Throwable t) {
+    public AASequenceMassUnknownException(final String msg, final Throwable t) {
         super(msg, t);
     }
 
-    public AASequenceMassUnknownException(Throwable t) {
+    public AASequenceMassUnknownException(final Throwable t) {
         super(t);
     }
 

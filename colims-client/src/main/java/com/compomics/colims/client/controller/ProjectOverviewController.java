@@ -292,7 +292,6 @@ public class ProjectOverviewController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
-                    Spectrum selectedPsm = getSelectedSpectrum();
                     //update the spectrum panel
                     updateSpectrum();
                 }
@@ -484,7 +483,7 @@ public class ProjectOverviewController implements Controllable {
                     projectOverviewPanel.getSpectrumMainPanel().repaint();
                 }
             } catch (Exception e) {
-                e.printStackTrace(); // @TODO: add better error handling
+                LOGGER.error(e.getCause(), e);
             }
             colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         } else {

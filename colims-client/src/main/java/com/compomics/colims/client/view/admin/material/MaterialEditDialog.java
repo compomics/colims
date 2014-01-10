@@ -17,7 +17,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
     /**
      * Creates new form InstrumentCvDialog
      */
-    public MaterialEditDialog(Dialog parent, boolean modal) {
+    public MaterialEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();

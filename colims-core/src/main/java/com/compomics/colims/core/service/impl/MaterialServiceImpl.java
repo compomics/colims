@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.repository.MaterialRepository;
-import org.hibernate.LockOptions;
 
 /**
  *

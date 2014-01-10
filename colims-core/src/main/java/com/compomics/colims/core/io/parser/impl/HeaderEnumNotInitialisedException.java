@@ -6,7 +6,7 @@ package com.compomics.colims.core.io.parser.impl;
  */
 public class HeaderEnumNotInitialisedException extends Exception {
 
-    public HeaderEnumNotInitialisedException(String errorMessage) {
+    public HeaderEnumNotInitialisedException(final String errorMessage) {
         super(errorMessage);
     }
 }

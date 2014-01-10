@@ -7,9 +7,6 @@ package com.compomics.colims.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -62,7 +59,7 @@ public class Institution extends AbstractDatabaseEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -70,7 +67,7 @@ public class Institution extends AbstractDatabaseEntity {
         return abbreviation;
     }
 
-    public void setAbbreviation(String abbreviation) {
+    public void setAbbreviation(final String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
@@ -78,7 +75,7 @@ public class Institution extends AbstractDatabaseEntity {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet(final String street) {
         this.street = street;
     }
 
@@ -86,7 +83,7 @@ public class Institution extends AbstractDatabaseEntity {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(final Integer number) {
         this.number = number;
     }
 
@@ -94,7 +91,7 @@ public class Institution extends AbstractDatabaseEntity {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(final String city) {
         this.city = city;
     }
 
@@ -102,7 +99,7 @@ public class Institution extends AbstractDatabaseEntity {
         return postalCode;
     }
 
-    public void setPostalCode(Integer postalCode) {
+    public void setPostalCode(final Integer postalCode) {
         this.postalCode = postalCode;
     }
 
@@ -110,7 +107,7 @@ public class Institution extends AbstractDatabaseEntity {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(final String country) {
         this.country = country;
     }
 }

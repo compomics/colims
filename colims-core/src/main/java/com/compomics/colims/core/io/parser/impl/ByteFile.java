@@ -19,33 +19,33 @@ public class ByteFile extends File {
 
     private byte[] slurpedFile;
 
-    public ByteFile(String pathname) {
+    public ByteFile(final String pathname) {
         super(pathname);
     }
 
-    public ByteFile(String parent, String child) {
+    public ByteFile(final String parent, final String child) {
         super(parent, child);
     }
 
-    public ByteFile(File parent, String child) {
+    public ByteFile(final File parent, final String child) {
         super(parent, child);
     }
 
-    public ByteFile(URI uri) {
+    public ByteFile(final URI uri) {
         super(uri);
     }
 
-    public ByteFile(File readInFile) throws IOException, FileNotFoundException {
+    public ByteFile(final File readInFile) throws IOException, FileNotFoundException {
         super(readInFile.getAbsolutePath());
         slurpFile(readInFile);
     }
 
-    public ByteFile(byte[] fileByteArray) {
+    public ByteFile(final byte[] fileByteArray) {
         super("not on disk");
         slurpedFile = fileByteArray.clone();
     }
 
-    private void slurpFile(File readInFile) throws IOException, FileNotFoundException {
+    private void slurpFile(final File readInFile) throws IOException, FileNotFoundException {
         if (readInFile.isFile()) {
             ByteArrayOutputStream bais = new ByteArrayOutputStream(1024);
             IOUtils.copy(new FileInputStream(readInFile), bais);
@@ -60,9 +60,5 @@ public class ByteFile extends File {
             return new FileInputStream(this);
         }
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+       
 }

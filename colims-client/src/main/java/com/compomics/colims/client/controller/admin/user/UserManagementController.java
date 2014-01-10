@@ -32,9 +32,6 @@ public class UserManagementController implements Controllable {
     private RoleCrudController roleCrudController;
     @Autowired
     private PermissionCrudController permissionCrudController;
-    //services
-    @Autowired
-    private EventBus eventBus;
 
     public UserManagementController() {
     }
@@ -57,7 +54,7 @@ public class UserManagementController implements Controllable {
         //add action listeners
         userManagementDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 userManagementDialog.dispose();
             }
         });

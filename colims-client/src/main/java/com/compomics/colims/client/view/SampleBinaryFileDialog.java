@@ -14,7 +14,7 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public SampleBinaryFileDialog(Dialog parent, boolean modal) {
+    public SampleBinaryFileDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();       

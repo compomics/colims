@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ColimsModificationMapperTest {
 
     @Autowired
-    ColimsModificationMapper colimsModificationMapper;
+    private ColimsModificationMapper colimsModificationMapper;
 
     public ColimsModificationMapperTest() {
     }

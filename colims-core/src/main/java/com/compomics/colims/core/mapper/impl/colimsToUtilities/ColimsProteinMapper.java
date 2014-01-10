@@ -3,7 +3,6 @@ package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 import java.util.List;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
@@ -31,7 +30,7 @@ public class ColimsProteinMapper {
      * @param sourceProtein the colims protein
      * @throws MappingException
      */
-    public void map(Protein sourceProtein, List<ProteinMatch> proteinMatches) throws MappingException {
+    public void map(final Protein sourceProtein, final List<ProteinMatch> proteinMatches) throws MappingException {
         LOGGER.debug("Mapping proteins from " + sourceProtein.getAccession() + " to new list of ProteinMatch objects");
         ProteinMatch protMatch = new ProteinMatch();
         protMatch.setMainMatch(sourceProtein.getAccession());

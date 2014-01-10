@@ -10,15 +10,15 @@ public class UnknownAAException extends Exception {
     public UnknownAAException() {
     }
 
-    public UnknownAAException(String msg) {
+    public UnknownAAException(final String msg) {
         super(msg);
     }
 
-    public UnknownAAException(String msg, Throwable t) {
+    public UnknownAAException(String msg, final Throwable t) {
         super(t);
     }
 
-    public UnknownAAException(Throwable t) {
+    public UnknownAAException(final Throwable t) {
         super(t);
     }
 }

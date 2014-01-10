@@ -13,13 +13,13 @@ public class MessageEvent {
     private String message;
     private int messageType;
 
-    public MessageEvent(String messageTitle, String message, int messageType) {
+    public MessageEvent(final String messageTitle, final String message, final int messageType) {
         this.messageTitle = messageTitle;
         this.message = message;
         this.messageType = messageType;
     }
 
-    public MessageEvent(String messageTitle, List<String> messages, int messageType) {
+    public MessageEvent(final String messageTitle, final List<String> messages, final int messageType) {
         this.messageTitle = messageTitle;
         Joiner joiner = Joiner.on("\n");
         String concatenatedMessage = joiner.join(messages);

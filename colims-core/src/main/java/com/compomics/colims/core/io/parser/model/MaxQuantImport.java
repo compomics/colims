@@ -11,7 +11,7 @@ public class MaxQuantImport {
     private File maxQuantFolder;
     private File fastaFileUsed;
     
-    public MaxQuantImport(File aMaxQuantFolder,File aFastaFile){
+    public MaxQuantImport(final File aMaxQuantFolder, final File aFastaFile){
         this.maxQuantFolder = aMaxQuantFolder;
         this.fastaFileUsed = aFastaFile;
     }
@@ -20,7 +20,7 @@ public class MaxQuantImport {
         return maxQuantFolder;
     }
 
-    public void setMaxQuantFolder(File maxQuantFolder) {
+    public void setMaxQuantFolder(final File maxQuantFolder) {
         this.maxQuantFolder = maxQuantFolder;
     }
 
@@ -28,7 +28,7 @@ public class MaxQuantImport {
         return fastaFileUsed;
     }
 
-    public void setFastaFileUsed(File fastaFileUsed) {
+    public void setFastaFileUsed(final File fastaFileUsed) {
         this.fastaFileUsed = fastaFileUsed;
     }
     

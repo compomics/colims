@@ -73,7 +73,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return enzyme;
     }
 
-    public void setEnzyme(String enzyme) {
+    public void setEnzyme(final String enzyme) {
         this.enzyme = enzyme;
     }
 
@@ -81,7 +81,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return maxMissedCleavages;
     }
 
-    public void setMaxMissedCleavages(int maxMissedCleavages) {
+    public void setMaxMissedCleavages(final int maxMissedCleavages) {
         this.maxMissedCleavages = maxMissedCleavages;
     }
 
@@ -89,7 +89,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return precMassTolerance;
     }
 
-    public void setPrecMassTolerance(double precMassTolerance) {
+    public void setPrecMassTolerance(final double precMassTolerance) {
         this.precMassTolerance = precMassTolerance;
     }
 
@@ -97,7 +97,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return precursorLowerCharge;
     }
 
-    public void setPrecursorLowerCharge(int precursorLowerCharge) {
+    public void setPrecursorLowerCharge(final int precursorLowerCharge) {
         this.precursorLowerCharge = precursorLowerCharge;
     }
 
@@ -105,7 +105,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return precursorUpperCharge;
     }
 
-    public void setPrecursorUpperCharge(int precursorUpperCharge) {
+    public void setPrecursorUpperCharge(final int precursorUpperCharge) {
         this.precursorUpperCharge = precursorUpperCharge;
     }
 
@@ -113,7 +113,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return precMassToleranceUnit;
     }
 
-    public void setPrecMassToleranceUnit(PrecursorAccuracyType precMassToleranceUnit) {
+    public void setPrecMassToleranceUnit(final PrecursorAccuracyType precMassToleranceUnit) {
         this.precMassToleranceUnit = precMassToleranceUnit;
     }
 
@@ -121,7 +121,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return fragMassTolerance;
     }
 
-    public void setFragMassTolerance(double fragMassTolerance) {
+    public void setFragMassTolerance(final double fragMassTolerance) {
         this.fragMassTolerance = fragMassTolerance;
     }
 
@@ -129,7 +129,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return fragMassToleranceUnit;
     }
 
-    public void setFragMassToleranceUnit(PrecursorAccuracyType fragMassToleranceUnit) {
+    public void setFragMassToleranceUnit(final PrecursorAccuracyType fragMassToleranceUnit) {
         this.fragMassToleranceUnit = fragMassToleranceUnit;
     }
 
@@ -137,7 +137,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return fragmentIon1Type;
     }
 
-    public void setFragmentIon1Type(int fragmentIon1Type) {
+    public void setFragmentIon1Type(final int fragmentIon1Type) {
         this.fragmentIon1Type = fragmentIon1Type;
     }
 
@@ -145,7 +145,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return fragmentIon2Type;
     }
 
-    public void setFragmentIon2Type(int fragmentIon2Type) {
+    public void setFragmentIon2Type(final int fragmentIon2Type) {
         this.fragmentIon2Type = fragmentIon2Type;
     }
 
@@ -153,7 +153,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return evalueCutoff;
     }
 
-    public void setEvalueCutoff(double evalueCutoff) {
+    public void setEvalueCutoff(final double evalueCutoff) {
         this.evalueCutoff = evalueCutoff;
     }
 
@@ -161,7 +161,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return hitlistLength;
     }
 
-    public void setHitlistLength(int hitlistLength) {
+    public void setHitlistLength(final int hitlistLength) {
         this.hitlistLength = hitlistLength;
     }
 
@@ -169,7 +169,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return searchAndValSetHasSearchEngine;
     }
 
-    public void setSearchAndValSetHasSearchEngine(SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine) {
+    public void setSearchAndValSetHasSearchEngine(final SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine) {
         this.searchAndValSetHasSearchEngine = searchAndValSetHasSearchEngine;
     }
 
@@ -177,7 +177,7 @@ public class SearchParameterSettings extends AbstractDatabaseEntity {
         return fastaDb;
     }
 
-    public void setFastaDb(FastaDb fastaDb) {
+    public void setFastaDb(final FastaDb fastaDb) {
         this.fastaDb = fastaDb;
     }
 

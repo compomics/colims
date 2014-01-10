@@ -8,31 +8,50 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * Singleton for holding the Spring application context.
  *
  * @author Niels Hulstaert
  */
-public class ApplicationContextProvider {
+public final class ApplicationContextProvider {
 
+    /**
+     * The Spring application context
+     */
     private ApplicationContext applicationContext;
-    private static final ApplicationContextProvider provider = new ApplicationContextProvider();
+    private static final ApplicationContextProvider PROVIDER = new ApplicationContextProvider();
 
-    private ApplicationContextProvider() throws ExceptionInInitializerError {
-        try {
-            this.applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
+    /**
+     * The singleton private constructor.
+     */
+    private ApplicationContextProvider() {
+        this.applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
     }
 
-    public synchronized static ApplicationContextProvider getInstance() throws ExceptionInInitializerError {
-        return provider;
+    /**
+     * Get the singleton instance.
+     *
+     * @return the singleton instance
+     * @throws ExceptionInInitializerError
+     */
+    public static synchronized ApplicationContextProvider getInstance() {
+        return PROVIDER;
     }
 
+    /**
+     * Get the Spring application context.
+     *
+     * @return the application context
+     */
     public ApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    /**
+     * Setter for the application context.
+     *
+     * @param applicationContext the application context
+     */
+    public void setApplicationContext(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 }

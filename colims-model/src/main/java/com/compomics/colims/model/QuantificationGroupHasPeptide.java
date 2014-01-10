@@ -30,7 +30,7 @@ public class QuantificationGroupHasPeptide extends AbstractDatabaseEntity {
         return quantificationGroup;
     }
 
-    public void setQuantificationGroup(QuantificationGroup quantificationGroup) {
+    public void setQuantificationGroup(final QuantificationGroup quantificationGroup) {
         this.quantificationGroup = quantificationGroup;
     }
 
@@ -38,7 +38,7 @@ public class QuantificationGroupHasPeptide extends AbstractDatabaseEntity {
         return peptide;
     }
 
-    public void setPeptide(Peptide peptide) {
+    public void setPeptide(final Peptide peptide) {
         this.peptide = peptide;
     }
 }

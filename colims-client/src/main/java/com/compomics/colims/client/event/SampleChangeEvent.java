@@ -9,7 +9,7 @@ public class SampleChangeEvent extends EntityChangeEvent {
 
     private Sample sample;
 
-    public SampleChangeEvent(Type type, boolean childrenAffected, Sample sample) {
+    public SampleChangeEvent(final Type type, final boolean childrenAffected, final Sample sample) {
         super(type, childrenAffected);
         this.sample = sample;
     }

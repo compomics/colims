@@ -22,12 +22,12 @@ public class ProteinServiceImpl implements ProteinService {
     private ProteinRepository proteinRepository;
 
     @Override
-    public Protein findByAccession(String accession) {
+    public Protein findByAccession(final String accession) {
         return proteinRepository.findByAccession(accession);
     }
 
     @Override
-    public Protein findById(Long id) {
+    public Protein findById(final Long id) {
         return proteinRepository.findById(id);
     }
 
@@ -37,22 +37,22 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public void save(Protein entity) {
+    public void save(final Protein entity) {
         proteinRepository.save(entity);
     }
 
     @Override
-    public void update(Protein entity) {
+    public void update(final Protein entity) {
         proteinRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Protein entity) {
+    public void saveOrUpdate(final Protein entity) {
         proteinRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(Protein entity) {
+    public void delete(final Protein entity) {
         proteinRepository.delete(entity);
     }
 

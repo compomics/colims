@@ -25,16 +25,16 @@ import org.junit.After;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantParserTest {
-
+    
     @Autowired
     MaxQuantParser maxQuantParser;
     public static File testFolder;
-
+    
     @After
     public void clearMaxQuantParser() {
         maxQuantParser.clearParsedProject();
     }
-
+    
     public MaxQuantParserTest() {
         testFolder = new File(getClass().getClassLoader().getResource("testdata").getPath());
     }
@@ -99,7 +99,7 @@ public class MaxQuantParserTest {
         //acetyl only
         MSnSpectrum togetSpectrum = new MSnSpectrum();
         SpectrumIntUrParameterShizzleStuff testId = new SpectrumIntUrParameterShizzleStuff();
-        testId.spectrumid = 46;
+        testId.setSpectrumid(46);
         togetSpectrum.addUrParam(testId);
         testAssumption = maxQuantParser.getIdentificationForSpectrum(togetSpectrum);
         assertThat(testAssumption, is(not(nullValue())));
@@ -109,7 +109,7 @@ public class MaxQuantParserTest {
         assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
 
         //oxidation only
-        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 36;
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).setSpectrumid(36);
         testAssumption = maxQuantParser.getIdentificationForSpectrum(togetSpectrum);
         assertThat(testAssumption.getPeptide().getModificationMatches().size(), is(1));
         assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
@@ -122,13 +122,13 @@ public class MaxQuantParserTest {
 
 
         //and test if the assumptions were parsed correctly
-        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 487;
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).setSpectrumid(487);
         assertThat(maxQuantParser.getIdentificationForSpectrum(togetSpectrum).getScore(), is(58.676));
-        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 605;
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).setSpectrumid(605);
         assertThat(maxQuantParser.getIdentificationForSpectrum(togetSpectrum).getScore(), is(101.64));
 
         //test link between protein groups and peptides
-        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).spectrumid = 275;
+        ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).setSpectrumid(275);
         Iterator<ProteinMatch> proteinIter = maxQuantParser.getProteinHitsForIdentification(maxQuantParser.getIdentificationForSpectrum(togetSpectrum)).iterator();
         ProteinMatch testProtein = proteinIter.next();
         assertThat(testProtein.getMainMatch(), is("P62917"));

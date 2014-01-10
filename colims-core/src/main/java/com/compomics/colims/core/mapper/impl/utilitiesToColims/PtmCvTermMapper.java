@@ -33,7 +33,7 @@ public class PtmCvTermMapper {
      * The map of new modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();
+//    private Map<String, Modification> newModifications = new HashMap<>();
         
     public PtmCvTermMapper() throws FileNotFoundException, IOException, ClassNotFoundException {
         ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();

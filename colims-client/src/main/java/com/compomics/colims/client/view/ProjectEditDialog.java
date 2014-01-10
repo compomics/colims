@@ -1,6 +1,7 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DualList;
+import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
@@ -15,7 +16,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoginDialog
      */
-    public ProjectEditDialog(java.awt.Frame parent, boolean modal) {
+    public ProjectEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);        
         initComponents();
     } 

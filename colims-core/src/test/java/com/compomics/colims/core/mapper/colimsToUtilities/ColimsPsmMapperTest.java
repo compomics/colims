@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ColimsPsmMapperTest {
 
     @Autowired
-    ColimsPsmMapper colimsPsmMapper;
+    private ColimsPsmMapper colimsPsmMapper;
 
     public ColimsPsmMapperTest() {
     }

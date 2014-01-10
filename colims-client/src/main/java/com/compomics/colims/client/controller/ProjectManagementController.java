@@ -140,14 +140,6 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                }
-            }
-        });
-
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

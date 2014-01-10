@@ -34,7 +34,7 @@ public class ExperimentServiceImpl implements ExperimentService {
     private AbstractBinaryFileHibernateRepository abstractBinaryFileHibernateRepository;
 
     @Override
-    public Experiment findById(Long id) {
+    public Experiment findById(final Long id) {
         return experimentRepository.findById(id);
     }
 
@@ -44,22 +44,22 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public void save(Experiment entity) {
+    public void save(final Experiment entity) {
         experimentRepository.save(entity);
     }
 
     @Override
-    public void delete(Experiment entity) {
+    public void delete(final Experiment entity) {
         experimentRepository.delete(entity);
     }
 
     @Override
-    public void update(Experiment entity) {
+    public void update(final Experiment entity) {
         experimentRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Experiment entity) {
+    public void saveOrUpdate(final Experiment entity) {
         experimentRepository.saveOrUpdate(entity);
     }
 
@@ -69,17 +69,17 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public List<Experiment> getExperimentsByProjectId(Long projectId) {
+    public List<Experiment> getExperimentsByProjectId(final Long projectId) {
         return experimentRepository.getExperimentsByProjectId(projectId);
     }
 
     @Override
-    public Experiment findByTitle(String title) {
+    public Experiment findByTitle(final String title) {
         return experimentRepository.findByTitle(title);
     }
 
     @Override
-    public void fetchBinaryFiles(Experiment experiment) {
+    public void fetchBinaryFiles(final Experiment experiment) {
         try {
             //attach the experiment to the new session
             experimentRepository.saveOrUpdate(experiment);

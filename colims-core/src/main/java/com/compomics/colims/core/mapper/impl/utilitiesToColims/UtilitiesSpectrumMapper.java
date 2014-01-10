@@ -35,12 +35,12 @@ public class UtilitiesSpectrumMapper {
      * @param targetSpectrum the colims spectrum
      * @throws MappingException
      */
-    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
-        LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
-
+    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {        
         if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
+        
+        LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
 
         //get precursor from source
         Precursor precursor = sourceSpectrum.getPrecursor();

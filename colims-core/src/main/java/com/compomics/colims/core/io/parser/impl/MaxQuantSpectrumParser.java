@@ -38,8 +38,8 @@ public class MaxQuantSpectrumParser {
         String[] massList = masses.split(";");
         for (int i = 0; i < peakList.length; i++) {
             int charge = 1;
-            if (peakList[i].contains("")) {
-            }
+//            if (peakList[i].contains("")) {
+//            }
             Double moverz = Double.parseDouble(massList[i]) / charge;
             peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
         }
@@ -86,7 +86,7 @@ public class MaxQuantSpectrumParser {
 
                 MSnSpectrum spectrum = parseSpectrum(values, addPeakList);
                 SpectrumIntUrParameterShizzleStuff nastyworkaround = new SpectrumIntUrParameterShizzleStuff();
-                nastyworkaround.spectrumid = id;
+                nastyworkaround.setSpectrumid(id);
                 spectrum.addUrParam(nastyworkaround);
                 spectrumMap.put(id, spectrum);
             }

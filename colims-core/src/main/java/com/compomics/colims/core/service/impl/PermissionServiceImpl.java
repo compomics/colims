@@ -16,7 +16,6 @@ import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.PermissionRepository;
-import org.hibernate.LockOptions;
 
 /**
  *
@@ -31,7 +30,7 @@ public class PermissionServiceImpl implements PermissionService {
     private PermissionRepository permissionRepository;
 
     @Override
-    public Permission findById(Long id) {
+    public Permission findById(final Long id) {
         return permissionRepository.findById(id);
     }
 
@@ -41,12 +40,12 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void save(Permission entity) {
+    public void save(final Permission entity) {
         permissionRepository.save(entity);
     }
 
     @Override
-    public void delete(Permission entity) {
+    public void delete(final Permission entity) {
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
         //remove entity relations
@@ -58,24 +57,24 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void update(Permission entity) {        
+    public void update(final Permission entity) {        
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
         permissionRepository.update(entity);        
     }
 
     @Override
-    public void saveOrUpdate(Permission entity) {
+    public void saveOrUpdate(final Permission entity) {
         permissionRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public Permission findByName(String name) {
+    public Permission findByName(final String name) {
         return permissionRepository.findByName(name);
     }
 
     @Override
-    public boolean isDefaultPermission(Permission permission) {
+    public boolean isDefaultPermission(final Permission permission) {
         boolean isDefaultPermission = false;
         
         for(DefaultPermission defaultPermission : DefaultPermission.values()){

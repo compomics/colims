@@ -2,14 +2,9 @@ package com.compomics.colims.core.mapper.impl.colimsToUtilities;
 
 import java.util.List;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,7 +25,7 @@ public class ProteinMapper {
      * @param peptideMatch
      * @throws MappingException
      */
-    public void map(List<PeptideHasProtein> peptideHasProteins, List<ProteinMatch> proteinMatches, String peptideMatchKey) {
+    public void map(final List<PeptideHasProtein> peptideHasProteins, final List<ProteinMatch> proteinMatches, final String peptideMatchKey) {
         for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {
             ProteinMatch proteinMatch = new ProteinMatch(peptideHasProtein.getProtein().getAccession());
 
