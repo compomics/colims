@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class SearchController implements Runnable {
 
     @Autowired
-    StorageQueue searchQueue;
+    SearchQueue searchQueue;
     @Autowired
     SearchHandler searchHandler;
 

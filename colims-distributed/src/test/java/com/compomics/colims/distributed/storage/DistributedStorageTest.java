@@ -60,7 +60,7 @@ public class DistributedStorageTest {
     public void testOfferAndRetrieve() throws IOException, SQLException {
         System.out.println("Test offer file to store");
         StorageTask task = null;
-        storageQueue = new StorageQueue();//(StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
+        StorageQueue storageQueue =StorageQueue.getInstance();//(StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
         task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1",StorageType.PEPTIDESHAKER.toString());
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
         assertTrue(taskFromDb != null);

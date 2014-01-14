@@ -57,7 +57,7 @@ public class ClientForStorageConnector {
      * imported to colims
      * @return if the method was succesfull storing the file
      */
-    public boolean storeFile(String Username, String fileLocation, long sampleID, String instrumentName, StorageType type) {
+    public void storeFile(String Username, String fileLocation, long sampleID, String instrumentName, StorageType type) {
         boolean success = false;
         Socket socket = null;
         try {
@@ -70,12 +70,8 @@ public class ClientForStorageConnector {
                     + instrumentName + ">.<"
                     + type.toString());
             out.flush();
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response;
-            while ((response = in.readLine()) != null & !success) {
-                state = StorageState.valueOf(response.split(">.<")[1].toUpperCase());
-                success = !state.equals(StorageState.ERROR);
-            }
+            out.println(">.|");
+            out.flush();
         } catch (UnknownHostException ex) {
             LOGGER.error(ex);
             success = false;
@@ -83,12 +79,6 @@ public class ClientForStorageConnector {
             LOGGER.error(ex);
             success = false;
         } finally {
-            String fileName = new File(fileLocation).getName();
-            if (success) {
-                LOGGER.debug("Succesfully stored " + fileName + " into the db");
-            } else {
-                LOGGER.error("Could not store " + fileName + " into the db");
-            }
             //Failsave method to prevent socket from staying open  = resource-leak
             LOGGER.debug("Closing socket with master");
             if (socket != null) {
@@ -99,21 +89,12 @@ public class ClientForStorageConnector {
                     LOGGER.error("Forcing socket to close");
                     socket = null;
                 }
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    LOGGER.error("Forcing inputstream to close");
-                    if (in != null) {
-                        in = null;
-                    }
-                }
                 out.flush();
                 out.close();
                 if (out != null) {
                     out = null;
                 }
             }
-            return success;
         }
     }
 

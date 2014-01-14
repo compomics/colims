@@ -92,6 +92,8 @@ public class WorkerQueue extends PriorityQueue<Worker> implements Runnable {
                 + task.getFastaLocation());
         writer.println();
         writer.flush();
+        writer.println(">.|");
+        writer.flush();
     }
 
 }

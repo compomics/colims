@@ -61,6 +61,8 @@ public class ClientForPollingConnector {
             out = new PrintWriter(socket.getOutputStream(), true);
             out.println(Username + ">.<" + fileLocation + ">.<" + "poll_state");
             out.flush();
+            out.print(System.lineSeparator());
+            out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
             while ((response = in.readLine()) != null) {

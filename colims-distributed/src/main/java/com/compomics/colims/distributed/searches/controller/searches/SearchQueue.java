@@ -4,9 +4,13 @@
  */
 package com.compomics.colims.distributed.searches.controller.searches;
 
+import com.compomics.colims.core.exception.MappingException;
+import com.compomics.colims.core.exception.PeptideShakerIOException;
 import com.compomics.colims.distributed.searches.controller.searches.searchtask.SearchTask;
+import com.compomics.colims.distributed.searches.respin.control.common.Respin;
 import com.compomics.colims.distributed.searches.respin.model.enums.RespinState;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +33,7 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
     private boolean connectionLocked = false;
     private File adress;
     private final Logger LOGGER = Logger.getLogger(SearchQueue.class);
-    private File outputDir;
+    private File outputDir = new File(System.getProperty("user.home") + "/.compomics/ColimsController/SearchController/Searches");
 
     private SearchQueue() {
         this.adress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/SearchController/");
@@ -225,7 +230,35 @@ public class SearchQueue extends PriorityQueue<SearchTask> implements Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while (true) {
+            //STORE TO COLIMS !!!!
+            SearchTask taskToSearch = poll();
+            if (taskToSearch != null) {
+                updateTask(taskToSearch, RespinState.STARTUP);
+                LOGGER.info("Searching " + taskToSearch.getSearchName());
+                updateTask(taskToSearch, RespinState.CLOSED);
+                try {
+                    new Respin().launch(
+                            taskToSearch.getUserName(),
+                            taskToSearch.getInstrument(),
+                            taskToSearch.getSampleID(),
+                            new File(taskToSearch.getMgfLocation()),
+                            new File(taskToSearch.getParameterLocation()),
+                            new File(taskToSearch.getFastaLocation()),
+                            outputDir,
+                            taskToSearch.getSearchName(),
+                            true);
+                } catch (Exception ex) {
+                    LOGGER.error(ex);
+                }
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    LOGGER.error(ex);
+                }
+            }
+        }
     }
 
 }

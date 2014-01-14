@@ -11,5 +11,5 @@ package com.compomics.colims.distributed.storage.enums;
  */
 public enum StorageType {
 
-    PEPTIDESHAKER, MAX_QUANT
+    RESPIN, PEPTIDESHAKER, MAX_QUANT
 }

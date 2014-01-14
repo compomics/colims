@@ -30,20 +30,19 @@ import org.springframework.stereotype.Component;
 @Component("colimsMaxQuantImporter")
 public class ColimsMaxQuantImporter implements ColimsFileImporter {
 
-
     /**
      *
-     * @param quantFolder the folder where the resultfiles of the quant search are located in
+     * @param quantFolder the folder where the resultfiles of the quant search
+     * are located in
      * @return if the folder contains all required files
      */
     @Override
-    public boolean validate(File quantFolder){
+    public boolean validate(File quantFolder) {
         return true;
     }
-    
-    @Override
-    public void storeFile(String username, File cpsFileFolder,long sampleId,String instrumentName) throws PeptideShakerIOException, MappingException {
-       
-        }
-    }
 
+    @Override
+    public void storeFile(String username, File cpsFileFolder, long sampleId, String instrumentName) throws PeptideShakerIOException, MappingException {
+
+    }
+}
