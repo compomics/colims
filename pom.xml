@@ -11,8 +11,8 @@
         <module>colims-model</module>
         <module>colims-repository</module>
         <module>colims-core</module>
-        <module>colims-client</module>
         <module>colims-distributed</module>
+        <module>colims-client</module>        
     </modules>
     <name>colims</name>
     <url>https://code.google.com/p/colims/</url>

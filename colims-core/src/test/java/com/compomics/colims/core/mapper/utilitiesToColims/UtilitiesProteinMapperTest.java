@@ -83,7 +83,7 @@ public class UtilitiesProteinMapperTest {
     }
 
     /**
-     * Test the protein mapping whith protein groups
+     * Test the protein mapping with protein groups
      *
      * @throws MappingException
      * @throws IOException

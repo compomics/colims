@@ -63,3 +63,6 @@ INSERT INTO `material` (id, creation_date, modification_date, user_name, name, l
 
 -- insert test modifications
 INSERT INTO `modification` (id, creation_date, modification_date, user_name, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+
+-- insert test proteins
+INSERT INTO `protein` (id, creation_date, modification_date, user_name, accession, database_type, protein_sequence) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'Q8IWA5', 'UniProt', 'MGDERPHYYGKHGTPQKYDPTFKG'), (2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'Q13233', 'UniProt', 'MAAAAGNRASSSGFPGARAT');

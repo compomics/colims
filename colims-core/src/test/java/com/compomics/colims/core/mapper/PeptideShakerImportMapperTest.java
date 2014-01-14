@@ -22,6 +22,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -127,12 +128,21 @@ public class PeptideShakerImportMapperTest {
         }
         
 //        //get sample from db
-//        Sample sample = sampleService.findAll().get(0);
-//        
-//        //set sample and persist
-//        for(AnalyticalRun analyticalRun : analyticalRuns){
-//            analyticalRun.setSample(sample);
-//            analyticalRunService.save(analyticalRun);
-//        }
+        Sample sample = sampleService.findAll().get(0);
+        
+        //set sample and persist
+        for(AnalyticalRun analyticalRun : analyticalRuns){
+            analyticalRun.setSample(sample);
+            analyticalRunService.save(analyticalRun);
+        }  
+        
+        //do it again
+        analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+        
+        for(AnalyticalRun analyticalRun : analyticalRuns){
+            analyticalRun.setSample(sample);
+            analyticalRunService.save(analyticalRun);
+        }
+                
     }
 }

@@ -48,20 +48,20 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * Update the model with EnumMaps for the given CV term type of a single CV
      * term. The CV term instance can be null.
      *
-     * @param cvTermType 
-     * @param t 
+     * @param cvTermType
+     * @param t
      */
     public void updateSingleCvTerm(CvTermType cvTermType, T t) {
         singleCvTerms.put(cvTermType, t);
         this.fireContentsChanged(this, 0, getSize());
     }
-    
+
     /**
-     * Update the model with EnumMaps for the given CV term type of a multiple CV
-     * term. The CV term list can be empty.
+     * Update the model with EnumMaps for the given CV term type of a multiple
+     * CV term. The CV term list can be empty.
      *
-     * @param cvTermType 
-     * @param cvTerms  
+     * @param cvTermType
+     * @param cvTerms
      */
     public void updateMultiCvTerm(CvTermType cvTermType, List<T> cvTerms) {
         multiCvTerms.put(cvTermType, cvTerms);
@@ -104,7 +104,7 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
 
     @Override
     public Object getElementAt(int index) {
-        Object element;
+        Object element = null;
         if (index < singleCvTermKeys.length) {
             element = singleCvTermKeys[index];
         } else {
