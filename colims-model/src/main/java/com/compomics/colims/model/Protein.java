@@ -25,7 +25,7 @@ import com.compomics.util.protein.Header.DatabaseType;
  */
 @Table(name = "protein")
 @Entity
-public class Protein extends AbstractDatabaseEntity {
+public class Protein extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

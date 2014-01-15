@@ -25,7 +25,7 @@ import javax.persistence.TemporalType;
  */
 @Table(name = "analytical_run")
 @Entity
-public class AnalyticalRun extends AbstractDatabaseEntity {
+public class AnalyticalRun extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;   
     @Basic(optional = false)

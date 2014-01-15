@@ -1,5 +1,4 @@
--- create tables
-    create table analytical_run (
+create table analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -38,9 +37,6 @@
 
     create table fasta_db (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         file_name varchar(255) not null,
         md5_checksum varchar(255),
         name varchar(255) not null,
@@ -65,9 +61,6 @@
 
     create table identification_file (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_search_and_val_set_id bigint,
         primary key (id)
     );
@@ -156,9 +149,6 @@
 
     create table modification (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         accession varchar(255),
         average_mass double precision,
         average_mass_shift double precision,
@@ -170,9 +160,6 @@
 
     create table peptide (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         experimental_mass double precision,
         psm_post_error_prob double precision,
         psm_prob double precision,
@@ -185,9 +172,6 @@
 
     create table peptide_has_modification (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         alpha_score double precision,
         delta_score double precision,
         location integer,
@@ -199,9 +183,6 @@
 
     create table peptide_has_protein (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         peptide_post_error_prob double precision,
         peptide_prob double precision,
         l_main_group_protein_id bigint,
@@ -239,9 +220,6 @@
 
     create table protein (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         accession varchar(255) not null,
         database_type varchar(255) not null,
         protein_sequence longtext not null,
@@ -285,9 +263,6 @@
 
     create table quant_method_has_quant_engine (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_quantification_engine_id bigint,
         l_quantification_method_id bigint,
         l_quant_param_settings_id bigint,
@@ -296,9 +271,6 @@
 
     create table quantification (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         intensity double precision,
         weight integer,
         l_quantification_group_id bigint,
@@ -308,35 +280,23 @@
 
     create table quantification_engine (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         primary key (id)
     );
 
     create table quantification_file (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_quantification_method_id bigint,
         primary key (id)
     );
 
     create table quantification_group (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_quantification_file_id bigint,
         primary key (id)
     );
 
     create table quantification_group_has_peptide (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_peptide_id bigint,
         l_quantification_group_id bigint,
         primary key (id)
@@ -344,18 +304,12 @@
 
     create table quantification_method (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_experiment_id bigint,
         primary key (id)
     );
 
     create table quantification_parameter_setting (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         primary key (id)
     );
 
@@ -396,9 +350,6 @@
 
     create table search_and_val_set_has_search_engine (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_s_and_val_set_id bigint,
         l_search_engine_id bigint,
         primary key (id)
@@ -406,26 +357,17 @@
 
     create table search_and_validation_settings (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         l_experiment_id bigint,
         primary key (id)
     );
 
     create table search_engine (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         primary key (id)
     );
 
     create table search_parameter_settings (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         enzyme varchar(255),
         evalue_cutoff double precision,
         fragment_mass_tolerance double precision,
@@ -445,9 +387,6 @@
 
     create table spectrum (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         accession varchar(255) not null,
         charge integer not null,
         fragmentation_type varchar(255),
@@ -463,9 +402,6 @@
 
     create table spectrum_file (
         id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
         content longblob not null,
         l_spectrum_id bigint,
         primary key (id)

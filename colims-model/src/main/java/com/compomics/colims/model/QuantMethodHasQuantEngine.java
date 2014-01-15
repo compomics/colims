@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quant_method_has_quant_engine")
 @Entity
-public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
+public class QuantMethodHasQuantEngine extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @JoinColumn(name = "l_quantification_method_id", referencedColumnName = "id")

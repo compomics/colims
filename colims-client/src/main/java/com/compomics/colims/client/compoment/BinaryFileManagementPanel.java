@@ -1,7 +1,7 @@
 package com.compomics.colims.client.compoment;
 
 import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.model.AbstractBinaryFile;
+import com.compomics.colims.model.BinaryFile;
 import com.compomics.colims.model.enums.BinaryFileType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +25,7 @@ import org.jmol.export.dialog.FileChooser;
  *
  * @author Niels Hulstaert
  */
-public class BinaryFileManagementPanel<T extends AbstractBinaryFile> extends javax.swing.JPanel {
+public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing.JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(BinaryFileManagementPanel.class);
     public static final String ADD = "add";

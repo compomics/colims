@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.hibernate;
 
+import com.compomics.colims.model.AuditableDatabaseEntity;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,7 +11,6 @@ import org.hibernate.event.spi.PersistEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.compomics.colims.model.AbstractDatabaseEntity;
 import com.compomics.colims.repository.AuthenticationBean;
 
 /**
@@ -19,7 +19,7 @@ import com.compomics.colims.repository.AuthenticationBean;
  */
 @Component("persistEventListener")
 public class CustomPersistEventListener implements PersistEventListener {
-    
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(CustomPersistEventListener.class);
@@ -36,13 +36,13 @@ public class CustomPersistEventListener implements PersistEventListener {
     @Override
     public void onPersist(final PersistEvent event, final Map map) throws HibernateException {
         LOGGER.debug("Entering onPersist(PersistEvent event, Map map)");
-        
+
         onPersist(event);
-    }     
-        
+    }
+
     private void onListen(final Object object) {
-        if (object instanceof AbstractDatabaseEntity) {
-            AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
+        if (object instanceof AuditableDatabaseEntity) {
+            AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;
 
             //set the user name            
             entity.setUserName(authenticationBean.getCurrentUser().getName());

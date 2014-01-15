@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Table(name = "sample_binary_file")
 @Entity
-public class SampleBinaryFile extends AbstractBinaryFile {
+public class SampleBinaryFile extends BinaryFile {
     
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne

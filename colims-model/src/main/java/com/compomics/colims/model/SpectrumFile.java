@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Table(name = "spectrum_file")
 @Entity
-public class SpectrumFile extends AbstractDatabaseEntity {
+public class SpectrumFile extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

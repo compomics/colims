@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Table(name = "identification_file")
 @Entity
-public class IdentificationFile extends AbstractDatabaseEntity {
+public class IdentificationFile extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

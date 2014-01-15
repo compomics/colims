@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("projectEditController")
+@Component("analyticalRunEditController")
 public class AnalyticalRunEditController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunEditController.class);

@@ -33,7 +33,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Spectrum extends AbstractDatabaseEntity {
+public class Spectrum extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

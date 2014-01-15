@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Table(name = "search_parameter_settings")
 @Entity
-public class SearchParameterSettings extends AbstractDatabaseEntity {
+public class SearchParameterSettings extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

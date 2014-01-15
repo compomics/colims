@@ -44,7 +44,7 @@ public class ProjectRepositoryTest {
         //persist project
         projectRepository.save(project);
 
-        //test AbstractDatabaseEntity properties set by hibernate interceptor
+        //test AuditableDatabaseEntity properties set by hibernate interceptor
         Assert.assertEquals("N/A", project.getUserName());
         Assert.assertNotNull(project.getCreationdate());
         Assert.assertNotNull(project.getModificationdate());

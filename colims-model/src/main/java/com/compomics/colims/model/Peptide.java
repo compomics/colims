@@ -29,7 +29,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Peptide extends AbstractDatabaseEntity {
+public class Peptide extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

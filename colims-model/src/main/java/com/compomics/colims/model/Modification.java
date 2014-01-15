@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Table(name = "modification")
 @Entity
-public class Modification extends AbstractDatabaseEntity {
+public class Modification extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
