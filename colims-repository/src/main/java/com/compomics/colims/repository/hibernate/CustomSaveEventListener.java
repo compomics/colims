@@ -41,12 +41,12 @@ public class CustomSaveEventListener extends DefaultSaveEventListener {
             entity.setUserName(authenticationBean.getCurrentUser().getName());
 
             // set the creation date
-            if (entity.getCreationdate() == null) {
-                entity.setCreationdate(new Date());
+            if (entity.getCreationDate() == null) {
+                entity.setCreationDate(new Date());
             }
 
             //set the modification date
-            entity.setModificationdate(new Date());
+            entity.setModificationDate(new Date());
         }
     }
 }

@@ -71,7 +71,7 @@ public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> 
                 String protocol = (sample.getProtocol() != null) ? sample.getProtocol().toString() : NOT_APPLICABLE;
                 return protocol;    
             case CREATED:
-                return DATE_FORMAT.format(sample.getCreationdate());        
+                return DATE_FORMAT.format(sample.getCreationDate());        
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

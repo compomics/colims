@@ -41,6 +41,5 @@ public class AuthenticationInterceptor {
             throw new PermissionException("User " + authenticationBean.getCurrentUser() + " has no delete permission.");
         }
     }
-
     
 }

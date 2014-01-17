@@ -30,8 +30,6 @@ public class ExperimentServiceImpl implements ExperimentService {
     private static final Logger LOGGER = Logger.getLogger(ExperimentServiceImpl.class);
     @Autowired
     private ExperimentRepository experimentRepository;
-    @Autowired
-    private AbstractBinaryFileHibernateRepository abstractBinaryFileHibernateRepository;
 
     @Override
     public Experiment findById(final Long id) {

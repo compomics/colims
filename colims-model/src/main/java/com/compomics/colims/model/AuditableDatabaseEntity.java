@@ -35,7 +35,7 @@ public abstract class AuditableDatabaseEntity extends DatabaseEntity {
     @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modification_date", nullable = false)
-    protected Date modificationDate;    
+    protected Date modificationDate;
 
     public String getUserName() {
         return userName;
@@ -45,19 +45,19 @@ public abstract class AuditableDatabaseEntity extends DatabaseEntity {
         this.userName = username;
     }
 
-    public Date getCreationdate() {
-        return creationDate != null ? new Date(creationDate.getTime()) : null;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreationdate(final Date creationdate) {
-        this.creationDate = new Date(creationdate.getTime());
+    public void setCreationDate(final Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public Date getModificationdate() {
-        return modificationDate != null ? new Date(modificationDate.getTime()) : null;
+    public Date getModificationDate() {
+        return modificationDate;
     }
 
-    public void setModificationdate(final Date aModificationdate) {
-        modificationDate = new Date(aModificationdate.getTime());
+    public void setModificationDate(final Date modificationDate) {
+        this.modificationDate = modificationDate;
     }
 }

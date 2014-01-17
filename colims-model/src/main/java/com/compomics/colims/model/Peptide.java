@@ -27,8 +27,8 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Table(name = "peptide")
 @Entity
-@Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Peptide extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;

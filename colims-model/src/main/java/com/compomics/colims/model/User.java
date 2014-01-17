@@ -38,8 +38,8 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
         parameters = {
             @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
         })
-@Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;

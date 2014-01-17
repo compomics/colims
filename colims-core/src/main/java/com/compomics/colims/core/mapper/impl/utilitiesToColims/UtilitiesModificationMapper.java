@@ -155,14 +155,16 @@ public class UtilitiesModificationMapper {
 
                     //check if the PTM is not unknown in the PTMFactory
                     if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
-                        modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
-
-                        //@todo check if the PTM mass is the average or the monoisotopic mass shift
-                        modification.setMonoIsotopicMassShift(ptM.getMass());
-
-                        //add to newModifications
-                        newModifications.put(modification.getAccession(), modification);
+                        LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be found in the PtmFactory.");
                     }
+
+                    modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
+
+                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                    modification.setMonoIsotopicMassShift(ptM.getMass());
+
+                    //add to newModifications
+                    newModifications.put(modification.getAccession(), modification);
                 }
             }
         }

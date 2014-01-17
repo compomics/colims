@@ -2,8 +2,8 @@ package com.compomics.colims.core.io.parser.impl;
 
 import com.compomics.colims.core.exception.MappingException;
 import com.compomics.colims.core.mapper.MatchScore;
-import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesAnalyticalRunMapper;
-import com.compomics.colims.core.mapper.impl.MaxQuantToColims.MaxQuantUtilitiesPeptideMapper;
+import com.compomics.colims.core.mapper.impl.maxQuantToColims.MaxQuantUtilitiesAnalyticalRunMapper;
+import com.compomics.colims.core.mapper.impl.maxQuantToColims.MaxQuantUtilitiesPeptideMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;

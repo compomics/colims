@@ -39,11 +39,11 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
             //set the user name            
             entity.setUserName(authenticationBean.getCurrentUser().getName());
             
-            if(entity.getCreationdate() == null){
-                entity.setCreationdate(new Date());
+            if(entity.getCreationDate() == null){
+                entity.setCreationDate(new Date());
             }
             //set the modification date
-            entity.setModificationdate(new Date());                        
+            entity.setModificationDate(new Date());                        
         }
     }
 }

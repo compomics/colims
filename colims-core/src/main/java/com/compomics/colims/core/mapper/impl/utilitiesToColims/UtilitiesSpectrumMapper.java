@@ -35,11 +35,11 @@ public class UtilitiesSpectrumMapper {
      * @param targetSpectrum the colims spectrum
      * @throws MappingException
      */
-    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {        
+    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
         if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
-        
+
         LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
 
         //get precursor from source
@@ -54,7 +54,9 @@ public class UtilitiesSpectrumMapper {
         targetSpectrum.setMzRatio(precursor.getMz());
         targetSpectrum.setIntensity(precursor.getIntensity());
         targetSpectrum.setRetentionTime(precursor.getRt());
-        targetSpectrum.setCharge(precursor.getPossibleCharges().get(0).value);
+        if (!precursor.getPossibleCharges().isEmpty()) {
+            targetSpectrum.setCharge(precursor.getPossibleCharges().get(0).value);
+        }
         if (fragmentationType != null) {
             targetSpectrum.setFragmentationType(fragmentationType);
         }
@@ -71,7 +73,7 @@ public class UtilitiesSpectrumMapper {
             //write MSnSpectum to a byte array output stream
             sourceSpectrum.writeMgf(bufferedWriter);
             bufferedWriter.flush();
-            
+
             //get the bytes from the stream
             byte[] unzippedBytes = byteArrayOutputStream.toByteArray();
 
@@ -79,7 +81,7 @@ public class UtilitiesSpectrumMapper {
             gZIPOutputStream.write(unzippedBytes);
             gZIPOutputStream.flush();
             gZIPOutputStream.finish();
-            
+
             //set content of the SpectrumFile
             spectrumFile.setContent(zippedByteArrayOutputStream.toByteArray());
         } catch (IOException ex) {

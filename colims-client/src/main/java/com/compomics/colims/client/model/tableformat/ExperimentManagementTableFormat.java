@@ -64,7 +64,7 @@ public class ExperimentManagementTableFormat implements AdvancedTableFormat<Expe
             case NUMBER:
                 return experiment.getNumber();
             case CREATED:
-                return DATE_FORMAT.format(experiment.getCreationdate());    
+                return DATE_FORMAT.format(experiment.getCreationDate());    
             case NUMBER_OF_SAMPLES:
                 return experiment.getSamples().size();
             default:

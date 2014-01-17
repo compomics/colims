@@ -46,8 +46,8 @@ public class ProjectRepositoryTest {
 
         //test AuditableDatabaseEntity properties set by hibernate interceptor
         Assert.assertEquals("N/A", project.getUserName());
-        Assert.assertNotNull(project.getCreationdate());
-        Assert.assertNotNull(project.getModificationdate());
+        Assert.assertNotNull(project.getCreationDate());
+        Assert.assertNotNull(project.getModificationDate());
 
         Assert.assertNotNull(project.getId());
         Assert.assertNotNull(project.getOwner());
