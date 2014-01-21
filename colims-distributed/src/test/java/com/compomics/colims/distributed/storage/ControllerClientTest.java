@@ -5,7 +5,9 @@
  */
 package com.compomics.colims.distributed.storage;
 
-import com.compomics.colims.distributed.spring.ApplicationContextProvider;
+
+import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.distributed.searches.controller.searches.SearchController;
 import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.distributed.storage.processing.controller.StorageController;
@@ -16,9 +18,11 @@ import java.sql.SQLException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,8 +34,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ControllerClientTest {
-
-    StorageController storageController;
+@Autowired
+StorageController storageController;
 
     private Thread listener;
 
@@ -44,7 +48,7 @@ public class ControllerClientTest {
     @Before
     public void startListener() {
         try {
-            storageController = (StorageController) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageController");
+         
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
             LOGGER.error(ex);
@@ -71,10 +75,11 @@ public class ControllerClientTest {
     @Test
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
-        // Assert.fail("Not yet finished");
+       // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
-        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
-        creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1", StorageType.PEPTIDESHAKER);
+        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project.cps").getFile();
+        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);
+        Assert.assertTrue(success);
     }
 
 }

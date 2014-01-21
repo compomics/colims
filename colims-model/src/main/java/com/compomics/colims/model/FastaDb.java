@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Table(name = "fasta_db")
 @Entity
-public class FastaDb extends AbstractDatabaseEntity {
+public class FastaDb extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

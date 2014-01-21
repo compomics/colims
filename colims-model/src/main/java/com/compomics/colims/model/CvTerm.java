@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class CvTerm extends AbstractDatabaseEntity {
+public abstract class CvTerm extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

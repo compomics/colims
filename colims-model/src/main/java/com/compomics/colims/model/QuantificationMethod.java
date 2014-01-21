@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_method")
 @Entity
-public class QuantificationMethod extends AbstractDatabaseEntity {
+public class QuantificationMethod extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

@@ -56,7 +56,7 @@ public class Playground {
             authenticationBean.setCurrentUser(adminUser);
 
             //import PeptideShaker .cps file
-            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_3.cps").getFile());
+            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
             //set mgf files and fasta file
             List<File> mgfFiles = new ArrayList<>();
             mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());

@@ -1,6 +1,6 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AbstractBinaryFile;
+import com.compomics.colims.model.BinaryFile;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.repository.AbstractBinaryFileRepository;
@@ -10,6 +10,6 @@ import com.compomics.colims.repository.AbstractBinaryFileRepository;
  * @author Niels Hulstaert
  */
 @Repository("abstractBinaryFileRepository")
-public class AbstractBinaryFileHibernateRepository extends GenericHibernateRepository<AbstractBinaryFile, Long> implements AbstractBinaryFileRepository {
+public class AbstractBinaryFileHibernateRepository extends GenericHibernateRepository<BinaryFile, Long> implements AbstractBinaryFileRepository {
     
 }

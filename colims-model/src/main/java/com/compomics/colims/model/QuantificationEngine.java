@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_engine")
 @Entity
-public class QuantificationEngine extends AbstractDatabaseEntity {
+public class QuantificationEngine extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
 

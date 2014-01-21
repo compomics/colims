@@ -26,7 +26,7 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Table(name = "sample")
 @Entity
-public class Sample extends AbstractDatabaseEntity {
+public class Sample extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "material")
 @Entity
-public class Material extends AbstractDatabaseEntity {
+public class Material extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

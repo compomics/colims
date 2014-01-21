@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Table(name = "search_and_val_set_has_search_engine")
 @Entity 
-public class SearchAndValSetHasSearchEngine extends AbstractDatabaseEntity {
+public class SearchAndValSetHasSearchEngine extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
 

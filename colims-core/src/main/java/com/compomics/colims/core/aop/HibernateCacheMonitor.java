@@ -41,7 +41,7 @@ public class HibernateCacheMonitor {
         statistics.setStatisticsEnabled(true);
 
         long hit0 = statistics.getQueryCacheHitCount();
-        long miss0 = statistics.getSecondLevelCacheMissCount();
+        long miss0 = statistics.getSecondLevelCacheMissCount();        
 
         Object result = pjp.proceed();
 
@@ -51,11 +51,11 @@ public class HibernateCacheMonitor {
         double ratio = (double) hit1 / (hit1 + miss1);
 
         if (hit1 > hit0) {
-            LOGGER.debug(String.format("CACHE HIT; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
+            LOGGER.info(String.format("CACHE HIT; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
         } else if (miss1 > miss0) {
-            LOGGER.debug(String.format("CACHE MISS; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
+            LOGGER.info(String.format("CACHE MISS; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
         } else {
-            LOGGER.debug("query cache not used");
+            LOGGER.info("query cache not used");
         }
 
         return result;

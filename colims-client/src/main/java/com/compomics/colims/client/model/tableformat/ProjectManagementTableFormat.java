@@ -68,7 +68,7 @@ public class ProjectManagementTableFormat implements AdvancedTableFormat<Project
             case OWNER:
                 return project.getOwner().getName();
             case CREATED:
-                return DATE_FORMAT.format(project.getCreationdate());    
+                return DATE_FORMAT.format(project.getCreationDate());    
             case NUMBER_OF_EXPERIMENTS:
                 return project.getExperiments().size();
             default:

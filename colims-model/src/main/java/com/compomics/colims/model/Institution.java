@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "institution")
 @Entity
-public class Institution extends AbstractDatabaseEntity {
+public class Institution extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

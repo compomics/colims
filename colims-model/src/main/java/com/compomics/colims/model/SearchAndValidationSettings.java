@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Table(name = "search_and_validation_settings")
 @Entity
-public class SearchAndValidationSettings extends AbstractDatabaseEntity {
+public class SearchAndValidationSettings extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

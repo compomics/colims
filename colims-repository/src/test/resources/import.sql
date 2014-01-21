@@ -62,4 +62,7 @@ INSERT INTO `material_cv_term` (id, creation_date, modification_date, user_name,
 INSERT INTO `material` (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_project_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '1', '2');
 
 -- insert test modifications
-INSERT INTO `modification` (id, creation_date, modification_date, user_name, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+INSERT INTO `modification` (id, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+
+-- insert test proteins
+INSERT INTO `protein` (id, accession, database_type, protein_sequence) VALUES (1, 'Q8IWA5', 'UniProt', 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'Q13233', 'UniProt', 'MAAAAGNRASSSGFPGARAT');

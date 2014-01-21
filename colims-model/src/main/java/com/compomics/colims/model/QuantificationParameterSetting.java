@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_parameter_setting")
 @Entity
-public class QuantificationParameterSetting extends AbstractDatabaseEntity {
+public class QuantificationParameterSetting extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

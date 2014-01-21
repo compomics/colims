@@ -31,9 +31,9 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Table(name = "spectrum")
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Spectrum extends AbstractDatabaseEntity {
+//@Cacheable
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Spectrum extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
@@ -48,7 +48,7 @@ public class Spectrum extends AbstractDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "mz_ratio", nullable = false)
     private Double mzRatio;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "charge", nullable = true)
     private Integer charge;
     @Basic(optional = true)

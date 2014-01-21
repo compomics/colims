@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.NotBlank;
 // group is a reserved SQL keyword
 @Table(name = "user_group")
 @Entity
-public class Group extends AbstractDatabaseEntity {
+public class Group extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

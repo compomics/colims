@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "group_role")
 @Entity
-public class Role extends AbstractDatabaseEntity {
+public class Role extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
    

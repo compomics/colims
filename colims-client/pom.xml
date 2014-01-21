@@ -186,16 +186,11 @@
     </build>       
 
     <dependencies>
-        <dependency>
-            <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-core</artifactId>
-            <type>jar</type>
-        </dependency>
         
+        <!-- colims dependencies -->        
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-distributed</artifactId>
-            <type>jar</type>
         </dependency>
         
         <dependency>

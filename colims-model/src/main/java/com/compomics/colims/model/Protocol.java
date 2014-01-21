@@ -29,7 +29,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "protocol")
 @Entity
-public class Protocol extends AbstractDatabaseEntity {
+public class Protocol extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

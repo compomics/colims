@@ -2,12 +2,14 @@ package com.compomics.colims.core.io.parser.impl;
 
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,9 +25,8 @@ public class MaxQuantProteinGroupParserTest {
     @Autowired
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
 
-    public MaxQuantProteinGroupParserTest() {
-        ClassLoader loader = getClass().getClassLoader();
-        shortTestFile = new File(loader.getResource("testdata/proteingroups_subset.tsv").getFile());
+    public MaxQuantProteinGroupParserTest() throws IOException {        
+        shortTestFile = new ClassPathResource("data/maxquant/proteingroups_subset.tsv").getFile();
     }
 
     /**

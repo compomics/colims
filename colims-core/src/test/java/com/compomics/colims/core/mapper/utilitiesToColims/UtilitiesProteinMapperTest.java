@@ -39,7 +39,7 @@ public class UtilitiesProteinMapperTest {
     @BeforeClass
     public static void setupOnce() throws IOException, FileNotFoundException, ClassNotFoundException {
         //load SequenceFactory for testing
-        File fastaFile = new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
         SequenceFactory.getInstance().loadFastaFile(fastaFile);
     }
 
@@ -83,7 +83,7 @@ public class UtilitiesProteinMapperTest {
     }
 
     /**
-     * Test the protein mapping whith protein groups
+     * Test the protein mapping with protein groups
      *
      * @throws MappingException
      * @throws IOException

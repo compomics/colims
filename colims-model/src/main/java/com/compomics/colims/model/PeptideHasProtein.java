@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Table(name = "peptide_has_protein")
 @Entity
-public class PeptideHasProtein extends AbstractDatabaseEntity {
+public class PeptideHasProtein extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

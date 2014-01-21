@@ -28,7 +28,7 @@
     
     <aop:aspectj-autoproxy />  
     
-    <!--<bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
+<!--    <bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
       
     <bean class="com.compomics.colims.core.aop.AuthenticationInterceptor" />  
     

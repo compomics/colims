@@ -27,7 +27,7 @@ public class Playground {
         //        schemaExport.setDelimiter(";");
         //        schemaExport.execute(true, false, false, true);
         //        CpsParentImpl cpsParentImpl = new CpsParentImpl();
-        //        cpsParentImpl.setCpsFile(new File("C:\\Users\\niels\\Desktop\\test\\test_peptideshaker_project_3.cps"));
+        //        cpsParentImpl.setCpsFile(new File("C:\\Users\\niels\\Desktop\\test\\data/peptideshaker/test_peptideshaker_project.cps"));
         //        cpsParentImpl.loadCpsFile(null);
         //        cpsParentImpl.loadSpectrumFiles(null);
         //        System.out.println("test");

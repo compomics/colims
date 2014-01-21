@@ -76,12 +76,7 @@
     </build>
 
     <dependencies>
-        <!-- colims dependencies -->
-        <dependency>
-            <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-model</artifactId>
-        </dependency>
-        
+        <!-- colims dependencies -->        
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-repository</artifactId>
@@ -115,21 +110,7 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.0</version>
-        </dependency>
-         
-        <!-- junit dependency -->               
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <!-- h2 in memory db for unit testing -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
+        </dependency>                
         
         <!-- apache commons dependencies -->
         <dependency>
@@ -139,7 +120,6 @@
         </dependency>
         
         <!-- compomics dependencies -->
-
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
@@ -171,6 +151,7 @@
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
             <version>3.0.0-milestone1</version>
         </dependency>
+        
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>

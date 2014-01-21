@@ -26,7 +26,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Table(name = "experiment")
 @Entity
-public class Experiment extends AbstractDatabaseEntity {
+public class Experiment extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

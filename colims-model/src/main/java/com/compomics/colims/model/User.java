@@ -36,11 +36,11 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
 @TypeDef(name = "encryptedString",
         typeClass = EncryptedStringType.class,
         parameters = {
-    @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
-})
-@Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class User extends AbstractDatabaseEntity {
+            @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
+        })
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class User extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
@@ -78,9 +78,9 @@ public class User extends AbstractDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
-        @JoinColumn(name = "l_user_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_user_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
+                @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
     private List<Group> groups = new ArrayList<>();
 
     public User() {
@@ -161,7 +161,7 @@ public class User extends AbstractDatabaseEntity {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
-    }        
+    }
 
     @Override
     public boolean equals(Object obj) {

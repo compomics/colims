@@ -30,7 +30,7 @@ public class PeptideShakerIOTest {
 
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, PeptideShakerIOException {
-        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
 
         File dbDirectory = peptideShakerImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);

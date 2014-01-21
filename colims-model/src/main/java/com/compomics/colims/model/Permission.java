@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "permission")
 @Entity
-public class Permission extends AbstractDatabaseEntity {
+public class Permission extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

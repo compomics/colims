@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  *
@@ -20,7 +22,9 @@ import javax.persistence.Table;
  */
 @Table(name = "modification")
 @Entity
-public class Modification extends AbstractDatabaseEntity {
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Modification extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 

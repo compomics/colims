@@ -157,8 +157,8 @@ public class ColimsRespinImporter implements ColimsFileImporter {
             InstrumentCvTerm detector = (InstrumentCvTerm) cvTermService.findByAccession("respin_detector", CvTermType.DETECTOR);
             if (detector == null) {
                 detector = new InstrumentCvTerm(CvTermType.DETECTOR, "Respin", "Respin", "respin_detector", "respin_detector");
-                detector.setCreationdate(creationDate);
-                detector.setModificationdate(creationDate);
+                detector.setCreationDate(creationDate);
+                detector.setModificationDate(creationDate);
                 detector.setUserName("respin");
                 cvTermService.saveOrUpdate(detector);
             }
@@ -166,8 +166,8 @@ public class ColimsRespinImporter implements ColimsFileImporter {
             InstrumentCvTerm analyzer = (InstrumentCvTerm) cvTermService.findByAccession("respin_analyzer", CvTermType.ANALYZER);
             if (analyzer == null) {
                 analyzer = new InstrumentCvTerm(CvTermType.ANALYZER, "Respin", "Respin", "respin_analyzer", "respin_analyzer");
-                analyzer.setCreationdate(creationDate);
-                analyzer.setModificationdate(creationDate);
+                analyzer.setCreationDate(creationDate);
+                analyzer.setModificationDate(creationDate);
                 analyzer.setUserName("respin");
                 cvTermService.saveOrUpdate(analyzer);
             }
@@ -175,8 +175,8 @@ public class ColimsRespinImporter implements ColimsFileImporter {
             InstrumentCvTerm source = (InstrumentCvTerm) cvTermService.findByAccession("respin_source", CvTermType.SOURCE);
             if (source == null) {
                 source = new InstrumentCvTerm(CvTermType.SOURCE, "Respin", "Respin", "respin_source", "respin_source");
-                source.setCreationdate(creationDate);
-                source.setModificationdate(creationDate);
+                source.setCreationDate(creationDate);
+                source.setModificationDate(creationDate);
                 source.setUserName("respin");
                 cvTermService.saveOrUpdate(source);
             }
@@ -186,8 +186,8 @@ public class ColimsRespinImporter implements ColimsFileImporter {
             respinInstrument.setAnalyzers(analyzers);
             respinInstrument.setDetector(detector);
             respinInstrument.setSource(source);
-            respinInstrument.setCreationdate(creationDate);
-            respinInstrument.setModificationdate(creationDate);
+            respinInstrument.setCreationDate(creationDate);
+            respinInstrument.setModificationDate(creationDate);
             respinInstrument.setUserName("respin");
 
             InstrumentType respinType = instrumentTypeService.findByName("respin_instrumentType");
@@ -195,8 +195,8 @@ public class ColimsRespinImporter implements ColimsFileImporter {
                 respinType = new InstrumentType();
                 respinType.setDescription("Respin mediated instruments");
                 respinType.setName("respin_instrumentType");
-                respinType.setCreationdate(creationDate);
-                respinType.setModificationdate(creationDate);
+                respinType.setCreationDate(creationDate);
+                respinType.setModificationDate(creationDate);
                 respinType.setUserName("respin");
                 List<Instrument> respinInstruments = new ArrayList<>();
                 respinInstruments.add(respinInstrument);

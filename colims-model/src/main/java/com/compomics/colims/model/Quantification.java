@@ -22,7 +22,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification")
 @Entity
-public class Quantification extends AbstractDatabaseEntity {
+public class Quantification extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
