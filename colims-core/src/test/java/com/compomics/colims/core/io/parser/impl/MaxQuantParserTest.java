@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import org.junit.After;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -35,12 +36,14 @@ public class MaxQuantParserTest {
         maxQuantParser.clearParsedProject();
     }
     
-    public MaxQuantParserTest() {
-        testFolder = new File(getClass().getClassLoader().getResource("testdata").getPath());
+    public MaxQuantParserTest() throws IOException {
+        testFolder = new ClassPathResource("data/maxquant").getFile();
     }
 
     /**
      * Test of parseMaxQuantTextFolder method, of class MaxQuantParser.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testParseMaxQuantTextFolder() throws Exception {
@@ -51,6 +54,10 @@ public class MaxQuantParserTest {
 
     /**
      * Test of hasParsedAFile method, of class MaxQuantParser.
+     * 
+     * @throws java.io.IOException
+     * @throws com.compomics.colims.core.io.parser.impl.HeaderEnumNotInitialisedException
+     * @throws com.compomics.colims.core.io.parser.impl.UnparseableException
      */
     @Test
     public void testHasParsedAFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
@@ -155,6 +162,7 @@ public class MaxQuantParserTest {
     @Test
     public void testGetSpectra() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getSpectra");
+        maxQuantParser.clearParsedProject();
         Collection result = maxQuantParser.getSpectraFromParsedFile();
         assertThat(result.iterator().hasNext(), is(false));
         maxQuantParser.parseMaxQuantTextFolder(testFolder);

@@ -30,6 +30,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -52,8 +53,8 @@ public class MaxQuantColimsSpectrumInsertTest {
     private File maxQuantMsMsFile;
     private Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
 
-    public MaxQuantColimsSpectrumInsertTest() {
-        maxQuantMsMsFile = new File(getClass().getClassLoader().getResource("testdata/msms_subset_1000.tsv").getPath());
+    public MaxQuantColimsSpectrumInsertTest() throws IOException {
+        maxQuantMsMsFile = new ClassPathResource("data/maxquant/msms_subset_1000.tsv").getFile();
     }
 
     @Test
@@ -134,7 +135,6 @@ public class MaxQuantColimsSpectrumInsertTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
         User user = userService.findByName("admin1");

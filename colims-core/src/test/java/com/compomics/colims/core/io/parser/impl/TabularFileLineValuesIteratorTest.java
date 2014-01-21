@@ -8,16 +8,18 @@ import java.util.Map;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 public class TabularFileLineValuesIteratorTest {
-    File getFile(final String filename) {
-        return new File(getClass().getClassLoader().getResource(filename).getFile());
+    
+    File getFile(final String filename) throws IOException {
+        return new ClassPathResource(filename).getFile();
     }
 
     @Test
     public void testTabularFileLineValuesIterator() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         // Create iterator for ELVI
-        TabularFileLineValuesIterator elvi = new TabularFileLineValuesIterator(getFile("testdata/evidence_subset_10.tsv"),EvidenceHeaders.values());
+        TabularFileLineValuesIterator elvi = new TabularFileLineValuesIterator(getFile("data/maxquant/evidence_subset_10.tsv"),EvidenceHeaders.values());
 
         // Iterate over ELVI and assign values to a list for further inspection
         @SuppressWarnings("unchecked")
@@ -45,7 +47,7 @@ public class TabularFileLineValuesIteratorTest {
 
     @Test
     public void testGetHeaders() throws IOException {
-        TabularFileLineValuesIterator tflvi = new TabularFileLineValuesIterator(getFile("testdata/msms_subset_1000.tsv"));
+        TabularFileLineValuesIterator tflvi = new TabularFileLineValuesIterator(getFile("data/maxquant/msms_subset_1000.tsv"));
 
         String[] headers = tflvi.getHeaders();
         for (String header : headers) {

@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.number.IsCloseTo.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,12 +36,14 @@ public class MaxQuantPsmParserTest {
     MaxQuantPSMParser maxQuantEvidenceParser;
     /**
      * constructor for running the Identification integration tests
+     * 
+     * @throws java.io.IOException
      */
-    public MaxQuantPsmParserTest() {
-        evidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        proteinGroupFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.tsv").getPath());
-        quantFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_quant10.tsv").getFile());
-        //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("testdata/proteinGroups.txt").getPath());
+    public MaxQuantPsmParserTest() throws IOException {
+        evidenceFile = new ClassPathResource("data/maxquant/evidence_subset_1000.tsv").getFile();
+        proteinGroupFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
+        quantFile = new ClassPathResource("data/maxquant/evidence_subset_quant10.tsv").getFile();
+        //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("data/maxquant/proteinGroups.txt").getPath());
     }
 
     /**
@@ -85,7 +88,7 @@ public class MaxQuantPsmParserTest {
         //oxidation only
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().size(), is(1));
         assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
-        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(10));
+        assertThat(parsedPeptides.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(11));
         //both (don't have an entry for this yet)
 
         //and test if the assumptions were parsed correctly

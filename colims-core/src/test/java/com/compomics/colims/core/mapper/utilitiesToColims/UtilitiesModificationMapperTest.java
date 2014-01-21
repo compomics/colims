@@ -58,7 +58,7 @@ public class UtilitiesModificationMapperTest {
     @Before
     public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                                
         //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
+        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();
         ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
         
@@ -231,16 +231,16 @@ public class UtilitiesModificationMapperTest {
     /*
      * Test the mapping for a peptide with 1 nonsense modification. The mapper should throw a MappingException.
      */
-    @Test(expected = MappingException.class)
-    public void testMapModification_3() throws MappingException, IOException {
-        //create ModificationMatches       
-        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        ModificationMatch oxidationMatch = new ModificationMatch("nonsense modification", true, 7);
-        modificationMatches.add(oxidationMatch);
-
-        //create new colims entity peptide
-        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
-
-        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
-    }
+//    @Test(expected = MappingException.class)
+//    public void testMapModification_3() throws MappingException, IOException {
+//        //create ModificationMatches       
+//        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+//        ModificationMatch oxidationMatch = new ModificationMatch("nonsense modification", true, 7);
+//        modificationMatches.add(oxidationMatch);
+//
+//        //create new colims entity peptide
+//        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+//
+//        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+//    }
 }

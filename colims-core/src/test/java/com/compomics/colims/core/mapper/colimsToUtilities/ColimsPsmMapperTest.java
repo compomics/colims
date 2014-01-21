@@ -51,7 +51,7 @@ public class ColimsPsmMapperTest {
         inputProtein.setAccession("P0C9F1");
         inputProtein.setSequence("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
 
-        File inputSpectra = new ClassPathResource("input_spectra.mgf").getFile();
+        File inputSpectra = new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile();
         byte[] data = Files.readAllBytes(inputSpectra.toPath());
         SpectrumFile spectrumFile = new SpectrumFile();
         spectrumFile.setContent(data);

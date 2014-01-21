@@ -30,6 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Ignore;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -54,10 +55,11 @@ public class MaxQuantColimsIdentificationInsertTest {
     private File maxQuantProteinGroupsFile;
     private File proteinGroupsFastaFile;
 
-    public MaxQuantColimsIdentificationInsertTest() throws AAAAAAAAAAAAAARGHException {
-        maxQuantEvidenceFile = new File(getClass().getClassLoader().getResource("testdata/evidence_subset_1000.tsv").getPath());
-        maxQuantProteinGroupsFile = new File(getClass().getClassLoader().getResource("testdata/proteinGroups_subset.tsv").getPath());
-        proteinGroupsFastaFile = new File(getClass().getClassLoader().getResource("testdata/testfasta.fasta").getPath());
+    public MaxQuantColimsIdentificationInsertTest() throws AAAAAAAAAAAAAARGHException, IOException {
+        maxQuantEvidenceFile = new ClassPathResource("data/maxquant/evidence_subset_1000.tsv").getFile();
+        maxQuantEvidenceFile = new ClassPathResource("data/maxquant/evidence_subset_1000.tsv").getFile();
+        maxQuantProteinGroupsFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
+        proteinGroupsFastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
         sequenceFactory = SequenceFactory.getInstance();
         try {
             sequenceFactory.loadFastaFile(proteinGroupsFastaFile);

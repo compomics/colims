@@ -3,6 +3,7 @@ package com.compomics.colims.core.io.parser.impl;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
@@ -10,6 +11,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,13 +21,14 @@ public class MaxQuantMsmsParserTest {
 
     private File msmsFile;
 
-    public MaxQuantMsmsParserTest() {
-        msmsFile = new File(getClass().getClassLoader().getResource("testdata/msms_subset_1000.tsv").getPath());
-
+    public MaxQuantMsmsParserTest() throws IOException {
+        msmsFile = new ClassPathResource("data/maxquant/msms_subset_1000.tsv").getFile();
     }
 
     /**
      * Test of parse method, of class MaxQuantSpectrumParser.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testParse() throws Exception {

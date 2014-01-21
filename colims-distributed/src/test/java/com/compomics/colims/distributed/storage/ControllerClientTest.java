@@ -77,7 +77,7 @@ StorageController storageController;
         System.out.println("Test communication between client and controller");
        // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
-        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
+        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project.cps").getFile();
         boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);
         Assert.assertTrue(success);
     }

@@ -29,8 +29,8 @@ public class MaxQuantQuantificationParserTest {
 
     public MaxQuantQuantificationParserTest() {
         ClassLoader loader = getClass().getClassLoader();
-        noQuantFile = new File(loader.getResource("testdata/evidence_subset_10.tsv").getFile());
-        quantFile = new File(loader.getResource("testdata/evidence_subset_quant10.tsv").getFile());
+        noQuantFile = new File(loader.getResource("data/maxquant/evidence_subset_10.tsv").getFile());
+        quantFile = new File(loader.getResource("data/maxquant/evidence_subset_quant10.tsv").getFile());
     }
 
     @BeforeClass

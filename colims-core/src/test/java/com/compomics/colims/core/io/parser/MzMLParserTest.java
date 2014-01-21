@@ -50,7 +50,7 @@ public class MzMLParserTest {
     public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
         List<File> mzMLFiles = new ArrayList<>();
-        File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();
+        File mzMLFile = new ClassPathResource("data/test_mzML_1.mzML").getFile();
         mzMLFiles.add(mzMLFile);
 
         mzMLParser.importMzMLFiles(mzMLFiles);
@@ -63,7 +63,7 @@ public class MzMLParserTest {
     public void testParseMzmlFile() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
         List<File> mzMLFiles = new ArrayList<File>();
-        File mzMLFile = new ClassPathResource("test_mzML_1.mzML").getFile();
+        File mzMLFile = new ClassPathResource("data/test_mzML_1.mzML").getFile();
         mzMLFiles.add(mzMLFile);
 
         mzMLParser.importMzMLFiles(mzMLFiles);

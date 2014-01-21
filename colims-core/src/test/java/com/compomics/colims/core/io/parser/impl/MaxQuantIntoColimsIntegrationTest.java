@@ -31,6 +31,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -72,8 +73,8 @@ public class MaxQuantIntoColimsIntegrationTest {
     UtilitiesProteinMapper maxQuantProteinMapperStub;
     private File testFolder;
 
-    public MaxQuantIntoColimsIntegrationTest() {
-        this.testFolder = new File(getClass().getClassLoader().getResource("testdata").getPath());
+    public MaxQuantIntoColimsIntegrationTest() throws IOException {
+        this.testFolder = new ClassPathResource("data/maxquant").getFile();
     }
 
     @Test

@@ -59,7 +59,7 @@ public class Playground2 {
         PeptideService peptideService = applicationContext.getBean("peptideService", PeptideService.class);
         
         //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
+        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();
         ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
 
@@ -72,9 +72,9 @@ public class Playground2 {
         PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
         peptideShakerImport.setMgfFiles(mgfFiles);
-        peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+        peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
 
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 
@@ -97,7 +97,7 @@ public class Playground2 {
         mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
         peptideShakerImport.setMgfFiles(mgfFiles);
-        peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+        peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
 
         analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 
@@ -115,7 +115,7 @@ public class Playground2 {
         }
         
 //        //load SequenceFactory for testing
-//        File fastaFile = new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile();
+//        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
 //        SequenceFactory.getInstance().loadFastaFile(fastaFile);
 //        
 //        //set admin user in authentication bean

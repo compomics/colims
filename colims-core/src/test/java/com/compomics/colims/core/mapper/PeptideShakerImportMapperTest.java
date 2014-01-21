@@ -69,7 +69,7 @@ public class PeptideShakerImportMapperTest {
     @Before
     public void setup() throws FileNotFoundException, IOException, XmlPullParserException {                                
         //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
+        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();
         ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);        
         
@@ -81,12 +81,12 @@ public class PeptideShakerImportMapperTest {
     @Test
     public void testMap() throws IOException, PeptideShakerIOException, MappingException, SQLException, ClassNotFoundException, FileNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
         //import PeptideShaker .cps file
-        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_3.cps").getFile());
+        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
         peptideShakerImport.setMgfFiles(mgfFiles);
-            peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+            peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
 
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 
@@ -128,21 +128,21 @@ public class PeptideShakerImportMapperTest {
         }
         
 //        //get sample from db
-        Sample sample = sampleService.findAll().get(0);
-        
-        //set sample and persist
-        for(AnalyticalRun analyticalRun : analyticalRuns){
-            analyticalRun.setSample(sample);
-            analyticalRunService.save(analyticalRun);
-        }  
-        
-        //do it again
-        analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
-        
-        for(AnalyticalRun analyticalRun : analyticalRuns){
-            analyticalRun.setSample(sample);
-            analyticalRunService.save(analyticalRun);
-        }
+//        Sample sample = sampleService.findAll().get(0);
+//        
+//        //set sample and persist
+//        for(AnalyticalRun analyticalRun : analyticalRuns){
+//            analyticalRun.setSample(sample);
+//            analyticalRunService.saveOrUpdate(analyticalRun);
+//        }  
+//        
+//        //do it again
+//        analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+//        
+//        for(AnalyticalRun analyticalRun : analyticalRuns){
+//            analyticalRun.setSample(sample);
+//            analyticalRunService.saveOrUpdate(analyticalRun);
+//        }
                 
     }
 }

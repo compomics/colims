@@ -36,7 +36,7 @@ public class UtilitiesSearchParametersMapperTest {
     @Test
     public void testMap() throws Exception {
         System.out.println("map");
-        PeptideShakerImport imported = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project_2.cps").getFile());
+        PeptideShakerImport imported = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
         PeptideShakerParameterParser parsingInstance = new PeptideShakerParameterParser();
         SearchParameters source = parsingInstance.parseToSearchParameters(imported);
         SearchParameterSettings target = new SearchParameterSettings();
