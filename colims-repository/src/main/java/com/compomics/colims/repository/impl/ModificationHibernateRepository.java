@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.repository.ModificationRepository;
+import org.hibernate.Criteria;
 
 /**
  *
@@ -20,6 +21,8 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
     
     @Override
     public Modification findByAccession(final String accession) {
-        return findUniqueByCriteria(Restrictions.eq("accession", accession));
+        Criteria criteria = createCriteria(Restrictions.eq("accession", accession));
+        criteria.setCacheable(true);
+        return (Modification) criteria.uniqueResult();
     }
 }

@@ -91,6 +91,29 @@ public class Playground2 {
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
         
+        //import PeptideShaker .cps file
+        peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
+        //set mgf files and fasta file
+        mgfFiles = new ArrayList<>();
+        mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
+        peptideShakerImport.setMgfFiles(mgfFiles);
+        peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+
+        analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+
+        //get sample from db
+        sample = sampleService.findAll().get(0);
+
+        //set sample and persist
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            //set modification and creation date
+            analyticalRun.setCreationDate(new Date());
+            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
+            analyticalRun.setSample(sample);
+            analyticalRunService.saveOrUpdate(analyticalRun);
+        }
+        
 //        //load SequenceFactory for testing
 //        File fastaFile = new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile();
 //        SequenceFactory.getInstance().loadFastaFile(fastaFile);
