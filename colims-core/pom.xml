@@ -112,6 +112,20 @@
             <version>3.0</version>
         </dependency>                
         
+        <!-- junit dependency -->               
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- h2 in memory db for unit testing -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
         <!-- apache commons dependencies -->
         <dependency>
             <groupId>commons-configuration</groupId>
