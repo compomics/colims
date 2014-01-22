@@ -55,6 +55,9 @@ public class ClientForStorageConnector {
      * @param Username the user that wants to store the tasks
      * @param fileLocation the filelocation of the file that needs to be
      * imported to colims
+     * @param sampleID
+     * @param instrumentName
+     * @param type
      * @return if the method was succesfull storing the file
      */
     public void storeFile(String Username, String fileLocation, long sampleID, String instrumentName, StorageType type) {
@@ -79,7 +82,7 @@ public class ClientForStorageConnector {
             LOGGER.error(ex);
             success = false;
         } finally {
-            //Failsave method to prevent socket from staying open  = resource-leak
+            //Failsave method to prevent socket from staying open = resource-leak
             LOGGER.debug("Closing socket with master");
             if (socket != null) {
                 try {

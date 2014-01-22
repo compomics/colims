@@ -6,8 +6,6 @@
 package com.compomics.colims.distributed.storage;
 
 
-import com.compomics.colims.core.spring.ApplicationContextProvider;
-import com.compomics.colims.distributed.searches.controller.searches.SearchController;
 import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.distributed.storage.processing.controller.StorageController;
@@ -78,8 +76,7 @@ StorageController storageController;
        // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
         File cpsFileToStore = new ClassPathResource("test_peptideshaker_project.cps").getFile();
-        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);
-        Assert.assertTrue(success);
+        creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);        
     }
 
 }

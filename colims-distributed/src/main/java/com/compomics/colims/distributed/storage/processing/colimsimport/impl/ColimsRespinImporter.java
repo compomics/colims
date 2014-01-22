@@ -50,6 +50,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 @Component("colimsRespinImporter")
 public class ColimsRespinImporter implements ColimsFileImporter {
 
+    private static final Logger LOGGER = Logger.getLogger(ColimsRespinImporter.class);
     @Autowired
     ExperimentService experimentService;
     @Autowired
@@ -72,8 +73,7 @@ public class ColimsRespinImporter implements ColimsFileImporter {
     @Autowired
     CvTermService cvTermService;
     @Autowired
-    AnalyticalRunService analyticalRunService;
-    private static final Logger LOGGER = Logger.getLogger(ColimsRespinImporter.class);
+    AnalyticalRunService analyticalRunService;    
 
     /**
      *
@@ -136,7 +136,6 @@ public class ColimsRespinImporter implements ColimsFileImporter {
         project.setTitle(cpsFileFolder.getName() + "_" + System.currentTimeMillis());
         project.setLabel(String.valueOf(System.currentTimeMillis()));
         project.setOwner(user);
-        //STEP 3= save
         return project;
     }
 
