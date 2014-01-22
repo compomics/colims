@@ -8,10 +8,7 @@ package com.compomics.colims.distributed.storage.incoming;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.distributed.storage.enums.StorageState;
 import com.compomics.colims.distributed.storage.enums.StorageType;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -25,10 +22,11 @@ import org.apache.log4j.Logger;
 public class ClientForStorageConnector {
 
     private final static Logger LOGGER = Logger.getLogger(ClientForStorageConnector.class);
+    private static final String DELIMITER = ">.<";
+    private static final String END_DELIMITER = ">.|";
     private String masterIPAddress = "127.0.0.1";
     private int masterPort = 24567;
     private StorageState state = StorageState.WAITING;
-    private BufferedReader in;
     private PrintWriter out;
 
     /**
@@ -67,13 +65,13 @@ public class ClientForStorageConnector {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(Username + ">.<"
-                    + fileLocation + ">.<"
-                    + sampleID + ">.<"
-                    + instrumentName + ">.<"
+            out.println(Username + DELIMITER
+                    + fileLocation + DELIMITER
+                    + sampleID + DELIMITER
+                    + instrumentName + DELIMITER
                     + type.toString());
             out.flush();
-            out.println(">.|");
+            out.println(END_DELIMITER);
             out.flush();
         } catch (UnknownHostException ex) {
             LOGGER.error(ex);

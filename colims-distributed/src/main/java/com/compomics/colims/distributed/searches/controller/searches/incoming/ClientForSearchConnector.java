@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 public class ClientForSearchConnector {
 
     private final static Logger LOGGER = Logger.getLogger(ClientForSearchConnector.class);
+    private static final String DELIMITER = ">.<";
     private String masterIPAddress = "127.0.0.1";
     private int masterPort = 24568;
     private RespinState state;
@@ -57,18 +58,18 @@ public class ClientForSearchConnector {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(mgfFile + ">.<"
-                    + paramFile + ">.<"
-                    + fastaFile + ">.<"
-                    + userName + ">.<"
-                    + searchName + ">.<"
-                    + instrumentName + ">.<"
+            out.println(mgfFile + DELIMITER
+                    + paramFile + DELIMITER
+                    + fastaFile + DELIMITER
+                    + userName + DELIMITER
+                    + searchName + DELIMITER
+                    + instrumentName + DELIMITER
                     + sampleID);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
             while ((response = in.readLine()) != null &!success) {
-                state = RespinState.valueOf(response.split(">.<")[1].toUpperCase());
+                state = RespinState.valueOf(response.split(DELIMITER)[1].toUpperCase());
                 success = !state.equals(StorageState.ERROR);
             }
             //TODO ELABORATE ON THIS

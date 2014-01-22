@@ -101,7 +101,7 @@ public class RespinProperties {
         String XTandemVersion = null;
         if (osname.contains("win")) {
             OMSSAversion = "omssa-2.1.9.win32";
-            if (arch.toString().toLowerCase().contains("64")) {
+            if (arch.contains("64")) {
                 XTandemVersion = "windows 64bits";
             } else {
                 XTandemVersion = "windows 32bits";
@@ -111,7 +111,7 @@ public class RespinProperties {
             XTandemVersion = "osx";
         } else if (osname.contains("lin")) {
             OMSSAversion = "omssa-2.1.9.linux";
-            if (arch.toString().toLowerCase().contains("64")) {
+            if (arch.contains("64")) {
                 XTandemVersion = "linux_64bit";
             } else {
                 XTandemVersion = "linux_32bit";

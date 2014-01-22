@@ -26,7 +26,7 @@ public class MaxQuantProteinGroupParserTest {
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
 
     public MaxQuantProteinGroupParserTest() throws IOException {        
-        shortTestFile = new ClassPathResource("data/maxquant/proteingroups_subset.tsv").getFile();
+        shortTestFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
     }
 
     /**
