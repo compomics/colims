@@ -24,8 +24,7 @@ public class AuthenticationInterceptor {
     public void beforeCreateOperation(final JoinPoint joinPoint) {
         if(!authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)){
             throw new PermissionException("User " + authenticationBean.getCurrentUser() + " has no save permission.");
-        }
-        
+        }        
     }
 
     @Before("execution(* com.compomics.colims.core.service.impl.interceptable.*.update(..))")
