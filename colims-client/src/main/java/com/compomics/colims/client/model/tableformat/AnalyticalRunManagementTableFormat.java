@@ -15,6 +15,7 @@ import java.util.Comparator;
 public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<AnalyticalRun> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     private static final String[] COLUMN_NAMES = {"Id", "Name", "Start date", "Created", "# spectra"};
     public static final int RUN_ID = 0;
     public static final int NAME = 1;
@@ -68,7 +69,7 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
             case NAME:
                 return analyticalRun.getName();
             case START_DATE:
-                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
+                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_TIME_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
                  return startDateString;
             case CREATED:
                 return DATE_FORMAT.format(analyticalRun.getCreationDate());

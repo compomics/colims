@@ -45,41 +45,31 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="updateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="userDualListLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
-                                  <Component id="userDualList" min="-2" pref="542" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="labelLabel" alignment="0" min="-2" pref="60" max="-2" attributes="0"/>
+                                      <Component id="instrumentLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="instrumentComboBox" pref="255" max="32767" attributes="0"/>
+                                      <Component id="dateTimePicker" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="nameLabel" min="-2" pref="60" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="nameTextField" min="-2" pref="542" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="labelLabel" min="-2" pref="60" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="labelTextField" min="-2" pref="255" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="descriptionLabel" min="-2" pref="60" max="-2" attributes="0"/>
-                                      <Component id="ownerLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="ownerComboBox" min="-2" pref="255" max="-2" attributes="0"/>
-                                      <Component id="descriptionScrollPanel" alignment="0" min="-2" pref="542" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="nameTextField" min="-2" pref="400" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -97,30 +87,20 @@
                       <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="labelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="labelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="dateTimePicker" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="descriptionScrollPanel" pref="127" max="32767" attributes="0"/>
-                      <Component id="descriptionLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="ownerComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ownerLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="instrumentLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="instrumentComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="userDualList" pref="149" max="32767" attributes="0"/>
-                      <Component id="userDualListLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="saveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="updateButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -128,13 +108,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="descriptionLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="description"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="labelTextField">
-        </Component>
         <Component class="javax.swing.JTextField" name="nameTextField">
         </Component>
         <Component class="javax.swing.JLabel" name="nameLabel">
@@ -142,50 +115,26 @@
             <Property name="text" type="java.lang.String" value="name"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="descriptionScrollPanel">
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-          <SubComponents>
-            <Component class="javax.swing.JTextArea" name="descriptionTextArea">
-              <Properties>
-                <Property name="columns" type="int" value="20"/>
-                <Property name="lineWrap" type="boolean" value="true"/>
-                <Property name="rows" type="int" value="5"/>
-                <Property name="autoscrolls" type="boolean" value="false"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
         <Component class="javax.swing.JLabel" name="labelLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="label"/>
+            <Property name="text" type="java.lang.String" value="start date"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="ownerLabel">
+        <Component class="javax.swing.JLabel" name="instrumentLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="owner"/>
+            <Property name="text" type="java.lang.String" value="instrument"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="ownerComboBox">
+        <Component class="javax.swing.JComboBox" name="instrumentComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
           </Properties>
         </Component>
-        <Component class="com.compomics.colims.client.compoment.DualList" name="userDualList">
-        </Component>
-        <Component class="javax.swing.JLabel" name="userDualListLabel">
+        <Component class="javax.swing.JButton" name="updateButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="users"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="saveOrUpdateButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="save"/>
+            <Property name="text" type="java.lang.String" value="update"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
@@ -212,6 +161,8 @@
               <Dimension value="[80, 25]"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="com.compomics.colims.client.compoment.DateTimePicker" name="dateTimePicker">
         </Component>
       </SubComponents>
     </Container>

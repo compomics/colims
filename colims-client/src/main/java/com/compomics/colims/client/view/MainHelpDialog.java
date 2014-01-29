@@ -19,7 +19,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     private URI uri;
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public MainHelpDialog(final Frame parent, final boolean modal) {
         super(parent, modal);

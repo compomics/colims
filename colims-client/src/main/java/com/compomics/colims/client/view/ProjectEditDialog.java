@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 public class ProjectEditDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public ProjectEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);        

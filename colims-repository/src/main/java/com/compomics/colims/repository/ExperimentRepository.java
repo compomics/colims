@@ -12,8 +12,6 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 public interface ExperimentRepository extends GenericRepository<Experiment, Long> {
-
-    List<Experiment> getExperimentsByProjectId(Long projectId);
     
     /**
      * Find the experiment by title.
@@ -22,4 +20,13 @@ public interface ExperimentRepository extends GenericRepository<Experiment, Long
      * @return the found experiment
      */
     Experiment findByTitle(String title);
+    
+     /**
+     * Find the experiment by title and project ID.
+     *
+     * @param projectId the project ID
+     * @param title the experiment title
+     * @return the found experiment
+     */
+    Experiment findByProjectIdAndTitle(Long projectId, String title);
 }

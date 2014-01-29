@@ -2038,7 +2038,7 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
     }
 
     private void loadExperimentTable(long projectID) {
-        experimentList = experimentService.getExperimentsByProjectId(projectID);
+        //experimentList = experimentService.getExperimentsByProjectId(projectID);
         selectedProjectId = projectID;
         DefaultTableModel tableModel = (DefaultTableModel) experimentsTable.getModel();
         int counter = 1;

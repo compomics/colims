@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 public class ExperimentEditDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public ExperimentEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
@@ -225,16 +225,19 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         samplesTableScrollPane.setViewportView(samplesTable);
 
         deleteSampleButton.setText("delete");
+        deleteSampleButton.setToolTipText("delete a sample");
         deleteSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         editSampleButton.setText("edit...");
+        editSampleButton.setToolTipText("edit the metadata of an existing sample");
         editSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         addSampleButton.setText("add...");
+        addSampleButton.setToolTipText("add a new sample");
         addSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));

@@ -12,7 +12,7 @@ import javax.swing.JButton;
 public class SampleBinaryFileDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public SampleBinaryFileDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
