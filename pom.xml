@@ -7,6 +7,7 @@
     <artifactId>colims</artifactId>
     <version>1.2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
+    
     <modules>
         <module>colims-model</module>
         <module>colims-repository</module>
@@ -14,19 +15,67 @@
         <module>colims-distributed</module>
         <module>colims-client</module>        
     </modules>
+    
     <name>colims</name>
+    
     <url>https://code.google.com/p/colims/</url>
+    
     <issueManagement>
         <url>https://code.google.com/p/colims/issues/list</url>
         <system>Google Code</system>
     </issueManagement>
+    
     <scm>
         <url>https://code.google.com/p/colims/source/browse/</url>
     </scm>
+    
+    <!-- Licence -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <name>Niels Hulstaert</name>
+            <id>niels</id>
+            <email>niels.hulstaert AT ugent.be</email>
+            <organization>Computational Omics and Systems Biology Group, VIB Department of Medical Protein Research,
+                UGent, Belgium
+            </organization>
+        </developer>
+        <developer>
+            <name>Davy Maddelein</name>
+            <id>davy</id>
+            <email>davy.maddelein AT ugent.be</email>
+            <organization>Computational Omics and Systems Biology Group, VIB Department of Medical Protein Research,
+                UGent, Belgium
+            </organization>
+        </developer>
+        <developer>
+            <name>Kenneth Verheggen</name>
+            <id>kenneth</id>
+            <email>kenneth.verheggen AT ugent.be</email>
+            <organization>Computational Omics and Systems Biology Group, VIB Department of Medical Protein Research,
+                UGent, Belgium
+            </organization>
+        </developer>
+        <developer>
+            <name>Harald Barsnes</name>
+            <id>harald</id>
+            <email>harald.barsnes AT biomed.uib.no</email>
+            <organization>Department of Biomedicine, University of Bergen, Norway</organization>
+        </developer>
+    </developers>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.2.5.RELEASE</org.springframework.version>
     </properties>
+    
     <build>
         <pluginManagement>
             <!-- Plugins -->
@@ -72,8 +121,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-                
+                </plugin>                
             </plugins>
         </pluginManagement>
         <!-- Plugins -->
