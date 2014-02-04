@@ -40,9 +40,13 @@ public class ColimsFrame extends javax.swing.JFrame {
         return helpMenuItem;
     }
 
-    public JMenuItem getHomeMenuItem() {
-        return homeMenuItem;
+    public JMenuItem getProjectsManagementMenuItem() {
+        return projectsManagementMenuItem;
     }
+
+    public JMenuItem getProjectsOverviewMenuItem() {
+        return projectsOverviewMenuItem;
+    }       
 
     public JMenu getAdminMenu() {
         return adminMenu;
@@ -60,6 +64,10 @@ public class ColimsFrame extends javax.swing.JFrame {
         return protocolManagementMenuItem;
     }
 
+    public JMenuItem getNewRunMenuItem() {
+        return newRunMenuItem;
+    }    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,8 +81,12 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        newFileMenu = new javax.swing.JMenu();
+        newRunMenuItem = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
-        homeMenuItem = new javax.swing.JMenuItem();
+        projectsManagementMenuItem = new javax.swing.JMenuItem();
+        projectsOverviewMenuItem = new javax.swing.JMenuItem();
         adminMenu = new javax.swing.JMenu();
         managementMenu = new javax.swing.JMenu();
         userManagementMenuItem = new javax.swing.JMenuItem();
@@ -96,10 +108,24 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Projects overview", projectsOverviewParentPanel);
 
+        fileMenu.setText("File");
+
+        newFileMenu.setText("new");
+
+        newRunMenuItem.setText("run...");
+        newFileMenu.add(newRunMenuItem);
+
+        fileMenu.add(newFileMenu);
+
+        menuBar.add(fileMenu);
+
         viewMenu.setText("View");
 
-        homeMenuItem.setText("home");
-        viewMenu.add(homeMenuItem);
+        projectsManagementMenuItem.setText("projects management");
+        viewMenu.add(projectsManagementMenuItem);
+
+        projectsOverviewMenuItem.setText("projects overview");
+        viewMenu.add(projectsOverviewMenuItem);
 
         menuBar.add(viewMenu);
 
@@ -107,16 +133,16 @@ public class ColimsFrame extends javax.swing.JFrame {
 
         managementMenu.setText("management");
 
-        userManagementMenuItem.setText("users");
+        userManagementMenuItem.setText("users...");
         managementMenu.add(userManagementMenuItem);
 
         instrumentManagementMenuItem.setText("instruments");
         managementMenu.add(instrumentManagementMenuItem);
 
-        materialManagementMenuItem.setText("materials");
+        materialManagementMenuItem.setText("materials...");
         managementMenu.add(materialManagementMenuItem);
 
-        protocolManagementMenuItem.setText("protocols");
+        protocolManagementMenuItem.setText("protocols...");
         managementMenu.add(protocolManagementMenuItem);
 
         adminMenu.add(managementMenu);
@@ -125,7 +151,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
         helpMenu.setText("Help");
 
-        helpMenuItem.setText("help");
+        helpMenuItem.setText("help...");
         helpMenu.add(helpMenuItem);
 
         menuBar.add(helpMenu);
@@ -147,15 +173,19 @@ public class ColimsFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu adminMenu;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
-    private javax.swing.JMenuItem homeMenuItem;
     private javax.swing.JMenuItem instrumentManagementMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JMenu managementMenu;
     private javax.swing.JMenuItem materialManagementMenuItem;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu newFileMenu;
+    private javax.swing.JMenuItem newRunMenuItem;
+    private javax.swing.JMenuItem projectsManagementMenuItem;
     private javax.swing.JPanel projectsManagementParentPanel;
+    private javax.swing.JMenuItem projectsOverviewMenuItem;
     private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JMenuItem userManagementMenuItem;

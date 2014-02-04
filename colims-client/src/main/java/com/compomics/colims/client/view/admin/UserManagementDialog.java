@@ -19,6 +19,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form UserManagementDialog.
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
      */
     public UserManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
@@ -26,7 +29,6 @@ public class UserManagementDialog extends javax.swing.JDialog {
         initComponents();
         
         this.getContentPane().setBackground(Color.WHITE);
-        setLocationRelativeTo(parent);
     }
 
     public JButton getAddUserButton() {

@@ -102,8 +102,6 @@ public class ProjectOverviewController implements Controllable {
     private ProjectManagementController projectManagementController;
     //services
     @Autowired
-    private ProjectService projectService;
-    @Autowired
     private SpectrumService spectrumService;
     @Autowired
     private AnalyticalRunService analyticalRunService;

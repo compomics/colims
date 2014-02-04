@@ -55,7 +55,6 @@ public class ProjectSetupController implements Controllable {
     //model
     private Project project;
     private ObservableList<User> userBindingList;
-    private BindingGroup bindingGroup;
     private Resource cpsResource;
     private Resource mgfResource;
     private Resource fastaResource;
@@ -104,25 +103,7 @@ public class ProjectSetupController implements Controllable {
         projectSetupPanel.getFinishButton().setEnabled(false);
 
         //show info
-        showProceedInfo("Click on proceed to import data files.");
-
-        //init binding
-        bindingGroup = new BindingGroup();
-
-        userBindingList = ObservableCollections.observableList(userService.findAll());
-        JComboBoxBinding userComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ, userBindingList, projectSetupPanel.getUserComboBox(), "userComboBoxBinding");
-        bindingGroup.addBinding(userComboBoxBinding);
-
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("title"), "titleBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("label"), "labelBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getDescriptionTextArea(), ELProperty.create("${text}"), project, BeanProperty.create("description"), "descriptionBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getUserComboBox(), ELProperty.create("${selectedItem}"), project, BeanProperty.create("user"), "userBinding");
-        bindingGroup.addBinding(binding);
-
-        bindingGroup.bind();
+        showProceedInfo("Click on proceed to import data files.");       
 
         //get cps file chooser
         JFileChooser cpsFileChooser = projectSetupPanel.getCpsFileChooser();
