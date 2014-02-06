@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesPsmMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;

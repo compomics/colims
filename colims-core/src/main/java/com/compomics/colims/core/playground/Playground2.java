@@ -1,10 +1,9 @@
 package com.compomics.colims.core.playground;
 
-import com.compomics.colims.core.component.PtmFactoryWrapper;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesModificationMapper;
@@ -14,7 +13,7 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Sample;
@@ -32,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -44,7 +44,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground2 {
 
-    public static void main(String[] args) throws XmlPullParserException, IOException, PeptideShakerIOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
+    public static void main(String[] args) throws XmlPullParserException, IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, ArchiveException {
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
 
         PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);

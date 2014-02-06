@@ -2,7 +2,6 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.config.PropertiesConfigurationHolder;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
@@ -35,6 +34,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +47,8 @@ public class ColimsController implements Controllable, ActionListener {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
+    @Value("${colims-client.version}")
+    private String version;
     @Autowired
     private AuthenticationBean authenticationBean;
     private EventList<Project> projects = new BasicEventList<>();
@@ -119,7 +121,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init views       
         colimsFrame = new ColimsFrame();
-        colimsFrame.setTitle("Colims " + getVersion());
+        colimsFrame.setTitle("Colims " + version);
         loginDialog = new LoginDialog(colimsFrame, true);
         mainHelpDialog = new MainHelpDialog(colimsFrame, true);
 
@@ -247,15 +249,6 @@ public class ColimsController implements Controllable, ActionListener {
         showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
-    }
-
-    /**
-     * Retrieves the version number set in the pom file.
-     *
-     * @return the version number of PeptideShaker
-     */
-    private String getVersion() {
-        return PropertiesConfigurationHolder.getInstance().getString("colims-client.version", "UNKNOWN");
     }
 
     private void onLogin() {

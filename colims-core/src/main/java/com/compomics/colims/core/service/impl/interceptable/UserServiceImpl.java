@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         boolean isDefaultUser = false;
 
         for (DefaultUser defaultUser : DefaultUser.values()) {
-            if (user.getName().equals(defaultUser.getDbEntry())) {
+            if (user.getName().equals(defaultUser.dbEntry())) {
                 isDefaultUser = true;
                 break;
             }

@@ -17,7 +17,7 @@ public enum DefaultRole {
         this.dbEntry = dbEntry;
     }
 
-    public String getDbEntry() {
+    public String dbEntry() {
         return dbEntry;
     }        
     

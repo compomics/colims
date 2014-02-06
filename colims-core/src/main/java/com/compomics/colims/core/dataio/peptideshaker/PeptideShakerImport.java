@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.peptideshaker.model;
+package com.compomics.colims.core.dataio.peptideshaker;
 
 import java.io.File;
 import java.util.List;

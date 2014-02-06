@@ -1,15 +1,15 @@
 package com.compomics.colims.client.playground;
 
-import com.compomics.colims.client.spring.ApplicationContextProvider;
-import com.compomics.colims.core.component.PtmFactoryWrapper;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,7 +35,7 @@ public class Playground2 {
 
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, PeptideShakerIOException {
         try {
-            ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+            ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
             PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
             PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);

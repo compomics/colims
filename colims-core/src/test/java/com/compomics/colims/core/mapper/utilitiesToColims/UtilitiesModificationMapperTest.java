@@ -1,6 +1,6 @@
 package com.compomics.colims.core.mapper.utilitiesToColims;
 
-import com.compomics.colims.core.component.PtmFactoryWrapper;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 

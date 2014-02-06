@@ -1,6 +1,6 @@
 package com.compomics.colims.core.mapper.impl.utilitiesToColims;
 
-import com.compomics.colims.core.component.PtmFactoryWrapper;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

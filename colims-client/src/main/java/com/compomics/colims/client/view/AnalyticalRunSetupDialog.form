@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="dataTypeButtonGroup">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="title" type="java.lang.String" value="analytical run setup"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -55,7 +60,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="topPanel" pref="220" max="32767" attributes="0"/>
+                  <Component id="topPanel" pref="261" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="bottomPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -95,11 +100,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="projectsPanel" pref="270" max="32767" attributes="0"/>
+                          <Component id="projectsPanel" pref="333" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="experimentsPanel" pref="270" max="32767" attributes="0"/>
+                          <Component id="experimentsPanel" pref="334" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="samplesPanel" pref="272" max="32767" attributes="0"/>
+                          <Component id="samplesPanel" pref="335" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -109,9 +114,9 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="projectsPanel" alignment="1" pref="193" max="32767" attributes="0"/>
-                              <Component id="experimentsPanel" alignment="1" pref="193" max="32767" attributes="0"/>
-                              <Component id="samplesPanel" alignment="0" pref="193" max="32767" attributes="0"/>
+                              <Component id="projectsPanel" alignment="1" pref="234" max="32767" attributes="0"/>
+                              <Component id="experimentsPanel" alignment="1" pref="234" max="32767" attributes="0"/>
+                              <Component id="samplesPanel" alignment="0" pref="234" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -137,7 +142,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="projectsScrollPane" pref="238" max="32767" attributes="0"/>
+                              <Component id="projectsScrollPane" pref="301" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -214,7 +219,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="experimentsScrollPane" pref="238" max="32767" attributes="0"/>
+                              <Component id="experimentsScrollPane" pref="302" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -282,7 +287,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="samplesScrollPane" pref="240" max="32767" attributes="0"/>
+                              <Component id="samplesScrollPane" pref="303" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -291,7 +296,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="samplesScrollPane" pref="148" max="32767" attributes="0"/>
+                              <Component id="samplesScrollPane" pref="189" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -350,21 +355,12 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cpsFileLabel" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="fileSelectionLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="mgfFileLabel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="fileSelectionLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="fastaFileLabel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="fileSelectionLabel" alignment="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="dataTypeSelectionLabel" min="-2" pref="169" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="selectFastaButton" alignment="0" min="-2" pref="92" max="-2" attributes="0"/>
-                              <Component id="selectMgfButton" alignment="0" min="-2" pref="92" max="-2" attributes="0"/>
-                              <Component id="selectCpsButton" alignment="0" min="-2" pref="92" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace pref="855" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -372,87 +368,103 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="fileSelectionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cpsFileLabel" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
-                              <Component id="selectCpsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                          <Component id="fileSelectionLabel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="mgfFileLabel" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
-                              <Component id="selectMgfButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="dataTypeSelectionLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="fileSelectionLabel2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="fastaFileLabel" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="selectFastaButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                          <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="149" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="fileSelectionLabel">
+                <Component class="javax.swing.JLabel" name="dataTypeSelectionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Select a PeptideShaker .cps file"/>
+                    <Property name="text" type="java.lang.String" value="Select the analytical run data type:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="fileSelectionLabel1">
+                <Component class="javax.swing.JRadioButton" name="peptideShakerRadioButton">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Select an .mgf file"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="fileSelectionLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Select a FASTA file"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="cpsFileLabel">
-                  <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="dataTypeButtonGroup"/>
                     </Property>
+                    <Property name="text" type="java.lang.String" value="PeptideShaker"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="fastaFileLabel">
+                <Component class="javax.swing.JRadioButton" name="maxQuantRadioButton">
                   <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="dataTypeButtonGroup"/>
                     </Property>
+                    <Property name="text" type="java.lang.String" value="MaxQuant"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="mgfFileLabel">
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="dataTypeSelectionPanel1">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="dataTypeSelectionPanel" noResource="true"/>
+                <Property name="opaque" type="boolean" value="false"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="dataTypeSelectionPanel"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="maxQuantRadioButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="peptideShakerRadioButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="dataTypeSelectionLabel1" alignment="0" min="-2" pref="169" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="855" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="dataTypeSelectionLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="peptideShakerRadioButton1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="maxQuantRadioButton1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="149" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="dataTypeSelectionLabel1">
                   <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
+                    <Property name="text" type="java.lang.String" value="Select the analytical run data type:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="peptideShakerRadioButton1">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="dataTypeButtonGroup"/>
                     </Property>
+                    <Property name="text" type="java.lang.String" value="PeptideShaker"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="selectCpsButton">
+                <Component class="javax.swing.JRadioButton" name="maxQuantRadioButton1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Browse"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="selectMgfButton">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Browse"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="selectFastaButton">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Browse"/>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="dataTypeButtonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="MaxQuant"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -474,7 +486,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="infoLabel" pref="476" max="32767" attributes="0"/>
+                      <Component id="infoLabel" pref="666" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="backButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>

@@ -5,7 +5,7 @@
 package com.compomics.colims.distributed.storage.processing.controller.storagequeue;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
 import com.compomics.colims.distributed.spring.ApplicationContextProvider;
 import com.compomics.colims.distributed.storage.enums.StorageState;
 import com.compomics.colims.distributed.storage.enums.StorageType;

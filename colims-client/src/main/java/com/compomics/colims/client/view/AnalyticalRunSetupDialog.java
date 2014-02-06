@@ -2,10 +2,12 @@
 package com.compomics.colims.client.view;
 
 import java.awt.Color;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTable;
 
 /**
@@ -69,31 +71,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
     public JFileChooser getFastaFileChooser() {
         return fastaFileChooser;
-    }
-
-    public JButton getSelectCpsButton() {
-        return selectCpsButton;
-    }
-
-    public JButton getSelectFastaButton() {
-        return selectFastaButton;
-    }
-
-    public JButton getSelectMgfButton() {
-        return selectMgfButton;
-    }
-
-    public JLabel getCpsFileLabel() {
-        return cpsFileLabel;
-    }
-
-    public JLabel getFastaFileLabel() {
-        return fastaFileLabel;
-    }
-
-    public JLabel getMgfFileLabel() {
-        return mgfFileLabel;
-    }        
+    }  
 
     public JTable getExperimentsTable() {
         return experimentsTable;
@@ -107,6 +85,22 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         return samplesTable;
     }
 
+    public JButton getCloseButton() {
+        return closeButton;
+    }  
+
+    public ButtonGroup getDataTypeButtonGroup() {
+        return dataTypeButtonGroup;
+    }        
+
+    public JRadioButton getMaxQuantRadioButton() {
+        return maxQuantRadioButton;
+    }
+
+    public JRadioButton getPeptideShakerRadioButton() {
+        return peptideShakerRadioButton;
+    }       
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -116,6 +110,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dataTypeButtonGroup = new javax.swing.ButtonGroup();
         parentPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
         sampleSelectionPanel = new javax.swing.JPanel();
@@ -129,15 +124,13 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         samplesScrollPane = new javax.swing.JScrollPane();
         samplesTable = new javax.swing.JTable();
         dataTypeSelectionPanel = new javax.swing.JPanel();
-        fileSelectionLabel = new javax.swing.JLabel();
-        fileSelectionLabel1 = new javax.swing.JLabel();
-        fileSelectionLabel2 = new javax.swing.JLabel();
-        cpsFileLabel = new javax.swing.JLabel();
-        fastaFileLabel = new javax.swing.JLabel();
-        mgfFileLabel = new javax.swing.JLabel();
-        selectCpsButton = new javax.swing.JButton();
-        selectMgfButton = new javax.swing.JButton();
-        selectFastaButton = new javax.swing.JButton();
+        dataTypeSelectionLabel = new javax.swing.JLabel();
+        peptideShakerRadioButton = new javax.swing.JRadioButton();
+        maxQuantRadioButton = new javax.swing.JRadioButton();
+        dataTypeSelectionPanel1 = new javax.swing.JPanel();
+        dataTypeSelectionLabel1 = new javax.swing.JLabel();
+        peptideShakerRadioButton1 = new javax.swing.JRadioButton();
+        maxQuantRadioButton1 = new javax.swing.JRadioButton();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -146,6 +139,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("analytical run setup");
 
         parentPanel.setOpaque(false);
 
@@ -198,7 +192,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
                 .addContainerGap())
         );
         projectsPanelLayout.setVerticalGroup(
@@ -249,7 +243,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addContainerGap())
         );
         experimentsPanelLayout.setVerticalGroup(
@@ -300,14 +294,14 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(samplesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
                 .addContainerGap())
         );
         samplesPanelLayout.setVerticalGroup(
             samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(samplesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -317,11 +311,11 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sampleSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
                 .addContainerGap())
         );
         sampleSelectionPanelLayout.setVerticalGroup(
@@ -329,9 +323,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sampleSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                    .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))
+                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                    .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                    .addComponent(samplesPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -340,23 +334,15 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         dataTypeSelectionPanel.setName("dataTypeSelectionPanel"); // NOI18N
         dataTypeSelectionPanel.setOpaque(false);
 
-        fileSelectionLabel.setText("Select a PeptideShaker .cps file");
+        dataTypeSelectionLabel.setText("Select the analytical run data type:");
 
-        fileSelectionLabel1.setText("Select an .mgf file");
+        dataTypeButtonGroup.add(peptideShakerRadioButton);
+        peptideShakerRadioButton.setText("PeptideShaker");
+        peptideShakerRadioButton.setOpaque(false);
 
-        fileSelectionLabel2.setText("Select a FASTA file");
-
-        cpsFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        fastaFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        mgfFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        selectCpsButton.setText("Browse");
-
-        selectMgfButton.setText("Browse");
-
-        selectFastaButton.setText("Browse");
+        dataTypeButtonGroup.add(maxQuantRadioButton);
+        maxQuantRadioButton.setText("MaxQuant");
+        maxQuantRadioButton.setOpaque(false);
 
         javax.swing.GroupLayout dataTypeSelectionPanelLayout = new javax.swing.GroupLayout(dataTypeSelectionPanel);
         dataTypeSelectionPanel.setLayout(dataTypeSelectionPanelLayout);
@@ -364,45 +350,64 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cpsFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                    .addComponent(fileSelectionLabel1)
-                    .addComponent(mgfFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fileSelectionLabel2)
-                    .addComponent(fastaFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fileSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectCpsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(maxQuantRadioButton)
+                    .addComponent(peptideShakerRadioButton)
+                    .addComponent(dataTypeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(855, Short.MAX_VALUE))
         );
         dataTypeSelectionPanelLayout.setVerticalGroup(
             dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fileSelectionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cpsFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectCpsButton))
-                .addGap(13, 13, 13)
-                .addComponent(fileSelectionLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mgfFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectMgfButton))
+                .addComponent(dataTypeSelectionLabel)
                 .addGap(18, 18, 18)
-                .addComponent(fileSelectionLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fastaFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectFastaButton))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(peptideShakerRadioButton)
+                .addGap(18, 18, 18)
+                .addComponent(maxQuantRadioButton)
+                .addContainerGap(149, Short.MAX_VALUE))
         );
 
         topPanel.add(dataTypeSelectionPanel, "dataTypeSelectionPanel");
+
+        dataTypeSelectionPanel1.setName("dataTypeSelectionPanel"); // NOI18N
+        dataTypeSelectionPanel1.setOpaque(false);
+
+        dataTypeSelectionLabel1.setText("Select the analytical run data type:");
+
+        dataTypeButtonGroup.add(peptideShakerRadioButton1);
+        peptideShakerRadioButton1.setText("PeptideShaker");
+        peptideShakerRadioButton1.setOpaque(false);
+
+        dataTypeButtonGroup.add(maxQuantRadioButton1);
+        maxQuantRadioButton1.setText("MaxQuant");
+        maxQuantRadioButton1.setOpaque(false);
+
+        javax.swing.GroupLayout dataTypeSelectionPanel1Layout = new javax.swing.GroupLayout(dataTypeSelectionPanel1);
+        dataTypeSelectionPanel1.setLayout(dataTypeSelectionPanel1Layout);
+        dataTypeSelectionPanel1Layout.setHorizontalGroup(
+            dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataTypeSelectionPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(maxQuantRadioButton1)
+                    .addComponent(peptideShakerRadioButton1)
+                    .addComponent(dataTypeSelectionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(855, Short.MAX_VALUE))
+        );
+        dataTypeSelectionPanel1Layout.setVerticalGroup(
+            dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataTypeSelectionPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dataTypeSelectionLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(peptideShakerRadioButton1)
+                .addGap(18, 18, 18)
+                .addComponent(maxQuantRadioButton1)
+                .addContainerGap(149, Short.MAX_VALUE))
+        );
+
+        topPanel.add(dataTypeSelectionPanel1, "dataTypeSelectionPanel");
 
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
@@ -437,7 +442,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -477,7 +482,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -502,19 +507,21 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JButton closeButton;
-    private javax.swing.JLabel cpsFileLabel;
+    private javax.swing.ButtonGroup dataTypeButtonGroup;
+    private javax.swing.JLabel dataTypeSelectionLabel;
+    private javax.swing.JLabel dataTypeSelectionLabel1;
     private javax.swing.JPanel dataTypeSelectionPanel;
+    private javax.swing.JPanel dataTypeSelectionPanel1;
     private javax.swing.JPanel experimentsPanel;
     private javax.swing.JScrollPane experimentsScrollPane;
     private javax.swing.JTable experimentsTable;
-    private javax.swing.JLabel fastaFileLabel;
-    private javax.swing.JLabel fileSelectionLabel;
-    private javax.swing.JLabel fileSelectionLabel1;
-    private javax.swing.JLabel fileSelectionLabel2;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JLabel mgfFileLabel;
+    private javax.swing.JRadioButton maxQuantRadioButton;
+    private javax.swing.JRadioButton maxQuantRadioButton1;
     private javax.swing.JPanel parentPanel;
+    private javax.swing.JRadioButton peptideShakerRadioButton;
+    private javax.swing.JRadioButton peptideShakerRadioButton1;
     private javax.swing.JButton proceedButton;
     private javax.swing.JPanel projectsPanel;
     private javax.swing.JScrollPane projectsScrollPane;
@@ -523,9 +530,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JScrollPane samplesScrollPane;
     private javax.swing.JTable samplesTable;
-    private javax.swing.JButton selectCpsButton;
-    private javax.swing.JButton selectFastaButton;
-    private javax.swing.JButton selectMgfButton;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

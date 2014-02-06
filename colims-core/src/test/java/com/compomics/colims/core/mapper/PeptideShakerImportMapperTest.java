@@ -1,6 +1,6 @@
 package com.compomics.colims.core.mapper;
 
-import com.compomics.colims.core.component.PtmFactoryWrapper;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -10,9 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -31,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.core.io.ClassPathResource;
@@ -79,7 +79,7 @@ public class PeptideShakerImportMapperTest {
     }
     
     @Test
-    public void testMap() throws IOException, PeptideShakerIOException, MappingException, SQLException, ClassNotFoundException, FileNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
+    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, FileNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
         //import PeptideShaker .cps file
         PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
         //set mgf files and fasta file

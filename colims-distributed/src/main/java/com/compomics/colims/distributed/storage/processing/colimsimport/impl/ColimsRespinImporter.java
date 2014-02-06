@@ -7,9 +7,9 @@ package com.compomics.colims.distributed.storage.processing.colimsimport.impl;
 
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.CvTermService;

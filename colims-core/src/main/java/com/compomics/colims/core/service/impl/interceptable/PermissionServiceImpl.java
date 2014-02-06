@@ -78,7 +78,7 @@ public class PermissionServiceImpl implements PermissionService {
         boolean isDefaultPermission = false;
         
         for(DefaultPermission defaultPermission : DefaultPermission.values()){
-            if(permission.getName().equals(defaultPermission.getDbEntry())){
+            if(permission.getName().equals(defaultPermission.dbEntry())){
                 isDefaultPermission = true;
                 break;
             }

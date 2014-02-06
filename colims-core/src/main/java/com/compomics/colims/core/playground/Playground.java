@@ -1,7 +1,7 @@
 package com.compomics.colims.core.playground;
 
 import org.springframework.context.ApplicationContext;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;

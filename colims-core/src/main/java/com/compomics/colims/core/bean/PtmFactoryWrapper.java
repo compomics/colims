@@ -1,4 +1,4 @@
-package com.compomics.colims.core.component;
+package com.compomics.colims.core.bean;
 
 import com.compomics.util.experiment.biology.PTMFactory;
 import org.springframework.stereotype.Component;

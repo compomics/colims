@@ -5,7 +5,7 @@
 package com.compomics.colims.distributed.searches.controller.searches;
 
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.StorageQueue;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import java.io.IOException;
 import java.net.ServerSocket;

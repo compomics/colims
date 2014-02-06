@@ -6,7 +6,7 @@
 package com.compomics.colims.distributed.storage.processing.colimsimport;
 
 import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
 import java.io.File;
 import javax.naming.AuthenticationException;
 

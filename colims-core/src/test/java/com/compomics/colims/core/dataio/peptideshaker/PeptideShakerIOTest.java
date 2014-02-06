@@ -1,6 +1,6 @@
-package com.compomics.colims.core.io;
+package com.compomics.colims.core.dataio.peptideshaker;
 
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
 import java.io.File;
 import java.io.IOException;
 
@@ -12,10 +12,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.compomics.colims.core.exception.PeptideShakerIOException;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.biology.Sample;
+import org.apache.commons.compress.archivers.ArchiveException;
 
 /**
  *
@@ -29,7 +28,7 @@ public class PeptideShakerIOTest {
     private PeptideShakerIO peptideShakerIO;
 
     @Test
-    public void testUnpackPeptideShakerCpsFile() throws IOException, PeptideShakerIOException {
+    public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
         PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
 
         File dbDirectory = peptideShakerImport.getDbDirectory();

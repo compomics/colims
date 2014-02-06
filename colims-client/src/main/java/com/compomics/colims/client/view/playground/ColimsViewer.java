@@ -9,7 +9,6 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
@@ -1340,9 +1339,9 @@ public class ColimsViewer extends javax.swing.JFrame implements ExportGraphicsDi
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
-        ColimsViewer colimsViewer = (ColimsViewer) applicationContext.getBean("colimsViewer");
-        colimsViewer.init();
+        //ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+        //ColimsViewer colimsViewer = (ColimsViewer) applicationContext.getBean("colimsViewer");
+        //colimsViewer.init();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
