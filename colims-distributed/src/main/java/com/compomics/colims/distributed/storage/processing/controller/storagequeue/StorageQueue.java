@@ -4,8 +4,7 @@
  */
 package com.compomics.colims.distributed.storage.processing.controller.storagequeue;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.spring.ApplicationContextProvider;
 import com.compomics.colims.distributed.storage.enums.StorageState;
 import com.compomics.colims.distributed.storage.enums.StorageType;
@@ -104,7 +103,7 @@ public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable
                     } else {
                         updateTask(taskToStore, StorageState.ERROR);
                     }
-                } catch (IOException | PeptideShakerIOException | AuthenticationException | MappingException ex) {
+                } catch (IOException | AuthenticationException | MappingException ex) {
                     updateTask(taskToStore, StorageState.ERROR);
                 } finally {
                     try {

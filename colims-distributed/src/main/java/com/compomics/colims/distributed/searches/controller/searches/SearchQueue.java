@@ -4,8 +4,7 @@
  */
 package com.compomics.colims.distributed.searches.controller.searches;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.searches.controller.searches.searchtask.SearchTask;
 import com.compomics.colims.distributed.searches.respin.control.common.Respin;
 import com.compomics.colims.distributed.searches.respin.model.enums.RespinState;

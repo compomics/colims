@@ -127,10 +127,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         dataTypeSelectionLabel = new javax.swing.JLabel();
         peptideShakerRadioButton = new javax.swing.JRadioButton();
         maxQuantRadioButton = new javax.swing.JRadioButton();
-        dataTypeSelectionPanel1 = new javax.swing.JPanel();
-        dataTypeSelectionLabel1 = new javax.swing.JLabel();
-        peptideShakerRadioButton1 = new javax.swing.JRadioButton();
-        maxQuantRadioButton1 = new javax.swing.JRadioButton();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -370,45 +366,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         topPanel.add(dataTypeSelectionPanel, "dataTypeSelectionPanel");
 
-        dataTypeSelectionPanel1.setName("dataTypeSelectionPanel"); // NOI18N
-        dataTypeSelectionPanel1.setOpaque(false);
-
-        dataTypeSelectionLabel1.setText("Select the analytical run data type:");
-
-        dataTypeButtonGroup.add(peptideShakerRadioButton1);
-        peptideShakerRadioButton1.setText("PeptideShaker");
-        peptideShakerRadioButton1.setOpaque(false);
-
-        dataTypeButtonGroup.add(maxQuantRadioButton1);
-        maxQuantRadioButton1.setText("MaxQuant");
-        maxQuantRadioButton1.setOpaque(false);
-
-        javax.swing.GroupLayout dataTypeSelectionPanel1Layout = new javax.swing.GroupLayout(dataTypeSelectionPanel1);
-        dataTypeSelectionPanel1.setLayout(dataTypeSelectionPanel1Layout);
-        dataTypeSelectionPanel1Layout.setHorizontalGroup(
-            dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataTypeSelectionPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(maxQuantRadioButton1)
-                    .addComponent(peptideShakerRadioButton1)
-                    .addComponent(dataTypeSelectionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(855, Short.MAX_VALUE))
-        );
-        dataTypeSelectionPanel1Layout.setVerticalGroup(
-            dataTypeSelectionPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataTypeSelectionPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(dataTypeSelectionLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(peptideShakerRadioButton1)
-                .addGap(18, 18, 18)
-                .addComponent(maxQuantRadioButton1)
-                .addContainerGap(149, Short.MAX_VALUE))
-        );
-
-        topPanel.add(dataTypeSelectionPanel1, "dataTypeSelectionPanel");
-
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
 
@@ -509,19 +466,15 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JButton closeButton;
     private javax.swing.ButtonGroup dataTypeButtonGroup;
     private javax.swing.JLabel dataTypeSelectionLabel;
-    private javax.swing.JLabel dataTypeSelectionLabel1;
     private javax.swing.JPanel dataTypeSelectionPanel;
-    private javax.swing.JPanel dataTypeSelectionPanel1;
     private javax.swing.JPanel experimentsPanel;
     private javax.swing.JScrollPane experimentsScrollPane;
     private javax.swing.JTable experimentsTable;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JRadioButton maxQuantRadioButton;
-    private javax.swing.JRadioButton maxQuantRadioButton1;
     private javax.swing.JPanel parentPanel;
     private javax.swing.JRadioButton peptideShakerRadioButton;
-    private javax.swing.JRadioButton peptideShakerRadioButton1;
     private javax.swing.JButton proceedButton;
     private javax.swing.JPanel projectsPanel;
     private javax.swing.JScrollPane projectsScrollPane;

@@ -8,9 +8,9 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.mapper.Mapper;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
@@ -339,7 +339,7 @@ public class ProjectSetupController implements Controllable {
         @Override
         protected Void doInBackground() throws Exception {
             LOGGER.info("Start importing PeptideShaker file " + cpsResource.getFilename());
-            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(cpsResource.getFile());
+            PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(cpsResource.getFile());
             LOGGER.info("Finished importing PeptideShaker file " + cpsResource.getFilename());
 
             //set mgf and fasta files

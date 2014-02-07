@@ -12,7 +12,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
-import com.compomics.colims.core.exception.PermissionException;
+import com.compomics.colims.core.authentication.PermissionException;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;

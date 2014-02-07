@@ -1,8 +1,8 @@
 package com.compomics.colims.client.view.playground;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsPeptideMapper;
-import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsSpectrumMapper;
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.PeptideService;

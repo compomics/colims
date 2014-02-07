@@ -6,11 +6,10 @@
 package com.compomics.colims.distributed.storage.processing.colimsimport.impl;
 
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
-import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.ExperimentService;
@@ -37,7 +36,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.naming.AuthenticationException;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,7 +60,7 @@ public class ColimsRespinImporter implements ColimsFileImporter {
     SampleService sampleService;
     @Autowired
     AuthenticationBean authenticationBean;
-    PeptideShakerImport peptideShakerImport;
+    PeptideShakerDataImport peptideShakerImport;
     @Autowired
     PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -208,7 +209,7 @@ public class ColimsRespinImporter implements ColimsFileImporter {
         return respinInstrument;
     }
 
-    private void mapPeptideShakerIOInFolder(File cpsFileFolder) throws PeptideShakerIOException {
+    private void mapPeptideShakerIOInFolder(File cpsFileFolder) throws IOException, ArchiveException, ClassNotFoundException {
         for (File fileInFolder : cpsFileFolder.listFiles()) {
             if (fileInFolder.getName().contains(".cps")) {
                 peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(fileInFolder);
@@ -226,7 +227,7 @@ public class ColimsRespinImporter implements ColimsFileImporter {
     }
 
     @Override
-    public void storeFile(String username, File cpsFileFolder, long sampleID, String instrumentName) throws PeptideShakerIOException, MappingException, AuthenticationException {
+    public void storeFile(String username, File cpsFileFolder, long sampleID, String instrumentName) throws MappingException, AuthenticationException {
         try {
             User user = login(username);
             Project respinProject = createRespinProject(user, cpsFileFolder);
@@ -253,7 +254,7 @@ public class ColimsRespinImporter implements ColimsFileImporter {
             sampleService.saveOrUpdate(respinSample);
             experimentService.saveOrUpdate(respinExperiment);
             projectService.saveOrUpdate(respinProject);
-        } catch (IOException | SQLException | ClassNotFoundException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException ex) {
+        } catch (IOException | SQLException | ClassNotFoundException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException | ArchiveException ex) {
             LOGGER.error(ex);
         }
     }

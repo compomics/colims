@@ -1,11 +1,10 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIOException;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.dataio.peptideshaker.PeptideShakerImport;
-import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -19,6 +18,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -32,49 +32,44 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground {
 
-    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, PeptideShakerIOException {
-        try {
-            ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
+    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
-            PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-            PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
-            UserService userService = applicationContext.getBean("userService", UserService.class);
-            SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
-            AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
-            PtmFactoryWrapper ptmFactoryWrapper = applicationContext.getBean("ptmFactoryWrapper", PtmFactoryWrapper.class);
-            AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
+        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
+        PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
+        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
+        PtmFactoryWrapper ptmFactoryWrapper = applicationContext.getBean("ptmFactoryWrapper", PtmFactoryWrapper.class);
+        AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
 
+        //load mods from test resources instead of user folder
+        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
+        ptmFactoryWrapper.getPtmFactory().clearFactory();
+        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
 
-            //load mods from test resources instead of user folder
-            Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
-            ptmFactoryWrapper.getPtmFactory().clearFactory();
-            ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
+        //set admin user in authentication bean
+        User adminUser = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(adminUser);
+        authenticationBean.setCurrentUser(adminUser);
 
-            //set admin user in authentication bean
-            User adminUser = userService.findByName("admin1");
-            userService.fetchAuthenticationRelations(adminUser);
-            authenticationBean.setCurrentUser(adminUser);
+        //import PeptideShaker .cps file
+        PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+        //set mgf files and fasta file
+        List<File> mgfFiles = new ArrayList<>();
+        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
+        peptideShakerImport.setMgfFiles(mgfFiles);
+        peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
 
-            //import PeptideShaker .cps file
-            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
-            //set mgf files and fasta file
-            List<File> mgfFiles = new ArrayList<>();
-            mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
-            peptideShakerImport.setMgfFiles(mgfFiles);
-            peptideShakerImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
+        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 
-            List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+        //get sample from db
+        Sample sample = sampleService.findAll().get(0);
 
-            //get sample from db
-            Sample sample = sampleService.findAll().get(0);
-
-            //set sample and persist
-            for (AnalyticalRun analyticalRun : analyticalRuns) {
-                analyticalRun.setSample(sample);
-                analyticalRunService.save(analyticalRun);
-            }
-        } catch (PeptideShakerIOException ex) {
-            System.out.println("test");
+        //set sample and persist
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            analyticalRun.setSample(sample);
+            analyticalRunService.save(analyticalRun);
         }
     }
 }
