@@ -36,7 +36,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     private static final String PEPTIDESHAKER_SERIALIZATION_DIR = "resources/matches";
     private static final String PEPTIDESHAKER_SERIALIZIZED_EXP_NAME = "experiment";
     @Value("${peptideshakerio.buffer_size}")
-    private final int buffer = 0;
+    private int buffer = 0;
     @Autowired
     private EventBus eventBus;
 
