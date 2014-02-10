@@ -1,6 +1,8 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectEditDialog;
@@ -100,22 +102,30 @@ public class ProjectEditController implements Controllable {
                 if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
                     validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
                             + "\n" + "please choose another project title.");
-                }
-                int index = 0;
+                }                
                 if (validationMessages.isEmpty()) {
+                    int index;
+                    EntityChangeEvent.Type type;
+                    
                     if (projectToEdit.getId() != null) {
                         projectService.update(projectToEdit);
+                        
                         index = projectManagementController.getSelectedProjectIndex();
+                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         projectService.save(projectToEdit);
 
-                        //add project to overview table
-                        projectManagementController.addProject(projectToEdit);
-
                         index = projectManagementController.getProjectsSize() - 1;
+                        type = EntityChangeEvent.Type.CREATED;
+                        
+                        //add project to overview table
+                        projectManagementController.addProject(projectToEdit);                        
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
                     }
+                    ProjectChangeEvent projectChangeEvent = new ProjectChangeEvent(type, projectToEdit);
+                    eventBus.post(projectChangeEvent);
+                    
                     MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 

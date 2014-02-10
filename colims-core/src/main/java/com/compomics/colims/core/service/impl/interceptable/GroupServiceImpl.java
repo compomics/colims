@@ -76,7 +76,7 @@ public class GroupServiceImpl implements GroupService {
         boolean isDefaultGroup = false;
         
         for(DefaultGroup defaultGroup : DefaultGroup.values()){
-            if(group.getName().equals(defaultGroup.getDbEntry())){
+            if(group.getName().equals(defaultGroup.dbEntry())){
                 isDefaultGroup = true;
                 break;
             }

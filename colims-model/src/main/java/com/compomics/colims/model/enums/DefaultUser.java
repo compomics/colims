@@ -17,7 +17,7 @@ public enum DefaultUser {
         this.dbEntry = dbEntry;
     }
 
-    public String getDbEntry() {
+    public String dbEntry() {
         return dbEntry;
     }        
     

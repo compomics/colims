@@ -339,6 +339,7 @@
             <Component class="javax.swing.JButton" name="deleteSampleButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
+                <Property name="toolTipText" type="java.lang.String" value="delete a sample"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>
@@ -353,6 +354,7 @@
             <Component class="javax.swing.JButton" name="editSampleButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
+                <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing sample"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>
@@ -367,6 +369,7 @@
             <Component class="javax.swing.JButton" name="addSampleButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="add..."/>
+                <Property name="toolTipText" type="java.lang.String" value="add a new sample"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>

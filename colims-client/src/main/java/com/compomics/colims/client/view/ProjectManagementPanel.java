@@ -82,13 +82,13 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         projectsOverviewPanel.setOpaque(false);
 
         editProjectButton.setText("edit...");
-        editProjectButton.setToolTipText("add a new project");
+        editProjectButton.setToolTipText("edit the metadata of an existing project");
         editProjectButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         addProjectButton.setText("add...");
-        addProjectButton.setToolTipText("edit the metadata of an existing project");
+        addProjectButton.setToolTipText("add a new project");
         addProjectButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));

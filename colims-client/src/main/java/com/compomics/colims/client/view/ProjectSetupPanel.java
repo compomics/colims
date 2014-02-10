@@ -27,19 +27,7 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         cpsFileChooser = new JFileChooser();
         mgfFileChooser = new JFileChooser();
         fastaFileChooser = new JFileChooser();
-    }
-
-    public JTextArea getDescriptionTextArea() {
-        return descriptionTextArea;
-    }
-
-    public JTextField getTitleTextField() {
-        return titleTextField;
-    }
-
-    public JComboBox getUserComboBox() {
-        return userComboBox;
-    }
+    }   
 
     public JButton getBackButton() {
         return backButton;
@@ -95,11 +83,7 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
 
     public JLabel getMgfFileLabel() {
         return mgfFileLabel;
-    }
-
-    public JTextField getLabelTextField() {
-        return labelTextField;
-    }        
+    }         
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -111,17 +95,8 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         topPanel = new javax.swing.JPanel();
-        projectMetaDataPanel = new javax.swing.JPanel();
-        titleTextField = new javax.swing.JTextField();
-        titleLabel = new javax.swing.JLabel();
-        descriptionLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        descriptionTextArea = new javax.swing.JTextArea();
-        userLabel = new javax.swing.JLabel();
-        userComboBox = new javax.swing.JComboBox();
-        labelTextField = new javax.swing.JTextField();
-        titleLabel1 = new javax.swing.JLabel();
-        dataImportPanel = new javax.swing.JPanel();
+        sampleSelectionPanel = new javax.swing.JPanel();
+        dataTypeSelectionPanel = new javax.swing.JPanel();
         fileSelectionLabel = new javax.swing.JLabel();
         fileSelectionLabel1 = new javax.swing.JLabel();
         fileSelectionLabel2 = new javax.swing.JLabel();
@@ -137,90 +112,33 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         proceedInfoLabel = new javax.swing.JLabel();
         finishButton = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
 
-        topPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        topPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         topPanel.setOpaque(false);
         topPanel.setPreferredSize(new java.awt.Dimension(400, 285));
         topPanel.setLayout(new java.awt.CardLayout());
 
-        projectMetaDataPanel.setName("projectMetaDataPanel"); // NOI18N
-        projectMetaDataPanel.setOpaque(false);
+        sampleSelectionPanel.setName("sampleSelectionPanel"); // NOI18N
+        sampleSelectionPanel.setOpaque(false);
 
-        titleLabel.setText("title");
-        titleLabel.setPreferredSize(new java.awt.Dimension(48, 14));
-
-        descriptionLabel.setText("description");
-        descriptionLabel.setPreferredSize(new java.awt.Dimension(48, 14));
-
-        descriptionTextArea.setColumns(20);
-        descriptionTextArea.setRows(5);
-        jScrollPane1.setViewportView(descriptionTextArea);
-
-        userLabel.setText("user");
-        userLabel.setPreferredSize(new java.awt.Dimension(48, 14));
-
-        titleLabel1.setText("label");
-        titleLabel1.setPreferredSize(new java.awt.Dimension(48, 14));
-
-        javax.swing.GroupLayout projectMetaDataPanelLayout = new javax.swing.GroupLayout(projectMetaDataPanel);
-        projectMetaDataPanel.setLayout(projectMetaDataPanelLayout);
-        projectMetaDataPanelLayout.setHorizontalGroup(
-            projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(titleLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                    .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labelTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
-            .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                    .addContainerGap()))
+        javax.swing.GroupLayout sampleSelectionPanelLayout = new javax.swing.GroupLayout(sampleSelectionPanel);
+        sampleSelectionPanel.setLayout(sampleSelectionPanelLayout);
+        sampleSelectionPanelLayout.setHorizontalGroup(
+            sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
-        projectMetaDataPanelLayout.setVerticalGroup(
-            projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                .addGap(51, 51, 51)
-                .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(titleLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(141, 141, 141))
-                    .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(userComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(62, Short.MAX_VALUE))))
-            .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(projectMetaDataPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(projectMetaDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(254, Short.MAX_VALUE)))
+        sampleSelectionPanelLayout.setVerticalGroup(
+            sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 261, Short.MAX_VALUE)
         );
 
-        topPanel.add(projectMetaDataPanel, "projectMetaDataPanel");
-        projectMetaDataPanel.getAccessibleContext().setAccessibleName("");
+        topPanel.add(sampleSelectionPanel, "projectMetaDataPanel");
+        sampleSelectionPanel.getAccessibleContext().setAccessibleName("");
 
-        dataImportPanel.setName("dataImportPanel"); // NOI18N
-        dataImportPanel.setOpaque(false);
+        dataTypeSelectionPanel.setName("dataTypeSelectionPanel"); // NOI18N
+        dataTypeSelectionPanel.setOpaque(false);
 
         fileSelectionLabel.setText("Select a PeptideShaker .cps file");
 
@@ -240,13 +158,13 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
 
         selectFastaButton.setText("Browse");
 
-        javax.swing.GroupLayout dataImportPanelLayout = new javax.swing.GroupLayout(dataImportPanel);
-        dataImportPanel.setLayout(dataImportPanelLayout);
-        dataImportPanelLayout.setHorizontalGroup(
-            dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataImportPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout dataTypeSelectionPanelLayout = new javax.swing.GroupLayout(dataTypeSelectionPanel);
+        dataTypeSelectionPanel.setLayout(dataTypeSelectionPanelLayout);
+        dataTypeSelectionPanelLayout.setHorizontalGroup(
+            dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cpsFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                     .addComponent(fileSelectionLabel1)
                     .addComponent(mgfFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -254,40 +172,40 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
                     .addComponent(fastaFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fileSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectCpsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
-        dataImportPanelLayout.setVerticalGroup(
-            dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataImportPanelLayout.createSequentialGroup()
+        dataTypeSelectionPanelLayout.setVerticalGroup(
+            dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(fileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cpsFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectCpsButton))
                 .addGap(13, 13, 13)
                 .addComponent(fileSelectionLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mgfFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectMgfButton))
                 .addGap(18, 18, 18)
                 .addComponent(fileSelectionLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataImportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fastaFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectFastaButton))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
-        topPanel.add(dataImportPanel, "dataImportPanel");
-        dataImportPanel.getAccessibleContext().setAccessibleName("");
+        topPanel.add(dataTypeSelectionPanel, "dataImportPanel");
+        dataTypeSelectionPanel.getAccessibleContext().setAccessibleName("");
 
-        bottomPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
 
         backButton.setText("back");
@@ -343,43 +261,40 @@ public class ProjectSetupPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-            .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+                    .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JLabel cpsFileLabel;
-    private javax.swing.JPanel dataImportPanel;
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JTextArea descriptionTextArea;
+    private javax.swing.JPanel dataTypeSelectionPanel;
     private javax.swing.JLabel fastaFileLabel;
     private javax.swing.JLabel fileSelectionLabel;
     private javax.swing.JLabel fileSelectionLabel1;
     private javax.swing.JLabel fileSelectionLabel2;
     private javax.swing.JButton finishButton;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField labelTextField;
     private javax.swing.JLabel mgfFileLabel;
     private javax.swing.JButton proceedButton;
     private javax.swing.JLabel proceedInfoLabel;
-    private javax.swing.JPanel projectMetaDataPanel;
+    private javax.swing.JPanel sampleSelectionPanel;
     private javax.swing.JButton selectCpsButton;
     private javax.swing.JButton selectFastaButton;
     private javax.swing.JButton selectMgfButton;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JLabel titleLabel1;
-    private javax.swing.JTextField titleTextField;
     private javax.swing.JPanel topPanel;
-    private javax.swing.JComboBox userComboBox;
-    private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 }

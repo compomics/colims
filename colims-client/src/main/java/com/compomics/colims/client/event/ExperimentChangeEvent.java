@@ -7,10 +7,10 @@ import com.compomics.colims.model.Experiment;
  */
 public class ExperimentChangeEvent extends EntityChangeEvent {
 
-    private Experiment experiment;
+    private final Experiment experiment;
 
-    public ExperimentChangeEvent(final Type type, final boolean childrenAffected, final Experiment experiment) {
-        super(type, childrenAffected);
+    public ExperimentChangeEvent(final Type type, final Experiment experiment) {
+        super(type);
         this.experiment = experiment;
     }
 

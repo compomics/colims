@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 public class LoginDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public LoginDialog(final Frame parent, final boolean modal) {
         super(parent, modal);  

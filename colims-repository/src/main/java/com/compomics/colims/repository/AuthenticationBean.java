@@ -54,7 +54,7 @@ public class AuthenticationBean {
             for (Group group : currentUser.getGroups()) {
                 for (Role role : group.getRoles()) {
                     for (Permission permission : role.getPermissions()) {
-                        if (permission.getName().equals(defaultPermission.getDbEntry())) {
+                        if (permission.getName().equals(defaultPermission.dbEntry())) {
                             defaultPermissions.put(defaultPermission, Boolean.TRUE);
                             break grouploop;
                         }
@@ -77,7 +77,7 @@ public class AuthenticationBean {
         boolean isAdmin = false;
 
         for (Group group : currentUser.getGroups()) {
-            if (group.getName().equals(DefaultGroup.ADMIN.getDbEntry())) {
+            if (group.getName().equals(DefaultGroup.ADMIN.dbEntry())) {
                 isAdmin = true;
                 break;
             }

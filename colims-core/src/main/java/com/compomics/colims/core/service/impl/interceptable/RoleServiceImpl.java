@@ -81,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
          boolean isDefaultRole = false;
         
         for(DefaultRole defaultRole : DefaultRole.values()){
-            if(role.getName().equals(defaultRole.getDbEntry())){
+            if(role.getName().equals(defaultRole.dbEntry())){
                 isDefaultRole = true;
                 break;
             }

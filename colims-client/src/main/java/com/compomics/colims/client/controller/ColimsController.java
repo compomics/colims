@@ -2,7 +2,6 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.config.PropertiesConfigurationHolder;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
@@ -13,7 +12,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
-import com.compomics.colims.core.exception.PermissionException;
+import com.compomics.colims.core.authentication.PermissionException;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
@@ -35,6 +34,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +47,8 @@ public class ColimsController implements Controllable, ActionListener {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
+    @Value("${colims-client.version}")
+    private String version;
     @Autowired
     private AuthenticationBean authenticationBean;
     private EventList<Project> projects = new BasicEventList<>();
@@ -60,6 +62,10 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProjectOverviewController projectOverviewController;
     @Autowired
+    private ProtocolManagementController protocolManagementController;
+    @Autowired
+    private AnalyticalRunSetupController analyticalRunSetupController;
+    @Autowired
     private UserManagementController userManagementController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
@@ -67,8 +73,6 @@ public class ColimsController implements Controllable, ActionListener {
     private InstrumentManagementController instrumentManagementController;
     @Autowired
     private MaterialManagementController materialManagementController;
-    @Autowired
-    private ProtocolManagementController protocolManagementController;
     //services
     @Autowired
     private UserService userService;
@@ -85,7 +89,7 @@ public class ColimsController implements Controllable, ActionListener {
 
     public EventList<Project> getProjects() {
         return projects;
-    }        
+    }
 
     /**
      * Controller init method.
@@ -117,19 +121,20 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init views       
         colimsFrame = new ColimsFrame();
-        colimsFrame.setTitle("Colims " + getVersion());
+        colimsFrame.setTitle("Colims " + version);
         loginDialog = new LoginDialog(colimsFrame, true);
         mainHelpDialog = new MainHelpDialog(colimsFrame, true);
 
         //workaround for better beansbinding logging issue
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
-        
+
         //find all projects
         projects.addAll(projectService.findAllWithEagerFetching());
 
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
+        analyticalRunSetupController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -143,7 +148,9 @@ public class ColimsController implements Controllable, ActionListener {
 
         //add action listeners                
         //add menu item action listeners
-        colimsFrame.getHomeMenuItem().addActionListener(this);
+        colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
+        colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
+        colimsFrame.getNewRunMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
         loginDialog.getLoginButton().addActionListener(new ActionListener() {
@@ -165,19 +172,19 @@ public class ColimsController implements Controllable, ActionListener {
         });
 
         //show login dialog
-        loginDialog.setLocationRelativeTo(null);
-        loginDialog.setVisible(true);
+//        loginDialog.setLocationRelativeTo(null);
+//        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-//        User currentUser = userService.findByName("admin");
-//        userService.fetchAuthenticationRelations(currentUser);
-//        authenticationBean.setCurrentUser(currentUser);
-//        if (authenticationBean.isAdmin()) {
-//            initAdminSection();
-//        } else {
-//            //disable admin menu
-//            colimsFrame.getAdminMenu().setEnabled(false);
-//        }     
-//        showView();
+        User currentUser = userService.findByName("admin1");
+        userService.fetchAuthenticationRelations(currentUser);
+        authenticationBean.setCurrentUser(currentUser);
+        if (authenticationBean.isAdmin()) {
+            initAdminSection();
+        } else {
+            //disable admin menu
+            colimsFrame.getAdminMenu().setEnabled(false);
+        }
+        showView();
     }
 
     @Override
@@ -191,8 +198,12 @@ public class ColimsController implements Controllable, ActionListener {
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
-        if (menuItemLabel.equals(colimsFrame.getHomeMenuItem().getText())) {
+        if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
+        } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
+            colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
+        } else if (menuItemLabel.equals(colimsFrame.getNewRunMenuItem().getText())) {
+            analyticalRunSetupController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
             userManagementController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
@@ -238,15 +249,6 @@ public class ColimsController implements Controllable, ActionListener {
         showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
-    }
-
-    /**
-     * Retrieves the version number set in the pom file.
-     *
-     * @return the version number of PeptideShaker
-     */
-    private String getVersion() {
-        return PropertiesConfigurationHolder.getInstance().getString("colims-client.version", "UNKNOWN");
     }
 
     private void onLogin() {

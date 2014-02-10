@@ -67,12 +67,12 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public List<Experiment> getExperimentsByProjectId(final Long projectId) {
-        return experimentRepository.getExperimentsByProjectId(projectId);
-    }
-
-    @Override
     public Experiment findByTitle(final String title) {
+        return experimentRepository.findByTitle(title);
+    }
+    
+    @Override
+    public Experiment findByProjectIdAndTitle(final Long projectId, final String title) {
         return experimentRepository.findByTitle(title);
     }
 

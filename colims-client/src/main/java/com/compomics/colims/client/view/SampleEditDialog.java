@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 public class SampleEditDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
      */
     public SampleEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
@@ -23,10 +23,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
 
         analyticalRunsTableScrollPane.getViewport().setOpaque(false);
         analyticalRunsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-    }
-
-    public JButton getAddAnalyticalRunButton() {
-        return addAnalyticalRunButton;
     }
 
     public JButton getDeleteAnalyticalRunButton() {
@@ -95,7 +91,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         analyticalRunsTable = new javax.swing.JTable();
         deleteAnalyticalRunButton = new javax.swing.JButton();
         editAnalyticalRunButton = new javax.swing.JButton();
-        addAnalyticalRunButton = new javax.swing.JButton();
         detailPanel = new javax.swing.JPanel();
         attachementsLabel = new javax.swing.JLabel();
         conditionTextField = new javax.swing.JTextField();
@@ -149,19 +144,16 @@ public class SampleEditDialog extends javax.swing.JDialog {
         analyticalRunsTableScrollPane.setViewportView(analyticalRunsTable);
 
         deleteAnalyticalRunButton.setText("delete");
+        deleteAnalyticalRunButton.setToolTipText("delete a run");
         deleteAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         editAnalyticalRunButton.setText("edit...");
+        editAnalyticalRunButton.setToolTipText("edit the metadata of an existing run");
         editAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        addAnalyticalRunButton.setText("add...");
-        addAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        addAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        addAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
         analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
@@ -170,11 +162,9 @@ public class SampleEditDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, analyticalRunsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(analyticalRunsTableScrollPane)
+                    .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -188,8 +178,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -334,7 +323,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addAnalyticalRunButton;
     private javax.swing.JPanel analyticalRunsPanel;
     private javax.swing.JTable analyticalRunsTable;
     private javax.swing.JScrollPane analyticalRunsTableScrollPane;

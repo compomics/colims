@@ -2,7 +2,7 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.client.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import java.text.SimpleDateFormat;
@@ -23,7 +23,7 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
     private SpectrumService spectrumService;
 
     public AnalyticalRunSimpleTableFormat() {
-        spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean("spectrumService", SpectrumService.class);
+        spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
     }    
     
     @Override

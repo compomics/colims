@@ -1,20 +1,19 @@
 package com.compomics.colims.core.playground;
 
-import com.compomics.colims.core.component.PtmFactoryWrapper;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.bean.PtmFactoryWrapper;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.MatchScore;
-import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesModificationMapper;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesPeptideMapper;
-import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.MatchScore;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
+import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
+import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Sample;
@@ -32,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -44,7 +44,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground2 {
 
-    public static void main(String[] args) throws XmlPullParserException, IOException, PeptideShakerIOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
+    public static void main(String[] args) throws XmlPullParserException, IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, ArchiveException {
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
 
         PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
@@ -69,7 +69,7 @@ public class Playground2 {
         authenticationBean.setCurrentUser(adminUser);
 
         //import PeptideShaker .cps file
-        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
+        PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());

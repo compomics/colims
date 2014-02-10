@@ -10,7 +10,6 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
-import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
@@ -223,7 +222,7 @@ public class ProjectManagementController implements Controllable {
                         //remove from overview table and clear selection
                         experiments.remove(experimentToDelete);
                         experimentsSelectionModel.clearSelection();
-                        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, false, experimentToDelete));
+                        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete));
 
                         //remove experiment from the selected project and update the table
                         getSelectedProject().getExperiments().remove(experimentToDelete);
@@ -334,8 +333,6 @@ public class ProjectManagementController implements Controllable {
         //add the experiment to the selected project and update the projects table
         getSelectedProject().getExperiments().add(experiment);
         projectManagementPanel.getProjectsTable().updateUI();
-
-        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, false, experiment));
     }
 
     /**

@@ -6,11 +6,10 @@
 package com.compomics.colims.distributed.storage.processing.colimsimport.impl;
 
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.Mapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
@@ -42,7 +41,7 @@ public class ColimsMaxQuantImporter implements ColimsFileImporter {
     }
 
     @Override
-    public void storeFile(String username, File cpsFileFolder, long sampleId, String instrumentName) throws PeptideShakerIOException, MappingException {
+    public void storeFile(String username, File cpsFileFolder, long sampleId, String instrumentName) throws MappingException {
 
     }
 }

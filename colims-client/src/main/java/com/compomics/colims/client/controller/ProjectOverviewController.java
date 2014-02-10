@@ -8,9 +8,9 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
-import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
@@ -18,8 +18,8 @@ import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
-import com.compomics.colims.core.mapper.impl.colimsToUtilities.ColimsSpectrumMapper;
-import com.compomics.colims.core.mapper.impl.colimsToUtilities.PsmMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
+import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
@@ -64,7 +64,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("projectOverviewController")
 public class ProjectOverviewController implements Controllable {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ProjectOverviewController.class);
     //model    
     private AdvancedTableModel<Project> projectsTableModel;
@@ -102,8 +102,6 @@ public class ProjectOverviewController implements Controllable {
     private ProjectManagementController projectManagementController;
     //services
     @Autowired
-    private ProjectService projectService;
-    @Autowired
     private SpectrumService spectrumService;
     @Autowired
     private AnalyticalRunService analyticalRunService;
@@ -113,11 +111,11 @@ public class ProjectOverviewController implements Controllable {
     private PsmMapper psmMapper;
     @Autowired
     private EventBus eventBus;
-    
+
     public ProjectOverviewPanel getProjectOverviewPanel() {
         return projectOverviewPanel;
     }
-    
+
     @Override
     public void init() {
         //register to event bus
@@ -234,7 +232,7 @@ public class ProjectOverviewController implements Controllable {
                 }
             }
         });
-        
+
         experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -245,12 +243,12 @@ public class ProjectOverviewController implements Controllable {
                         GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
                     } else {
                         GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
-                        
+
                     }
                 }
             }
         });
-        
+
         samplesSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -265,7 +263,7 @@ public class ProjectOverviewController implements Controllable {
                 }
             }
         });
-        
+
         analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -273,13 +271,13 @@ public class ProjectOverviewController implements Controllable {
                     AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
                     if (selectedAnalyticalRun != null) {
                         colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-                        
+
                         setPsmTableCellRenderers();
-                        
+
                         analyticalRunService.fetchSpectra(selectedAnalyticalRun);
                         //fill psm table                        
                         GlazedLists.replaceAll(spectra, selectedAnalyticalRun.getSpectrums(), false);
-                        
+
                         colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
                     } else {
                         GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
@@ -287,7 +285,7 @@ public class ProjectOverviewController implements Controllable {
                 }
             }
         });
-        
+
         psmsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -298,7 +296,7 @@ public class ProjectOverviewController implements Controllable {
             }
         });
     }
-    
+
     @Override
     public void showView() {
         //do nothing
@@ -320,6 +318,8 @@ public class ProjectOverviewController implements Controllable {
                 experiments.add(experiment);
             } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
                 experiments.remove(experiment);
+            } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+                updateExperiment(experiment);
             }
         }
     }
@@ -332,12 +332,34 @@ public class ProjectOverviewController implements Controllable {
     @Subscribe
     public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
         Sample sample = sampleChangeEvent.getSample();
-        
+
         if (sample.getExperiment().equals(getSelectedExperiment())) {
             if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
                 samples.add(sample);
             } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
                 samples.remove(sample);
+            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+                updateSample(sample);
+            }
+        }
+    }
+    
+    /**
+     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table if necessary.
+     *
+     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent
+     */
+    @Subscribe
+    public void onSampleChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+        AnalyticalRun analyticalRun = analyticalRunChangeEvent.getAnalyticalRun();
+
+        if (analyticalRun.getSample().equals(getSelectedSample())) {
+            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+                analyticalRuns.add(analyticalRun);
+            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                analyticalRuns.remove(analyticalRun);
+            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+                updateAnalyticalRun(analyticalRun);
             }
         }
     }
@@ -347,29 +369,29 @@ public class ProjectOverviewController implements Controllable {
      */
     public void updateSpectrum() {
         Spectrum selectedSpectrum = getSelectedSpectrum();
-        
+
         if (getSelectedSpectrum() != null) {
             colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-            
+
             AnnotationPreferences annotationPreferences = projectOverviewPanel.getAnnotationPreferences();
-            
+
             try {
                 MSnSpectrum spectrum = new MSnSpectrum();
-                
+
                 spectrumService.fetchSpectrumFiles(selectedSpectrum);
 
                 //map the colims spectrum to utilities MSnSpectrum
                 colimsSpectrumMapper.map(selectedSpectrum, spectrum);
-                
+
                 Collection<Peak> peaks = spectrum.getPeakList();
-                
+
                 if (peaks == null || peaks.isEmpty()) {
                     // do nothing, peaks list not found
                 } else {
 
                     // add the data to the spectrum panel
                     Precursor precursor = spectrum.getPrecursor();
-                    
+
                     SpectrumPanel spectrumPanel = new SpectrumPanel(
                             spectrum.getMzValuesAsArray(), spectrum.getIntensityValuesAsArray(),
                             precursor.getMz(),
@@ -388,7 +410,7 @@ public class ProjectOverviewController implements Controllable {
                     if (!selectedSpectrum.getPeptides().isEmpty()) {
                         SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match                   
                         psmMapper.map(selectedSpectrum, spectrumMatch);
-                        
+
                         PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
                         int identificationCharge = spectrumMatch.getBestAssumption().getIdentificationCharge().value;
 
@@ -415,7 +437,7 @@ public class ProjectOverviewController implements Controllable {
                         // show all or just the annotated peaks
                         spectrumPanel.showAnnotatedPeaksOnly(!annotationPreferences.showAllPeaks());
                         spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
-                        
+
                         int forwardIon = projectOverviewPanel.getSearchParameters().getIonSearched1();
                         int rewindIon = projectOverviewPanel.getSearchParameters().getIonSearched2();
 
@@ -435,8 +457,8 @@ public class ProjectOverviewController implements Controllable {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().removeAll();
                         SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
                                 projectOverviewPanel.getTaggedPeptideSequence(
-                                peptideAssumption.getPeptide(),
-                                false, false, false),
+                                        peptideAssumption.getPeptide(),
+                                        false, false, false),
                                 annotations, true, projectOverviewPanel.getSearchParameters().getModificationProfile(), forwardIon, rewindIon);
                         sequenceFragmentationPanel.setMinimumSize(new Dimension(sequenceFragmentationPanel.getPreferredSize().width, sequenceFragmentationPanel.getHeight()));
                         sequenceFragmentationPanel.setOpaque(true);
@@ -499,11 +521,11 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getSpectrumJPanel().removeAll();
         projectOverviewPanel.getSpectrumJPanel().revalidate();
         projectOverviewPanel.getSpectrumJPanel().repaint();
-        
+
         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().removeAll();
         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().revalidate();
         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().repaint();
-        
+
         ((TitledBorder) projectOverviewPanel.getSpectrumMainPanel().getBorder()).setTitle("Spectrum & Fragment Ions");
         projectOverviewPanel.getSpectrumMainPanel().repaint();
     }
@@ -515,12 +537,12 @@ public class ProjectOverviewController implements Controllable {
      */
     private Project getSelectedProject() {
         Project selectedProject = null;
-        
+
         EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
         if (!selectedProjects.isEmpty()) {
             selectedProject = selectedProjects.get(0);
         }
-        
+
         return selectedProject;
     }
 
@@ -531,31 +553,63 @@ public class ProjectOverviewController implements Controllable {
      */
     private Experiment getSelectedExperiment() {
         Experiment selectedExperiment = null;
-        
+
         EventList<Experiment> selectedExperiments = experimentsSelectionModel.getSelected();
         if (!selectedExperiments.isEmpty()) {
             selectedExperiment = selectedExperiments.get(0);
         }
-        
+
         return selectedExperiment;
     }
 
     /**
-     * Get the selected sample from the sample table.
+     * Update the given experiment in the experiments EventList.
+     *
+     * @param updatedExperiment the updated experiment
+     */
+    private void updateExperiment(Experiment updatedExperiment) {
+        //find the experiment in the experiments EventList.
+        for (int i = 0; i < experiments.size(); i++) {
+            if (experiments.get(i).getId().compareTo(updatedExperiment.getId()) == 0) {
+                //update the experiments EventList
+                experiments.set(i, updatedExperiment);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Get the selected sample from the experiment table.
      *
      * @return the selected sample, null if no sample is selected
      */
     private Sample getSelectedSample() {
         Sample selectedSample = null;
-        
+
         EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
         if (!selectedSamples.isEmpty()) {
             selectedSample = selectedSamples.get(0);
         }
-        
+
         return selectedSample;
     }
 
+    /**
+     * Update the given sample in the samples EventList.
+     *
+     * @param updatedSample the updated sample
+     */
+    private void updateSample(Sample updatedSample) {
+        //find the sample in the samples EventList.
+        for (int i = 0; i < samples.size(); i++) {
+            if (samples.get(i).getId().compareTo(updatedSample.getId()) == 0) {
+                //update the samples EventList
+                samples.set(i, updatedSample);
+                break;
+            }
+        }
+    }
+    
     /**
      * Get the selected analytical run from the analytical run table.
      *
@@ -564,13 +618,29 @@ public class ProjectOverviewController implements Controllable {
      */
     private AnalyticalRun getSelectedAnalyticalRun() {
         AnalyticalRun selectedAnalyticalRun = null;
-        
+
         EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
         if (!selectedAnalyticalRuns.isEmpty()) {
             selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
         }
-        
+
         return selectedAnalyticalRun;
+    }
+    
+    /**
+     * Update the given analytical run in the analytical runs EventList.
+     *
+     * @param updatedAnalyticalRun the updated sample
+     */
+    private void updateAnalyticalRun(AnalyticalRun updatedAnalyticalRun) {
+        //find the analytical run in the analytical runs EventList.
+        for (int i = 0; i < analyticalRuns.size(); i++) {
+            if (analyticalRuns.get(i).getId().compareTo(updatedAnalyticalRun.getId()) == 0) {
+                //update the samples EventList
+                analyticalRuns.set(i, updatedAnalyticalRun);
+                break;
+            }
+        }
     }
 
     /**
@@ -580,24 +650,24 @@ public class ProjectOverviewController implements Controllable {
      */
     private Spectrum getSelectedSpectrum() {
         Spectrum selectedPsm = null;
-        
+
         EventList<Spectrum> selectedPsms = psmsSelectionModel.getSelected();
         if (!selectedPsms.isEmpty()) {
             selectedPsm = selectedPsms.get(0);
         }
-        
+
         return selectedPsm;
-    }
+    }        
 
     /**
      * Set the PSM table cell renderers.
      */
     private void setPsmTableCellRenderers() {
         AnalyticalRun analyticalRun = getSelectedAnalyticalRun();
-        
+
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME).
                 setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL, spectrumService.getMinimumRetentionTime(analyticalRun),
-                spectrumService.getMaximumRetentionTime(analyticalRun), 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
+                                spectrumService.getMaximumRetentionTime(analyticalRun), 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()
                 .getColumn(PsmTableFormat.RETENTION_TIME).getCellRenderer()).showNumberAndChart(true, labelWidth + 5);
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()

@@ -143,11 +143,9 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="analyticalRunsTableScrollPane" max="32767" attributes="0"/>
+                              <Component id="analyticalRunsTableScrollPane" pref="655" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Component id="addAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="editAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
@@ -166,7 +164,6 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="deleteAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="editAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="addAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -201,6 +198,7 @@
                 <Component class="javax.swing.JButton" name="deleteAnalyticalRunButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="delete"/>
+                    <Property name="toolTipText" type="java.lang.String" value="delete a run"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[80, 25]"/>
                     </Property>
@@ -215,20 +213,7 @@
                 <Component class="javax.swing.JButton" name="editAnalyticalRunButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="edit..."/>
-                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="addAnalyticalRunButton">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="add..."/>
+                    <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing run"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[80, 25]"/>
                     </Property>

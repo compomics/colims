@@ -4,14 +4,38 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
+        <Menu class="javax.swing.JMenu" name="fileMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="File"/>
+          </Properties>
+          <SubComponents>
+            <Menu class="javax.swing.JMenu" name="newFileMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="new"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="newRunMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="run..."/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+          </SubComponents>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="viewMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="View"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="homeMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="projectsManagementMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="home"/>
+                <Property name="text" type="java.lang.String" value="projects management"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="projectsOverviewMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="projects overview"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -28,7 +52,7 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="userManagementMenuItem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="users"/>
+                    <Property name="text" type="java.lang.String" value="users..."/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
@@ -38,12 +62,12 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="materialManagementMenuItem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="materials"/>
+                    <Property name="text" type="java.lang.String" value="materials..."/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="protocolManagementMenuItem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="protocols"/>
+                    <Property name="text" type="java.lang.String" value="protocols..."/>
                   </Properties>
                 </MenuItem>
               </SubComponents>
@@ -57,7 +81,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="helpMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="help"/>
+                <Property name="text" type="java.lang.String" value="help..."/>
               </Properties>
             </MenuItem>
           </SubComponents>
