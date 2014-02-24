@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
     
-    <import resource="classpath:colims-core-context.xml"/>
+    <import resource="classpath:colims-distributed-context.xml"/>
     
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">

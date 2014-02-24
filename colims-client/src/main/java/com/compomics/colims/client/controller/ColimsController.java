@@ -12,7 +12,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
-import com.compomics.colims.core.authentication.PermissionException;
+import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
@@ -48,7 +48,7 @@ public class ColimsController implements Controllable, ActionListener {
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     @Value("${colims-client.version}")
-    private String version;
+    private String version = "unknown";
     @Autowired
     private AuthenticationBean authenticationBean;
     private EventList<Project> projects = new BasicEventList<>();

@@ -10,7 +10,7 @@ import com.compomics.util.experiment.MsExperiment;
  *
  * @author Niels Hulstaert
  */
-    public class PeptideShakerDataImport extends DataImport {
+public class PeptideShakerDataImport extends DataImport {
 
     /**
      * The location of the db contained in the PeptideShaker .cps archive
@@ -41,7 +41,7 @@ import com.compomics.util.experiment.MsExperiment;
 
     public void setMgfFiles(final List<File> mgfFiles) {
         this.mgfFiles = mgfFiles;
-    }   
+    }
 
     public MsExperiment getMsExperiment() {
         return msExperiment;

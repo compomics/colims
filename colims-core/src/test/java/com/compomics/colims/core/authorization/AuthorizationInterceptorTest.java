@@ -1,7 +1,7 @@
 
-package com.compomics.colims.core.authentication;
+package com.compomics.colims.core.authorization;
 
-import com.compomics.colims.core.authentication.PermissionException;
+import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
-public class AuthenticationInterceptorTest {
+public class AuthorizationInterceptorTest {
     
     @Autowired
     private UserService userService;

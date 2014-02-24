@@ -1,4 +1,4 @@
-package com.compomics.colims.core.authentication;
+package com.compomics.colims.core.authorization;
 
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Niels Hulstaert
  */
 @Aspect
-public class AuthenticationInterceptor {
+public class AuthorizationInterceptor {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthenticationInterceptor.class);
+    private static final Logger LOGGER = Logger.getLogger(AuthorizationInterceptor.class);
     @Autowired
     private AuthenticationBean authenticationBean;
 

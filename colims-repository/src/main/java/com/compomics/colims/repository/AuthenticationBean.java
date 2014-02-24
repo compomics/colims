@@ -55,7 +55,7 @@ public class AuthenticationBean {
                 for (Role role : group.getRoles()) {
                     for (Permission permission : role.getPermissions()) {
                         if (permission.getName().equals(defaultPermission.dbEntry())) {
-                            defaultPermissions.put(defaultPermission, Boolean.TRUE);
+                            defaultPermissions.put(defaultPermission, true);
                             break grouploop;
                         }
                     }
