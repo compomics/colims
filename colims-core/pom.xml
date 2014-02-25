@@ -81,6 +81,11 @@
             <artifactId>colims-repository</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>com.compomics.colims</groupId>
+            <artifactId>colims-model</artifactId>
+        </dependency>
+        
         <!-- spring dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>

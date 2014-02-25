@@ -5,6 +5,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,8 +39,8 @@ public class StorageQueueConsumer implements MessageListener {
 //                counter.incrementAndGet();
 //            }
             
-             if (message instanceof TestBean) {
-                TestBean tm = (TestBean) message;                
+             if (message instanceof ActiveMQObjectMessage) {
+                TestBean tm = (TestBean)((ActiveMQObjectMessage) message).getObject();                
 
                 LOGGER.info("Processed message " + messageCount + "value = " + tm);
 
