@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.distributed.storage.processing.colimsimport.factory;
 
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.colimsimport.impl.ColimsMaxQuantImporter;
 import com.compomics.colims.distributed.storage.processing.colimsimport.impl.ColimsCpsImporter;
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;

@@ -1,6 +1,7 @@
 
 package com.compomics.colims.distributed.playground;
 
+import com.compomics.colims.distributed.storage.consumer.StorageTaskConsumer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,9 +13,8 @@ public class Playground {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
-
-        StorageQueueProducer storageQueueProducer = applicationContext.getBean("storageQueueProducer", StorageQueueProducer.class);
-        storageQueueProducer.generateMessages();
+               
+        StorageTaskConsumer storageTaskConsumer = applicationContext.getBean("storageTaskConsumer", StorageTaskConsumer.class);        
     }
     
 }

@@ -5,8 +5,8 @@
  */
 package com.compomics.colims.distributed.storage;
 
-import com.compomics.colims.distributed.storage.enums.StorageState;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageState;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.File;

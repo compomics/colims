@@ -5,7 +5,7 @@ import com.compomics.colims.distributed.config.distributedconfiguration.client.R
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessRunner;
 import com.compomics.colims.distributed.searches.respin.control.validation.SearchParamValidator;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.identification.SearchParameters;

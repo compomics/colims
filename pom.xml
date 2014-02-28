@@ -140,6 +140,11 @@
     </build>
     <repositories>
         <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>ebi-repo</id>
             <name>The EBI Maven 2 repository</name>
             <url>http://www.ebi.ac.uk/~maven/m2repo</url>
@@ -161,7 +166,7 @@
             <name>Genesis maven2 repository</name>
             <url>http://genesis.UGent.be/maven2</url>
             <layout>default</layout>
-        </repository>
+        </repository>        
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -286,10 +291,15 @@
                 <version>5.7.0</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-optional</artifactId>
+                <version>5.7.0</version>
+            </dependency> 
+            <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
                 <version>3.16</version>
-            </dependency>                        
+            </dependency>                                               
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -342,6 +352,7 @@
             </plugin>
         </plugins>
     </reporting>
+    
     <profiles>
         <profile>
             <id>development</id>

@@ -6,8 +6,8 @@
 package com.compomics.colims.distributed.storage.incoming;
 
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
-import com.compomics.colims.distributed.storage.enums.StorageState;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageState;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;

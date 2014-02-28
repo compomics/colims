@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"       
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"       
        xmlns:context="http://www.springframework.org/schema/context"   
        xmlns:jms="http://www.springframework.org/schema/jms"
        xmlns:amq="http://activemq.apache.org/schema/core"        
@@ -33,15 +34,26 @@
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
     </context:component-scan>        
-        
-    <!-- JMS Producer Configuration -->
-    <bean id="jmsProducerConnectionFactory" 
-          class="org.springframework.jms.connection.SingleConnectionFactory"
-          depends-on="broker"
-          p:targetConnectionFactory-ref="jmsFactory" />
-
-    <bean id="jmsProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
-          p:connectionFactory-ref="jmsProducerConnectionFactory"
+    
+    <!-- ActiveMQ connection factory -->
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${connectionfactory.broker.url}"/>
+    
+    <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <constructor-arg ref="amqConnectionFactory" />
+        <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
+        <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
+    </bean>            
+    
+    <!-- ActiveMQ Destination -->  
+    <amq:queue id="storage_destination" physicalName="${distributed.queue.storage}" />
+    
+    <bean id="storageProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="storage_destination" />    
         
+    <!-- Client connector -->
+    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
+          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
+    
 </beans>

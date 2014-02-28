@@ -5,7 +5,7 @@
 package com.compomics.colims.distributed.searches.controller.searches;
 
 import com.compomics.colims.distributed.searches.controller.searches.searchtask.SearchTask;
-import com.compomics.colims.distributed.storage.enums.StorageState;
+import com.compomics.colims.distributed.storage.model.enums.StorageState;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;

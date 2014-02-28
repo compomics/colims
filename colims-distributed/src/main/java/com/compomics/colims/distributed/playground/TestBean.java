@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class TestBean implements Serializable {
 
+    private static final long serialVersionUID = 123L;
     private String name;
     private String address;
 

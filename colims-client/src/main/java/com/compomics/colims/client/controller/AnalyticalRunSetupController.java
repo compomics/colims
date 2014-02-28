@@ -14,7 +14,7 @@ import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;

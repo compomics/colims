@@ -6,7 +6,7 @@
 package com.compomics.colims.distributed.storage.incoming;
 
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
-import com.compomics.colims.distributed.storage.enums.StorageState;
+import com.compomics.colims.distributed.storage.model.enums.StorageState;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

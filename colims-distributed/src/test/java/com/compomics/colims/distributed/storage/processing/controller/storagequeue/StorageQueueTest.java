@@ -6,7 +6,7 @@
 package com.compomics.colims.distributed.storage.processing.controller.storagequeue;
 
 import com.compomics.colims.distributed.spring.ApplicationContextProvider;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.sql.SQLException;
 import org.junit.After;

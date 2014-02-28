@@ -219,6 +219,11 @@
         </dependency>
         
         <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-optional</artifactId>
+        </dependency>
+        
+        <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
         </dependency>

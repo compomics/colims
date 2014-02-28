@@ -6,7 +6,7 @@
 package com.compomics.colims.distributed.storage;
 
 
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.distributed.storage.processing.controller.StorageController;
 import java.io.File;

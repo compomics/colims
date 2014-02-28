@@ -20,7 +20,7 @@
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>colims-distributed.properties
+                <value>${property_file.source}:config/colims-distributed.properties
                 </value>
             </list>
         </property>        
@@ -30,47 +30,23 @@
     </bean>
     
     <!-- component beans -->
-    <context:component-scan base-package="com.compomics.colims.distributed">
+    <context:component-scan base-package="com.compomics.colims.distributed.storage.consumer">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
     </context:component-scan>  
-    
-    <!--  Embedded ActiveMQ Broker -->
-    <amq:broker id="broker" useJmx="false" persistent="false">
-        <amq:transportConnectors>
-            <amq:transportConnector uri="tcp://localhost:61616" />
-        </amq:transportConnectors>
-    </amq:broker>
-
-    <!--  ActiveMQ Destination  -->
-    <amq:queue id="storage_destination" physicalName="com.compomics.distributed.storage" />
-
-    <!-- JMS ConnectionFactory to use, configuring the embedded broker using XML -->
-    <amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost" />
-    
-    <!-- JMS Producer Configuration -->
-    <bean id="jmsProducerConnectionFactory" 
-          class="org.springframework.jms.connection.SingleConnectionFactory"
-          depends-on="broker"
-          p:targetConnectionFactory-ref="jmsFactory" />
-
-    <bean id="jmsProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
-          p:connectionFactory-ref="jmsProducerConnectionFactory"
-          p:defaultDestination-ref="storage_destination" />
-
-    <!-- JMS Consumer Configuration -->
-    <bean id="jmsConsumerConnectionFactory" 
-          class="org.springframework.jms.connection.SingleConnectionFactory"
-          depends-on="broker"
-          p:targetConnectionFactory-ref="jmsFactory" />
         
-    <jms:listener-container container-type="default" 
-                            connection-factory="jmsConsumerConnectionFactory"
-                            acknowledge="auto">
-        <jms:listener destination="com.compomics.distributed.storage" ref="storageQueueConsumer"/>
-    </jms:listener-container>
-
-    <!-- Counter for consumer to increment and test to verify count -->
-    <bean id="counter" class="java.util.concurrent.atomic.AtomicInteger" />               
+    <!-- ActiveMQ connection factory -->
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${connectionfactory.broker.url}"/>
+    
+    <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <constructor-arg ref="amqConnectionFactory" />
+        <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
+        <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
+    </bean>
+    
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default">                            
+        <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
+    </jms:listener-container>              
                           
 </beans>

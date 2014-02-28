@@ -6,8 +6,8 @@ package com.compomics.colims.distributed.storage.processing.controller.storagequ
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.spring.ApplicationContextProvider;
-import com.compomics.colims.distributed.storage.enums.StorageState;
-import com.compomics.colims.distributed.storage.enums.StorageType;
+import com.compomics.colims.distributed.storage.model.enums.StorageState;
+import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
 import com.compomics.colims.distributed.storage.processing.colimsimport.factory.ColimsImporterFactory;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
