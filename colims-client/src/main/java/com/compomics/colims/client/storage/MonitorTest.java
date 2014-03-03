@@ -32,9 +32,9 @@ import org.springframework.stereotype.Component;
 @Component("monitorTest")
 public class MonitorTest {
 
-    @Autowired
+//    @Autowired
     private MBeanServerConnection clientConnector;
-    
+
     @Autowired
     private CachingConnectionFactory cachingConnectionFactory;
 
@@ -51,44 +51,41 @@ public class MonitorTest {
             for (ObjectName name : mbean.getQueues()) {
                 QueueViewMBean queueMbean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, name, QueueViewMBean.class, true);
                 System.out.println("testing: " + queueMbean.getQueueSize());
-                TabularData browseAsTable = queueMbean.browseAsTable();
-                CompositeData[] browse = queueMbean.browse();
-                System.out.println("test");
-            }                        
+//                TabularData browseAsTable = queueMbean.browseAsTable();
+//                CompositeData[] browse = queueMbean.browse();
+//                System.out.println("test");
+//            }                        
 
-            System.out.println("test");
+                System.out.println("test");
+            }
         } catch (MalformedObjectNameException ex) {
             Logger.getLogger(MonitorTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (OpenDataException ex) {
-            Logger.getLogger(MonitorTest.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
     
+
     public void getQueueInfo2() {
         try {
             Connection connection = cachingConnectionFactory.createConnection();
             connection.start();
-            
+
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             QueueBrowser queueBrowser = session.createBrowser(session.createQueue("com.compomics.distributed.queue.storage"));
+            
             Enumeration enumeration = queueBrowser.getEnumeration();
-            
+
             while (enumeration.hasMoreElements()) {
-                    Message message = (Message) enumeration.nextElement();
-                    Enumeration propertyNames = message.getPropertyNames();
-                    
-                    while(propertyNames.hasMoreElements()){
-                        String propertyName = (String) propertyNames.nextElement();
-                        System.out.println("value: " + propertyName);
-                        System.out.println("value: " + message.getStringProperty(propertyName));
-                    }
-                    System.out.println("test");
+                Message message = (Message) enumeration.nextElement();
+                Enumeration propertyNames = message.getPropertyNames();
+
+                while (propertyNames.hasMoreElements()) {
+                    String propertyName = (String) propertyNames.nextElement();
+                    System.out.println("value: " + propertyName);
+                    System.out.println("value: " + message.getStringProperty(propertyName));
                 }
-            
-            System.out.println("test");
-            
-            System.out.println("test");
-            
+                System.out.println("test");
+            }
+
             session.close();
             connection.close();
         } catch (JMSException ex) {

@@ -53,7 +53,7 @@
           p:defaultDestination-ref="storage_destination" />    
         
     <!-- Client connector -->
-    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
+          <!--    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
+          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    -->
     
 </beans>
