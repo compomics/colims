@@ -1,13 +1,15 @@
 package com.compomics.colims.client.storage;
 
+import com.compomics.colims.distributed.storage.model.StorageMetadata;
+import com.compomics.colims.distributed.storage.model.StorageTask;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.QueueBrowser;
 import javax.jms.Session;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,9 @@ public class QueueMonitor {
     @Autowired
     private CachingConnectionFactory cachingConnectionFactory;
 
-    public void getQueueBrowser(String queueName) throws JMSException {                
+    public List<StorageMetadata> getMessages(String queueName) throws JMSException {
+        List<StorageMetadata> messages = new ArrayList<>();
+
         Connection connection = cachingConnectionFactory.createConnection();
         connection.start();
 
@@ -32,19 +36,16 @@ public class QueueMonitor {
         Enumeration enumeration = queueBrowser.getEnumeration();
 
         while (enumeration.hasMoreElements()) {
-            Message message = (Message) enumeration.nextElement();
-            Enumeration propertyNames = message.getPropertyNames();
-
-            while (propertyNames.hasMoreElements()) {
-                String propertyName = (String) propertyNames.nextElement();
-                System.out.println("value: " + propertyName);
-                System.out.println("value: " + message.getStringProperty(propertyName));
-            }
-            System.out.println("test");
+            ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
+            StorageTask storageTask = (StorageTask) message.getObject();
+            
+            messages.add(storageTask.getStorageMetadata());
         }
 
         session.close();
         connection.close();
+
+        return messages;
     }
 
 }

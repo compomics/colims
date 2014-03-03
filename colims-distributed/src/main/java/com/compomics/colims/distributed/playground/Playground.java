@@ -14,7 +14,7 @@ public class Playground {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
                
-        StorageTaskConsumer storageTaskConsumer = applicationContext.getBean("storageTaskConsumer", StorageTaskConsumer.class);        
+        StorageTaskConsumer storageTaskConsumer = applicationContext.getBean("storageTaskConsumer", StorageTaskConsumer.class);                   
     }
     
 }

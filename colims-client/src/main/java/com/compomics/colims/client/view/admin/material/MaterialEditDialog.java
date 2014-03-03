@@ -15,7 +15,10 @@ import javax.swing.JTextField;
 public class MaterialEditDialog extends javax.swing.JDialog {
     
     /**
-     * Creates new form InstrumentCvDialog
+     * Dialog constructor
+     * 
+     * @param parent the parent dialog
+     * @param modal the modal boolean
      */
     public MaterialEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);

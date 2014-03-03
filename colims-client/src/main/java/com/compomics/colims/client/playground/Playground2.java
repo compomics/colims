@@ -1,6 +1,7 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.client.storage.MonitorTest;
+import com.compomics.colims.client.storage.QueueMonitor;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
@@ -11,6 +12,7 @@ import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.client.storage.StorageTaskProducer;
+import com.compomics.colims.distributed.storage.model.StorageMetadata;
 import com.compomics.colims.distributed.storage.model.StorageTask;
 import com.compomics.colims.distributed.storage.model.enums.StorageType;
 import com.compomics.colims.model.AnalyticalRun;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.jms.JMSException;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -37,24 +40,28 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground2 {
     
-    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException {
+    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
         
 //        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
 //        
 //        StorageTask storageTask = new StorageTask();
-//        storageTask.setStorageType(StorageType.PEPTIDESHAKER);
-//        storageTask.setDescription("test description");
-//        storageTask.setSample(new Sample("sample name"));
-//        storageTask.setSubmissionTimestamp(System.currentTimeMillis());
-//        storageTask.setUserName("testUser");        
+//        StorageMetadata storageMetadata = new StorageMetadata();
+//        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+//        storageMetadata.setDescription("test description2");
+//        storageMetadata.setSample(new Sample("sample name2"));
+//        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
+//        storageMetadata.setUserName("testUser");        
+//        
+//        storageTask.setStorageMetadata(storageMetadata);
 //        storageTask.setDataImport(new PeptideShakerDataImport(null, null));
 //        
 //        storageTaskProducer.sendStorageTask(storageTask);
         
-        MonitorTest monitorTest = applicationContext.getBean("monitorTest", MonitorTest.class);
-        monitorTest.getQueueInfo2();
-
+//        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
+//        List<StorageMetadata> messages = queueMonitor.getMessages("test");
+        
+        
 //        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
 //        PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
 //        UserService userService = applicationContext.getBean("userService", UserService.class);

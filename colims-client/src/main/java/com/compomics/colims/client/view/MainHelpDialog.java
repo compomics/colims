@@ -20,6 +20,8 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
+     * @param parent the parent dialog
+     * @param modal is the dialog modal
      */
     public MainHelpDialog(final Frame parent, final boolean modal) {
         super(parent, modal);

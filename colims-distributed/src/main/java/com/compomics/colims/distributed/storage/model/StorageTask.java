@@ -1,8 +1,6 @@
 package com.compomics.colims.distributed.storage.model;
 
 import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.distributed.storage.model.enums.StorageType;
-import com.compomics.colims.model.Sample;
 import java.io.Serializable;
 
 /**
@@ -18,26 +16,11 @@ public class StorageTask implements Serializable {
     public static final String SAMPLE_NAME = "sample_name";
     
     private static final long serialVersionUID = 1L;
+    
     /**
-     * The storage type of the task
+     * The storage metadata
      */
-    protected StorageType storageType;
-    /**
-     * The submission timestamp
-     */
-    protected Long submissionTimestamp;
-    /**
-     * The storage task description
-     */
-    protected String description;
-    /**
-     * The name of the user that submitted the task
-     */
-    protected String userName;
-    /**
-     * The sample the run(s) will be added to
-     */
-    protected Sample sample;
+    protected StorageMetadata storageMetadata;
     /**
      * The resources necessary for storing
      */
@@ -46,14 +29,14 @@ public class StorageTask implements Serializable {
     public StorageTask() {
     }
 
-    public StorageType getStorageType() {
-        return storageType;
+    public StorageMetadata getStorageMetadata() {
+        return storageMetadata;
     }
 
-    public void setStorageType(StorageType storageType) {
-        this.storageType = storageType;
-    }
-
+    public void setStorageMetadata(StorageMetadata storageMetadata) {
+        this.storageMetadata = storageMetadata;
+    }        
+    
     public DataImport getDataImport() {
         return dataImport;
     }
@@ -61,37 +44,4 @@ public class StorageTask implements Serializable {
     public void setDataImport(DataImport dataImport) {
         this.dataImport = dataImport;
     }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public Long getSubmissionTimestamp() {
-        return submissionTimestamp;
-    }
-
-    public void setSubmissionTimestamp(Long submissionTimestamp) {
-        this.submissionTimestamp = submissionTimestamp;
-    }
-
-    public Sample getSample() {
-        return sample;
-    }
-
-    public void setSample(Sample sample) {
-        this.sample = sample;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
 }

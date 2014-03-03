@@ -60,7 +60,9 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
-    private ProjectOverviewController projectOverviewController;
+    private ProjectOverviewController projectOverviewController;    
+    @Autowired
+    private StorageMonitoringController storageMonitoringController;   
     @Autowired
     private ProtocolManagementController protocolManagementController;
     @Autowired
@@ -134,6 +136,7 @@ public class ColimsController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
+        storageMonitoringController.init();
         analyticalRunSetupController.init();
         cvTermManagementController.init();
 
@@ -150,6 +153,7 @@ public class ColimsController implements Controllable, ActionListener {
         //add menu item action listeners
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
+        colimsFrame.getStorageMonitoringMenuItem().addActionListener(this);
         colimsFrame.getNewRunMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
@@ -202,6 +206,8 @@ public class ColimsController implements Controllable, ActionListener {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
+        } else if (menuItemLabel.equals(colimsFrame.getStorageMonitoringMenuItem().getText())) {
+            storageMonitoringController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getNewRunMenuItem().getText())) {
             analyticalRunSetupController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {

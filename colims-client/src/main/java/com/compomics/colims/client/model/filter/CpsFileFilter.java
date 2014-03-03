@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model.tableformat.filter;
+package com.compomics.colims.client.model.filter;
 
 import com.compomics.util.io.filefilters.FileFilterUtils;
 import java.io.File;

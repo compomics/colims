@@ -1,6 +1,6 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.model.tableformat.filter.CpsFileFilter;
+import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.compomics.util.io.filefilters.MgfFileFilter;
