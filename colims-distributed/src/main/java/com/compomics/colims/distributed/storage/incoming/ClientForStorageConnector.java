@@ -72,7 +72,7 @@ public class ClientForStorageConnector {
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response;
-            while ((response = in.readLine()) != null & !success) {
+            while ((response = in.readLine()) != null && !success) {
                 state = StorageState.valueOf(response.split(">.<")[1].toUpperCase());
                 success = !state.equals(StorageState.ERROR);
             }

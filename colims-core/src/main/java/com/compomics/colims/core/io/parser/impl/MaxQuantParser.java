@@ -48,7 +48,7 @@ public class MaxQuantParser {
     private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
     private Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
     private boolean initialized = false;
-    private Map<String, SearchParameters> analysisSearchParameters;
+    private Map<String, SearchParameters> analysisSearchParameters = new HashMap<>();
 
     /**
      * Parse a folder containing the MaxQuant txt output files, using the

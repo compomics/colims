@@ -91,9 +91,9 @@ public class MaxQuantImportMapper {
 
             maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
 
-            SearchParameterSettings runSettings = new SearchParameterSettings();
+            //SearchParameterSettings runSettings = new SearchParameterSettings();
 
-            utilitiesSearchParametersMapper.map(maxQuantParser.getParametersForRun(aParsedRun), runSettings);
+            //utilitiesSearchParametersMapper.map(maxQuantParser.getParametersForRun(aParsedRun), runSettings);
 
             List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
 

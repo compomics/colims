@@ -37,7 +37,7 @@ public class MaxQuantImportMapperTest {
 
     public MaxQuantImportMapperTest() {
         maxQuantTextFolder = new File(getClass().getClassLoader().getResource("testdata").getPath());
-        maxQuantTestFastaFile = new File(getClass().getClassLoader().getResource("testdata/maxQuantTestFasta.fasta").getPath());
+        maxQuantTestFastaFile = new File(getClass().getClassLoader().getResource("testdata/testfasta.fasta").getPath());
     }
 
     /**

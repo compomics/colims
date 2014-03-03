@@ -5,7 +5,6 @@
 package com.compomics.colims.distributed.storage.processing.controller;
 
 import com.compomics.colims.distributed.storage.enums.StorageState;
-import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.storagetask.StorageTask;
 import java.io.BufferedReader;
@@ -16,9 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.SocketException;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

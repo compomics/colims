@@ -14,7 +14,6 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,8 +27,7 @@ public class StorageController implements Runnable {
 
     @Autowired
     StorageQueue storageQueue;
-    @Autowired
-    StorageHandler storageHandler;
+    StorageHandler storageHandler = new StorageHandler();
 
     private int port = 24567;
     private ServerSocket serverSocket;
@@ -83,7 +81,7 @@ public class StorageController implements Runnable {
         while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
+                //storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
                 storageHandler.setSocket(incomingSocket);
                 threadService.submit(storageHandler);
             } catch (IOException ex) {

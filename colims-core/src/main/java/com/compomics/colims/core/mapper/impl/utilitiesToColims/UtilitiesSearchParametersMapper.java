@@ -8,14 +8,12 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchParameterSettings;
 import com.compomics.util.experiment.identification.SearchParameters;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Kenneth Verheggen
  */
 @Component("utilitiesSearchParametersMapper")
-@Transactional
 public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters, SearchParameterSettings> {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);

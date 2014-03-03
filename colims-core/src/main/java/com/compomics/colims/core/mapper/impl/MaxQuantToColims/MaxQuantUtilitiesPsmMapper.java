@@ -5,7 +5,6 @@ import com.compomics.colims.core.io.parser.impl.MaxQuantParser;
 import com.compomics.colims.core.mapper.MatchScore;
 import com.compomics.colims.core.mapper.impl.utilitiesToColims.UtilitiesProteinMapper;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
@@ -13,6 +12,7 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * maps the max quant identifications of a spectrum to a colims spectrum
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @throws MappingException
  * @author Davy
  */
+@Component("maxQuantUtilitiesPsmMapper")
 public class MaxQuantUtilitiesPsmMapper {
 
     @Autowired

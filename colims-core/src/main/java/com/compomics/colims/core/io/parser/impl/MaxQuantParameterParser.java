@@ -83,95 +83,107 @@ public class MaxQuantParameterParser {
     }
 
     //DAMN YOU MAX QUUAAAAAANT
-    private enum ParametersHeaders implements HeaderEnum{
+    private enum ParametersHeaders implements HeaderEnum {
 
-        VERSION("Version"),
-        FIXED_MODIFICATIONS("Fixed modifications"),
-        RANDOMIZE("Randomize"),
-        DIGEST_AA("Special AAs"),
-        INCLUDE_CONTAMINANTS("Include contaminants"),
+        VERSION(new String[]{"Version"}),
+        FIXED_MODIFICATIONS(new String[]{"Fixed modifications"}),
+        RANDOMIZE(new String[]{"Randomize"}),
+        DIGEST_AA(new String[]{"Special AAs"}),
+        INCLUDE_CONTAMINANTS(new String[]{"Include contaminants"}),
         //FOURIER TRANSFORM
-        FTMS_MS_MS_TOLERANCE("MS/MS tol. (FTMS)"),
-        FTMS_PEAKS_PER_100_DALTON("Top MS/MS peaks per 100 Da. (FTMS)"),
-        FTMS_DEISOTOPING("MS/MS deisotoping (FTMS)"),
-        ITMS_MS_MS_TOLERANCE("MS/MS tol. (ITMS)"),
-        ITMS_PEAKS_PER_100_DALTON("Top MS/MS peaks per 100 Da. (ITMS)"),
-        ITMS_DEISOTOPING("MS/MS deisotoping (ITMS)"),
+        FTMS_MS_MS_TOLERANCE(new String[]{"MS/MS tol. (FTMS)"}),
+        FTMS_PEAKS_PER_100_DALTON(new String[]{"Top MS/MS peaks per 100 Da. (FTMS)"}),
+        FTMS_DEISOTOPING(new String[]{"MS/MS deisotoping (FTMS)"}),
+        ITMS_MS_MS_TOLERANCE(new String[]{"MS/MS tol. (ITMS)"}),
+        ITMS_PEAKS_PER_100_DALTON(new String[]{"Top MS/MS peaks per 100 Da. (ITMS)"}),
+        ITMS_DEISOTOPING(new String[]{"MS/MS deisotoping (ITMS)"}),
         //TIME OF FLIGHT
-        TOF_MS_MS_TOLERANCE("MS/MS tol. (TOF)"),
-        TOF_PEAKS_PER_100_DALTON("Top MS/MS peaks per 100 Da. (TOF)"),
-        TOF_DEISOTOPING("MS/MS deisotoping (TOF)"),
+        TOF_MS_MS_TOLERANCE(new String[]{"MS/MS tol. (TOF)"}),
+        TOF_PEAKS_PER_100_DALTON(new String[]{"Top MS/MS peaks per 100 Da. (TOF)"}),
+        TOF_DEISOTOPING(new String[]{"MS/MS deisotoping (TOF)"}),
         //OTHER
-        UNKNOWN_MS_MS_TOLERANCE("MS/MS tol. (Unknown)"),
-        UNKNOWN_PEAKS_PER_100_DALTON("Top MS/MS peaks per 100 Da. (Unknown)"),
-        UNKNOWN_DEISOTOPING("MS/MS deisotoping (Unknown)"),
+        UNKNOWN_MS_MS_TOLERANCE(new String[]{"MS/MS tol. (Unknown)"}),
+        UNKNOWN_PEAKS_PER_100_DALTON(new String[]{"Top MS/MS peaks per 100 Da. (Unknown)"}),
+        UNKNOWN_DEISOTOPING(new String[]{"MS/MS deisotoping (Unknown)"}),
         //quality
-        PEP_FDR("Peptide FDR"),
-        MAX_PEP_PEP("Max. peptide PEP"),
-        PROTEIN_FDR("Protein FDR"),
-        SITE_FDR("Site FDR"),
-        NORMALIZED_OCCUPANCY_RATIOS("Use Normalized Ratios For Occupancy"),
-        SEPARATE_SITE_FDR("Apply site FDR separately"),
-        MIN_PEP_LENGTH("Min. peptide Length"),
-        MIN_SCORE("Min. score"),
-        MIN_UNIQUE_PEPTIDES("Min. unique peptides"),
-        MIN_RAZOR_PEPTIDES("Min. razor peptides"),
-        MIN_PEPTIDES("Min. peptides"),
-        USE_UNMOD("Use only unmodified peptides and"),
-        USE_PEPTIDES_MODDED_WITH("Modifications included in protein quantification"),
-        PEPTIDES_USE_FOR_QUANT("Peptides used for protein quantification"),
-        DISCARD_UNMOD_COUNTERPART_PEPTIDES("Discard unmodified counterpart peptides"),
-        MIN_PEP_COUNT_FOR_RATIO("Min. ratio count"),
-        LFQ_MIN_RATIO_COUNT("Lfq min. ratio count"),
-        KEEP_LOW_SCORING_PEPTIDES("Keep low-scoring versions of identified peptides"),
-        RECAL_MS_MS("MS/MS recalibration"),
-        CUT_PEAKS("Cut peaks"),
+        PEP_FDR(new String[]{"Peptide FDR"}),
+        MAX_PEP_PEP(new String[]{"Max. peptide PEP"}),
+        PROTEIN_FDR(new String[]{"Protein FDR"}),
+        SITE_FDR(new String[]{"Site FDR"}),
+        NORMALIZED_OCCUPANCY_RATIOS(new String[]{"Use Normalized Ratios For Occupancy"}),
+        SEPARATE_SITE_FDR(new String[]{"Apply site FDR separately"}),
+        MIN_PEP_LENGTH(new String[]{"Min. peptide Length"}),
+        MIN_SCORE(new String[]{"Min. score"}),
+        MIN_UNIQUE_PEPTIDES(new String[]{"Min. unique peptides"}),
+        MIN_RAZOR_PEPTIDES(new String[]{"Min. razor peptides"}),
+        MIN_PEPTIDES(new String[]{"Min. peptides"}),
+        USE_UNMOD(new String[]{"Use only unmodified peptides and"}),
+        USE_PEPTIDES_MODDED_WITH(new String[]{"Modifications included in protein quantification"}),
+        PEPTIDES_USE_FOR_QUANT(new String[]{"Peptides used for protein quantification"}),
+        DISCARD_UNMOD_COUNTERPART_PEPTIDES(new String[]{"Discard unmodified counterpart peptides"}),
+        MIN_PEP_COUNT_FOR_RATIO(new String[]{"Min. ratio count"}),
+        LFQ_MIN_RATIO_COUNT(new String[]{"Lfq min. ratio count"}),
+        KEEP_LOW_SCORING_PEPTIDES(new String[]{"Keep low-scoring versions of identified peptides"}),
+        RECAL_MS_MS(new String[]{"MS/MS recalibration"}),
+        CUT_PEAKS(new String[]{"Cut peaks"}),
         //quant
-        SITE_QUANTITATION_METHOD("Site quantification"),
-        RE_QUANTIFY("Re-quantify"),
-        LABEL_FREE("Label-free protein quantification"),
-        IBAQ("iBAQ"),
-        LOG_IBAQ("iBAQ log fit"),
-        ADVANCED_RATIOS("Advanced ratios"),
+        SITE_QUANTITATION_METHOD(new String[]{"Site quantification"}),
+        RE_QUANTIFY(new String[]{"Re-quantify"}),
+        LABEL_FREE(new String[]{"Label-free protein quantification"}),
+        IBAQ(new String[]{"iBAQ"}),
+        LOG_IBAQ(new String[]{"iBAQ log fit"}),
+        ADVANCED_RATIOS(new String[]{"Advanced ratios"}),
         //mass spec
-        MATCH_BETWEEN_RUNS("Match between runs"),
-        TIME_WINDOW_IN_MINUTES("Time window [min]"),
-        FIND_DEPENDENT_PEPTIDES("Find dependent peptides"),
-        LABELED_AA_FILTERING("Labeled amino acid filtering"),
-        RETENTION_TIME_SHIFT("RT shift"),
+        MATCH_BETWEEN_RUNS(new String[]{"Match between runs"}),
+        TIME_WINDOW_IN_MINUTES(new String[]{"Time window [min]"}),
+        FIND_DEPENDENT_PEPTIDES(new String[]{"Find dependent peptides"}),
+        LABELED_AA_FILTERING(new String[]{"Labeled amino acid filtering"}),
+        RETENTION_TIME_SHIFT(new String[]{"RT shift"}),
         //AIF
-        AIF_CORRELATION("AIF correlation"),
-        FIRST_PASS_AIF_CORRELATION("First pass AIF correlation"),
-        AIF_TOPX("AIF topx"),
-        AIF_MIN_MASS("AIF min mass"),
-        AIF_SIL_WEIGHT("AIF SIL weight"),
-        AIF_ISOBAR_WEIGHT("AIF ISO weight"),
-        AIF_ITERATIVE("AIF iterative"),
-        AIF_THRESHOLD_FDR("AIF threshold FDR"),
+        AIF_CORRELATION(new String[]{"AIF correlation"}),
+        FIRST_PASS_AIF_CORRELATION(new String[]{"First pass AIF correlation"}),
+        AIF_TOPX(new String[]{"AIF topx"}),
+        AIF_MIN_MASS(new String[]{"AIF min mass"}),
+        AIF_SIL_WEIGHT(new String[]{"AIF SIL weight"}),
+        AIF_ISOBAR_WEIGHT(new String[]{"AIF ISO weight"}),
+        AIF_ITERATIVE(new String[]{"AIF iterative"}),
+        AIF_THRESHOLD_FDR(new String[]{"AIF threshold FDR"}),
         //FASTA
-        FASTA_FILE("Fasta file"),
-        FIRST_SEARCH_FASTA_FILE("First search fasta file"),
+        FASTA_FILE(new String[]{"Fasta file"}),
+        FIRST_SEARCH_FASTA_FILE(new String[]{"First search fasta file"}),
         //mods
-        MOD_SITE_HEADERS("Site tables");
+        MOD_SITE_HEADERS(new String[]{"Site tables"});
         public String column;
+        private String[] columnNames;
+        private int columnReference = -1;
 
-        private ParametersHeaders(String column) {
-            this.column = column;
+        private ParametersHeaders(final String[] fieldnames) {
+            columnNames = fieldnames;
         }
 
         @Override
-        public String[] returnPossibleColumnNames() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public final String[] returnPossibleColumnNames() {
+            return columnNames;
         }
 
         @Override
-        public void setColumnReference(int columnReference) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public final void setColumnReference(int columnReference) {
+            this.columnReference = columnReference;
         }
 
         @Override
-        public String getColumnName() throws HeaderEnumNotInitialisedException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public final String getColumnName() throws HeaderEnumNotInitialisedException {
+            if (columnNames != null) {
+                if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
+                    return columnNames[0].toLowerCase(Locale.US);
+                } else if (columnNames.length < 0) {
+                    throw new HeaderEnumNotInitialisedException("header enum not initialised");
+                } else {
+                    return columnNames[columnReference].toLowerCase(Locale.US);
+                }
+            } else {
+                throw new HeaderEnumNotInitialisedException("array was null");
+            }
         }
     }
 

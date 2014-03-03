@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.PriorityQueue;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth Verheggen
  */
 @Component("storageQueue")
+@Scope("prototype")
 public class StorageQueue extends PriorityQueue<StorageTask> implements Runnable {
 
     @Autowired

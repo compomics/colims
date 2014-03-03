@@ -18,13 +18,16 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author Kenneth
  */
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})*/
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class DistributedStorageTest {
 
     private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController");
@@ -39,7 +42,6 @@ public class DistributedStorageTest {
         try {
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
-
         }
     }
 
@@ -60,8 +62,9 @@ public class DistributedStorageTest {
     public void testOfferAndRetrieve() throws IOException, SQLException {
         System.out.println("Test offer file to store");
         StorageTask task = null;
-        storageQueue = new StorageQueue();//(StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
-        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1",StorageType.PEPTIDESHAKER.toString());
+        storageQueue = new StorageQueue();
+        //storageQueue = (StorageQueue) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageQueue");
+        task = storageQueue.addNewTask("myFiles/testingFile.cps", "admin1", 1, "instrument_1", StorageType.PEPTIDESHAKER.toString());
         StorageTask taskFromDb = storageQueue.getTask(task.getTaskID());
         assertTrue(taskFromDb != null);
         assertEquals(taskFromDb.getFileLocation(), "myFiles/testingFile.cps");
@@ -71,5 +74,4 @@ public class DistributedStorageTest {
         assertEquals(taskFromDb.getInstrumentId(), "instrument_1");
         assertEquals(storageQueue.peek().getTaskID(), 1);
     }
-
 }
