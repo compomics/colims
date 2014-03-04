@@ -6,18 +6,21 @@
 package com.compomics.colims.distributed.storage.processing.colimsimport.impl;
 
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -26,6 +29,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.naming.AuthenticationException;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,14 +43,16 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 @Component("colimsCpsImporter")
 public class ColimsCpsImporter implements ColimsFileImporter {
-
+    
+    @Autowired
+    ExperimentService experimentService;
     @Autowired
     UserService userService;
     @Autowired
     SampleService sampleService;
     @Autowired
     AuthenticationBean authenticationBean;
-    PeptideShakerImport peptideShakerImport;
+    PeptideShakerDataImport peptideShakerImport;
     @Autowired
     PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -56,6 +64,7 @@ public class ColimsCpsImporter implements ColimsFileImporter {
     @Autowired
     AnalyticalRunService analyticalRunService;
     private static final Logger LOGGER = Logger.getLogger(ColimsCpsImporter.class);
+    private Object utilitiesExperimentMapper;
 
     /**
      *
@@ -87,58 +96,67 @@ public class ColimsCpsImporter implements ColimsFileImporter {
                 && validatedMGF
                 && validatedFasta);
     }
-
-    @Override
-    public void storeFile(String username, File cpsFileFolder, long sampleID, String instrumentName) throws PeptideShakerIOException, MappingException {
-        try {
+    
+    private User login(String username) throws AuthenticationException {
+        if (!username.equals("distributed")) {
             User user = userService.findByName(username);
             userService.fetchAuthenticationRelations(user);
             authenticationBean.setCurrentUser(user);
-
+            return user;
+        } else {
+            throw new AuthenticationException("Cannot log in with distributed");
+        }
+    }
+       
+    private void mapPeptideShakerIOInFolder(File cpsFileFolder) throws IOException, ArchiveException, ClassNotFoundException {
+        for (File fileInFolder : cpsFileFolder.listFiles()) {
+            if (fileInFolder.getName().contains(".cps")) {
+                peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(fileInFolder);
+            }
+        }
+        List<File> mgfFiles = new ArrayList<>();
+        for (File fileInFolder : cpsFileFolder.listFiles()) {
+            if (fileInFolder.getName().contains(".mgf")) {
+                mgfFiles.add(fileInFolder);
+                peptideShakerImport.setMgfFiles(mgfFiles);
+            } else if (fileInFolder.getName().contains(".fasta")) {
+                peptideShakerImport.setFastaFile(fileInFolder);
+            }
+        }
+    }
+     
+    @Override
+    public void storeFile(String username, File cpsFileFolder, long sampleID, String instrumentName) throws MappingException, AuthenticationException {
+        try {
+            //STEP 1 = login with distributed User
+            //STEP 2 = login with actual user != distributedUser
+            login(username);
+            //STEP 2 map the inputdata
+            mapPeptideShakerIOInFolder(cpsFileFolder);
+            //STEP3 find the sample
             Sample sample = sampleService.findById(sampleID);
-
+            //STEP 4 find the instrument
             Instrument instrument = instrumentService.findByName(instrumentName);
-
-            for (File fileInFolder : cpsFileFolder.listFiles()) {
-                if (fileInFolder.getName().contains(".cps")) {
-                    peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(fileInFolder);
-                }
-            }
-            List<File> mgfFiles = new ArrayList<>();
-            for (File fileInFolder : cpsFileFolder.listFiles()) {
-                if (fileInFolder.getName().contains(".mgf")) {
-                    mgfFiles.add(fileInFolder);
-                    peptideShakerImport.setMgfFiles(mgfFiles);
-                } else if (fileInFolder.getName().contains(".fasta")) {
-                    peptideShakerImport.setFastaFile(fileInFolder);
-                }
-            }
-
+            //STEP 5 find the experiments
+            Experiment experiment = sample.getExperiment();
+            experiment.setTitle(cpsFileFolder.getName());
+            experiment.setStorageLocation(cpsFileFolder.getAbsolutePath());
+            experiment.setNumber(System.currentTimeMillis());
+            experimentService.save(experiment);
+            //STEP 5 find the analytical runs
             List<AnalyticalRun> analyticalRunForThisSample = peptideShakerImportMapper.map(peptideShakerImport);
-
             for (AnalyticalRun anAnalyticalRun : analyticalRunForThisSample) {
                 anAnalyticalRun.setSample(sample);
                 anAnalyticalRun.setInstrument(instrument);
                 analyticalRunService.save(anAnalyticalRun);
             }
-
+            //STEP 6 save the sample
             sample.setAnalyticalRuns(analyticalRunForThisSample);
-
-           // sampleService.update(sample);
-            /*
-             experiment = new Experiment();
-             utilitiesExperimentMapper.map(peptideShakerImport, experiment);
-             Project project = new Project();
-             project.setDescription("test description");
-             project.setTitle("project title");
-             project.setOwner(user);
-             project.setLabel(label);
-             List<Experiment> experiments = new ArrayList<>();
-             experiments.add(experiment);
-             experiment.setProject(project);
-             projectService.save(project);*/
-        } catch (IOException | SQLException | ClassNotFoundException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException ex) {
+            sampleService.update(sample);
+            
+        } catch (IOException | SQLException | ClassNotFoundException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException | ArchiveException ex) {
             LOGGER.error(ex);
         }
     }
+    
 }

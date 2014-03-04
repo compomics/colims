@@ -2,7 +2,7 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.client.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import java.text.SimpleDateFormat;
@@ -15,7 +15,8 @@ import java.util.Comparator;
 public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<AnalyticalRun> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Start date", "Created", "# spectra"};
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private static final String[] COLUMN_NAMES = {"Id", "Name", "Start date", "Created", "# spectra"};
     public static final int RUN_ID = 0;
     public static final int NAME = 1;
     public static final int START_DATE = 2;
@@ -24,11 +25,11 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
     private SpectrumService spectrumService;
 
     public AnalyticalRunManagementTableFormat() {
-        spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean("spectrumService", SpectrumService.class);
+        spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
     }    
     
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case RUN_ID:
                 return Long.class;
@@ -46,32 +47,32 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(AnalyticalRun analyticalRun, int column) {
+    public Object getColumnValue(final AnalyticalRun analyticalRun, final int column) {
         switch (column) {
             case RUN_ID:
                 return analyticalRun.getId();
             case NAME:
                 return analyticalRun.getName();
             case START_DATE:
-                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
+                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_TIME_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
                  return startDateString;
             case CREATED:
-                return DATE_FORMAT.format(analyticalRun.getCreationdate());
+                return DATE_FORMAT.format(analyticalRun.getCreationDate());
             case NUMBER_OF_SPECTRA:
                 return spectrumService.countSpectraByAnalyticalRun(analyticalRun);
             default:

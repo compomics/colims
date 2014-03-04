@@ -10,12 +10,12 @@ import com.compomics.colims.model.enums.CvTermType;
  *
  * @author Niels Hulstaert
  */
-public class CvTermFactory {
+public final class CvTermFactory {
 
     private CvTermFactory() {
     }
 
-    public static CvTerm newInstance(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+    public static CvTerm newInstance(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         CvTerm cvTerm;
 
         CvTermType parent = cvTermType.getParent();

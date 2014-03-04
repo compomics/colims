@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Table(name = "search_engine")
 @Entity
-public class SearchEngine extends AbstractDatabaseEntity {
+public class SearchEngine extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

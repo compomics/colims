@@ -220,7 +220,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(new ActionListener() {
+        instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentManagementDialog.dispose();
@@ -369,7 +369,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
+        instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentEditDialog.dispose();
@@ -517,7 +517,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentTypeCrudDialog.getCancelInstrumentTypeCrudButton().addActionListener(new ActionListener() {
+        instrumentTypeCrudDialog.getCloseInstrumentTypeCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentTypeCrudDialog.dispose();

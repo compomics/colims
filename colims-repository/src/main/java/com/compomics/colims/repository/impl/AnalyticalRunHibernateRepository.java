@@ -1,7 +1,6 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Sample;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,15 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>colims-core</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
   
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.3-SNAPSHOT</version>
     </parent>
 
     <name>colims-core</name>
@@ -76,12 +75,7 @@
     </build>
 
     <dependencies>
-        <!-- colims dependencies -->
-        <dependency>
-            <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-model</artifactId>
-        </dependency>
-        
+        <!-- colims dependencies -->        
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-repository</artifactId>
@@ -115,8 +109,8 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.0</version>
-        </dependency>
-         
+        </dependency>                
+        
         <!-- junit dependency -->               
         <dependency>
             <groupId>junit</groupId>
@@ -139,7 +133,6 @@
         </dependency>
         
         <!-- compomics dependencies -->
-
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
@@ -171,6 +164,7 @@
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
             <version>3.0.0-milestone1</version>
         </dependency>
+        
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>

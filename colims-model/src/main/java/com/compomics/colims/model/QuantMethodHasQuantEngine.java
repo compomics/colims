@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quant_method_has_quant_engine")
 @Entity
-public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
+public class QuantMethodHasQuantEngine extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @JoinColumn(name = "l_quantification_method_id", referencedColumnName = "id")
@@ -32,7 +32,7 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         return quantificationMethod;
     }
 
-    public void setQuantificationMethod(QuantificationMethod quantificationMethod) {
+    public void setQuantificationMethod(final QuantificationMethod quantificationMethod) {
         this.quantificationMethod = quantificationMethod;
     }
 
@@ -40,7 +40,7 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         return quantificationEngine;
     }
 
-    public void setQuantificationEngine(QuantificationEngine quantificationEngine) {
+    public void setQuantificationEngine(final QuantificationEngine quantificationEngine) {
         this.quantificationEngine = quantificationEngine;
     }
 
@@ -48,7 +48,7 @@ public class QuantMethodHasQuantEngine extends AbstractDatabaseEntity {
         return quantificationParameterSetting;
     }
 
-    public void setQuantificationParameterSetting(QuantificationParameterSetting quantificationParameterSetting) {
+    public void setQuantificationParameterSetting(final QuantificationParameterSetting quantificationParameterSetting) {
         this.quantificationParameterSetting = quantificationParameterSetting;
     }
 }

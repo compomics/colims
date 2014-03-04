@@ -1,6 +1,8 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectEditDialog;
@@ -57,19 +59,20 @@ public class ProjectEditController implements Controllable {
         return projectEditDialog;
     }
 
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);        
+        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
 
         //init dual list
-        projectEditDialog.getUserDualList().init(new UserNameComparator());        
-        
+        projectEditDialog.getUserDualList().init(new UserNameComparator());
+
         //add binding
         bindingGroup = new BindingGroup();
-        
+
         userBindingList = ObservableCollections.observableList(userService.findAll());
 
         JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
@@ -80,7 +83,7 @@ public class ProjectEditController implements Controllable {
         //add action listeners
         projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 List<User> addedUsers = (List<User>) evt.getNewValue();
 
                 projectToEdit.setUsers(addedUsers);
@@ -89,9 +92,9 @@ public class ProjectEditController implements Controllable {
 
         projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update projectToEdit with dialog input
-                updateProjectToEdit();                
+                updateProjectToEdit();
 
                 //validate project
                 List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
@@ -99,20 +102,30 @@ public class ProjectEditController implements Controllable {
                 if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
                     validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
                             + "\n" + "please choose another project title.");
-                }
-                int index = 0;
+                }                
                 if (validationMessages.isEmpty()) {
+                    int index;
+                    EntityChangeEvent.Type type;
+                    
                     if (projectToEdit.getId() != null) {
                         projectService.update(projectToEdit);
+                        
                         index = projectManagementController.getSelectedProjectIndex();
+                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         projectService.save(projectToEdit);
-                        //add project to overview table
-                        projectManagementController.addProject(projectToEdit);
-                        index = projectManagementController.getProjectsSize() - 1;
-                    }
-                    projectEditDialog.getSaveOrUpdateButton().setText("update");
 
+                        index = projectManagementController.getProjectsSize() - 1;
+                        type = EntityChangeEvent.Type.CREATED;
+                        
+                        //add project to overview table
+                        projectManagementController.addProject(projectToEdit);                        
+
+                        projectEditDialog.getSaveOrUpdateButton().setText("update");
+                    }
+                    ProjectChangeEvent projectChangeEvent = new ProjectChangeEvent(type, projectToEdit);
+                    eventBus.post(projectChangeEvent);
+                    
                     MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -125,9 +138,9 @@ public class ProjectEditController implements Controllable {
             }
         });
 
-        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
+        projectEditDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 projectEditDialog.dispose();
             }
         });
@@ -143,9 +156,9 @@ public class ProjectEditController implements Controllable {
      * Update the project edit dialog with the selected project in the project
      * overview table.
      */
-    public void updateView(Project project) {
+    public void updateView(final Project project) {
         projectToEdit = project;
-        
+
         if (projectToEdit.getId() != null) {
             projectEditDialog.getSaveOrUpdateButton().setText("update");
         } else {
@@ -159,7 +172,7 @@ public class ProjectEditController implements Controllable {
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
         //populate user dual list
         projectEditDialog.getUserDualList().populateLists(userService.findAll(), projectToEdit.getUsers());
-        
+
         showView();
     }
 
@@ -180,7 +193,7 @@ public class ProjectEditController implements Controllable {
      * @param project the project
      * @return does the project title exist
      */
-    private boolean isExistingProjectTitle(Project project) {
+    private boolean isExistingProjectTitle(final Project project) {
         boolean isExistingProjectTitle = true;
         Project foundProject = projectService.findByTitle(project.getTitle());
         if (foundProject == null) {

@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Table(name = "peptide_has_modification")
 @Entity
-public class PeptideHasModification extends AbstractDatabaseEntity {
+public class PeptideHasModification extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return location;
     }
 
-    public void setLocation(Integer location) {
+    public void setLocation(final Integer location) {
         this.location = location;
     }
 
@@ -60,7 +60,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return peptide;
     }
 
-    public void setPeptide(Peptide peptide) {
+    public void setPeptide(final Peptide peptide) {
         this.peptide = peptide;
     }
 
@@ -68,7 +68,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return alphaScore;
     }
 
-    public void setAlphaScore(Double alphaScore) {
+    public void setAlphaScore(final Double alphaScore) {
         this.alphaScore = alphaScore;
     }
 
@@ -76,7 +76,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return deltaScore;
     }
 
-    public void setDeltaScore(Double deltaScore) {
+    public void setDeltaScore(final Double deltaScore) {
         this.deltaScore = deltaScore;
     }    
 
@@ -84,7 +84,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return modificationType;
     }
 
-    public void setModificationType(ModificationType modificationType) {
+    public void setModificationType(final ModificationType modificationType) {
         this.modificationType = modificationType;
     }
 
@@ -92,7 +92,7 @@ public class PeptideHasModification extends AbstractDatabaseEntity {
         return modification;
     }
 
-    public void setModification(Modification modification) {
+    public void setModification(final Modification modification) {
         this.modification = modification;
     }
 }

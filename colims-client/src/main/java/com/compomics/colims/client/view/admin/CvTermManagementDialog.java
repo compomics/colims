@@ -13,7 +13,7 @@ import javax.swing.JTextField;
  */
 public class CvTermManagementDialog extends javax.swing.JDialog {
     
-    public CvTermManagementDialog(Frame parent, boolean modal) {
+    public CvTermManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();
@@ -34,8 +34,8 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         return addCvTermButton;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JLabel getCvTermStateInfoLabel() {
@@ -67,7 +67,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
     }
 
     public JButton getEditUsingOlsCvTermButton() {
-        return EditUsingOlsCvTermButton;
+        return editUsingOlsCvTermButton;
     }        
 
     /**
@@ -99,8 +99,8 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         definitionLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         definitionTextArea = new javax.swing.JTextArea();
-        EditUsingOlsCvTermButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        editUsingOlsCvTermButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CV term management");
@@ -206,11 +206,11 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
         definitionTextArea.setEnabled(false);
         jScrollPane1.setViewportView(definitionTextArea);
 
-        EditUsingOlsCvTermButton.setText("edit...");
-        EditUsingOlsCvTermButton.setToolTipText("add a CV term with the OLS dialog");
-        EditUsingOlsCvTermButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        EditUsingOlsCvTermButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        EditUsingOlsCvTermButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        editUsingOlsCvTermButton.setText("edit...");
+        editUsingOlsCvTermButton.setToolTipText("add a CV term with the OLS dialog");
+        editUsingOlsCvTermButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        editUsingOlsCvTermButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        editUsingOlsCvTermButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout cvTermDetailPanelLayout = new javax.swing.GroupLayout(cvTermDetailPanel);
         cvTermDetailPanel.setLayout(cvTermDetailPanelLayout);
@@ -221,7 +221,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 .addGroup(cvTermDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvTermDetailPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(EditUsingOlsCvTermButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(editUsingOlsCvTermButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(cvTermDetailPanelLayout.createSequentialGroup()
@@ -274,14 +274,14 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 .addGap(11, 11, 11)
                 .addGroup(cvTermDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(EditUsingOlsCvTermButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editUsingOlsCvTermButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout cvTermCrudPanelLayout = new javax.swing.GroupLayout(cvTermCrudPanel);
         cvTermCrudPanel.setLayout(cvTermCrudPanelLayout);
@@ -292,7 +292,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 .addGroup(cvTermCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvTermCrudPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(cvTermOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cvTermDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -305,7 +305,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cvTermDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -324,11 +324,10 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton EditUsingOlsCvTermButton;
     private javax.swing.JLabel accessionLabel;
     private javax.swing.JTextField accessionTextField;
     private javax.swing.JButton addCvTermButton;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JPanel cvTermCrudPanel;
     private javax.swing.JPanel cvTermDetailPanel;
     private javax.swing.JPanel cvTermOverviewPanel;
@@ -338,6 +337,7 @@ public class CvTermManagementDialog extends javax.swing.JDialog {
     private javax.swing.JLabel definitionLabel;
     private javax.swing.JTextArea definitionTextArea;
     private javax.swing.JButton deleteCvTermButton;
+    private javax.swing.JButton editUsingOlsCvTermButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;

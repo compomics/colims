@@ -214,7 +214,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
+        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolManagementDialog.dispose();
@@ -358,7 +358,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
+        protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolEditDialog.dispose();

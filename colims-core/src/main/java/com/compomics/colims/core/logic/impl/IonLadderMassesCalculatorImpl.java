@@ -18,7 +18,7 @@ public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator 
     private static final Logger LOGGER = Logger.getLogger(IonLadderMassesCalculatorImpl.class);
 
     @Override
-    public double[] calculateBIonLadderMasses(Peptide peptide, int charge) throws UnknownAAException {
+    public double[] calculateBIonLadderMasses(final Peptide peptide, final int charge) throws UnknownAAException {
         //B ion series N -> C
         //b1 = subSequence(0, 1)
         //b2 = subSequence(0, 2)
@@ -45,7 +45,7 @@ public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator 
     }
 
     @Override
-    public double[] calculateYIonLadderMasses(Peptide peptide, int charge) throws UnknownAAException {
+    public double[] calculateYIonLadderMasses(final Peptide peptide, final int charge) throws UnknownAAException {
 
         //Y ion series N <- C
         //y1 = subSequence(length-1, length)

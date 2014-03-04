@@ -1,6 +1,7 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DualList;
+import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
@@ -13,15 +14,18 @@ import javax.swing.JTextField;
 public class ProjectEditDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form LoginDialog
+     * Dialog constructor
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
      */
-    public ProjectEditDialog(java.awt.Frame parent, boolean modal) {
+    public ProjectEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);        
         initComponents();
     } 
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JTextField getLabelTextField() {
@@ -70,7 +74,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         userDualList = new com.compomics.colims.client.compoment.DualList();
         userDualListLabel = new javax.swing.JLabel();
         saveOrUpdateButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("project metadata management");
@@ -99,11 +103,11 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelButton.setText("cancel");
-        cancelButton.setToolTipText("");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setToolTipText("");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout projectEditPanelLayout = new javax.swing.GroupLayout(projectEditPanel);
         projectEditPanel.setLayout(projectEditPanelLayout);
@@ -116,7 +120,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(projectEditPanelLayout.createSequentialGroup()
                         .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(projectEditPanelLayout.createSequentialGroup()
@@ -167,7 +171,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
                     .addComponent(userDualListLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -186,7 +190,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPanel;
     private javax.swing.JTextArea descriptionTextArea;

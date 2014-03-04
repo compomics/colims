@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.hibernate;
 
+import com.compomics.colims.model.AuditableDatabaseEntity;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -8,7 +9,6 @@ import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.compomics.colims.model.AbstractDatabaseEntity;
 import com.compomics.colims.repository.AuthenticationBean;
 
 /**
@@ -24,7 +24,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
     private AuthenticationBean authenticationBean;
 
     @Override
-    public void onSaveOrUpdate(SaveOrUpdateEvent event) {
+    public void onSaveOrUpdate(final SaveOrUpdateEvent event) {
         LOGGER.debug("Entering onSaveOrUpdate");
 
         onListen(event.getObject());
@@ -32,18 +32,18 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
         super.onSaveOrUpdate(event);
     }
 
-    private void onListen(Object object) {
-        if (object instanceof AbstractDatabaseEntity) {
-            AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;            
+    private void onListen(final Object object) {
+        if (object instanceof AuditableDatabaseEntity) {
+            AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;            
 
             //set the user name            
             entity.setUserName(authenticationBean.getCurrentUser().getName());
             
-            if(entity.getCreationdate() == null){
-                entity.setCreationdate(new Date());
+            if(entity.getCreationDate() == null){
+                entity.setCreationDate(new Date());
             }
             //set the modification date
-            entity.setModificationdate(new Date());                        
+            entity.setModificationDate(new Date());                        
         }
     }
 }

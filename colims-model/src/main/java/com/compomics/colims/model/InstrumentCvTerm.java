@@ -15,7 +15,7 @@ public class InstrumentCvTerm extends CvTerm {
     public InstrumentCvTerm() {
     }
 
-    public InstrumentCvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+    public InstrumentCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }    
 

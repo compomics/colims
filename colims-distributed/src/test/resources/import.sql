@@ -53,7 +53,7 @@ INSERT INTO `project_has_user` (l_project_id, l_user_id) VALUES (1,2),(1,3),(2,2
 INSERT INTO `experiment` (id, creation_date, modification_date, user_name, description, number, storage_location, title, l_project_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','experiment 1 description', '114', 'C://project//114','Experiment 1 title', '1'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','experiment 2 description', '115', 'C://project//115','Experiment 2 title', '1');
 
 -- insert test sample
-INSERT INTO `sample` (id, creation_date, modification_date, user_name,name, l_experiment_id, l_protocol_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','sample 1',1,1);
+INSERT INTO `sample` (id, creation_date, modification_date, user_name, name, l_experiment_id, l_protocol_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin','sample 1',1,1);
 
 -- insert test material cv terms
 INSERT INTO `material_cv_term` (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_1','MS','species_1', 'PSI Mass Spectrometry','SPECIES'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_2','MS','tissue_1', 'PSI Mass Spectrometry','TISSUE'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_3','MS','cell_type_1', 'PSI Mass Spectrometry','CELL_TYPE'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','material_cv_acc_4','MS','compartment', 'PSI Mass Spectrometry','COMPARTMENT');
@@ -62,4 +62,7 @@ INSERT INTO `material_cv_term` (id, creation_date, modification_date, user_name,
 INSERT INTO `material` (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_project_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '1', '2');
 
 -- insert test modifications
-INSERT INTO `modification` (id, creation_date, modification_date, user_name, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+INSERT INTO `modification` (id, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+
+-- insert test proteins
+INSERT INTO `protein` (id, accession, database_type, protein_sequence) VALUES (1, 'Q8IWA5', 'UniProt', 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'Q13233', 'UniProt', 'MAAAAGNRASSSGFPGARAT');

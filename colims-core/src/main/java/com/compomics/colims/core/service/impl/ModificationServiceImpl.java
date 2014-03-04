@@ -22,7 +22,7 @@ public class ModificationServiceImpl implements ModificationService {
     private ModificationRepository modificationRepository;
 
     @Override
-    public Modification findById(Long id) {
+    public Modification findById(final Long id) {
         return modificationRepository.findById(id);
     }
 
@@ -32,32 +32,32 @@ public class ModificationServiceImpl implements ModificationService {
     }
 
     @Override
-    public void save(Modification entity) {
+    public void save(final Modification entity) {
         modificationRepository.save(entity);
     }
 
     @Override
-    public void update(Modification entity) {
+    public void update(final Modification entity) {
         modificationRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(Modification entity) {
+    public void saveOrUpdate(final Modification entity) {
         modificationRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(Modification entity) {
+    public void delete(final Modification entity) {
         modificationRepository.delete(entity);
     }
 
     @Override
-    public Modification findByName(String name) {
+    public Modification findByName(final String name) {
         return modificationRepository.findByName(name);
     }
 
     @Override
-    public Modification findByAccession(String accession) {
+    public Modification findByAccession(final String accession) {
         return modificationRepository.findByAccession(accession);
     }
 

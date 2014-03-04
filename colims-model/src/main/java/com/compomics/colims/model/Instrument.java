@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Table(name = "instrument")
 @Entity
-public class Instrument extends AbstractDatabaseEntity {
+public class Instrument extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

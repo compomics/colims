@@ -26,17 +26,17 @@ public class AuditInterceptor extends EmptyInterceptor {
         return authenticationBean;
     }
 
-    public void setAuthenticationBean(AuthenticationBean authenticationBean) {
+    public void setAuthenticationBean(final AuthenticationBean authenticationBean) {
         this.authenticationBean = authenticationBean;
     }            
 
     @Override
-    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {       
+    public boolean onFlushDirty(final Object entity, final Serializable id, final Object[] currentState, final Object[] previousState, final String[] propertyNames, final Type[] types) {       
         return audit(currentState, propertyNames);
     }
 
     @Override
-    public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+    public boolean onSave(final Object entity, final Serializable id, final Object[] state, final String[] propertyNames, final Type[] types) {
         return audit(state, propertyNames);
     }
 
@@ -48,7 +48,7 @@ public class AuditInterceptor extends EmptyInterceptor {
      * @param propertyNames
      * @return true if the state is modified in anyway
      */
-    private boolean audit(Object[] currentState, String[] propertyNames) {
+    private boolean audit(final Object[] currentState, final String[] propertyNames) {
         boolean changed = false;
         for (int i = 0; i < propertyNames.length; i++) {
             if ("creationDate".equals(propertyNames[i])) {

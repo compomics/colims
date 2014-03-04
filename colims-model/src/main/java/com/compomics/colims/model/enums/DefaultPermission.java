@@ -13,11 +13,11 @@ public enum DefaultPermission {
      */
     private final String dbEntry;
     
-    private DefaultPermission(String dbEntry){
+    private DefaultPermission(final String dbEntry){
         this.dbEntry = dbEntry;
     }
 
-    public String getDbEntry() {
+    public String dbEntry() {
         return dbEntry;
     }        
     

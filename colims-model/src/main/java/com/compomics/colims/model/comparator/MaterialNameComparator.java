@@ -15,7 +15,7 @@ public class MaterialNameComparator implements Comparator<Material>, Serializabl
     private static final long serialVersionUID = 1L;
     
     @Override
-    public int compare(Material material1, Material material2) {
+    public int compare(final Material material1, final Material material2) {
         return material1.getName().compareToIgnoreCase(material2.getName());
     }
 

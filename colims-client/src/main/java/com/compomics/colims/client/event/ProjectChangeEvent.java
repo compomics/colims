@@ -7,10 +7,10 @@ import com.compomics.colims.model.Project;
  */
 public class ProjectChangeEvent extends EntityChangeEvent {
 
-    private Project project;
+    private final Project project;
 
-    public ProjectChangeEvent(Type type, boolean childrenAffected, Project project) {
-        super(type, childrenAffected);
+    public ProjectChangeEvent(final Type type, final Project project) {
+        super(type);
         this.project = project;
     }
 

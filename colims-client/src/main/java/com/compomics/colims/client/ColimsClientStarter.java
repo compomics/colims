@@ -1,13 +1,13 @@
 package com.compomics.colims.client;
 
 import com.compomics.colims.client.controller.ColimsController;
-import com.compomics.colims.client.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.GenericJDBCException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
@@ -18,7 +18,7 @@ public class ColimsClientStarter {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch();
     }
 
@@ -52,8 +52,10 @@ public class ColimsClientStarter {
             @Override
             public void run() {
                 try {
-                    ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
-                    ColimsController colimsController = (ColimsController) applicationContext.getBean("colimsController");
+                    ApplicationContext clientApplicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
+                    ApplicationContextProvider.getInstance().setApplicationContext(clientApplicationContext);
+                    
+                    ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
                     colimsController.init();
                 } catch (CannotCreateTransactionException ex) {
                     if (ex.getCause() instanceof GenericJDBCException) {

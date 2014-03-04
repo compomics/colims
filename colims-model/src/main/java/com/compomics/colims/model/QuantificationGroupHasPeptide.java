@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_group_has_peptide")
 @Entity
-public class QuantificationGroupHasPeptide extends AbstractDatabaseEntity {
+public class QuantificationGroupHasPeptide extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class QuantificationGroupHasPeptide extends AbstractDatabaseEntity {
         return quantificationGroup;
     }
 
-    public void setQuantificationGroup(QuantificationGroup quantificationGroup) {
+    public void setQuantificationGroup(final QuantificationGroup quantificationGroup) {
         this.quantificationGroup = quantificationGroup;
     }
 
@@ -38,7 +38,7 @@ public class QuantificationGroupHasPeptide extends AbstractDatabaseEntity {
         return peptide;
     }
 
-    public void setPeptide(Peptide peptide) {
+    public void setPeptide(final Peptide peptide) {
         this.peptide = peptide;
     }
 }

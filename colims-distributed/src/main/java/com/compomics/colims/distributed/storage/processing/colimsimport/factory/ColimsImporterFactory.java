@@ -9,6 +9,7 @@ import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.processing.colimsimport.impl.ColimsMaxQuantImporter;
 import com.compomics.colims.distributed.storage.processing.colimsimport.impl.ColimsCpsImporter;
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
+import com.compomics.colims.distributed.storage.processing.colimsimport.impl.ColimsRespinImporter;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,8 @@ public class ColimsImporterFactory {
     ColimsCpsImporter colimsCpsImporter;
     @Autowired
     ColimsMaxQuantImporter colimsMaxQuantImporter;
+    @Autowired
+    ColimsRespinImporter colimsRespinImporter;
 
     public ColimsFileImporter getImporter(StorageType type) throws IOException {
         ColimsFileImporter importer = null;
@@ -32,6 +35,9 @@ public class ColimsImporterFactory {
         }
         if (type.equals(StorageType.MAX_QUANT)) {
             importer = colimsMaxQuantImporter;
+        }
+        if (type.equals(StorageType.RESPIN)) {
+            importer = colimsRespinImporter;
         }
         return importer;
     }

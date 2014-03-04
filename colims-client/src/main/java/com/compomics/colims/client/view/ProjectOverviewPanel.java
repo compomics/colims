@@ -10,28 +10,16 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.experiment.identification.SpectrumAnnotator;
-import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import com.compomics.util.experiment.massspectrometry.Charge;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.Peak;
-import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.export_graphics.ExportGraphicsDialog;
 import com.compomics.util.gui.export_graphics.ExportGraphicsDialogParent;
 import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
-import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
-import com.compomics.util.gui.spectrum.SpectrumPanel;
-import com.compomics.util.io.PklFile;
 import com.compomics.util.preferences.AnnotationPreferences;
 import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -40,7 +28,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import javax.swing.JCheckBoxMenuItem;
@@ -49,14 +36,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.TitledBorder;
-import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
-import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -71,11 +53,11 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
         XYBarRenderer.setDefaultBarPainter(new StandardXYBarPainter());
     }
     /**
-     * The parent frame
+     * The parent frame.
      */
     private JFrame colimsFrame;
     /**
-     * The controller
+     * The controller.
      */
     private ProjectOverviewController projectOverviewController;
     /**
@@ -85,7 +67,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     /**
      * The annotation preferences.
      */
-    AnnotationPreferences annotationPreferences = new AnnotationPreferences(); // @TODO: set the preferences
+    private AnnotationPreferences annotationPreferences = new AnnotationPreferences(); // @TODO: set the preferences
     /**
      * The neutral loss menus.
      */
@@ -110,7 +92,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     /**
      * Boolean indicating whether the spectrum shall be displayed.
      */
-    private boolean displaySpectrum = true;    
+    private boolean displaySpectrum = true;
     /**
      * The last folder opened by the user. Defaults to user.home.
      */
@@ -123,7 +105,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     /**
      * Creates new form ProjectOverviewPanel1
      */
-    public ProjectOverviewPanel(JFrame colimsFrame, ProjectOverviewController projectOverviewController, UtilitiesUserPreferences utilitiesUserPreferences) {
+    public ProjectOverviewPanel(final JFrame colimsFrame, final ProjectOverviewController projectOverviewController, final UtilitiesUserPreferences utilitiesUserPreferences) {
         this.colimsFrame = colimsFrame;
         this.projectOverviewController = projectOverviewController;
         this.utilitiesUserPreferences = utilitiesUserPreferences;
@@ -158,7 +140,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
     public JTable getPsmTable() {
         return psmTable;
-    } 
+    }
 
     public JPanel getSpectrumJPanel() {
         return spectrumJPanel;
@@ -170,15 +152,15 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
     public JPanel getSpectrumMainPanel() {
         return spectrumMainPanel;
-    }   
+    }
 
     public AnnotationPreferences getAnnotationPreferences() {
         return annotationPreferences;
-    }       
+    }
 
     public SearchParameters getSearchParameters() {
         return searchParameters;
-    }        
+    }
 
     /**
      * Set up the GUI.
@@ -1232,8 +1214,6 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     public void updateSpectrum() {
         projectOverviewController.updateSpectrum();
     }
-
-    
 
     /**
      * Returns the spectrum panel.

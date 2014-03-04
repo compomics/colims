@@ -37,14 +37,16 @@ public class Respin {
     private RespinProperties respProps;
     private PrintWriter notifier;
 
-    public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String projectId, PrintWriter notifier, boolean storeAfterRun) throws RespinException, Exception {
+    public void launch(String userName, String instrumentId, long sampleId, File mgf, File searchparameters, File fasta, File outputFolder, String searchName, boolean storeAfterRun) throws RespinException, Exception {
 
         this.notifier = notifier;
         this.mgfFile = mgf;
         this.paramFile = searchparameters;
         this.fastaFile = fasta;
-        this.outputDir = outputFolder;
-        this.projectID = projectId;
+        this.outputDir = new File(outputFolder, searchName);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
 
         try {
             prepareLogging();
@@ -67,7 +69,7 @@ public class Respin {
                 }
                 notifySocket("PROCESS_COMPLETED");
                 if (storeAfterRun) {
-                    command.storeColimsResults(userName, sampleId, projectId);
+                    command.storeColimsResults(userName, sampleId, instrumentId);
                 }
             } else {
                 throw new RespinException("No valid commandline !");
@@ -80,8 +82,6 @@ public class Respin {
     }
 
     private boolean initRespin() throws ParseException, XmlPullParserException, IOException {
-        //setup the commandline
-        command = new RespinCommandLine(mgfFile, paramFile, fastaFile, projectID);
         //INITIATE THE REQUIRED FACTORIES
         File enzymeFile = respProps.getEnzymeFile();
         enzymeFactory.importEnzymes(enzymeFile);
@@ -90,6 +90,8 @@ public class Respin {
             String filename = mgfFile.getAbsolutePath();
             projectID = filename.toUpperCase().substring(filename.indexOf("."));
         }
+        //setup the commandline
+        command = new RespinCommandLine(mgfFile, paramFile, fastaFile, projectID);
         //
         LOGGER.debug("Preparing respin");
         command.setFasta(fastaFile);

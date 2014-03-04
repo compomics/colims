@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.distributed.storage.processing.controller;
 
-import com.compomics.colims.core.spring.ApplicationContextProvider;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.distributed.storage.processing.controller.storagequeue.StorageQueue;
 import java.io.IOException;
@@ -25,16 +25,14 @@ import org.springframework.stereotype.Component;
 @Component("storageController")
 public class StorageController implements Runnable {
 
-    @Autowired
-    StorageQueue storageQueue;
-    StorageHandler storageHandler = new StorageHandler();
-
+    private StorageHandler storageHandler;
     private int port = 24567;
     private ServerSocket serverSocket;
     private final Logger LOGGER = Logger.getLogger(StorageController.class);
     private final ExecutorService threadService = Executors.newCachedThreadPool();
     private boolean disconnected = false;
     private DistributedProperties workProperties;
+    private StorageQueue storageQueue = StorageQueue.getInstance();
 
     /**
      *
@@ -81,7 +79,7 @@ public class StorageController implements Runnable {
         while (!disconnected) {
             try {
                 Socket incomingSocket = serverSocket.accept();
-                //storageHandler = (StorageHandler) ApplicationContextProvider.getInstance().getApplicationContext().getBean("storageHandler");
+                storageHandler = new StorageHandler();
                 storageHandler.setSocket(incomingSocket);
                 threadService.submit(storageHandler);
             } catch (IOException ex) {

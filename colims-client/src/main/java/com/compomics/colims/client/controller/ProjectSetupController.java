@@ -9,8 +9,8 @@ import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectSetupPanel;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.mapper.Mapper;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
@@ -55,7 +55,6 @@ public class ProjectSetupController implements Controllable {
     //model
     private Project project;
     private ObservableList<User> userBindingList;
-    private BindingGroup bindingGroup;
     private Resource cpsResource;
     private Resource mgfResource;
     private Resource fastaResource;
@@ -87,6 +86,7 @@ public class ProjectSetupController implements Controllable {
     /**
      * Controller init method.
      */
+    @Override
     public void init() {
         //init view
         projectSetupPanel = new ProjectSetupPanel();
@@ -103,25 +103,7 @@ public class ProjectSetupController implements Controllable {
         projectSetupPanel.getFinishButton().setEnabled(false);
 
         //show info
-        showProceedInfo("Click on proceed to import data files.");
-
-        //init binding
-        bindingGroup = new BindingGroup();
-
-        userBindingList = ObservableCollections.observableList(userService.findAll());
-        JComboBoxBinding userComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ, userBindingList, projectSetupPanel.getUserComboBox(), "userComboBoxBinding");
-        bindingGroup.addBinding(userComboBoxBinding);
-
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("title"), "titleBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getTitleTextField(), ELProperty.create("${text}"), project, BeanProperty.create("label"), "labelBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getDescriptionTextArea(), ELProperty.create("${text}"), project, BeanProperty.create("description"), "descriptionBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, projectSetupPanel.getUserComboBox(), ELProperty.create("${selectedItem}"), project, BeanProperty.create("user"), "userBinding");
-        bindingGroup.addBinding(binding);
-
-        bindingGroup.bind();
+        showProceedInfo("Click on proceed to import data files.");       
 
         //get cps file chooser
         JFileChooser cpsFileChooser = projectSetupPanel.getCpsFileChooser();
@@ -357,7 +339,7 @@ public class ProjectSetupController implements Controllable {
         @Override
         protected Void doInBackground() throws Exception {
             LOGGER.info("Start importing PeptideShaker file " + cpsResource.getFilename());
-            PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(cpsResource.getFile());
+            PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(cpsResource.getFile());
             LOGGER.info("Finished importing PeptideShaker file " + cpsResource.getFilename());
 
             //set mgf and fasta files

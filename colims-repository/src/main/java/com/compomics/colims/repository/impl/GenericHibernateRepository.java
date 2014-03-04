@@ -13,7 +13,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
-import org.hibernate.metamodel.source.annotations.entity.EntityClass;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.compomics.colims.repository.GenericRepository;
@@ -137,6 +136,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
+     * 
+     * @param criterion
+     * @return 
      */
     protected T findUniqueByCriteria(final Criterion... criterion) {
         return (T) createCriteria(criterion).uniqueResult();
@@ -144,6 +146,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
+     * 
+     * @param criterion
+     * @return 
      */
     protected List<T> findByCriteria(final Criterion... criterion) {
         return findByCriteria(-1, -1, criterion);
@@ -151,6 +156,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
+     * 
+     * @param firstResult
+     * @return 
      */
     protected List<T> findByCriteria(final int firstResult,
             final int maxResults, final Criterion... criterion) {
@@ -170,6 +178,8 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
+     * 
+     * @param criterion
      */
     protected long countByCriteria(final Criterion... criterion) {
         Criteria crit = createCriteria(criterion);

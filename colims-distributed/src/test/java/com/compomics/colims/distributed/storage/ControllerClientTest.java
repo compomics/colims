@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.distributed.storage;
 
+
 import com.compomics.colims.distributed.storage.enums.StorageType;
 import com.compomics.colims.distributed.storage.incoming.ClientForStorageConnector;
 import com.compomics.colims.distributed.storage.processing.controller.StorageController;
@@ -19,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,11 +32,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class ControllerClientTest {
-
-    StorageController storageController = new StorageController();
-    ;
+@Autowired
+StorageController storageController;
 
     private Thread listener;
+
     private final File testTaskDbAddress = new File(System.getProperty("user.home") + "/.compomics/ColimsController/StorageController/");
     private static final Logger LOGGER = Logger.getLogger(ControllerClientTest.class);
 
@@ -44,7 +46,7 @@ public class ControllerClientTest {
     @Before
     public void startListener() {
         try {
-
+         
             FileUtils.deleteDirectory(testTaskDbAddress);
         } catch (IOException ex) {
             LOGGER.error(ex);
@@ -71,10 +73,10 @@ public class ControllerClientTest {
     @Test
     public void testOfferAndRetrieve() throws IOException {
         System.out.println("Test communication between client and controller");
-        // Assert.fail("Not yet finished");
+       // Assert.fail("Not yet finished");
         ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
-        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project_3.cps").getFile();
-        boolean success = creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);
-        Assert.assertTrue(success);
+        File cpsFileToStore = new ClassPathResource("test_peptideshaker_project.cps").getFile();
+        creator.storeFile("admin1", cpsFileToStore.getAbsolutePath(), 1, "instrument_1",StorageType.PEPTIDESHAKER);        
     }
+
 }

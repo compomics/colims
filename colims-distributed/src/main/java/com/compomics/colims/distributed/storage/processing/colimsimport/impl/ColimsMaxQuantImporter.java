@@ -6,11 +6,10 @@
 package com.compomics.colims.distributed.storage.processing.colimsimport.impl;
 
 import com.compomics.colims.distributed.storage.processing.colimsimport.ColimsFileImporter;
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
-import com.compomics.colims.core.mapper.Mapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
@@ -30,20 +29,19 @@ import org.springframework.stereotype.Component;
 @Component("colimsMaxQuantImporter")
 public class ColimsMaxQuantImporter implements ColimsFileImporter {
 
-
     /**
      *
-     * @param quantFolder the folder where the resultfiles of the quant search are located in
+     * @param quantFolder the folder where the resultfiles of the quant search
+     * are located in
      * @return if the folder contains all required files
      */
     @Override
-    public boolean validate(File quantFolder){
+    public boolean validate(File quantFolder) {
         return true;
     }
-    
-    @Override
-    public void storeFile(String username, File cpsFileFolder,long sampleId,String instrumentName) throws PeptideShakerIOException, MappingException {
-       
-        }
-    }
 
+    @Override
+    public void storeFile(String username, File cpsFileFolder, long sampleId, String instrumentName) throws MappingException {
+
+    }
+}

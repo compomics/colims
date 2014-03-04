@@ -18,6 +18,8 @@ import javax.persistence.Table;
 
 import com.compomics.util.protein.Header;
 import com.compomics.util.protein.Header.DatabaseType;
+import javax.persistence.Cacheable;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  *
@@ -25,7 +27,9 @@ import com.compomics.util.protein.Header.DatabaseType;
  */
 @Table(name = "protein")
 @Entity
-public class Protein extends AbstractDatabaseEntity {
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Protein extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

@@ -7,7 +7,7 @@ package com.compomics.colims.client.event;
  */
 public abstract class EntityChangeEvent {
     
-    public enum Type {
+    public static enum Type {
 
         CREATED, DELETED, UPDATED;                
     }
@@ -16,22 +16,13 @@ public abstract class EntityChangeEvent {
      * The type of change event
      */
     protected Type type;
-    /**
-     * Are children collections affected by the change event?
-     */
-    protected boolean childrenAffected;
 
-    public EntityChangeEvent(Type type, boolean childrenAffected) {
+    public EntityChangeEvent(final Type type) {
         this.type = type;
-        this.childrenAffected = childrenAffected;
     }    
     
     public Type getType() {
         return type;
-    }        
-
-    public boolean areChildrenAffected() {
-        return childrenAffected;
-    }        
+    }             
 
 }

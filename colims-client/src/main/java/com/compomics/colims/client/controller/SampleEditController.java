@@ -9,6 +9,8 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
@@ -19,7 +21,6 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
@@ -66,8 +67,9 @@ public class SampleEditController implements Controllable {
     //parent controller
     @Autowired
     private ExperimentEditController experimentEditController;
+    //child controller
     @Autowired
-    private ColimsController colimsController;
+    private AnalyticalRunEditController analyticalRunEditController;
     //services
     @Autowired
     private SampleService sampleService;
@@ -84,6 +86,7 @@ public class SampleEditController implements Controllable {
         return sampleEditDialog;
     }
 
+    @Override
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -92,6 +95,9 @@ public class SampleEditController implements Controllable {
         sampleEditDialog = new SampleEditDialog(experimentEditController.getExperimentEditDialog(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
+
+        //init child controller
+        analyticalRunEditController.init();
 
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
@@ -138,19 +144,34 @@ public class SampleEditController implements Controllable {
 
                 //validate project
                 List<String> validationMessages = GuiUtils.validateEntity(sampleToEdit);
-                int index = 0;
+
                 if (validationMessages.isEmpty()) {
+                    int index;
+                    EntityChangeEvent.Type type;
+
                     if (sampleToEdit.getId() != null) {
                         sampleService.update(sampleToEdit);
-                        index = experimentEditController.getSelectedSampleIndex();
-                    } else {
-                        sampleService.save(sampleToEdit);
-                        //add experiment to overview table
-                        experimentEditController.addSample(sampleToEdit);
-                        index = experimentEditController.getSamplesSize() - 1;
-                    }
-                    sampleEditDialog.getSaveOrUpdateButton().setText("update");
 
+                        index = experimentEditController.getSelectedSampleIndex();
+                        type = EntityChangeEvent.Type.UPDATED;
+                    } else {
+                        //set experiment
+                        sampleToEdit.setExperiment(experimentEditController.getExperimentToEdit());
+
+                        sampleService.save(sampleToEdit);
+
+                        index = experimentEditController.getSamplesSize() - 1;
+                        type = EntityChangeEvent.Type.CREATED;
+
+                        //add sample to overview table
+                        experimentEditController.addSample(sampleToEdit);
+
+                        sampleEditDialog.getSaveOrUpdateButton().setText("update");
+                        updateAnalyticalRunButtonsState(true);
+                    }
+                    SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
+                    eventBus.post(sampleChangeEvent);
+                    
                     MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -182,7 +203,7 @@ public class SampleEditController implements Controllable {
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
+                SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
 
                 if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
                     sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
@@ -207,6 +228,13 @@ public class SampleEditController implements Controllable {
             }
         });
 
+        sampleBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sampleBinaryFileDialog.dispose();
+            }
+        });
+
         sampleEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -217,35 +245,51 @@ public class SampleEditController implements Controllable {
             }
         });
 
-        sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
+        sampleEditDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sampleEditDialog.dispose();
+            }
+        });
+
+        sampleEditDialog.getEditAnalyticalRunButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+                if (selectedAnalyticalRun != null) {
+                    analyticalRunEditController.updateView(selectedAnalyticalRun);
+                } else {
+                    eventBus.post(new MessageEvent("analytical run selection", "Please select an analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
+                }
             }
         });
     }
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), sampleEditDialog);
+        GuiUtils.centerDialogOnComponent(experimentEditController.getExperimentEditDialog(), sampleEditDialog);
         sampleEditDialog.setVisible(true);
     }
 
     /**
      * Update the sample edit dialog with the selected sample in the sample
      * overview table.
+     *
+     * @param sample
      */
     public void updateView(Sample sample) {
         sampleToEdit = sample;
 
         if (sampleToEdit.getId() != null) {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
+            updateAnalyticalRunButtonsState(true);
             //fetch sample binary files
             sampleService.fetchBinaryFiles(sampleToEdit);
             //fetch sample materials
             sampleService.fetchMaterials(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
+            updateAnalyticalRunButtonsState(false);
         }
 
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
@@ -262,6 +306,43 @@ public class SampleEditController implements Controllable {
         GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
 
         showView();
+    }
+
+    /**
+     * Get the row index of the selected analytical run in the analytical runs
+     * table
+     *
+     * @return
+     */
+    public int getSelectedAnalyticalRunIndex() {
+        return analyticalRunsSelectionModel.getLeadSelectionIndex();
+    }
+
+    /**
+     * Get the selected analytical run from the analytical run overview table.
+     *
+     * @return the selected analytical run, null if no analytical run is
+     * selected
+     */
+    public AnalyticalRun getSelectedAnalyticalRun() {
+        AnalyticalRun selectedAnalyticalRun = null;
+
+        EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+        if (!selectedAnalyticalRuns.isEmpty()) {
+            selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
+        }
+
+        return selectedAnalyticalRun;
+    }
+
+    /**
+     * Set the selected analytical run in the analytical runs table
+     *
+     * @param index
+     */
+    public void setSelectedAnalyticalRun(int index) {
+        analyticalRunsSelectionModel.clearSelection();
+        analyticalRunsSelectionModel.setLeadSelectionIndex(index);
     }
 
     /**
@@ -288,5 +369,15 @@ public class SampleEditController implements Controllable {
         concatenatedString = joiner.join(sampleToEdit.getBinaryFiles());
 
         return concatenatedString;
+    }
+
+    /**
+     * Update the state (enables/disabled) of the analytical run related buttons
+     *
+     * @param enable the enable the buttons boolean
+     */
+    private void updateAnalyticalRunButtonsState(boolean enable) {
+        sampleEditDialog.getEditAnalyticalRunButton().setEnabled(enable);
+        sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
     }
 }

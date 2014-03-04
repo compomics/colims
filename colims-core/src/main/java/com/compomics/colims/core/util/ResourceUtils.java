@@ -25,7 +25,7 @@ public class ResourceUtils {
      * @param relativePath the relative path of the resource
      * @return the found resource
      */
-    public static Resource getResourceByRelativePath(String relativePath) {       
+    public static Resource getResourceByRelativePath(final String relativePath) {       
         Resource resource = new FileSystemResource(relativePath);
 
         if (!resource.exists()) {
@@ -47,7 +47,7 @@ public class ResourceUtils {
      * @param relativePath the relative path of the resource
      * @return the is existing boolean
      */
-    public static boolean isExistingFile(String relativePath) {
+    public static boolean isExistingFile(final String relativePath) {
         boolean isExistingResource = Boolean.FALSE;
 
         Resource resource = new FileSystemResource(relativePath);

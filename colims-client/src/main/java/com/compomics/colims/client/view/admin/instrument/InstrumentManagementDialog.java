@@ -14,7 +14,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
     /**
      * Creates new form InstrumentCvDialog
      */
-    public InstrumentManagementDialog(Frame parent, boolean modal) {
+    public InstrumentManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
         
         initComponents();
@@ -43,8 +43,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         return instrumentEditButton;
     }        
 
-    public JButton getCancelInstrumentManagementButton() {
-        return cancelInstrumentManagementButton;
+    public JButton getCloseInstrumentManagementButton() {
+        return closeInstrumentManagementButton;
     }            
 
     /**
@@ -66,7 +66,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
         instrumentDetailPanel = new javax.swing.JPanel();
         instrumentDetailsTableScrollPane = new javax.swing.JScrollPane();
         instrumentDetailsTable = new javax.swing.JTable();
-        cancelInstrumentManagementButton = new javax.swing.JButton();
+        closeInstrumentManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("instrument management overview");
@@ -152,8 +152,8 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        cancelInstrumentManagementButton.setText("cancel");
-        cancelInstrumentManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeInstrumentManagementButton.setText("close");
+        closeInstrumentManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout instrumentCrudPanelLayout = new javax.swing.GroupLayout(instrumentCrudPanel);
         instrumentCrudPanel.setLayout(instrumentCrudPanelLayout);
@@ -167,7 +167,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentCrudPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cancelInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         instrumentCrudPanelLayout.setVerticalGroup(
@@ -178,7 +178,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(instrumentDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeInstrumentManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -202,7 +202,7 @@ public class InstrumentManagementDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addInstrumentButton;
-    private javax.swing.JButton cancelInstrumentManagementButton;
+    private javax.swing.JButton closeInstrumentManagementButton;
     private javax.swing.JButton deleteInstrumentButton;
     private javax.swing.JPanel instrumentCrudPanel;
     private javax.swing.JPanel instrumentDetailPanel;

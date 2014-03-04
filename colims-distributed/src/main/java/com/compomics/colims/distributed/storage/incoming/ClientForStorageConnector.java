@@ -8,10 +8,7 @@ package com.compomics.colims.distributed.storage.incoming;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.distributed.storage.enums.StorageState;
 import com.compomics.colims.distributed.storage.enums.StorageType;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -25,10 +22,11 @@ import org.apache.log4j.Logger;
 public class ClientForStorageConnector {
 
     private final static Logger LOGGER = Logger.getLogger(ClientForStorageConnector.class);
+    private static final String DELIMITER = ">.<";
+    private static final String END_DELIMITER = ">.|";
     private String masterIPAddress = "127.0.0.1";
     private int masterPort = 24567;
     private StorageState state = StorageState.WAITING;
-    private BufferedReader in;
     private PrintWriter out;
 
     /**
@@ -55,27 +53,26 @@ public class ClientForStorageConnector {
      * @param Username the user that wants to store the tasks
      * @param fileLocation the filelocation of the file that needs to be
      * imported to colims
+     * @param sampleID
+     * @param instrumentName
+     * @param type
      * @return if the method was succesfull storing the file
      */
-    public boolean storeFile(String Username, String fileLocation, long sampleID, String instrumentName, StorageType type) {
+    public void storeFile(String Username, String fileLocation, long sampleID, String instrumentName, StorageType type) {
         boolean success = false;
         Socket socket = null;
         try {
             LOGGER.debug("Connecting to : " + masterIPAddress + ":" + masterPort);
             socket = new Socket(masterIPAddress, masterPort);
             out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(Username + ">.<"
-                    + fileLocation + ">.<"
-                    + sampleID + ">.<"
-                    + instrumentName + ">.<"
+            out.println(Username + DELIMITER
+                    + fileLocation + DELIMITER
+                    + sampleID + DELIMITER
+                    + instrumentName + DELIMITER
                     + type.toString());
             out.flush();
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response;
-            while ((response = in.readLine()) != null && !success) {
-                state = StorageState.valueOf(response.split(">.<")[1].toUpperCase());
-                success = !state.equals(StorageState.ERROR);
-            }
+            out.println(END_DELIMITER);
+            out.flush();
         } catch (UnknownHostException ex) {
             LOGGER.error(ex);
             success = false;
@@ -83,13 +80,7 @@ public class ClientForStorageConnector {
             LOGGER.error(ex);
             success = false;
         } finally {
-            String fileName = new File(fileLocation).getName();
-            if (success) {
-                LOGGER.debug("Succesfully stored " + fileName + " into the db");
-            } else {
-                LOGGER.error("Could not store " + fileName + " into the db");
-            }
-            //Failsave method to prevent socket from staying open  = resource-leak
+            //Failsave method to prevent socket from staying open = resource-leak
             LOGGER.debug("Closing socket with master");
             if (socket != null) {
                 try {
@@ -99,21 +90,12 @@ public class ClientForStorageConnector {
                     LOGGER.error("Forcing socket to close");
                     socket = null;
                 }
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    LOGGER.error("Forcing inputstream to close");
-                    if (in != null) {
-                        in = null;
-                    }
-                }
                 out.flush();
                 out.close();
                 if (out != null) {
                     out = null;
                 }
             }
-            return success;
         }
     }
 

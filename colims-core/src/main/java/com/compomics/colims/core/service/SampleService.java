@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface SampleService extends GenericService<Sample, Long> {
 
-    public List<Sample> findSampleByExperimentId(Long experimentId);
+    List<Sample> findSampleByExperimentId(Long experimentId);
     
     /**
      * Fetch the sample binary files

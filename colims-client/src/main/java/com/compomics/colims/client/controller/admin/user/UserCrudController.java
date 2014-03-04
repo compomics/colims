@@ -10,6 +10,7 @@ import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
+import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
@@ -118,18 +119,18 @@ public class UserCrudController implements Controllable {
         //add listeners
         userManagementDialog.getUserNameTextField().addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(final FocusEvent e) {
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 userManagementDialog.getUserList().updateUI();
             }
         });
 
         userManagementDialog.getUserList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
                         User selectedUser = getSelectedUser();
@@ -170,7 +171,7 @@ public class UserCrudController implements Controllable {
 
         userManagementDialog.getAddUserButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 User newUser = new User("name");
                 newUser.setUserName(authenticationBean.getCurrentUser().getName());
                 userBindingList.add(newUser);
@@ -181,29 +182,34 @@ public class UserCrudController implements Controllable {
 
         userManagementDialog.getDeleteUserButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
                     User userToDelete = getSelectedUser();
                     //check if the user is already has an id.
                     //If so, delete the user from the db.
                     if (userToDelete.getId() != null) {
-                        try {
-                            userService.delete(userToDelete);
-                            eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+                        //check if the user is a default user
+                        if (!userService.isDefaultUser(userToDelete)) {
+                            try {
+                                userService.delete(userToDelete);
+                                eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
 
-                            userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                            userManagementDialog.getUserList().getSelectionModel().clearSelection();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the user can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
+                                userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                                userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                            } catch (DataIntegrityViolationException dive) {
+                                //check if the user can be deleted without breaking existing database relations,
+                                //i.e. are there any constraints violations
+                                if (dive.getCause() instanceof ConstraintViolationException) {
+                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
+                                    eventBus.post(dbConstraintMessageEvent);
+                                } else {
+                                    //pass the exception
+                                    throw dive;
+                                }
                             }
                         }
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
                     } else {
                         userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
                         resetSelection();
@@ -214,7 +220,7 @@ public class UserCrudController implements Controllable {
 
         userManagementDialog.getGroupDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 //change groups of the selected user                                    
                 List<Group> addedGroups = (List<Group>) evt.getNewValue();
 
@@ -228,7 +234,7 @@ public class UserCrudController implements Controllable {
 
         userManagementDialog.getUserSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 User selectedUser = getSelectedUser();
                 //validate user
                 List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
@@ -272,7 +278,7 @@ public class UserCrudController implements Controllable {
      * @param groupChangeEvent the GroupEvent
      */
     @Subscribe
-    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+    public void onGroupChangeEvent(final GroupChangeEvent groupChangeEvent) {
         switch (groupChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -301,7 +307,7 @@ public class UserCrudController implements Controllable {
      * @param user the selected user
      * @return the does exist boolean
      */
-    private boolean isExistingUserName(User user) {
+    private boolean isExistingUserName(final User user) {
         boolean isExistingUserName = true;
         User foundUser = userService.findByName(user.getName());
         if (foundUser == null) {

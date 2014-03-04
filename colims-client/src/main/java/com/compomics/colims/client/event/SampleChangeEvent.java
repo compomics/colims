@@ -7,10 +7,10 @@ import com.compomics.colims.model.Sample;
  */
 public class SampleChangeEvent extends EntityChangeEvent {
 
-    private Sample sample;
+    private final Sample sample;
 
-    public SampleChangeEvent(Type type, boolean childrenAffected, Sample sample) {
-        super(type, childrenAffected);
+    public SampleChangeEvent(final Type type, final Sample sample) {
+        super(type);
         this.sample = sample;
     }
 

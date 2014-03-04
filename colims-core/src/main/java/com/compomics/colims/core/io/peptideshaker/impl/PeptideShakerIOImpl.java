@@ -13,17 +13,16 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.core.config.PropertiesConfigurationHolder;
-import com.compomics.colims.core.event.ProgressEvent;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.bean.ProgressEvent;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.model.PeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.Files;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -36,6 +35,8 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerIOImpl.class);
     private static final String PEPTIDESHAKER_SERIALIZATION_DIR = "resources/matches";
     private static final String PEPTIDESHAKER_SERIALIZIZED_EXP_NAME = "experiment";
+    @Value("${peptideshakerio.buffer_size}")
+    private int buffer = 0;
     @Autowired
     private EventBus eventBus;
 
@@ -45,17 +46,17 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public PeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws PeptideShakerIOException {
+    public PeptideShakerDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException {
         File tempDirectory = Files.createTempDir();
         if (tempDirectory.exists()) {
             return this.unpackPeptideShakerCpsArchive(peptideShakerCpsArchive, tempDirectory);
         } else {
-            throw new PeptideShakerIOException("Unable to create a temporary directory in " + tempDirectory.getParent());
+            throw new IOException("Unable to create a temporary directory in " + tempDirectory.getParent());
         }
     }
 
     @Override
-    public PeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws PeptideShakerIOException {
+    public PeptideShakerDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         MsExperiment msExperiment;
@@ -65,8 +66,6 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         }
 
         try (FileInputStream fileInputStream = new FileInputStream(peptideShakerCpsArchive);) {
-            //define buffer for BufferedInputStream
-            final int buffer = PropertiesConfigurationHolder.getInstance().getInt("peptideshakerio.buffer_size");
             byte data[] = new byte[buffer];
 
             try (ArchiveInputStream tarInput = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(fileInputStream, buffer));) {
@@ -98,23 +97,19 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
                     eventBus.post(new ProgressEvent(progress, "unzipping archive"));
                 }
             }
-        } catch (ArchiveException | IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new PeptideShakerIOException(ex);
         }
+//        catch (ArchiveException | IOException ex) {
+//            LOGGER.error(ex.getMessage(), ex);
+//            throw new PeptideShakerIOException(ex);
+//        }
 
         //get serialized experiment object file
         File serializedExperimentFile = new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR + File.separator + PEPTIDESHAKER_SERIALIZIZED_EXP_NAME);
-        try {
-            //deserialize the experiment
-            LOGGER.info("Deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
-            msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new PeptideShakerIOException(ex);
-        }
+        //deserialize the experiment
+        LOGGER.info("Deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
+        msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
 
-        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(msExperiment, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
+        PeptideShakerDataImport peptideShakerImport = new PeptideShakerDataImport(msExperiment, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
         LOGGER.info("Finished importing PeptideShaker file " + peptideShakerCpsArchive.getName());
 
         return peptideShakerImport;

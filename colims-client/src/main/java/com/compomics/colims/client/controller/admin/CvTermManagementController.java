@@ -197,7 +197,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             }
         });
         
-        cvTermManagementDialog.getCancelButton().addActionListener(new ActionListener() {
+        cvTermManagementDialog.getCloseButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {

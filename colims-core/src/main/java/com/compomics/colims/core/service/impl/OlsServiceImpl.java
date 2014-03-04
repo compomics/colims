@@ -70,7 +70,7 @@ public class OlsServiceImpl implements OlsService {
 
                 //get the modificiation properties
                 for (MapItem mapItem : modificationMetaData.getItem()) {
-                    if (mapItem.getKey() != null & mapItem.getValue() != null) {
+                    if (mapItem.getKey() != null && mapItem.getValue() != null) {
                         if (mapItem.getKey().equals("MassMono")) {
                             modification.setMonoIsotopicMass(Double.parseDouble(mapItem.getValue().toString()));
                         } else if (mapItem.getKey().equals("DiffMono")) {

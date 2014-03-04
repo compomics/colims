@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.searches.respin.model.processes.respinprocess;
 
+import com.compomics.colims.distributed.config.distributedconfiguration.client.DistributedProperties;
 import com.compomics.colims.distributed.config.distributedconfiguration.client.RespinProperties;
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessEnum;
 import com.compomics.colims.distributed.searches.respin.control.processrunner.ProcessRunner;
@@ -29,6 +30,7 @@ public class RespinCommandLine {
     private static final Logger LOGGER = Logger.getLogger(RespinCommandLine.class);
     private final EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
     private RespinProperties respProps;
+    private DistributedProperties distProps;
     private File fastaFile;
     private File searchguiJar;
     private File peptideshakerJar;
@@ -53,6 +55,7 @@ public class RespinCommandLine {
         try {
             this.projectID = projectID;
             respProps = RespinProperties.getInstance();
+            distProps = DistributedProperties.getInstance();
             //purge temp dir
             File tempDir = new File(System.getProperty("user.home") + "/.compomics/respin/temp_results/");
             tempDir.delete();
@@ -284,9 +287,9 @@ public class RespinCommandLine {
                     }
                 }
             }
-        } catch (IOException|URISyntaxException ex) {
+        } catch (IOException | URISyntaxException ex) {
             LOGGER.error(ex);
-        } 
+        }
     }
 
     public RespinCommandLine setOutputDir(File outputDir) {
@@ -321,8 +324,8 @@ public class RespinCommandLine {
         });
 
         for (File aFile : resultFiles) {
-            ClientForStorageConnector creator = new ClientForStorageConnector("127.0.0.1", 45678);
-            boolean success = creator.storeFile(userName, aFile.getAbsolutePath(), sampleId, instrumentName,StorageType.PEPTIDESHAKER);
+            ClientForStorageConnector creator = new ClientForStorageConnector(distProps.getControllerIP(), distProps.getStoragePort());
+            creator.storeFile(userName, aFile.getAbsolutePath(), sampleId, instrumentName, StorageType.PEPTIDESHAKER);
         }
     }
 }

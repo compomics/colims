@@ -54,10 +54,22 @@ import org.springframework.stereotype.Component;
 public class GroupCrudController implements Controllable {
 
     //model
+    /**
+     * Group binding list.
+     */
     private ObservableList<Group> groupBindingList;
+    /**
+     * The binding group.
+     */
     private BindingGroup bindingGroup;
+    /**
+     * The list of available roles.
+     */
     private List<Role> availableRoles;
-    boolean areChildrenAffected;
+    /**
+     * Boolean that keeps track wether children are affected or not.
+     */
+    private boolean areChildrenAffected;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -109,18 +121,18 @@ public class GroupCrudController implements Controllable {
         //add listeners
         userManagementDialog.getGroupNameTextField().addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(final FocusEvent e) {
             }
             
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 userManagementDialog.getGroupList().updateUI();
             }
         });
         
         userManagementDialog.getGroupList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
                         Group selectedGroup = getSelectedGroup();
@@ -152,7 +164,7 @@ public class GroupCrudController implements Controllable {
         
         userManagementDialog.getAddGroupButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Group newGroup = new Group("name");
                 groupBindingList.add(newGroup);
                 userManagementDialog.getGroupNameTextField().setEnabled(true);
@@ -162,7 +174,7 @@ public class GroupCrudController implements Controllable {
         
         userManagementDialog.getDeleteGroupButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
                     Group groupToDelete = getSelectedGroup();
                     //check if group is already has an id.
@@ -201,7 +213,7 @@ public class GroupCrudController implements Controllable {
         
         userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 //change roles of the selected group                                    
                 List<Role> addedRoles = (List<Role>) evt.getNewValue();
 
@@ -215,7 +227,7 @@ public class GroupCrudController implements Controllable {
         
         userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Group selectedGroup = getSelectedGroup();
                 //validate group
                 List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
@@ -259,7 +271,7 @@ public class GroupCrudController implements Controllable {
      * @param userChangeEvent the UserChangeEvent
      */
     @Subscribe
-    public void onUserChangeEvent(UserChangeEvent userChangeEvent) {
+    public void onUserChangeEvent(final UserChangeEvent userChangeEvent) {
         if (userChangeEvent.areChildrenAffected()) {
             groupBindingList.clear();
             groupBindingList.addAll(groupService.findAll());
@@ -273,7 +285,7 @@ public class GroupCrudController implements Controllable {
      * @param roleChangeEvent the RoleChangeEvent
      */
     @Subscribe
-    public void onRoleChangeEvent(RoleChangeEvent roleChangeEvent) {
+    public void onRoleChangeEvent(final RoleChangeEvent roleChangeEvent) {
         switch (roleChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -302,7 +314,7 @@ public class GroupCrudController implements Controllable {
      * @param group the selected group
      * @return does the group name exist
      */
-    private boolean isExistingGroupName(Group group) {
+    private boolean isExistingGroupName(final Group group) {
         boolean isExistingGroupName = true;
         Group foundGroup = groupService.findByName(group.getName());
         if (foundGroup == null) {

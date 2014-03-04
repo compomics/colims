@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Group;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Permission;
@@ -21,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 public class PermissionHibernateRepository extends GenericHibernateRepository<Permission, Long> implements PermissionRepository {
     
     @Override
-    public Permission findByName(String name) {
+    public Permission findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }
 

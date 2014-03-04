@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_file")
 @Entity
-public class QuantificationFile extends AbstractDatabaseEntity {
+public class QuantificationFile extends DatabaseEntity {
     
     private static final long serialVersionUID = 1L;
     

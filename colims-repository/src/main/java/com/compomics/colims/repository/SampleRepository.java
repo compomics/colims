@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface SampleRepository extends GenericRepository<Sample, Long> {
 
-    public List<Sample> findSampleByExperimentId(Long experimentId);
+    List<Sample> findSampleByExperimentId(Long experimentId);
     
     /**
      * Get the most used protocol.

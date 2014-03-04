@@ -57,7 +57,7 @@ public class RoleCrudController implements Controllable {
     private ObservableList<Role> roleBindingList;
     private BindingGroup bindingGroup;
     private List<Permission> availablePermissions;
-    boolean areChildrenAffected;
+    private boolean areChildrenAffected;
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -109,18 +109,18 @@ public class RoleCrudController implements Controllable {
         //add listeners
         userManagementDialog.getRoleNameTextField().addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(final FocusEvent e) {
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 userManagementDialog.getRoleList().updateUI();
             }
         });
 
         userManagementDialog.getRoleList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
                         Role selectedRole = getSelectedRole();
@@ -152,7 +152,7 @@ public class RoleCrudController implements Controllable {
 
         userManagementDialog.getAddRoleButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Role newRole = new Role("name");
                 roleBindingList.add(newRole);
                 userManagementDialog.getRoleNameTextField().setEnabled(true);
@@ -162,7 +162,7 @@ public class RoleCrudController implements Controllable {
 
         userManagementDialog.getDeleteRoleButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
                     Role roleToDelete = getSelectedRole();
                     //check if role is already has an id.
@@ -201,7 +201,7 @@ public class RoleCrudController implements Controllable {
 
         userManagementDialog.getPermissionDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 //change permissions of the selected role                                    
                 List<Permission> addedPermissions = (List<Permission>) evt.getNewValue();
 
@@ -215,7 +215,7 @@ public class RoleCrudController implements Controllable {
 
         userManagementDialog.getRoleSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Role selectedRole = getSelectedRole();
                 //validate role
                 List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
@@ -258,7 +258,7 @@ public class RoleCrudController implements Controllable {
      * @param groupChangeEvent the GroupChangeEvent
      */
     @Subscribe
-    public void onGroupChangeEvent(GroupChangeEvent groupChangeEvent) {
+    public void onGroupChangeEvent(final GroupChangeEvent groupChangeEvent) {
         if (groupChangeEvent.areChildrenAffected()) {
             roleBindingList.clear();
             roleBindingList.addAll(roleService.findAll());
@@ -272,7 +272,7 @@ public class RoleCrudController implements Controllable {
      * @param permissionChangeEvent the PermissionChangeEvent
      */
     @Subscribe
-    public void onPermissionChangeEvent(PermissionChangeEvent permissionChangeEvent) {
+    public void onPermissionChangeEvent(final PermissionChangeEvent permissionChangeEvent) {
         switch (permissionChangeEvent.getType()) {
             case CREATED:
             case UPDATED:
@@ -301,7 +301,7 @@ public class RoleCrudController implements Controllable {
      * @param role the selected role
      * @return does the role name exist
      */
-    private boolean isExistingRoleName(Role role) {
+    private boolean isExistingRoleName(final Role role) {
         boolean isExistingRoleName = true;
         Role foundRole = roleService.findByName(role.getName());
         if (foundRole == null) {

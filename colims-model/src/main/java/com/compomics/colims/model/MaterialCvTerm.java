@@ -15,7 +15,7 @@ public class MaterialCvTerm extends CvTerm {
     public MaterialCvTerm() {
     }    
     
-    public MaterialCvTerm(CvTermType cvTermType, String ontology, String label, String accession, String name) {
+    public MaterialCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }        
         

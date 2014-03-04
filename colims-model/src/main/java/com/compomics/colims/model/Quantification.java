@@ -22,7 +22,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification")
 @Entity
-public class Quantification extends AbstractDatabaseEntity {
+public class Quantification extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class Quantification extends AbstractDatabaseEntity {
         return quantificationGroup;
     }
 
-    public void setQuantificationGroup(QuantificationGroup quantificationGroup) {
+    public void setQuantificationGroup(final QuantificationGroup quantificationGroup) {
         this.quantificationGroup = quantificationGroup;
     }
 
@@ -51,11 +51,11 @@ public class Quantification extends AbstractDatabaseEntity {
         return intensity;
     }
 
-    public void setIntensity(double intensity) {
+    public void setIntensity(final double intensity) {
         this.intensity = intensity;
     }
 
-    public void setWeight(QuantificationWeight weight) {
+    public void setWeight(final QuantificationWeight weight) {
         this.weight = weight;
     }
 
@@ -67,7 +67,7 @@ public class Quantification extends AbstractDatabaseEntity {
         return spectrum;
     }
 
-    public void setSpectrum(Spectrum spectrum) {
+    public void setSpectrum(final Spectrum spectrum) {
         this.spectrum = spectrum;
     }
 }

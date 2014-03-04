@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Experiment;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
 
 /**
  *
@@ -14,14 +13,14 @@ import java.util.Date;
 public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experiment> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Title", "Number", "# samp"};
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Number", "# samp"};
     public static final int EXPERIMENT_ID = 0;
     public static final int TITLE = 1;
     public static final int NUMBER = 2;
     public static final int NUMBER_OF_SAMPLES = 3;
 
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case EXPERIMENT_ID:
                 return Long.class;
@@ -37,22 +36,22 @@ public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experime
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(Experiment experiment, int column) {
+    public Object getColumnValue(final Experiment experiment, final int column) {
         switch (column) {
             case EXPERIMENT_ID:
                 return experiment.getId();

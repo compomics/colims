@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -92,7 +91,7 @@ public class GuiUtils {
      */
     public static <T> List<String> validateEntity(final T t) {
         List<String> validationMessages = new ArrayList<>();
-
+        
         ValidatorFactory entityValidator = Validation.buildDefaultValidatorFactory();
         Validator validator = entityValidator.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(t);

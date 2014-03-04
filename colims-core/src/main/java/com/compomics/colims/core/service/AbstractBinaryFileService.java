@@ -1,12 +1,12 @@
 package com.compomics.colims.core.service;
 
 
-import com.compomics.colims.model.AbstractBinaryFile;
+import com.compomics.colims.model.BinaryFile;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public interface AbstractBinaryFileService extends GenericService<AbstractBinaryFile, Long> {
+public interface AbstractBinaryFileService extends GenericService<BinaryFile, Long> {
     
 }

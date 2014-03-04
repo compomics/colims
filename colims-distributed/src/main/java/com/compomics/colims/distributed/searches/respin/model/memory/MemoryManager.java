@@ -5,7 +5,6 @@
 package com.compomics.colims.distributed.searches.respin.model.memory;
 
 import java.lang.management.ManagementFactory;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -13,9 +12,12 @@ import org.apache.log4j.Logger;
  */
 public class MemoryManager {
 
-    private static final Logger LOGGER = Logger.getLogger(MemoryManager.class);
-    private static final int allowedMemory = (int) (0.9 * (((com.sun.management.OperatingSystemMXBean) ManagementFactory
-            .getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024);
+    static {
+        allowedMemory = (int) (0.9 * (((com.sun.management.OperatingSystemMXBean) ManagementFactory
+                .getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024);
+    }
+
+    private static final int allowedMemory;
 
     public static int getAllowedRam() {
         return allowedMemory;

@@ -35,6 +35,14 @@ public interface UserService extends GenericService<User, Long> {
      *
      * @param user the given user
      */
-    void fetchAuthenticationRelations(User user);        
+    void fetchAuthenticationRelations(User user);      
+    
+    /**
+     * Check if the user is a default user.
+     *
+     * @param user the user
+     * @return
+     */
+    boolean isDefaultUser(User user);
 
 }

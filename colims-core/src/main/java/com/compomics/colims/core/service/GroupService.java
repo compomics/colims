@@ -5,9 +5,6 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
-import java.util.List;
 
 /**
  *

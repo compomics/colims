@@ -5,9 +5,9 @@
  */
 package com.compomics.colims.distributed.storage.processing.colimsimport;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.exception.PeptideShakerIOException;
+import com.compomics.colims.core.io.MappingException;
 import java.io.File;
+import javax.naming.AuthenticationException;
 
 /**
  *
@@ -15,7 +15,7 @@ import java.io.File;
  */
 public interface ColimsFileImporter {
 
-    public void storeFile(String username, File fileFolder,long sampleId,String instrumentName) throws PeptideShakerIOException, MappingException;
-    
+    public void storeFile(String username, File fileFolder, long sampleId, String instrumentName) throws MappingException, AuthenticationException;
+
     public boolean validate(File fileFolder);
 }

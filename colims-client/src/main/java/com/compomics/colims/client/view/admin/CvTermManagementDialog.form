@@ -49,7 +49,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="cvTermOverviewPanel" min="-2" pref="534" max="-2" attributes="0"/>
                       <Component id="cvTermDetailPanel" alignment="0" min="-2" pref="534" max="-2" attributes="0"/>
@@ -66,7 +66,7 @@
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Component id="cvTermDetailPanel" pref="365" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cancelButton" min="-2" pref="23" max="-2" attributes="0"/>
+                  <Component id="closeButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -196,7 +196,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="EditUsingOlsCvTermButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="editUsingOlsCvTermButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -264,7 +264,7 @@
                       <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="saveOrUpdateButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                          <Component id="EditUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -369,7 +369,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="EditUsingOlsCvTermButton">
+            <Component class="javax.swing.JButton" name="editUsingOlsCvTermButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
                 <Property name="toolTipText" type="java.lang.String" value="add a CV term with the OLS dialog"/>
@@ -386,9 +386,9 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="cancelButton">
+        <Component class="javax.swing.JButton" name="closeButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="text" type="java.lang.String" value="close"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

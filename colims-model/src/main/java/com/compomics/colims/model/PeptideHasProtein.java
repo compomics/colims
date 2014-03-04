@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Table(name = "peptide_has_protein")
 @Entity
-public class PeptideHasProtein extends AbstractDatabaseEntity {
+public class PeptideHasProtein extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
         return peptideProbability;
     }
 
-    public void setPeptideProbability(Double peptideProbability) {
+    public void setPeptideProbability(final Double peptideProbability) {
         this.peptideProbability = peptideProbability;
     }
 
@@ -46,7 +46,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
         return peptidePostErrorProbability;
     }
 
-    public void setPeptidePostErrorProbability(Double peptidePostErrorProbability) {
+    public void setPeptidePostErrorProbability(final Double peptidePostErrorProbability) {
         this.peptidePostErrorProbability = peptidePostErrorProbability;
     }
 
@@ -54,7 +54,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
         return peptide;
     }
 
-    public void setPeptide(Peptide peptide) {
+    public void setPeptide(final Peptide peptide) {
         this.peptide = peptide;
     }
 
@@ -62,7 +62,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
         return protein;
     }
 
-    public void setProtein(Protein protein) {
+    public void setProtein(final Protein protein) {
         this.protein = protein;
     }
 
@@ -70,7 +70,7 @@ public class PeptideHasProtein extends AbstractDatabaseEntity {
         return mainGroupProtein;
     }
 
-    public void setMainGroupProtein(Protein mainGroupProtein) {
+    public void setMainGroupProtein(final Protein mainGroupProtein) {
         this.mainGroupProtein = mainGroupProtein;
     }
     

@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Table(name = "sample_binary_file")
 @Entity
-public class SampleBinaryFile extends AbstractBinaryFile {
+public class SampleBinaryFile extends BinaryFile {
     
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne
@@ -25,7 +25,7 @@ public class SampleBinaryFile extends AbstractBinaryFile {
         return sample;
     }
 
-    public void setSample(Sample sample) {
+    public void setSample(final Sample sample) {
         this.sample = sample;
     }    
     

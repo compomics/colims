@@ -13,7 +13,7 @@ import java.util.Comparator;
 public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] columnNames = {"Id", "Name", "Condition", "Protocol", "Created", "# runs"};
+    private static final String[] COLUMN_NAMES = {"Id", "Name", "Condition", "Protocol", "Created", "# runs"};
     private static final String NOT_APPLICABLE = "N/A";
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
@@ -23,7 +23,7 @@ public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> 
     public static final int NUMBER_OF_RUNS = 5;
 
     @Override
-    public Class getColumnClass(int column) {
+    public Class getColumnClass(final int column) {
         switch (column) {
             case SAMPLE_ID:
                 return Long.class;
@@ -43,22 +43,22 @@ public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> 
     }
 
     @Override
-    public Comparator getColumnComparator(int column) {
+    public Comparator getColumnComparator(final int column) {
         return GlazedLists.comparableComparator();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
+    public String getColumnName(final int column) {
+        return COLUMN_NAMES[column];
     }
 
     @Override
-    public Object getColumnValue(Sample sample, int column) {
+    public Object getColumnValue(final Sample sample, final int column) {
         switch (column) {
             case SAMPLE_ID:
                 return sample.getId();
@@ -71,7 +71,7 @@ public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> 
                 String protocol = (sample.getProtocol() != null) ? sample.getProtocol().toString() : NOT_APPLICABLE;
                 return protocol;    
             case CREATED:
-                return DATE_FORMAT.format(sample.getCreationdate());        
+                return DATE_FORMAT.format(sample.getCreationDate());        
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

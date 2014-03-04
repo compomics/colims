@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.hibernate;
 
+import com.compomics.colims.model.AuditableDatabaseEntity;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -8,7 +9,7 @@ import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.compomics.colims.model.AbstractDatabaseEntity;
+import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.repository.AuthenticationBean;
 
 /**
@@ -17,14 +18,14 @@ import com.compomics.colims.repository.AuthenticationBean;
  */
 @Component("saveEventListener")
 public class CustomSaveEventListener extends DefaultSaveEventListener {
-    
+
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(CustomSaveEventListener.class);
     @Autowired
     private AuthenticationBean authenticationBean;
 
     @Override
-    public void onSaveOrUpdate(SaveOrUpdateEvent event) {
+    public void onSaveOrUpdate(final SaveOrUpdateEvent event) {
         LOGGER.debug("Entering onSaveOrUpdate");
 
         onListen(event.getObject());
@@ -32,20 +33,20 @@ public class CustomSaveEventListener extends DefaultSaveEventListener {
         super.onSaveOrUpdate(event);
     }
 
-    private void onListen(Object object) {
-        if (object instanceof AbstractDatabaseEntity) {
-            AbstractDatabaseEntity entity = (AbstractDatabaseEntity) object;
+    private void onListen(final Object object) {
+        if (object instanceof AuditableDatabaseEntity) {
+            AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;
 
             //set the user name            
             entity.setUserName(authenticationBean.getCurrentUser().getName());
 
             // set the creation date
-            if (entity.getCreationdate() == null) {
-                entity.setCreationdate(new Date());
+            if (entity.getCreationDate() == null) {
+                entity.setCreationDate(new Date());
             }
-            
+
             //set the modification date
-            entity.setModificationdate(new Date());
+            entity.setModificationDate(new Date());
         }
     }
 }

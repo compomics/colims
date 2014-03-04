@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {
 
-    public List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleID);
+    List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleID);
 
 }

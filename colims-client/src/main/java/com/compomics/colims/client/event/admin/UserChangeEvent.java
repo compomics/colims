@@ -1,16 +1,16 @@
 package com.compomics.colims.client.event.admin;
 
-import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.EntityWithChildrenChangeEvent;
 import com.compomics.colims.model.User;
 
 /**
  * @author Niels Hulstaert
  */
-public class UserChangeEvent extends EntityChangeEvent {
+public class UserChangeEvent extends EntityWithChildrenChangeEvent {
     
-    private User user;
+    private final User user;
 
-    public UserChangeEvent(Type type, boolean childrenAffected, User user) {
+    public UserChangeEvent(final Type type, final boolean childrenAffected, final User user) {
         super(type, childrenAffected);
         this.user = user;
     }

@@ -3,7 +3,6 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
-import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 

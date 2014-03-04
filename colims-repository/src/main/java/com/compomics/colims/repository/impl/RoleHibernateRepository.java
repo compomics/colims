@@ -20,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 public class RoleHibernateRepository extends GenericHibernateRepository<Role, Long> implements RoleRepository {
     
     @Override
-    public Role findByName(String name) {
+    public Role findByName(final String name) {
         return findUniqueByCriteria(Restrictions.eq("name", name));
     }    
 

@@ -15,7 +15,7 @@ import javax.swing.JList;
 public class CvTermSummaryCellRenderer<T extends CvTerm> extends DefaultListCellRenderer {
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         CvTermSummaryListModel<T> cvTermSummaryListModel = (CvTermSummaryListModel) list.getModel();
 
