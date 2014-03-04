@@ -46,11 +46,11 @@
     </bean>            
     
     <!-- ActiveMQ Destination -->  
-    <amq:queue id="storage_destination" physicalName="${distributed.queue.storage}" />
+    <amq:queue id="storageTaskDestination" physicalName="${distributed.queue.storage}" />
     
-    <bean id="storageProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="storageTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="storage_destination" />    
+          p:defaultDestination-ref="storageTaskDestination" />    
         
     <!-- Client connector for jmx -->
     <!--    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"

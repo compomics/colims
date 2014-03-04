@@ -1,12 +1,9 @@
 package com.compomics.colims.client.storage;
 
-import com.compomics.colims.distributed.playground.TestBean;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Connection;
-import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.QueueBrowser;
@@ -15,13 +12,9 @@ import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.OpenDataException;
-import javax.management.openmbean.TabularData;
 import org.apache.activemq.broker.jmx.BrokerViewMBean;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +56,6 @@ public class MonitorTest {
         }
     }
     
-
     public void getQueueInfo2() {
         try {
             Connection connection = cachingConnectionFactory.createConnection();

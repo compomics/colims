@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.distributed.storage.model.StorageMetadata;
+import com.compomics.colims.distributed.model.StorageMetadata;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +13,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class StorageQueueTableModel extends AbstractTableModel {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "sample"};    
     private static final int QUEUE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
@@ -64,7 +64,7 @@ public class StorageQueueTableModel extends AbstractTableModel {
             case TYPE_INDEX:                
                 return storageMetadata.getStorageType().userFriendlyName();
             case SUBMITTED_INDEX:
-                return DATE_FORMAT.format(new Date(storageMetadata.getSubmissionTimestamp()));
+                return DATE_TIME_FORMAT.format(new Date(storageMetadata.getSubmissionTimestamp()));
             case DESCRIPTION_INDEX:
                 return storageMetadata.getDescription();
             case USER_INDEX:

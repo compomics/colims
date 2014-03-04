@@ -30,7 +30,7 @@
     </bean>
     
     <!-- component beans -->
-    <context:component-scan base-package="com.compomics.colims.distributed.storage.consumer">
+    <context:component-scan base-package="com.compomics.colims.distributed.storage">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
     </context:component-scan>  
@@ -47,6 +47,13 @@
     
     <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default">                            
         <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
-    </jms:listener-container>              
+    </jms:listener-container>
+    
+    <!-- ActiveMQ Destination -->  
+    <amq:queue id="storageErrorDestination" physicalName="${distributed.queue.error}" />
+    
+    <bean id="storageErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="connectionFactory"
+          p:defaultDestination-ref="storageErrorDestination" />                      
                           
 </beans>

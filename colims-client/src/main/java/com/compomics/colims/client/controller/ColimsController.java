@@ -51,6 +51,10 @@ public class ColimsController implements Controllable, ActionListener {
     private String version = "unknown";
     @Autowired
     private AuthenticationBean authenticationBean;
+    /**
+     * The project EventList that is used as table model in the project
+     * management and overview tabs.
+     */
     private EventList<Project> projects = new BasicEventList<>();
     //views
     private ColimsFrame colimsFrame;
@@ -60,9 +64,9 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
-    private ProjectOverviewController projectOverviewController;    
+    private ProjectOverviewController projectOverviewController;
     @Autowired
-    private StorageMonitoringController storageMonitoringController;   
+    private StorageMonitoringController storageMonitoringController;
     @Autowired
     private ProtocolManagementController protocolManagementController;
     @Autowired
@@ -82,8 +86,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private LocalSessionFactoryBean sessionFactory;
+//    @Autowired
+//    private LocalSessionFactoryBean sessionFactory;
 
     public ColimsFrame getColimsFrame() {
         return colimsFrame;

@@ -1,7 +1,7 @@
 package com.compomics.colims.client.storage;
 
-import com.compomics.colims.distributed.storage.model.StorageMetadata;
-import com.compomics.colims.distributed.storage.model.StorageTask;
+import com.compomics.colims.distributed.model.StorageMetadata;
+import com.compomics.colims.distributed.model.StorageTask;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -31,7 +31,7 @@ public class QueueMonitor {
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        QueueBrowser queueBrowser = session.createBrowser(session.createQueue("com.compomics.distributed.queue.storage"));
+        QueueBrowser queueBrowser = session.createBrowser(session.createQueue(queueName));
 
         Enumeration enumeration = queueBrowser.getEnumeration();
 

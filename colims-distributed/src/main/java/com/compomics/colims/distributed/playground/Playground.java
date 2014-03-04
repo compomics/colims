@@ -1,7 +1,7 @@
 
 package com.compomics.colims.distributed.playground;
 
-import com.compomics.colims.distributed.storage.consumer.StorageTaskConsumer;
+import com.compomics.colims.distributed.consumer.StorageTaskConsumer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

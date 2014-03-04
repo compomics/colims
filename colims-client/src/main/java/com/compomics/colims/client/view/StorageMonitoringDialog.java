@@ -2,6 +2,8 @@ package com.compomics.colims.client.view;
 
 import java.awt.Color;
 import java.awt.Frame;
+import javax.swing.JButton;
+import javax.swing.JTable;
 
 /**
  *
@@ -22,7 +24,19 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         
         storageQueueScrollPane.getViewport().setOpaque(false);
         this.getContentPane().setBackground(Color.WHITE);
-    }    
+    } 
+
+    public JTable getStorageQueueTable() {
+        return storageQueueTable;
+    }
+
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
+    public JButton getRefreshButton() {
+        return refreshButton;
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,9 +52,11 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         storageQueueScrollPane = new javax.swing.JScrollPane();
         storageQueueTable = new javax.swing.JTable();
         exceptionQueuePanel = new javax.swing.JPanel();
+        closeButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("sample metadata management");
+        setTitle("storage monitoring");
 
         storageQueuePanel.setOpaque(false);
 
@@ -73,8 +89,8 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
             storageQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(storageQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(storageQueueScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addComponent(storageQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         storageMonitoringTabbedPane.addTab("storage tasks", storageQueuePanel);
@@ -89,26 +105,50 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         );
         exceptionQueuePanelLayout.setVerticalGroup(
             exceptionQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 349, Short.MAX_VALUE)
+            .addGap(0, 263, Short.MAX_VALUE)
         );
 
-        storageMonitoringTabbedPane.addTab("errors", exceptionQueuePanel);
+        storageMonitoringTabbedPane.addTab("storage errors", exceptionQueuePanel);
+
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        refreshButton.setText("refresh");
+        refreshButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        refreshButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        refreshButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(storageMonitoringTabbedPane)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(storageMonitoringTabbedPane)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(storageMonitoringTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
     private javax.swing.JPanel exceptionQueuePanel;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JTabbedPane storageMonitoringTabbedPane;
     private javax.swing.JPanel storageQueuePanel;
     private javax.swing.JScrollPane storageQueueScrollPane;

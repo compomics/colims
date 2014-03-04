@@ -1,6 +1,6 @@
 package com.compomics.colims.client.storage;
 
-import com.compomics.colims.distributed.storage.model.StorageTask;
+import com.compomics.colims.distributed.model.StorageTask;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -18,29 +18,27 @@ import org.springframework.stereotype.Component;
  */
 @Component("storageTaskProducer")
 public class StorageTaskProducer {
-    
+
     private static final Logger LOGGER = Logger.getLogger(StorageTaskProducer.class);
 
     @Autowired
-    private JmsTemplate storageProducerTemplate;
+    private JmsTemplate storageTaskProducerTemplate;
 
     /**
-     * Send the serialized StorageTask to the storage queue. For queue
-     * monitoring purposes, the storage type, submission timestamp, description,
-     * user name and sample name are set a jms message properties.
+     * Send the serialized StorageTask to the storage queue.
      *
      * @param storageTask the StorageTask
      * @throws JmsException
      */
     public void sendStorageTask(final StorageTask storageTask) throws JmsException {
-        
-        storageProducerTemplate.send(new MessageCreator() {
+
+        storageTaskProducerTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set StorageTask instance as message body
-                ObjectMessage storageTaskMessage = session.createObjectMessage(storageTask);                
+                ObjectMessage storageTaskMessage = session.createObjectMessage(storageTask);
 
-                LOGGER.info("Sending message: " + storageTask.getStorageMetadata().getDescription());
+                LOGGER.info("Sending storage task");
 
                 return storageTaskMessage;
             }
