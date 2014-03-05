@@ -4,6 +4,7 @@ package com.compomics.colims.distributed.model;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Sample;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -72,6 +73,44 @@ public class StorageMetadata implements Serializable {
 
     public void setSample(Sample sample) {
         this.sample = sample;
+    }    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.storageType);
+        hash = 47 * hash + Objects.hashCode(this.submissionTimestamp);
+        hash = 47 * hash + Objects.hashCode(this.description);
+        hash = 47 * hash + Objects.hashCode(this.userName);
+        hash = 47 * hash + Objects.hashCode(this.sample);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StorageMetadata other = (StorageMetadata) obj;
+        if (this.storageType != other.storageType) {
+            return false;
+        }
+        if (!Objects.equals(this.submissionTimestamp, other.submissionTimestamp)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.userName, other.userName)) {
+            return false;
+        }
+        if (!Objects.equals(this.sample, other.sample)) {
+            return false;
+        }
+        return true;
     }        
 
 }

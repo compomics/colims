@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,6 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-client-context.xml", "classpath:colims-client-test-context.xml"})
 public class StorageTaskProducerTest {
     
+    @Value("${distributed.queue.storage}")
+    private String storageQueueName;
     @Autowired
     private StorageTaskProducer storageTaskProducer;
     @Autowired
@@ -37,21 +40,25 @@ public class StorageTaskProducerTest {
         storageMetadata.setSample(new Sample("test sample name"));
         storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
         storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-        storageMetadata.setUserName("test user");
-        
+        storageMetadata.setUserName("test user");        
         storageTask.setStorageMetadata(storageMetadata);
         
-        DataImport dataImport = new PeptideShakerDataImport(null, null);
-        
+        DataImport dataImport = new PeptideShakerDataImport(null, null);        
         storageTask.setDataImport(dataImport);
         
-        List<StorageMetadata> messages = queueMonitor.getMessages("com.compomics.distributed.queue.storage");
+        List<StorageMetadata> messages = queueMonitor.getMessages(storageQueueName);
+        //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
         
+        //send the test message
         storageTaskProducer.sendStorageTask(storageTask);
         
-        messages = queueMonitor.getMessages("com.compomics.distributed.queue.storage");
+        messages = queueMonitor.getMessages(storageQueueName);
+        //there should be one message on the queue
         Assert.assertEquals(1, messages.size());
+        
+        StorageMetadata storageMetaDataOnQueue = messages.get(0);
+        Assert.assertEquals(storageMetadata, storageMetaDataOnQueue);
     }
     
 }

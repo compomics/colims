@@ -10,7 +10,6 @@ import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
@@ -30,7 +29,7 @@ public class StorageMonitoringController implements Controllable {
     //model   
     private StorageQueueTableModel storageQueueTableModel;
     @Value("${distributed.queue.storage}")
-    private String storageQueueName = "";
+    private String storageQueueName;
     //view
     private StorageMonitoringDialog storageMonitoringDialog;
     //parent controller

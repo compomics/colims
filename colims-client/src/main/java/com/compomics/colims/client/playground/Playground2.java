@@ -39,29 +39,27 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  * @author Niels Hulstaert
  */
 public class Playground2 {
-    
+
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
-        
-//        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
-//        
-//        StorageTask storageTask = new StorageTask();
-//        StorageMetadata storageMetadata = new StorageMetadata();
-//        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
-//        storageMetadata.setDescription("test description2");
-//        storageMetadata.setSample(new Sample("sample name2"));
-//        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-//        storageMetadata.setUserName("testUser");        
-//        
-//        storageTask.setStorageMetadata(storageMetadata);
-//        storageTask.setDataImport(new PeptideShakerDataImport(null, null));
-//        
-//        storageTaskProducer.sendStorageTask(storageTask);
-        
+
+        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
+
+        StorageTask storageTask = new StorageTask();
+        StorageMetadata storageMetadata = new StorageMetadata();
+        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+        storageMetadata.setDescription("test description1");
+        storageMetadata.setSample(new Sample("sample name3"));
+        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
+        storageMetadata.setUserName("testUser");
+
+        storageTask.setStorageMetadata(storageMetadata);
+        storageTask.setDataImport(new PeptideShakerDataImport(null, null));
+
+        storageTaskProducer.sendStorageTask(storageTask);
+
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
 //        List<StorageMetadata> messages = queueMonitor.getMessages("test");
-        
-        
 //        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
 //        PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
 //        UserService userService = applicationContext.getBean("userService", UserService.class);

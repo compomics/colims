@@ -30,7 +30,7 @@
     </bean>
     
     <!-- component beans -->
-    <context:component-scan base-package="com.compomics.colims.distributed.storage">
+    <context:component-scan base-package="com.compomics.colims.distributed">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
     </context:component-scan>  
@@ -45,7 +45,7 @@
         <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
     </bean>
     
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default">                            
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler">                            
         <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
     </jms:listener-container>
     

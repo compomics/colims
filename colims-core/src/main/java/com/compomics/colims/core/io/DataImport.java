@@ -29,6 +29,6 @@ public abstract class DataImport implements Serializable {
 
     public void setFastaFile(File fastaFile) {
         this.fastaFile = fastaFile;
-    }
+    }        
 
 }

@@ -80,7 +80,7 @@ public class PeptideShakerImportMapperTest {
     }
     
     @Test
-    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, FileNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException {
+    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException {
         //import PeptideShaker .cps file
         PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
         //set mgf files and fasta file
