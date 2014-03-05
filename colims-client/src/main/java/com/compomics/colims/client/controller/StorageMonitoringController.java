@@ -27,9 +27,7 @@ public class StorageMonitoringController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(StorageMonitoringController.class);
 
     //model   
-    private StorageQueueTableModel storageQueueTableModel;
-    @Value("${distributed.queue.storage}")
-    private String storageQueueName;
+    private StorageQueueTableModel storageQueueTableModel;    
     //view
     private StorageMonitoringDialog storageMonitoringDialog;
     //parent controller
@@ -87,7 +85,7 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageMetadata> messages = queueMonitor.getMessages(storageQueueName);
+            List<StorageMetadata> messages = queueMonitor.monitorStorageQueue();
             storageQueueTableModel.setMessages(messages);
         } catch (JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);   

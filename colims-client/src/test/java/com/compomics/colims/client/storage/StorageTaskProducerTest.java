@@ -46,14 +46,14 @@ public class StorageTaskProducerTest {
         DataImport dataImport = new PeptideShakerDataImport(null, null);        
         storageTask.setDataImport(dataImport);
         
-        List<StorageMetadata> messages = queueMonitor.getMessages(storageQueueName);
+        List<StorageMetadata> messages = queueMonitor.monitorStorageQueue(storageQueueName);
         //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
         
         //send the test message
         storageTaskProducer.sendStorageTask(storageTask);
         
-        messages = queueMonitor.getMessages(storageQueueName);
+        messages = queuemonitorStorageQueueMessages(storageQueueName);
         //there should be one message on the queue
         Assert.assertEquals(1, messages.size());
         

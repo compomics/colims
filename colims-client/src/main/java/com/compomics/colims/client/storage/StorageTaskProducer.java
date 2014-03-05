@@ -31,7 +31,7 @@ public class StorageTaskProducer {
      * @throws JmsException
      */
     public void sendStorageTask(final StorageTask storageTask) throws JmsException {
-
+        
         storageTaskProducerTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {

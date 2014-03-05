@@ -16,15 +16,9 @@ public class StorageTaskConsumerErrorHandler implements ErrorHandler {
 
     private static final Logger LOGGER = Logger.getLogger(StorageTaskConsumerErrorHandler.class);
 
-    @Autowired
-    private StorageErrorProducer storageErrorProducer;
-
     @Override
     public void handleError(Throwable thrwbl) {
         LOGGER.error(thrwbl.getMessage(), thrwbl);
-
-        //wrap the StorageTask in a StorageError and send it to the error queue
-        storageErrorProducer.sendStorageError(new StorageError(null, (Exception) thrwbl));
     }
 
 }

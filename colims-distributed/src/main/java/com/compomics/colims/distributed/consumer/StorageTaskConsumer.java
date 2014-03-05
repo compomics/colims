@@ -19,6 +19,7 @@ import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
  *
@@ -52,7 +53,7 @@ public class StorageTaskConsumer implements MessageListener {
             try {
                 //map the task
                 List<AnalyticalRun> analyticalRuns = mapDataImport(storageTask);
-            } catch (MappingException e) {
+            } catch (MappingException | CannotCreateTransactionException e) {
                 LOGGER.error(e.getMessage(), e);
                 //wrap the StorageTask in a StorageError and send it to the error queue
                 storageErrorProducer.sendStorageError(new StorageError(storageTask, e));

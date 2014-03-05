@@ -11,6 +11,7 @@ import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
 
@@ -21,17 +22,21 @@ import org.springframework.stereotype.Component;
 @Component("queueMonitor")
 public class QueueMonitor {
 
+    
+    @Value("${distributed.queue.storage}")
+    private String storageQueueName;
+    
     @Autowired
     private CachingConnectionFactory cachingConnectionFactory;
 
-    public List<StorageMetadata> getMessages(String queueName) throws JMSException {
+    public List<StorageMetadata> monitorStorageQueue() throws JMSException {
         List<StorageMetadata> messages = new ArrayList<>();
 
         Connection connection = cachingConnectionFactory.createConnection();
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        QueueBrowser queueBrowser = session.createBrowser(session.createQueue(queueName));
+        QueueBrowser queueBrowser = session.createBrowser(session.createQueue(storageQueueName));
 
         Enumeration enumeration = queueBrowser.getEnumeration();
 
