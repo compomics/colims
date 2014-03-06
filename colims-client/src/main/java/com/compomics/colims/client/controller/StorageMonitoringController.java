@@ -1,11 +1,13 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
 import com.compomics.colims.client.storage.QueueMonitor;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
-import com.compomics.colims.distributed.model.StorageMetadata;
+import com.compomics.colims.distributed.model.StorageError;
+import com.compomics.colims.distributed.model.StorageTask;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,11 +25,16 @@ import org.springframework.stereotype.Component;
  */
 @Component("storageMonitoringController")
 public class StorageMonitoringController implements Controllable {
-    
+
     private static final Logger LOGGER = Logger.getLogger(StorageMonitoringController.class);
 
-    //model   
-    private StorageQueueTableModel storageQueueTableModel;    
+    //model
+    @Value("${distributed.queue.storage}")
+    private String storageQueueName;
+    @Value("${distributed.queue.error}")
+    private String errorQueueName;
+    private StorageQueueTableModel storageQueueTableModel;
+    private ErrorQueueTableModel errorQueueTableModel;
     //view
     private StorageMonitoringDialog storageMonitoringDialog;
     //parent controller
@@ -38,11 +45,11 @@ public class StorageMonitoringController implements Controllable {
     private QueueMonitor queueMonitor;
     @Autowired
     private EventBus eventBus;
-    
+
     public StorageMonitoringDialog getStorageMonitoringDialog() {
         return storageMonitoringDialog;
     }
-    
+
     @Override
     public void init() {
         //register to event bus
@@ -51,9 +58,11 @@ public class StorageMonitoringController implements Controllable {
         //init view
         storageMonitoringDialog = new StorageMonitoringDialog(colimsController.getColimsFrame(), true);
 
-        //init and set table model
+        //init and set table models
         storageQueueTableModel = new StorageQueueTableModel();
         storageMonitoringDialog.getStorageQueueTable().setModel(storageQueueTableModel);
+        errorQueueTableModel = new ErrorQueueTableModel();
+        storageMonitoringDialog.getErrorQueueTable().setModel(errorQueueTableModel);
         
         //add action listeners
         storageMonitoringDialog.getRefreshButton().addActionListener(new ActionListener() {
@@ -62,7 +71,7 @@ public class StorageMonitoringController implements Controllable {
                 updateMonitoringTables();
             }
         });
-        
+
         storageMonitoringDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,11 +79,11 @@ public class StorageMonitoringController implements Controllable {
             }
         });
     }
-    
+
     @Override
     public void showView() {
         updateMonitoringTables();
-        
+
         GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
         storageMonitoringDialog.setVisible(true);
     }
@@ -85,12 +94,15 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageMetadata> messages = queueMonitor.monitorStorageQueue();
-            storageQueueTableModel.setMessages(messages);
+            List<StorageTask> storageTaskMessages = queueMonitor.monitorQueue(storageQueueName);
+            storageQueueTableModel.setMessages(storageTaskMessages);
+            
+            List<StorageError> storageErrorMessages = queueMonitor.monitorQueue(errorQueueName);
+            errorQueueTableModel.setMessages(storageErrorMessages);
         } catch (JMSException ex) {
-            LOGGER.error(ex.getMessage(), ex);   
+            LOGGER.error(ex.getMessage(), ex);
             eventBus.post(new MessageEvent("connection error", "The storage module could not be reached.", JOptionPane.ERROR_MESSAGE));
         }
     }
-    
+
 }

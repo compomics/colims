@@ -1,6 +1,7 @@
 package com.compomics.colims.client.model;
 
 import com.compomics.colims.distributed.model.StorageMetadata;
+import com.compomics.colims.distributed.model.StorageTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,21 +22,21 @@ public class StorageQueueTableModel extends AbstractTableModel {
     private static final int DESCRIPTION_INDEX = 3;
     private static final int USER_INDEX = 4;
     private static final int SAMPLE_INDEX = 5;
-    private List<StorageMetadata> messages;
+    private List<StorageTask> messages;
 
     public StorageQueueTableModel() {
         messages = new ArrayList<>();
     }
 
-    public StorageQueueTableModel(List<StorageMetadata> messages) {
+    public StorageQueueTableModel(List<StorageTask> messages) {
         this.messages = messages;
     }
 
-    public List<StorageMetadata> getMessages() {
+    public List<StorageTask> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<StorageMetadata> messages) {
+    public void setMessages(List<StorageTask> messages) {
         this.messages = messages;
     }    
 
@@ -56,7 +57,7 @@ public class StorageQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        StorageMetadata storageMetadata = messages.get(rowIndex);
+        StorageMetadata storageMetadata = messages.get(rowIndex).getStorageMetadata();
                 
         switch (columnIndex) {
             case QUEUE_INDEX:                

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"       
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"       
-       xmlns:context="http://www.springframework.org/schema/context"   
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:p="http://www.springframework.org/schema/p"      
+       xmlns:context="http://www.springframework.org/schema/context"  
        xmlns:jms="http://www.springframework.org/schema/jms"
-       xmlns:amq="http://activemq.apache.org/schema/core"        
+       xmlns:amq="http://activemq.apache.org/schema/core"     
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context
@@ -14,13 +14,13 @@
        http://activemq.apache.org/schema/core 
        http://activemq.apache.org/schema/core/activemq-core.xsd">
     
-    <import resource="classpath:colims-core-context.xml"/>
+    <import resource="classpath:colims-core-context.xml"/>   
     
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>${property_file.source}:config/colims-client.properties
+                <value>${property_file.source}:config/colims-distributed.properties
                 </value>
             </list>
         </property>        
@@ -30,11 +30,11 @@
     </bean>
     
     <!-- component beans -->
-    <context:component-scan base-package="com.compomics.colims.client">
+    <context:component-scan base-package="com.compomics.colims.distributed">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>        
-    
+    </context:component-scan>  
+        
     <!-- ActiveMQ connection factory -->
     <amq:connectionFactory id="amqConnectionFactory" brokerURL="${connectionfactory.broker.url}"/>
     
@@ -43,20 +43,17 @@
         <constructor-arg ref="amqConnectionFactory" />
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
         <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
-    </bean>            
+    </bean>
+    
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler">                            
+        <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
+    </jms:listener-container>
     
     <!-- ActiveMQ Destination -->  
-    <amq:queue id="storageTaskDestination" physicalName="${distributed.queue.storage}" />
+    <amq:queue id="storageErrorDestination" physicalName="${distributed.queue.error}" />
     
-    <bean id="storageTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="storageErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="storageTaskDestination" />    
-    
-    <bean id="queueMonitorTemplate" class="org.springframework.jms.core.JmsTemplate"
-          p:connectionFactory-ref="connectionFactory"/>    
-        
-    <!-- Client connector for jmx -->
-    <!--    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-    p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    -->
-    
+          p:defaultDestination-ref="storageErrorDestination" />                      
+                          
 </beans>

@@ -13,6 +13,8 @@ import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.core.BrowserCallback;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,35 +22,28 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("queueMonitor")
-public class QueueMonitor {
+public class QueueMonitor {    
 
-    
-    @Value("${distributed.queue.storage}")
-    private String storageQueueName;
-    
     @Autowired
-    private CachingConnectionFactory cachingConnectionFactory;
+    private JmsTemplate queueMonitorTemplate;
+    
+    public <T> List<T> monitorQueue(String queueName) throws JMSException {
+        List<T> messages = queueMonitorTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
-    public List<StorageMetadata> monitorStorageQueue() throws JMSException {
-        List<StorageMetadata> messages = new ArrayList<>();
+            @Override
+            public List<T> doInJms(Session session, QueueBrowser browser) throws JMSException {
+                Enumeration enumeration = browser.getEnumeration();
+                List<T> queueMessages = new ArrayList<>();
 
-        Connection connection = cachingConnectionFactory.createConnection();
-        connection.start();
+                while (enumeration.hasMoreElements()) {
+                    ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
 
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        QueueBrowser queueBrowser = session.createBrowser(session.createQueue(storageQueueName));
+                    queueMessages.add((T) message.getObject());
+                }
 
-        Enumeration enumeration = queueBrowser.getEnumeration();
-
-        while (enumeration.hasMoreElements()) {
-            ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
-            StorageTask storageTask = (StorageTask) message.getObject();
-            
-            messages.add(storageTask.getStorageMetadata());
-        }
-
-        session.close();
-        connection.close();
+                return queueMessages;
+            }
+        });
 
         return messages;
     }

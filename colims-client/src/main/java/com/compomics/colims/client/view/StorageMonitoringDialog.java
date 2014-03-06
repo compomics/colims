@@ -23,12 +23,17 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         initComponents();   
         
         storageQueueScrollPane.getViewport().setOpaque(false);
+        errorQueueScrollPane.getViewport().setOpaque(false);
         this.getContentPane().setBackground(Color.WHITE);
     } 
 
     public JTable getStorageQueueTable() {
         return storageQueueTable;
     }
+
+    public JTable getErrorQueueTable() {
+        return errorQueueTable;
+    }        
 
     public JButton getCloseButton() {
         return closeButton;
@@ -52,6 +57,8 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         storageQueueScrollPane = new javax.swing.JScrollPane();
         storageQueueTable = new javax.swing.JTable();
         exceptionQueuePanel = new javax.swing.JPanel();
+        errorQueueScrollPane = new javax.swing.JScrollPane();
+        errorQueueTable = new javax.swing.JTable();
         closeButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
 
@@ -97,15 +104,37 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
 
         exceptionQueuePanel.setOpaque(false);
 
+        errorQueueScrollPane.setOpaque(false);
+
+        errorQueueTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        errorQueueTable.setOpaque(false);
+        errorQueueScrollPane.setViewportView(errorQueueTable);
+
         javax.swing.GroupLayout exceptionQueuePanelLayout = new javax.swing.GroupLayout(exceptionQueuePanel);
         exceptionQueuePanel.setLayout(exceptionQueuePanelLayout);
         exceptionQueuePanelLayout.setHorizontalGroup(
             exceptionQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 691, Short.MAX_VALUE)
+            .addGroup(exceptionQueuePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(errorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                .addContainerGap())
         );
         exceptionQueuePanelLayout.setVerticalGroup(
             exceptionQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 263, Short.MAX_VALUE)
+            .addGroup(exceptionQueuePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(errorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         storageMonitoringTabbedPane.addTab("storage errors", exceptionQueuePanel);
@@ -147,6 +176,8 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JScrollPane errorQueueScrollPane;
+    private javax.swing.JTable errorQueueTable;
     private javax.swing.JPanel exceptionQueuePanel;
     private javax.swing.JButton refreshButton;
     private javax.swing.JTabbedPane storageMonitoringTabbedPane;

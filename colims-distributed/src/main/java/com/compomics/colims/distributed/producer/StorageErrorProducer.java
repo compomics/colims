@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.producer;
 
 import com.compomics.colims.distributed.model.StorageError;
-import com.compomics.colims.distributed.model.StorageTask;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -37,7 +36,7 @@ public class StorageErrorProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set StorageError instance as message body
-                ObjectMessage storageErrorMessage = session.createObjectMessage();
+                ObjectMessage storageErrorMessage = session.createObjectMessage(storageError);
 
                 LOGGER.info("Sending storage error");
 
