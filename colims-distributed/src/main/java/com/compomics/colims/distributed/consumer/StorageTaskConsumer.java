@@ -53,7 +53,7 @@ public class StorageTaskConsumer implements MessageListener {
             try {
                 //map the task
                 List<AnalyticalRun> analyticalRuns = mapDataImport(storageTask);
-            } catch (MappingException | CannotCreateTransactionException e) {
+            } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 //wrap the StorageTask in a StorageError and send it to the error queue
                 storageErrorProducer.sendStorageError(new StorageError(storageTask, e));

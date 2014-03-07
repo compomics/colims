@@ -75,7 +75,7 @@ public class ErrorQueueTableModel extends AbstractTableModel {
             case SAMPLE_INDEX:
                 return storageMetadata.getSample().getName();
             case ERROR_INDEX:
-                return storageError.getCause().getMessage();
+                return storageError.getCause().getClass().getSimpleName();
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }

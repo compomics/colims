@@ -9,14 +9,20 @@ import com.compomics.colims.client.view.StorageMonitoringDialog;
 import com.compomics.colims.distributed.model.StorageError;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.google.common.eventbus.EventBus;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.UncategorizedJmsException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -63,8 +69,28 @@ public class StorageMonitoringController implements Controllable {
         storageMonitoringDialog.getStorageQueueTable().setModel(storageQueueTableModel);
         errorQueueTableModel = new ErrorQueueTableModel();
         storageMonitoringDialog.getErrorQueueTable().setModel(errorQueueTableModel);
-        
+
         //add action listeners
+        storageMonitoringDialog.getErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                //if (!lse.getValueIsAdjusting()) {
+                    int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
+                    if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
+                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+                        //add message to JTextArea
+                        JTextArea textArea = new JTextArea(storageError.getCause().getMessage());
+                        //put JTextArea in JScrollPane
+                        JScrollPane scrollPane = new JScrollPane(textArea);
+                        scrollPane.setPreferredSize(new Dimension(600, 200));
+                        textArea.setEditable(false);
+
+                        JOptionPane.showMessageDialog(storageMonitoringDialog.getContentPane(), scrollPane, "error message", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                //}
+            }
+        });
+
         storageMonitoringDialog.getRefreshButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,12 +122,13 @@ public class StorageMonitoringController implements Controllable {
         try {
             List<StorageTask> storageTaskMessages = queueMonitor.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
-            
+
             List<StorageError> storageErrorMessages = queueMonitor.monitorQueue(errorQueueName);
             errorQueueTableModel.setMessages(storageErrorMessages);
-        } catch (JMSException ex) {
+        } catch (UncategorizedJmsException | JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);
-            eventBus.post(new MessageEvent("connection error", "The storage module could not be reached.", JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("connection error", "The storage module could not be reached:"
+                    + "\n" + ex.getMessage(), JOptionPane.ERROR_MESSAGE));
         }
     }
 

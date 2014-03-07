@@ -117,6 +117,7 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        errorQueueTable.setToolTipText("click on a row to see the error message");
         errorQueueTable.setOpaque(false);
         errorQueueScrollPane.setViewportView(errorQueueTable);
 
