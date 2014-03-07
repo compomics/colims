@@ -12,6 +12,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
+import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.distributed.model.enums.StorageType;
@@ -73,6 +74,8 @@ public class AnalyticalRunSetupController implements Controllable {
     private EventBus eventBus;
     @Autowired
     private AuthenticationBean authenticationBean;
+    @Autowired
+    private StorageTaskProducer storageTaskProducer;
 
     public AnalyticalRunSetupDialog getAnalyticalRunSetupDialog() {
         return analyticalRunSetupDialog;
@@ -124,7 +127,7 @@ public class AnalyticalRunSetupController implements Controllable {
                         break;
                     case PS_DATA_IMPORT_CARD:
                         List<String> validationMessages = peptideShakerDataImportController.validateBeforeUnpacking();
-                        if (validationMessages.isEmpty()) {
+                        if (validationMessages.isEmpty()) {                            
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), TEST_CARD);
                         } else {
                             MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
@@ -149,7 +152,7 @@ public class AnalyticalRunSetupController implements Controllable {
         analyticalRunSetupDialog.getFinishButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //do something
+                //store it
             }
         });
 
@@ -310,11 +313,11 @@ public class AnalyticalRunSetupController implements Controllable {
                 //enable back button
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
                 //enable proceed button
-                analyticalRunSetupDialog.getProceedButton().setEnabled(true);
+                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
                 //disable finish button
-                analyticalRunSetupDialog.getFinishButton().setEnabled(false);
+                analyticalRunSetupDialog.getFinishButton().setEnabled(true);
                 //show info
-                updateInfo("Click on \"proceed\" to validate the input.");
+                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
             default:
                 break;

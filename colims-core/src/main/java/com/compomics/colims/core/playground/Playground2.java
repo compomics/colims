@@ -3,7 +3,7 @@ package com.compomics.colims.core.playground;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
@@ -69,12 +69,12 @@ public class Playground2 {
         authenticationBean.setCurrentUser(adminUser);
 
         //import PeptideShaker .cps file
-        PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
+        UnpackedPeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
         //set mgf files and fasta file
-        List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
-        peptideShakerImport.setMgfFiles(mgfFiles);
-        peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
+        List<Resource> mgfResources = new ArrayList<>();
+        mgfResources.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf"));
+        peptideShakerImport.setMgfResources(mgfResources);
+        peptideShakerImport.setFastaResource(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta"));
 
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 
@@ -94,10 +94,10 @@ public class Playground2 {
         //import PeptideShaker .cps file
         peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
         //set mgf files and fasta file
-        mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
-        peptideShakerImport.setMgfFiles(mgfFiles);
-        peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
+        mgfResources = new ArrayList<>();
+        mgfResources.add(new ClassPathResource("small_scale/example.mgf"));
+        peptideShakerImport.setMgfResources(mgfResources);
+        peptideShakerImport.setFastaResource(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta"));
 
         analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 

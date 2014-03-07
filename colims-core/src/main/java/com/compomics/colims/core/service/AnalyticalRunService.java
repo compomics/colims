@@ -20,5 +20,5 @@ public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long
      *
      * @param analyticalRun
      */
-    void fetchSpectra(AnalyticalRun analyticalRun);
+    void fetchSpectra(AnalyticalRun analyticalRun);        
 }

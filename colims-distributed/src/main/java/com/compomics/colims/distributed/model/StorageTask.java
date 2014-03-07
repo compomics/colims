@@ -21,11 +21,11 @@ public class StorageTask implements Serializable {
     /**
      * The storage metadata
      */
-    protected StorageMetadata storageMetadata;
+    private StorageMetadata storageMetadata;
     /**
      * The resources necessary for storing
      */
-    protected DataImport dataImport;
+    private DataImport dataImport;
 
     public StorageTask() {
     }

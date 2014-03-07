@@ -49,11 +49,18 @@
         <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
     </jms:listener-container>
     
-    <!-- ActiveMQ Destination -->  
+    <!-- storage error queue -->          
     <amq:queue id="storageErrorDestination" physicalName="${distributed.queue.error}" />
     
     <bean id="storageErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="storageErrorDestination" />                      
+          p:defaultDestination-ref="storageErrorDestination" />    
+    
+    <!-- stored task queue -->
+    <amq:queue id="storedTaskDestination" physicalName="${distributed.queue.stored}" />
+    
+    <bean id="storedTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="connectionFactory"
+          p:defaultDestination-ref="storedTaskDestination" />                      
                           
 </beans>

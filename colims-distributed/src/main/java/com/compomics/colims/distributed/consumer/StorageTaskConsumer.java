@@ -3,15 +3,20 @@ package com.compomics.colims.distributed.consumer;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.MaxQuantDataImport;
 import com.compomics.colims.core.io.maxquant.MaxQuantImportMapper;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.StorageError;
 import com.compomics.colims.distributed.model.StorageTask;
+import com.compomics.colims.distributed.model.StoredTask;
 import com.compomics.colims.distributed.producer.StorageErrorProducer;
+import com.compomics.colims.distributed.producer.StoredTaskProducer;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Sample;
+import com.compomics.colims.repository.AuthenticationBean;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -19,7 +24,6 @@ import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
  *
@@ -31,11 +35,20 @@ public class StorageTaskConsumer implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(StorageTaskConsumer.class);
 
     @Autowired
+    private StoredTaskProducer storedTaskProducer;
+    @Autowired
     private StorageErrorProducer storageErrorProducer;
     @Autowired
     private PeptideShakerImportMapper peptideShakerImportMapper;
     @Autowired
     private MaxQuantImportMapper maxQuantImportMapper;
+    @Autowired
+    private AnalyticalRunService analyticalRunService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AuthenticationBean authenticationBean;
+    
 
     /**
      * Implementation of <code>MessageListener</code>.
@@ -51,8 +64,16 @@ public class StorageTaskConsumer implements MessageListener {
             LOGGER.info("Received storage task message of type " + storageTask.getStorageMetadata().getStorageType().userFriendlyName());
 
             try {
+                Long started = System.currentTimeMillis();
+                
                 //map the task
                 List<AnalyticalRun> analyticalRuns = mapDataImport(storageTask);
+                
+                //store the analytical run(s)
+                storeAnalyticalRuns(storageTask, analyticalRuns);
+                
+                //wrap the StorageTask in a StoredTask and send it to the stored task queue
+                storedTaskProducer.sendStoredTask(new StoredTask(started, System.currentTimeMillis(), storageTask));                
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 //wrap the StorageTask in a StorageError and send it to the error queue
@@ -75,7 +96,7 @@ public class StorageTaskConsumer implements MessageListener {
 
         switch (storageTask.getStorageMetadata().getStorageType()) {
             case PEPTIDESHAKER:
-                analyticalRuns = peptideShakerImportMapper.map((PeptideShakerDataImport) storageTask.getDataImport());
+                analyticalRuns = peptideShakerImportMapper.map((UnpackedPeptideShakerDataImport) storageTask.getDataImport());
                 break;
             case MAX_QUANT:
                 analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) storageTask.getDataImport());
@@ -85,6 +106,19 @@ public class StorageTaskConsumer implements MessageListener {
         }
 
         return analyticalRuns;
+    }
+    
+    /**
+     * Store the analytical runs in the database.
+     * 
+     * @param storageTask the storage task
+     * @param analyticalRuns the list of analytical runs
+     */
+    private void storeAnalyticalRuns(StorageTask storageTask, List<AnalyticalRun> analyticalRuns){
+        for(AnalyticalRun analyticalRun : analyticalRuns){
+            analyticalRun.setSample(storageTask.getStorageMetadata().getSample());
+            analyticalRunService.saveOrUpdate(analyticalRun);
+        }        
     }
 
 }
