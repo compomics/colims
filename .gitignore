@@ -102,3 +102,8 @@ colims-core/src/test/resources/uniprot_sprot_101104_human_concat.fasta.cui
 /com.compomics.colims_colims-distributed_jar_1.2.0-SNAPSHOT/target/
 /colims-distributed/target/
 *.versionsBackup
+colims-distributed/data/localhost/KahaDB/db-1.log
+colims-distributed/data/localhost/KahaDB/db.data
+colims-distributed/data/localhost/KahaDB/db.redo
+colims-distributed/data/localhost/KahaDB/lock
+colims-distributed/src/test/resources/log4j.properties

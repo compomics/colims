@@ -5,7 +5,6 @@ import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.SearchParameterSettings;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.db.ObjectsCache;
 import com.compomics.util.experiment.identification.SequenceFactory;
@@ -21,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Davy
  */
-@Service("maxQuantImportMapper")
+@Component("maxQuantImportMapper")
 public class MaxQuantImportMapper {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerImportMapper.class);
@@ -39,17 +38,15 @@ public class MaxQuantImportMapper {
     private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
-    @Autowired
-    private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
-    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
      * Compomics utilities sequence factory
      */
-    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
      * The map of new proteins (key: protein accession, value: the protein)
      */
-    private final Map<String, Protein> newProteins = new HashMap<>();
+    private Map<String, Protein> newProteins = new HashMap<>();
     /**
      * The cache used to store objects.
      */
@@ -60,6 +57,8 @@ public class MaxQuantImportMapper {
      *
      * @param aMaxQuantImport the resulting files from the max quant search and
      * the fasta ran against
+     * @param sampleRanThroughMaxQuant the sample we should store against since
+     * there is no way of inferring which sample was run from the files alone
      * @return the list of analytical runs that were mapped to the sample
      * @throws IOException if something went wrong while trying to read files
      * from the folder
@@ -68,10 +67,11 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
+    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException  {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantFolder().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
 
+        try{
         //just in case
         maxQuantParser.clearParsedProject();
         clearMappingResources();
@@ -98,6 +98,10 @@ public class MaxQuantImportMapper {
                 maxQuantUtilitiesPsmMapper.map(aParsedSpectrum, maxQuantParser, targetSpectrum);
             }
             targetRun.setSpectrums(mappedSpectra);
+        }
+        } catch (IOException | SQLException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new MappingException(ex);
         }
 
         return mappedRuns;

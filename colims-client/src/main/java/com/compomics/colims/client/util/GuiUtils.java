@@ -28,7 +28,8 @@ public class GuiUtils {
     /**
      * Private constructor to prevent initialization.
      */
-    private GuiUtils() { }
+    private GuiUtils() {
+    }
 
     /**
      * Center the dialog on the parent component
@@ -61,25 +62,22 @@ public class GuiUtils {
     }
 
     /**
-     * Get the name of the component currently visible in the card layout
+     * Get the name of the visible child component. Returns null if no
+     * components are visible.
      *
      * @param parentContainer the parent container
-     * @return the component name
+     * @return the visible component name
      */
-    public static String getCurrentCardName(final Container parentContainer) {
-        CardLayout cardLayout = (CardLayout) parentContainer.getLayout();
-
-        if (cardLayout == null) {
-            throw new IllegalArgumentException("The layout of the parent container is no card layout.");
-        }
+    public static String getVisibleChildComponent(final Container parentContainer) {
+        String visibleComponentName = null;
 
         for (Component component : parentContainer.getComponents()) {
             if (component.isVisible()) {
-                return ((JPanel) component).getName();
+                visibleComponentName = ((JPanel) component).getName();
             }
         }
 
-        throw new IllegalStateException("None of the cards in parentContainer was visible; Could not getCurrentCardName");
+        return visibleComponentName;
     }
 
     /**
@@ -91,7 +89,7 @@ public class GuiUtils {
      */
     public static <T> List<String> validateEntity(final T t) {
         List<String> validationMessages = new ArrayList<>();
-        
+
         ValidatorFactory entityValidator = Validation.buildDefaultValidatorFactory();
         Validator validator = entityValidator.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(t);

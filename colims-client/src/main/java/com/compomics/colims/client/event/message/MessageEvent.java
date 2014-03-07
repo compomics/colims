@@ -9,9 +9,18 @@ import java.util.List;
  */
 public class MessageEvent {
 
-    private String messageTitle;
-    private String message;
-    private int messageType;
+    /**
+     * The title of the message.
+     */
+    private final String messageTitle;
+    /**
+     * The message.
+     */
+    private final String message;
+    /**
+     * The message type.
+     */
+    private final int messageType;
 
     public MessageEvent(final String messageTitle, final String message, final int messageType) {
         this.messageTitle = messageTitle;

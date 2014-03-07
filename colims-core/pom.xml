@@ -81,6 +81,11 @@
             <artifactId>colims-repository</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>com.compomics.colims</groupId>
+            <artifactId>colims-model</artifactId>
+        </dependency>
+        
         <!-- spring dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -111,13 +116,6 @@
             <version>3.0</version>
         </dependency>                
         
-        <!-- junit dependency -->               
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
         <!-- h2 in memory db for unit testing -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -129,7 +127,6 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>1.10</version>
         </dependency>
         
         <!-- compomics dependencies -->

@@ -14,6 +14,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
+     * @param parent the parent dialog
+     * @param modal is the dialog modal
      */
     public ExperimentEditDialog(final Frame parent, final boolean modal) {
         super(parent, modal);

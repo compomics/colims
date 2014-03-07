@@ -1,4 +1,3 @@
-
 package com.compomics.colims.client.view;
 
 import java.awt.Color;
@@ -6,6 +5,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
@@ -16,31 +16,23 @@ import javax.swing.JTable;
  */
 public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
-    private JFileChooser cpsFileChooser;
-    private JFileChooser mgfFileChooser;
-    private JFileChooser fastaFileChooser;
-    
     /**
      * Creates new form AnalyticalRunSetupDialog
-     * 
+     *
      * @param parent the dialog parent
      * @param modal the modal boolean
      */
     public AnalyticalRunSetupDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        
+
         initComponents();
-        
-        cpsFileChooser = new JFileChooser();
-        mgfFileChooser = new JFileChooser();
-        fastaFileChooser = new JFileChooser();
-        
+
         projectsScrollPane.getViewport().setOpaque(false);
         experimentsScrollPane.getViewport().setOpaque(false);
         samplesScrollPane.getViewport().setOpaque(false);
         this.getContentPane().setBackground(Color.WHITE);
     }
-    
+
     public JButton getBackButton() {
         return backButton;
     }
@@ -59,19 +51,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
     public JLabel getInfoLabel() {
         return infoLabel;
-    }   
-
-    public JFileChooser getCpsFileChooser() {
-        return cpsFileChooser;
     }
-
-    public JFileChooser getMgfFileChooser() {
-        return mgfFileChooser;
-    }
-
-    public JFileChooser getFastaFileChooser() {
-        return fastaFileChooser;
-    }  
 
     public JTable getExperimentsTable() {
         return experimentsTable;
@@ -87,11 +67,11 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
     public JButton getCloseButton() {
         return closeButton;
-    }  
+    }
 
     public ButtonGroup getDataTypeButtonGroup() {
         return dataTypeButtonGroup;
-    }        
+    }
 
     public JRadioButton getMaxQuantRadioButton() {
         return maxQuantRadioButton;
@@ -99,7 +79,11 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
     public JRadioButton getPeptideShakerRadioButton() {
         return peptideShakerRadioButton;
-    }       
+    }
+
+    public PeptideShakerDataImportPanel getPeptideShakerDataImportPanel() {
+        return peptideShakerDataImportPanel;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -127,6 +111,11 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         dataTypeSelectionLabel = new javax.swing.JLabel();
         peptideShakerRadioButton = new javax.swing.JRadioButton();
         maxQuantRadioButton = new javax.swing.JRadioButton();
+        peptideShakerDataImportPanel = new com.compomics.colims.client.view.PeptideShakerDataImportPanel();
+        testPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        testPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -297,7 +286,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(samplesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -319,9 +308,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sampleSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                    .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(samplesPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -330,7 +319,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         dataTypeSelectionPanel.setName("dataTypeSelectionPanel"); // NOI18N
         dataTypeSelectionPanel.setOpaque(false);
 
-        dataTypeSelectionLabel.setText("Select the analytical run data type:");
+        dataTypeSelectionLabel.setText("Select the analytical run data type");
 
         dataTypeButtonGroup.add(peptideShakerRadioButton);
         peptideShakerRadioButton.setText("PeptideShaker");
@@ -361,10 +350,59 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
                 .addComponent(peptideShakerRadioButton)
                 .addGap(18, 18, 18)
                 .addComponent(maxQuantRadioButton)
-                .addContainerGap(149, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         topPanel.add(dataTypeSelectionPanel, "dataTypeSelectionPanel");
+
+        peptideShakerDataImportPanel.setName("peptideShakerDataImportPanel"); // NOI18N
+        topPanel.add(peptideShakerDataImportPanel, "peptideShakerDataImportPanel");
+
+        testPanel.setName("testPanel"); // NOI18N
+
+        jLabel1.setText("testPanel1");
+
+        javax.swing.GroupLayout testPanelLayout = new javax.swing.GroupLayout(testPanel);
+        testPanel.setLayout(testPanelLayout);
+        testPanelLayout.setHorizontalGroup(
+            testPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(786, Short.MAX_VALUE))
+        );
+        testPanelLayout.setVerticalGroup(
+            testPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(211, Short.MAX_VALUE))
+        );
+
+        topPanel.add(testPanel, "testPanel");
+
+        testPanel2.setName("testPanel2"); // NOI18N
+
+        jLabel2.setText("testPanel2");
+
+        javax.swing.GroupLayout testPanel2Layout = new javax.swing.GroupLayout(testPanel2);
+        testPanel2.setLayout(testPanel2Layout);
+        testPanel2Layout.setHorizontalGroup(
+            testPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(749, Short.MAX_VALUE))
+        );
+        testPanel2Layout.setVerticalGroup(
+            testPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(testPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(211, Short.MAX_VALUE))
+        );
+
+        topPanel.add(testPanel2, "testPanel2");
 
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
@@ -439,7 +477,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -458,7 +496,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
- 
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
@@ -472,8 +510,11 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JTable experimentsTable;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel infoLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton maxQuantRadioButton;
     private javax.swing.JPanel parentPanel;
+    private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     private javax.swing.JRadioButton peptideShakerRadioButton;
     private javax.swing.JButton proceedButton;
     private javax.swing.JPanel projectsPanel;
@@ -483,6 +524,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JScrollPane samplesScrollPane;
     private javax.swing.JTable samplesTable;
+    private javax.swing.JPanel testPanel;
+    private javax.swing.JPanel testPanel2;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

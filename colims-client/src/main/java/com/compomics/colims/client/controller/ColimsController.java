@@ -12,7 +12,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
-import com.compomics.colims.core.authentication.PermissionException;
+import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
@@ -48,9 +48,13 @@ public class ColimsController implements Controllable, ActionListener {
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     @Value("${colims-client.version}")
-    private String version;
+    private String version = "unknown";
     @Autowired
     private AuthenticationBean authenticationBean;
+    /**
+     * The project EventList that is used as table model in the project
+     * management and overview tabs.
+     */
     private EventList<Project> projects = new BasicEventList<>();
     //views
     private ColimsFrame colimsFrame;
@@ -61,6 +65,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectManagementController projectManagementController;
     @Autowired
     private ProjectOverviewController projectOverviewController;
+    @Autowired
+    private StorageMonitoringController storageMonitoringController;
     @Autowired
     private ProtocolManagementController protocolManagementController;
     @Autowired
@@ -80,8 +86,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private LocalSessionFactoryBean sessionFactory;
+//    @Autowired
+//    private LocalSessionFactoryBean sessionFactory;
 
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
@@ -134,6 +140,7 @@ public class ColimsController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
+        storageMonitoringController.init();
         analyticalRunSetupController.init();
         cvTermManagementController.init();
 
@@ -150,6 +157,7 @@ public class ColimsController implements Controllable, ActionListener {
         //add menu item action listeners
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
+        colimsFrame.getStorageMonitoringMenuItem().addActionListener(this);
         colimsFrame.getNewRunMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
@@ -202,6 +210,8 @@ public class ColimsController implements Controllable, ActionListener {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
+        } else if (menuItemLabel.equals(colimsFrame.getStorageMonitoringMenuItem().getText())) {
+            storageMonitoringController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getNewRunMenuItem().getText())) {
             analyticalRunSetupController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {

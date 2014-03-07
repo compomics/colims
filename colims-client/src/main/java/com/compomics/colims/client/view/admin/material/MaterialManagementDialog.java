@@ -11,8 +11,11 @@ import javax.swing.JTable;
  */
 public class MaterialManagementDialog extends javax.swing.JDialog {
 
-    /**
-     * Creates new form MaterialCvDialog
+     /**
+     * Dialog constructor
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
      */
     public MaterialManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);

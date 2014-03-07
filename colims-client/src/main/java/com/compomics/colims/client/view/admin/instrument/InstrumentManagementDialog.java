@@ -11,8 +11,11 @@ import javax.swing.JTable;
  */
 public class InstrumentManagementDialog extends javax.swing.JDialog {
     
-    /**
-     * Creates new form InstrumentCvDialog
+     /**
+     * Dialog constructor
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
      */
     public InstrumentManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);

@@ -13,6 +13,12 @@ import javax.swing.JTextField;
  */
 public class CvTermManagementDialog extends javax.swing.JDialog {
     
+     /**
+     * Dialog constructor
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
+     */
     public CvTermManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
         

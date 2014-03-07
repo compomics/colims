@@ -17,6 +17,7 @@ public class ColimsFrame extends javax.swing.JFrame {
      */
     public ColimsFrame() {
         initComponents();
+        
         this.getContentPane().setBackground(Color.WHITE);
     }
 
@@ -68,6 +69,10 @@ public class ColimsFrame extends javax.swing.JFrame {
         return newRunMenuItem;
     }    
 
+    public JMenuItem getStorageMonitoringMenuItem() {
+        return storageMonitoringMenuItem;
+    }        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,6 +92,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         viewMenu = new javax.swing.JMenu();
         projectsManagementMenuItem = new javax.swing.JMenuItem();
         projectsOverviewMenuItem = new javax.swing.JMenuItem();
+        storageMonitoringMenuItem = new javax.swing.JMenuItem();
         adminMenu = new javax.swing.JMenu();
         managementMenu = new javax.swing.JMenu();
         userManagementMenuItem = new javax.swing.JMenuItem();
@@ -126,6 +132,9 @@ public class ColimsFrame extends javax.swing.JFrame {
 
         projectsOverviewMenuItem.setText("projects overview");
         viewMenu.add(projectsOverviewMenuItem);
+
+        storageMonitoringMenuItem.setText("storage monitoring");
+        viewMenu.add(storageMonitoringMenuItem);
 
         menuBar.add(viewMenu);
 
@@ -188,6 +197,7 @@ public class ColimsFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem projectsOverviewMenuItem;
     private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
+    private javax.swing.JMenuItem storageMonitoringMenuItem;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
