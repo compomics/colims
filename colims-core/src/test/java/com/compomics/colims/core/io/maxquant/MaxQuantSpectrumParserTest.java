@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.parser.impl;
+package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
@@ -23,7 +23,7 @@ public class MaxQuantSpectrumParserTest {
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
 
     public MaxQuantSpectrumParserTest() {
-        msmsFile = new File(getClass().getClassLoader().getResource("testdata/msms_subset_1000.tsv").getPath());
+        msmsFile = new File(getClass().getClassLoader().getResource("data/maxquant/msms_subset_1000.tsv").getPath());
 
     }
 

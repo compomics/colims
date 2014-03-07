@@ -3,6 +3,7 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.SearchParameterSettings;
