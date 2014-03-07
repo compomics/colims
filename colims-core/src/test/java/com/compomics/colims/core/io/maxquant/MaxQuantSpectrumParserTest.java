@@ -1,5 +1,6 @@
-package com.compomics.colims.core.io.parser.impl;
+package com.compomics.colims.core.io.maxquant;
 
+import com.compomics.colims.core.io.maxquant.MaxQuantSpectrumParser;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import java.io.File;

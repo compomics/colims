@@ -1,8 +1,6 @@
-package com.compomics.colims.core.mapper;
+package com.compomics.colims.core.io.maxquant;
 
-import com.compomics.colims.core.exception.MappingException;
-import com.compomics.colims.core.io.parser.impl.HeaderEnumNotInitialisedException;
-import com.compomics.colims.core.io.parser.impl.UnparseableException;
+import com.compomics.colims.core.io.MappingException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import java.io.File;
 import java.util.List;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.core.io.parser.model.MaxQuantImport;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +43,7 @@ public class MaxQuantImportMapperTest {
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         System.out.println("map");
-        MaxQuantImport testImport = new MaxQuantImport(maxQuantTextFolder, maxQuantTestFastaFile);
+        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextFolder, maxQuantTestFastaFile);
         List<AnalyticalRun> result = maxQuantImportMapper.map(testImport);
         assertThat(result.size(), is(not(0)));
     }
