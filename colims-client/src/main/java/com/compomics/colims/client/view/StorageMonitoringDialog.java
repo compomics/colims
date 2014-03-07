@@ -11,21 +11,22 @@ import javax.swing.JTable;
  */
 public class StorageMonitoringDialog extends javax.swing.JDialog {
 
-     /**
+    /**
      * Dialog constructor
-     * 
+     *
      * @param parent the parent frame
      * @param modal the modal boolean
      */
     public StorageMonitoringDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
 
-        initComponents();   
-        
+        initComponents();
+
         storageQueueScrollPane.getViewport().setOpaque(false);
         errorQueueScrollPane.getViewport().setOpaque(false);
+        storedQueueScrollPane.getViewport().setOpaque(false);
         this.getContentPane().setBackground(Color.WHITE);
-    } 
+    }
 
     public JTable getStorageQueueTable() {
         return storageQueueTable;
@@ -33,7 +34,7 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
 
     public JTable getErrorQueueTable() {
         return errorQueueTable;
-    }        
+    }
 
     public JButton getCloseButton() {
         return closeButton;
@@ -41,7 +42,11 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
 
     public JButton getRefreshButton() {
         return refreshButton;
-    }        
+    }
+
+    public JTable getStoredQueueTable() {
+        return storedQueueTable;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -59,6 +64,9 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
         exceptionQueuePanel = new javax.swing.JPanel();
         errorQueueScrollPane = new javax.swing.JScrollPane();
         errorQueueTable = new javax.swing.JTable();
+        storedQueuePanel = new javax.swing.JPanel();
+        storedQueueScrollPane = new javax.swing.JScrollPane();
+        storedQueueTable = new javax.swing.JTable();
         closeButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
 
@@ -140,6 +148,44 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
 
         storageMonitoringTabbedPane.addTab("storage errors", exceptionQueuePanel);
 
+        storedQueuePanel.setOpaque(false);
+
+        storedQueueScrollPane.setOpaque(false);
+
+        storedQueueTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        storedQueueTable.setToolTipText("click on a row to see the error message");
+        storedQueueTable.setOpaque(false);
+        storedQueueScrollPane.setViewportView(storedQueueTable);
+
+        javax.swing.GroupLayout storedQueuePanelLayout = new javax.swing.GroupLayout(storedQueuePanel);
+        storedQueuePanel.setLayout(storedQueuePanelLayout);
+        storedQueuePanelLayout.setHorizontalGroup(
+            storedQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(storedQueuePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(storedQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        storedQueuePanelLayout.setVerticalGroup(
+            storedQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(storedQueuePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(storedQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        storageMonitoringTabbedPane.addTab("storage errors", storedQueuePanel);
+
         closeButton.setText("close");
         closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -185,5 +231,8 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
     private javax.swing.JPanel storageQueuePanel;
     private javax.swing.JScrollPane storageQueueScrollPane;
     private javax.swing.JTable storageQueueTable;
+    private javax.swing.JPanel storedQueuePanel;
+    private javax.swing.JScrollPane storedQueueScrollPane;
+    private javax.swing.JTable storedQueueTable;
     // End of variables declaration//GEN-END:variables
 }
