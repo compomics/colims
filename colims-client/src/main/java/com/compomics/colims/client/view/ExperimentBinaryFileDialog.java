@@ -13,6 +13,8 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
+     * @param parent the parent dialog
+     * @param modal is the dialog modal
      */
     public ExperimentBinaryFileDialog(Dialog parent, boolean modal) {
         super(parent, modal);

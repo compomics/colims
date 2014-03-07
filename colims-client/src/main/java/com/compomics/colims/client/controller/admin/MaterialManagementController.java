@@ -15,7 +15,6 @@ import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.CvTerm;
-import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;

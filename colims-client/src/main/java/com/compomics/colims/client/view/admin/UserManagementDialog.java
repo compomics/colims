@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class UserManagementDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form UserManagementDialog.
+     * Dialog constructor
      * 
      * @param parent the parent frame
      * @param modal the modal boolean

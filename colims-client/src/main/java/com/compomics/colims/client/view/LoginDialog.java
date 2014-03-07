@@ -14,6 +14,8 @@ public class LoginDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
+     * @param parent the parent dialog
+     * @param modal is the dialog modal
      */
     public LoginDialog(final Frame parent, final boolean modal) {
         super(parent, modal);  

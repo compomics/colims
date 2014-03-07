@@ -207,7 +207,7 @@ public class ProjectSetupController implements Controllable {
         projectSetupPanel.getProceedButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (GuiUtils.getCurrentCardName(projectSetupPanel.getTopPanel()).equals(PROJECT_META_DATA_CARD_NAME)) {
+                if (GuiUtils.getVisibleChildComponent(projectSetupPanel.getTopPanel()).equals(PROJECT_META_DATA_CARD_NAME)) {
                     //validate project
                     List<String> validationMessages = GuiUtils.validateEntity(project);
 
@@ -308,7 +308,7 @@ public class ProjectSetupController implements Controllable {
     }
 
     private void onCardSwitch() {
-        String currentCardName = GuiUtils.getCurrentCardName(projectSetupPanel.getTopPanel());
+        String currentCardName = GuiUtils.getVisibleChildComponent(projectSetupPanel.getTopPanel());
         if (currentCardName.equals(PROJECT_META_DATA_CARD_NAME)) {
             //disable back button
             projectSetupPanel.getBackButton().setEnabled(false);

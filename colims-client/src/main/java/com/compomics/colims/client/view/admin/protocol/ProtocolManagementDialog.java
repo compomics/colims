@@ -11,8 +11,11 @@ import javax.swing.JTable;
  */
 public class ProtocolManagementDialog extends javax.swing.JDialog {
     
-    /**
-     * Creates new form ProtocolCvDialog.
+     /**
+     * Dialog constructor
+     * 
+     * @param parent the parent frame
+     * @param modal the modal boolean
      */
     public ProtocolManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
