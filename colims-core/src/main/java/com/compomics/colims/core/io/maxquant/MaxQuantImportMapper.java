@@ -69,16 +69,16 @@ public class MaxQuantImportMapper {
      * @throws MappingException if a mapping could not be completed
      */
     public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException  {
-        LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantFolder().getName());
+        LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
 
         try{
         //just in case
         maxQuantParser.clearParsedProject();
         clearMappingResources();
-        loadFastaResource(aMaxQuantImport.getFastaResource());
+        loadFastaFile(aMaxQuantImport.getFastaFile());
 
-        maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantFolder());
+        maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
 
         for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();
@@ -119,11 +119,11 @@ public class MaxQuantImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaResource the fasta resource
+     * @param fastaFile the fasta file
      */
-    private void loadFastaResource(Resource fastaResource) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaResource.getFile());
+        sequenceFactory.loadFastaFile(fastaFile);
         LOGGER.debug("Finish loading FASTA file.");
     }
 }

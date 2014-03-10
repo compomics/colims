@@ -5,7 +5,7 @@ import com.compomics.colims.client.storage.QueueMonitor;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
@@ -55,7 +55,7 @@ public class Playground2 {
         storageMetadata.setUserName("testUser");
 
         storageTask.setStorageMetadata(storageMetadata);
-        storageTask.setDataImport(new PeptideShakerDataImport(null, null));
+        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
 
         storageTaskProducer.sendStorageTask(storageTask);
 

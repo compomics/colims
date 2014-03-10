@@ -1,4 +1,3 @@
-
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.distributed.model.enums.StorageType;
@@ -11,9 +10,9 @@ import java.util.Objects;
  * @author Niels Hulstaert
  */
 public class StorageMetadata implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The storage type of the task
      */
@@ -34,6 +33,17 @@ public class StorageMetadata implements Serializable {
      * The sample the run(s) will be added to
      */
     private Sample sample;
+
+    public StorageMetadata() {
+    }
+
+    public StorageMetadata(StorageType storageType, String description, String userName, Sample sample) {
+        this.storageType = storageType;
+        this.description = description;
+        this.userName = userName;
+        this.sample = sample;
+        submissionTimestamp = System.currentTimeMillis();
+    }
 
     public StorageType getStorageType() {
         return storageType;
@@ -73,7 +83,7 @@ public class StorageMetadata implements Serializable {
 
     public void setSample(Sample sample) {
         this.sample = sample;
-    }    
+    }
 
     @Override
     public int hashCode() {
@@ -111,6 +121,6 @@ public class StorageMetadata implements Serializable {
             return false;
         }
         return true;
-    }        
+    }
 
 }

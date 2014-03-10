@@ -3,7 +3,7 @@ package com.compomics.colims.client.playground;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
@@ -54,14 +54,14 @@ public class Playground {
         authenticationBean.setCurrentUser(adminUser);
 
         //import PeptideShaker .cps file
-        UnpackedPeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
         //set mgf files and fasta file
-        List<Resource> mgfResources = new ArrayList<>();
-        mgfResources.add(new ClassPathResource("input_spectra.mgf"));
-        peptideShakerImport.setMgfResources(mgfResources);
-        peptideShakerImport.setFastaResource(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta"));
+        List<File> mgfFiles = new ArrayList<>();
+        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
+        unpackedPsDataImport.setMgfFiles(mgfFiles);
+        unpackedPsDataImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
 
-        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
 
         //get sample from db
         Sample sample = sampleService.findAll().get(0);

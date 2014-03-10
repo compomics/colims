@@ -353,14 +353,16 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
                               <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
                               <Component id="dataTypeSelectionLabel" min="-2" pref="169" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionLabel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="storageDescriptionTextField" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="855" max="32767" attributes="0"/>
+                          <EmptySpace pref="703" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -373,7 +375,11 @@
                           <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="129" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="storageDescriptionTextField" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="71" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -402,6 +408,13 @@
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JLabel" name="storageDescriptionLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Provide an optional description for monitoring the storage progress"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="storageDescriptionTextField">
+                </Component>
               </SubComponents>
             </Container>
             <Component class="com.compomics.colims.client.view.PeptideShakerDataImportPanel" name="peptideShakerDataImportPanel">
@@ -414,6 +427,55 @@
                 </Constraint>
               </Constraints>
             </Component>
+            <Component class="com.compomics.colims.client.view.MaxQuantDataImportPanel" name="maxQuantDataImportPanel">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="maxQuantDataImportPanel" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="maxQuantDataImportPanel"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Container class="javax.swing.JPanel" name="confirmationPanel">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="confirmationPanel" noResource="true"/>
+                <Property name="opaque" type="boolean" value="false"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="confirmationPanel"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="434" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="211" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="The runs were sent successfully to the storage unit. Please go to the &quot;storage monitoring&quot; menu to view the storage state."/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="bottomPanel">

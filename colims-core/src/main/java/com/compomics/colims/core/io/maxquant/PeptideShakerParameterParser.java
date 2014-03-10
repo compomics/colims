@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.io.maxquant;
 
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.identification.SearchParameters;
@@ -39,7 +39,7 @@ public class PeptideShakerParameterParser {
      * @param msExperiment
      * @return
      */
-    public SearchParameters parseToSearchParameters(final UnpackedPeptideShakerDataImport source) {
+    public SearchParameters parseToSearchParameters(final UnpackedPsDataImport source) {
         if (source == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }

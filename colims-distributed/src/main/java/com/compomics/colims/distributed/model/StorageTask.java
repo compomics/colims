@@ -9,12 +9,6 @@ import java.util.Objects;
  * @author Niels Hulstaert
  */
 public class StorageTask implements Serializable {
-
-    public static final String STORAGE_TYPE = "storage_type";
-    public static final String SUBMISSION_TIMESTAMP = "submission_timestamp";
-    public static final String DESCRIPTION = "description";
-    public static final String USER_NAME = "user_name";
-    public static final String SAMPLE_NAME = "sample_name";
     
     private static final long serialVersionUID = 1L;
     
@@ -29,6 +23,11 @@ public class StorageTask implements Serializable {
 
     public StorageTask() {
     }
+
+    public StorageTask(StorageMetadata storageMetadata, DataImport dataImport) {
+        this.storageMetadata = storageMetadata;
+        this.dataImport = dataImport;
+    }        
 
     public StorageMetadata getStorageMetadata() {
         return storageMetadata;
