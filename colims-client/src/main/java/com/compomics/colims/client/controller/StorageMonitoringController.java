@@ -3,20 +3,18 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
+import com.compomics.colims.client.model.StoredQueueTableModel;
 import com.compomics.colims.client.storage.QueueMonitor;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
 import com.compomics.colims.distributed.model.StorageError;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.google.common.eventbus.EventBus;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
@@ -37,9 +35,12 @@ public class StorageMonitoringController implements Controllable {
     //model
     @Value("${distributed.queue.storage}")
     private String storageQueueName;
+    @Value("${distributed.queue.stored}")
+    private String storedQueueName;
     @Value("${distributed.queue.error}")
     private String errorQueueName;
     private StorageQueueTableModel storageQueueTableModel;
+    private StoredQueueTableModel storedQueueTableModel;
     private ErrorQueueTableModel errorQueueTableModel;
     //view
     private StorageMonitoringDialog storageMonitoringDialog;
@@ -67,6 +68,8 @@ public class StorageMonitoringController implements Controllable {
         //init and set table models
         storageQueueTableModel = new StorageQueueTableModel();
         storageMonitoringDialog.getStorageQueueTable().setModel(storageQueueTableModel);
+        storedQueueTableModel = new StoredQueueTableModel();
+        storageMonitoringDialog.getStoredQueueTable().setModel(storedQueueTableModel);
         errorQueueTableModel = new ErrorQueueTableModel();
         storageMonitoringDialog.getErrorQueueTable().setModel(errorQueueTableModel);
 
@@ -74,20 +77,16 @@ public class StorageMonitoringController implements Controllable {
         storageMonitoringDialog.getErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                //if (!lse.getValueIsAdjusting()) {
+                if (!lse.getValueIsAdjusting()) {
                     int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
                     if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
                         StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
-                        //add message to JTextArea
-                        JTextArea textArea = new JTextArea(storageError.getCause().getMessage());
-                        //put JTextArea in JScrollPane
-                        JScrollPane scrollPane = new JScrollPane(textArea);
-                        scrollPane.setPreferredSize(new Dimension(600, 200));
-                        textArea.setEditable(false);
 
-                        JOptionPane.showMessageDialog(storageMonitoringDialog.getContentPane(), scrollPane, "error message", JOptionPane.INFORMATION_MESSAGE);
+                        storageMonitoringDialog.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
+                    } else {
+                        storageMonitoringDialog.getErrorDetailTextArea().setText("");
                     }
-                //}
+                }
             }
         });
 
@@ -109,7 +108,12 @@ public class StorageMonitoringController implements Controllable {
     @Override
     public void showView() {
         updateMonitoringTables();
-
+        
+        //clear selections
+        storageMonitoringDialog.getStorageQueueTable().getSelectionModel().clearSelection();
+        storageMonitoringDialog.getStoredQueueTable().getSelectionModel().clearSelection();
+        storageMonitoringDialog.getErrorQueueTable().getSelectionModel().clearSelection();
+        
         GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
         storageMonitoringDialog.setVisible(true);
     }

@@ -16,6 +16,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 /**
  *
@@ -29,12 +32,12 @@ public class MaxQuantImportMapperTest {
     @Autowired
     MaxQuantImportMapper maxQuantImportMapper;
 
-    File maxQuantTextFolder;
-    File maxQuantTestFastaFile;
+    private File maxQuantTextFolder;
+    private Resource maxQuantTestFastaFile;
 
-    public MaxQuantImportMapperTest() {
-        maxQuantTextFolder = new File(getClass().getClassLoader().getResource("data/maxquant").getPath());
-        maxQuantTestFastaFile = new File(getClass().getClassLoader().getResource("data/maxquant/testfasta.fasta").getPath());
+    public MaxQuantImportMapperTest() throws IOException {
+        maxQuantTextFolder = new ClassPathResource("testdata").getFile();
+        maxQuantTestFastaFile = new ClassPathResource("testdata/testfasta.fasta");
     }
 
     /**

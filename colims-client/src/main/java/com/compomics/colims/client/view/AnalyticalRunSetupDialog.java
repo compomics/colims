@@ -3,9 +3,7 @@ package com.compomics.colims.client.view;
 import java.awt.Color;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
@@ -112,10 +110,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         peptideShakerRadioButton = new javax.swing.JRadioButton();
         maxQuantRadioButton = new javax.swing.JRadioButton();
         peptideShakerDataImportPanel = new com.compomics.colims.client.view.PeptideShakerDataImportPanel();
-        testPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        testPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -358,52 +352,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         peptideShakerDataImportPanel.setName("peptideShakerDataImportPanel"); // NOI18N
         topPanel.add(peptideShakerDataImportPanel, "peptideShakerDataImportPanel");
 
-        testPanel.setName("testPanel"); // NOI18N
-
-        jLabel1.setText("testPanel1");
-
-        javax.swing.GroupLayout testPanelLayout = new javax.swing.GroupLayout(testPanel);
-        testPanel.setLayout(testPanelLayout);
-        testPanelLayout.setHorizontalGroup(
-            testPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(testPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(786, Short.MAX_VALUE))
-        );
-        testPanelLayout.setVerticalGroup(
-            testPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(testPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(211, Short.MAX_VALUE))
-        );
-
-        topPanel.add(testPanel, "testPanel");
-
-        testPanel2.setName("testPanel2"); // NOI18N
-
-        jLabel2.setText("testPanel2");
-
-        javax.swing.GroupLayout testPanel2Layout = new javax.swing.GroupLayout(testPanel2);
-        testPanel2.setLayout(testPanel2Layout);
-        testPanel2Layout.setHorizontalGroup(
-            testPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(testPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(749, Short.MAX_VALUE))
-        );
-        testPanel2Layout.setVerticalGroup(
-            testPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(testPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(211, Short.MAX_VALUE))
-        );
-
-        topPanel.add(testPanel2, "testPanel2");
-
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
 
@@ -510,8 +458,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JTable experimentsTable;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton maxQuantRadioButton;
     private javax.swing.JPanel parentPanel;
     private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
@@ -524,8 +470,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JScrollPane samplesScrollPane;
     private javax.swing.JTable samplesTable;
-    private javax.swing.JPanel testPanel;
-    private javax.swing.JPanel testPanel2;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

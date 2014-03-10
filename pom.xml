@@ -263,6 +263,18 @@
                         <artifactId>swing-layout</artifactId>
                         <groupId>org.swinglabs</groupId>
                     </exclusion>
+                    <exclusion>
+                        <artifactId>batik-all</artifactId>
+                        <groupId>batik</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>batik</groupId>
+                        <artifactId>pdf-transcoder</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>umontreal.iro.lecuyer.gof</groupId>
+                        <artifactId>ssj</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>

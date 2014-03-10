@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -82,12 +82,12 @@ public class PeptideShakerImportMapperTest {
     @Test
     public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException {
         //import PeptideShaker .cps file
-        PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
+        UnpackedPeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
         //set mgf files and fasta file
-        List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
-        peptideShakerImport.setMgfFiles(mgfFiles);
-            peptideShakerImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
+        List<Resource> mgfResources = new ArrayList<>();
+        mgfResources.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf"));
+        peptideShakerImport.setMgfResources(mgfResources);
+            peptideShakerImport.setFastaResource(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta"));
 
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
 

@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io.peptideshaker;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,7 +13,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
@@ -34,6 +33,7 @@ import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +70,7 @@ public class PeptideShakerImportMapper {
      */
     private PeptideShakerSettings experimentSettings;
 
-    public List<AnalyticalRun> map(PeptideShakerDataImport peptideShakerImport) throws MappingException {
+    public List<AnalyticalRun> map(UnpackedPeptideShakerDataImport peptideShakerImport) throws MappingException {
         //the analytical runs onto the utilities replicates will be mapped
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
@@ -86,8 +86,8 @@ public class PeptideShakerImportMapper {
             //load experiment settings
             experimentSettings = loadExperimentSettings(msExperiment);
 
-            //load fasta file in sequence factory        
-            loadFastaFile(peptideShakerImport.getFastaFile());
+            //load fasta resource in sequence factory        
+            loadFastaResource(peptideShakerImport.getFastaResource());
 
             //iterate over samples
             for (com.compomics.util.experiment.biology.Sample sourceSample : msExperiment.getSamples().values()) {
@@ -182,11 +182,11 @@ public class PeptideShakerImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaFile the fasta file
+     * @param fastaResource the fasta resource
      */
-    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaResource(Resource fastaResource) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaFile);
+        sequenceFactory.loadFastaFile(fastaResource.getFile());
         LOGGER.debug("Finish loading FASTA file.");
     }
 
@@ -201,26 +201,26 @@ public class PeptideShakerImportMapper {
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    private void loadSpectrumMatches(Ms2Identification ms2Identification, PeptideShakerDataImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadSpectrumMatches(Ms2Identification ms2Identification, UnpackedPeptideShakerDataImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-            loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
+            loadSpectraFromMgfFile(source.getMgfResourceByName(spectrumFileName));
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);
             ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null);
         }
     }
 
     /**
-     * Load spectra from a given mfg file in the Utilities SpectrumFactory.
+     * Load spectra from a given mfg resource in the Utilities SpectrumFactory.
      *
-     * @param mgfFile the mgf file
+     * @param mgfResource the mgf resource
      * @throws SQLException
      * @throws IOException
      * @throws InterruptedException
      */
-    private void loadSpectraFromMgfFile(File mgfFile) throws FileNotFoundException, IOException, ClassNotFoundException {
-        LOGGER.debug("Start importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
-        spectrumFactory.addSpectra(mgfFile);
-        LOGGER.debug("Finish importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
+    private void loadSpectraFromMgfFile(Resource mgfResource) throws FileNotFoundException, IOException, ClassNotFoundException {
+        LOGGER.debug("Start importing spectra from file " + mgfResource.getFilename() + " into the utilities SpectrumFactory.");
+        spectrumFactory.addSpectra(mgfResource.getFile());
+        LOGGER.debug("Finish importing spectra from file " + mgfResource.getFilename() + " into the utilities SpectrumFactory.");
     }
 
     /**

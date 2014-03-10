@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -76,7 +77,7 @@ public class MaxQuantImportMapper {
         //just in case
         maxQuantParser.clearParsedProject();
         clearMappingResources();
-        loadFastaFile(aMaxQuantImport.getFastaFile());
+        loadFastaResource(aMaxQuantImport.getFastaResource());
 
         maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantFolder());
 
@@ -119,11 +120,11 @@ public class MaxQuantImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaFile the fasta file
+     * @param fastaResource the fasta resource
      */
-    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaResource(Resource fastaResource) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaFile);
+        sequenceFactory.loadFastaFile(fastaResource.getFile());
         LOGGER.debug("Finish loading FASTA file.");
     }
 }

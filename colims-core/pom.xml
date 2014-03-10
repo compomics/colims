@@ -138,6 +138,16 @@
         <dependency>
             <groupId>eu.isas.peptideshaker</groupId>
             <artifactId>PeptideShaker</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jmol</artifactId>
+                    <groupId>niklaas</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jshortcut</artifactId>
+                    <groupId>net.jimmc</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
