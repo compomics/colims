@@ -16,10 +16,12 @@ import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.comparator.IdComparator;
@@ -38,6 +40,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
@@ -56,7 +64,7 @@ public class AnalyticalRunSetupController implements Controllable {
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
-    //model
+    //model    
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private EventList<Experiment> experiments = new BasicEventList<>();
@@ -65,6 +73,8 @@ public class AnalyticalRunSetupController implements Controllable {
     private EventList<Sample> samples = new BasicEventList<>();
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
+    private BindingGroup bindingGroup;
+    private ObservableList<Instrument> instrumentBindingList;    
     private StorageType selectedStorageType;
     //view
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
@@ -77,6 +87,8 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private MaxQuantDataImportController maxQuantDataImportController;
     //services
+    @Autowired
+    private InstrumentService instrumentService;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -104,6 +116,16 @@ public class AnalyticalRunSetupController implements Controllable {
         analyticalRunSetupDialog.getPeptideShakerRadioButton().setSelected(true);
 
         initSampleSelectionPanel();
+        
+        instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
+        
+        //add binding
+        bindingGroup = new BindingGroup();
+
+        JComboBoxBinding instrumentComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, analyticalRunSetupDialog.getInstrumentComboBox());
+        bindingGroup.addBinding(instrumentComboBoxBinding);
+
+        bindingGroup.bind();
 
         //add action listeners
         analyticalRunSetupDialog.getProceedButton().addActionListener(new ActionListener() {

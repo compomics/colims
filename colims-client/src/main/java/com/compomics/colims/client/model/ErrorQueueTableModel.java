@@ -15,14 +15,15 @@ import javax.swing.table.AbstractTableModel;
 public class ErrorQueueTableModel extends AbstractTableModel {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "sample", "error"};
+    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "instrument", "sample", "error"};
     private static final int QUEUE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
     private static final int SUBMITTED_INDEX = 2;
     private static final int DESCRIPTION_INDEX = 3;
     private static final int USER_INDEX = 4;
-    private static final int SAMPLE_INDEX = 5;
-    private static final int ERROR_INDEX = 6;
+    private static final int INSTRUMENT_INDEX = 5;
+    private static final int SAMPLE_INDEX = 6;
+    private static final int ERROR_INDEX = 7;
     private List<StorageError> messages;
 
     public ErrorQueueTableModel() {
@@ -72,6 +73,8 @@ public class ErrorQueueTableModel extends AbstractTableModel {
                 return storageMetadata.getDescription();
             case USER_INDEX:
                 return storageMetadata.getUserName();
+            case INSTRUMENT_INDEX:
+                return storageMetadata.getInstrument().toString();    
             case SAMPLE_INDEX:
                 return storageMetadata.getSample().getName();
             case ERROR_INDEX:

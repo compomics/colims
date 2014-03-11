@@ -87,8 +87,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private LocalSessionFactoryBean sessionFactory;
+//    @Autowired
+//    private LocalSessionFactoryBean sessionFactory;
 
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
@@ -103,11 +103,11 @@ public class ColimsController implements Controllable, ActionListener {
      */
     @Override
     public void init() {
-        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
-        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
-        schemaExport.setFormat(true);
-        schemaExport.setDelimiter(";");
-        schemaExport.execute(true, false, false, true);
+//        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
+//        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
+//        schemaExport.setFormat(true);
+//        schemaExport.setDelimiter(";");
+//        schemaExport.execute(true, false, false, true);
 
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

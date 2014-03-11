@@ -17,15 +17,16 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "sample", "start", "duration"};    
+    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "instrument","sample", "start", "duration"};    
     private static final int QUEUE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
     private static final int SUBMITTED_INDEX = 2;
     private static final int DESCRIPTION_INDEX = 3;
     private static final int USER_INDEX = 4;
-    private static final int SAMPLE_INDEX = 5;
-    private static final int START_INDEX = 6;
-    private static final int DURATION_INDEX = 7;
+    private static final int INSTRUMENT_INDEX = 5;
+    private static final int SAMPLE_INDEX = 6;
+    private static final int START_INDEX = 7;
+    private static final int DURATION_INDEX = 8;
     private List<StoredTask> messages;
 
     public StoredQueueTableModel() {
@@ -75,6 +76,8 @@ public class StoredQueueTableModel extends AbstractTableModel {
                 return storageMetadata.getDescription();
             case USER_INDEX:
                 return storageMetadata.getUserName();
+            case INSTRUMENT_INDEX:
+                return storageMetadata.getInstrument().toString();        
             case SAMPLE_INDEX:
                 return storageMetadata.getSample().getName();
             case START_INDEX:

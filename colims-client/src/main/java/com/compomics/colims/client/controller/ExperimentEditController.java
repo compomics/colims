@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -120,11 +121,17 @@ public class ExperimentEditController implements Controllable {
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //update projectToEdit with dialog input
-                updateExperimentToEdit();
+                List<String> validationMessages = new ArrayList<>();
+
+                //update projectToEdit with dialog input, catch NumberFormatException for experiment number
+                try {
+                    updateExperimentToEdit();
+                } catch (NumberFormatException nfe) {
+                    validationMessages.add("The experiment number must be a number.");
+                }
 
                 //validate project
-                List<String> validationMessages = GuiUtils.validateEntity(experimentToEdit);
+                validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
                 //check for a new experiment if the experiment title already exists in the db                
                 if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
                     validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
