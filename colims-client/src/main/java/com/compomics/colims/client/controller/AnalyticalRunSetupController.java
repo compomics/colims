@@ -74,8 +74,9 @@ public class AnalyticalRunSetupController implements Controllable {
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
     private BindingGroup bindingGroup;
-    private ObservableList<Instrument> instrumentBindingList;    
-    private StorageType selectedStorageType;
+    private ObservableList<Instrument> instrumentBindingList;
+    private StorageType storageType;
+    private Instrument instrument;
     //view
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
     //parent controller
@@ -116,9 +117,9 @@ public class AnalyticalRunSetupController implements Controllable {
         analyticalRunSetupDialog.getPeptideShakerRadioButton().setSelected(true);
 
         initSampleSelectionPanel();
-        
+
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
-        
+
         //add binding
         bindingGroup = new BindingGroup();
 
@@ -145,16 +146,22 @@ public class AnalyticalRunSetupController implements Controllable {
                         }
                         break;
                     case DATA_TYPE_SELECTION_CARD:
-                        selectedStorageType = getSelectedStorageType();
-                        switch (selectedStorageType) {
-                            case PEPTIDESHAKER:
-                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
-                                break;
-                            case MAX_QUANT:
-                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
-                                break;
+                        instrument = getSelectedInstrument();
+                        if (instrument != null) {
+                            storageType = getSelectedStorageType();
+                            switch (storageType) {
+                                case PEPTIDESHAKER:
+                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
+                                    break;
+                                case MAX_QUANT:
+                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
+                                    break;
+                            }
+                            onCardSwitch();
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("instrument selection", "Please select an instrument.", JOptionPane.INFORMATION_MESSAGE);
+                            eventBus.post(messageEvent);        
                         }
-                        onCardSwitch();
                         break;
                     default:
                         break;
@@ -314,7 +321,9 @@ public class AnalyticalRunSetupController implements Controllable {
     public void showView() {
         //check if the user has the rights to add a run
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
-
+            //reset project selection
+            projectsSelectionModel.clearSelection();
+            
             //reset input fields
             analyticalRunSetupDialog.getStorageDescriptionTextField().setText("");
             peptideShakerDataImportController.showView();
@@ -332,7 +341,7 @@ public class AnalyticalRunSetupController implements Controllable {
     }
 
     private void sendStorageTask(DataImport dataImport) {
-        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), getSelectedSample());
+        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), instrument, getSelectedSample());
         StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
 
         try {
@@ -364,7 +373,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 //show info
-                updateInfo("Click on \"proceed\" to select the data type.");
+                updateInfo("Click on \"proceed\" to select the data type and instrument.");
                 break;
             case DATA_TYPE_SELECTION_CARD:
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
@@ -460,18 +469,33 @@ public class AnalyticalRunSetupController implements Controllable {
      * @return the selected StorageType
      */
     private StorageType getSelectedStorageType() {
-        StorageType storageType = null;
+        StorageType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
         for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                storageType = StorageType.getByUserFriendlyName(button.getText());
+                selectedStorageType = StorageType.getByUserFriendlyName(button.getText());
             }
         }
 
-        return storageType;
+        return selectedStorageType;
+    }
+
+    /**
+     * Get the selected instrument. Returns null if no instrument was selected.
+     *
+     * @return the selected Instrument
+     */
+    private Instrument getSelectedInstrument() {
+        Instrument selectedInstrument = null;
+
+        if (analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex() != -1) {
+            selectedInstrument = instrumentBindingList.get(analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex());
+        }
+
+        return selectedInstrument;
     }
 
 }
