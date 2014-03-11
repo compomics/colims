@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImport;
+import java.io.File;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
@@ -14,30 +15,38 @@ public class PeptideShakerDataImport extends DataImport {
     /**
      * The PeptideShaker .cps file
      */
-    private Resource peptideShakerCpsArchive;
+    private File peptideShakerCpsArchive;
     /**
-     * The list of mgf resources
+     * The list of mgf files
      */
-    private List<Resource> mgfResources;
+    private List<File> mgfResources;
 
-    public PeptideShakerDataImport(Resource peptideShakerCpsArchive, List<Resource> mgfResources) {
+    /**
+     * Constructor
+     * 
+     * @param peptideShakerCpsArchive
+     * @param fastaResource
+     * @param mgfResources
+     */
+    public PeptideShakerDataImport(final File peptideShakerCpsArchive, final File fastaResource, final List<File> mgfResources) {
+        super(fastaResource);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfResources = mgfResources;
     }
 
-    public Resource getPeptideShakerCpsArchive() {
+    public File getPeptideShakerCpsArchive() {
         return peptideShakerCpsArchive;
     }
 
-    public void setPeptideShakerCpsArchive(Resource peptideShakerCpsArchive) {
+    public void setPeptideShakerCpsArchive(File peptideShakerCpsArchive) {
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
     }
 
-    public List<Resource> getMgfResources() {
+    public List<File> getMgfFiles() {
         return mgfResources;
     }
 
-    public void setMgfResources(List<Resource> mgfFiles) {
+    public void setMgfFiles(List<File> mgfFiles) {
         this.mgfResources = mgfFiles;
     }            
 }

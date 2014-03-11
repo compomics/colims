@@ -1,6 +1,6 @@
 package com.compomics.colims.core.io.peptideshaker;
 
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import java.io.File;
 import java.io.IOException;
@@ -30,13 +30,13 @@ public class PeptideShakerIOTest {
 
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
+        UnpackedPsDataImport psDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
 
-        File dbDirectory = peptideShakerImport.getDbDirectory();
+        File dbDirectory = psDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
         Assert.assertTrue(dbDirectory.exists());
 
-        MsExperiment msExperiment = peptideShakerImport.getMsExperiment();
+        MsExperiment msExperiment = psDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
         Assert.assertNotNull(msExperiment.getSamples());
         Sample sample = msExperiment.getSample(0);

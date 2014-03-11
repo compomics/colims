@@ -5,13 +5,12 @@ import java.util.List;
 
 import com.compomics.util.experiment.MsExperiment;
 import java.io.File;
-import org.springframework.core.io.Resource;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class UnpackedPeptideShakerDataImport extends DataImport {
+public class UnpackedPsDataImport extends DataImport {
 
     /**
      * The location of the db contained in the PeptideShaker .cps archive
@@ -20,13 +19,13 @@ public class UnpackedPeptideShakerDataImport extends DataImport {
     /**
      * The list of mgf files
      */
-    private List<Resource> mgfResources;
+    private List<File> mgfFiles;
     /**
      * The Utilities MsExperiment
      */
     private MsExperiment msExperiment;
 
-    public UnpackedPeptideShakerDataImport(final MsExperiment msExperiment, final File dbDirectory) {
+    public UnpackedPsDataImport(final MsExperiment msExperiment, final File dbDirectory) {
         this.dbDirectory = dbDirectory;
         this.msExperiment = msExperiment;
     }
@@ -39,12 +38,12 @@ public class UnpackedPeptideShakerDataImport extends DataImport {
         this.dbDirectory = dbDirectory;
     }
 
-    public List<Resource> getMgfResources() {
-        return mgfResources;
+    public List<File> getMgfFiles() {
+        return mgfFiles;
     }
 
-    public void setMgfResources(final List<Resource> mgfResources) {
-        this.mgfResources = mgfResources;
+    public void setMgfFiles(final List<File> mgfFiles) {
+        this.mgfFiles = mgfFiles;
     }
 
     public MsExperiment getMsExperiment() {
@@ -63,17 +62,17 @@ public class UnpackedPeptideShakerDataImport extends DataImport {
      * @param mgfResourceName the mgf resource name
      * @return the found mgf resource
      */
-    public Resource getMgfResourceByName(final String mgfResourceName) {
-        Resource foundMgfResource = null;
-        if (mgfResources != null) {
-            for (Resource mgfResource : mgfResources) {
-                if (mgfResource.getFilename().toLowerCase().equals(mgfResourceName.toLowerCase())) {
-                    foundMgfResource = mgfResource;
+    public File getMgfFileByName(final String mgfResourceName) {
+        File foundMgfFile = null;
+        if (mgfFiles != null) {
+            for (File mgfFile : mgfFiles) {
+                if (mgfFile.getName().toLowerCase().equals(mgfResourceName.toLowerCase())) {
+                    foundMgfFile = mgfFile;
                     break;
                 }
             }
         }
 
-        return foundMgfResource;
+        return foundMgfFile;
     }
 }

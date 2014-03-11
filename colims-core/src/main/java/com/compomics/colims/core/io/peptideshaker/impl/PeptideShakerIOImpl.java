@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.compomics.colims.core.bean.ProgressEvent;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.eventbus.EventBus;
@@ -48,7 +48,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPeptideShakerDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException {
+    public UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException {
         File tempDirectory = Files.createTempDir();
         if (tempDirectory.exists()) {
             return this.unpackPeptideShakerCpsArchive(peptideShakerCpsArchive, tempDirectory);
@@ -58,7 +58,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPeptideShakerDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException {
+    public UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         MsExperiment msExperiment;
@@ -107,9 +107,9 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         LOGGER.info("Deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
         msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
 
-        UnpackedPeptideShakerDataImport peptideShakerImport = new UnpackedPeptideShakerDataImport(msExperiment, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
+        UnpackedPsDataImport unpackedPsDataImport = new UnpackedPsDataImport(msExperiment, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
         LOGGER.info("Finished importing PeptideShaker file " + peptideShakerCpsArchive.getName());
 
-        return peptideShakerImport;
+        return unpackedPsDataImport;
     }
 }

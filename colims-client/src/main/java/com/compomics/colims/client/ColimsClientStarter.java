@@ -58,6 +58,7 @@ public class ColimsClientStarter {
                     ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
                     colimsController.init();
                 } catch (CannotCreateTransactionException ex) {
+                    LOGGER.error(ex.getMessage(), ex);
                     if (ex.getCause() instanceof GenericJDBCException) {
                         JOptionPane.showMessageDialog(null, "Cannot establish a connection to the database, the application will not start."
                                 + "\n" + "Make sure your connection parameters in the config/colims-client.properties."

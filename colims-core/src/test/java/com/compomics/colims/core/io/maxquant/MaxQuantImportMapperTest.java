@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import java.io.File;
 import java.util.List;
 import com.compomics.colims.model.AnalyticalRun;
+import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 /**
  *
@@ -32,12 +30,12 @@ public class MaxQuantImportMapperTest {
     @Autowired
     MaxQuantImportMapper maxQuantImportMapper;
 
-    private File maxQuantTextFolder;
-    private Resource maxQuantTestFastaFile;
+    private File maxQuantTextDirectory;
+    private File maxQuantTestFastaFile;
 
     public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextFolder = new ClassPathResource("testdata").getFile();
-        maxQuantTestFastaFile = new ClassPathResource("testdata/testfasta.fasta");
+        maxQuantTextDirectory = new ClassPathResource("testdata").getFile();
+        maxQuantTestFastaFile = new ClassPathResource("testdata/testfasta.fasta").getFile();
     }
 
     /**
@@ -46,7 +44,7 @@ public class MaxQuantImportMapperTest {
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         System.out.println("map");
-        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextFolder, maxQuantTestFastaFile);
+        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextDirectory, maxQuantTestFastaFile);
         List<AnalyticalRun> result = maxQuantImportMapper.map(testImport);
         assertThat(result.size(), is(not(0)));
     }

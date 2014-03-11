@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerDataImport;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
@@ -33,9 +32,9 @@ public class PeptideShakerDataImportController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerDataImportController.class);
     //model
-    private Resource cpsArchive;
-    private Resource fastaFile;
-    private final DefaultListModel<Resource> mgfResourceListModel = new DefaultListModel();
+    private File cpsArchive;
+    private File fastaFile;
+    private final DefaultListModel<File> mgfFileListModel = new DefaultListModel();
     //view
     private PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     //parent controller
@@ -65,10 +64,10 @@ public class PeptideShakerDataImportController implements Controllable {
                 //in response to the button click, show open dialog 
                 int returnVal = peptideShakerDataImportPanel.getCpsFileChooser().showOpenDialog(peptideShakerDataImportPanel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    cpsArchive = new FileSystemResource(peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile());
+                    cpsArchive = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile();
 
                     //show cps file name in label
-                    peptideShakerDataImportPanel.getCpsFileLabel().setText(cpsArchive.getFilename());
+                    peptideShakerDataImportPanel.getCpsFileLabel().setText(cpsArchive.getName());
                 }
             }
         });
@@ -85,16 +84,16 @@ public class PeptideShakerDataImportController implements Controllable {
                 //in response to the button click, show open dialog 
                 int returnVal = peptideShakerDataImportPanel.getFastaFileChooser().showOpenDialog(peptideShakerDataImportPanel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fastaFile = new FileSystemResource(peptideShakerDataImportPanel.getFastaFileChooser().getSelectedFile());
+                    fastaFile = peptideShakerDataImportPanel.getFastaFileChooser().getSelectedFile();
 
-                    //show cps file name in label
-                    peptideShakerDataImportPanel.getFastaFileLabel().setText(fastaFile.getFilename());
+                    //show fasta file name in label
+                    peptideShakerDataImportPanel.getFastaFileLabel().setText(fastaFile.getName());
                 }
             }
         });
 
         //init mgf file(s) selection
-        peptideShakerDataImportPanel.getMgfFileList().setModel(mgfResourceListModel);
+        peptideShakerDataImportPanel.getMgfFileList().setModel(mgfFileListModel);
         peptideShakerDataImportPanel.getMgfFileList().setCellRenderer(new ListCellRenderer() {
             protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
@@ -103,7 +102,7 @@ public class PeptideShakerDataImportController implements Controllable {
                 JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
                         isSelected, cellHasFocus);
 
-                renderer.setText(((Resource) value).getFilename());
+                renderer.setText(((File) value).getName());
 
                 return renderer;
             }
@@ -120,10 +119,10 @@ public class PeptideShakerDataImportController implements Controllable {
                 //in response to the button click, show open dialog
                 int returnVal = peptideShakerDataImportPanel.getMgfFileChooser().showOpenDialog(peptideShakerDataImportPanel);
                 //clear list
-                mgfResourceListModel.clear();
+                mgfFileListModel.clear();
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     for (int i = 0; i < peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles().length; i++) {
-                        mgfResourceListModel.add(i, new FileSystemResource(peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i]));
+                        mgfFileListModel.add(i, peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i]);
                     }
                 }
             }
@@ -135,7 +134,7 @@ public class PeptideShakerDataImportController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 int[] selectedIndices = peptideShakerDataImportPanel.getMgfFileList().getSelectedIndices();
                 for (int i = 0; i < selectedIndices.length; i++) {
-                    mgfResourceListModel.remove(selectedIndices[i]);
+                    mgfFileListModel.remove(selectedIndices[i]);
                 }
             }
         });
@@ -146,7 +145,7 @@ public class PeptideShakerDataImportController implements Controllable {
         //reset the input fields
         peptideShakerDataImportPanel.getCpsFileLabel().setText("");
         peptideShakerDataImportPanel.getFastaFileLabel().setText("");
-        mgfResourceListModel.clear();
+        mgfFileListModel.clear();
     }
 
     /**
@@ -164,7 +163,7 @@ public class PeptideShakerDataImportController implements Controllable {
         if (fastaFile == null) {
             validationMessages.add("Please select a FASTA file.");
         }
-        if (mgfResourceListModel.isEmpty()) {
+        if (mgfFileListModel.isEmpty()) {
             validationMessages.add("Please select one or more MGF files.");
         }
 
@@ -172,12 +171,12 @@ public class PeptideShakerDataImportController implements Controllable {
     }
 
     public PeptideShakerDataImport getDataImport() {
-        List<Resource> mgfResources = new ArrayList<>();
-        for (int i = 0; i < mgfResourceListModel.size(); i++) {
-            mgfResources.add(mgfResourceListModel.get(i));
+        List<File> mgfFiles = new ArrayList<>();
+        for (int i = 0; i < mgfFileListModel.size(); i++) {
+            mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(cpsArchive, mgfResources);
+        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(cpsArchive, fastaFile, mgfFiles);
 
         return peptideShakerDataImport;
     }

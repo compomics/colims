@@ -15,6 +15,9 @@ import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
 import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
+import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.distributed.model.StorageMetadata;
+import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
@@ -36,6 +39,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,7 +53,8 @@ public class AnalyticalRunSetupController implements Controllable {
     private static final String SAMPLE_SELECTION_CARD = "sampleSelectionPanel";
     private static final String DATA_TYPE_SELECTION_CARD = "dataTypeSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
-    private static final String TEST_CARD = "testPanel";
+    private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
+    private static final String CONFIRMATION_CARD = "confirmationPanel";
 
     //model
     private AdvancedTableModel<Project> projectsTableModel;
@@ -69,6 +74,8 @@ public class AnalyticalRunSetupController implements Controllable {
     //child controller
     @Autowired
     private PeptideShakerDataImportController peptideShakerDataImportController;
+    @Autowired
+    private MaxQuantDataImportController maxQuantDataImportController;
     //services
     @Autowired
     private EventBus eventBus;
@@ -91,6 +98,7 @@ public class AnalyticalRunSetupController implements Controllable {
 
         //init child controller
         peptideShakerDataImportController.init();
+        maxQuantDataImportController.init();
 
         //select peptideShaker radio button
         analyticalRunSetupDialog.getPeptideShakerRadioButton().setSelected(true);
@@ -121,17 +129,8 @@ public class AnalyticalRunSetupController implements Controllable {
                                 getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
                                 break;
                             case MAX_QUANT:
+                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
                                 break;
-                        }
-                        onCardSwitch();
-                        break;
-                    case PS_DATA_IMPORT_CARD:
-                        List<String> validationMessages = peptideShakerDataImportController.validateBeforeUnpacking();
-                        if (validationMessages.isEmpty()) {                            
-                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), TEST_CARD);
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
                         }
                         onCardSwitch();
                         break;
@@ -144,7 +143,16 @@ public class AnalyticalRunSetupController implements Controllable {
         analyticalRunSetupDialog.getBackButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
+                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+                switch (currentCardName) {
+                    case PS_DATA_IMPORT_CARD:
+                    case MAX_QUANT_DATA_IMPORT_CARD:
+                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), DATA_TYPE_SELECTION_CARD);
+                        break;
+                    default:
+                        getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
+                        break;
+                }
                 onCardSwitch();
             }
         });
@@ -152,7 +160,33 @@ public class AnalyticalRunSetupController implements Controllable {
         analyticalRunSetupDialog.getFinishButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //store it
+                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+                switch (currentCardName) {
+                    case PS_DATA_IMPORT_CARD:
+                        List<String> psValidationMessages = peptideShakerDataImportController.validateBeforeUnpacking();
+                        if (psValidationMessages.isEmpty()) {
+                            sendStorageTask(peptideShakerDataImportController.getDataImport());
+                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            eventBus.post(messageEvent);
+                        }
+                        onCardSwitch();
+                        break;
+                    case MAX_QUANT_DATA_IMPORT_CARD:
+                        List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
+                        if (maxQuantValidationMessages.isEmpty()) {
+                            sendStorageTask(maxQuantDataImportController.getDataImport());
+                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            eventBus.post(messageEvent);
+                        }
+                        onCardSwitch();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -260,7 +294,9 @@ public class AnalyticalRunSetupController implements Controllable {
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
 
             //reset input fields
+            analyticalRunSetupDialog.getStorageDescriptionTextField().setText("");
             peptideShakerDataImportController.showView();
+            maxQuantDataImportController.showView();
 
             //show first card
             getCardLayout().first(analyticalRunSetupDialog.getTopPanel());
@@ -270,6 +306,18 @@ public class AnalyticalRunSetupController implements Controllable {
             analyticalRunSetupDialog.setVisible(true);
         } else {
             eventBus.post(new MessageEvent("authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
+        }
+    }
+
+    private void sendStorageTask(DataImport dataImport) {
+        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), getSelectedSample());
+        StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
+
+        try {
+            storageTaskProducer.sendStorageTask(storageTask);
+        } catch (JmsException jmsException) {
+            LOGGER.error(jmsException.getMessage(), jmsException);
+            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit could not be reached.", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -290,35 +338,38 @@ public class AnalyticalRunSetupController implements Controllable {
         String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
         switch (currentCardName) {
             case SAMPLE_SELECTION_CARD:
-                //disable back button
                 analyticalRunSetupDialog.getBackButton().setEnabled(false);
-                //enable proceed button
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
-                //disable finish button
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 //show info
                 updateInfo("Click on \"proceed\" to select the data type.");
                 break;
             case DATA_TYPE_SELECTION_CARD:
-                //enable back button
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
-                //enable proceed button
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
-                //disable finish button
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 //show info
                 updateInfo("Click on \"proceed\" to select the necessary input files/directories.");
                 break;
             case PS_DATA_IMPORT_CARD:
-                //enable back button
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
-                //enable proceed button
                 analyticalRunSetupDialog.getProceedButton().setEnabled(false);
-                //disable finish button
                 analyticalRunSetupDialog.getFinishButton().setEnabled(true);
                 //show info
                 updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
+            case MAX_QUANT_DATA_IMPORT_CARD:
+                analyticalRunSetupDialog.getBackButton().setEnabled(true);
+                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
+                analyticalRunSetupDialog.getFinishButton().setEnabled(true);
+                //show info
+                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
+                break;
+            case CONFIRMATION_CARD:
+                analyticalRunSetupDialog.getBackButton().setEnabled(false);
+                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
+                analyticalRunSetupDialog.getFinishButton().setEnabled(false);
+                updateInfo("");
             default:
                 break;
         }

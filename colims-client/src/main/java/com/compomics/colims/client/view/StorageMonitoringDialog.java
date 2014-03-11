@@ -179,7 +179,9 @@ public class StorageMonitoringDialog extends javax.swing.JDialog {
 
         errorDetailTextArea.setEditable(false);
         errorDetailTextArea.setColumns(20);
+        errorDetailTextArea.setLineWrap(true);
         errorDetailTextArea.setRows(5);
+        errorDetailTextArea.setWrapStyleWord(true);
         errorDetailTextAreaScrollPane.setViewportView(errorDetailTextArea);
 
         javax.swing.GroupLayout exceptionQueuePanelLayout = new javax.swing.GroupLayout(exceptionQueuePanel);

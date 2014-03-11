@@ -1,7 +1,7 @@
 package com.compomics.colims.core.io;
 
+import java.io.File;
 import java.io.Serializable;
-import org.springframework.core.io.Resource;
 
 /**
  *
@@ -12,23 +12,23 @@ public abstract class DataImport implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The fasta resource
+     * The fasta file
      */
-    protected Resource fastaResource;
+    protected File fastaFile;
 
     public DataImport() {
     }
 
-    public DataImport(Resource fastaResource) {
-        this.fastaResource = fastaResource;
+    public DataImport(File fastaFile) {
+        this.fastaFile = fastaFile;
     }
 
-    public Resource getFastaResource() {
-        return fastaResource;
+    public File getFastaFile() {
+        return fastaFile;
     }
 
-    public void setFastaResource(Resource fastaResource) {
-        this.fastaResource = fastaResource;
+    public void setFastaFile(File fastaFile) {
+        this.fastaFile = fastaFile;
     }        
 
 }

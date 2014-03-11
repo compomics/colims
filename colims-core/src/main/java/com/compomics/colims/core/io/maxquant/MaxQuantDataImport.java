@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.DataImport;
 import java.io.File;
-import org.springframework.core.io.Resource;
 
 /**
  *
@@ -10,19 +9,25 @@ import org.springframework.core.io.Resource;
  */
 public class MaxQuantDataImport extends DataImport {
 
-    private File maxQuantFolder;
+    private File maxQuantDirectory;
     
-    public MaxQuantDataImport(final File aMaxQuantFolder, final Resource fastaResource){
-        super(fastaResource);
-        this.maxQuantFolder = aMaxQuantFolder;
+    /**
+     * Constructor
+     * 
+     * @param maxQuantDirectory
+     * @param fastaFile
+     */
+    public MaxQuantDataImport(final File maxQuantDirectory, final File fastaFile){
+        super(fastaFile);
+        this.maxQuantDirectory = maxQuantDirectory;
     }
 
-    public File getMaxQuantFolder() {
-        return maxQuantFolder;
+    public File getMaxQuantDirectory() {
+        return maxQuantDirectory;
     }
 
-    public void setMaxQuantFolder(final File maxQuantFolder) {
-        this.maxQuantFolder = maxQuantFolder;
+    public void setMaxQuantDirectory(final File maxQuantDirectory) {
+        this.maxQuantDirectory = maxQuantDirectory;
     }
 
 }

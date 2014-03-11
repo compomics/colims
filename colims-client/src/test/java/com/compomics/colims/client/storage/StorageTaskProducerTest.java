@@ -43,7 +43,7 @@ public class StorageTaskProducerTest {
         storageMetadata.setUserName("test user");        
         storageTask.setStorageMetadata(storageMetadata);
         
-        DataImport dataImport = new PeptideShakerDataImport(null, null);        
+        DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
         storageTask.setDataImport(dataImport);
         
         List<StorageTask> messages = queueMonitor.monitorQueue(storageQueueName);
