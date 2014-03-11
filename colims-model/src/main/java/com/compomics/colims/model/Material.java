@@ -39,15 +39,15 @@ public class Material extends AuditableDatabaseEntity {
     @ManyToOne
     private MaterialCvTerm species;
     @Basic(optional = true)
-    @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvTerm tissue;
     @Basic(optional = true)
-    @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvTerm cellType;
     @Basic(optional = true)
-    @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvTerm compartment;
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")

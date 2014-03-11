@@ -1,4 +1,5 @@
-create table analytical_run (
+
+    create table analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -126,11 +127,11 @@ create table analytical_run (
         modification_date datetime not null,
         user_name varchar(255) not null,
         name varchar(30) not null,
-        l_cell_type_cv_id bigint not null,
-        l_compartment_cv_id bigint not null,
+        l_cell_type_cv_id bigint,
+        l_compartment_cv_id bigint,
         l_project_id bigint,
         l_species_cv_id bigint not null,
-        l_tissue_cv_id bigint not null,
+        l_tissue_cv_id bigint,
         primary key (id)
     );
 
@@ -232,9 +233,9 @@ create table analytical_run (
         modification_date datetime not null,
         user_name varchar(255) not null,
         name varchar(30) not null,
-        l_cell_based_cv_id bigint not null,
-        l_enzyme_cv_id bigint not null,
-        l_reduction_cv_id bigint not null,
+        l_cell_based_cv_id bigint,
+        l_enzyme_cv_id bigint,
+        l_reduction_cv_id bigint,
         primary key (id)
     );
 
@@ -388,7 +389,7 @@ create table analytical_run (
     create table spectrum (
         id bigint not null auto_increment,
         accession varchar(255) not null,
-        charge integer not null,
+        charge integer,
         fragmentation_type varchar(255),
         intensity double precision,
         mz_ratio double precision not null,

@@ -39,15 +39,15 @@ public class Protocol extends AuditableDatabaseEntity {
     private String name;
     @Basic(optional = true)
     @ManyToOne
-    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvTerm reduction;
     @Basic(optional = true)
     @ManyToOne
-    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvTerm enzyme;
     @Basic(optional = true)
     @ManyToOne
-    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvTerm cellBased;
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();

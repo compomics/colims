@@ -73,14 +73,14 @@ public class MaterialManagementController implements Controllable {
     private CvTermService cvTermService;
     @Autowired
     private EventBus eventBus;
-
+    
     public MaterialManagementController() {
     }
-
+    
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
     }
-
+    
     @Override
     public void init() {
         //register to event bus
@@ -92,15 +92,15 @@ public class MaterialManagementController implements Controllable {
         //init views     
         initMaterialManagementDialog();
         initMaterialEditDialog();
-
+        
         bindingGroup.bind();
     }
-
+    
     @Override
     public void showView() {
         //clear selection
         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-
+        
         GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), materialManagementDialog);
         materialManagementDialog.setVisible(true);
     }
@@ -116,7 +116,7 @@ public class MaterialManagementController implements Controllable {
             materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
         }
     }
-
+    
     private void initMaterialManagementDialog() {
         materialManagementDialog = new MaterialManagementDialog(colimsController.getColimsFrame(), true);
 
@@ -157,16 +157,18 @@ public class MaterialManagementController implements Controllable {
                 }
             }
         });
-
+        
         materialManagementDialog.getAddMaterialButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Material defaultMaterial = createDefaultMaterial();
-                materialBindingList.add(defaultMaterial);
-                materialManagementDialog.getMaterialList().setSelectedIndex(materialBindingList.size() - 1);
+                updateMaterialEditDialog(createDefaultMaterial());
+
+                //show dialog
+                GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
+                materialEditDialog.setVisible(true);
             }
         });
-
+        
         materialManagementDialog.getDeleteMaterialButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -177,7 +179,7 @@ public class MaterialManagementController implements Controllable {
                     if (materialToDelete.getId() != null) {
                         try {
                             materialService.delete(materialToDelete);
-
+                            
                             materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                             materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                         } catch (DataIntegrityViolationException dive) {
@@ -198,7 +200,7 @@ public class MaterialManagementController implements Controllable {
                 }
             }
         });
-
+        
         materialManagementDialog.getEditMaterialButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -210,16 +212,16 @@ public class MaterialManagementController implements Controllable {
                 }
             }
         });
-
+        
         materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialManagementDialog.dispose();
             }
         });
-
+        
     }
-
+    
     private void initMaterialEditDialog() {
         materialEditDialog = new MaterialEditDialog(materialManagementDialog, true);
 
@@ -246,7 +248,7 @@ public class MaterialManagementController implements Controllable {
 
                         //load duallist for the selected cvTermType
                         List<MaterialCvTerm> availableCvTerms = cvTermService.findByCvTermByType(MaterialCvTerm.class, selectedcvTermType);
-
+                        
                         List<MaterialCvTerm> addedCvTerms;
                         //@todo for the moment, material has only single CV terms,
                         //so this check is not necessary.
@@ -268,13 +270,13 @@ public class MaterialManagementController implements Controllable {
                 }
             }
         });
-
+        
         materialEditDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //get selected cvTermType                        
                 CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
-
+                
                 List<MaterialCvTerm> addedItems = (List<MaterialCvTerm>) evt.getNewValue();
 
                 //check for property
@@ -315,10 +317,10 @@ public class MaterialManagementController implements Controllable {
                         cvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, null);
                     }
                 }
-
+                
             }
         });
-
+        
         materialEditDialog.getMaterialSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -344,7 +346,7 @@ public class MaterialManagementController implements Controllable {
                         index = materialBindingList.size() - 1;
                     }
                     materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
-
+                    
                     MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -357,14 +359,14 @@ public class MaterialManagementController implements Controllable {
                 }
             }
         });
-
+        
         materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialEditDialog.dispose();
             }
         });
-
+        
         materialEditDialog.getMaterialCvTermsCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -372,12 +374,12 @@ public class MaterialManagementController implements Controllable {
                 if (materialEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
                     //get selected cvTermType from summary list                        
                     CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
-
+                    
                     List<CvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
-
+                    
                     cvTermManagementController.showView();
                 }
             }
@@ -396,7 +398,7 @@ public class MaterialManagementController implements Controllable {
         if (foundMaterial == null) {
             isExistingMaterialName = false;
         }
-
+        
         return isExistingMaterialName;
     }
 
@@ -466,6 +468,8 @@ public class MaterialManagementController implements Controllable {
             materialEditDialog.getMaterialSaveOrUpdateButton().setText("save");
             materialEditDialog.getMaterialStateInfoLabel().setText("This material hasn't been persisted to the database.");
         }
+        
+        materialEditDialog.getNameTextField().setText(materialToEdit.getName());
 
         //add the single CV terms
         EnumMap<CvTermType, MaterialCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class);

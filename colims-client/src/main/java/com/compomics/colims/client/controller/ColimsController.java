@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,8 +87,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
-//    @Autowired
-//    private LocalSessionFactoryBean sessionFactory;
+    @Autowired
+    private LocalSessionFactoryBean sessionFactory;
 
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
@@ -102,11 +103,11 @@ public class ColimsController implements Controllable, ActionListener {
      */
     @Override
     public void init() {
-//        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
-//        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
-//        schemaExport.setFormat(true);
-//        schemaExport.setDelimiter(";");
-//        schemaExport.execute(true, false, false, true);
+        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
+        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
+        schemaExport.setFormat(true);
+        schemaExport.setDelimiter(";");
+        schemaExport.execute(true, false, false, true);
 
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -183,7 +184,7 @@ public class ColimsController implements Controllable, ActionListener {
 //        loginDialog.setLocationRelativeTo(null);
 //        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("admin1");
+        User currentUser = userService.findByName("admin");
         userService.fetchAuthenticationRelations(currentUser);
         authenticationBean.setCurrentUser(currentUser);
         if (authenticationBean.isAdmin()) {
