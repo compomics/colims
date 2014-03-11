@@ -362,9 +362,11 @@ public class InstrumentManagementController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (instrumentToEdit != null) {
-                    //set instrument type                    
-                    InstrumentType selectedInstrumentType = instrumentTypeBindingList.get(instrumentEditDialog.getTypeComboBox().getSelectedIndex());
-                    instrumentToEdit.setInstrumentType(selectedInstrumentType);
+                    //set instrument type 
+                    if (!instrumentTypeBindingList.isEmpty()) {
+                        InstrumentType selectedInstrumentType = instrumentTypeBindingList.get(instrumentEditDialog.getTypeComboBox().getSelectedIndex());
+                        instrumentToEdit.setInstrumentType(selectedInstrumentType);
+                    }
                 }
             }
         });

@@ -164,9 +164,11 @@ public class ProtocolManagementController implements Controllable {
         protocolManagementDialog.getAddProtocolButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Protocol defaultProtocol = createDefaultProtocol();
-                protocolBindingList.add(defaultProtocol);
-                protocolManagementDialog.getProtocolList().setSelectedIndex(protocolBindingList.size() - 1);
+                updateProtocolEditDialog(createDefaultProtocol());
+
+                //show dialog
+                GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
+                protocolEditDialog.setVisible(true);
             }
         });
 

@@ -1,9 +1,10 @@
 package com.compomics.colims.distributed;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import javax.swing.JOptionPane;
+import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.User;
+import com.compomics.colims.repository.AuthenticationBean;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.GenericJDBCException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.CannotCreateTransactionException;
@@ -22,8 +23,14 @@ public class ColimsDistributedStarter {
 
     private static void launch() {
         try {
-            ApplicationContext distributedApplicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
-            ApplicationContextProvider.getInstance().setApplicationContext(distributedApplicationContext);            
+            ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
+            UserService userService = applicationContext.getBean("userService", UserService.class);
+            AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
+
+            //set the default distributed user in the authentication bean
+            User distributedUser = userService.findByName("distributed");
+            userService.fetchAuthenticationRelations(distributedUser);
+            authenticationBean.setCurrentUser(distributedUser);
         } catch (CannotCreateTransactionException ex) {
             LOGGER.error(ex.getMessage(), ex);
             System.exit(0);
