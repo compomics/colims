@@ -7,6 +7,7 @@ package com.compomics.colims.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -27,13 +28,13 @@ import javax.persistence.TemporalType;
 @Entity
 public class AnalyticalRun extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;   
+    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
-    private String name;    
+    private String name;
     @Basic(optional = true)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_date")    
+    @Column(name = "start_date")
     protected Date startDate;
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne
@@ -42,15 +43,15 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @ManyToOne
     private Instrument instrument;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
-    private List<Spectrum> spectrums = new ArrayList<>();  
+    private List<Spectrum> spectrums = new ArrayList<>();
 
     public String getName() {
         return name;
-    }        
+    }
 
     public void setName(String name) {
         this.name = name;
-    }          
+    }
 
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;
@@ -87,7 +88,10 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 59 * hash + Objects.hashCode(this.name);
+        hash = 59 * hash + Objects.hashCode(this.startDate);
+        hash = 59 * hash + Objects.hashCode(this.sample);
+        hash = 59 * hash + Objects.hashCode(this.instrument);
         return hash;
     }
 
@@ -100,7 +104,16 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
             return false;
         }
         final AnalyticalRun other = (AnalyticalRun) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.startDate, other.startDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.sample, other.sample)) {
+            return false;
+        }
+        if (!Objects.equals(this.instrument, other.instrument)) {
             return false;
         }
         return true;

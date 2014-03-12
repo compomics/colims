@@ -123,8 +123,11 @@ public class Instrument extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.name);
-        hash = 29 * hash + Objects.hashCode(this.instrumentType);
+        hash = 73 * hash + Objects.hashCode(this.name);
+        hash = 73 * hash + Objects.hashCode(this.source);
+        hash = 73 * hash + Objects.hashCode(this.detector);
+        hash = 73 * hash + Objects.hashCode(this.instrumentType);
+        hash = 73 * hash + Objects.hashCode(this.analyzers);
         return hash;
     }
 
@@ -140,11 +143,20 @@ public class Instrument extends AuditableDatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
+        if (!Objects.equals(this.source, other.source)) {
+            return false;
+        }
+        if (!Objects.equals(this.detector, other.detector)) {
+            return false;
+        }
         if (!Objects.equals(this.instrumentType, other.instrumentType)) {
             return false;
         }
+        if (!Objects.equals(this.analyzers, other.analyzers)) {
+            return false;
+        }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

@@ -3,6 +3,8 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ProtocolChangeEvent;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -109,6 +111,8 @@ public class ProtocolManagementController implements Controllable {
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the ProtocolManagementDialog is visible,
      * clear the selection in the CV term summary list.
+     *
+     * @param cvTermChangeEvent
      */
     @Subscribe
     public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
@@ -185,6 +189,8 @@ public class ProtocolManagementController implements Controllable {
 
                             protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
                             protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
+
+                            eventBus.post(new ProtocolChangeEvent(EntityChangeEvent.Type.DELETED));
                         } catch (DataIntegrityViolationException dive) {
                             //check if the protocol can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
@@ -334,18 +340,24 @@ public class ProtocolManagementController implements Controllable {
                     validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
                             + "\n" + "please choose another protocol name.");
                 }
-                int index = 0;
                 if (validationMessages.isEmpty()) {
+                    int index;
+                    EntityChangeEvent.Type type;
                     if (protocolToEdit.getId() != null) {
                         protocolService.update(protocolToEdit);
                         index = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         protocolService.save(protocolToEdit);
                         //add protocol to overview list
                         protocolBindingList.add(protocolToEdit);
                         index = protocolBindingList.size() - 1;
+                        protocolEditDialog.getProtocolStateInfoLabel().setText("");
+                        type = EntityChangeEvent.Type.CREATED;
                     }
                     protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
+
+                    eventBus.post(new ProtocolChangeEvent(type));
 
                     MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

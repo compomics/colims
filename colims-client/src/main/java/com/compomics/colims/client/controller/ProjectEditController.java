@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.ProjectChangeEvent;
+import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectEditDialog;
@@ -12,6 +12,7 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -39,6 +40,7 @@ public class ProjectEditController implements Controllable {
     //model   
     private BindingGroup bindingGroup;
     private ObservableList<User> userBindingList;
+    private List<User> users;
     private Project projectToEdit;
     //view
     private ProjectEditDialog projectEditDialog;
@@ -68,12 +70,13 @@ public class ProjectEditController implements Controllable {
         projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
 
         //init dual list
+        users = userService.findAll();
         projectEditDialog.getUserDualList().init(new UserNameComparator());
 
         //add binding
         bindingGroup = new BindingGroup();
 
-        userBindingList = ObservableCollections.observableList(userService.findAll());
+        userBindingList = ObservableCollections.observableList(users);
 
         JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, projectEditDialog.getOwnerComboBox());
         bindingGroup.addBinding(ownerComboBoxBinding);
@@ -122,10 +125,7 @@ public class ProjectEditController implements Controllable {
                         projectManagementController.addProject(projectToEdit);                        
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
-                    }
-                    ProjectChangeEvent projectChangeEvent = new ProjectChangeEvent(type, projectToEdit);
-                    eventBus.post(projectChangeEvent);
-                    
+                    }                    
                     MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -155,6 +155,8 @@ public class ProjectEditController implements Controllable {
     /**
      * Update the project edit dialog with the selected project in the project
      * overview table.
+     * 
+     * @param project
      */
     public void updateView(final Project project) {
         projectToEdit = project;
@@ -167,13 +169,24 @@ public class ProjectEditController implements Controllable {
 
         projectEditDialog.getTitleTextField().setText(projectToEdit.getTitle());
         projectEditDialog.getLabelTextField().setText(projectToEdit.getLabel());
-        //set the selected item in the owner combobox        
+        //set the selected item in the owner combobox
         projectEditDialog.getOwnerComboBox().setSelectedItem(projectToEdit.getOwner());
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
-        //populate user dual list
-        projectEditDialog.getUserDualList().populateLists(userService.findAll(), projectToEdit.getUsers());
+        //populate user dual list        
+        projectEditDialog.getUserDualList().populateLists(users, projectToEdit.getUsers());
 
         showView();
+    }
+    
+    /**
+     * Listen to a UserChangeEvent and reload the users.
+     *
+     * @param userChangeEvent the UserChangeEvent
+     */
+    @Subscribe
+    public void onUserChangeEvent(final UserChangeEvent userChangeEvent) {
+        users.clear();
+        users.addAll(userService.findAll());
     }
 
     /**

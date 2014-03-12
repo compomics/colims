@@ -3,6 +3,8 @@ package com.compomics.colims.client.controller.admin;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -118,6 +120,8 @@ public class InstrumentManagementController implements Controllable {
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the InstrumentManagementDialog is visible,
      * clear the selection in the CV term summary list.
+     * 
+     * @param cvTermChangeEvent
      */
     @Subscribe
     public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
@@ -188,6 +192,8 @@ public class InstrumentManagementController implements Controllable {
 
                             instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
                             instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+                            
+                            eventBus.post(new InstrumentChangeEvent(EntityChangeEvent.Type.DELETED));
                         } catch (DataIntegrityViolationException dive) {
                             //check if the instrument can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
@@ -331,19 +337,25 @@ public class InstrumentManagementController implements Controllable {
                 if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
                     validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
                             + "\n" + "please choose another instrument name.");
-                }
-                int index = 0;
+                }                
                 if (validationMessages.isEmpty()) {
+                    int index;
+                    EntityChangeEvent.Type type;
                     if (instrumentToEdit.getId() != null) {
                         instrumentService.update(instrumentToEdit);
-                        index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                        index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();                        
+                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         instrumentService.save(instrumentToEdit);
                         //add instrument to overview list
                         instrumentBindingList.add(instrumentToEdit);
                         index = instrumentBindingList.size() - 1;
+                        instrumentEditDialog.getInstrumentStateInfoLabel().setText("");
+                        type = EntityChangeEvent.Type.CREATED;
                     }
                     instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
+                    
+                    eventBus.post(new InstrumentChangeEvent(type));
 
                     MessageEvent messageEvent = new MessageEvent("instrument persist confirmation", "Instrument " + instrumentToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);

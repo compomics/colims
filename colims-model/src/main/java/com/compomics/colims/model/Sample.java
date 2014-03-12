@@ -6,6 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -132,7 +133,11 @@ public class Sample extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 13 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 73 * hash + Objects.hashCode(this.name);
+        hash = 73 * hash + Objects.hashCode(this.condition);
+        hash = 73 * hash + Objects.hashCode(this.storageLocation);
+        hash = 73 * hash + Objects.hashCode(this.experiment);
+        hash = 73 * hash + Objects.hashCode(this.protocol);
         return hash;
     }
 
@@ -145,11 +150,23 @@ public class Sample extends AuditableDatabaseEntity {
             return false;
         }
         final Sample other = (Sample) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.condition, other.condition)) {
+            return false;
+        }
+        if (!Objects.equals(this.storageLocation, other.storageLocation)) {
+            return false;
+        }
+        if (!Objects.equals(this.experiment, other.experiment)) {
+            return false;
+        }
+        if (!Objects.equals(this.protocol, other.protocol)) {
             return false;
         }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

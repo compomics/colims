@@ -207,9 +207,10 @@ public class UserCrudController implements Controllable {
                                     throw dive;
                                 }
                             }
+                        } else {
+                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
+                            eventBus.post(defaultDbEntryMessageEvent);
                         }
-                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
-                        eventBus.post(defaultDbEntryMessageEvent);
                     } else {
                         userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
                         resetSelection();

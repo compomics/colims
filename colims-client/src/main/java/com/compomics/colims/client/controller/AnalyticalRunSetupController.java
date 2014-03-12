@@ -8,6 +8,7 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
@@ -28,6 +29,7 @@ import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -338,6 +340,17 @@ public class AnalyticalRunSetupController implements Controllable {
         } else {
             eventBus.post(new MessageEvent("authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
+    }
+    
+    /**
+     * Listen to an InstrumentChangeEvent.
+     *
+     * @param instrumentChangeEvent the instrument change event
+     */
+    @Subscribe
+    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
+        instrumentBindingList.clear();
+        instrumentBindingList.addAll(instrumentService.findAll());
     }
 
     private void sendStorageTask(DataImport dataImport) {

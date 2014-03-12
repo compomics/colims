@@ -122,7 +122,12 @@ public class Material extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 43 * hash + Objects.hashCode(this.name);
+        hash = 43 * hash + Objects.hashCode(this.species);
+        hash = 43 * hash + Objects.hashCode(this.tissue);
+        hash = 43 * hash + Objects.hashCode(this.cellType);
+        hash = 43 * hash + Objects.hashCode(this.compartment);
+        hash = 43 * hash + Objects.hashCode(this.project);
         return hash;
     }
 
@@ -138,8 +143,23 @@ public class Material extends AuditableDatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
+        if (!Objects.equals(this.species, other.species)) {
+            return false;
+        }
+        if (!Objects.equals(this.tissue, other.tissue)) {
+            return false;
+        }
+        if (!Objects.equals(this.cellType, other.cellType)) {
+            return false;
+        }
+        if (!Objects.equals(this.compartment, other.compartment)) {
+            return false;
+        }
+        if (!Objects.equals(this.project, other.project)) {
+            return false;
+        }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

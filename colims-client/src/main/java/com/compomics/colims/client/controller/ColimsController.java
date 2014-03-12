@@ -7,6 +7,10 @@ import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.InstrumentChangeEvent;
+import com.compomics.colims.client.event.MaterialChangeEvent;
+import com.compomics.colims.client.event.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.LoginDialog;
@@ -32,11 +36,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -260,6 +262,46 @@ public class ColimsController implements Controllable, ActionListener {
         showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * Listen to an MaterialChangeEvent.
+     *
+     * @param materialChangeEvent the material change event
+     */
+    @Subscribe
+    public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {
+        updateProjects(materialChangeEvent);
+    }
+
+    /**
+     * Listen to an InstrumentChangeEvent.
+     *
+     * @param instrumentChangeEvent the instrument change event
+     */
+    @Subscribe
+    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
+        updateProjects(instrumentChangeEvent);
+    }
+
+    /**
+     * Listen to an ProtocolChangeEvent.
+     *
+     * @param protocolChangeEvent the protocol change event
+     */
+    @Subscribe
+    public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
+        updateProjects(protocolChangeEvent);
+    }
+
+    /**
+     * Reload all projects from the database if necessary.
+     */
+    private void updateProjects(EntityChangeEvent entityChangeEvent) {
+        if (entityChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+            projects.clear();
+            projects.addAll(projectService.findAllWithEagerFetching());
+        }
     }
 
     private void onLogin() {
