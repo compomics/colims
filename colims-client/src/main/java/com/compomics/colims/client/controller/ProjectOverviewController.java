@@ -21,7 +21,6 @@ import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
@@ -350,7 +349,7 @@ public class ProjectOverviewController implements Controllable {
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent
      */
     @Subscribe
-    public void onSampleChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+    public void onAnalyticalRunChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
         AnalyticalRun analyticalRun = analyticalRunChangeEvent.getAnalyticalRun();
 
         if (analyticalRun.getSample().equals(getSelectedSample())) {

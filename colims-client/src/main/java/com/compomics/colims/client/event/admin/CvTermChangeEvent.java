@@ -7,5 +7,5 @@ package com.compomics.colims.client.event.admin;
  * @author Niels Hulstaert
  */
 public class CvTermChangeEvent {
-    
+
 }

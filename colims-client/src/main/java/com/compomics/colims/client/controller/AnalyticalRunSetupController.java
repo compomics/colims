@@ -8,6 +8,7 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
@@ -16,16 +17,19 @@ import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +42,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
@@ -56,7 +66,7 @@ public class AnalyticalRunSetupController implements Controllable {
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
-    //model
+    //model    
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private EventList<Experiment> experiments = new BasicEventList<>();
@@ -65,7 +75,10 @@ public class AnalyticalRunSetupController implements Controllable {
     private EventList<Sample> samples = new BasicEventList<>();
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
-    private StorageType selectedStorageType;
+    private BindingGroup bindingGroup;
+    private ObservableList<Instrument> instrumentBindingList;
+    private StorageType storageType;
+    private Instrument instrument;
     //view
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
     //parent controller
@@ -77,6 +90,8 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private MaxQuantDataImportController maxQuantDataImportController;
     //services
+    @Autowired
+    private InstrumentService instrumentService;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -105,6 +120,16 @@ public class AnalyticalRunSetupController implements Controllable {
 
         initSampleSelectionPanel();
 
+        instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
+
+        //add binding
+        bindingGroup = new BindingGroup();
+
+        JComboBoxBinding instrumentComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, analyticalRunSetupDialog.getInstrumentComboBox());
+        bindingGroup.addBinding(instrumentComboBoxBinding);
+
+        bindingGroup.bind();
+
         //add action listeners
         analyticalRunSetupDialog.getProceedButton().addActionListener(new ActionListener() {
             @Override
@@ -123,16 +148,22 @@ public class AnalyticalRunSetupController implements Controllable {
                         }
                         break;
                     case DATA_TYPE_SELECTION_CARD:
-                        selectedStorageType = getSelectedStorageType();
-                        switch (selectedStorageType) {
-                            case PEPTIDESHAKER:
-                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
-                                break;
-                            case MAX_QUANT:
-                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
-                                break;
+                        instrument = getSelectedInstrument();
+                        if (instrument != null) {
+                            storageType = getSelectedStorageType();
+                            switch (storageType) {
+                                case PEPTIDESHAKER:
+                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
+                                    break;
+                                case MAX_QUANT:
+                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
+                                    break;
+                            }
+                            onCardSwitch();
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("instrument selection", "Please select an instrument.", JOptionPane.INFORMATION_MESSAGE);
+                            eventBus.post(messageEvent);        
                         }
-                        onCardSwitch();
                         break;
                     default:
                         break;
@@ -292,7 +323,9 @@ public class AnalyticalRunSetupController implements Controllable {
     public void showView() {
         //check if the user has the rights to add a run
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
-
+            //reset project selection
+            projectsSelectionModel.clearSelection();
+            
             //reset input fields
             analyticalRunSetupDialog.getStorageDescriptionTextField().setText("");
             peptideShakerDataImportController.showView();
@@ -308,9 +341,20 @@ public class AnalyticalRunSetupController implements Controllable {
             eventBus.post(new MessageEvent("authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
+    
+    /**
+     * Listen to an InstrumentChangeEvent.
+     *
+     * @param instrumentChangeEvent the instrument change event
+     */
+    @Subscribe
+    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
+        instrumentBindingList.clear();
+        instrumentBindingList.addAll(instrumentService.findAll());
+    }
 
     private void sendStorageTask(DataImport dataImport) {
-        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), getSelectedSample());
+        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), instrument, getSelectedSample());
         StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
 
         try {
@@ -342,7 +386,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 //show info
-                updateInfo("Click on \"proceed\" to select the data type.");
+                updateInfo("Click on \"proceed\" to select the data type and instrument.");
                 break;
             case DATA_TYPE_SELECTION_CARD:
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
@@ -438,18 +482,33 @@ public class AnalyticalRunSetupController implements Controllable {
      * @return the selected StorageType
      */
     private StorageType getSelectedStorageType() {
-        StorageType storageType = null;
+        StorageType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
         for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                storageType = StorageType.getByUserFriendlyName(button.getText());
+                selectedStorageType = StorageType.getByUserFriendlyName(button.getText());
             }
         }
 
-        return storageType;
+        return selectedStorageType;
+    }
+
+    /**
+     * Get the selected instrument. Returns null if no instrument was selected.
+     *
+     * @return the selected Instrument
+     */
+    private Instrument getSelectedInstrument() {
+        Instrument selectedInstrument = null;
+
+        if (analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex() != -1) {
+            selectedInstrument = instrumentBindingList.get(analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex());
+        }
+
+        return selectedInstrument;
     }
 
 }

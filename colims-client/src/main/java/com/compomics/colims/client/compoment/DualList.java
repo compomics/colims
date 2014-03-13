@@ -47,7 +47,7 @@ public class DualList<T> extends javax.swing.JPanel {
 
     /**
      * Populate the available and added items lists. This method removes the
-     * added items from the availabe items
+     * added items from the availabe items list.
      *
      * @param availableItems the available items
      * @param addedItems the added items

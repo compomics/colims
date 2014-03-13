@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import java.io.Serializable;
 import java.util.Objects;
@@ -30,6 +31,10 @@ public class StorageMetadata implements Serializable {
      */
     private String userName;
     /**
+     * The instrument the run is executed on
+     */
+    private Instrument instrument;
+    /**
      * The sample the run(s) will be added to
      */
     private Sample sample;
@@ -37,10 +42,11 @@ public class StorageMetadata implements Serializable {
     public StorageMetadata() {
     }
 
-    public StorageMetadata(StorageType storageType, String description, String userName, Sample sample) {
+    public StorageMetadata(StorageType storageType, String description, String userName, Instrument instrument, Sample sample) {
         this.storageType = storageType;
         this.description = description;
         this.userName = userName;
+        this.instrument = instrument;
         this.sample = sample;
         submissionTimestamp = System.currentTimeMillis();
     }
@@ -77,6 +83,14 @@ public class StorageMetadata implements Serializable {
         this.userName = userName;
     }
 
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }        
+
     public Sample getSample() {
         return sample;
     }
@@ -87,12 +101,13 @@ public class StorageMetadata implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.storageType);
-        hash = 47 * hash + Objects.hashCode(this.submissionTimestamp);
-        hash = 47 * hash + Objects.hashCode(this.description);
-        hash = 47 * hash + Objects.hashCode(this.userName);
-        hash = 47 * hash + Objects.hashCode(this.sample);
+        int hash = 5;
+        hash = 19 * hash + Objects.hashCode(this.storageType);
+        hash = 19 * hash + Objects.hashCode(this.submissionTimestamp);
+        hash = 19 * hash + Objects.hashCode(this.description);
+        hash = 19 * hash + Objects.hashCode(this.userName);
+        hash = 19 * hash + Objects.hashCode(this.instrument);
+        hash = 19 * hash + Objects.hashCode(this.sample);
         return hash;
     }
 
@@ -117,10 +132,13 @@ public class StorageMetadata implements Serializable {
         if (!Objects.equals(this.userName, other.userName)) {
             return false;
         }
+        if (!Objects.equals(this.instrument, other.instrument)) {
+            return false;
+        }
         if (!Objects.equals(this.sample, other.sample)) {
             return false;
         }
         return true;
-    }
+    }   
 
 }

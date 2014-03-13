@@ -120,9 +120,11 @@ public class Experiment extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.title);
-        hash = 67 * hash + Objects.hashCode(this.number);
+        hash = 37 * hash + Objects.hashCode(this.title);
+        hash = 37 * hash + Objects.hashCode(this.number);
+        hash = 37 * hash + Objects.hashCode(this.description);
+        hash = 37 * hash + Objects.hashCode(this.storageLocation);
+        hash = 37 * hash + Objects.hashCode(this.project);
         return hash;
     }
 
@@ -135,17 +137,23 @@ public class Experiment extends AuditableDatabaseEntity {
             return false;
         }
         final Experiment other = (Experiment) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
         if (!Objects.equals(this.title, other.title)) {
             return false;
         }
         if (!Objects.equals(this.number, other.number)) {
             return false;
         }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.storageLocation, other.storageLocation)) {
+            return false;
+        }
+        if (!Objects.equals(this.project, other.project)) {
+            return false;
+        }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

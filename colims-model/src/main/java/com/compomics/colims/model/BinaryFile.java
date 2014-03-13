@@ -5,6 +5,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -66,6 +67,32 @@ public class BinaryFile extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return fileName + " (" + binaryFileType + ")";
-    }        
+    }  
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.fileName);
+        hash = 41 * hash + Objects.hashCode(this.binaryFileType);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BinaryFile other = (BinaryFile) obj;
+        if (!Objects.equals(this.fileName, other.fileName)) {
+            return false;
+        }
+        if (this.binaryFileType != other.binaryFileType) {
+            return false;
+        }
+        return true;
+    }    
         
 }

@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunEditDialog;
@@ -8,6 +9,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -85,11 +87,9 @@ public class AnalyticalRunEditController implements Controllable {
                 //validate analytical run
                 List<String> validationMessages = GuiUtils.validateEntity(analyticalRunToEdit);
 
-                if (validationMessages.isEmpty()) {
-                    int index;
-
+                if (validationMessages.isEmpty()) {                    
                     analyticalRunService.update(analyticalRunToEdit);
-                    index = sampleEditController.getSelectedAnalyticalRunIndex();
+                    int index = sampleEditController.getSelectedAnalyticalRunIndex();
 
                     MessageEvent messageEvent = new MessageEvent("analytical run persist confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
@@ -135,6 +135,17 @@ public class AnalyticalRunEditController implements Controllable {
         analyticalRunEditDialog.getInstrumentComboBox().setSelectedItem(analyticalRunToEdit.getInstrument());
 
         showView();
+    }
+    
+    /**
+     * Listen to an InstrumentChangeEvent.
+     *
+     * @param instrumentChangeEvent the instrument change event
+     */
+    @Subscribe
+    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
+        instrumentBindingList.clear();
+        instrumentBindingList.addAll(instrumentService.findAll());
     }
 
     /**

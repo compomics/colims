@@ -10,6 +10,8 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.MaterialChangeEvent;
+import com.compomics.colims.client.event.ProtocolChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
@@ -29,6 +31,7 @@ import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -61,6 +64,7 @@ public class SampleEditController implements Controllable {
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private Sample sampleToEdit;
+    private List<Material> materials;
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
@@ -101,6 +105,8 @@ public class SampleEditController implements Controllable {
 
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
+        
+        materials = materialService.findAll();
 
         //init sample analyticalruns table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
@@ -300,7 +306,7 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
 
         //populate user dual list
-        sampleEditDialog.getMaterialDualList().populateLists(materialService.findAll(), sampleToEdit.getMaterials());
+        sampleEditDialog.getMaterialDualList().populateLists(materials, sampleToEdit.getMaterials());
 
         //fill analytical runs table                        
         GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
@@ -344,7 +350,28 @@ public class SampleEditController implements Controllable {
         analyticalRunsSelectionModel.clearSelection();
         analyticalRunsSelectionModel.setLeadSelectionIndex(index);
     }
+    
+    /**
+     * Listen to a ProtocolChangeEvent.
+     *
+     * @param protocolChangeEvent the protocol change event
+     */
+    @Subscribe
+    public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
+        protocolBindingList.clear();
+        protocolBindingList.addAll(protocolService.findAll());
+    }
 
+    /**
+     * Listen to MaterialChangeEvent.
+     *
+     * @param materialChangeEvent the protocol change event
+     */
+    @Subscribe
+    public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {
+        materials = materialService.findAll();
+    }
+    
     /**
      * Update the instance fields of the selected sample in the samples table
      */

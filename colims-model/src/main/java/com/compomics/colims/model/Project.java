@@ -127,9 +127,10 @@ public class Project extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.title);
-        hash = 97 * hash + Objects.hashCode(this.label);
+        hash = 67 * hash + Objects.hashCode(this.title);
+        hash = 67 * hash + Objects.hashCode(this.label);
+        hash = 67 * hash + Objects.hashCode(this.description);
+        hash = 67 * hash + Objects.hashCode(this.owner);
         return hash;
     }
 
@@ -142,19 +143,20 @@ public class Project extends AuditableDatabaseEntity {
             return false;
         }
         final Project other = (Project) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
         if (!Objects.equals(this.title, other.title)) {
             return false;
         }
         if (!Objects.equals(this.label, other.label)) {
             return false;
         }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.owner, other.owner)) {
+            return false;
+        }
         return true;
-    }
-
-    
+    }       
 
     @Override
     public String toString() {

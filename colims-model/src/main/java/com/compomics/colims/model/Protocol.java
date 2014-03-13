@@ -142,7 +142,13 @@ public class Protocol extends AuditableDatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 43 * hash + Objects.hashCode(this.name);
+        hash = 37 * hash + Objects.hashCode(this.name);
+        hash = 37 * hash + Objects.hashCode(this.reduction);
+        hash = 37 * hash + Objects.hashCode(this.enzyme);
+        hash = 37 * hash + Objects.hashCode(this.cellBased);
+        hash = 37 * hash + Objects.hashCode(this.samples);
+        hash = 37 * hash + Objects.hashCode(this.chemicalLabels);
+        hash = 37 * hash + Objects.hashCode(this.otherCvTerms);
         return hash;
     }
 
@@ -158,8 +164,26 @@ public class Protocol extends AuditableDatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
+        if (!Objects.equals(this.reduction, other.reduction)) {
+            return false;
+        }
+        if (!Objects.equals(this.enzyme, other.enzyme)) {
+            return false;
+        }
+        if (!Objects.equals(this.cellBased, other.cellBased)) {
+            return false;
+        }
+        if (!Objects.equals(this.samples, other.samples)) {
+            return false;
+        }
+        if (!Objects.equals(this.chemicalLabels, other.chemicalLabels)) {
+            return false;
+        }
+        if (!Objects.equals(this.otherCvTerms, other.otherCvTerms)) {
+            return false;
+        }
         return true;
-    }
+    }    
 
     @Override
     public String toString() {

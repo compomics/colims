@@ -355,14 +355,31 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
-                              <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
-                              <Component id="dataTypeSelectionLabel" min="-2" pref="169" max="-2" attributes="0"/>
-                              <Component id="storageDescriptionLabel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="storageDescriptionTextField" alignment="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="storageDescriptionTextField" min="-2" pref="321" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="dataTypeSelectionLabel" min="-2" pref="169" max="-2" attributes="0"/>
+                                          <EmptySpace pref="302" max="32767" attributes="0"/>
+                                          <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="232" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="maxQuantRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="instrumentSelectionLabel" alignment="0" min="-2" pref="169" max="-2" attributes="0"/>
+                                      <Component id="instrumentComboBox" alignment="0" min="-2" pref="270" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace pref="703" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -370,16 +387,22 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="dataTypeSelectionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="dataTypeSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="peptideShakerRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="storageDescriptionTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="71" max="32767" attributes="0"/>
+                          <Component id="instrumentSelectionLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="instrumentComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="87" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -414,6 +437,18 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="storageDescriptionTextField">
+                </Component>
+                <Component class="javax.swing.JLabel" name="instrumentSelectionLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Select the instrument"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="instrumentComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="0"/>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -453,7 +488,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="confirmationLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="434" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -462,14 +497,14 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="confirmationLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="211" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jLabel1">
+                <Component class="javax.swing.JLabel" name="confirmationLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="The runs were sent successfully to the storage unit. Please go to the &quot;storage monitoring&quot; menu to view the storage state."/>
                   </Properties>
