@@ -29,7 +29,7 @@ public class StorageTaskProducerTest {
     @Autowired
     private StorageTaskProducer storageTaskProducer;
     @Autowired
-    private QueueMonitor queueMonitor;
+    private QueueManager queueManager;
     
     @Test
     public void testSendStorageTaskMessage() throws JMSException {
@@ -46,14 +46,14 @@ public class StorageTaskProducerTest {
         DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
         storageTask.setDataImport(dataImport);
         
-        List<StorageTask> messages = queueMonitor.monitorQueue(storageQueueName);
+        List<StorageTask> messages = queueManager.monitorQueue(storageQueueName);
         //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
         
         //send the test message
         storageTaskProducer.sendStorageTask(storageTask);
         
-        messages = queueMonitor.monitorQueue(storageQueueName);
+        messages = queueManager.monitorQueue(storageQueueName);
         //there should be one message on the queue
         Assert.assertEquals(1, messages.size());
         

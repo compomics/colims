@@ -52,7 +52,7 @@
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="storageTaskDestination" />    
     
-    <bean id="queueMonitorTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="queueManagerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"/>    
         
     <!-- Client connector for jmx -->

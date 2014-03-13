@@ -1,7 +1,7 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.client.storage.MonitorTest;
-import com.compomics.colims.client.storage.QueueMonitor;
+import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;

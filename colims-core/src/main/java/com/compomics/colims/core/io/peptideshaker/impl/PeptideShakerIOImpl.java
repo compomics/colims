@@ -14,6 +14,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.log4j.Logger;
 
 import com.compomics.colims.core.bean.ProgressEvent;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.util.experiment.MsExperiment;
@@ -23,8 +24,6 @@ import com.google.common.io.Files;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -109,6 +108,18 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 
         UnpackedPsDataImport unpackedPsDataImport = new UnpackedPsDataImport(msExperiment, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
         LOGGER.info("Finished importing PeptideShaker file " + peptideShakerCpsArchive.getName());
+
+        return unpackedPsDataImport;
+    }
+
+    @Override
+    public UnpackedPsDataImport unpackPeptideShakerDataImport(PeptideShakerDataImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException {
+        //unpack the .cps archive
+        UnpackedPsDataImport unpackedPsDataImport = unpackPeptideShakerCpsArchive(peptideShakerDataImport.getPeptideShakerCpsArchive());
+
+        //set fast file and MGF files
+        unpackedPsDataImport.setFastaFile(peptideShakerDataImport.getFastaFile());
+        unpackedPsDataImport.setMgfFiles(peptideShakerDataImport.getMgfFiles());
 
         return unpackedPsDataImport;
     }

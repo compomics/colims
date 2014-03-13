@@ -101,7 +101,7 @@ public class StorageTaskConsumer implements MessageListener {
         switch (storageTask.getStorageMetadata().getStorageType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
-                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(((PeptideShakerDataImport) storageTask.getDataImport()).getPeptideShakerCpsArchive());
+                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) storageTask.getDataImport()));
                 analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
                 break;
             case MAX_QUANT:

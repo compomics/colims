@@ -4,7 +4,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
 import com.compomics.colims.client.model.StoredQueueTableModel;
-import com.compomics.colims.client.storage.QueueMonitor;
+import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
 import com.compomics.colims.distributed.model.StorageError;
@@ -49,7 +49,7 @@ public class StorageMonitoringController implements Controllable {
     private ColimsController colimsController;
     //services
     @Autowired
-    private QueueMonitor queueMonitor;
+    private QueueManager queueManager;
     @Autowired
     private EventBus eventBus;
 
@@ -90,6 +90,25 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
+        storageMonitoringDialog.getResendStorageErrorButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
+                if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
+                    try {
+                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+
+                        queueManager.redirectStorageError(storageQueueName, storageError);
+
+                        updateMonitoringTables();
+                    } catch (JMSException jMSException) {
+                        LOGGER.error(jMSException.getMessage(), jMSException);
+                    }
+                }
+            }
+        });
+
         storageMonitoringDialog.getRefreshButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,12 +127,7 @@ public class StorageMonitoringController implements Controllable {
     @Override
     public void showView() {
         updateMonitoringTables();
-        
-        //clear selections
-        storageMonitoringDialog.getStorageQueueTable().getSelectionModel().clearSelection();
-        storageMonitoringDialog.getStoredQueueTable().getSelectionModel().clearSelection();
-        storageMonitoringDialog.getErrorQueueTable().getSelectionModel().clearSelection();
-        
+
         GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
         storageMonitoringDialog.setVisible(true);
     }
@@ -124,11 +138,19 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageTask> storageTaskMessages = queueMonitor.monitorQueue(storageQueueName);
+            List<StorageTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
 
-            List<StorageError> storageErrorMessages = queueMonitor.monitorQueue(errorQueueName);
+            List<StorageError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
             errorQueueTableModel.setMessages(storageErrorMessages);
+
+            //clear selections
+            storageMonitoringDialog.getStorageQueueTable().getSelectionModel().clearSelection();
+            storageMonitoringDialog.getStoredQueueTable().getSelectionModel().clearSelection();
+            storageMonitoringDialog.getErrorQueueTable().getSelectionModel().clearSelection();
+
+            storageMonitoringDialog.getStorageQueueTable().updateUI();
+            storageMonitoringDialog.getErrorQueueTable().updateUI();
         } catch (UncategorizedJmsException | JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);
             eventBus.post(new MessageEvent("connection error", "The storage module could not be reached:"
