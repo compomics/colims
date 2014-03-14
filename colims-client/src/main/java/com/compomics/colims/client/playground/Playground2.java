@@ -1,7 +1,7 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.client.storage.MonitorTest;
-import com.compomics.colims.client.storage.QueueManager;
+import com.compomics.colims.client.storage.QueueBrowser;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
+import javax.management.openmbean.OpenDataException;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -41,23 +43,26 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground2 {
 
-    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException {
+    public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, InvalidSelectorException, OpenDataException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
-        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
-
-        StorageTask storageTask = new StorageTask();
-        StorageMetadata storageMetadata = new StorageMetadata();
-        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
-        storageMetadata.setDescription("test description1");
-        storageMetadata.setSample(new Sample("sample name3"));
-        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-        storageMetadata.setUserName("testUser");
-
-        storageTask.setStorageMetadata(storageMetadata);
-        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
-
-        storageTaskProducer.sendStorageTask(storageTask);
+        MonitorTest monitorTest = applicationContext.getBean("monitorTest", MonitorTest.class);
+        monitorTest.getQueueInfo();
+        
+//        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
+//
+//        StorageTask storageTask = new StorageTask();
+//        StorageMetadata storageMetadata = new StorageMetadata();
+//        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+//        storageMetadata.setDescription("test description1");
+//        storageMetadata.setSample(new Sample("sample name3"));
+//        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
+//        storageMetadata.setUserName("testUser");
+//
+//        storageTask.setStorageMetadata(storageMetadata);
+//        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
+//
+//        storageTaskProducer.sendStorageTask(storageTask);
 
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
 //        List<StorageMetadata> messages = queueMonitor.getMessages("test");

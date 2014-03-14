@@ -52,11 +52,11 @@
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="storageTaskDestination" />    
     
-    <bean id="queueManagerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="queueBrowserTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"/>    
         
     <!-- Client connector for jmx -->
-    <!--    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-    p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    -->
+    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
+          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
     
 </beans>

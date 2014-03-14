@@ -1,4 +1,3 @@
-
 package com.compomics.colims.distributed.model;
 
 import java.io.Serializable;
@@ -7,10 +6,10 @@ import java.io.Serializable;
  *
  * @author Niels Hulstaert
  */
-public class StoredTask implements Serializable {
-    
+public class StoredTask extends AbstractMessage implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The storage start timestamp
      */
@@ -33,7 +32,7 @@ public class StoredTask implements Serializable {
         this.startedTimestamp = startedTimestamp;
         this.endedTimestamp = endedTimestamp;
         this.storageTask = storageTask;
-    }            
+    }
 
     public Long getStartedTimestamp() {
         return startedTimestamp;
@@ -57,6 +56,6 @@ public class StoredTask implements Serializable {
 
     public void setStorageTask(StorageTask storageTask) {
         this.storageTask = storageTask;
-    }        
+    }
 
 }

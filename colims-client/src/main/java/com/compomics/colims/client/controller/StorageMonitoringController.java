@@ -4,7 +4,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
 import com.compomics.colims.client.model.StoredQueueTableModel;
-import com.compomics.colims.client.storage.QueueManager;
+import com.compomics.colims.client.storage.QueueBrowser;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
 import com.compomics.colims.distributed.model.StorageError;
@@ -49,7 +49,7 @@ public class StorageMonitoringController implements Controllable {
     private ColimsController colimsController;
     //services
     @Autowired
-    private QueueManager queueManager;
+    private QueueBrowser queueBrowser;
     @Autowired
     private EventBus eventBus;
 
@@ -99,7 +99,7 @@ public class StorageMonitoringController implements Controllable {
                     try {
                         StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
-                        queueManager.redirectStorageError(storageQueueName, storageError);
+                        queueBrowser.redirectStorageError(storageQueueName, storageError);
 
                         updateMonitoringTables();
                     } catch (JMSException jMSException) {
@@ -138,10 +138,10 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
+            List<StorageTask> storageTaskMessages = queueBrowser.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
 
-            List<StorageError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
+            List<StorageError> storageErrorMessages = queueBrowser.monitorQueue(errorQueueName);
             errorQueueTableModel.setMessages(storageErrorMessages);
 
             //clear selections
