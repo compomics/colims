@@ -1,5 +1,6 @@
 package com.compomics.colims.client.storage;
 
+import com.compomics.colims.distributed.model.AbstractMessage;
 import com.compomics.colims.distributed.model.StorageError;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -45,7 +46,7 @@ public class QueueBrowser {
 
                 while (enumeration.hasMoreElements()) {
                     ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
-
+                    
                     queueMessages.add((T) message.getObject());
                 }
 
@@ -54,37 +55,7 @@ public class QueueBrowser {
         });
 
         return messages;
-    }
-
-    /**
-     * Monitor the queue with the given queue name. Returns a map (key: JMS
-     * message ID; value: the instance of class T).
-     *
-     * @param <T>
-     * @param queueName
-     * @return
-     * @throws JMSException
-     */
-    public <T> Map<String, T> monitorQueueAsMap(String queueName) throws JMSException {
-        Map<String, T> messages = queueBrowserTemplate.browse(queueName, new BrowserCallback<Map<String, T>>() {
-
-            @Override
-            public Map<String, T> doInJms(Session session, javax.jms.QueueBrowser browser) throws JMSException {
-                Enumeration enumeration = browser.getEnumeration();
-                Map<String, T> queueMessages = new HashMap<>();
-
-                while (enumeration.hasMoreElements()) {
-                    ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
-
-                    queueMessages.put(message.getJMSMessageID(), (T) message.getObject());
-                }
-
-                return queueMessages;
-            }
-        });
-
-        return messages;
-    }
+    }    
 
     public void redirectStorageError(String queueName, StorageError storageError) throws JMSException {
         //

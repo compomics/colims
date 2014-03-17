@@ -36,9 +36,12 @@ public class StorageTaskProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set StorageTask instance as message body
-                ObjectMessage storageTaskMessage = session.createObjectMessage(storageTask);
+                ObjectMessage storageTaskMessage = session.createObjectMessage();
+                storageTask.setMessageId(storageTaskMessage.getJMSMessageID());
+                
+                storageTaskMessage.setObject(storageTask);
 
-                LOGGER.info("Sending storage task");
+                LOGGER.info("Sending storage task with message ID " + storageTaskMessage.getJMSMessageID());
 
                 return storageTaskMessage;
             }
