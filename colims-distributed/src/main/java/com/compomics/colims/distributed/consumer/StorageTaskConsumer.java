@@ -130,6 +130,7 @@ public class StorageTaskConsumer implements MessageListener {
             analyticalRun.setCreationDate(new Date());
             analyticalRun.setModificationDate(new Date());
             analyticalRun.setUserName(storageTask.getStorageMetadata().getUserName());
+            analyticalRun.setStartDate(storageTask.getStorageMetadata().getStartDate());
             analyticalRun.setSample(storageTask.getStorageMetadata().getSample());
             analyticalRun.setInstrument(storageTask.getStorageMetadata().getInstrument());
             analyticalRunService.saveOrUpdate(analyticalRun);

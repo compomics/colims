@@ -7,11 +7,14 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import org.jdesktop.swingx.JXDatePicker;
@@ -33,11 +36,13 @@ public class DateTimePicker extends JXDatePicker {
     public DateTimePicker() {
         super();
         getMonthView().setSelectionModel(new SingleDaySelectionModel());
+        getEditor().setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
     }
 
     public DateTimePicker(Date d) {
         this();
         setDate(d);
+        
     }
 
     @Override
@@ -65,7 +70,6 @@ public class DateTimePicker extends JXDatePicker {
     private JPanel createTimePanel() {
         JPanel newPanel = new JPanel();
         newPanel.setLayout(new FlowLayout());
-        //newPanel.add(panelOriginal);
 
         SpinnerDateModel dateModel = new SpinnerDateModel();
         timeSpinner = new JSpinner(dateModel);
@@ -126,19 +130,4 @@ public class DateTimePicker extends JXDatePicker {
         updateTextFieldFormat();
     }
 
-//    public static void main(String[] args) {
-//        Date date = new Date();
-//        JFrame frame = new JFrame();
-//        frame.setTitle("Date Time Picker");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        DateTimePicker dateTimePicker = new DateTimePicker();
-//        dateTimePicker.setFormats(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM));
-//        dateTimePicker.setTimeFormat(DateFormat.getTimeInstance(DateFormat.MEDIUM));
-//
-//        dateTimePicker.setDate(date);
-//
-//        frame.getContentPane().add(dateTimePicker);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
 }

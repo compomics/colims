@@ -1,9 +1,14 @@
 package com.compomics.colims.client.view;
 
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -20,6 +25,9 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
      */
     public PeptideShakerDataImportPanel() {
         initComponents();
+        
+        cpsFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+        fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
         
         mgfFilesScrollPane.getViewport().setOpaque(false);
     }  
@@ -92,17 +100,13 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         cpsFileSelectionLabel.setText("Select a PeptideShaker cps file");
 
-        cpsFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        fastaFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
         selectCpsButton.setText("browse");
 
         selectFastaButton.setText("browse");
 
         fileSelectionLabel1.setText("Select MGF file(s)");
 
-        mgfFilesScrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        mgfFilesScrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240)));
 
         mgfFilesScrollPane.setViewportView(mgfFileList);
 

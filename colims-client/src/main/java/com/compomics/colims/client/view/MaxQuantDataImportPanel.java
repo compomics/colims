@@ -1,9 +1,13 @@
 package com.compomics.colims.client.view;
 
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -18,7 +22,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
      * Creates new form PeptideShakerDataImportPanel
      */
     public MaxQuantDataImportPanel() {
-        initComponents();               
+        initComponents(); 
+        
+        maxQuantDirectoryLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+        fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
     }  
 
     public JFileChooser getMaxQuantDirectoryChooser() {
@@ -64,10 +71,6 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         setOpaque(false);
 
         maxQuantDirectorySelectionLabel.setText("Select the MaxQuant text files directory");
-
-        maxQuantDirectoryLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        fastaFileLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         selectMaxQuantDirectoryButton.setText("browse");
 
