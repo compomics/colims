@@ -40,6 +40,15 @@ public class StorageQueueTableModel extends AbstractTableModel {
     public void setMessages(List<StorageTask> messages) {
         this.messages = messages;
     }
+    
+    /**
+     * Remove the storage task with the given index.
+     *
+     * @param index the index of the storage task that needs to be removed.
+     */
+    public void remove(int index) {
+        messages.remove(index);
+    }
 
     @Override
     public int getRowCount() {

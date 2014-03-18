@@ -123,7 +123,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         samplesPanel = new javax.swing.JPanel();
         samplesScrollPane = new javax.swing.JScrollPane();
         samplesTable = new javax.swing.JTable();
-        dataTypeSelectionPanel = new javax.swing.JPanel();
+        metaDataSelectionPanel = new javax.swing.JPanel();
         dataTypeSelectionLabel = new javax.swing.JLabel();
         peptideShakerRadioButton = new javax.swing.JRadioButton();
         maxQuantRadioButton = new javax.swing.JRadioButton();
@@ -335,8 +335,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         topPanel.add(sampleSelectionPanel, "sampleSelectionPanel");
 
-        dataTypeSelectionPanel.setName("dataTypeSelectionPanel"); // NOI18N
-        dataTypeSelectionPanel.setOpaque(false);
+        metaDataSelectionPanel.setName("metaDataSelectionPanel"); // NOI18N
+        metaDataSelectionPanel.setOpaque(false);
 
         dataTypeSelectionLabel.setText("Select the analytical run data type");
 
@@ -352,40 +352,40 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         instrumentSelectionLabel.setText("Select the instrument");
 
-        javax.swing.GroupLayout dataTypeSelectionPanelLayout = new javax.swing.GroupLayout(dataTypeSelectionPanel);
-        dataTypeSelectionPanel.setLayout(dataTypeSelectionPanelLayout);
-        dataTypeSelectionPanelLayout.setHorizontalGroup(
-            dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout metaDataSelectionPanelLayout = new javax.swing.GroupLayout(metaDataSelectionPanel);
+        metaDataSelectionPanel.setLayout(metaDataSelectionPanelLayout);
+        metaDataSelectionPanelLayout.setHorizontalGroup(
+            metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(metaDataSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dataTypeSelectionPanelLayout.createSequentialGroup()
-                        .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
+                .addGroup(metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, metaDataSelectionPanelLayout.createSequentialGroup()
+                        .addGroup(metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(metaDataSelectionPanelLayout.createSequentialGroup()
                                 .addComponent(peptideShakerRadioButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(storageDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
+                            .addGroup(metaDataSelectionPanelLayout.createSequentialGroup()
                                 .addComponent(dataTypeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 302, Short.MAX_VALUE)
                                 .addComponent(storageDescriptionLabel)))
                         .addGap(232, 232, 232))
-                    .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
-                        .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(metaDataSelectionPanelLayout.createSequentialGroup()
+                        .addGroup(metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxQuantRadioButton)
                             .addComponent(instrumentSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
-        dataTypeSelectionPanelLayout.setVerticalGroup(
-            dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataTypeSelectionPanelLayout.createSequentialGroup()
+        metaDataSelectionPanelLayout.setVerticalGroup(
+            metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(metaDataSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dataTypeSelectionLabel)
                     .addComponent(storageDescriptionLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(dataTypeSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(metaDataSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(peptideShakerRadioButton)
                     .addComponent(storageDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -397,7 +397,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
                 .addContainerGap(87, Short.MAX_VALUE))
         );
 
-        topPanel.add(dataTypeSelectionPanel, "dataTypeSelectionPanel");
+        topPanel.add(metaDataSelectionPanel, "metaDataSelectionPanel");
 
         peptideShakerDataImportPanel.setName("peptideShakerDataImportPanel"); // NOI18N
         topPanel.add(peptideShakerDataImportPanel, "peptideShakerDataImportPanel");
@@ -531,7 +531,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JPanel confirmationPanel;
     private javax.swing.ButtonGroup dataTypeButtonGroup;
     private javax.swing.JLabel dataTypeSelectionLabel;
-    private javax.swing.JPanel dataTypeSelectionPanel;
     private javax.swing.JPanel experimentsPanel;
     private javax.swing.JScrollPane experimentsScrollPane;
     private javax.swing.JTable experimentsTable;
@@ -541,6 +540,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JLabel instrumentSelectionLabel;
     private com.compomics.colims.client.view.MaxQuantDataImportPanel maxQuantDataImportPanel;
     private javax.swing.JRadioButton maxQuantRadioButton;
+    private javax.swing.JPanel metaDataSelectionPanel;
     private javax.swing.JPanel parentPanel;
     private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     private javax.swing.JRadioButton peptideShakerRadioButton;

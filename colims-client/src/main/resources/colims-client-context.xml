@@ -36,13 +36,13 @@
     </context:component-scan>        
     
     <!-- ActiveMQ connection factory -->
-    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${connectionfactory.broker.url}"/>
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>
     
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
         <constructor-arg ref="amqConnectionFactory" />
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
-        <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
+        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
     </bean>            
     
     <!-- ActiveMQ Destination -->  
@@ -52,11 +52,11 @@
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="storageTaskDestination" />    
     
-    <bean id="queueBrowserTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="queueManagerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"/>    
         
     <!-- Client connector for jmx -->
-    <bean id="clientConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
+    <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
           p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
     
 </beans>

@@ -4,15 +4,17 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
 import com.compomics.colims.client.model.StoredQueueTableModel;
-import com.compomics.colims.client.storage.QueueBrowser;
+import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
 import com.compomics.colims.distributed.model.StorageError;
 import com.compomics.colims.distributed.model.StorageTask;
+import com.compomics.colims.distributed.model.StoredTask;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -49,7 +51,7 @@ public class StorageMonitoringController implements Controllable {
     private ColimsController colimsController;
     //services
     @Autowired
-    private QueueBrowser queueBrowser;
+    private QueueManager queueManager;
     @Autowired
     private EventBus eventBus;
 
@@ -73,7 +75,30 @@ public class StorageMonitoringController implements Controllable {
         errorQueueTableModel = new ErrorQueueTableModel();
         storageMonitoringDialog.getErrorQueueTable().setModel(errorQueueTableModel);
 
-        //add action listeners
+        //add action listeners        
+        storageMonitoringDialog.getDeleteStorageTaskButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRowIndex = storageMonitoringDialog.getStorageQueueTable().getSelectedRow();
+                if (selectedRowIndex != -1 && storageQueueTableModel.getRowCount() != 0) {
+                    try {
+                        StorageTask storageTask = storageQueueTableModel.getMessages().get(selectedRowIndex);
+
+                        queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
+
+                        updateMonitoringTables();
+                    } catch (JMSException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    } catch (Exception ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    }
+                }
+            }
+        });
+
         storageMonitoringDialog.getErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -99,12 +124,90 @@ public class StorageMonitoringController implements Controllable {
                     try {
                         StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
-                        queueBrowser.redirectStorageError(storageQueueName, storageError);
+                        queueManager.redirectStorageError(storageQueueName, storageError);
 
                         updateMonitoringTables();
-                    } catch (JMSException jMSException) {
-                        LOGGER.error(jMSException.getMessage(), jMSException);
+                    } catch (JMSException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    } catch (Exception ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
                     }
+                }
+            }
+        });
+
+        storageMonitoringDialog.getDeleteStorageErrorButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
+                if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
+                    try {
+                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+
+                        queueManager.deleteMessage(errorQueueName, storageError.getMessageId());
+
+                        errorQueueTableModel.remove(selectedRowIndex);
+                    } catch (JMSException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    } catch (Exception ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        storageMonitoringDialog.getPurgeStorageErrorsButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    queueManager.purgeMessages(errorQueueName);
+
+                    errorQueueTableModel.removeAll();
+                } catch (Exception ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    postConnectionErrorMessage(ex.getMessage());
+                }
+            }
+        });
+
+        storageMonitoringDialog.getDeleteStoredTaskButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRowIndex = storageMonitoringDialog.getStoredQueueTable().getSelectedRow();
+                if (selectedRowIndex != -1 && storedQueueTableModel.getRowCount() != 0) {
+                    try {
+                        StoredTask storedTask = storedQueueTableModel.getMessages().get(selectedRowIndex);
+
+                        queueManager.deleteMessage(storedQueueName, storedTask.getMessageId());
+
+                        storedQueueTableModel.remove(selectedRowIndex);
+                    } catch (JMSException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    } catch (Exception ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        postConnectionErrorMessage(ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        storageMonitoringDialog.getPurgeStoredTasksButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    queueManager.purgeMessages(storedQueueName);
+
+                    storedQueueTableModel.removeAll();
+                } catch (Exception ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    postConnectionErrorMessage(ex.getMessage());
                 }
             }
         });
@@ -138,10 +241,13 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageTask> storageTaskMessages = queueBrowser.monitorQueue(storageQueueName);
+            List<StorageTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
+            
+            List<StoredTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
+            storedQueueTableModel.setMessages(storedTaskMessages);
 
-            List<StorageError> storageErrorMessages = queueBrowser.monitorQueue(errorQueueName);
+            List<StorageError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
             errorQueueTableModel.setMessages(storageErrorMessages);
 
             //clear selections
@@ -153,9 +259,18 @@ public class StorageMonitoringController implements Controllable {
             storageMonitoringDialog.getErrorQueueTable().updateUI();
         } catch (UncategorizedJmsException | JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);
-            eventBus.post(new MessageEvent("connection error", "The storage module could not be reached:"
-                    + "\n" + ex.getMessage(), JOptionPane.ERROR_MESSAGE));
+            postConnectionErrorMessage(ex.getMessage());
         }
+    }
+
+    /**
+     * Post a connection error message on the event bus.
+     *
+     * @param message the error message
+     */
+    private void postConnectionErrorMessage(String message) {
+        eventBus.post(new MessageEvent("connection error", "The storage module could not be reached:"
+                + "\n" + message, JOptionPane.ERROR_MESSAGE));
     }
 
 }

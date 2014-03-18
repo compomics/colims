@@ -61,7 +61,7 @@ public class AnalyticalRunSetupController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunSetupController.class);
     private static final String SAMPLE_SELECTION_CARD = "sampleSelectionPanel";
-    private static final String DATA_TYPE_SELECTION_CARD = "dataTypeSelectionPanel";
+    private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
@@ -147,7 +147,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             eventBus.post(messageEvent);
                         }
                         break;
-                    case DATA_TYPE_SELECTION_CARD:
+                    case METADATA_SELECTION_CARD:
                         instrument = getSelectedInstrument();
                         if (instrument != null) {
                             storageType = getSelectedStorageType();
@@ -178,7 +178,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
                     case MAX_QUANT_DATA_IMPORT_CARD:
-                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), DATA_TYPE_SELECTION_CARD);
+                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), METADATA_SELECTION_CARD);
                         break;
                     default:
                         getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
@@ -388,7 +388,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 //show info
                 updateInfo("Click on \"proceed\" to select the data type and instrument.");
                 break;
-            case DATA_TYPE_SELECTION_CARD:
+            case METADATA_SELECTION_CARD:
                 analyticalRunSetupDialog.getBackButton().setEnabled(true);
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);

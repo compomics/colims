@@ -339,14 +339,14 @@
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="dataTypeSelectionPanel">
+            <Container class="javax.swing.JPanel" name="metaDataSelectionPanel">
               <Properties>
-                <Property name="name" type="java.lang.String" value="dataTypeSelectionPanel" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="metaDataSelectionPanel" noResource="true"/>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="dataTypeSelectionPanel"/>
+                  <CardConstraints cardName="metaDataSelectionPanel"/>
                 </Constraint>
               </Constraints>
 

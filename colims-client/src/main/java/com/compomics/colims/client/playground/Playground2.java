@@ -1,7 +1,7 @@
 package com.compomics.colims.client.playground;
 
-import com.compomics.colims.client.storage.MonitorTest;
-import com.compomics.colims.client.storage.QueueBrowser;
+import com.compomics.colims.client.storage.QueueManager;
+import com.compomics.colims.client.storage.impl.QueueManagerImpl;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
@@ -46,8 +46,7 @@ public class Playground2 {
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, InvalidSelectorException, OpenDataException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
-        MonitorTest monitorTest = applicationContext.getBean("monitorTest", MonitorTest.class);
-        monitorTest.getQueueInfo();
+        QueueManager queueManager = applicationContext.getBean("queueManager", QueueManager.class);
         
 //        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
 //
