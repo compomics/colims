@@ -33,7 +33,7 @@ public class QueueManagerImpl implements QueueManager {
     @Value("${distributed.queue.error}")
     private String errorQueueName;
     private final StorageErrorMessageConvertor storageErrorMessageConvertor = new StorageErrorMessageConvertor();
-    private final String name = "org.apache.activemq:brokerName=" + brokerName + ",destinationName=%s,destinationType=Queue,type=Broker";
+    private final String name = "org.apache.activemq:brokerName=%s,destinationName=%s,destinationType=Queue,type=Broker";
     @Autowired
     private JmsTemplate queueManagerTemplate;
     @Autowired
@@ -65,14 +65,14 @@ public class QueueManagerImpl implements QueueManager {
 
     @Override
     public void deleteMessage(String queueName, String messageId) throws MalformedObjectNameException, Exception {        
-        ObjectName objectName = new ObjectName(String.format(name, queueName));
+        ObjectName objectName = new ObjectName(String.format(name, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.removeMessage(messageId);
     }
 
     @Override
     public void purgeMessages(String queueName) throws MalformedObjectNameException, Exception {        
-        ObjectName objectName = new ObjectName(String.format(name, queueName));
+        ObjectName objectName = new ObjectName(String.format(name, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.purge();
     }
