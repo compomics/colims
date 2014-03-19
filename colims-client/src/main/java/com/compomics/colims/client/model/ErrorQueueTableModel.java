@@ -42,6 +42,22 @@ public class ErrorQueueTableModel extends AbstractTableModel {
         this.messages = messages;
     }
 
+    /**
+     * Remove the storage error with the given index.
+     *
+     * @param index the index of the storage error that needs to be removed.
+     */
+    public void remove(int index) {
+        messages.remove(index);
+    }
+    
+    /**
+     * Remove all messages.
+     */
+    public void removeAll(){
+        messages.clear();
+    }
+
     @Override
     public int getRowCount() {
         return messages.size();
@@ -74,7 +90,7 @@ public class ErrorQueueTableModel extends AbstractTableModel {
             case USER_INDEX:
                 return storageMetadata.getUserName();
             case INSTRUMENT_INDEX:
-                return storageMetadata.getInstrument().toString();    
+                return storageMetadata.getInstrument().toString();
             case SAMPLE_INDEX:
                 return storageMetadata.getSample().getName();
             case ERROR_INDEX:

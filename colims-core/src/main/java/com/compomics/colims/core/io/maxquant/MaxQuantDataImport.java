@@ -2,13 +2,14 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.DataImport;
 import java.io.File;
+import java.util.Map;
 
 /**
  *
  * @author Davy
  */
 public class MaxQuantDataImport extends DataImport {
-
+ 
     private File maxQuantDirectory;
     
     /**
@@ -29,5 +30,5 @@ public class MaxQuantDataImport extends DataImport {
     public void setMaxQuantDirectory(final File maxQuantDirectory) {
         this.maxQuantDirectory = maxQuantDirectory;
     }
-
+      
 }

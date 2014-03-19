@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * @author Niels Hulstaert
  */
-public class StorageError implements Serializable {
+public class StorageError extends AbstractMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

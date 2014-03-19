@@ -36,13 +36,13 @@
     </context:component-scan>  
         
     <!-- ActiveMQ connection factory -->
-    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${connectionfactory.broker.url}"/>
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>
     
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
         <constructor-arg ref="amqConnectionFactory" />
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
-        <property name="sessionCacheSize" value="${connectionfactory.session.cache.size}" />
+        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
     </bean>
     
     <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler">                            

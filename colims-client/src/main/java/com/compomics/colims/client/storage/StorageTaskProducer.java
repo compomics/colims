@@ -37,8 +37,8 @@ public class StorageTaskProducer {
             public Message createMessage(Session session) throws JMSException {
                 //set StorageTask instance as message body
                 ObjectMessage storageTaskMessage = session.createObjectMessage(storageTask);
-
-                LOGGER.info("Sending storage task");
+                
+                LOGGER.info("Sending storage task with message ID " + storageTaskMessage.getJMSMessageID());
 
                 return storageTaskMessage;
             }

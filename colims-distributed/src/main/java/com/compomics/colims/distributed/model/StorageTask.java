@@ -8,10 +8,10 @@ import java.util.Objects;
  *
  * @author Niels Hulstaert
  */
-public class StorageTask implements Serializable {
-    
+public class StorageTask extends AbstractMessage implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The storage metadata
      */
@@ -27,7 +27,7 @@ public class StorageTask implements Serializable {
     public StorageTask(StorageMetadata storageMetadata, DataImport dataImport) {
         this.storageMetadata = storageMetadata;
         this.dataImport = dataImport;
-    }        
+    }
 
     public StorageMetadata getStorageMetadata() {
         return storageMetadata;
@@ -35,8 +35,8 @@ public class StorageTask implements Serializable {
 
     public void setStorageMetadata(StorageMetadata storageMetadata) {
         this.storageMetadata = storageMetadata;
-    }        
-    
+    }
+
     public DataImport getDataImport() {
         return dataImport;
     }
@@ -70,5 +70,5 @@ public class StorageTask implements Serializable {
         }
         return true;
     }
-        
+
 }

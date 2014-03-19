@@ -1,7 +1,5 @@
 package com.compomics.colims.core.io.peptideshaker;
 
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,6 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.biology.Sample;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 
 /**
@@ -28,20 +28,54 @@ public class PeptideShakerIOTest {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
 
+    /**
+     * Test the unpacking of a PS .cps file.
+     *
+     * @throws IOException
+     * @throws ArchiveException
+     * @throws ClassNotFoundException
+     */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPsDataImport psDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
 
-        File dbDirectory = psDataImport.getDbDirectory();
+        Assert.assertNotNull(unpackedPsDataImport);
+
+        File dbDirectory = unpackedPsDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
         Assert.assertTrue(dbDirectory.exists());
 
-        MsExperiment msExperiment = psDataImport.getMsExperiment();
+        MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
-        Assert.assertNotNull(msExperiment.getSamples());
-        Sample sample = msExperiment.getSample(0);
-        Assert.assertNotNull(sample);
-        Assert.assertNotNull(msExperiment.getAnalysisSet(sample));
     }
-    
+
+    /**
+     * Test the unpacking of a PeptideShakerDataImport instance.
+     *
+     * @throws IOException
+     * @throws ArchiveException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
+        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        List<File> mgfFiles = new ArrayList<>();
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
+
+        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaFile, mgfFiles);
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);
+
+        Assert.assertNotNull(unpackedPsDataImport);
+
+        File dbDirectory = unpackedPsDataImport.getDbDirectory();
+        Assert.assertNotNull(dbDirectory);
+        Assert.assertTrue(dbDirectory.exists());
+
+        MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
+        Assert.assertNotNull(msExperiment);
+
+        Assert.assertEquals(fastaFile, unpackedPsDataImport.getFastaFile());
+        Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
+    }
 }

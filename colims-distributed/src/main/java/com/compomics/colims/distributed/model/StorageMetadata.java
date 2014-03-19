@@ -4,6 +4,7 @@ import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -31,6 +32,10 @@ public class StorageMetadata implements Serializable {
      */
     private String userName;
     /**
+     * The start date of the run(s)
+     */
+    private Date startDate;
+    /**
      * The instrument the run is executed on
      */
     private Instrument instrument;
@@ -42,10 +47,11 @@ public class StorageMetadata implements Serializable {
     public StorageMetadata() {
     }
 
-    public StorageMetadata(StorageType storageType, String description, String userName, Instrument instrument, Sample sample) {
+    public StorageMetadata(StorageType storageType, String description, String userName, Date startDate, Instrument instrument, Sample sample) {
         this.storageType = storageType;
         this.description = description;
         this.userName = userName;
+        this.startDate = startDate;
         this.instrument = instrument;
         this.sample = sample;
         submissionTimestamp = System.currentTimeMillis();
@@ -75,6 +81,14 @@ public class StorageMetadata implements Serializable {
         this.description = description;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -89,7 +103,7 @@ public class StorageMetadata implements Serializable {
 
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
-    }        
+    }
 
     public Sample getSample() {
         return sample;
@@ -101,13 +115,14 @@ public class StorageMetadata implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 19 * hash + Objects.hashCode(this.storageType);
-        hash = 19 * hash + Objects.hashCode(this.submissionTimestamp);
-        hash = 19 * hash + Objects.hashCode(this.description);
-        hash = 19 * hash + Objects.hashCode(this.userName);
-        hash = 19 * hash + Objects.hashCode(this.instrument);
-        hash = 19 * hash + Objects.hashCode(this.sample);
+        int hash = 3;
+        hash = 43 * hash + Objects.hashCode(this.storageType);
+        hash = 43 * hash + Objects.hashCode(this.submissionTimestamp);
+        hash = 43 * hash + Objects.hashCode(this.description);
+        hash = 43 * hash + Objects.hashCode(this.startDate);
+        hash = 43 * hash + Objects.hashCode(this.userName);
+        hash = 43 * hash + Objects.hashCode(this.instrument);
+        hash = 43 * hash + Objects.hashCode(this.sample);
         return hash;
     }
 
@@ -129,6 +144,9 @@ public class StorageMetadata implements Serializable {
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
+        if (!Objects.equals(this.startDate, other.startDate)) {
+            return false;
+        }
         if (!Objects.equals(this.userName, other.userName)) {
             return false;
         }
@@ -139,6 +157,6 @@ public class StorageMetadata implements Serializable {
             return false;
         }
         return true;
-    }   
+    }
 
 }

@@ -8,6 +8,8 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.InstrumentService;
+import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.StorageError;
 import com.compomics.colims.distributed.model.StorageTask;
@@ -18,6 +20,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -50,7 +53,9 @@ public class StorageTaskConsumer implements MessageListener {
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired
-    private UserService userService;
+    private InstrumentService instrumentService;
+    @Autowired
+    private SampleService sampleService;
     @Autowired
     private AuthenticationBean authenticationBean;
 
@@ -101,7 +106,7 @@ public class StorageTaskConsumer implements MessageListener {
         switch (storageTask.getStorageMetadata().getStorageType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
-                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(((PeptideShakerDataImport) storageTask.getDataImport()).getPeptideShakerCpsArchive());
+                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) storageTask.getDataImport()));
                 analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
                 break;
             case MAX_QUANT:
@@ -122,7 +127,12 @@ public class StorageTaskConsumer implements MessageListener {
      */
     private void storeAnalyticalRuns(StorageTask storageTask, List<AnalyticalRun> analyticalRuns) {
         for (AnalyticalRun analyticalRun : analyticalRuns) {
+            analyticalRun.setCreationDate(new Date());
+            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setUserName(storageTask.getStorageMetadata().getUserName());
+            analyticalRun.setStartDate(storageTask.getStorageMetadata().getStartDate());
             analyticalRun.setSample(storageTask.getStorageMetadata().getSample());
+            analyticalRun.setInstrument(storageTask.getStorageMetadata().getInstrument());
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
     }

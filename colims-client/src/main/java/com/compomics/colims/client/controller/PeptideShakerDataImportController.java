@@ -118,8 +118,6 @@ public class PeptideShakerDataImportController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 //in response to the button click, show open dialog
                 int returnVal = peptideShakerDataImportPanel.getMgfFileChooser().showOpenDialog(peptideShakerDataImportPanel);
-                //clear list
-                mgfFileListModel.clear();
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     for (int i = 0; i < peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles().length; i++) {
                         mgfFileListModel.add(i, peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i]);

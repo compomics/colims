@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="dataTypeButtonGroup">
     </Component>
@@ -100,7 +100,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="projectsPanel" pref="333" max="32767" attributes="0"/>
+                          <Component id="projectsPanel" pref="335" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="experimentsPanel" pref="334" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -114,9 +114,9 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="projectsPanel" alignment="1" pref="214" max="32767" attributes="0"/>
-                              <Component id="experimentsPanel" alignment="1" pref="214" max="32767" attributes="0"/>
-                              <Component id="samplesPanel" alignment="0" pref="214" max="32767" attributes="0"/>
+                              <Component id="projectsPanel" alignment="1" pref="213" max="32767" attributes="0"/>
+                              <Component id="experimentsPanel" alignment="1" pref="213" max="32767" attributes="0"/>
+                              <Component id="samplesPanel" alignment="0" pref="213" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -142,7 +142,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="projectsScrollPane" pref="301" max="32767" attributes="0"/>
+                              <Component id="projectsScrollPane" pref="299" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -151,7 +151,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="projectsScrollPane" pref="0" max="32767" attributes="0"/>
+                              <Component id="projectsScrollPane" pref="164" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -219,7 +219,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="experimentsScrollPane" pref="302" max="32767" attributes="0"/>
+                              <Component id="experimentsScrollPane" pref="298" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -287,7 +287,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="samplesScrollPane" pref="303" max="32767" attributes="0"/>
+                              <Component id="samplesScrollPane" pref="299" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -339,14 +339,14 @@
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="dataTypeSelectionPanel">
+            <Container class="javax.swing.JPanel" name="metadataSelectionPanel">
               <Properties>
-                <Property name="name" type="java.lang.String" value="dataTypeSelectionPanel" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="metadataSelectionPanel" noResource="true"/>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="dataTypeSelectionPanel"/>
+                  <CardConstraints cardName="metadataSelectionPanel"/>
                 </Constraint>
               </Constraints>
 
@@ -356,30 +356,27 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="storageDescriptionTextField" min="-2" pref="321" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <Component id="dataTypeSelectionLabel" min="-2" pref="169" max="-2" attributes="0"/>
-                                          <EmptySpace pref="302" max="32767" attributes="0"/>
-                                          <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="232" max="-2" attributes="0"/>
-                              </Group>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="maxQuantRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="instrumentSelectionLabel" alignment="0" min="-2" pref="169" max="-2" attributes="0"/>
-                                      <Component id="instrumentComboBox" alignment="0" min="-2" pref="270" max="-2" attributes="0"/>
+                                  <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="peptideShakerRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="instrumentComboBox" alignment="0" pref="270" max="32767" attributes="0"/>
+                                      <Component id="dataTypeSelectionLabel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="instrumentSelectionLabel" alignment="0" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="284" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="dateTimePicker" alignment="1" pref="462" max="32767" attributes="0"/>
+                                      <Component id="startDataLabel" alignment="1" pref="462" max="32767" attributes="0"/>
+                                      <Component id="storageDescriptionTextField" alignment="1" max="32767" attributes="0"/>
+                                      <Component id="storageDescriptionLabel" alignment="1" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -389,20 +386,26 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="dataTypeSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="storageDescriptionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="startDataLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="peptideShakerRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="storageDescriptionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="dateTimePicker" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="instrumentSelectionLabel" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="instrumentSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="instrumentComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="87" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="instrumentComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="69" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -419,7 +422,6 @@
                       <ComponentRef name="dataTypeButtonGroup"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="PeptideShaker"/>
-                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="maxQuantRadioButton">
@@ -428,12 +430,11 @@
                       <ComponentRef name="dataTypeButtonGroup"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="MaxQuant"/>
-                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="storageDescriptionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Provide an optional description for monitoring the storage progress"/>
+                    <Property name="text" type="java.lang.String" value="Provide an optional description for monitoring purposes"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="storageDescriptionTextField">
@@ -449,6 +450,13 @@
                       <StringArray count="0"/>
                     </Property>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="startDataLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Select the start date of the run(s)"/>
+                  </Properties>
+                </Component>
+                <Component class="com.compomics.colims.client.compoment.DateTimePicker" name="dateTimePicker">
                 </Component>
               </SubComponents>
             </Container>
@@ -489,7 +497,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="confirmationLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="434" max="32767" attributes="0"/>
+                          <EmptySpace pref="184" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -498,7 +506,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="confirmationLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="211" max="32767" attributes="0"/>
+                          <EmptySpace pref="208" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

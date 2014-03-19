@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public abstract class DataImport implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;       
 
     /**
      * The fasta file
@@ -29,6 +29,6 @@ public abstract class DataImport implements Serializable {
 
     public void setFastaFile(File fastaFile) {
         this.fastaFile = fastaFile;
-    }        
+    }    
 
 }

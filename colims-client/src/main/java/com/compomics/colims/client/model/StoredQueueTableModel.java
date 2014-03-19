@@ -17,7 +17,7 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "instrument","sample", "start", "duration"};    
+    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "instrument", "sample", "start", "duration"};
     private static final int QUEUE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
     private static final int SUBMITTED_INDEX = 2;
@@ -43,7 +43,23 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     public void setMessages(List<StoredTask> messages) {
         this.messages = messages;
-    }    
+    }
+
+    /**
+     * Remove the stored task with the given index.
+     *
+     * @param index the index of the stored task that needs to be removed.
+     */
+    public void remove(int index) {
+        messages.remove(index);
+    }
+
+    /**
+     * Remove all messages.
+     */
+    public void removeAll() {
+        messages.clear();
+    }
 
     @Override
     public int getRowCount() {
@@ -64,11 +80,11 @@ public class StoredQueueTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         StoredTask storedTask = messages.get(rowIndex);
         StorageMetadata storageMetadata = storedTask.getStorageTask().getStorageMetadata();
-                
+
         switch (columnIndex) {
-            case QUEUE_INDEX:                
+            case QUEUE_INDEX:
                 return rowIndex;
-            case TYPE_INDEX:                
+            case TYPE_INDEX:
                 return storageMetadata.getStorageType().userFriendlyName();
             case SUBMITTED_INDEX:
                 return DATE_TIME_FORMAT.format(new Date(storageMetadata.getSubmissionTimestamp()));
@@ -77,7 +93,7 @@ public class StoredQueueTableModel extends AbstractTableModel {
             case USER_INDEX:
                 return storageMetadata.getUserName();
             case INSTRUMENT_INDEX:
-                return storageMetadata.getInstrument().toString();        
+                return storageMetadata.getInstrument().toString();
             case SAMPLE_INDEX:
                 return storageMetadata.getSample().getName();
             case START_INDEX:

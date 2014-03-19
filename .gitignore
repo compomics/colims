@@ -107,3 +107,5 @@ colims-distributed/data/localhost/KahaDB/db.data
 colims-distributed/data/localhost/KahaDB/db.redo
 colims-distributed/data/localhost/KahaDB/lock
 colims-distributed/src/test/resources/log4j.properties
+colims-distributed/src/test/resources/colims-distributed-context.xml
+colims-distributed/derby.log

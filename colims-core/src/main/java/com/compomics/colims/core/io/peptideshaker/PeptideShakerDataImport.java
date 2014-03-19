@@ -4,8 +4,6 @@ import com.compomics.colims.core.io.DataImport;
 import java.io.File;
 import java.util.List;
 
-import org.springframework.core.io.Resource;
-
 /**
  *
  * @author Niels Hulstaert
@@ -19,11 +17,11 @@ public class PeptideShakerDataImport extends DataImport {
     /**
      * The list of mgf files
      */
-    private List<File> mgfResources;
+    private List<File> mgfFiles;
 
     /**
      * Constructor
-     * 
+     *
      * @param peptideShakerCpsArchive
      * @param fastaResource
      * @param mgfResources
@@ -31,7 +29,7 @@ public class PeptideShakerDataImport extends DataImport {
     public PeptideShakerDataImport(final File peptideShakerCpsArchive, final File fastaResource, final List<File> mgfResources) {
         super(fastaResource);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
-        this.mgfResources = mgfResources;
+        this.mgfFiles = mgfResources;
     }
 
     public File getPeptideShakerCpsArchive() {
@@ -43,10 +41,11 @@ public class PeptideShakerDataImport extends DataImport {
     }
 
     public List<File> getMgfFiles() {
-        return mgfResources;
+        return mgfFiles;
     }
 
     public void setMgfFiles(List<File> mgfFiles) {
-        this.mgfResources = mgfFiles;
-    }            
+        this.mgfFiles = mgfFiles;
+    }
+    
 }
