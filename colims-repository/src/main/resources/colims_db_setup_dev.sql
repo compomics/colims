@@ -864,7 +864,7 @@ INSERT INTO `role_has_permission` (l_role_id, l_permission_id) VALUES (1,1),(1,2
 -- insert some test data
 INSERT INTO project (id,creation_date,modification_date,user_name,description,label,title,l_owner_user_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','test project 1 description','test project 1 label','test project 1',1);
 
-INSERT INTO project_has_user (l_project_id,l_user_id) VALUES (1,3);
+INSERT INTO project_has_user (l_project_id,l_user_id) VALUES (1,1);
 
 INSERT INTO experiment (id,creation_date,modification_date,user_name,description,number,storage_location,title,l_project_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','experiment 1 description',2222,'','experiment 1',1);
 INSERT INTO experiment (id,creation_date,modification_date,user_name,description,number,storage_location,title,l_project_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','',15166,'','experiment 2',1);
