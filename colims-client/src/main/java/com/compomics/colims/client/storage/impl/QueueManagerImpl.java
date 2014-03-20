@@ -33,7 +33,7 @@ public class QueueManagerImpl implements QueueManager {
     @Value("${distributed.queue.error}")
     private String errorQueueName;
     private final StorageErrorMessageConvertor storageErrorMessageConvertor = new StorageErrorMessageConvertor();
-    private final String name = "org.apache.activemq:brokerName=%s,destinationName=%s,destinationType=Queue,type=Broker";
+    private final String name = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
     @Autowired
     private JmsTemplate queueManagerTemplate;
     @Autowired

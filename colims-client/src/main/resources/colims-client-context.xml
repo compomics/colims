@@ -33,10 +33,15 @@
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>        
+    </context:component-scan>       
     
     <!-- ActiveMQ connection factory -->
-    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>
+    <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
+    </bean>  
+    
+    <!--     ActiveMQ connection factory 
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>-->
     
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
@@ -57,6 +62,6 @@
         
     <!-- Client connector for jmx -->
     <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
+          p:serviceUrl="${distributed.jmx.service.url}" />    
     
 </beans>

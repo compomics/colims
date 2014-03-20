@@ -26,8 +26,8 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
     public PeptideShakerDataImportPanel() {
         initComponents();
         
-        cpsFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
-        fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+//        cpsFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+//        fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
         
         mgfFilesScrollPane.getViewport().setOpaque(false);
     }  
@@ -82,29 +82,86 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        cpsFileSelectionLabel = new javax.swing.JLabel();
-        cpsFileLabel = new javax.swing.JLabel();
-        fastaFileLabel = new javax.swing.JLabel();
+        leftPanel = new javax.swing.JPanel();
         selectCpsButton = new javax.swing.JButton();
+        cpsFileLabel = new javax.swing.JLabel();
+        cpsFileSelectionLabel = new javax.swing.JLabel();
+        fastaFileLabel = new javax.swing.JLabel();
         selectFastaButton = new javax.swing.JButton();
-        fileSelectionLabel1 = new javax.swing.JLabel();
+        fastaFileSelectionLabel = new javax.swing.JLabel();
+        rightPanel = new javax.swing.JPanel();
+        mgfFileSelectionLabel = new javax.swing.JLabel();
         mgfFilesScrollPane = new javax.swing.JScrollPane();
         mgfFileList = new javax.swing.JList();
         addMgfButton = new javax.swing.JButton();
         removeMgfButton = new javax.swing.JButton();
-        fastaFileSelectionLabel = new javax.swing.JLabel();
         separator = new javax.swing.JSeparator();
 
         setOpaque(false);
+        setLayout(new java.awt.GridBagLayout());
 
-        cpsFileSelectionLabel.setText("Select a PeptideShaker cps file");
+        leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         selectCpsButton.setText("browse");
 
+        cpsFileLabel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+
+        cpsFileSelectionLabel.setText("Select a PeptideShaker cps file");
+
         selectFastaButton.setText("browse");
 
-        fileSelectionLabel1.setText("Select MGF file(s)");
+        fastaFileSelectionLabel.setText("Select a FASTA file");
+
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cpsFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addComponent(cpsFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectCpsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addComponent(fastaFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cpsFileSelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cpsFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectCpsButton))
+                .addGap(18, 18, 18)
+                .addComponent(fastaFileSelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fastaFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectFastaButton))
+                .addContainerGap())
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(leftPanel, gridBagConstraints);
+
+        rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
+
+        mgfFileSelectionLabel.setText("Select MGF file(s)");
 
         mgfFilesScrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240)));
 
@@ -114,72 +171,53 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         removeMgfButton.setText("remove");
 
-        fastaFileSelectionLabel.setText("Select a FASTA file");
-
-        separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
+        rightPanel.setLayout(rightPanelLayout);
+        rightPanelLayout.setHorizontalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cpsFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cpsFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addComponent(mgfFilesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectCpsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(fastaFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(fastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(mgfFilesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(removeMgfButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(fileSelectionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mgfFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        rightPanelLayout.setVerticalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cpsFileSelectionLabel)
-                            .addComponent(fileSelectionLabel1))
+                .addComponent(mgfFileSelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mgfFilesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addComponent(addMgfButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(mgfFilesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addMgfButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeMgfButton))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(cpsFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(selectCpsButton))
-                                        .addGap(18, 18, 18)
-                                        .addComponent(fastaFileSelectionLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(fastaFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(selectFastaButton))))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(separator))
+                        .addComponent(removeMgfButton)
+                        .addGap(0, 176, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(rightPanel, gridBagConstraints);
+
+        separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        add(separator, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -189,10 +227,12 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel cpsFileSelectionLabel;
     private javax.swing.JLabel fastaFileLabel;
     private javax.swing.JLabel fastaFileSelectionLabel;
-    private javax.swing.JLabel fileSelectionLabel1;
+    private javax.swing.JPanel leftPanel;
     private javax.swing.JList mgfFileList;
+    private javax.swing.JLabel mgfFileSelectionLabel;
     private javax.swing.JScrollPane mgfFilesScrollPane;
     private javax.swing.JButton removeMgfButton;
+    private javax.swing.JPanel rightPanel;
     private javax.swing.JButton selectCpsButton;
     private javax.swing.JButton selectFastaButton;
     private javax.swing.JSeparator separator;

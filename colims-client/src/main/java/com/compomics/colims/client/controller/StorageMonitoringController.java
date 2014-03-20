@@ -255,8 +255,9 @@ public class StorageMonitoringController implements Controllable {
             storageMonitoringDialog.getStoredQueueTable().getSelectionModel().clearSelection();
             storageMonitoringDialog.getErrorQueueTable().getSelectionModel().clearSelection();
 
-            storageMonitoringDialog.getStorageQueueTable().updateUI();
-            storageMonitoringDialog.getErrorQueueTable().updateUI();
+//            storageMonitoringDialog.getStorageQueueTable().updateUI();
+//            storageMonitoringDialog.getStoredQueueTable().updateUI();
+//            storageMonitoringDialog.getErrorQueueTable().updateUI();
         } catch (UncategorizedJmsException | JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);
             postConnectionErrorMessage(ex.getMessage());

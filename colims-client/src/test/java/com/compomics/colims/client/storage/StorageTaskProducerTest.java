@@ -32,7 +32,7 @@ public class StorageTaskProducerTest {
     private QueueManager queueManager;
     
     @Test
-    public void testSendStorageTaskMessage() throws JMSException {
+    public void testSendStorageTaskMessage() throws JMSException, Exception {
         final StorageTask storageTask = new StorageTask();
         
         StorageMetadata storageMetadata = new StorageMetadata();
@@ -59,6 +59,13 @@ public class StorageTaskProducerTest {
         
         StorageMetadata storageMetaDataOnQueue = messages.get(0).getStorageMetadata();
         Assert.assertEquals(storageMetadata, storageMetaDataOnQueue);
+        
+        //remove message from queue        
+        queueManager.deleteMessage(storageQueueName, messages.get(0).getMessageId());
+        
+        messages = queueManager.monitorQueue(storageQueueName);
+        //the queue must be empty
+        Assert.assertTrue(messages.isEmpty());
     }
     
 }

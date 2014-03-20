@@ -43,6 +43,7 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     public void setMessages(List<StoredTask> messages) {
         this.messages = messages;
+        this.fireTableDataChanged();
     }
 
     /**
@@ -52,6 +53,7 @@ public class StoredQueueTableModel extends AbstractTableModel {
      */
     public void remove(int index) {
         messages.remove(index);
+        this.fireTableDataChanged();
     }
 
     /**
@@ -59,6 +61,7 @@ public class StoredQueueTableModel extends AbstractTableModel {
      */
     public void removeAll() {
         messages.clear();
+        this.fireTableDataChanged();        
     }
 
     @Override
