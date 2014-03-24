@@ -102,6 +102,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
+        leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         selectCpsButton.setText("browse");
@@ -159,6 +160,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(leftPanel, gridBagConstraints);
 
+        rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         mgfFileSelectionLabel.setText("Select MGF file(s)");

@@ -350,6 +350,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         metadataSelectionPanel.setOpaque(false);
         metadataSelectionPanel.setLayout(new java.awt.GridBagLayout());
 
+        leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         dataTypeSelectionLabel.setText("Select the analytical run data type");
@@ -402,6 +403,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         metadataSelectionPanel.add(leftPanel, gridBagConstraints);
 
+        rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         storageDescriptionLabel.setText("Provide an optional description for monitoring purposes");

@@ -346,6 +346,7 @@ public class ColimsController implements Controllable, ActionListener {
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(600, 200));
             textArea.setEditable(false);
+            textArea.setLineWrap(true);
 
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
@@ -370,4 +371,6 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
         colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
+    
+    
 }

@@ -3,12 +3,10 @@ package com.compomics.colims.client;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import java.rmi.ConnectException;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.GenericJDBCException;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.CannotCreateTransactionException;
@@ -63,23 +61,15 @@ public class ColimsClientStarter {
                     
                     ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
                     colimsController.init();
-//                } catch (CannotCreateTransactionException ex) {
-//                    LOGGER.error(ex.getMessage(), ex);
-//                    if (ex.getCause() instanceof GenericJDBCException) {
-//                        JOptionPane.showMessageDialog(null, "Cannot establish a connection to the database, the application will not start."
-//                                + "\n" + "Make sure your connection parameters in the config/colims-client.properties."
-//                                + "\n" + "file are correct.", "Colims startup error", JOptionPane.ERROR_MESSAGE);                        
-//                    }
-//                    System.exit(0);
-                } catch (Exception ex) {
+                } catch (CannotCreateTransactionException ex) {
                     LOGGER.error(ex.getMessage(), ex);
                     if (ex.getCause() instanceof GenericJDBCException) {
                         JOptionPane.showMessageDialog(null, "Cannot establish a connection to the database, the application will not start."
                                 + "\n" + "Make sure your connection parameters in the config/colims-client.properties."
-                                + "\n" + "file are correct.", "Colims startup error", JOptionPane.ERROR_MESSAGE);                        
+                                + "\n" + "file are correct.", "Colims startup error", JOptionPane.ERROR_MESSAGE);
                     }
                     System.exit(0);
-                }                
+                }             
             }
         });
     }

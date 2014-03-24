@@ -6,7 +6,7 @@
        xmlns:jms="http://www.springframework.org/schema/jms"
        xmlns:amq="http://activemq.apache.org/schema/core"     
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jms 
@@ -45,7 +45,7 @@
         <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
     </bean>
     
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler">                            
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
         <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
     </jms:listener-container>
     
