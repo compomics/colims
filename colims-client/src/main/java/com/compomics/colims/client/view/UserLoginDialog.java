@@ -10,14 +10,14 @@ import javax.swing.JTextField;
  *
  * @author Niels Hulstaert
  */
-public class LoginDialog extends javax.swing.JDialog {
+public class UserLoginDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
-    public LoginDialog(final Frame parent, final boolean modal) {
+    public UserLoginDialog(final Frame parent, final boolean modal) {
         super(parent, modal);  
         
         initComponents();
@@ -29,13 +29,17 @@ public class LoginDialog extends javax.swing.JDialog {
         return loginButton;
     }
     
-    public JPasswordField getPasswordTextField() {
-        return passwordTextField;
+    public JPasswordField getUserPasswordTextField() {
+        return userPasswordTextField;
     }
     
     public JTextField getUserNameTextField() {
         return userNameTextField;
     }
+
+    public JButton getCloseButton() {
+        return closeButton;
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,21 +52,27 @@ public class LoginDialog extends javax.swing.JDialog {
 
         userNameLabel = new javax.swing.JLabel();
         userNameTextField = new javax.swing.JTextField();
-        passwordLabel = new javax.swing.JLabel();
-        passwordTextField = new javax.swing.JPasswordField();
+        userPasswordLabel = new javax.swing.JLabel();
+        userPasswordTextField = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Colims login");
+        setTitle("colims user login");
 
         userNameLabel.setText("user name");
 
-        passwordLabel.setText("password");
+        userPasswordLabel.setText("user password");
 
         loginButton.setText("login");
         loginButton.setMaximumSize(new java.awt.Dimension(80, 25));
         loginButton.setMinimumSize(new java.awt.Dimension(80, 25));
         loginButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -72,16 +82,18 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(userNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(userNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                            .addComponent(passwordTextField)))
+                            .addComponent(userPasswordLabel)
+                            .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(userPasswordTextField)
+                            .addComponent(userNameTextField)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 152, Short.MAX_VALUE)
+                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -91,22 +103,25 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userNameLabel)
                     .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordLabel)
-                    .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(userPasswordLabel)
+                    .addComponent(userPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
     private javax.swing.JButton loginButton;
-    private javax.swing.JLabel passwordLabel;
-    private javax.swing.JPasswordField passwordTextField;
     private javax.swing.JLabel userNameLabel;
     private javax.swing.JTextField userNameTextField;
+    private javax.swing.JLabel userPasswordLabel;
+    private javax.swing.JPasswordField userPasswordTextField;
     // End of variables declaration//GEN-END:variables
 }

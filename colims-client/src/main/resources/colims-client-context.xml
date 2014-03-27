@@ -33,8 +33,8 @@
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>       
-    
+    </context:component-scan>  
+                     
     <!-- ActiveMQ connection factory -->
     <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
