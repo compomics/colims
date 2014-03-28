@@ -24,25 +24,26 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userPasswordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="userNameLabel" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userPasswordTextField" max="32767" attributes="0"/>
-                          <Component id="userNameTextField" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="loginInfoLabel" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="152" max="32767" attributes="0"/>
                       <Component id="loginButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="userNameLabel" min="-2" pref="70" max="-2" attributes="0"/>
+                          <Component id="userPasswordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="userNameTextField" alignment="1" max="32767" attributes="0"/>
+                          <Component id="userPasswordTextField" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -53,16 +54,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="loginInfoLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userPasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="userPasswordTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="userPasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="loginButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -113,6 +116,11 @@
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[80, 25]"/>
         </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="loginInfoLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="please provide your colims user login credentials:"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -49,6 +49,7 @@
                           <Component id="dbUrlTextField" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <Component id="loginInfoLabel" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -58,9 +59,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="loginInfoLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="dbUrlLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="dbUrlTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="dbUrlLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -72,7 +75,7 @@
                   <Component id="dbPasswordTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="dbPasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="loginButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -131,6 +134,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="dbUrlTextField">
+    </Component>
+    <Component class="javax.swing.JLabel" name="loginInfoLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="please provide the colims database login credentials:"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

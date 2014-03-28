@@ -2,6 +2,7 @@ package com.compomics.colims.client.view;
 
 import java.awt.Color;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -23,6 +24,7 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
         initComponents();
         
         this.getContentPane().setBackground(Color.WHITE);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
     }
 
     public JButton getCloseButton() {
@@ -62,6 +64,7 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
         dbUrlLabel = new javax.swing.JLabel();
         closeButton = new javax.swing.JButton();
         dbUrlTextField = new javax.swing.JTextField();
+        loginInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("colims database login");
@@ -81,6 +84,8 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
         closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        loginInfoLabel.setText("please provide the colims database login credentials:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,16 +110,19 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(dbUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(dbUrlTextField))))
+                            .addComponent(dbUrlTextField)))
+                    .addComponent(loginInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(loginInfoLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dbUrlLabel)
-                    .addComponent(dbUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dbUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dbUrlLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dbUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -123,7 +131,7 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dbPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dbPasswordLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -141,5 +149,6 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
     private javax.swing.JLabel dbUserNameLabel;
     private javax.swing.JTextField dbUserNameTextField;
     private javax.swing.JButton loginButton;
+    private javax.swing.JLabel loginInfoLabel;
     // End of variables declaration//GEN-END:variables
 }

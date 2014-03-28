@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import com.compomics.colims.client.SplashScreen;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
@@ -26,6 +27,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -55,6 +57,8 @@ public class ColimsController implements Controllable, ActionListener {
     private String version = "unknown";
     @Autowired
     private AuthenticationBean authenticationBean;
+    @Autowired
+    private SplashScreen splashScreen;
     /**
      * The project EventList that is used as table model in the project
      * management and overview tabs.
@@ -123,10 +127,11 @@ public class ColimsController implements Controllable, ActionListener {
                 } else if (e instanceof EncryptionOperationNotPossibleException) {
                     showMessageDialog("password encryption error", "The password for the jasypt encryption framework is not correct. "
                             + "\n" + "Check if the 'jasypt.password' property in the colims client config file contains the correct value.", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                 } else {
                     showUnexpectedErrorDialog(e.getMessage());
+                    System.exit(0);
                 }
-                System.exit(0);
             }
         });
 
@@ -135,6 +140,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init views       
         colimsFrame = new ColimsFrame();
+        colimsFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
         colimsFrame.setTitle("Colims " + version);
         userLoginDialog = new UserLoginDialog(colimsFrame, true);
         mainHelpDialog = new MainHelpDialog(colimsFrame, true);
@@ -172,7 +178,7 @@ public class ColimsController implements Controllable, ActionListener {
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!(userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length == 0)) {
+                if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
                     showMessageDialog("login validation fail", "please provide an user name and password", JOptionPane.WARNING_MESSAGE);
@@ -187,13 +193,15 @@ public class ColimsController implements Controllable, ActionListener {
                 System.exit(0);
             }
         });
-        
+
         userLoginDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
                 System.exit(0);
             }
         });
+
+        splashScreen.dispose();
 
         //show login dialog
         userLoginDialog.setLocationRelativeTo(null);
@@ -274,7 +282,7 @@ public class ColimsController implements Controllable, ActionListener {
     public void showPermissionErrorDialog(String message) {
         showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
-                + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
+                + "\n" + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -317,6 +325,10 @@ public class ColimsController implements Controllable, ActionListener {
         }
     }
 
+    /**
+     * Check the user credentials and init the admin section if necessary. If
+     * unsuccessful, show a message dialog and reset the input fields.
+     */
     private void onLogin() {
         //check if a user with given user name and password is found in the db    
         LOGGER.info("Login attempt with user name: " + userLoginDialog.getUserNameTextField().getText());

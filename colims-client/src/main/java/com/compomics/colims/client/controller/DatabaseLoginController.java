@@ -1,7 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.view.DatabaseLoginDialog;
-import com.google.common.collect.HashBiMap;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -55,7 +54,9 @@ public class DatabaseLoginController implements Controllable {
         //set db url and user name from client properties
         databaseLoginDialog.getDbUrlTextField().setText(propertiesConfiguration.getString("db.url"));
         databaseLoginDialog.getDbUserNameTextField().setText(propertiesConfiguration.getString("db.username"));
-
+        
+        databaseLoginDialog.getDbPasswordTextField().requestFocus();
+        
         databaseLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,7 +89,7 @@ public class DatabaseLoginController implements Controllable {
     }
 
     @Override
-    public void showView() {
+    public void showView() {        
         databaseLoginDialog.setLocationRelativeTo(null);
         databaseLoginDialog.setVisible(true);
     }
