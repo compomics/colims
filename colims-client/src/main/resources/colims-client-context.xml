@@ -29,7 +29,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
     </bean>
     
-    <bean class="com.compomics.colims.client.SplashScreen"/>
+    <bean id="splashScreen" class="com.compomics.colims.client.SplashScreen"/>
     
     <!-- component beans -->
     <context:component-scan base-package="com.compomics.colims.client">

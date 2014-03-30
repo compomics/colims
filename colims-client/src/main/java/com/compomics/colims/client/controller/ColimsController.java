@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -181,7 +182,7 @@ public class ColimsController implements Controllable, ActionListener {
                 if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
-                    showMessageDialog("login validation fail", "please provide an user name and password", JOptionPane.WARNING_MESSAGE);
+                    showMessageDialog("login validation fail", "Please provide an user name and password.", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -201,11 +202,6 @@ public class ColimsController implements Controllable, ActionListener {
             }
         });
 
-        splashScreen.dispose();
-
-        //show login dialog
-        userLoginDialog.setLocationRelativeTo(null);
-        userLoginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
 //        User currentUser = userService.findByName("admin");
 //        userService.fetchAuthenticationRelations(currentUser);
@@ -224,6 +220,9 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         colimsFrame.setLocationRelativeTo(null);
         colimsFrame.setVisible(true);
+        //show login dialog
+        userLoginDialog.setLocationRelativeTo(colimsFrame);
+        userLoginDialog.setVisible(true);
     }
 
     @Override
@@ -347,8 +346,6 @@ public class ColimsController implements Controllable, ActionListener {
                 //disable admin menu
                 colimsFrame.getAdminMenu().setEnabled(false);
             }
-
-            showView();
         } else {
             showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
             userLoginDialog.getUserNameTextField().setText("");

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Peter De Bruycker
@@ -26,13 +25,13 @@ import org.springframework.util.StringUtils;
 public class SplashScreen implements ApplicationContextAware, BeanPostProcessor, InitializingBean {
 
     private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
+
     private JWindow window;
-
     private Image image;
-
     private String imageResourcePath;
     private ApplicationContext context;
     private JProgressBar progressBar;
+    private int beanCount = 0;
     private int progress = 0;
     private boolean showProgressLabel;
 
@@ -118,6 +117,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         if (showProgressLabel) {
             progressBar.setString("Loading bean " + name);
         }
+
         return bean;
     }
 
@@ -153,4 +153,5 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     public void setShowProgressLabel(boolean showProgressLabel) {
         this.showProgressLabel = showProgressLabel;
     }
+   
 }

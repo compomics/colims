@@ -6,6 +6,8 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,6 +18,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ColimsClientStarter {
 
     private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+
+    public ColimsClientStarter(String[] contextPaths) {
+        launchColimsClient(contextPaths);
+    }
 
     public static void main(String[] args) {
         /*
@@ -34,11 +40,10 @@ public class ColimsClientStarter {
         }
         //</editor-fold>
 
-        
-        launchColimsClient(new String[]{"colims-client-context.xml"});
+        ColimsClientStarter colimsClientStarter = new ColimsClientStarter(new String[]{"colims-client-context.xml"});
     }
 
-    private static void launchColimsClient(String[] contextPaths) {
+    private void launchColimsClient(String[] contextPaths) {
         try {
             //init and show database login dialog for database login credentials
             DatabaseLoginController databaseLoginController = new DatabaseLoginController();
@@ -52,19 +57,23 @@ public class ColimsClientStarter {
             DatabasePropertySource databasePropertySource = new DatabasePropertySource(databaseLoginController.getDbProperties());
             applicationContext.getEnvironment().getPropertySources().addLast(databasePropertySource);
 
+            //reset database properties for security
+            databaseLoginController.reset();
+            databasePropertySource.reset();
+
             //refresh the application context
             applicationContext.refresh();
 
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
 
-            //reset database properties for security
-            databaseLoginController.reset();
-            databasePropertySource.reset();
-
-            //init Colims controller
             ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
             colimsController.init();
+
+            SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
+            splashScreen.dispose();
+
+            colimsController.showView();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             JOptionPane.showMessageDialog(null, "An error occured during startup, please try again."

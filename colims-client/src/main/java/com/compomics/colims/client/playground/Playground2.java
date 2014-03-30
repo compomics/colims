@@ -46,22 +46,22 @@ public class Playground2 {
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, InvalidSelectorException, OpenDataException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
-        QueueManager queueManager = applicationContext.getBean("queueManager", QueueManager.class);
+//        QueueManager queueManager = applicationContext.getBean("queueManager", QueueManager.class);
         
-//        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
-//
-//        StorageTask storageTask = new StorageTask();
-//        StorageMetadata storageMetadata = new StorageMetadata();
-//        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
-//        storageMetadata.setDescription("test description1");
-//        storageMetadata.setSample(new Sample("sample name3"));
-//        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-//        storageMetadata.setUserName("testUser");
-//
-//        storageTask.setStorageMetadata(storageMetadata);
-//        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
-//
-//        storageTaskProducer.sendStorageTask(storageTask);
+        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
+
+        StorageTask storageTask = new StorageTask();
+        StorageMetadata storageMetadata = new StorageMetadata();
+        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+        storageMetadata.setDescription("test description1");
+        storageMetadata.setSample(new Sample("sample name3"));
+        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
+        storageMetadata.setUserName("testUser");
+
+        storageTask.setStorageMetadata(storageMetadata);
+        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
+
+        storageTaskProducer.sendStorageTask(storageTask);
 
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
 //        List<StorageMetadata> messages = queueMonitor.getMessages("test");
