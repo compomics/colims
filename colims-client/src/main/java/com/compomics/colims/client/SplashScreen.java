@@ -31,12 +31,17 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     private ApplicationContext context;
     private final JProgressBar progressBar;
     private int progress = 0;
+    private int maximum;
     private final boolean showProgressLabel;
 
     public SplashScreen() {
         progressBar = new JProgressBar();
         imageResourcePath = "/icons/colims_icon.png";
         showProgressLabel = true;
+    }
+
+    public int getMaximum() {
+        return maximum;
     }
 
     /**
@@ -128,17 +133,20 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
             progressBar.setString("Loading context...");
         }
         progressBar.setMinimum(0);
-        progressBar.setMaximum(context.getBeanDefinitionCount());
+        maximum = context.getBeanDefinitionCount();
+        progressBar.setMaximum(maximum);
         splash();
     }
 
     /**
      * Set the progress message of the progress bar.
      *
-     * @param progressMessage
+     * @param progressMessage the progress bar label message
+     * @param value the progress bar value
      */
-    public void setProgressLabel(String progressMessage) {
+    public void setProgressLabel(String progressMessage, int value) {
         if (showProgressLabel) {
+            progressBar.setValue(progressBar.getMaximum() - 1);
             progressBar.setString(progressMessage);
         }
     }

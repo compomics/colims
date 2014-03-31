@@ -228,7 +228,7 @@
                         <Column editable="true" title="Title 4" type="java.lang.Object"/>
                       </Table>
                     </Property>
-                    <Property name="toolTipText" type="java.lang.String" value="click on a row to see the error message"/>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>

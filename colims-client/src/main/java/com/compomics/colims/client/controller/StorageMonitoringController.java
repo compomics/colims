@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 public class StorageMonitoringController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(StorageMonitoringController.class);
+    private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
 
     //model
     @Value("${distributed.queue.storage}")
@@ -108,7 +109,11 @@ public class StorageMonitoringController implements Controllable {
                     if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
                         StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
-                        storageMonitoringDialog.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
+                        if (storageError.getCause().getMessage() != null) {
+                            storageMonitoringDialog.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
+                        } else {
+                            storageMonitoringDialog.getErrorDetailTextArea().setText(ERROR_DETAIL_NOT_AVAILABLE);
+                        }
                     } else {
                         storageMonitoringDialog.getErrorDetailTextArea().setText("");
                     }

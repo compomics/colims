@@ -13,6 +13,6 @@ public class StorageQueuesConnectionErrorMessageEvent extends MessageEvent {
             + "Please check if the storage queueing module is up and running and try again.";
 
     public StorageQueuesConnectionErrorMessageEvent(final String brokerName, final String brokerUrl, final String brokerJmxUrl) {
-        super("database constraint violation", String.format(CONNECTION_ERROR_MESSAGE, brokerName, brokerUrl, brokerJmxUrl), JOptionPane.ERROR_MESSAGE);
+        super("storage queueing connection error", String.format(CONNECTION_ERROR_MESSAGE, brokerName, brokerUrl, brokerJmxUrl), JOptionPane.ERROR_MESSAGE);
     }
 }

@@ -2,6 +2,7 @@ package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DateTimePicker;
 import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -410,7 +413,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         startDataLabel.setText("Select the start date of the run(s)");
 
-        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 25));
+        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 20));
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
@@ -431,8 +436,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(startDataLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dateTimePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addComponent(dateTimePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
                 .addComponent(storageDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(storageDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

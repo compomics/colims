@@ -85,6 +85,10 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 20));
+
         javax.swing.GroupLayout projectEditPanelLayout = new javax.swing.GroupLayout(projectEditPanel);
         projectEditPanel.setLayout(projectEditPanelLayout);
         projectEditPanelLayout.setHorizontalGroup(

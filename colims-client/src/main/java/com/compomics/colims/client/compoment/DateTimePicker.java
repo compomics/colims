@@ -13,8 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import org.jdesktop.swingx.JXDatePicker;
@@ -36,7 +36,7 @@ public class DateTimePicker extends JXDatePicker {
     public DateTimePicker() {
         super();
         getMonthView().setSelectionModel(new SingleDaySelectionModel());
-        getEditor().setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(240, 240, 240)), new EmptyBorder(0, 5, 0, 0)));
+        getEditor().setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
     }
 
     public DateTimePicker(Date d) {
