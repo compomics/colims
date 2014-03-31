@@ -40,7 +40,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="storageMonitoringMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="storage monitoring"/>
+                <Property name="text" type="java.lang.String" value="storage monitoring..."/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -62,7 +62,7 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="instruments"/>
+                    <Property name="text" type="java.lang.String" value="instruments..."/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="materialManagementMenuItem">

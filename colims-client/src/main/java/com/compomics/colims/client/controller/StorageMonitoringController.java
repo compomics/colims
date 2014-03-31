@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
 import com.compomics.colims.client.model.StorageQueueTableModel;
 import com.compomics.colims.client.model.StoredQueueTableModel;
@@ -229,10 +230,15 @@ public class StorageMonitoringController implements Controllable {
 
     @Override
     public void showView() {
-        updateMonitoringTables();
+        //check connection to distributed queues
+        if (queueManager.testConnection()) {
+            updateMonitoringTables();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
-        storageMonitoringDialog.setVisible(true);
+            GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
+            storageMonitoringDialog.setVisible(true);
+        } else {
+            eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+        }
     }
 
     /**
@@ -243,7 +249,7 @@ public class StorageMonitoringController implements Controllable {
         try {
             List<StorageTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
-            
+
             List<StoredTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
             storedQueueTableModel.setMessages(storedTaskMessages);
 
@@ -255,8 +261,9 @@ public class StorageMonitoringController implements Controllable {
             storageMonitoringDialog.getStoredQueueTable().getSelectionModel().clearSelection();
             storageMonitoringDialog.getErrorQueueTable().getSelectionModel().clearSelection();
 
-            storageMonitoringDialog.getStorageQueueTable().updateUI();
-            storageMonitoringDialog.getErrorQueueTable().updateUI();
+//            storageMonitoringDialog.getStorageQueueTable().updateUI();
+//            storageMonitoringDialog.getStoredQueueTable().updateUI();
+//            storageMonitoringDialog.getErrorQueueTable().updateUI();
         } catch (UncategorizedJmsException | JMSException ex) {
             LOGGER.error(ex.getMessage(), ex);
             postConnectionErrorMessage(ex.getMessage());

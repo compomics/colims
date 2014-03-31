@@ -1,14 +1,15 @@
 package com.compomics.colims.client;
 
 import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.DatabaseLoginController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.GenericJDBCException;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
  *
@@ -16,13 +17,13 @@ import org.springframework.transaction.CannotCreateTransactionException;
  */
 public class ColimsClientStarter {
 
-    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
 
-    public static void main(final String[] args) {
-        launch();
+    public ColimsClientStarter(String[] contextPaths) {
+        launchColimsClient(contextPaths);
     }
 
-    private static void launch() {
+    public static void main(String[] args) {
         /*
          * Set the Nimbus look and feel
          */
@@ -34,39 +35,53 @@ public class ColimsClientStarter {
          */
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-        } catch (InstantiationException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-        } catch (IllegalAccessException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
         //</editor-fold>
 
-        /*
-         * Create and display the form
-         */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ApplicationContext clientApplicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
-                    ApplicationContextProvider.getInstance().setApplicationContext(clientApplicationContext);
-                    
-                    ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
-                    colimsController.init();
-                } catch (CannotCreateTransactionException ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                    if (ex.getCause() instanceof GenericJDBCException) {
-                        JOptionPane.showMessageDialog(null, "Cannot establish a connection to the database, the application will not start."
-                                + "\n" + "Make sure your connection parameters in the config/colims-client.properties."
-                                + "\n" + "file are correct.", "Colims startup error", JOptionPane.ERROR_MESSAGE);                        
-                    }
-                    System.exit(0);
-                }
-            }
-        });
+        ColimsClientStarter colimsClientStarter = new ColimsClientStarter(new String[]{"colims-client-context.xml"});
     }
+
+    private void launchColimsClient(String[] contextPaths) {
+        try {
+            //init and show database login dialog for database login credentials
+            DatabaseLoginController databaseLoginController = new DatabaseLoginController();
+            databaseLoginController.init();
+            databaseLoginController.showView();
+
+            //load application context
+            AbstractApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths, false);
+
+            //override database properties that require user input by adding a new PropertySource
+            DatabasePropertySource databasePropertySource = new DatabasePropertySource(databaseLoginController.getDbProperties());
+            applicationContext.getEnvironment().getPropertySources().addLast(databasePropertySource);
+
+            //reset database properties for security
+            databaseLoginController.reset();
+            databasePropertySource.reset();
+
+            //refresh the application context
+            applicationContext.refresh();
+
+            //set application context in ApplicationContextProvider
+            ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
+            
+            ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
+            SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
+            
+            splashScreen.setProgressLabel("Loading GUI...");
+            colimsController.init();            
+            splashScreen.dispose();
+
+            colimsController.showView();
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(null, "An error occured during startup, please try again."
+                    + "\n" + "If the problem persists, contact the administrator.",
+                    "colims startup error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+
 }

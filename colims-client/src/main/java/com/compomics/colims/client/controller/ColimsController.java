@@ -2,6 +2,7 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import com.compomics.colims.client.SplashScreen;
 import com.compomics.colims.client.controller.admin.user.UserManagementController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
@@ -13,7 +14,7 @@ import com.compomics.colims.client.event.MaterialChangeEvent;
 import com.compomics.colims.client.event.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.LoginDialog;
+import com.compomics.colims.client.view.UserLoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.core.authorization.PermissionException;
@@ -26,16 +27,19 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +65,7 @@ public class ColimsController implements Controllable, ActionListener {
     private EventList<Project> projects = new BasicEventList<>();
     //views
     private ColimsFrame colimsFrame;
-    private LoginDialog loginDialog;
+    private UserLoginDialog userLoginDialog;
     private MainHelpDialog mainHelpDialog;
     //child controllers    
     @Autowired
@@ -119,8 +123,13 @@ public class ColimsController implements Controllable, ActionListener {
                 //check for permission exceptions
                 if (e instanceof PermissionException) {
                     showPermissionErrorDialog(e.getMessage());
+                } else if (e instanceof EncryptionOperationNotPossibleException) {
+                    showMessageDialog("password encryption error", "The password for the jasypt encryption framework is not correct. "
+                            + "\n" + "Check if the 'jasypt.password' property in the colims client config file contains the correct value.", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                 } else {
                     showUnexpectedErrorDialog(e.getMessage());
+                    System.exit(0);
                 }
             }
         });
@@ -130,8 +139,9 @@ public class ColimsController implements Controllable, ActionListener {
 
         //init views       
         colimsFrame = new ColimsFrame();
+        colimsFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
         colimsFrame.setTitle("Colims " + version);
-        loginDialog = new LoginDialog(colimsFrame, true);
+        userLoginDialog = new UserLoginDialog(colimsFrame, true);
         mainHelpDialog = new MainHelpDialog(colimsFrame, true);
 
         //workaround for better beansbinding logging issue
@@ -164,38 +174,43 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getNewRunMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
-        loginDialog.getLoginButton().addActionListener(new ActionListener() {
+        userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!(loginDialog.getUserNameTextField().getText().isEmpty() && loginDialog.getPasswordTextField().getPassword().length == 0)) {
+                if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
-                    showMessageDialog("login validation fail", "please provide an user name and password", JOptionPane.WARNING_MESSAGE);
+                    showMessageDialog("login validation fail", "Please provide an user name and password.", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
 
-        loginDialog.addWindowListener(new WindowAdapter() {
+        userLoginDialog.getCloseButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                userLoginDialog.dispose();
+                System.exit(0);
+            }
+        });
+
+        userLoginDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
                 System.exit(0);
             }
         });
 
-        //show login dialog
-//        loginDialog.setLocationRelativeTo(null);
-//        loginDialog.setVisible(true);
         //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("admin");
-        userService.fetchAuthenticationRelations(currentUser);
-        authenticationBean.setCurrentUser(currentUser);
-        if (authenticationBean.isAdmin()) {
-            initAdminSection();
-        } else {
-            //disable admin menu
-            colimsFrame.getAdminMenu().setEnabled(false);
-        }
-        showView();
+//        User currentUser = userService.findByName("admin");
+//        userService.fetchAuthenticationRelations(currentUser);
+//        authenticationBean.setCurrentUser(currentUser);
+//        if (authenticationBean.isAdmin()) {
+//            initAdminSection();
+//        } else {
+//            //disable admin menu
+//            colimsFrame.getAdminMenu().setEnabled(false);
+//        }
+//        showView();
     }
 
     @Override
@@ -203,6 +218,9 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         colimsFrame.setLocationRelativeTo(null);
         colimsFrame.setVisible(true);
+        //show login dialog
+        userLoginDialog.setLocationRelativeTo(colimsFrame);
+        userLoginDialog.setVisible(true);
     }
 
     @Override
@@ -261,7 +279,7 @@ public class ColimsController implements Controllable, ActionListener {
     public void showPermissionErrorDialog(String message) {
         showMessageDialog("permission warning", "A permission warning occured: "
                 + "\n" + message
-                + "\n" + "please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
+                + "\n" + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -304,13 +322,17 @@ public class ColimsController implements Controllable, ActionListener {
         }
     }
 
+    /**
+     * Check the user credentials and init the admin section if necessary. If
+     * unsuccessful, show a message dialog and reset the input fields.
+     */
     private void onLogin() {
         //check if a user with given user name and password is found in the db    
-        LOGGER.info("Login attempt with user name: " + loginDialog.getUserNameTextField().getText());
-        User currentUser = userService.findByLoginCredentials(loginDialog.getUserNameTextField().getText(), String.valueOf(loginDialog.getPasswordTextField().getPassword()));
+        LOGGER.info("Login attempt with user name: " + userLoginDialog.getUserNameTextField().getText());
+        User currentUser = userService.findByLoginCredentials(userLoginDialog.getUserNameTextField().getText(), String.valueOf(userLoginDialog.getUserPasswordTextField().getPassword()));
         if (currentUser != null) {
-            LOGGER.info("User " + loginDialog.getUserNameTextField().getText() + " successfully logged in.");
-            loginDialog.dispose();
+            LOGGER.info("User " + userLoginDialog.getUserNameTextField().getText() + " successfully logged in.");
+            userLoginDialog.dispose();
 
             //set current user in authentication bean 
             userService.fetchAuthenticationRelations(currentUser);
@@ -322,12 +344,10 @@ public class ColimsController implements Controllable, ActionListener {
                 //disable admin menu
                 colimsFrame.getAdminMenu().setEnabled(false);
             }
-
-            showView();
         } else {
             showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
-            loginDialog.getUserNameTextField().setText("");
-            loginDialog.getPasswordTextField().setText("");
+            userLoginDialog.getUserNameTextField().setText("");
+            userLoginDialog.getUserPasswordTextField().setText("");
         }
     }
 
@@ -346,6 +366,8 @@ public class ColimsController implements Controllable, ActionListener {
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(600, 200));
             textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
 
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
@@ -370,4 +392,5 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
         colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
+
 }

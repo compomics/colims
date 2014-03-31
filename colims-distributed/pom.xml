@@ -230,11 +230,21 @@
             <artifactId>spring-jms</artifactId>
         </dependency>
         
-        <!-- Active MQ -->
+        <!-- Active MQ -->                
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-        </dependency>        
+            <artifactId>activemq-broker</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-spring</artifactId>           
+        </dependency>
         
         <dependency>
             <groupId>org.apache.xbean</groupId>

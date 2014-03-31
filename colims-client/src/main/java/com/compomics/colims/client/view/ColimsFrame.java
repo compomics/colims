@@ -133,7 +133,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsOverviewMenuItem.setText("projects overview");
         viewMenu.add(projectsOverviewMenuItem);
 
-        storageMonitoringMenuItem.setText("storage monitoring");
+        storageMonitoringMenuItem.setText("storage monitoring...");
         viewMenu.add(storageMonitoringMenuItem);
 
         menuBar.add(viewMenu);
@@ -145,7 +145,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         userManagementMenuItem.setText("users...");
         managementMenu.add(userManagementMenuItem);
 
-        instrumentManagementMenuItem.setText("instruments");
+        instrumentManagementMenuItem.setText("instruments...");
         managementMenu.add(instrumentManagementMenuItem);
 
         materialManagementMenuItem.setText("materials...");

@@ -4,6 +4,7 @@ import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.storage.StorageErrorMessageConvertor;
 import com.compomics.colims.distributed.model.AbstractMessage;
 import com.compomics.colims.distributed.model.StorageError;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -13,8 +14,10 @@ import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import org.apache.activemq.broker.jmx.BrokerViewMBean;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQObjectMessage;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.BrowserCallback;
@@ -28,16 +31,23 @@ import org.springframework.stereotype.Component;
 @Component("queueManager")
 public class QueueManagerImpl implements QueueManager {
 
+    private static final Logger LOGGER = Logger.getLogger(QueueManagerImpl.class);
+
     @Value("${distributed.broker.name}")
     private String brokerName;
+    @Value("${distributed.connectionfactory.broker.url}")
+    private String brokerUrl;
+    @Value("${distributed.jmx.service.url}")
+    private String brokerJmxUrl;
     @Value("${distributed.queue.error}")
     private String errorQueueName;
     private final StorageErrorMessageConvertor storageErrorMessageConvertor = new StorageErrorMessageConvertor();
-    private final String name = "org.apache.activemq:brokerName=%s,destinationName=%s,destinationType=Queue,type=Broker";
+    private final String queueObjectName = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
+    private final String brokerObjectName = "org.apache.activemq:type=Broker,brokerName=%s";
     @Autowired
     private JmsTemplate queueManagerTemplate;
     @Autowired
-    private MBeanServerConnection clientConnector;    
+    private MBeanServerConnection clientConnector;
 
     @Override
     public <T extends AbstractMessage> List<T> monitorQueue(String queueName) throws JMSException {
@@ -52,7 +62,7 @@ public class QueueManagerImpl implements QueueManager {
                     ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
                     T messageObject = (T) message.getObject();
                     messageObject.setMessageId(message.getJMSMessageID());
-                    
+
                     queueMessages.add((T) message.getObject());
                 }
 
@@ -64,15 +74,15 @@ public class QueueManagerImpl implements QueueManager {
     }
 
     @Override
-    public void deleteMessage(String queueName, String messageId) throws MalformedObjectNameException, Exception {        
-        ObjectName objectName = new ObjectName(String.format(name, brokerName, queueName));
+    public void deleteMessage(String queueName, String messageId) throws MalformedObjectNameException, Exception {
+        ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.removeMessage(messageId);
     }
 
     @Override
-    public void purgeMessages(String queueName) throws MalformedObjectNameException, Exception {        
-        ObjectName objectName = new ObjectName(String.format(name, brokerName, queueName));
+    public void purgeMessages(String queueName) throws MalformedObjectNameException, Exception {
+        ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.purge();
     }
@@ -83,12 +93,45 @@ public class QueueManagerImpl implements QueueManager {
         if (!(queueManagerTemplate.getMessageConverter() instanceof StorageErrorMessageConvertor)) {
             queueManagerTemplate.setMessageConverter(storageErrorMessageConvertor);
         }
-        
+
         //send the message
         queueManagerTemplate.convertAndSend(queueName, storageError);
 
         //remove the message from the error queue
         deleteMessage(errorQueueName, storageError.getMessageId());
+    }
+
+    @Override
+    public boolean testConnection() {
+        boolean connectionAchieved = false;
+
+        try {
+            ObjectName activeMQ = new ObjectName(String.format(brokerObjectName, brokerName));
+            BrokerViewMBean brokerViewMBean = (BrokerViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, activeMQ, BrokerViewMBean.class, true);
+            //get broker ID to test the connection
+            String brokerId = brokerViewMBean.getBrokerId();
+
+            connectionAchieved = true;
+        } catch (MalformedObjectNameException | UndeclaredThrowableException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
+
+        return connectionAchieved;
+    }
+
+    @Override
+    public String getBrokerName() {
+        return brokerName;
+    }
+
+    @Override
+    public String getBrokerUrl() {
+        return brokerUrl;
+    }
+
+    @Override
+    public String getBrokerJmxUrl() {
+        return brokerJmxUrl;
     }
 
 }

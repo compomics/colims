@@ -104,7 +104,7 @@
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="experimentsPanel" pref="334" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="samplesPanel" pref="335" max="32767" attributes="0"/>
+                          <Component id="samplesPanel" pref="333" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -114,9 +114,9 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="projectsPanel" alignment="1" pref="213" max="32767" attributes="0"/>
-                              <Component id="experimentsPanel" alignment="1" pref="213" max="32767" attributes="0"/>
-                              <Component id="samplesPanel" alignment="0" pref="213" max="32767" attributes="0"/>
+                              <Component id="projectsPanel" alignment="1" pref="214" max="32767" attributes="0"/>
+                              <Component id="experimentsPanel" alignment="1" pref="214" max="32767" attributes="0"/>
+                              <Component id="samplesPanel" alignment="0" pref="214" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -287,7 +287,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="samplesScrollPane" pref="299" max="32767" attributes="0"/>
+                              <Component id="samplesScrollPane" pref="301" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -350,113 +350,168 @@
                 </Constraint>
               </Constraints>
 
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="peptideShakerRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="instrumentComboBox" alignment="0" pref="270" max="32767" attributes="0"/>
-                                      <Component id="dataTypeSelectionLabel" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="instrumentSelectionLabel" alignment="0" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace pref="284" max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="dateTimePicker" alignment="1" pref="462" max="32767" attributes="0"/>
-                                      <Component id="startDataLabel" alignment="1" pref="462" max="32767" attributes="0"/>
-                                      <Component id="storageDescriptionTextField" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="storageDescriptionLabel" alignment="1" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="dataTypeSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="startDataLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="peptideShakerRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="dateTimePicker" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="instrumentSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="storageDescriptionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="instrumentComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="storageDescriptionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace pref="69" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="dataTypeSelectionLabel">
+                <Container class="javax.swing.JPanel" name="leftPanel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Select the analytical run data type"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="peptideShakerRadioButton">
-                  <Properties>
-                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="dataTypeButtonGroup"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="PeptideShaker"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="maxQuantRadioButton">
-                  <Properties>
-                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="dataTypeButtonGroup"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="MaxQuant"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="storageDescriptionLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Provide an optional description for monitoring purposes"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="storageDescriptionTextField">
-                </Component>
-                <Component class="javax.swing.JLabel" name="instrumentSelectionLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Select the instrument"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="instrumentComboBox">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="0"/>
+                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 0]"/>
                     </Property>
                   </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="startDataLabel">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="maxQuantRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="peptideShakerRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="instrumentComboBox" max="32767" attributes="0"/>
+                                  <Component id="instrumentSelectionLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="dataTypeSelectionLabel" alignment="0" pref="336" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="dataTypeSelectionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="peptideShakerRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="maxQuantRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="instrumentSelectionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="instrumentComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="dataTypeSelectionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Select the analytical run data type"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="peptideShakerRadioButton">
+                      <Properties>
+                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                          <ComponentRef name="dataTypeButtonGroup"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="PeptideShaker"/>
+                        <Property name="opaque" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="maxQuantRadioButton">
+                      <Properties>
+                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                          <ComponentRef name="dataTypeButtonGroup"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="MaxQuant"/>
+                        <Property name="opaque" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="instrumentSelectionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Select the instrument"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="instrumentComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="0"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="rightPanel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Select the start date of the run(s)"/>
+                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 0]"/>
+                    </Property>
                   </Properties>
-                </Component>
-                <Component class="com.compomics.colims.client.compoment.DateTimePicker" name="dateTimePicker">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="2" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="dateTimePicker" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="startDataLabel" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="storageDescriptionTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="storageDescriptionLabel" alignment="1" min="-2" pref="462" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="startDataLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="dateTimePicker" min="-2" pref="25" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="storageDescriptionTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="storageDescriptionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Provide an optional description for monitoring purposes"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="storageDescriptionTextField">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="startDataLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Select the start date of the run(s)"/>
+                      </Properties>
+                    </Component>
+                    <Component class="com.compomics.colims.client.compoment.DateTimePicker" name="dateTimePicker">
+                      <Properties>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[104, 25]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JSeparator" name="separator">
+                  <Properties>
+                    <Property name="orientation" type="int" value="1"/>
+                  </Properties>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="1" gridY="0" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="5" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                    </Constraint>
+                  </Constraints>
                 </Component>
               </SubComponents>
             </Container>
@@ -497,7 +552,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="confirmationLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="184" max="32767" attributes="0"/>
+                          <EmptySpace pref="434" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

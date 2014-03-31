@@ -6,7 +6,7 @@
        xmlns:jms="http://www.springframework.org/schema/jms"
        xmlns:amq="http://activemq.apache.org/schema/core"        
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jms 
@@ -29,14 +29,18 @@
         <property name="ignoreResourceNotFound" value="true"/>
     </bean>
     
+    <bean id="splashScreen" class="com.compomics.colims.client.SplashScreen"/>
+    
     <!-- component beans -->
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>        
-    
+    </context:component-scan>           
+                     
     <!-- ActiveMQ connection factory -->
-    <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>
+    <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
+    </bean>  
     
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
@@ -57,6 +61,6 @@
         
     <!-- Client connector for jmx -->
     <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-          p:serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />    
+          p:serviceUrl="${distributed.jmx.service.url}" p:connectOnStartup="false"/>    
     
 </beans>
