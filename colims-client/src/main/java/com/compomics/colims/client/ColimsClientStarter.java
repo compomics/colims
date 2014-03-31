@@ -66,11 +66,12 @@ public class ColimsClientStarter {
 
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
-
+            
             ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
-            colimsController.init();
-
             SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
+            
+            splashScreen.setProgressLabel("Loading GUI...");
+            colimsController.init();            
             splashScreen.dispose();
 
             colimsController.showView();

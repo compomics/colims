@@ -17,7 +17,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.Assert;
 
 /**
  * @author Peter De Bruycker
@@ -28,12 +27,11 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
 
     private JWindow window;
     private Image image;
-    private String imageResourcePath;
+    private final String imageResourcePath;
     private ApplicationContext context;
-    private JProgressBar progressBar;
-    private int beanCount = 0;
+    private final JProgressBar progressBar;
     private int progress = 0;
-    private boolean showProgressLabel;
+    private final boolean showProgressLabel;
 
     public SplashScreen() {
         progressBar = new JProgressBar();
@@ -68,17 +66,6 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         window.setVisible(true);
     }
 
-    public void setImageResourcePath(String path) {
-        Assert.hasText(path, "The splash screen image resource path is required");
-        this.imageResourcePath = path;
-    }
-
-    private void center(JWindow window) {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        Rectangle r = window.getBounds();
-        window.setLocation((screen.width - r.width) / 2, (screen.height - r.height) / 2);
-    }
-
     /**
      * Dispose of the the splash screen. Once disposed, the same splash screen
      * instance may not be shown again.
@@ -86,6 +73,80 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     public void dispose() {
         window.dispose();
         window = null;
+    }
+
+    /**
+     * @param context
+     * @see
+     * org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        this.context = context;
+    }
+
+    /**
+     * @param bean
+     * @param name
+     * @return
+     * @see
+     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
+     * java.lang.String)
+     */
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
+        progressBar.setValue(progress++);
+        if (showProgressLabel) {
+            progressBar.setString("Loading bean " + name + "...");
+        }
+
+        return bean;
+    }
+
+    /**
+     * @param bean
+     * @param name
+     * @return
+     * @see
+     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
+     * java.lang.String)
+     */
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String name) throws BeansException {
+        return bean;
+    }
+
+    /**
+     * @throws java.lang.Exception
+     * @see
+     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (showProgressLabel) {
+            progressBar.setStringPainted(true);
+            progressBar.setString("Loading context...");
+        }
+        progressBar.setMinimum(0);
+        progressBar.setMaximum(context.getBeanDefinitionCount());
+        splash();
+    }
+
+    /**
+     * Set the progress message of the progress bar.
+     *
+     * @param progressMessage
+     */
+    public void setProgressLabel(String progressMessage) {
+        if (showProgressLabel) {
+            progressBar.setString(progressMessage);
+        }
+    }
+
+    private void center(JWindow window) {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        Rectangle r = window.getBounds();
+        window.setLocation((screen.width - r.width) / 2, (screen.height - r.height) / 2);
     }
 
     private Image loadImage(String path) {
@@ -97,61 +158,4 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         return Toolkit.getDefaultToolkit().createImage(url);
     }
 
-    /**
-     * @see
-     * org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
-    }
-
-    /**
-     * @see
-     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
-     * java.lang.String)
-     */
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
-        progressBar.setValue(progress++);
-        if (showProgressLabel) {
-            progressBar.setString("Loading bean " + name);
-        }
-
-        return bean;
-    }
-
-    /**
-     * @see
-     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
-     * java.lang.String)
-     */
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String name) throws BeansException {
-        return bean;
-    }
-
-    /**
-     * @see
-     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        if (showProgressLabel) {
-            progressBar.setStringPainted(true);
-            progressBar.setString("Loading context");
-        }
-        progressBar.setMinimum(0);
-        progressBar.setMaximum(context.getBeanDefinitionCount());
-        splash();
-    }
-
-    public boolean getShowProgressLabel() {
-        return showProgressLabel;
-    }
-
-    public void setShowProgressLabel(boolean showProgressLabel) {
-        this.showProgressLabel = showProgressLabel;
-    }
-   
 }

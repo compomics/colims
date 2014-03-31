@@ -13,10 +13,12 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -48,6 +50,8 @@ public class Playground2 {
 
 //        QueueManager queueManager = applicationContext.getBean("queueManager", QueueManager.class);
         
+        InstrumentService instrumentService = applicationContext.getBean("instrumentService", InstrumentService.class);
+        Instrument instrument = instrumentService.findAll().get(0);
         StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
 
         StorageTask storageTask = new StorageTask();
@@ -57,6 +61,7 @@ public class Playground2 {
         storageMetadata.setSample(new Sample("sample name3"));
         storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
         storageMetadata.setUserName("testUser");
+        storageMetadata.setInstrument(instrument);
 
         storageTask.setStorageMetadata(storageMetadata);
         storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
