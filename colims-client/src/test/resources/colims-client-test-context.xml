@@ -13,7 +13,9 @@
        http://www.springframework.org/schema/jms/spring-jms.xsd
        http://activemq.apache.org/schema/core 
        http://activemq.apache.org/schema/core/activemq-core.xsd">
-                 
+     
+   <bean id="splashScreen" class="com.compomics.colims.client.SplashScreenStub" />
+                
     <!--  Embedded ActiveMQ Broker -->
     <amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}"> 
         <amq:managementContext>

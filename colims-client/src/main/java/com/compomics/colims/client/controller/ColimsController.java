@@ -58,8 +58,6 @@ public class ColimsController implements Controllable, ActionListener {
     private String version = "unknown";
     @Autowired
     private AuthenticationBean authenticationBean;
-    @Autowired
-    private SplashScreen splashScreen;
     /**
      * The project EventList that is used as table model in the project
      * management and overview tabs.
