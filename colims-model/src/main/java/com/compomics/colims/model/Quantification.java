@@ -15,9 +15,6 @@ import javax.persistence.Table;
 /**
  *
  * @author Niels Hulstaert
- */
-/**
- *
  * @author Kenneth Verheggen
  */
 @Table(name = "quantification")

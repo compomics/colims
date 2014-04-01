@@ -2,6 +2,7 @@ package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.controller.ProjectOverviewController;
 import com.compomics.util.Util;
+import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.IonFactory;
 import com.compomics.util.experiment.biology.NeutralLoss;
@@ -9,11 +10,12 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
+import static com.compomics.util.experiment.identification.Advocate.PeptideShaker;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import com.compomics.util.gui.export_graphics.ExportGraphicsDialog;
-import com.compomics.util.gui.export_graphics.ExportGraphicsDialogParent;
+import com.compomics.util.gui.export.graphics.ExportGraphicsDialog;
+import com.compomics.util.gui.export.graphics.ExportGraphicsDialogParent;
 import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
 import com.compomics.util.preferences.AnnotationPreferences;
@@ -1053,8 +1055,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
         if (automaticAnnotationCheckBoxMenuItem.isSelected()) {
             adaptCheckBoxMenuItem.setSelected(true);
             try {
-                //annotationPreferences.resetAutomaticAnnotation(PeptideShaker.MATCHING_TYPE, searchParameters.getFragmentIonAccuracy()); // utilities 3.19.7
-                annotationPreferences.resetAutomaticAnnotation(); // utilities 3.14.14
+                //@todo which matching type should be used here?
+                annotationPreferences.resetAutomaticAnnotation(AminoAcidPattern.MatchingType.string, searchParameters.getFragmentIonAccuracy());                
             } catch (Exception e) {
                 e.printStackTrace(); // @TODO: add better exception handling
             }

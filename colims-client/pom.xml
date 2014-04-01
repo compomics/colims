@@ -259,7 +259,6 @@
         <dependency>
             <groupId>no.uib</groupId>
             <artifactId>ols-dialog</artifactId>
-            <version>3.4.0</version>
         </dependency>
         
         <dependency>

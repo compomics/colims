@@ -133,11 +133,27 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>ols-dialog</artifactId>
+                    <groupId>no.uib</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsparklines</artifactId>
+                    <groupId>no.uib</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>eu.isas.peptideshaker</groupId>
             <artifactId>PeptideShaker</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsparklines</artifactId>
+                    <groupId>no.uib</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -174,6 +190,11 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>no.uib</groupId>
+            <artifactId>jsparklines</artifactId>
+            <version>0.6.5</version>
         </dependency>
     </dependencies>
 </project>

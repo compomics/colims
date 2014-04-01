@@ -86,13 +86,13 @@ public class UtilitiesModificationMapper {
                     peptideHasModification.setModificationType(ModificationType.VARIABLE);
 
                     if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
-                        String alphaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestAScoreLocations();
-                        if (alphaLocationKeys != null) {
-                            Double alphaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getAScore(alphaLocationKeys);
+                        String orderedProbablisticLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getOrderedProbabilisticSites();
+                        if (orderedProbablisticLocationKeys != null) {
+                            Double alphaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getAScore(orderedProbablisticLocationKeys);
                             peptideHasModification.setAlphaScore(alphaScore);
-                            ArrayList<Integer> locations = PtmScoring.getLocations(alphaLocationKeys);
+                            ArrayList<Integer> locations = PtmScoring.getLocations(orderedProbablisticLocationKeys);
                             if (!locations.contains(modificationMatch.getModificationSite())) {
-                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + alphaLocationKeys + ")");
+                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + orderedProbablisticLocationKeys + ")");
                             }
                         }
                         String deltaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();

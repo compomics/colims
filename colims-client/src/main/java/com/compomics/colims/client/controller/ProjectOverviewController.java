@@ -32,6 +32,7 @@ import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import com.compomics.util.experiment.identification.spectrum_annotators.PeptideSpectrumAnnotator;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
@@ -65,6 +66,7 @@ import org.springframework.stereotype.Component;
 public class ProjectOverviewController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectOverviewController.class);
+    private static final double INTENSITY_LEVEL = 0.75;
     //model    
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
@@ -83,7 +85,7 @@ public class ProjectOverviewController implements Controllable {
     /**
      * The spectrum annotator.
      */
-    private SpectrumAnnotator spectrumAnnotator = new SpectrumAnnotator();
+    private PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
     /**
      * The utilities user preferences.
      */
@@ -409,8 +411,8 @@ public class ProjectOverviewController implements Controllable {
                         SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match                   
                         psmMapper.map(selectedSpectrum, spectrumMatch);
 
-                        PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
-                        int identificationCharge = spectrumMatch.getBestAssumption().getIdentificationCharge().value;
+                        PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
+                        int identificationCharge = peptideAssumption.getIdentificationCharge().value;
 
                         // @TODO: re-add the line below
                         //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
@@ -420,7 +422,9 @@ public class ProjectOverviewController implements Controllable {
                                 identificationCharge,
                                 spectrum, peptideAssumption.getPeptide(),
                                 spectrum.getIntensityLimit(annotationPreferences.getAnnotationIntensityLimit()),
-                                annotationPreferences.getFragmentIonAccuracy(), false);
+                                annotationPreferences.getFragmentIonAccuracy(),
+                                false,
+                                false);
                         spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
                         //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
 
@@ -464,21 +468,11 @@ public class ProjectOverviewController implements Controllable {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(sequenceFragmentationPanel);
 
                         // create the intensity histograms
-                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(
-                                annotations, annotationPreferences.getFragmentIonTypes(), spectrum,
-                                annotationPreferences.getAnnotationIntensityLimit(),
-                                annotationPreferences.getValidatedCharges().contains(1),
-                                annotationPreferences.getValidatedCharges().contains(2),
-                                annotationPreferences.getValidatedCharges().contains(3)));
-
+                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(annotations, spectrum, INTENSITY_LEVEL));
+                        
                         // create the miniature mass error plot
-                        MassErrorPlot massErrorPlot = new MassErrorPlot(
-                                annotations, annotationPreferences.getFragmentIonTypes(), spectrum,
-                                annotationPreferences.getFragmentIonAccuracy(),
-                                annotationPreferences.getValidatedCharges().contains(1),
-                                annotationPreferences.getValidatedCharges().contains(2),
-                                annotationPreferences.getValidatedCharges().contains(3),
-                                false);
+                        //@todo is annotationPreferences.getFragmentIonAccuracy() the correct mass tolerance
+                        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, spectrum, annotationPreferences.getFragmentIonAccuracy(), false);
 
                         //if (massErrorPlot.getNumberOfDataPointsInPlot() > 0) {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(massErrorPlot);

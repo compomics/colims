@@ -13,8 +13,6 @@ import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.massspectrometry.Charge;
-import com.compomics.util.experiment.quantification.Ratio;
-import com.compomics.util.experiment.quantification.matches.PeptideQuantification;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -178,26 +176,27 @@ public class MaxQuantPSMParser {
     }
 
     /**
+     * @todo uncomment this method
      * Create a new PeptideQuant instance from the values contained in the map.
      *
      * @param values
      * @return
      */
-    public final PeptideQuantification createPeptideQuantification(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
-        //String peptideId
-        String peptideID = values.get(EvidenceHeaders.Peptide_ID.getColumnName());
-        // The id of the peptide quant
-        int id = Integer.parseInt(values.get(EvidenceHeaders.id.getColumnName()));
-        // The normalized ratio
-        double ratio = Double.parseDouble(values.get(EvidenceHeaders.Normalized_Ratio.getColumnName()));
-        //create utilities Ratio object
-        Ratio utilitiesRatio = new Ratio(id, ratio);
-        // Create peptidequantification
-        PeptideQuantification pepQuant = new PeptideQuantification(peptideID);
-        // add the ratio to the quant object
-        pepQuant.addRatio(id, utilitiesRatio);
-        return pepQuant;
-    }
+//    public final PeptideQuantification createPeptideQuantification(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
+//        //String peptideId
+//        String peptideID = values.get(EvidenceHeaders.Peptide_ID.getColumnName());
+//        // The id of the peptide quant
+//        int id = Integer.parseInt(values.get(EvidenceHeaders.id.getColumnName()));
+//        // The normalized ratio
+//        double ratio = Double.parseDouble(values.get(EvidenceHeaders.Normalized_Ratio.getColumnName()));
+//        //create utilities Ratio object
+////        Ratio utilitiesRatio = new Ratio(id, ratio);
+//        // Create peptidequantification
+//        PeptideQuantification pepQuant = new PeptideQuantification(peptideID);
+//        // add the ratio to the quant object
+//        pepQuant.addRatio(id, utilitiesRatio);
+//        return pepQuant;
+//    }
 
     public void addModification(String aModification) {
         modificationList.add(aModification);

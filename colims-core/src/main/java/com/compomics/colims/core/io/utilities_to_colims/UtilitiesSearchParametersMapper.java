@@ -34,13 +34,13 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
         colimsSearchParametersSettings.setFastaDb(fastaDb);
         colimsSearchParametersSettings.setFragMassTolerance(searchParameters.getFragmentIonAccuracy());
         //TODO this might be wrong !!!!
-        colimsSearchParametersSettings.setFragMassToleranceUnit(searchParameters.getPrecursorAccuracyType());
+//        colimsSearchParametersSettings.setFragMassToleranceUnit(searchParameters.getPrecursorAccuracyType());
         colimsSearchParametersSettings.setFragmentIon1Type(searchParameters.getIonSearched1());
         colimsSearchParametersSettings.setFragmentIon2Type(searchParameters.getIonSearched2());
         colimsSearchParametersSettings.setHitlistLength(searchParameters.getHitListLength());
         colimsSearchParametersSettings.setMaxMissedCleavages(searchParameters.getnMissedCleavages());
         colimsSearchParametersSettings.setPrecMassTolerance(searchParameters.getPrecursorAccuracy());
-        colimsSearchParametersSettings.setPrecMassToleranceUnit(searchParameters.getPrecursorAccuracyType());
+//        colimsSearchParametersSettings.setPrecMassToleranceUnit(searchParameters.getPrecursorAccuracyType());
         colimsSearchParametersSettings.setPrecursorUpperCharge((searchParameters.getMaxChargeSearched().value) * searchParameters.getMaxChargeSearched().sign);
         colimsSearchParametersSettings.setPrecursorLowerCharge((searchParameters.getMinChargeSearched().value) * searchParameters.getMinChargeSearched().sign);
         //TODO search engine settings?
