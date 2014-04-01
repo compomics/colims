@@ -107,27 +107,21 @@ public class UtilitiesModificationMapperTest {
         PSPtmScores ptmScores = new PSPtmScores();
 
         PtmScoring ptmScoring = new PtmScoring(oxidation.getName());
-        ArrayList<Integer> locations = new ArrayList();
-        locations.add(oxidationMatch.getModificationSite());
         double oxidationScore = 100.0;
-        ptmScoring.addAScore(locations, oxidationScore);
-        ptmScoring.addDeltaScore(locations, oxidationScore);
+        ptmScoring.setProbabilisticScore(oxidationMatch.getModificationSite(), oxidationScore);
+        ptmScoring.setDeltaScore(oxidationMatch.getModificationSite(), oxidationScore);
         ptmScores.addPtmScoring(oxidation.getName(), ptmScoring);
 
         ptmScoring = new PtmScoring(phosphorylation.getName());
-        locations = new ArrayList();
-        locations.add(phosphorylationMatch.getModificationSite());
         double phosphorylationScore = 200.0;
-        ptmScoring.addAScore(locations, phosphorylationScore);
-        ptmScoring.addDeltaScore(locations, phosphorylationScore);
+        ptmScoring.setProbabilisticScore(phosphorylationMatch.getModificationSite(), phosphorylationScore);
+        ptmScoring.setDeltaScore(phosphorylationMatch.getModificationSite(), phosphorylationScore);
         ptmScores.addPtmScoring(phosphorylation.getName(), ptmScoring);
 
-        ptmScoring = new PtmScoring(nonUtilitiesPtmName);
-        locations = new ArrayList();
-        locations.add(nonUtilitiesModificationMatch.getModificationSite());
+        ptmScoring = new PtmScoring(nonUtilitiesPtmName);        
         double nonUtilitiesPtmScore = 300.0;
-        ptmScoring.addAScore(locations, nonUtilitiesPtmScore);
-        ptmScoring.addDeltaScore(locations, nonUtilitiesPtmScore);
+        ptmScoring.setProbabilisticScore(nonUtilitiesModificationMatch.getModificationSite(), nonUtilitiesPtmScore);
+        ptmScoring.setDeltaScore(nonUtilitiesModificationMatch.getModificationSite(), nonUtilitiesPtmScore);
         ptmScores.addPtmScoring(nonUtilitiesPtmName, ptmScoring);
 
         //create new colims entity peptide
@@ -193,11 +187,9 @@ public class UtilitiesModificationMapperTest {
         PSPtmScores ptmScores = new PSPtmScores();
 
         PtmScoring ptmScoring = new PtmScoring(oxidationMatch.getTheoreticPtm());
-        ArrayList<Integer> locations = new ArrayList();
-        locations.add(oxidationMatch.getModificationSite());
         double oxidationScore = 100.0;
-        ptmScoring.addAScore(locations, oxidationScore);
-        ptmScoring.addDeltaScore(locations, oxidationScore);
+        ptmScoring.setProbabilisticScore(oxidationMatch.getModificationSite(), oxidationScore);
+        ptmScoring.setDeltaScore(oxidationMatch.getModificationSite(), oxidationScore);
         ptmScores.addPtmScoring(oxidationMatch.getTheoreticPtm(), ptmScoring);
 
         //create new colims entity peptide

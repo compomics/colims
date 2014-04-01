@@ -36,7 +36,6 @@ public class PeptideShakerParameterParser {
      * Parse the peptideshaker import file to utilities searchparameters.
      *
      * @param source
-     * @param msExperiment
      * @return
      */
     public SearchParameters parseToSearchParameters(final UnpackedPsDataImport source) {
@@ -54,7 +53,7 @@ public class PeptideShakerParameterParser {
     /**
      * Load the PeptideShaker settings.
      *
-     * @param msExperiment
+     * @param experiment
      * @return PeptideshakerSettings
      */
     public PeptideShakerSettings loadExperimentSettings(final MsExperiment experiment) {

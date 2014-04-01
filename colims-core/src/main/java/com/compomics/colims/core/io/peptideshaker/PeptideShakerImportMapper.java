@@ -187,7 +187,7 @@ public class PeptideShakerImportMapper {
      */
     private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaFile);
+        sequenceFactory.loadFastaFile(fastaFile, null);
         LOGGER.debug("Finish loading FASTA file.");
     }
 

@@ -44,12 +44,10 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
         for (ModificationMatch match : source.getPeptide().getModificationMatches()) {
             final MaxQuantPtmScoring aPtmScore = (MaxQuantPtmScoring) match.getUrParam(new MaxQuantPtmScoring());
             PtmScoring ptmScoring = new PtmScoring(match.getTheoreticPtm());
-            ArrayList<Integer> locations = new ArrayList();
-            locations.add(match.getModificationSite());
-//            @todo ask Davy
-//            ptmScoring.addAScore(locations, aPtmScore.getScore());
-//            ptmScoring.addDeltaScore(locations, aPtmScore.getDeltaScore());
+            ptmScoring.setProbabilisticScore(match.getModificationSite(), aPtmScore.getScore());
+            ptmScoring.setDeltaScore(match.getModificationSite(), aPtmScore.getDeltaScore());
             ptmScores.addMainModificationSite(match.getTheoreticPtm(), match.getModificationSite());
+            ptmScores.addPtmScoring(match.getTheoreticPtm(), ptmScoring);
         }
         utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, target);
     }

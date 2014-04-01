@@ -96,7 +96,7 @@ public class MaxQuantParserTest {
         PeptideAssumption testAssumption = maxQuantParser.getIdentificationForSpectrum(spectra.get(4));
         assertThat(testAssumption.getPeptide().getSequence(), is(not(nullValue())));
         assertThat(testAssumption.getPeptide().getSequence(), is("AADIIDGLRK"));
-        assertThat(testAssumption.getPeptide().getParentProteins().size(), is(1));
+        assertThat(testAssumption.getPeptide().getParentProteinsNoRemapping().size(), is(1));
         assertThat(testAssumption.getPeptide().getMass(), closeTo(1070.6084, 0.0001));
 
         //is unmodified

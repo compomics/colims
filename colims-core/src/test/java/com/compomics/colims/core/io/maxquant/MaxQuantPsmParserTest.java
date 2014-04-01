@@ -72,7 +72,7 @@ public class MaxQuantPsmParserTest {
         assertThat(parsedPeptides.size(), is(2408));
         assertThat(parsedPeptides.get(4).getPeptide().getSequence(),is(not(nullValue())));
         assertThat(parsedPeptides.get(4).getPeptide().getSequence(), is("AAAAGENEEWTTDYPHFADVADQEGFPAIATMYR"));
-        assertThat(parsedPeptides.get(4).getPeptide().getParentProteins().size(), is(2));
+        assertThat(parsedPeptides.get(4).getPeptide().getParentProteinsNoRemapping().size(), is(2));
         assertThat(parsedPeptides.get(4).getPeptide().getMass(), closeTo(3743.6475, 0.0001));
 
         //is unmodified
@@ -96,9 +96,9 @@ public class MaxQuantPsmParserTest {
         assertThat(parsedPeptides.get(2407).getScore(), is(107.17));
 
         //test link between protein groups and peptides
-        assertThat(proteinGroupMap.get(Integer.parseInt(parsedPeptides.get(2246).getPeptide().getParentProteins().get(0))).getMainMatch(), is("Q9VPR3"));
-        assertThat(parsedPeptides.get(2).getPeptide().getParentProteins().size(), is(2));
-        assertThat(Integer.parseInt(parsedPeptides.get(2).getPeptide().getParentProteins().get(1)), is(1100));
+        assertThat(proteinGroupMap.get(Integer.parseInt(parsedPeptides.get(2246).getPeptide().getParentProteinsNoRemapping().get(0))).getMainMatch(), is("Q9VPR3"));
+        assertThat(parsedPeptides.get(2).getPeptide().getParentProteinsNoRemapping().size(), is(2));
+        assertThat(Integer.parseInt(parsedPeptides.get(2).getPeptide().getParentProteinsNoRemapping().get(1)), is(1100));
 
         Map<Integer, List<Quantification>> quantificationMap = MaxQuantQuantificationParser.parseMaxQuantQuantification(quantFile);
 
@@ -124,10 +124,10 @@ public class MaxQuantPsmParserTest {
 
         //only parse the peptides and see if it throws any kinks next to nullpointers
         Map<Integer, PeptideAssumption> parsedPeptides = maxQuantEvidenceParser.parse(evidenceFile);
-        assertThat(parsedPeptides.get(417).getPeptide().getParentProteins().size(), is(1));
+        assertThat(parsedPeptides.get(417).getPeptide().getParentProteinsNoRemapping().size(), is(1));
         Map<Integer, ProteinMatch> proteinList = new HashMap<>();
         //it appears the peptides got parsed, now to blow up the proteingroups
         proteinList = maxQuantProteinGroupParser.parse(new File("this file does not exist"));
-        assertThat(proteinList.get(Integer.parseInt(parsedPeptides.get(200).getPeptide().getParentProteins().get(0))), is(nullValue()));
+        assertThat(proteinList.get(Integer.parseInt(parsedPeptides.get(200).getPeptide().getParentProteinsNoRemapping().get(0))), is(nullValue()));
     }
 }
