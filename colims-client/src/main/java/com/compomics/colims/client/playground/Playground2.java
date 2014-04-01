@@ -57,8 +57,8 @@ public class Playground2 {
         StorageTask storageTask = new StorageTask();
         StorageMetadata storageMetadata = new StorageMetadata();
         storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
-        storageMetadata.setDescription("test description1");
-        storageMetadata.setSample(new Sample("sample name3"));
+        storageMetadata.setDescription("test description2");
+        storageMetadata.setSample(new Sample("sample name4"));
         storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
         storageMetadata.setUserName("testUser");
         storageMetadata.setInstrument(instrument);

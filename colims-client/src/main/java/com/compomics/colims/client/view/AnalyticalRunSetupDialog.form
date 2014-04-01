@@ -471,8 +471,8 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="startDataLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="dateTimePicker" min="-2" pref="25" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                              <Component id="dateTimePicker" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                               <Component id="storageDescriptionLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="storageDescriptionTextField" min="-2" max="-2" attributes="0"/>
@@ -496,8 +496,14 @@
                     </Component>
                     <Component class="com.compomics.colims.client.compoment.DateTimePicker" name="dateTimePicker">
                       <Properties>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[104, 20]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[104, 20]"/>
+                        </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[104, 25]"/>
+                          <Dimension value="[104, 20]"/>
                         </Property>
                       </Properties>
                     </Component>

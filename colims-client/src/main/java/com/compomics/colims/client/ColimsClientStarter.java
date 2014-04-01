@@ -6,8 +6,6 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -66,19 +64,20 @@ public class ColimsClientStarter {
 
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
-            
+
             ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
             SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
-            
-            splashScreen.setProgressLabel("Loading GUI...");
-            colimsController.init();            
+
+            //set final progress bar step
+            splashScreen.setProgressLabel("Loading GUI...", splashScreen.getMaximum() - 1);
+            colimsController.init();
             splashScreen.dispose();
 
             colimsController.showView();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             JOptionPane.showMessageDialog(null, "An error occured during startup, please try again."
-                    + "\n" + "If the problem persists, contact the administrator.",
+                    + "\n" + "If the problem persists, contact your administrator or post an issue on the google code page.",
                     "colims startup error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }

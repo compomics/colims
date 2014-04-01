@@ -242,7 +242,6 @@ public class ProjectOverviewController implements Controllable {
                         GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
                     } else {
                         GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
-
                     }
                 }
             }
