@@ -408,7 +408,7 @@
         primary key (id)
     );
 
-    create table user (
+    create table colims_user (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -467,7 +467,7 @@
     alter table protocol_cv_term 
         add constraint UK_ertrjihdksltewuvpd6m46mkk unique (accession);
 
-    alter table user 
+    alter table colims_user 
         add constraint UK_gj2fy3dcix7ph7k8684gka40c unique (name);
 
     alter table user_group 
@@ -621,13 +621,13 @@
         add index FK_nont146vvfurex1thyophrki0 (l_owner_user_id), 
         add constraint FK_nont146vvfurex1thyophrki0 
         foreign key (l_owner_user_id) 
-        references user (id);
+        references colims_user (id);
 
     alter table project_has_user 
         add index FK_t0ksfthfrcpvmr7fdnmk81rhc (l_user_id), 
         add constraint FK_t0ksfthfrcpvmr7fdnmk81rhc 
         foreign key (l_user_id) 
-        references user (id);
+        references colims_user (id);
 
     alter table project_has_user 
         add index FK_7l0pdupx29tr1yh2cv2omkla4 (l_project_id), 
@@ -821,7 +821,7 @@
         foreign key (l_spectrum_id) 
         references spectrum (id);
 
-    alter table user 
+    alter table colims_user 
         add index FK_2dv7j90jeym2jgoj9qj6g95e8 (l_institution_id), 
         add constraint FK_2dv7j90jeym2jgoj9qj6g95e8 
         foreign key (l_institution_id) 
@@ -837,11 +837,11 @@
         add index FK_e2guk3ak57dupnvkd5k3u9dfk (l_user_id), 
         add constraint FK_e2guk3ak57dupnvkd5k3u9dfk 
         foreign key (l_user_id) 
-        references user (id);
+        references colims_user (id);
 		
 -- create default value insertions
 -- insert default admin and distributed users
-INSERT INTO `user` (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','lEGFv0p//m40EoHCJtk1c5QVxjIoIQiD'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','Fe4BGoLvzGyUpcCVUTiBvb1Oy2qsrM3O');
+INSERT INTO `colims_user` (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','lEGFv0p//m40EoHCJtk1c5QVxjIoIQiD'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','Fe4BGoLvzGyUpcCVUTiBvb1Oy2qsrM3O');
 
 -- insert default admin and distributed groups
 INSERT INTO `user_group` (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed group description','distributed');
