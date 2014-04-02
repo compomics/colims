@@ -151,7 +151,7 @@ public class PermissionCrudController implements Controllable {
                                 eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
 
                                 permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
-                                userManagementDialog.getPermissionList().getSelectionModel().clearSelection();
+                                resetSelection();
                             } catch (DataIntegrityViolationException dive) {
                                 //check if the permission can be deleted without breaking existing database relations,
                                 //i.e. are there any constraints violations

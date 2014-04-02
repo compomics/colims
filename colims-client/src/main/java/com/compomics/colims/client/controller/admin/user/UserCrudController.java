@@ -194,8 +194,8 @@ public class UserCrudController implements Controllable {
                                 userService.delete(userToDelete);
                                 eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
 
-                                userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                                userManagementDialog.getUserList().getSelectionModel().clearSelection();
+                                userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());                                
+                                resetSelection();
                             } catch (DataIntegrityViolationException dive) {
                                 //check if the user can be deleted without breaking existing database relations,
                                 //i.e. are there any constraints violations

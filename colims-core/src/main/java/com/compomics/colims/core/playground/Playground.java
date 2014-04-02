@@ -2,6 +2,8 @@ package com.compomics.colims.core.playground;
 
 import org.springframework.context.ApplicationContext;
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.model.Project;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,6 +20,7 @@ import uk.ac.ebi.ook.web.model.DataHolder;
 public class Playground {    
     
     public static void main(final String[] args) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();                        
         
         //
@@ -32,20 +35,23 @@ public class Playground {
         //        cpsParentImpl.loadSpectrumFiles(null);
         //        System.out.println("test");
         
-        Query olsClient = (Query) applicationContext.getBean("olsClient");
-        Map ontologyNames = olsClient.getOntologyNames();
-        for (MapItem mapItem : ontologyNames.getItem()) {
-            if (mapItem.getKey().equals("MS")) {
-                System.out.println(mapItem.getKey());
-                System.out.println(mapItem.getValue());
-            }
-        }
-        Map termsByName = olsClient.getTermsByName("oxidation of m", "MOD", false);  
-        Map termsByExactName = olsClient.getTermsByExactName("methionine oxidation with neutral loss of 64 Da", "MOD");  
-        Map termXrefs = olsClient.getTermXrefs("MOD:00935", "MOD");
-        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
+//        Query olsClient = (Query) applicationContext.getBean("olsClient");
+//        Map ontologyNames = olsClient.getOntologyNames();
+//        for (MapItem mapItem : ontologyNames.getItem()) {
+//            if (mapItem.getKey().equals("MS")) {
+//                System.out.println(mapItem.getKey());
+//                System.out.println(mapItem.getValue());
+//            }
+//        }
+//        Map termsByName = olsClient.getTermsByName("oxidation of m", "MOD", false);  
+//        Map termsByExactName = olsClient.getTermsByExactName("methionine oxidation with neutral loss of 64 Da", "MOD");  
+//        Map termXrefs = olsClient.getTermXrefs("MOD:00935", "MOD");
+//        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
+//        
+//        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
         
-        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
+        ProjectService projectService = (ProjectService) applicationContext.getBean("projectService");
+        List<Project> findAll = projectService.findAll();
         
         System.out.println("test");
     }

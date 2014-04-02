@@ -4,7 +4,6 @@ import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
-import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.springframework.beans.factory.annotation.Autowired;
