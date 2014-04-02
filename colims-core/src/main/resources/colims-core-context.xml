@@ -28,7 +28,7 @@
     
     <aop:aspectj-autoproxy />  
     
-<!--    <bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
+    <!--    <bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
       
     <bean class="com.compomics.colims.core.authorization.AuthorizationInterceptor" />  
     
@@ -50,7 +50,7 @@
     <!-- guava event bus bean -->
     <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>       
     
-     <!-- ols soap service client -->
+    <!-- ols soap service client -->
     <jaxws:client id="olsClient"
                   serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
                   address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery" /> 

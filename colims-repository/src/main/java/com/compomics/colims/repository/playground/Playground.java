@@ -1,17 +1,26 @@
-
 package com.compomics.colims.repository.playground;
 
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 /**
  *
  * @author Niels Hulstaert
  */
 public class Playground {
-    
+
     public static void main(final String[] args) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");         
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");
+
+        LocalSessionFactoryBean sessionFactory = (LocalSessionFactoryBean) applicationContext.getBean("&sessionFactory", LocalSessionFactoryBean.class);
+
+        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
+        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
+        schemaExport.setFormat(true);
+        schemaExport.setDelimiter(";");
+        schemaExport.execute(true, false, false, true);
     }
 
 }
