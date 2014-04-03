@@ -25,8 +25,9 @@
             </list>
         </property>        
         <property name="order" value="-1"/>     
+        <!-- ignore the fact the the db.password property is not found in the client context as it is user input -->
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreResourceNotFound" value="false"/>
     </bean>
     
     <bean id="splashScreen" class="com.compomics.colims.client.SplashScreen"/>

@@ -17,13 +17,13 @@ public class Playground {
     public static void main(final String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");
 
-        LocalSessionFactoryBean sessionFactory = (LocalSessionFactoryBean) applicationContext.getBean("&sessionFactory", LocalSessionFactoryBean.class);
-
-        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
-        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.sql");
-        schemaExport.setFormat(true);
-        schemaExport.setDelimiter(";");
-        schemaExport.execute(true, false, false, true);                
+//        LocalSessionFactoryBean sessionFactory = (LocalSessionFactoryBean) applicationContext.getBean("&sessionFactory", LocalSessionFactoryBean.class);
+//
+//        SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
+//        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.sql");
+//        schemaExport.setFormat(true);
+//        schemaExport.setDelimiter(";");
+//        schemaExport.execute(true, false, false, true);                
     }
 
 }
