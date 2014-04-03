@@ -4,6 +4,7 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xml.xml_soap.Map;
 import org.apache.xml.xml_soap.MapItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,4 +88,34 @@ public class OlsServiceImpl implements OlsService {
 
         return modification;
     }
+
+    @Override
+    public Modification findModifiationByNameAndUnimodAccession(String name, String unimodAccession) {
+        Modification modification = null;
+
+        //first, find the modifications by name        
+        Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
+        if (modificationsTerms.getItem() != null) {
+            //iterate over the modificiations
+            outerloop:
+            for (MapItem mapItem : modificationsTerms.getItem()) {
+                String accession = mapItem.getKey().toString();
+                //get the Xrefs
+                Map termXrefs = olsClient.getTermXrefs(accession, "MOD");
+                for (MapItem xref : termXrefs.getItem()) {
+//                    if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
+                    if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
+                        Modification foundModification = findModifiationByAccession(accession);
+                        if (foundModification != null) {
+                            modification = foundModification;
+                            break outerloop;
+                        }
+                    }
+                }
+            }
+        }
+
+        return modification;
+    }
+
 }

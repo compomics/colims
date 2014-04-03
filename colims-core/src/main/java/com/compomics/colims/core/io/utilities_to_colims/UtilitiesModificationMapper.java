@@ -200,8 +200,13 @@ public class UtilitiesModificationMapper {
 
             if (modification == null) {
                 //the modification was not found in the database
-                //look for the modification in the PSI-MOD ontology by accession                
-                modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+                if (cvTerm.getOntology().equals("PSI-MOD")) {
+                    //look for the modification in the PSI-MOD ontology by accession                
+                    modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+                } else if(cvTerm.getOntology().equals("UNIMOD")){
+                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
+                    modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
+                }
 
                 if (modification != null) {
                     newModifications.put(modification.getAccession(), modification);

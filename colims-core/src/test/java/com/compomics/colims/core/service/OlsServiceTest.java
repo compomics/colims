@@ -82,4 +82,17 @@ public class OlsServiceTest {
         modifications = olsService.findModifiationByName("oxidation of m");
         Assert.assertEquals(3, modifications.size());
     }
+    
+    /**
+     * Test the find modification by name and UNIMOD accession method from the OlsService
+     */
+    @Test
+    public void testFindModificationByNameAndUnimodAccession() {
+        //try to find an existing modification
+//        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Oxidation", "UNIMOD:35");
+//        Assert.assertNotNull(modification);
+        
+        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
+        Assert.assertNotNull(modification);
+    }
 }

@@ -30,8 +30,19 @@ public interface OlsService {
     /**
      * Find a modification by accession in the ontology
      *
-     * @param accesion the modification accession
+     * @param accession the modification accession
      * @return the found modification, null if nothing was found
      */
     Modification findModifiationByAccession(final String accession);
+
+    /**
+     * Find a modification by name and UNIMOD accession in the PSI-MOD ontology.
+     * This method tries to find the modification by name and checks wether the
+     * UNIMOD accession could be found in the Xref section.
+     *
+     * @param name
+     * @param unimodAccession
+     * @return the found modification, null if nothing was found
+     */
+    Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession);
 }

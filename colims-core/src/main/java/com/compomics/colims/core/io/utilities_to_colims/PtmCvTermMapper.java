@@ -3,8 +3,6 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.compomics.colims.model.Modification;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PrideObjectsFactory;
@@ -35,6 +33,11 @@ public class PtmCvTermMapper {
      */
 //    private Map<String, Modification> newModifications = new HashMap<>();
         
+    /**
+     * The map of new modifications (key: modification name, value: the
+ modification)
+     * @throws java.io.FileNotFoundException
+     */
     public PtmCvTermMapper() throws FileNotFoundException, IOException, ClassNotFoundException {
         ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();
     }   
@@ -50,6 +53,8 @@ public class PtmCvTermMapper {
     
     /**
      * Init the PTM to CV term map
+     * @throws java.io.FileNotFoundException
+     * @throws java.lang.ClassNotFoundException
      */
     public void init() throws FileNotFoundException, IOException, ClassNotFoundException{
         //load the PtmToPrideMap from het PrideObjectsFactory
@@ -61,6 +66,8 @@ public class PtmCvTermMapper {
      * SearchParameters
      *
      * @param searchParameters the PeptideShaker SearchParameters
+     * @throws java.io.FileNotFoundException
+     * @throws java.lang.ClassNotFoundException
      */
     public void updatePtmToPrideMap(SearchParameters searchParameters) throws FileNotFoundException, IOException, ClassNotFoundException {  
         //do this because of break statement in loadPtmToPrideMap
