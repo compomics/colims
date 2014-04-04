@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -18,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -31,7 +29,7 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "user")
+@Table(name = "colims_user")
 @Entity
 @TypeDef(name = "encryptedString",
         typeClass = EncryptedStringType.class,
