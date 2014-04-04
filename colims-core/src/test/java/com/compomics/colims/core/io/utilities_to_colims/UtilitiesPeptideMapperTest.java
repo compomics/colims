@@ -27,6 +27,12 @@ public class UtilitiesPeptideMapperTest {
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
 
+    /**
+     * Test the mapping of an utilities to a colims peptide.
+     *
+     * @throws MappingException
+     * @throws IOException
+     */
     @Test
     public void testMapPeptide() throws MappingException, IOException {
         //create new utilities Peptide

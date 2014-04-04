@@ -12,8 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.utilities_to_colims.PtmCvTermMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
@@ -48,22 +46,29 @@ public class UtilitiesModificationMapperTest {
     @Autowired
     private ModificationService modificationService;
     @Autowired
-    private PtmFactoryWrapper ptmFactoryWrapper;    
+    private PtmFactoryWrapper ptmFactoryWrapper;
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
     private CvTerm nonUtilitiesPtm;
     private String nonUtilitiesPtmName;
 
+    /**
+     * Load the search parameters with the modifications.
+     *
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
     @Before
-    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {                                
+    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();
         ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
-        
+
         //get PTMs from PTMFactory
-        oxidation = ptmFactoryWrapper.getPtmFactory().getPTM("oxidation of m");       
+        oxidation = ptmFactoryWrapper.getPtmFactory().getPTM("oxidation of m");
         phosphorylation = ptmFactoryWrapper.getPtmFactory().getPTM("phosphorylation of y");
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
@@ -75,7 +80,7 @@ public class UtilitiesModificationMapperTest {
         modificationProfile.addFixedModification(phosphorylation);
 
         searchParameters.setModificationProfile(modificationProfile);
-        
+
         try {
             //reset PtmToPrideMap for consistent testing
             ptmCvTermMapper.setPtmToPrideMap(new PtmToPrideMap());
@@ -89,8 +94,11 @@ public class UtilitiesModificationMapperTest {
         ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
     }
 
-    /*
-     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
+    /**
+     * Test the mapping for a peptide with 3 modifications, none of them are
+     * present in the db.
+     *
+     * @throws MappingException
      */
     @Test
     public void testMapModification_1() throws MappingException {
@@ -118,7 +126,7 @@ public class UtilitiesModificationMapperTest {
         ptmScoring.setDeltaScore(phosphorylationMatch.getModificationSite(), phosphorylationScore);
         ptmScores.addPtmScoring(phosphorylation.getName(), ptmScoring);
 
-        ptmScoring = new PtmScoring(nonUtilitiesPtmName);        
+        ptmScoring = new PtmScoring(nonUtilitiesPtmName);
         double nonUtilitiesPtmScore = 300.0;
         ptmScoring.setProbabilisticScore(nonUtilitiesModificationMatch.getModificationSite(), nonUtilitiesPtmScore);
         ptmScoring.setDeltaScore(nonUtilitiesModificationMatch.getModificationSite(), nonUtilitiesPtmScore);
@@ -148,7 +156,7 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals("monohydroxylated residue", modification.getName());
                 Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());                
+                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                 Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals("phosphorylated residue")) {
@@ -165,16 +173,19 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getAlphaScore(), 0.001);
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
-            }
-            else{
+            } else {
                 Assert.fail();
             }
         }
 
     }
 
-    /*
-     * Test the mapping for a peptide with 1 modification, which is present in the db.
+    /**
+     * Test the mapping for a peptide with 1 modification, which is present in
+     * the db.
+     *
+     * @throws MappingException
+     * @throws IOException
      */
     @Test
     public void testMapModification_2() throws MappingException, IOException {
@@ -220,19 +231,23 @@ public class UtilitiesModificationMapperTest {
 
     }
 
-    /*
-     * Test the mapping for a peptide with 1 nonsense modification. The mapper should throw a MappingException.
+    /**
+     * Test the mapping for a peptide with 1 nonsense modification. The mapper
+     * should throw a MappingException.
+     *
+     * @throws MappingException
+     * @throws IOException
      */
-//    @Test(expected = MappingException.class)
-//    public void testMapModification_3() throws MappingException, IOException {
-//        //create ModificationMatches       
-//        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-//        ModificationMatch oxidationMatch = new ModificationMatch("nonsense modification", true, 7);
-//        modificationMatches.add(oxidationMatch);
-//
-//        //create new colims entity peptide
-//        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
-//
-//        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
-//    }
+    @Test(expected = MappingException.class)
+    public void testMapModification_3() throws MappingException, IOException {
+        //create ModificationMatches       
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+        ModificationMatch oxidationMatch = new ModificationMatch("nonsense modification", true, 7);
+        modificationMatches.add(oxidationMatch);
+
+        //create new colims entity peptide
+        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+
+        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+    }
 }

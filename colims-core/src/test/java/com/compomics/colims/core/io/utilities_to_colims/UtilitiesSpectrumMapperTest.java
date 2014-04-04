@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.FragmentationType;
@@ -37,6 +36,15 @@ public class UtilitiesSpectrumMapperTest {
     @Autowired
     private SpectrumService spectrumService;
 
+    /**
+     * Test the mapping of a utilities spectrum to a colims spectrum.
+     *
+     * @throws MappingException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws MzMLUnmarshallerException
+     */
     @Test
     public void testMapSpectrum() throws MappingException, IOException, FileNotFoundException, ClassNotFoundException, MzMLUnmarshallerException {
         //create new MSnSpectrum
@@ -58,7 +66,7 @@ public class UtilitiesSpectrumMapperTest {
         MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
         mSnSpectrum.setScanNumber("1200");
         mSnSpectrum.setScanStartTime(300.5);
-        
+
         Spectrum spectrum = new Spectrum();
 
         utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.CID, spectrum);

@@ -48,6 +48,9 @@ public class UtilitiesProteinMapperTest {
      *
      * @throws MappingException
      * @throws IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testMapProtein_1() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
@@ -87,6 +90,9 @@ public class UtilitiesProteinMapperTest {
      *
      * @throws MappingException
      * @throws IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testMapProtein_2() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {

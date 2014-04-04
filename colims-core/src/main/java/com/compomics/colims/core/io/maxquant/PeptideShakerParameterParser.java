@@ -19,19 +19,16 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author Kenneth
+ * @author Kenneth Verheggen
  */
 public class PeptideShakerParameterParser {
 
+    private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
     /**
      * The PeptideShaker experiment settings
      */
-    private PeptideShakerSettings experimentSettings;
-    /**
-     * A plain old logger
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
-
+    private PeptideShakerSettings experimentSettings;    
+    
     /**
      * Parse the peptideshaker import file to utilities searchparameters.
      *
@@ -85,7 +82,6 @@ public class PeptideShakerParameterParser {
         }
 
         return experimentSettings;
-
     }
 
 }
