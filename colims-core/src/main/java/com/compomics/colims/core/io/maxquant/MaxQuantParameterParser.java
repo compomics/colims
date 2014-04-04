@@ -4,10 +4,16 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +22,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("maxQuantParameterParser")
 public class MaxQuantParameterParser {
+    
+    //pretty ductapey atm, needs to be cleaned up 
 
     /**
      * parses the settings for the search per run searched
@@ -30,59 +38,95 @@ public class MaxQuantParameterParser {
         File parameterFile = new File(maxQuantTextFolder, "parameters.txt");
         File summaryFile = new File(maxQuantTextFolder, "summary.txt");
 
-        Map<String, String> values;
+        Entry<String, String> values;
         Map<String, SearchParameters> runParams = new HashMap<>();
         SearchParameters globalParameters = new SearchParameters();
-        TabularFileLineValuesIterator parameterIter = new TabularFileLineValuesIterator(parameterFile);
+        Iterator<Entry<String, String>> parameterIter = parseParameters(parameterFile).entrySet().iterator();
 
         while (parameterIter.hasNext()) {
-            // for some reason this file was built vertically
+            // for some reason this file was built vertically, a cleaner solution is possible
             values = parameterIter.next();
-            if (values.containsKey(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.column)) {
-                globalParameters.setDiscardLowQualitySpectra(Boolean.getBoolean(values.get(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.column).toLowerCase(Locale.US)));
-            } else if (values.containsKey(ParametersHeaders.FASTA_FILE.column)) {
-                globalParameters.setFastaFile(new File(values.get(ParametersHeaders.FASTA_FILE.column)));
-            } else if (values.containsKey(ParametersHeaders.MIN_PEP_LENGTH.column)) {
-                globalParameters.setMinPeptideLength(Integer.parseInt(values.get(ParametersHeaders.MIN_PEP_LENGTH.column)));
-            } else if (values.containsKey(ParametersHeaders.MAX_PEP_PEP.column)) {
-                globalParameters.setMaxEValue(Double.parseDouble(values.get(ParametersHeaders.MAX_PEP_PEP.column)));
-            } else if (values.containsKey(ParametersHeaders.FTMS_MS_MS_TOLERANCE.column)) {
-                globalParameters.setFragmentIonAccuracy(Double.parseDouble(values.get(ParametersHeaders.FTMS_MS_MS_TOLERANCE.column).split(" ")[0]));
+            if (Arrays.asList(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.allPossibleColumnNames()).contains(values.getKey())) {
+                globalParameters.setDiscardLowQualitySpectra(Boolean.getBoolean(values.getValue().toLowerCase(Locale.US)));
+            } else if (Arrays.asList(ParametersHeaders.FASTA_FILE.allPossibleColumnNames()).contains(values.getKey())) {
+                globalParameters.setFastaFile(new File(values.getValue()));
+            } else if (Arrays.asList(ParametersHeaders.MIN_PEP_LENGTH.allPossibleColumnNames()).contains(values.getKey())) {
+                globalParameters.setMinPeptideLength(Integer.parseInt(values.getValue()));
+            } else if (Arrays.asList(ParametersHeaders.MAX_PEP_PEP.allPossibleColumnNames()).contains(values.getKey())) {
+                globalParameters.setMaxEValue(Double.parseDouble(values.getValue()));
+            } else if (Arrays.asList(ParametersHeaders.FTMS_MS_MS_TOLERANCE.allPossibleColumnNames()).contains(values.getKey())) {
+                globalParameters.setFragmentIonAccuracy(Double.parseDouble(values.getValue().split(" ")[0]));
+                if (values.getValue().split(" ")[1].equalsIgnoreCase("da")) {
+                    globalParameters.setPrecursorAccuracyType(SearchParameters.PrecursorAccuracyType.DA);
+                } else {
+                    globalParameters.setPrecursorAccuracyType(SearchParameters.PrecursorAccuracyType.PPM);
+                }
             }
         }
-
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(summaryFile);
 
         while (summaryIter.hasNext()) {
-            SearchParameters runParameters = new SearchParameters();
-            values = summaryIter.next();
-            //runParams.put(values.get(SummaryHeaders.RAW_FILE.column), (SearchParameters)globalParameters.clone());
-            ModificationProfile runModifications = new ModificationProfile();
-            if (values.containsKey(SummaryHeaders.FIXED_MODS.column)) {
-                for (String fixedMod : values.get(SummaryHeaders.FIXED_MODS.column).split(";")) {
-                    PTM fixedPTM = new PTM();
-                    fixedPTM.setName(fixedMod);
-                    runModifications.addFixedModification(fixedPTM);
-
+            SearchParameters runParameters = cloneSearchParametersObject(globalParameters);
+            Map<String, String> valuesIter = summaryIter.next();
+            if (valuesIter.containsKey(SummaryHeaders.RAW_FILE.column) && !valuesIter.get(SummaryHeaders.RAW_FILE.column).equalsIgnoreCase("total")) {
+                ModificationProfile runModifications = new ModificationProfile();
+                if (valuesIter.containsKey(SummaryHeaders.FIXED_MODS.column)) {
+                    for (String fixedMod : valuesIter.get(SummaryHeaders.FIXED_MODS.column).split(";")) {
+                        if (!fixedMod.isEmpty()) {
+                            PTM fixedPTM = new PTM();
+                            fixedPTM.setName(fixedMod);
+                            runModifications.addFixedModification(fixedPTM);
+                        }
+                    }
                 }
-            }
-            if (values.containsKey(SummaryHeaders.VAR_MODS.column)) {
+                if (valuesIter.containsKey(SummaryHeaders.VAR_MODS.column)) {
 
-                for (String varMod : values.get(SummaryHeaders.VAR_MODS.column).split(";")) {
-                    PTM varPTM = new PTM();
-                    varPTM.setName(varMod);
-                    runModifications.addVariableModification(varPTM);
+                    for (String varMod : valuesIter.get(SummaryHeaders.VAR_MODS.column).split(";")) {
+                        if (!varMod.isEmpty()) {
+                            PTM varPTM = new PTM();
+                            varPTM.setName(varMod);
+                            runModifications.addVariableModification(varPTM);
+                        }
+                    }
                 }
+                runParameters.setModificationProfile(runModifications);
+                //runParameters.setEnzyme(valuesIter.get(SummaryHeaders.PROTEASE.column));
+
+                runParameters.setnMissedCleavages(Integer.parseInt(valuesIter.get(SummaryHeaders.MAX_MISCLEAVAGES)));
+                MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
+                runParameters.setParametersFile(tarredParameters.getTarredParaMeterFiles());
+                runParams.put(valuesIter.get(SummaryHeaders.RAW_FILE.column), runParameters);
             }
-            runParameters.setModificationProfile(runModifications);
-            //runParameters.setEnzyme(values.get(SummaryHeaders.PROTEASE.column));
-            MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
-            runParameters.setParametersFile(tarredParameters.getTarredParaMeterFiles());
         }
         return runParams;
     }
 
-    //DAMN YOU MAX QUUAAAAAANT
+    public Map<String, String> parseParameters(File parameterFile) throws FileNotFoundException, IOException {
+        Map<String, String> parameters = new HashMap<>();
+        LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] split = line.split("\t");
+            if (split.length == 2) {
+                parameters.put(split[0], split[1]);
+            } else {
+                parameters.put(split[0], "");
+            }
+        }
+        return parameters;
+    }
+
+    //naive copying of the data we fetched from the global parameters file
+    private SearchParameters cloneSearchParametersObject(SearchParameters globalParameters) throws IOException {
+        SearchParameters searchParams = new SearchParameters();
+        searchParams.setDiscardLowQualitySpectra(globalParameters.getDiscardLowQualitySpectra());
+        searchParams.setFastaFile(globalParameters.getFastaFile());
+        searchParams.setMinPeptideLength(globalParameters.getMinPeptideLength());
+        searchParams.setMaxEValue(globalParameters.getMaxEValue());
+        searchParams.setFragmentIonAccuracy(globalParameters.getFragmentIonAccuracy());
+        return searchParams;
+    }
+
     private enum ParametersHeaders implements HeaderEnum {
 
         VERSION(new String[]{"Version"}),
@@ -162,7 +206,7 @@ public class MaxQuantParameterParser {
         }
 
         @Override
-        public final String[] returnPossibleColumnNames() {
+        public final String[] allPossibleColumnNames() {
             return columnNames;
         }
 

@@ -10,7 +10,7 @@ public interface HeaderEnum {
      * 
      * @return returns the defined possible headers for a given enum value 
      */
-    String[] returnPossibleColumnNames();
+    String[] allPossibleColumnNames();
 
     /**
      * sets the header used in the file to parse

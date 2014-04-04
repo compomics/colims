@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.Spectrum;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -69,38 +67,39 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException  {
+    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
 
-        try{
-        //just in case
-        maxQuantParser.clearParsedProject();
-        clearMappingResources();
-        loadFastaFile(aMaxQuantImport.getFastaFile());
+        try {
+            //just in case
+            maxQuantParser.clearParsedProject();
+            clearMappingResources();
+            loadFastaFile(aMaxQuantImport.getFastaFile());
 
-        maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
+            maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
 
-        for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
-            AnalyticalRun targetRun = new AnalyticalRun();
+            for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
+                AnalyticalRun targetRun = new AnalyticalRun();
 
-            maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
+                maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
 
-            List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
+                List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
 
-            for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
-                Spectrum targetSpectrum = new Spectrum();
+                for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
+                    Spectrum targetSpectrum = new Spectrum();
 
                 //for the spectra we can just use the standard utilities mapper
-                //@TODO get the fragmentation type 
-                utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
-                mappedSpectra.add(targetSpectrum);
+                    //@TODO get the fragmentation type 
+                    utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
+                    mappedSpectra.add(targetSpectrum);
 
-                //
-                maxQuantUtilitiesPsmMapper.map(aParsedSpectrum, maxQuantParser, targetSpectrum);
+                    //
+                    maxQuantUtilitiesPsmMapper.map(aParsedSpectrum, maxQuantParser, targetSpectrum);
+                }
+                targetRun.setSpectrums(mappedSpectra);
+                mappedRuns.add(targetRun);
             }
-            targetRun.setSpectrums(mappedSpectra);
-        }
         } catch (IOException | SQLException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);

@@ -47,7 +47,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.compomics.colims.distributed.ControllerLauncher</mainClass>
+                            <mainClass>com.compomics.colims.distributed.ColimsDistributedStarter</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>

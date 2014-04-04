@@ -115,7 +115,7 @@ public class MaxQuantProteinGroupParser {
         }
 
         @Override
-        public final String[] returnPossibleColumnNames() {
+        public final String[] allPossibleColumnNames() {
             return columnNames;
         }
 

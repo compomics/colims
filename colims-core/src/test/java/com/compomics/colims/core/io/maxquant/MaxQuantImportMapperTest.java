@@ -34,8 +34,8 @@ public class MaxQuantImportMapperTest {
     private File maxQuantTestFastaFile;
 
     public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextDirectory = new ClassPathResource("testdata").getFile();
-        maxQuantTestFastaFile = new ClassPathResource("testdata/testfasta.fasta").getFile();
+        maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
+        maxQuantTestFastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
     }
 
     /**

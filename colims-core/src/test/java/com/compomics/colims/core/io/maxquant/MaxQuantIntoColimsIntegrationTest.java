@@ -129,6 +129,7 @@ public class MaxQuantIntoColimsIntegrationTest {
                 maxQuantProteinMapperStub.map(new ArrayList(maxQuantParser.getProteinHitsForIdentification(identification)), (MatchScore) identification.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY)), targetPeptide);
             }
             targetRun.setSpectrums(mappedSpectra);
+            colimsRuns.add(targetRun);
         }
         maxQuantSample.setAnalyticalRuns(colimsRuns);
         //experimentService.save(experiment);

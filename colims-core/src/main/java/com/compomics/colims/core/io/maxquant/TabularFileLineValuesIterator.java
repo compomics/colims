@@ -51,10 +51,9 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         fileReader = new FileReader(evidenceFile);
         lineReader = new LineReader(fileReader);
         String readLine = lineReader.readLine().toLowerCase(Locale.US);
-        for( int headerEnumerationCounter = 0; headerEnumerationCounter< headerEnumeration.length;headerEnumerationCounter++){
-            HeaderEnum aHeader = headerEnumeration[headerEnumerationCounter];
-            for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.returnPossibleColumnNames().length; numberOfPossibleHeaders++){
-                if(readLine.contains(aHeader.returnPossibleColumnNames()[numberOfPossibleHeaders])){
+        for (HeaderEnum aHeader : headerEnumeration) {
+            for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.allPossibleColumnNames().length; numberOfPossibleHeaders++){
+                if(readLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])){
                     aHeader.setColumnReference(numberOfPossibleHeaders);
                 }
             }

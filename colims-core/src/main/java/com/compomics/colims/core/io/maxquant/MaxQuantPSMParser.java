@@ -410,7 +410,7 @@ enum EvidenceHeaders implements HeaderEnum {
     }
 
     @Override
-    public final String[] returnPossibleColumnNames() {
+    public final String[] allPossibleColumnNames() {
         return columnNames;
     }
 
