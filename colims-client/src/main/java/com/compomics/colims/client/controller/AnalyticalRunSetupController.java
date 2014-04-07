@@ -23,6 +23,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Project;

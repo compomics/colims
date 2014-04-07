@@ -17,6 +17,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
@@ -53,7 +54,7 @@ public class Playground2 {
         InstrumentService instrumentService = applicationContext.getBean("instrumentService", InstrumentService.class);
         Instrument instrument = instrumentService.findAll().get(0);
         StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
-
+        
         StorageTask storageTask = new StorageTask();
         StorageMetadata storageMetadata = new StorageMetadata();
         storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);

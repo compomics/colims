@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
-import com.compomics.colims.repository.impl.AbstractBinaryFileHibernateRepository;
+import com.compomics.colims.repository.impl.BinaryFileHibernateRepository;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 

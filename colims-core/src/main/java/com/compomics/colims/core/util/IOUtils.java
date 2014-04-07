@@ -31,8 +31,9 @@ public class IOUtils {
      *
      * @param file the file
      * @return the byte array
+     * @throws java.io.IOException
      */
-    public static byte[] readBytesFromFile(File file) throws IOException {
+    public static byte[] read(File file) throws IOException {
         return FileUtils.readFileToByteArray(file);
     }
     
@@ -41,8 +42,9 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @param file the file to be written to
+     * @throws java.io.IOException
      */
-    public static void writeBytesToFile(byte[] bytes, File file) throws IOException {
+    public static void write(byte[] bytes, File file) throws IOException {
         FileUtils.writeByteArrayToFile(file, bytes);
     }
     
@@ -50,9 +52,11 @@ public class IOUtils {
      * (G)zip the byte array.
      *
      * @param bytes the byte array
+     * @return 
+     * @throws java.io.IOException
      */
     public static byte[] zip(byte[] bytes) throws IOException {        
-        byte[] zippedBytes = null;
+        byte[] zippedBytes;
 
         //gzip the byte array
         try (ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
@@ -73,9 +77,10 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @return the unzipped byte array
+     * @throws java.io.IOException
      */
     public static byte[] unzip(byte[] bytes) throws IOException {
-        byte[] unzippedBytes = null;
+        byte[] unzippedBytes;
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPInputStream gZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
@@ -94,12 +99,13 @@ public class IOUtils {
      *
      * @param file the file
      * @return the byte array
+     * @throws java.io.IOException
      */
-    public static byte[] readZippedBytesFromFile(File file) throws IOException {
-        byte[] zippedBytes = null;
+    public static byte[] readAndUnzip(File file) throws IOException {
+        byte[] zippedBytes;
 
         //get file as byte array
-        byte[] bytes = readBytesFromFile(file);
+        byte[] bytes = read(file);
 
         zippedBytes = zip(bytes);
 
@@ -111,12 +117,13 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @param file the file to be written to
+     * @throws java.io.IOException
      */
-    public static void unzipAndWriteBytesToFile(byte[] bytes, File file) throws IOException {
+    public static void unzipAndWrite(byte[] bytes, File file) throws IOException {
         //first unzip byte array
         byte[] unzippedBytes = unzip(bytes);
 
         //then write to file
-        writeBytesToFile(unzippedBytes, file);
+        write(unzippedBytes, file);
     }        
 }

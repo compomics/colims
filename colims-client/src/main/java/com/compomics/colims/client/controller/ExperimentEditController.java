@@ -18,7 +18,7 @@ import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
-import com.compomics.colims.core.service.AbstractBinaryFileService;
+import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.Experiment;
@@ -72,7 +72,7 @@ public class ExperimentEditController implements Controllable {
     @Autowired
     private SampleService sampleService;
     @Autowired
-    private AbstractBinaryFileService abstractBinaryFileService;
+    private BinaryFileService binaryFileService;
     @Autowired
     private EventBus eventBus;
 
@@ -185,7 +185,7 @@ public class ExperimentEditController implements Controllable {
                 binaryFileToAdd.setExperiment(experimentToEdit);
 
                 //save binary file
-                abstractBinaryFileService.save(binaryFileToAdd);
+                binaryFileService.save(binaryFileToAdd);
 
                 experimentToEdit.getBinaryFiles().add(binaryFileToAdd);
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -202,7 +202,7 @@ public class ExperimentEditController implements Controllable {
                 }
 
                 //remove binary file
-                abstractBinaryFileService.delete(binaryFileToRemove);
+                binaryFileService.delete(binaryFileToRemove);
 
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
@@ -214,7 +214,7 @@ public class ExperimentEditController implements Controllable {
                 ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
 
                 //update binary file
-                abstractBinaryFileService.update(binaryFileToUpdate);
+                binaryFileService.update(binaryFileToUpdate);
 
                 experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }

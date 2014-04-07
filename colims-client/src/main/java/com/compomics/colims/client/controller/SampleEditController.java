@@ -18,7 +18,7 @@ import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTabl
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
-import com.compomics.colims.core.service.AbstractBinaryFileService;
+import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
@@ -82,7 +82,7 @@ public class SampleEditController implements Controllable {
     @Autowired
     private ProtocolService protocolService;
     @Autowired
-    private AbstractBinaryFileService abstractBinaryFileService;
+    private BinaryFileService binaryFileService;
     @Autowired
     private EventBus eventBus;
 
@@ -199,7 +199,7 @@ public class SampleEditController implements Controllable {
                 binaryFileToAdd.setSample(sampleToEdit);
 
                 //save binary file
-                abstractBinaryFileService.save(binaryFileToAdd);
+                binaryFileService.save(binaryFileToAdd);
 
                 sampleToEdit.getBinaryFiles().add(binaryFileToAdd);
                 sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -216,7 +216,7 @@ public class SampleEditController implements Controllable {
                 }
 
                 //remove binary file
-                abstractBinaryFileService.delete(binaryFileToRemove);
+                binaryFileService.delete(binaryFileToRemove);
 
                 sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }
@@ -228,7 +228,7 @@ public class SampleEditController implements Controllable {
                 SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
 
                 //update binary file
-                abstractBinaryFileService.update(binaryFileToUpdate);
+                binaryFileService.update(binaryFileToUpdate);
 
                 sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
             }

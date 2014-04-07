@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
@@ -24,7 +23,6 @@ import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.ProteomicAnalysis;
 import com.compomics.util.experiment.SampleAnalysisSet;
 import com.compomics.util.experiment.identification.IdentificationMethod;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
@@ -34,7 +32,6 @@ import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +82,7 @@ public class PeptideShakerImportMapper {
             MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
 
             //load experiment settings
-            experimentSettings = loadExperimentSettings(msExperiment);
+            loadExperimentSettings(msExperiment);
 
             //load fasta resource in sequence factory        
             loadFastaFile(unpackedPsDataImport.getFastaFile());
@@ -102,7 +99,7 @@ public class PeptideShakerImportMapper {
                     //@todo check if there is a more suitable candidate as accession number
                     analyticalRun.setName(replicateNumber.toString());
 
-                //get (Ms2)Identification
+                    //get (Ms2)Identification
                     //@todo find out what the identification number is                 
                     Ms2Identification ms2Identification = (Ms2Identification) proteomicAnalysis.getIdentification(IdentificationMethod.MS2_IDENTIFICATION);
 
@@ -146,7 +143,7 @@ public class PeptideShakerImportMapper {
                                 LOGGER.debug("No PSM was found for spectrum " + spectrumKey);
                             }
 
-                        //map MSnSpectrum to model Spectrum
+                            //map MSnSpectrum to model Spectrum
                             //@todo get fragmentation type from peptideshaker
                             utilitiesSpectrumMapper.map(sourceSpectrum, null, targetSpectrum);
                             spectrums.add(targetSpectrum);
@@ -260,12 +257,7 @@ public class PeptideShakerImportMapper {
      * @param msExperiment
      * @return
      */
-    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {
-        PeptideShakerSettings experimentSettings = new PeptideShakerSettings();
-
+    private void loadExperimentSettings(MsExperiment msExperiment) {
         experimentSettings = (PeptideShakerSettings) msExperiment.getUrParam(experimentSettings);
-        SearchParameters searchParameters = experimentSettings.getSearchParameters();
-
-        return experimentSettings;
     }
 }

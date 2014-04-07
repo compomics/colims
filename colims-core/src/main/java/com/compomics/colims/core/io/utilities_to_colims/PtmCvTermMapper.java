@@ -33,7 +33,6 @@ public class PtmCvTermMapper {
      * modification)
      */
 //    private Map<String, Modification> newModifications = new HashMap<>();
-
     /**
      * The map of new modifications (key: modification name, value: the
      * modification)
@@ -74,10 +73,7 @@ public class PtmCvTermMapper {
      * @throws java.lang.ClassNotFoundException
      */
     public void updatePtmToPrideMap(SearchParameters searchParameters) throws FileNotFoundException, IOException, ClassNotFoundException {
-        //do this because of break statement in loadPtmToPrideMap
-        for (int i = 0; i < searchParameters.getModificationProfile().getAllModifications().size(); i++) {
-            ptmToPrideMap = PtmToPrideMap.loadPtmToPrideMap(searchParameters);
-        }
+        ptmToPrideMap = PtmToPrideMap.loadPtmToPrideMap(searchParameters);
     }
 
     /**

@@ -6,6 +6,6 @@ package com.compomics.colims.model.enums;
  */
 public enum BinaryFileType {
     
-    TEXT, IMAGE
+    TEXT, IMAGE, ZIP
     
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 /**
  *
  * @author Kenneth Verheggen
+ * @author Niels Hulstaert
  */
 @Component("utilitiesSearchParametersMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters, SearchParameterSettings> {

@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import java.io.Serializable;
