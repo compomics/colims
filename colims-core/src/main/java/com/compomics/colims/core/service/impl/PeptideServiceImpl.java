@@ -58,12 +58,7 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public long countAll() {
         return peptideRepository.countAll();
-    }
-
-    @Override
-    public List<Peptide> findBySpectrumId(final long spectrumId) {
-        return peptideRepository.findPeptideBySpectrumId(spectrumId);
-    }
+    }    
 
     @Override
     public void fetchPeptideHasModificiations(final Peptide peptide) {

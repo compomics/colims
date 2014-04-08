@@ -37,11 +37,23 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "file_name", nullable = false)
     private String fileName;
     /**
+     * The fasta db file path
+     */
+    @Basic(optional = true)
+    @Column(name = "file_path", nullable = true)
+    protected String filePath;
+    /**
      * The taxonomy ID
      */
     @Basic(optional = true)
     @Column(name = "taxonomy_id", nullable = true)
     private Integer taxonomyId;
+    /**
+     * The species name
+     */
+    @Basic(optional = true)
+    @Column(name = "species", nullable = true)
+    private String species;
     /**
      * The version of the fasta db
      */
@@ -55,7 +67,7 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;    
     @OneToMany(mappedBy = "fastaDb")
-    private List<SearchParameterSettings> SearchParameterSettings = new ArrayList<>();  
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -79,7 +91,23 @@ public class FastaDb extends DatabaseEntity {
 
     public void setTaxonomyId(Integer taxonomyId) {
         this.taxonomyId = taxonomyId;
-    }        
+    }  
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }       
 
     public String getVersion() {
         return version;
@@ -97,22 +125,21 @@ public class FastaDb extends DatabaseEntity {
         this.md5CheckSum = md5CheckSum;
     }
 
-    public List<SearchParameterSettings> getSearchParameterSettings() {
-        return SearchParameterSettings;
+    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
+        return searchAndValidationSettingses;
     }
 
-    public void setSearchParameterSettings(List<SearchParameterSettings> SearchParameterSettings) {
-        this.SearchParameterSettings = SearchParameterSettings;
+    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
+        this.searchAndValidationSettingses = searchAndValidationSettingses;
     }  
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.name);
-        hash = 41 * hash + Objects.hashCode(this.fileName);
-        hash = 41 * hash + Objects.hashCode(this.taxonomyId);
-        hash = 41 * hash + Objects.hashCode(this.version);
-        hash = 41 * hash + Objects.hashCode(this.md5CheckSum);
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.name);
+        hash = 37 * hash + Objects.hashCode(this.taxonomyId);
+        hash = 37 * hash + Objects.hashCode(this.species);
+        hash = 37 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
@@ -128,16 +155,13 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
         if (!Objects.equals(this.taxonomyId, other.taxonomyId)) {
             return false;
         }
-        if (!Objects.equals(this.version, other.version)) {
+        if (!Objects.equals(this.species, other.species)) {
             return false;
         }
-        if (!Objects.equals(this.md5CheckSum, other.md5CheckSum)) {
+        if (!Objects.equals(this.version, other.version)) {
             return false;
         }
         return true;

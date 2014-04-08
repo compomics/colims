@@ -5,15 +5,12 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
-import java.util.List;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {
-
-    List<AnalyticalRun> findAnalyticalRunsBySampleId(Long sampleId);
+public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {    
     
     /**
      * Fetch the spectra

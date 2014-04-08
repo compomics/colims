@@ -5,13 +5,14 @@
 package com.compomics.colims.model;
 
 import com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,12 +25,8 @@ public class SearchParameterSettings extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @JoinColumn(name = "l_s_and_val_set_has_s_eng_id", referencedColumnName = "id")
-    @ManyToOne
-    private SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine;
-    @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
-    @ManyToOne
-    private FastaDb fastaDb;
+    @OneToMany(mappedBy = "searchParameterSettings")
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
     @Basic(optional = true)
     @Column(name = "enzyme")
     private String enzyme;
@@ -165,20 +162,12 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.hitlistLength = hitlistLength;
     }
 
-    public SearchAndValSetHasSearchEngine getSearchAndValSetHasSearchEngine() {
-        return searchAndValSetHasSearchEngine;
+    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
+        return searchAndValidationSettingses;
     }
 
-    public void setSearchAndValSetHasSearchEngine(final SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine) {
-        this.searchAndValSetHasSearchEngine = searchAndValSetHasSearchEngine;
-    }
-
-    public FastaDb getFastaDb() {
-        return fastaDb;
-    }
-
-    public void setFastaDb(final FastaDb fastaDb) {
-        this.fastaDb = fastaDb;
+    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
+        this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
 }

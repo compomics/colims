@@ -20,41 +20,41 @@ public class BinaryFileServiceImpl implements BinaryFileService {
     private static final Logger LOGGER = Logger.getLogger(BinaryFileServiceImpl.class);
 
     @Autowired
-    private BinaryFileRepository abstractBinaryFileRepository;
+    private BinaryFileRepository binaryFileRepository;
 
     @Override
     public BinaryFile findById(final Long id) {
-        return abstractBinaryFileRepository.findById(id);
+        return binaryFileRepository.findById(id);
     }
 
     @Override
     public List<BinaryFile> findAll() {
-        return abstractBinaryFileRepository.findAll();
+        return binaryFileRepository.findAll();
     }
 
     @Override
     public void save(final BinaryFile entity) {
-        abstractBinaryFileRepository.save(entity);
+        binaryFileRepository.save(entity);
     }
 
     @Override
     public void update(final BinaryFile entity) {
-        abstractBinaryFileRepository.update(entity);
+        binaryFileRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(final BinaryFile entity) {
-        abstractBinaryFileRepository.saveOrUpdate(entity);
+        binaryFileRepository.saveOrUpdate(entity);
     }
 
     @Override
     public void delete(final BinaryFile entity) {
-        abstractBinaryFileRepository.delete(entity);
+        binaryFileRepository.delete(entity);
     }
 
     @Override
     public long countAll() {
-        return abstractBinaryFileRepository.countAll();
+        return binaryFileRepository.countAll();
     }
 
 }

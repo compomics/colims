@@ -53,7 +53,7 @@ public class IdentificationFile extends DatabaseEntity {
     @Lob
     @Column(name = "content", nullable = true)
     protected byte[] content;
-    @JoinColumn(name = "l_search_and_val_set_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_search_and_val_settings_id", referencedColumnName = "id")
     @ManyToOne
     private SearchAndValidationSettings searchAndValidationSettings;
     @OneToMany(mappedBy = "identificationFile")
@@ -90,14 +90,14 @@ public class IdentificationFile extends DatabaseEntity {
     public void setContent(byte[] content) {
         this.content = content;
     }    
-    
+
     public SearchAndValidationSettings getSearchAndValidationSettings() {
         return searchAndValidationSettings;
     }
 
     public void setSearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings) {
         this.searchAndValidationSettings = searchAndValidationSettings;
-    }
+    }              
 
     public List<Peptide> getPeptides() {
         return peptides;

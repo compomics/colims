@@ -32,7 +32,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
         //TODO GET THE CHECKSUM
         colimsSearchParametersSettings.setEnzyme(searchParameters.getEnzyme().getName());
         colimsSearchParametersSettings.setEvalueCutoff(searchParameters.getMaxEValue());
-        colimsSearchParametersSettings.setFastaDb(fastaDb);
+//        colimsSearchParametersSettings.setFastaDb(fastaDb);
         colimsSearchParametersSettings.setFragMassTolerance(searchParameters.getFragmentIonAccuracy());
         //TODO this might be wrong !!!!
 //        colimsSearchParametersSettings.setFragMassToleranceUnit(searchParameters.getPrecursorAccuracyType());

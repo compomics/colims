@@ -13,21 +13,14 @@ import java.io.IOException;
  * @author Niels Hulstaert
  */
 public interface SpectrumService extends GenericService<Spectrum, Long> {
-
-    /**
-     * Find the spectra by analytical run id.
-     *
-     * @param analyticalRunId the analytical run id
-     * @return the found spectra
-     */
-    List<Spectrum> findSpectraByAnalyticalRunId(Long analyticalRunId);
-
+    
     /**
      * Get the spectrum peaks as a map (key: mz ratio, value: intensity) by the
      * spectrum id.
      *
      * @param spectrumId the spectrum id
      * @return
+     * @throws java.io.IOException
      */
     Map<Double, Double> getSpectrumPeaks(Long spectrumId) throws IOException;
 
@@ -37,13 +30,14 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      *
      * @param spectrumFile the SpectrumFile
      * @return
+     * @throws java.io.IOException
      */
     Map<Double, Double> getSpectrumPeaks(SpectrumFile spectrumFile) throws IOException;
     
      /**
      * Count the spectra associated to the given analytical run
      *
-     * @param analyticalRunId the analytical run id
+     * @param analyticalRun
      * @return the number of spectra
      */
     Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun);

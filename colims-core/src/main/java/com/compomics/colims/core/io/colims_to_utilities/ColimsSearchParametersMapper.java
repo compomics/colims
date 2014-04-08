@@ -30,8 +30,8 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
      */
     @Override
     public void map(final SearchParameterSettings colimsSearchParametersSettings, final SearchParameters searchParameters) {
-      LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
-        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
+        LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
+//        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
         //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?
         Enzyme enzyme = new Enzyme(0, colimsSearchParametersSettings.getEnzyme(), "", "", "", "");
         searchParameters.setEnzyme(enzyme);

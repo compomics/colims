@@ -1,5 +1,5 @@
 
-    create table analytical_run (
+    create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -11,7 +11,21 @@
         primary key (id)
     );
 
-    create table experiment (
+    create table colims.colims_user (
+        id bigint not null auto_increment,
+        creation_date datetime not null,
+        modification_date datetime not null,
+        user_name varchar(255) not null,
+        email varchar(255) not null,
+        first_name varchar(20) not null,
+        last_name varchar(30) not null,
+        name varchar(20) not null,
+        password varchar(255) not null,
+        l_institution_id bigint,
+        primary key (id)
+    );
+
+    create table colims.experiment (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -24,7 +38,7 @@
         primary key (id)
     );
 
-    create table experiment_binary_file (
+    create table colims.experiment_binary_file (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -36,21 +50,22 @@
         primary key (id)
     );
 
-    create table fasta_db (
+    create table colims.fasta_db (
         id bigint not null auto_increment,
         file_name varchar(255) not null,
         md5_checksum varchar(255),
         name varchar(255) not null,
+        taxonomy_id integer,
         version varchar(255),
         primary key (id)
     );
 
-    create table group_has_role (
+    create table colims.group_has_role (
         l_group_id bigint not null,
         l_role_id bigint not null
     );
 
-    create table group_role (
+    create table colims.group_role (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -60,13 +75,17 @@
         primary key (id)
     );
 
-    create table identification_file (
+    create table colims.identification_file (
         id bigint not null auto_increment,
-        l_search_and_val_set_id bigint,
+        file_type varchar(255),
+        content longblob,
+        file_name varchar(255) not null,
+        file_path varchar(255),
+        l_search_and_val_settings_id bigint,
         primary key (id)
     );
 
-    create table institution (
+    create table colims.institution (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -81,7 +100,7 @@
         primary key (id)
     );
 
-    create table instrument (
+    create table colims.instrument (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -93,7 +112,7 @@
         primary key (id)
     );
 
-    create table instrument_cv_term (
+    create table colims.instrument_cv_term (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -106,12 +125,12 @@
         primary key (id)
     );
 
-    create table instrument_has_analyzer (
+    create table colims.instrument_has_analyzer (
         l_instrument_id bigint not null,
         l_instrument_cv_term_id bigint not null
     );
 
-    create table instrument_type (
+    create table colims.instrument_type (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -121,7 +140,7 @@
         primary key (id)
     );
 
-    create table material (
+    create table colims.material (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -135,7 +154,7 @@
         primary key (id)
     );
 
-    create table material_cv_term (
+    create table colims.material_cv_term (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -148,7 +167,7 @@
         primary key (id)
     );
 
-    create table modification (
+    create table colims.modification (
         id bigint not null auto_increment,
         accession varchar(255),
         average_mass double precision,
@@ -159,7 +178,7 @@
         primary key (id)
     );
 
-    create table peptide (
+    create table colims.peptide (
         id bigint not null auto_increment,
         experimental_mass double precision,
         psm_post_error_prob double precision,
@@ -171,7 +190,7 @@
         primary key (id)
     );
 
-    create table peptide_has_modification (
+    create table colims.peptide_has_modification (
         id bigint not null auto_increment,
         alpha_score double precision,
         delta_score double precision,
@@ -182,7 +201,7 @@
         primary key (id)
     );
 
-    create table peptide_has_protein (
+    create table colims.peptide_has_protein (
         id bigint not null auto_increment,
         peptide_post_error_prob double precision,
         peptide_prob double precision,
@@ -192,7 +211,7 @@
         primary key (id)
     );
 
-    create table permission (
+    create table colims.permission (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -202,7 +221,7 @@
         primary key (id)
     );
 
-    create table project (
+    create table colims.project (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -214,12 +233,12 @@
         primary key (id)
     );
 
-    create table project_has_user (
+    create table colims.project_has_user (
         l_project_id bigint not null,
         l_user_id bigint not null
     );
 
-    create table protein (
+    create table colims.protein (
         id bigint not null auto_increment,
         accession varchar(255) not null,
         database_type varchar(255) not null,
@@ -227,7 +246,7 @@
         primary key (id)
     );
 
-    create table protocol (
+    create table colims.protocol (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -239,7 +258,7 @@
         primary key (id)
     );
 
-    create table protocol_cv_term (
+    create table colims.protocol_cv_term (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -252,17 +271,17 @@
         primary key (id)
     );
 
-    create table protocol_has_chemical_labeling (
+    create table colims.protocol_has_chemical_labeling (
         l_protocol_id bigint not null,
         l_chemical_labeling_cv_term_id bigint not null
     );
 
-    create table protocol_has_other_cv_term (
+    create table colims.protocol_has_other_cv_term (
         l_protocol_id bigint not null,
         l_other_cv_term_id bigint not null
     );
 
-    create table quant_method_has_quant_engine (
+    create table colims.quant_method_has_quant_engine (
         id bigint not null auto_increment,
         l_quantification_engine_id bigint,
         l_quantification_method_id bigint,
@@ -270,7 +289,7 @@
         primary key (id)
     );
 
-    create table quantification (
+    create table colims.quantification (
         id bigint not null auto_increment,
         intensity double precision,
         weight integer,
@@ -279,47 +298,47 @@
         primary key (id)
     );
 
-    create table quantification_engine (
+    create table colims.quantification_engine (
         id bigint not null auto_increment,
         primary key (id)
     );
 
-    create table quantification_file (
+    create table colims.quantification_file (
         id bigint not null auto_increment,
         l_quantification_method_id bigint,
         primary key (id)
     );
 
-    create table quantification_group (
+    create table colims.quantification_group (
         id bigint not null auto_increment,
         l_quantification_file_id bigint,
         primary key (id)
     );
 
-    create table quantification_group_has_peptide (
+    create table colims.quantification_group_has_peptide (
         id bigint not null auto_increment,
         l_peptide_id bigint,
         l_quantification_group_id bigint,
         primary key (id)
     );
 
-    create table quantification_method (
+    create table colims.quantification_method (
         id bigint not null auto_increment,
         l_experiment_id bigint,
         primary key (id)
     );
 
-    create table quantification_parameter_setting (
+    create table colims.quantification_parameter_setting (
         id bigint not null auto_increment,
         primary key (id)
     );
 
-    create table role_has_permission (
+    create table colims.role_has_permission (
         l_role_id bigint not null,
         l_permission_id bigint not null
     );
 
-    create table sample (
+    create table colims.sample (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -332,7 +351,7 @@
         primary key (id)
     );
 
-    create table sample_binary_file (
+    create table colims.sample_binary_file (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -344,30 +363,28 @@
         primary key (id)
     );
 
-    create table sample_has_material (
+    create table colims.sample_has_material (
         l_sample_id bigint not null,
         l_material_id bigint not null
     );
 
-    create table search_and_val_set_has_search_engine (
-        id bigint not null auto_increment,
-        l_s_and_val_set_id bigint,
-        l_search_engine_id bigint,
-        primary key (id)
-    );
-
-    create table search_and_validation_settings (
+    create table colims.search_and_validation_settings (
         id bigint not null auto_increment,
         l_experiment_id bigint,
+        l_fasta_db_id bigint,
+        l_search_engine_id bigint,
+        l_search_param_settings_id bigint,
         primary key (id)
     );
 
-    create table search_engine (
+    create table colims.search_engine (
         id bigint not null auto_increment,
+        type varchar(255) not null,
+        version varchar(255),
         primary key (id)
     );
 
-    create table search_parameter_settings (
+    create table colims.search_parameter_settings (
         id bigint not null auto_increment,
         enzyme varchar(255),
         evalue_cutoff double precision,
@@ -381,12 +398,10 @@
         precursor_mass_tolerance_unit integer,
         precursor_lower_charge integer,
         precursor_upper_charge integer,
-        l_fasta_db_id bigint,
-        l_s_and_val_set_has_s_eng_id bigint,
         primary key (id)
     );
 
-    create table spectrum (
+    create table colims.spectrum (
         id bigint not null auto_increment,
         accession varchar(255) not null,
         charge integer,
@@ -401,28 +416,14 @@
         primary key (id)
     );
 
-    create table spectrum_file (
+    create table colims.spectrum_file (
         id bigint not null auto_increment,
         content longblob not null,
         l_spectrum_id bigint,
         primary key (id)
     );
 
-    create table colims_user (
-        id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
-        email varchar(255) not null,
-        first_name varchar(20) not null,
-        last_name varchar(30) not null,
-        name varchar(20) not null,
-        password varchar(255) not null,
-        l_institution_id bigint,
-        primary key (id)
-    );
-
-    create table user_group (
+    create table colims.user_group (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -432,412 +433,346 @@
         primary key (id)
     );
 
-    create table user_has_group (
+    create table colims.user_has_group (
         l_user_id bigint not null,
         l_group_id bigint not null
     );
 
-    alter table experiment 
-        add constraint UK_1h78kyl2aslkb3kxh0rwaujeg unique (title);
+    alter table colims.colims_user 
+        add constraint UK_7qy96sq9o6jh5517or8yh758  unique (name);
 
-    alter table group_role 
-        add constraint UK_7kvrlnisllgg2md5614ywh82g unique (name);
+    alter table colims.experiment 
+        add constraint UK_1h78kyl2aslkb3kxh0rwaujeg  unique (title);
 
-    alter table instrument 
-        add constraint UK_11wfouotl7vb11u6ebomnbsrr unique (name);
+    alter table colims.group_role 
+        add constraint UK_7kvrlnisllgg2md5614ywh82g  unique (name);
 
-    alter table instrument_cv_term 
-        add constraint UK_p439oc8wuh3dr9wyptksrc0o4 unique (accession);
+    alter table colims.instrument 
+        add constraint UK_11wfouotl7vb11u6ebomnbsrr  unique (name);
 
-    alter table instrument_type 
-        add constraint UK_2khnihpbgyekjsr8cj9lrr0r7 unique (name);
+    alter table colims.instrument_cv_term 
+        add constraint UK_p439oc8wuh3dr9wyptksrc0o4  unique (accession);
 
-    alter table material_cv_term 
-        add constraint UK_4t80knf2n488qnwc8d11xiwm4 unique (accession);
+    alter table colims.instrument_type 
+        add constraint UK_2khnihpbgyekjsr8cj9lrr0r7  unique (name);
 
-    alter table permission 
-        add constraint UK_2ojme20jpga3r4r79tdso17gi unique (name);
+    alter table colims.material_cv_term 
+        add constraint UK_4t80knf2n488qnwc8d11xiwm4  unique (accession);
 
-    alter table project 
-        add constraint UK_etb9i6krbg45bl5o1kt0cc4q8 unique (title);
+    alter table colims.permission 
+        add constraint UK_2ojme20jpga3r4r79tdso17gi  unique (name);
 
-    alter table protocol 
-        add constraint UK_lidqee66itlhns030fyykvptc unique (name);
+    alter table colims.project 
+        add constraint UK_etb9i6krbg45bl5o1kt0cc4q8  unique (title);
 
-    alter table protocol_cv_term 
-        add constraint UK_ertrjihdksltewuvpd6m46mkk unique (accession);
+    alter table colims.protocol 
+        add constraint UK_lidqee66itlhns030fyykvptc  unique (name);
 
-    alter table colims_user 
-        add constraint UK_gj2fy3dcix7ph7k8684gka40c unique (name);
+    alter table colims.protocol_cv_term 
+        add constraint UK_ertrjihdksltewuvpd6m46mkk  unique (accession);
 
-    alter table user_group 
-        add constraint UK_kas9w8ead0ska5n3csefp2bpp unique (name);
+    alter table colims.user_group 
+        add constraint UK_kas9w8ead0ska5n3csefp2bpp  unique (name);
 
-    alter table analytical_run 
-        add index FK_peeqymojpv3ng8ve6kvvvfw0r (l_instrument_id), 
+    alter table colims.analytical_run 
         add constraint FK_peeqymojpv3ng8ve6kvvvfw0r 
         foreign key (l_instrument_id) 
-        references instrument (id);
+        references colims.instrument (id);
 
-    alter table analytical_run 
-        add index FK_jqv7xoqlrkpc5qo13mrpmp7w8 (l_sample_id), 
+    alter table colims.analytical_run 
         add constraint FK_jqv7xoqlrkpc5qo13mrpmp7w8 
         foreign key (l_sample_id) 
-        references sample (id);
+        references colims.sample (id);
 
-    alter table experiment 
-        add index FK_4myk0t1pgujkgng7qm1umgmig (l_project_id), 
+    alter table colims.colims_user 
+        add constraint FK_6qvbirmm26e50fj41xifn0jg0 
+        foreign key (l_institution_id) 
+        references colims.institution (id);
+
+    alter table colims.experiment 
         add constraint FK_4myk0t1pgujkgng7qm1umgmig 
         foreign key (l_project_id) 
-        references project (id);
+        references colims.project (id);
 
-    alter table experiment_binary_file 
-        add index FK_myh8uaq7sva2od08mhwolbgrx (l_experiment_id), 
+    alter table colims.experiment_binary_file 
         add constraint FK_myh8uaq7sva2od08mhwolbgrx 
         foreign key (l_experiment_id) 
-        references experiment (id);
+        references colims.experiment (id);
 
-    alter table group_has_role 
-        add index FK_97ah8s48bdpbq6nbkqpniremq (l_role_id), 
+    alter table colims.group_has_role 
         add constraint FK_97ah8s48bdpbq6nbkqpniremq 
         foreign key (l_role_id) 
-        references group_role (id);
+        references colims.group_role (id);
 
-    alter table group_has_role 
-        add index FK_d5j6dccj6ksooehvhrh20frjv (l_group_id), 
+    alter table colims.group_has_role 
         add constraint FK_d5j6dccj6ksooehvhrh20frjv 
         foreign key (l_group_id) 
-        references user_group (id);
+        references colims.user_group (id);
 
-    alter table identification_file 
-        add index FK_pfxus7hv6x3fg3epvdmjy1ksc (l_search_and_val_set_id), 
-        add constraint FK_pfxus7hv6x3fg3epvdmjy1ksc 
-        foreign key (l_search_and_val_set_id) 
-        references search_and_validation_settings (id);
+    alter table colims.identification_file 
+        add constraint FK_jqdmoeocgmo37fgetf0t0p0pd 
+        foreign key (l_search_and_val_settings_id) 
+        references colims.search_and_validation_settings (id);
 
-    alter table instrument 
-        add index FK_nv913lhryr1tf3jil03u2j699 (l_detector_cv_id), 
+    alter table colims.instrument 
         add constraint FK_nv913lhryr1tf3jil03u2j699 
         foreign key (l_detector_cv_id) 
-        references instrument_cv_term (id);
+        references colims.instrument_cv_term (id);
 
-    alter table instrument 
-        add index FK_9mg83ll40kt1k3vs8wwrcxx84 (l_instrument_type_id), 
+    alter table colims.instrument 
         add constraint FK_9mg83ll40kt1k3vs8wwrcxx84 
         foreign key (l_instrument_type_id) 
-        references instrument_type (id);
+        references colims.instrument_type (id);
 
-    alter table instrument 
-        add index FK_amxbo4ld6m7kbyr2w00mmamf4 (l_source_cv_id), 
+    alter table colims.instrument 
         add constraint FK_amxbo4ld6m7kbyr2w00mmamf4 
         foreign key (l_source_cv_id) 
-        references instrument_cv_term (id);
+        references colims.instrument_cv_term (id);
 
-    alter table instrument_has_analyzer 
-        add index FK_p0fc15jd6hhc75kw5cmq041pj (l_instrument_cv_term_id), 
+    alter table colims.instrument_has_analyzer 
         add constraint FK_p0fc15jd6hhc75kw5cmq041pj 
         foreign key (l_instrument_cv_term_id) 
-        references instrument_cv_term (id);
+        references colims.instrument_cv_term (id);
 
-    alter table instrument_has_analyzer 
-        add index FK_7xy0454upil50qvcv1ongxlcm (l_instrument_id), 
+    alter table colims.instrument_has_analyzer 
         add constraint FK_7xy0454upil50qvcv1ongxlcm 
         foreign key (l_instrument_id) 
-        references instrument (id);
+        references colims.instrument (id);
 
-    alter table material 
-        add index FK_2emr349t8q9hje4hjcd4jwuas (l_cell_type_cv_id), 
+    alter table colims.material 
         add constraint FK_2emr349t8q9hje4hjcd4jwuas 
         foreign key (l_cell_type_cv_id) 
-        references material_cv_term (id);
+        references colims.material_cv_term (id);
 
-    alter table material 
-        add index FK_sfmjhs53n62t8v7xstsb9ln2 (l_compartment_cv_id), 
+    alter table colims.material 
         add constraint FK_sfmjhs53n62t8v7xstsb9ln2 
         foreign key (l_compartment_cv_id) 
-        references material_cv_term (id);
+        references colims.material_cv_term (id);
 
-    alter table material 
-        add index FK_1w1sodocqmm73kw7ll3uslwqi (l_project_id), 
+    alter table colims.material 
         add constraint FK_1w1sodocqmm73kw7ll3uslwqi 
         foreign key (l_project_id) 
-        references project (id);
+        references colims.project (id);
 
-    alter table material 
-        add index FK_e8ustpafqp4yhgp0ycperpy6u (l_species_cv_id), 
+    alter table colims.material 
         add constraint FK_e8ustpafqp4yhgp0ycperpy6u 
         foreign key (l_species_cv_id) 
-        references material_cv_term (id);
+        references colims.material_cv_term (id);
 
-    alter table material 
-        add index FK_8yfpw6v3pfg5f8wrrkgboud1r (l_tissue_cv_id), 
+    alter table colims.material 
         add constraint FK_8yfpw6v3pfg5f8wrrkgboud1r 
         foreign key (l_tissue_cv_id) 
-        references material_cv_term (id);
+        references colims.material_cv_term (id);
 
-    alter table peptide 
-        add index FK_nouta5locpa5t9o6yl2smm0xe (l_identification_file_id), 
+    alter table colims.peptide 
         add constraint FK_nouta5locpa5t9o6yl2smm0xe 
         foreign key (l_identification_file_id) 
-        references identification_file (id);
+        references colims.identification_file (id);
 
-    alter table peptide 
-        add index FK_obt49wd19s38x8lpknbne8a3y (l_spectrum_id), 
+    alter table colims.peptide 
         add constraint FK_obt49wd19s38x8lpknbne8a3y 
         foreign key (l_spectrum_id) 
-        references spectrum (id);
+        references colims.spectrum (id);
 
-    alter table peptide_has_modification 
-        add index FK_fon9f459diy97xrnqjb3dfj04 (l_modification_id), 
+    alter table colims.peptide_has_modification 
         add constraint FK_fon9f459diy97xrnqjb3dfj04 
         foreign key (l_modification_id) 
-        references modification (id);
+        references colims.modification (id);
 
-    alter table peptide_has_modification 
-        add index FK_tnhhusqmuwc88nl8yo0t3r7f1 (l_peptide_id), 
+    alter table colims.peptide_has_modification 
         add constraint FK_tnhhusqmuwc88nl8yo0t3r7f1 
         foreign key (l_peptide_id) 
-        references peptide (id);
+        references colims.peptide (id);
 
-    alter table peptide_has_protein 
-        add index FK_7d9fvws08o48ai89aqi3ph8l9 (l_main_group_protein_id), 
+    alter table colims.peptide_has_protein 
         add constraint FK_7d9fvws08o48ai89aqi3ph8l9 
         foreign key (l_main_group_protein_id) 
-        references protein (id);
+        references colims.protein (id);
 
-    alter table peptide_has_protein 
-        add index FK_nljccjaj0g8pbmfy9sdjfghce (l_peptide_id), 
+    alter table colims.peptide_has_protein 
         add constraint FK_nljccjaj0g8pbmfy9sdjfghce 
         foreign key (l_peptide_id) 
-        references peptide (id);
+        references colims.peptide (id);
 
-    alter table peptide_has_protein 
-        add index FK_i6ufytgonthuo7d6246l7rkme (l_protein_id), 
+    alter table colims.peptide_has_protein 
         add constraint FK_i6ufytgonthuo7d6246l7rkme 
         foreign key (l_protein_id) 
-        references protein (id);
+        references colims.protein (id);
 
-    alter table project 
-        add index FK_nont146vvfurex1thyophrki0 (l_owner_user_id), 
+    alter table colims.project 
         add constraint FK_nont146vvfurex1thyophrki0 
         foreign key (l_owner_user_id) 
-        references colims_user (id);
+        references colims.colims_user (id);
 
-    alter table project_has_user 
-        add index FK_t0ksfthfrcpvmr7fdnmk81rhc (l_user_id), 
+    alter table colims.project_has_user 
         add constraint FK_t0ksfthfrcpvmr7fdnmk81rhc 
         foreign key (l_user_id) 
-        references colims_user (id);
+        references colims.colims_user (id);
 
-    alter table project_has_user 
-        add index FK_7l0pdupx29tr1yh2cv2omkla4 (l_project_id), 
+    alter table colims.project_has_user 
         add constraint FK_7l0pdupx29tr1yh2cv2omkla4 
         foreign key (l_project_id) 
-        references project (id);
+        references colims.project (id);
 
-    alter table protocol 
-        add index FK_68woyi6fqi6j99t2511tiayb2 (l_cell_based_cv_id), 
+    alter table colims.protocol 
         add constraint FK_68woyi6fqi6j99t2511tiayb2 
         foreign key (l_cell_based_cv_id) 
-        references protocol_cv_term (id);
+        references colims.protocol_cv_term (id);
 
-    alter table protocol 
-        add index FK_r8omo1sbwto3f96hycuqgosxw (l_enzyme_cv_id), 
+    alter table colims.protocol 
         add constraint FK_r8omo1sbwto3f96hycuqgosxw 
         foreign key (l_enzyme_cv_id) 
-        references protocol_cv_term (id);
+        references colims.protocol_cv_term (id);
 
-    alter table protocol 
-        add index FK_ipxj4jmmfsh21ebk41sir499o (l_reduction_cv_id), 
+    alter table colims.protocol 
         add constraint FK_ipxj4jmmfsh21ebk41sir499o 
         foreign key (l_reduction_cv_id) 
-        references protocol_cv_term (id);
+        references colims.protocol_cv_term (id);
 
-    alter table protocol_has_chemical_labeling 
-        add index FK_hg4pc56r12d348ibd3q4mexk (l_chemical_labeling_cv_term_id), 
+    alter table colims.protocol_has_chemical_labeling 
         add constraint FK_hg4pc56r12d348ibd3q4mexk 
         foreign key (l_chemical_labeling_cv_term_id) 
-        references protocol_cv_term (id);
+        references colims.protocol_cv_term (id);
 
-    alter table protocol_has_chemical_labeling 
-        add index FK_lti01qugh58dw133ahsm7p7in (l_protocol_id), 
+    alter table colims.protocol_has_chemical_labeling 
         add constraint FK_lti01qugh58dw133ahsm7p7in 
         foreign key (l_protocol_id) 
-        references protocol (id);
+        references colims.protocol (id);
 
-    alter table protocol_has_other_cv_term 
-        add index FK_chjm79t4wyytdkud9yrtdflua (l_other_cv_term_id), 
+    alter table colims.protocol_has_other_cv_term 
         add constraint FK_chjm79t4wyytdkud9yrtdflua 
         foreign key (l_other_cv_term_id) 
-        references protocol_cv_term (id);
+        references colims.protocol_cv_term (id);
 
-    alter table protocol_has_other_cv_term 
-        add index FK_obdu1ny455r0vb44a86qapib (l_protocol_id), 
+    alter table colims.protocol_has_other_cv_term 
         add constraint FK_obdu1ny455r0vb44a86qapib 
         foreign key (l_protocol_id) 
-        references protocol (id);
+        references colims.protocol (id);
 
-    alter table quant_method_has_quant_engine 
-        add index FK_oasqydotqql6ck89k2ussm1gy (l_quantification_engine_id), 
+    alter table colims.quant_method_has_quant_engine 
         add constraint FK_oasqydotqql6ck89k2ussm1gy 
         foreign key (l_quantification_engine_id) 
-        references quantification_engine (id);
+        references colims.quantification_engine (id);
 
-    alter table quant_method_has_quant_engine 
-        add index FK_4gxen92cgpdm0md37a122fobt (l_quantification_method_id), 
+    alter table colims.quant_method_has_quant_engine 
         add constraint FK_4gxen92cgpdm0md37a122fobt 
         foreign key (l_quantification_method_id) 
-        references quantification_method (id);
+        references colims.quantification_method (id);
 
-    alter table quant_method_has_quant_engine 
-        add index FK_lhjhago1pcj6fhc0bey8ylnba (l_quant_param_settings_id), 
+    alter table colims.quant_method_has_quant_engine 
         add constraint FK_lhjhago1pcj6fhc0bey8ylnba 
         foreign key (l_quant_param_settings_id) 
-        references quantification_parameter_setting (id);
+        references colims.quantification_parameter_setting (id);
 
-    alter table quantification 
-        add index FK_pqbxof18u1h1hv14dmnyo44mr (l_quantification_group_id), 
+    alter table colims.quantification 
         add constraint FK_pqbxof18u1h1hv14dmnyo44mr 
         foreign key (l_quantification_group_id) 
-        references quantification_group (id);
+        references colims.quantification_group (id);
 
-    alter table quantification 
-        add index FK_crk8scd9ju0k4q8ajo4g48s33 (l_spectrum_id), 
+    alter table colims.quantification 
         add constraint FK_crk8scd9ju0k4q8ajo4g48s33 
         foreign key (l_spectrum_id) 
-        references spectrum (id);
+        references colims.spectrum (id);
 
-    alter table quantification_file 
-        add index FK_rqi1kve6lkstnkaj90pgej8k2 (l_quantification_method_id), 
+    alter table colims.quantification_file 
         add constraint FK_rqi1kve6lkstnkaj90pgej8k2 
         foreign key (l_quantification_method_id) 
-        references quantification_method (id);
+        references colims.quantification_method (id);
 
-    alter table quantification_group 
-        add index FK_jx8ix1plsndh02i3cpcetcs54 (l_quantification_file_id), 
+    alter table colims.quantification_group 
         add constraint FK_jx8ix1plsndh02i3cpcetcs54 
         foreign key (l_quantification_file_id) 
-        references quantification_file (id);
+        references colims.quantification_file (id);
 
-    alter table quantification_group_has_peptide 
-        add index FK_b9yiwf6dqhkcx01kdhm1t3it5 (l_peptide_id), 
+    alter table colims.quantification_group_has_peptide 
         add constraint FK_b9yiwf6dqhkcx01kdhm1t3it5 
         foreign key (l_peptide_id) 
-        references peptide (id);
+        references colims.peptide (id);
 
-    alter table quantification_group_has_peptide 
-        add index FK_3y5qhhppnpirl5g7efvnr611l (l_quantification_group_id), 
+    alter table colims.quantification_group_has_peptide 
         add constraint FK_3y5qhhppnpirl5g7efvnr611l 
         foreign key (l_quantification_group_id) 
-        references quantification_group (id);
+        references colims.quantification_group (id);
 
-    alter table quantification_method 
-        add index FK_qaaks315j06c978q4nj9nn6yf (l_experiment_id), 
+    alter table colims.quantification_method 
         add constraint FK_qaaks315j06c978q4nj9nn6yf 
         foreign key (l_experiment_id) 
-        references experiment (id);
+        references colims.experiment (id);
 
-    alter table role_has_permission 
-        add index FK_sp2yl1puui1jbdknkehlvhxq4 (l_permission_id), 
+    alter table colims.role_has_permission 
         add constraint FK_sp2yl1puui1jbdknkehlvhxq4 
         foreign key (l_permission_id) 
-        references permission (id);
+        references colims.permission (id);
 
-    alter table role_has_permission 
-        add index FK_30ri4nqak6uechie8onfsy489 (l_role_id), 
+    alter table colims.role_has_permission 
         add constraint FK_30ri4nqak6uechie8onfsy489 
         foreign key (l_role_id) 
-        references group_role (id);
+        references colims.group_role (id);
 
-    alter table sample 
-        add index FK_fx5esu8n3umhihw8kt19593yt (l_experiment_id), 
+    alter table colims.sample 
         add constraint FK_fx5esu8n3umhihw8kt19593yt 
         foreign key (l_experiment_id) 
-        references experiment (id);
+        references colims.experiment (id);
 
-    alter table sample 
-        add index FK_pbpctnedgs4yjfsu6vo6b7et8 (l_protocol_id), 
+    alter table colims.sample 
         add constraint FK_pbpctnedgs4yjfsu6vo6b7et8 
         foreign key (l_protocol_id) 
-        references protocol (id);
+        references colims.protocol (id);
 
-    alter table sample_binary_file 
-        add index FK_ek4x2rdy0on1ncwt4xa445d6c (l_sample_id), 
+    alter table colims.sample_binary_file 
         add constraint FK_ek4x2rdy0on1ncwt4xa445d6c 
         foreign key (l_sample_id) 
-        references sample (id);
+        references colims.sample (id);
 
-    alter table sample_has_material 
-        add index FK_8yuapgtl822resfo0cuhm1uv0 (l_material_id), 
+    alter table colims.sample_has_material 
         add constraint FK_8yuapgtl822resfo0cuhm1uv0 
         foreign key (l_material_id) 
-        references material (id);
+        references colims.material (id);
 
-    alter table sample_has_material 
-        add index FK_82ptqcd4sp8nrghikp7i9crpv (l_sample_id), 
+    alter table colims.sample_has_material 
         add constraint FK_82ptqcd4sp8nrghikp7i9crpv 
         foreign key (l_sample_id) 
-        references sample (id);
+        references colims.sample (id);
 
-    alter table search_and_val_set_has_search_engine 
-        add index FK_5cjhcdnpuib22sq83ttapgkhy (l_s_and_val_set_id), 
-        add constraint FK_5cjhcdnpuib22sq83ttapgkhy 
-        foreign key (l_s_and_val_set_id) 
-        references search_and_validation_settings (id);
-
-    alter table search_and_val_set_has_search_engine 
-        add index FK_iogx049qj83vcfh6r3v7echtr (l_search_engine_id), 
-        add constraint FK_iogx049qj83vcfh6r3v7echtr 
-        foreign key (l_search_engine_id) 
-        references search_engine (id);
-
-    alter table search_and_validation_settings 
-        add index FK_ris4310042dlrxtaocuejb2x7 (l_experiment_id), 
+    alter table colims.search_and_validation_settings 
         add constraint FK_ris4310042dlrxtaocuejb2x7 
         foreign key (l_experiment_id) 
-        references experiment (id);
+        references colims.experiment (id);
 
-    alter table search_parameter_settings 
-        add index FK_htqwqkr941nrjnw8udkhlswsh (l_fasta_db_id), 
-        add constraint FK_htqwqkr941nrjnw8udkhlswsh 
+    alter table colims.search_and_validation_settings 
+        add constraint FK_4o2jjp2a6a1vaff68fl6kj4ck 
         foreign key (l_fasta_db_id) 
-        references fasta_db (id);
+        references colims.fasta_db (id);
 
-    alter table search_parameter_settings 
-        add index FK_t06ciehin8u5bc0x1d9y0iuib (l_s_and_val_set_has_s_eng_id), 
-        add constraint FK_t06ciehin8u5bc0x1d9y0iuib 
-        foreign key (l_s_and_val_set_has_s_eng_id) 
-        references search_and_val_set_has_search_engine (id);
+    alter table colims.search_and_validation_settings 
+        add constraint FK_bnrf68wq188wbw6fq69yk83hi 
+        foreign key (l_search_engine_id) 
+        references colims.search_engine (id);
 
-    alter table spectrum 
-        add index FK_mpjgedldeff5qugyrqangh6so (l_analytical_run_id), 
+    alter table colims.search_and_validation_settings 
+        add constraint FK_1c0io12fbf8qsoebhe6n9201r 
+        foreign key (l_search_param_settings_id) 
+        references colims.search_parameter_settings (id);
+
+    alter table colims.spectrum 
         add constraint FK_mpjgedldeff5qugyrqangh6so 
         foreign key (l_analytical_run_id) 
-        references analytical_run (id);
+        references colims.analytical_run (id);
 
-    alter table spectrum_file 
-        add index FK_8unfql3wnogbervsi1gl607ds (l_spectrum_id), 
+    alter table colims.spectrum_file 
         add constraint FK_8unfql3wnogbervsi1gl607ds 
         foreign key (l_spectrum_id) 
-        references spectrum (id);
+        references colims.spectrum (id);
 
-    alter table colims_user 
-        add index FK_2dv7j90jeym2jgoj9qj6g95e8 (l_institution_id), 
-        add constraint FK_2dv7j90jeym2jgoj9qj6g95e8 
-        foreign key (l_institution_id) 
-        references institution (id);
-
-    alter table user_has_group 
-        add index FK_j85c8a2vhyfvwiooom79aenls (l_group_id), 
+    alter table colims.user_has_group 
         add constraint FK_j85c8a2vhyfvwiooom79aenls 
         foreign key (l_group_id) 
-        references user_group (id);
+        references colims.user_group (id);
 
-    alter table user_has_group 
-        add index FK_e2guk3ak57dupnvkd5k3u9dfk (l_user_id), 
+    alter table colims.user_has_group 
         add constraint FK_e2guk3ak57dupnvkd5k3u9dfk 
         foreign key (l_user_id) 
-        references colims_user (id);
+        references colims.colims_user (id);
 		
 -- create default value insertions
 -- insert default admin and distributed users
@@ -876,11 +811,11 @@ INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,acc
 INSERT INTO instrument_type (id,creation_date,modification_date,user_name,description,name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument type 1 description','instrument type 1');
 INSERT INTO instrument_type (id,creation_date,modification_date,user_name,description,name) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument type 2 description','instrument type 2');
 
-INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 1',2,1,1);
-INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (4,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 3',2,2,1);
+INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 1',2,1,1);
+INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 3',2,2,1);
 
+INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_term_id) VALUES (1,3);
 INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_term_id) VALUES (2,3);
-INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_term_id) VALUES (4,3);
 
 INSERT INTO material_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','9606','SPECIES','NEWT','Homo sapiens (Human)','NEWT UniProt Taxonomy Database[NEWT]');
 
@@ -888,4 +823,4 @@ INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_t
 INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_type_cv_id,l_compartment_cv_id,l_project_id,l_species_cv_id,l_tissue_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','material 2',null,null,null,1,null);
 
 INSERT INTO protocol (id,creation_date,modification_date,user_name,name,l_cell_based_cv_id,l_enzyme_cv_id,l_reduction_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','protocol 7',null,null,null);
-INSERT INTO protocol (id,creation_date,modification_date,user_name,name,l_cell_based_cv_id,l_enzyme_cv_id,l_reduction_cv_id) VALUES (3,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','protocol 1',null,null,null);
+INSERT INTO protocol (id,creation_date,modification_date,user_name,name,l_cell_based_cv_id,l_enzyme_cv_id,l_reduction_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','protocol 1',null,null,null);

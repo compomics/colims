@@ -10,6 +10,6 @@ import com.compomics.colims.model.SearchParameterSettings;
  *
  * @author Kenneth Verheggen
  */
-public interface SearchParameterRepository extends GenericRepository<SearchParameterSettings, Long> {
+public interface SearchParameterSettingsRepository extends GenericRepository<SearchParameterSettings, Long> {
 
 }

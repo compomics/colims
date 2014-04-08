@@ -5,6 +5,7 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Quantification;
+import com.compomics.colims.repository.QuantificationRepository;
 import org.springframework.stereotype.Repository;
 
 
@@ -13,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @author Kenneth Verheggen
  */
 @Repository("quantificationRepository")
-public class QuantificationRepository extends GenericHibernateRepository<Quantification, Long> implements com.compomics.colims.repository.QuantificationRepository {
-
+public class QuantificationHibernateRepository extends GenericHibernateRepository<Quantification, Long> implements QuantificationRepository {
+    
 }

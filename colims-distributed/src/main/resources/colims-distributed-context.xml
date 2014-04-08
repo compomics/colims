@@ -25,7 +25,7 @@
             </list>
         </property>        
         <property name="order" value="-1"/>     
-        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="false"/>
     </bean>
     

@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class SearchEngine extends DatabaseEntity {
     @Column(name = "version", nullable = true)
     private String version;    
     @OneToMany(mappedBy = "searchEngine")
-    private List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines = new ArrayList<>();  
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();  
 
     public SearchEngineType getSearchEngineType() {
         return searchEngineType;
@@ -60,13 +59,13 @@ public class SearchEngine extends DatabaseEntity {
         this.version = version;
     }        
 
-    public List<SearchAndValSetHasSearchEngine> getSearchAndValSetHasSearchEngines() {
-        return searchAndValSetHasSearchEngines;
+    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
+        return searchAndValidationSettingses;
     }
 
-    public void setSearchAndValSetHasSearchEngines(List<SearchAndValSetHasSearchEngine> searchAndValSetHasSearchEngines) {
-        this.searchAndValSetHasSearchEngines = searchAndValSetHasSearchEngines;
-    }
+    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
+        this.searchAndValidationSettingses = searchAndValidationSettingses;
+    }    
 
     @Override
     public int hashCode() {

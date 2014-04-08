@@ -386,7 +386,7 @@ public class AnalyticalRunSetupController implements Controllable {
             storageTaskProducer.sendStorageTask(storageTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
-            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit could not be reached.", JOptionPane.ERROR_MESSAGE);
+            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
         }
     }
 
