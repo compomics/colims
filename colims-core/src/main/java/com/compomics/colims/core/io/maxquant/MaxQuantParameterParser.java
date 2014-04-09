@@ -57,9 +57,9 @@ public class MaxQuantParameterParser {
             } else if (Arrays.asList(ParametersHeaders.FTMS_MS_MS_TOLERANCE.allPossibleColumnNames()).contains(values.getKey())) {
                 globalParameters.setFragmentIonAccuracy(Double.parseDouble(values.getValue().split(" ")[0]));
                 if (values.getValue().split(" ")[1].equalsIgnoreCase("da")) {
-                    globalParameters.setPrecursorAccuracyType(SearchParameters.PrecursorAccuracyType.DA);
+                    globalParameters.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.DA);
                 } else {
-                    globalParameters.setPrecursorAccuracyType(SearchParameters.PrecursorAccuracyType.PPM);
+                    globalParameters.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.PPM);
                 }
             }
         }
@@ -92,7 +92,7 @@ public class MaxQuantParameterParser {
                 runParameters.setModificationProfile(runModifications);
                 //runParameters.setEnzyme(valuesIter.get(SummaryHeaders.PROTEASE.column));
 
-                runParameters.setnMissedCleavages(Integer.parseInt(valuesIter.get(SummaryHeaders.MAX_MISCLEAVAGES)));
+                runParameters.setnMissedCleavages(Integer.parseInt(valuesIter.get(SummaryHeaders.MAX_MISCLEAVAGES.column)));
                 MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
                 runParameters.setParametersFile(tarredParameters.getTarredParaMeterFiles());
                 runParams.put(valuesIter.get(SummaryHeaders.RAW_FILE.column), runParameters);
