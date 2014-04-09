@@ -33,7 +33,7 @@ public class ColimsDistributedStarter {
             authenticationBean.setCurrentUser(distributedUser);
         } catch (CannotCreateTransactionException ex) {
             LOGGER.error(ex.getMessage(), ex);
-            System.exit(0);
+            System.exit(1);
         }
     }
 }
