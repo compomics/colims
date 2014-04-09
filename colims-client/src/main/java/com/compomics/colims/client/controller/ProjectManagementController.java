@@ -10,16 +10,21 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
+import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Protocol;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.google.common.eventbus.EventBus;
@@ -50,6 +55,9 @@ public class ProjectManagementController implements Controllable {
     private EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
+    private EventList<Sample> samples = new BasicEventList<>();
+    private AdvancedTableModel<Sample> samplesTableModel;
+    private DefaultEventSelectionModel<Sample> samplesSelectionModel;
     //view
     private ProjectManagementPanel projectManagementPanel;
     //child controller
@@ -57,6 +65,8 @@ public class ProjectManagementController implements Controllable {
     private ProjectEditController projectEditController;
     @Autowired
     private ExperimentEditController experimentEditController;
+    @Autowired
+    private SampleEditController sampleEditController;
     //parent controller
     @Autowired
     private ColimsController colimsController;
@@ -65,6 +75,8 @@ public class ProjectManagementController implements Controllable {
     private ProjectService projectService;
     @Autowired
     private ExperimentService experimentService;
+    @Autowired
+    private SampleService sampleService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -85,6 +97,7 @@ public class ProjectManagementController implements Controllable {
         //init child controllers
         projectEditController.init();
         experimentEditController.init();
+        sampleEditController.init();
 
         //init projects table        
         SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
@@ -117,11 +130,28 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);
         projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
 
+        //init experiment samples table
+        SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
+        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
+        projectManagementPanel.getSamplesTable().setModel(samplesTableModel);
+        samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
+        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        projectManagementPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
+
+        //set column widths
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(5);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(300);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(100);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
+
         //set sorting
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
+        TableComparatorChooser samplesTableSorter = TableComparatorChooser.install(
+                projectManagementPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -137,7 +167,7 @@ public class ProjectManagementController implements Controllable {
                     }
                 }
             }
-        });
+        });                
 
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
@@ -183,6 +213,21 @@ public class ProjectManagementController implements Controllable {
                     }
                 } else {
                     eventBus.post(new MessageEvent("project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        });
+        
+        experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    Experiment selectedExperiment = getSelectedExperiment();
+                    if (selectedExperiment != null) {
+                        //fill samples table                        
+                        GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
+                    } else {
+                        GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
+                    }
                 }
             }
         });
@@ -240,6 +285,59 @@ public class ProjectManagementController implements Controllable {
                     }
                 } else {
                     eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        });
+
+        projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sampleEditController.updateView(createDefaultSample());
+            }
+        });
+
+        projectManagementPanel.getEditSampleButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sample selectedSample = getSelectedSample();
+                if (selectedSample != null) {
+                    sampleEditController.updateView(selectedSample);
+                } else {
+                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        });
+
+        projectManagementPanel.getDeleteSampleButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sample sampleToDelete = getSelectedSample();
+
+                if (sampleToDelete != null) {
+                    try {
+                        sampleService.delete(sampleToDelete);
+
+                        //remove from overview table and clear selection
+                        samples.remove(sampleToDelete);
+                        samplesSelectionModel.clearSelection();
+                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
+
+                        //remove sample from the selected experiment and update the table
+                        getSelectedExperiment().getSamples().remove(sampleToDelete);
+                        projectManagementPanel.getExperimentsTable().updateUI();
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the sample can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("sample", sampleToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -359,6 +457,22 @@ public class ProjectManagementController implements Controllable {
 
         return selectedExperiment;
     }
+    
+    /**
+     * Get the selected sample from the sample overview table.
+     *
+     * @return the selected sample, null if no sample is selected
+     */
+    public Sample getSelectedSample() {
+        Sample selectedSample = null;
+
+        EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+        if (!selectedSamples.isEmpty()) {
+            selectedSample = selectedSamples.get(0);
+        }
+
+        return selectedSample;
+    }
 
     /**
      * Create a default project, with some default properties.
@@ -394,5 +508,22 @@ public class ProjectManagementController implements Controllable {
         defaultExperiment.setNumber(1L);
 
         return defaultExperiment;
+    }
+    
+    /**
+     * Create a default sample, with some default properties.
+     *
+     * @return the default sample
+     */
+    private Sample createDefaultSample() {
+        Sample defaultSample = new Sample();
+
+        defaultSample.setName("default sample name");
+        Protocol mostUsedProtocol = sampleService.getMostUsedProtocol();
+        if (mostUsedProtocol != null) {
+            defaultSample.setProtocol(mostUsedProtocol);
+        }
+
+        return defaultSample;
     }
 }

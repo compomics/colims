@@ -11,8 +11,6 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
-import com.compomics.colims.client.event.SampleChangeEvent;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
@@ -23,7 +21,6 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
-import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.google.common.base.Joiner;
@@ -37,9 +34,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,9 +53,6 @@ public class ExperimentEditController implements Controllable {
     //view
     private ExperimentEditDialog experimentEditDialog;
     private ExperimentBinaryFileDialog experimentBinaryFileDialog;
-    //child controller
-    @Autowired
-    private SampleEditController sampleEditController;
     //parent controller
     @Autowired
     private ProjectManagementController projectManagementController;
@@ -93,29 +85,6 @@ public class ExperimentEditController implements Controllable {
         experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);
         experimentBinaryFileDialog = new ExperimentBinaryFileDialog(experimentEditDialog, true);
         experimentBinaryFileDialog.getBinaryFileManagementPanel().init(ExperimentBinaryFile.class);
-
-        //init child controller
-        sampleEditController.init();
-
-        //init experiment samples table
-        SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
-        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
-        experimentEditDialog.getSamplesTable().setModel(samplesTableModel);
-        samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
-        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        experimentEditDialog.getSamplesTable().setSelectionModel(samplesSelectionModel);
-
-        //set column widths
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(5);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(200);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setPreferredWidth(100);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(100);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);
-        experimentEditDialog.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
-
-        //set sorting       
-        TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-                experimentEditDialog.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners                        
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
@@ -159,7 +128,6 @@ public class ExperimentEditController implements Controllable {
                         projectManagementController.addExperiment(experimentToEdit);
 
                         experimentEditDialog.getSaveOrUpdateButton().setText("update");
-                        updateSampleButtonsState(true);
                     }
                     ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
                     eventBus.post(experimentChangeEvent);
@@ -244,58 +212,6 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        experimentEditDialog.getAddSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sampleEditController.updateView(createDefaultSample());
-            }
-        });
-
-        experimentEditDialog.getEditSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
-                    sampleEditController.updateView(selectedSample);
-                } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        experimentEditDialog.getDeleteSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Sample sampleToDelete = getSelectedSample();
-
-                if (sampleToDelete != null) {
-                    try {
-                        sampleService.delete(sampleToDelete);
-
-                        //remove from overview table and clear selection
-                        samples.remove(sampleToDelete);
-                        samplesSelectionModel.clearSelection();
-                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
-
-                        //remove sample from the selected experiment
-                        experimentToEdit.getSamples().remove(sampleToDelete);
-                        experimentEditDialog.getSamplesTable().updateUI();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the sample can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("sample", sampleToDelete.getName());
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
     }
 
     @Override
@@ -315,13 +231,11 @@ public class ExperimentEditController implements Controllable {
         experimentToEdit = experiment;
 
         if (experimentToEdit.getId() != null) {
-            experimentEditDialog.getSaveOrUpdateButton().setText("update");
-            updateSampleButtonsState(true);
+            experimentEditDialog.getSaveOrUpdateButton().setText("update");            
             //fetch experiment binary files
             experimentService.fetchBinaryFiles(experimentToEdit);
         } else {
-            experimentEditDialog.getSaveOrUpdateButton().setText("save");
-            updateSampleButtonsState(false);
+            experimentEditDialog.getSaveOrUpdateButton().setText("save");            
         }
 
         experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());
@@ -376,22 +290,6 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Get the selected sample from the sample overview table.
-     *
-     * @return the selected sample, null if no sample is selected
-     */
-    public Sample getSelectedSample() {
-        Sample selectedSample = null;
-
-        EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
-        if (!selectedSamples.isEmpty()) {
-            selectedSample = selectedSamples.get(0);
-        }
-
-        return selectedSample;
-    }
-
-    /**
      * Update the instance fields of the selected experiment in the experiments
      * table
      */
@@ -433,31 +331,4 @@ public class ExperimentEditController implements Controllable {
         return concatenatedString;
     }
 
-    /**
-     * Create a default sample, with some default properties.
-     *
-     * @return the default sample
-     */
-    private Sample createDefaultSample() {
-        Sample defaultSample = new Sample();
-
-        defaultSample.setName("default sample name");
-        Protocol mostUsedProtocol = sampleService.getMostUsedProtocol();
-        if (mostUsedProtocol != null) {
-            defaultSample.setProtocol(mostUsedProtocol);
-        }
-
-        return defaultSample;
-    }
-
-    /**
-     * Update the state (enables/disabled) of the sample related buttons
-     *
-     * @param enable the enable the buttons boolean
-     */
-    private void updateSampleButtonsState(boolean enable) {
-        experimentEditDialog.getEditSampleButton().setEnabled(enable);
-        experimentEditDialog.getAddSampleButton().setEnabled(enable);
-        experimentEditDialog.getDeleteSampleButton().setEnabled(enable);
-    }
 }

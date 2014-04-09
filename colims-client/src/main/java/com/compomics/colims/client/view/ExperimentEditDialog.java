@@ -2,7 +2,6 @@ package com.compomics.colims.client.view;
 
 import java.awt.Frame;
 import javax.swing.JButton;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -14,6 +13,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
@@ -21,9 +21,6 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         initComponents();
-
-        samplesTableScrollPane.getViewport().setOpaque(false);
-        samplesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
 
     public JButton getAttachmentsEditButton() {
@@ -58,22 +55,6 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         return titleTextField;
     }
 
-    public JButton getAddSampleButton() {
-        return addSampleButton;
-    }
-
-    public JButton getDeleteSampleButton() {
-        return deleteSampleButton;
-    }
-
-    public JButton getEditSampleButton() {
-        return editSampleButton;
-    }
-
-    public JTable getSamplesTable() {
-        return samplesTable;
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -99,12 +80,6 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         descriptionLabel = new javax.swing.JLabel();
         numberLabel = new javax.swing.JLabel();
         titleTextField = new javax.swing.JTextField();
-        samplesPanel = new javax.swing.JPanel();
-        samplesTableScrollPane = new javax.swing.JScrollPane();
-        samplesTable = new javax.swing.JTable();
-        deleteSampleButton = new javax.swing.JButton();
-        editSampleButton = new javax.swing.JButton();
-        addSampleButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("experiment metadata management");
@@ -123,7 +98,6 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        detailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
         detailPanel.setOpaque(false);
 
         attachementsLabel.setText("attachments");
@@ -159,10 +133,6 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                         .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(descriptionScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(detailPanelLayout.createSequentialGroup()
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, detailPanelLayout.createSequentialGroup()
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(storageLocationLabel)
@@ -174,11 +144,14 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                                 .addComponent(attachementsTextField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(attachmentsEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(detailPanelLayout.createSequentialGroup()
-                        .addComponent(numberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)
-                        .addComponent(numberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, detailPanelLayout.createSequentialGroup()
+                        .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(numberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(numberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         detailPanelLayout.setVerticalGroup(
@@ -195,7 +168,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(descriptionLabel)
-                    .addComponent(descriptionScrollPanel))
+                    .addComponent(descriptionScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(storageLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -208,98 +181,23 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("samples"));
-        samplesPanel.setOpaque(false);
-
-        samplesTableScrollPane.setOpaque(false);
-
-        samplesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        samplesTableScrollPane.setViewportView(samplesTable);
-
-        deleteSampleButton.setText("delete");
-        deleteSampleButton.setToolTipText("delete a sample");
-        deleteSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        deleteSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        deleteSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        editSampleButton.setText("edit...");
-        editSampleButton.setToolTipText("edit the metadata of an existing sample");
-        editSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        editSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        editSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        addSampleButton.setText("add...");
-        addSampleButton.setToolTipText("add a new sample");
-        addSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        addSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        addSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        javax.swing.GroupLayout samplesPanelLayout = new javax.swing.GroupLayout(samplesPanel);
-        samplesPanel.setLayout(samplesPanelLayout);
-        samplesPanelLayout.setHorizontalGroup(
-            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(samplesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(samplesTableScrollPane)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, samplesPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        samplesPanelLayout.setVerticalGroup(
-            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(samplesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(samplesTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout experimentEditPanelLayout = new javax.swing.GroupLayout(experimentEditPanel);
         experimentEditPanel.setLayout(experimentEditPanelLayout);
         experimentEditPanelLayout.setHorizontalGroup(
             experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentEditPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentEditPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(experimentEditPanelLayout.createSequentialGroup()
-                        .addComponent(detailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(499, Short.MAX_VALUE)
+                .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addComponent(detailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         experimentEditPanelLayout.setVerticalGroup(
             experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentEditPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(detailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(samplesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -320,23 +218,17 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addSampleButton;
     private javax.swing.JLabel attachementsLabel;
     private javax.swing.JTextField attachementsTextField;
     private javax.swing.JButton attachmentsEditButton;
     private javax.swing.JButton closeButton;
-    private javax.swing.JButton deleteSampleButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPanel;
     private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JPanel detailPanel;
-    private javax.swing.JButton editSampleButton;
     private javax.swing.JPanel experimentEditPanel;
     private javax.swing.JLabel numberLabel;
     private javax.swing.JTextField numberTextField;
-    private javax.swing.JPanel samplesPanel;
-    private javax.swing.JTable samplesTable;
-    private javax.swing.JScrollPane samplesTableScrollPane;
     private javax.swing.JButton saveOrUpdateButton;
     private javax.swing.JLabel storageLocationLabel;
     private javax.swing.JTextField storageLocationTextField;
