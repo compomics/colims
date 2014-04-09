@@ -85,9 +85,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="userOverviewPanel" pref="203" max="32767" attributes="0"/>
+                      <Component id="userOverviewPanel" pref="183" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="userDetailPanel" pref="215" max="32767" attributes="0"/>
+                      <Component id="userDetailPanel" pref="235" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -133,7 +133,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteUserButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="userListScrollPane" pref="158" max="32767" attributes="0"/>
+                              <Component id="userListScrollPane" pref="138" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -270,22 +270,22 @@
                                       <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="firstNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="firstNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lastNameLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="lastNameTextField" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="emailLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="emailTextField" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="passwordTextField" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -578,7 +578,7 @@
                                       <Component id="groupNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="groupNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="groupDescriptionLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="groupDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
@@ -699,9 +699,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="roleOverviewPanel" pref="203" max="32767" attributes="0"/>
+                      <Component id="roleOverviewPanel" pref="200" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="roleDetailPanel" pref="215" max="32767" attributes="0"/>
+                      <Component id="roleDetailPanel" pref="218" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -747,7 +747,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteRoleButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="roleListScrollPane" alignment="0" pref="158" max="32767" attributes="0"/>
+                              <Component id="roleListScrollPane" alignment="0" pref="155" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -865,13 +865,13 @@
                                       <Component id="roleNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="roleNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="roleDescriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="roleDescriptionScrollPane" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Component id="permissionDualList" alignment="1" pref="124" max="32767" attributes="0"/>
+                              <Component id="permissionDualList" alignment="1" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="roleSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
@@ -986,9 +986,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="permissionOverviewPanel" pref="203" max="32767" attributes="0"/>
+                      <Component id="permissionOverviewPanel" pref="200" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="permissionDetailPanel" pref="215" max="32767" attributes="0"/>
+                      <Component id="permissionDetailPanel" pref="218" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1034,7 +1034,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deletePermissionButton" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="permissionListScrollPane" alignment="0" pref="158" max="32767" attributes="0"/>
+                              <Component id="permissionListScrollPane" alignment="0" pref="155" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -1142,12 +1142,12 @@
                               <Component id="permissionNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="permissionNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="permissionDescriptionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="permissionDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="8" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>

@@ -32,9 +32,9 @@ public class Group extends AuditableDatabaseEntity {
     @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Length(max = 500, message = "Group description length must be less than {max} characters")
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
     @ManyToMany(mappedBy = "groups")
     private List<User> users = new ArrayList<>();

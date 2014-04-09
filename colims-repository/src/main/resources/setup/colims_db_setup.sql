@@ -1,4 +1,5 @@
 
+    
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -53,8 +54,10 @@
     create table colims.fasta_db (
         id bigint not null auto_increment,
         file_name varchar(255) not null,
+        file_path varchar(255),
         md5_checksum varchar(255),
         name varchar(255) not null,
+        species varchar(255),
         taxonomy_id integer,
         version varchar(255),
         primary key (id)
@@ -428,7 +431,7 @@
         creation_date datetime not null,
         modification_date datetime not null,
         user_name varchar(255) not null,
-        description varchar(500) not null,
+        description varchar(500),
         name varchar(20) not null,
         primary key (id)
     );
