@@ -5,6 +5,7 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.Sample;
 import java.util.List;
 import javax.jms.JMSException;

@@ -156,12 +156,12 @@ public class MaxQuantParser {
      * parsed files
      */
     public ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
-        return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getParentProteins().get(0)));
+        return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getParentProteinsNoRemapping().get(0)));
     }
 
     public Collection<ProteinMatch> getProteinHitsForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
         Collection<ProteinMatch> proteins = new ArrayList<>();
-        for (String proteinKey : aPeptideAssumption.getPeptide().getParentProteins()) {
+        for (String proteinKey : aPeptideAssumption.getPeptide().getParentProteinsNoRemapping()) {
             proteins.add(proteinMap.get(Integer.parseInt(proteinKey)));
         }
         return Collections.unmodifiableCollection(proteins);

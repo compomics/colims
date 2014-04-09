@@ -18,6 +18,9 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -85,23 +88,28 @@ public class UtilitiesModificationMapper {
                 if (modificationMatch.isVariable()) {
                     peptideHasModification.setModificationType(ModificationType.VARIABLE);
 
-                    if (ptmScores != null && ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()) != null) {
-                        String alphaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestAScoreLocations();
-                        if (alphaLocationKeys != null) {
-                            Double alphaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getAScore(alphaLocationKeys);
-                            peptideHasModification.setAlphaScore(alphaScore);
-                            ArrayList<Integer> locations = PtmScoring.getLocations(alphaLocationKeys);
-                            if (!locations.contains(modificationMatch.getModificationSite())) {
-                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + alphaLocationKeys + ")");
+                    if (ptmScores != null) {
+                        PtmScoring ptmScoring = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm());
+                        if (ptmScoring != null) {
+                            //@todo ask mark if taking the site with the highest prob is the way to go
+                            //@todo ask mark if we should use the modificationMatch.getModificationSite
+                            List<Integer> orderedProbablisticSites = ptmScoring.getOrderedProbabilisticSites();
+                            if (!orderedProbablisticSites.isEmpty()) {
+                                Double probabilisticScore = ptmScoring.getProbabilisticScore(orderedProbablisticSites.get(0));
+                                peptideHasModification.setAlphaScore(probabilisticScore);
+                                Set<Integer> locations = ptmScoring.getProbabilisticSites();
+                                if (!locations.contains(modificationMatch.getModificationSite())) {
+                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedProbablisticSites.toArray()) + ")");
+                                }
                             }
-                        }
-                        String deltaLocationKeys = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getBestDeltaScoreLocations();
-                        if (deltaLocationKeys != null) {
-                            Double deltaScore = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm()).getDeltaScore(deltaLocationKeys);
-                            peptideHasModification.setDeltaScore(deltaScore);
-                            ArrayList<Integer> locations = PtmScoring.getLocations(deltaLocationKeys);
-                            if (!locations.contains(modificationMatch.getModificationSite())) {
-                                LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + deltaLocationKeys + ")");
+                            List<Integer> orderedDeltaSites = ptmScoring.getOrderedDSites();
+                            if (!orderedDeltaSites.isEmpty()) {
+                                Double deltaScore = ptmScoring.getDeltaScore(orderedDeltaSites.get(0));
+                                peptideHasModification.setDeltaScore(deltaScore);
+                                Set<Integer> locations = ptmScoring.getDSites();
+                                if (!locations.contains(modificationMatch.getModificationSite())) {
+                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedDeltaSites.toArray()) + ")");
+                                }
                             }
                         }
                     }
@@ -192,8 +200,13 @@ public class UtilitiesModificationMapper {
 
             if (modification == null) {
                 //the modification was not found in the database
-                //look for the modification in the PSI-MOD ontology by accession                
-                modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+                if (cvTerm.getOntology().equals("PSI-MOD")) {
+                    //look for the modification in the PSI-MOD ontology by accession                
+                    modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+                } else if(cvTerm.getOntology().equals("UNIMOD")){
+                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
+                    modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
+                }
 
                 if (modification != null) {
                     newModifications.put(modification.getAccession(), modification);

@@ -32,6 +32,6 @@ public class PsmMapper {
         peptideMapper.map(peptide, peptideMatch);
         PeptideAssumption assumption = new PeptideAssumption(peptideMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), peptide.getPsmProbability());
         //set best assumption
-        spectrumMatch.setBestAssumption(assumption);       
+        spectrumMatch.setBestPeptideAssumption(assumption);       
     }
 }

@@ -4,14 +4,15 @@
  */
 package com.compomics.colims.model;
 
-import com.compomics.util.experiment.identification.SearchParameters.PrecursorAccuracyType;
+import com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,12 +25,8 @@ public class SearchParameterSettings extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @JoinColumn(name = "l_s_and_val_set_has_s_eng_id", referencedColumnName = "id")
-    @ManyToOne
-    private SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine;
-    @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
-    @ManyToOne
-    private FastaDb fastaDb;
+    @OneToMany(mappedBy = "searchParameterSettings")
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
     @Basic(optional = true)
     @Column(name = "enzyme")
     private String enzyme;
@@ -48,14 +45,14 @@ public class SearchParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance_unit")
     @Enumerated(EnumType.ORDINAL)
-    private PrecursorAccuracyType precMassToleranceUnit;
+    private MassAccuracyType precMassToleranceUnit;
     @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance")
     private double fragMassTolerance;
     @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance_unit")
     @Enumerated(EnumType.ORDINAL)
-    private PrecursorAccuracyType fragMassToleranceUnit;
+    private MassAccuracyType fragMassToleranceUnit;
     @Basic(optional = true)
     @Column(name = "fragment_ion_1_type")
     private int fragmentIon1Type;
@@ -109,11 +106,11 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.precursorUpperCharge = precursorUpperCharge;
     }
 
-    public PrecursorAccuracyType getPrecMassToleranceUnit() {
+    public MassAccuracyType getPrecMassToleranceUnit() {
         return precMassToleranceUnit;
     }
 
-    public void setPrecMassToleranceUnit(final PrecursorAccuracyType precMassToleranceUnit) {
+    public void setPrecMassToleranceUnit(final MassAccuracyType precMassToleranceUnit) {
         this.precMassToleranceUnit = precMassToleranceUnit;
     }
 
@@ -125,11 +122,11 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.fragMassTolerance = fragMassTolerance;
     }
 
-    public PrecursorAccuracyType getFragMassToleranceUnit() {
+    public MassAccuracyType getFragMassToleranceUnit() {
         return fragMassToleranceUnit;
     }
 
-    public void setFragMassToleranceUnit(final PrecursorAccuracyType fragMassToleranceUnit) {
+    public void setFragMassToleranceUnit(final MassAccuracyType fragMassToleranceUnit) {
         this.fragMassToleranceUnit = fragMassToleranceUnit;
     }
 
@@ -165,20 +162,12 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.hitlistLength = hitlistLength;
     }
 
-    public SearchAndValSetHasSearchEngine getSearchAndValSetHasSearchEngine() {
-        return searchAndValSetHasSearchEngine;
+    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
+        return searchAndValidationSettingses;
     }
 
-    public void setSearchAndValSetHasSearchEngine(final SearchAndValSetHasSearchEngine searchAndValSetHasSearchEngine) {
-        this.searchAndValSetHasSearchEngine = searchAndValSetHasSearchEngine;
-    }
-
-    public FastaDb getFastaDb() {
-        return fastaDb;
-    }
-
-    public void setFastaDb(final FastaDb fastaDb) {
-        this.fastaDb = fastaDb;
+    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
+        this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
 }

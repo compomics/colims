@@ -20,7 +20,7 @@
     
     <!-- property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="colims-core.properties"/>
+        <property name="location" value="config/colims-core.properties"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>               
     </bean>
     
@@ -28,7 +28,7 @@
     
     <aop:aspectj-autoproxy />  
     
-<!--    <bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
+    <!--    <bean class="com.compomics.colims.core.aop.HibernateCacheMonitor" />-->
       
     <bean class="com.compomics.colims.core.authorization.AuthorizationInterceptor" />  
     
@@ -50,7 +50,7 @@
     <!-- guava event bus bean -->
     <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>       
     
-     <!-- ols soap service client -->
+    <!-- ols soap service client -->
     <jaxws:client id="olsClient"
                   serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
                   address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery" /> 

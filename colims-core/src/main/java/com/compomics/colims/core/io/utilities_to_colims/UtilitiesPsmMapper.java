@@ -32,9 +32,9 @@ public class UtilitiesPsmMapper {
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
-    public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException {
+    public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException, InterruptedException {
         //get best assumption
-        PeptideAssumption peptideAssumption = spectrumMatch.getBestAssumption();
+        PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
 
         PSParameter psmProbabilities = new PSParameter();
@@ -69,7 +69,9 @@ public class UtilitiesPsmMapper {
         List<ProteinMatch> proteinMatches = new ArrayList<>();
         //iterate over protein keys        
         try {
-            for (String proteinKey : sourcePeptide.getParentProteins()) {
+            //get parent proteins without remapping them
+            //@todo this is probably the way to go for maxquant, but what about peptideshaker?
+            for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {
                 ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
                 if (proteinMatch != null) {
                     proteinMatches.add(proteinMatch);

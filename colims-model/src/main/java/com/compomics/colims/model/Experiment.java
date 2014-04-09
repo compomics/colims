@@ -51,7 +51,7 @@ public class Experiment extends AuditableDatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<SearchAndValidationSettings> searchAndValidationSettings = new ArrayList<>();
+    List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public Project getProject() {
         return project;
@@ -109,12 +109,12 @@ public class Experiment extends AuditableDatabaseEntity {
         this.binaryFiles = binaryFiles;
     }
 
-    public List<SearchAndValidationSettings> getSearchAndValidationSettings() {
-        return searchAndValidationSettings;
+    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
+        return searchAndValidationSettingses;
     }
 
-    public void setSearchAndValidationSettings(List<SearchAndValidationSettings> searchAndValidationSettings) {
-        this.searchAndValidationSettings = searchAndValidationSettings;
+    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
+        this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class Experiment extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {

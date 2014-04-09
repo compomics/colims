@@ -40,7 +40,7 @@ public class UtilitiesProteinMapperTest {
     public static void setupOnce() throws IOException, FileNotFoundException, ClassNotFoundException {
         //load SequenceFactory for testing
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
-        SequenceFactory.getInstance().loadFastaFile(fastaFile);
+        SequenceFactory.getInstance().loadFastaFile(fastaFile, null);
     }
 
     /**
@@ -48,6 +48,9 @@ public class UtilitiesProteinMapperTest {
      *
      * @throws MappingException
      * @throws IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testMapProtein_1() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
@@ -60,7 +63,7 @@ public class UtilitiesProteinMapperTest {
 
         //create utilities protein matches
         List<ProteinMatch> proteinMatches = new ArrayList();
-        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide);
+        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.setMainMatch("P16083");
         proteinMatches.add(proteinMatch);
 
@@ -87,19 +90,23 @@ public class UtilitiesProteinMapperTest {
      *
      * @throws MappingException
      * @throws IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testMapProtein_2() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
         //create new utilities peptide
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P06241");
+        //@todo can we still use this construcor if we don't want to redo the protein mapping
         com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", parentProteins, new ArrayList<ModificationMatch>());
 
         Peptide targetPeptide = new Peptide();
 
         //create utilities protein matches
         List<ProteinMatch> proteinMatches = new ArrayList();
-        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide);
+        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.addTheoreticProtein("P07947");
         proteinMatch.addTheoreticProtein("P12931");
         proteinMatch.setMainMatch("P06241");

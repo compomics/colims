@@ -120,7 +120,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="detailPanel" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Component id="analyticalRunsPanel" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -159,7 +159,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="analyticalRunsTableScrollPane" pref="116" max="32767" attributes="0"/>
+                          <Component id="analyticalRunsTableScrollPane" pref="146" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="deleteAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -288,28 +288,28 @@
                               <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="conditionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="conditionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="protocolLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="protocolComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="storageLocationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="storageLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="attachementsTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="attachmentsEditButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="attachementsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="attachementsLabel1" min="-2" max="-2" attributes="0"/>
                               <Component id="materialDualList" min="-2" pref="151" max="-2" attributes="0"/>

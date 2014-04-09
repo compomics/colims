@@ -272,7 +272,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>3.14.14</version>
+                <version>3.26.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-math</artifactId>
@@ -307,7 +307,7 @@
             <dependency>
                 <groupId>eu.isas.peptideshaker</groupId>
                 <artifactId>PeptideShaker</artifactId>
-                <version>0.22.6</version>
+                <version>0.27.4</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.jmzml</groupId>
@@ -343,6 +343,11 @@
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
                 <version>3.16</version>
+            </dependency>
+            <dependency>
+                <groupId>no.uib</groupId>
+                <artifactId>ols-dialog</artifactId>
+                <version>3.4.2</version>
             </dependency>                                               
         </dependencies>
     </dependencyManagement>

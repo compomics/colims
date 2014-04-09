@@ -22,5 +22,5 @@ public interface ModificationService extends GenericService<Modification, Long> 
      * @param accession the modification accession
      * @return the found modification
      */
-    Modification findByAccession(String accession);
+    Modification findByAccession(String accession);        
 }

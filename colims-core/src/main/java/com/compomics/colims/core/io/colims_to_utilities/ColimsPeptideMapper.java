@@ -28,17 +28,17 @@ public class ColimsPeptideMapper {
     public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch) throws MappingException {
         LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
-        ArrayList<ProteinMatch> parentProteins = new ArrayList<ProteinMatch>();
+        ArrayList<ProteinMatch> parentProteins = new ArrayList<>();
         for (PeptideHasProtein pepHasProtein : sourcePeptide.getPeptideHasProteins()) {
             colimsProteinMapper.map(pepHasProtein.getProtein(), parentProteins);
         }
 
-        ArrayList<String> parentProteinAccessions = new ArrayList<String>();
+        ArrayList<String> parentProteinAccessions = new ArrayList<>();
         for (ProteinMatch aMatch : parentProteins) {
             parentProteinAccessions.add(aMatch.getMainMatch());
         }
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
-        ArrayList<ModificationMatch> modifications = new ArrayList<ModificationMatch>();
+        ArrayList<ModificationMatch> modifications = new ArrayList<>();
         colimsModMapper.map(sourcePeptide, modifications);
         com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);        
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
@@ -47,10 +47,10 @@ public class ColimsPeptideMapper {
     public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch, final ProteinMatch parentProteinMatch) throws MappingException {
         LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
-        ArrayList<String> parentProteinAccessions = new ArrayList<String>();
+        ArrayList<String> parentProteinAccessions = new ArrayList<>();
         parentProteinAccessions.add(parentProteinMatch.getMainMatch());
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
-        ArrayList<ModificationMatch> modifications = new ArrayList<ModificationMatch>();
+        ArrayList<ModificationMatch> modifications = new ArrayList<>();
         colimsModMapper.map(sourcePeptide, modifications);
         com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);

@@ -97,24 +97,24 @@
                       <Component id="titleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="titleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="labelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="labelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="descriptionScrollPanel" pref="127" max="32767" attributes="0"/>
+                      <Component id="descriptionScrollPanel" pref="135" max="32767" attributes="0"/>
                       <Component id="descriptionLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="ownerComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="ownerLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="userDualList" pref="149" max="32767" attributes="0"/>
+                      <Component id="userDualList" pref="154" max="32767" attributes="0"/>
                       <Component id="userDualListLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>

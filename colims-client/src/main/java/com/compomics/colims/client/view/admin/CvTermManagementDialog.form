@@ -62,9 +62,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cvTermOverviewPanel" pref="214" max="32767" attributes="0"/>
+                  <Component id="cvTermOverviewPanel" pref="193" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="cvTermDetailPanel" pref="365" max="32767" attributes="0"/>
+                  <Component id="cvTermDetailPanel" pref="343" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="closeButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -107,7 +107,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="cvTermTableScrollPane" pref="138" max="32767" attributes="0"/>
+                      <Component id="cvTermTableScrollPane" pref="117" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="addCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -236,32 +236,32 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Component id="cvTermStateInfoLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="ontologyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ontologyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="ontologyLabelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ontologyLabelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="accessionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="accessionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="94" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="117" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="saveOrUpdateButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="editUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>

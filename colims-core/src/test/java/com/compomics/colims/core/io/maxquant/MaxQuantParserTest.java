@@ -26,23 +26,23 @@ import org.springframework.core.io.ClassPathResource;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantParserTest {
-
+    
     @Autowired
     MaxQuantParser maxQuantParser;
     public static File testFolder;
-
+    
     @After
     public void clearMaxQuantParser() {
         maxQuantParser.clearParsedProject();
     }
-
+    
     public MaxQuantParserTest() throws IOException {
         testFolder = new ClassPathResource("data/maxquant").getFile();
     }
 
     /**
      * Test of parseMaxQuantTextFolder method, of class MaxQuantParser.
-     *
+     * 
      * @throws java.lang.Exception
      */
     @Test
@@ -54,11 +54,10 @@ public class MaxQuantParserTest {
 
     /**
      * Test of hasParsedAFile method, of class MaxQuantParser.
-     *
+     * 
      * @throws java.io.IOException
-     * @throws
-     * com.compomics.colims.core.io.maxquant.HeaderEnumNotInitialisedException
-     * @throws com.compomics.colims.core.io.maxquant.UnparseableException
+     * @throws com.compomics.colims.core.io.parser.impl.HeaderEnumNotInitialisedException
+     * @throws com.compomics.colims.core.io.parser.impl.UnparseableException
      */
     @Test
     public void testHasParsedAFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
@@ -73,16 +72,11 @@ public class MaxQuantParserTest {
 
     /**
      * Test of getIdentificationsFromParsedFile method, of class MaxQuantParser.
-     *
-     * @throws java.io.IOException
-     * @throws
-     * com.compomics.colims.core.io.maxquant.HeaderEnumNotInitialisedException
-     * @throws com.compomics.colims.core.io.maxquant.UnparseableException
      */
     @Test
     public void testGetIdentificationsFromParsedFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         System.out.println("getIdentificationsFromParsedFile");
-        Collection<PeptideAssumption> result = maxQuantParser.getIdentificationsFromParsedFile();
+        Collection result = maxQuantParser.getIdentificationsFromParsedFile();
         assertThat(result.iterator().hasNext(), is(false));
         maxQuantParser.parseMaxQuantTextFolder(testFolder);
         result = maxQuantParser.getIdentificationsFromParsedFile();
@@ -102,8 +96,8 @@ public class MaxQuantParserTest {
         PeptideAssumption testAssumption = maxQuantParser.getIdentificationForSpectrum(spectra.get(4));
         assertThat(testAssumption.getPeptide().getSequence(), is(not(nullValue())));
         assertThat(testAssumption.getPeptide().getSequence(), is("AADIIDGLRK"));
-        assertThat(testAssumption.getPeptide().getParentProteins().size(), is(1));
-        assertThat(testAssumption.getPeptide().getMass(), is(closeTo(1070.6084, 0.0001)));
+        assertThat(testAssumption.getPeptide().getParentProteinsNoRemapping().size(), is(1));
+        assertThat(testAssumption.getPeptide().getMass(), closeTo(1070.6084, 0.0001));
 
         //is unmodified
         assertThat(testAssumption.getPeptide().getModificationMatches().isEmpty(), is(true));
@@ -129,7 +123,11 @@ public class MaxQuantParserTest {
         assertThat(testAssumption.getPeptide().getModificationMatches().get(0).getModificationSite(), is(2));
 
         //multiple oxidations spectra id 37
+
+
         //both (don't have an entry for this yet) 442
+
+
         //and test if the assumptions were parsed correctly
         ((SpectrumIntUrParameterShizzleStuff) togetSpectrum.getUrParam(testId)).setSpectrumid(487);
         assertThat(maxQuantParser.getIdentificationForSpectrum(togetSpectrum).getScore(), is(58.676));
@@ -145,12 +143,16 @@ public class MaxQuantParserTest {
         //assertThat(Integer.parseInt(maxQuantParser.getIdentificationForSpectrum(spectra.get(2246)).getPeptide().getParentProteins().get(1)), is(1100));
 
         //Map<Integer, List<Quantification>> quantificationMap = MaxQuantQuantificationParser.parseMaxQuantQuantification(quantFile);
+
         //first test if the quantifications are parsed correctly
         //assertThat(quantificationMap.keySet().size(), is(15));
+
         // assertThat(quantificationMap.get(11).get(0).getIntensity(), is(2169200.0));
         // assertThat(quantificationMap.get(11).get(1).getIntensity(), is(2294200.0));
+
         // assertThat(quantificationMap.get(11).get(1).getWeight(), is(QuantificationWeight.HEAVY));
         // assertThat(quantificationMap.get(11).get(0).getWeight(), is(QuantificationWeight.LIGHT));
+
         //PeptideAssumption result = MaxQuantParser.getIdentificationForSpectrum(aSpectrum);
     }
 

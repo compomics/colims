@@ -22,12 +22,7 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunServiceImpl.class);
 
     @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
-
-    @Override
-    public List<AnalyticalRun> findAnalyticalRunsBySampleId(final Long sampleId) {
-        return analyticalRunRepository.findAnalyticalRunsBySampleId(sampleId);
-    }
+    private AnalyticalRunRepository analyticalRunRepository;    
 
     @Override
     public AnalyticalRun findById(final Long id) {

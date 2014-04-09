@@ -9,9 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.User;
-import com.jgoodies.looks.plastic.theme.ExperienceBlue;
 import org.junit.Assert;
 
 /**
@@ -26,8 +23,6 @@ public class ExperimentRepositoryTest {
 
     @Autowired
     private ExperimentRepository experimentRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @Test
     public void testFindByProjectIdAndTitle() {

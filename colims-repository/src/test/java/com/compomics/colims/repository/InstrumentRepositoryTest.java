@@ -47,8 +47,8 @@ public class InstrumentRepositoryTest {
         //instrument type term
         InstrumentType instrumentType = instrument.getInstrumentType();
         Assert.assertNotNull(instrumentType);
-        Assert.assertEquals(instrumentType.getName(), "instr_type_1_name");
-        Assert.assertEquals(instrumentType.getDescription(), "instrument type 1 description");
+        Assert.assertEquals("instr_type_1_name", instrumentType.getName());
+        Assert.assertEquals("instrument type 1 description", instrumentType.getDescription());
     }
 
     @Test

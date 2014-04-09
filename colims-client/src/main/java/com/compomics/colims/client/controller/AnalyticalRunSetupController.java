@@ -23,6 +23,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Project;
@@ -385,7 +386,7 @@ public class AnalyticalRunSetupController implements Controllable {
             storageTaskProducer.sendStorageTask(storageTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
-            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit could not be reached.", JOptionPane.ERROR_MESSAGE);
+            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
         }
     }
 

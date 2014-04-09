@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.maxquant.MaxQuantProteinMapperStub;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
@@ -58,7 +57,7 @@ public class MaxQuantColimsIdentificationInsertTest {
         proteinGroupsFastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
         sequenceFactory = SequenceFactory.getInstance();
         try {
-            sequenceFactory.loadFastaFile(proteinGroupsFastaFile);
+            sequenceFactory.loadFastaFile(proteinGroupsFastaFile, null);
         } catch (IOException | ClassNotFoundException | StringIndexOutOfBoundsException | IllegalArgumentException ex) {
             throw new AAAAAAAAAAAAAARGHException("FUUUUUUUUU");
         }
@@ -86,7 +85,7 @@ public class MaxQuantColimsIdentificationInsertTest {
                 {
                     //maxQuantproteinmapper
                     List<ProteinMatch> matches = new ArrayList<>();
-                    for (String proteinAccession : peptideAssumption.getPeptide().getParentProteins()) {
+                    for (String proteinAccession : peptideAssumption.getPeptide().getParentProteinsNoRemapping()) {
                         matches.add(parsedProteins.get(Integer.parseInt(proteinAccession)));
                     }
                     PeptideHasProtein php = new PeptideHasProtein();

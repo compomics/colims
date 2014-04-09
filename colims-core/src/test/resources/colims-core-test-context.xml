@@ -8,17 +8,7 @@
        http://www.springframework.org/schema/context/spring-context.xsd       
        http://www.springframework.org/schema/tx 
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
-     
-    <!-- property placeholder -->
-    <!-- The core test properties file contains properties that override properties used in the beans
-         below. Because these properties are not defined in the no-test core properties file, 
-         we need to explicitly load the test core properties file.    
-    -->
-    <!--bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="colims-core.properties"/>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean-->
-       
+               
     <!-- Beans to override for unit testing -->        
     <bean id="colimsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>

@@ -67,6 +67,12 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency> 
-       
+        
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.3-1101-jdbc41</version>
+        </dependency>
+                   
     </dependencies>
 </project>

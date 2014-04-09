@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.util.experiment.MsExperiment;
-import com.compomics.util.experiment.biology.Sample;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -37,7 +36,7 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_27_4.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -58,8 +57,8 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
-        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile();
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_ps_0_27_4.cps").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
 

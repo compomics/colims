@@ -28,7 +28,7 @@ public class Permission extends AuditableDatabaseEntity {
     private String name;
     @Basic(optional = true)
     @Length(max = 500, message = "Permission description length must be less than {max} characters")
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
     @ManyToMany(mappedBy = "permissions")
     private List<Role> roles = new ArrayList<>();

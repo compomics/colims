@@ -33,7 +33,7 @@ public class InstrumentType extends AuditableDatabaseEntity {
     private String name; 
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
     @OneToMany(mappedBy = "instrumentType")
     private List<Instrument> instruments = new ArrayList<>();

@@ -175,7 +175,7 @@ public class RoleCrudController implements Controllable {
                                 eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
 
                                 roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                                userManagementDialog.getRoleList().getSelectionModel().clearSelection();
+                                resetSelection();
                             } catch (DataIntegrityViolationException dive) {
                                 //check if the role can be deleted without breaking existing database relations,
                                 //i.e. are there any constraints violations

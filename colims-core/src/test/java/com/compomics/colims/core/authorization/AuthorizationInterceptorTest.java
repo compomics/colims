@@ -1,7 +1,6 @@
 
 package com.compomics.colims.core.authorization;
 
-import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;

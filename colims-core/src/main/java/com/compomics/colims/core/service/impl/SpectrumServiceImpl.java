@@ -40,18 +40,7 @@ public class SpectrumServiceImpl implements SpectrumService {
      */
     private static final String IONS_END = "END IONS";
     @Autowired
-    private SpectrumRepository spectrumRepository;
-
-    @Override
-    public List<Spectrum> findSpectraByAnalyticalRunId(Long analyticalRunId) {
-        List<Spectrum> spectra = spectrumRepository.findSpectraByAnalyticalRunId(analyticalRunId);
-        //initialize peptides        
-        for (Spectrum spectrum : spectra) {
-            //Hibernate.initialize(spectrum.getPeptides());
-            spectrum.getPeptides().size();
-        }
-        return spectra;
-    }
+    private SpectrumRepository spectrumRepository;    
 
     @Override
     public Spectrum findById(Long id) {

@@ -36,8 +36,8 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
      * Keep a reference to the class type for new instance creation
      */
     private Class<T> type;
-    private JFileChooser fileChooser = new FileChooser();
-    private JFileChooser exportDirectoryChooser = new FileChooser();
+    private final JFileChooser fileChooser = new FileChooser();
+    private final JFileChooser exportDirectoryChooser = new FileChooser();
     private BindingGroup bindingGroup;
     private ObservableList<T> binaryFileBindingList;
     private int previouslySelectedIndex = -1;
@@ -210,7 +210,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
         binaryFile.setFileName(file.getName());
         binaryFile.setBinaryFileType(BinaryFileType.TEXT);
 
-        binaryFile.setContent(IOUtils.readZippedBytesFromFile(file));
+        binaryFile.setContent(IOUtils.readAndUnzip(file));
 
         return binaryFile;
     }
@@ -222,7 +222,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
      * @param binaryFile
      */
     private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {        
-        IOUtils.unzipAndWriteBytesToFile(binaryFile.getContent(), new File(exportDirectory, binaryFile.getFileName()));
+        IOUtils.unzipAndWrite(binaryFile.getContent(), new File(exportDirectory, binaryFile.getFileName()));
     }
 
     /**

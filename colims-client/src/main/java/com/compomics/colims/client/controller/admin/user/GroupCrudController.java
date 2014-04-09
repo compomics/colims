@@ -187,7 +187,7 @@ public class GroupCrudController implements Controllable {
                                 eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
                                 
                                 groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                                userManagementDialog.getGroupList().getSelectionModel().clearSelection();
+                                resetSelection();
                             } catch (DataIntegrityViolationException dive) {
                                 //check if the group can be deleted without breaking existing database relations,
                                 //i.e. are there any constraints violations

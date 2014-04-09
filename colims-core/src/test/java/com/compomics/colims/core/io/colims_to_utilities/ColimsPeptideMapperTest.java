@@ -90,8 +90,8 @@ public class ColimsPeptideMapperTest {
         Assert.assertEquals("MYFHSFLDTFSKYLGSTSCPLLRLSR", targetPeptideMatch.getTheoreticPeptide().getSequence());
         Assert.assertEquals(3068.525, targetPeptideMatch.getTheoreticPeptide().getMass(), 0.001);
         Assert.assertEquals(3, targetPeptideMatch.getTheoreticPeptide().getModificationMatches().size());
-        Assert.assertEquals(1, targetPeptideMatch.getTheoreticPeptide().getParentProteins().size());
-        Assert.assertEquals("fakeProt1", targetPeptideMatch.getTheoreticPeptide().getParentProteins().get(0));
+        Assert.assertEquals(1, targetPeptideMatch.getTheoreticPeptide().getParentProteinsNoRemapping().size());
+        Assert.assertEquals("fakeProt1", targetPeptideMatch.getTheoreticPeptide().getParentProteinsNoRemapping().get(0));
     }
 
 }
