@@ -1,19 +1,8 @@
 package com.compomics.colims.client.controller;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.swing.AdvancedTableModel;
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
-import ca.odell.glazedlists.swing.GlazedListsSwing;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
-import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
 import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
@@ -23,12 +12,7 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
-import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
@@ -38,15 +22,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -66,21 +46,12 @@ import org.springframework.stereotype.Component;
 public class AnalyticalRunSetupController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunSetupController.class);
-    private static final String SAMPLE_SELECTION_CARD = "sampleSelectionPanel";
     private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
-    //model    
-    private AdvancedTableModel<Project> projectsTableModel;
-    private DefaultEventSelectionModel<Project> projectsSelectionModel;
-    private EventList<Experiment> experiments = new BasicEventList<>();
-    private AdvancedTableModel<Experiment> experimentsTableModel;
-    private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private EventList<Sample> samples = new BasicEventList<>();
-    private AdvancedTableModel<Sample> samplesTableModel;
-    private DefaultEventSelectionModel<Sample> samplesSelectionModel;
+    //model       
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
     private StorageType storageType;
@@ -90,6 +61,7 @@ public class AnalyticalRunSetupController implements Controllable {
     //parent controller
     @Autowired
     private ColimsController colimsController;
+    private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
     private PeptideShakerDataImportController peptideShakerDataImportController;
@@ -126,8 +98,6 @@ public class AnalyticalRunSetupController implements Controllable {
         //select peptideShaker radio button
         analyticalRunSetupDialog.getPeptideShakerRadioButton().setSelected(true);
 
-        initSampleSelectionPanel();
-
         //set DateTimePicker format
         analyticalRunSetupDialog.getDateTimePicker().setFormats(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
         analyticalRunSetupDialog.getDateTimePicker().setTimeFormat(DateFormat.getTimeInstance(DateFormat.MEDIUM));
@@ -147,18 +117,7 @@ public class AnalyticalRunSetupController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-                switch (currentCardName) {
-                    case SAMPLE_SELECTION_CARD:
-                        //check if a sample is selected
-                        Sample selectedSample = getSelectedSample();
-                        if (selectedSample != null) {
-                            getCardLayout().next(analyticalRunSetupDialog.getTopPanel());
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("sample selection", "Please select a sample.", JOptionPane.INFORMATION_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        break;
+                switch (currentCardName) {                    
                     case METADATA_SELECTION_CARD:
                         instrument = getSelectedInstrument();
                         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
@@ -174,7 +133,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             }
                             onCardSwitch();
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("instrument/start date selection", "Please select an instrument and/or a start date.", JOptionPane.INFORMATION_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         break;
@@ -240,108 +199,14 @@ public class AnalyticalRunSetupController implements Controllable {
                 analyticalRunSetupDialog.dispose();
             }
         });
-    }
-
-    /**
-     * Init the sample selection panel
-     */
-    private void initSampleSelectionPanel() {
-        //init projects table
-        SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
-        projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectSimpleTableFormat());
-        analyticalRunSetupDialog.getProjectsTable().setModel(projectsTableModel);
-        projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
-        projectsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        analyticalRunSetupDialog.getProjectsTable().setSelectionModel(projectsSelectionModel);
-
-        //set column widths
-        analyticalRunSetupDialog.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setPreferredWidth(10);
-        analyticalRunSetupDialog.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.TITLE).setPreferredWidth(100);
-        analyticalRunSetupDialog.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.LABEL).setPreferredWidth(50);
-        analyticalRunSetupDialog.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(20);
-
-        //set sorting
-        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
-                analyticalRunSetupDialog.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
-
-        //init projects experiment table
-        SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
-        experimentsTableModel = GlazedListsSwing.eventTableModel(sortedExperiments, new ExperimentSimpleTableFormat());
-        analyticalRunSetupDialog.getExperimentsTable().setModel(experimentsTableModel);
-        experimentsSelectionModel = new DefaultEventSelectionModel<>(sortedExperiments);
-        experimentsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        analyticalRunSetupDialog.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
-
-        //set column widths
-        analyticalRunSetupDialog.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setPreferredWidth(10);
-        analyticalRunSetupDialog.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.TITLE).setPreferredWidth(100);
-        analyticalRunSetupDialog.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER).setPreferredWidth(20);
-        analyticalRunSetupDialog.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(20);
-
-        //set sorting
-        TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-                analyticalRunSetupDialog.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
-
-        //init experiment samples table
-        SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
-        samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleSimpleTableFormat());
-        analyticalRunSetupDialog.getSamplesTable().setModel(samplesTableModel);
-        samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
-        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        analyticalRunSetupDialog.getSamplesTable().setSelectionModel(samplesSelectionModel);
-
-        //set column widths
-        analyticalRunSetupDialog.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setPreferredWidth(10);
-        analyticalRunSetupDialog.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NAME).setPreferredWidth(100);
-        analyticalRunSetupDialog.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setPreferredWidth(20);
-
-        //set sorting
-        TableComparatorChooser samplesTableSorter = TableComparatorChooser.install(
-                analyticalRunSetupDialog.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
-
-        //add action listeners
-        projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Project selectedProject = getSelectedProject();
-                    if (selectedProject != null) {
-                        //fill experiments table                        
-                        GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
-                    } else {
-                        GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
-                    }
-                }
-            }
-        });
-
-        experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Experiment selectedExperiment = getSelectedExperiment();
-                    if (selectedExperiment != null) {
-                        //fill samples table                        
-                        GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
-                    } else {
-                        GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
-
-                    }
-                }
-            }
-        });
-    }
+    }    
 
     @Override
     public void showView() {
         //check if the user has the rights to add a run
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
             //check connection to distributed queues
-            if (queueManager.testConnection()) {
-
-                //reset project selection
-                projectsSelectionModel.clearSelection();
-
+            if (queueManager.testConnection()) {                
                 //reset instrument selection
                 if (!instrumentBindingList.isEmpty()) {
                     analyticalRunSetupDialog.getInstrumentComboBox().setSelectedIndex(0);
@@ -379,7 +244,7 @@ public class AnalyticalRunSetupController implements Controllable {
     }
 
     private void sendStorageTask(DataImport dataImport) {
-        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), analyticalRunSetupDialog.getDateTimePicker().getDate(), instrument, getSelectedSample());
+        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), analyticalRunSetupDialog.getDateTimePicker().getDate(), instrument, projectManagementController.getSelectedSample());
         StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
 
         try {
@@ -405,16 +270,9 @@ public class AnalyticalRunSetupController implements Controllable {
      */
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-        switch (currentCardName) {
-            case SAMPLE_SELECTION_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(false);
-                analyticalRunSetupDialog.getProceedButton().setEnabled(true);
-                analyticalRunSetupDialog.getFinishButton().setEnabled(false);
-                //show info
-                updateInfo("Click on \"proceed\" to select the data type and instrument.");
-                break;
+        switch (currentCardName) {            
             case METADATA_SELECTION_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(true);
+                analyticalRunSetupDialog.getBackButton().setEnabled(false);
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 //show info
@@ -451,55 +309,7 @@ public class AnalyticalRunSetupController implements Controllable {
      */
     private void updateInfo(String message) {
         analyticalRunSetupDialog.getInfoLabel().setText(message);
-    }
-
-    /**
-     * Get the selected project from the project overview table.
-     *
-     * @return the selected project, null if no project is selected
-     */
-    private Project getSelectedProject() {
-        Project selectedProject = null;
-
-        EventList<Project> selectedProjects = projectsSelectionModel.getSelected();
-        if (!selectedProjects.isEmpty()) {
-            selectedProject = selectedProjects.get(0);
-        }
-
-        return selectedProject;
-    }
-
-    /**
-     * Get the selected experiment from the experiment table.
-     *
-     * @return the selected experiment, null if no experiment is selected
-     */
-    private Experiment getSelectedExperiment() {
-        Experiment selectedExperiment = null;
-
-        EventList<Experiment> selectedExperiments = experimentsSelectionModel.getSelected();
-        if (!selectedExperiments.isEmpty()) {
-            selectedExperiment = selectedExperiments.get(0);
-        }
-
-        return selectedExperiment;
-    }
-
-    /**
-     * Get the selected sample from the experiment table.
-     *
-     * @return the selected sample, null if no sample is selected
-     */
-    private Sample getSelectedSample() {
-        Sample selectedSample = null;
-
-        EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
-        if (!selectedSamples.isEmpty()) {
-            selectedSample = selectedSamples.get(0);
-        }
-
-        return selectedSample;
-    }
+    }    
 
     /**
      * Get the selected storage type.

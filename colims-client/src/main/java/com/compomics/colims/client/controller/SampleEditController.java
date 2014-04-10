@@ -70,7 +70,9 @@ public class SampleEditController implements Controllable {
     private SampleBinaryFileDialog sampleBinaryFileDialog;
     //parent controller
     @Autowired
-    private ExperimentEditController experimentEditController;
+    private ColimsController colimsController;
+    @Autowired
+    private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
     private AnalyticalRunEditController analyticalRunEditController;
@@ -96,7 +98,7 @@ public class SampleEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        sampleEditDialog = new SampleEditDialog(experimentEditController.getExperimentEditDialog(), true);
+        sampleEditDialog = new SampleEditDialog(colimsController.getColimsFrame(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
 
@@ -144,13 +146,12 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //update projectToEdit with dialog input
-                updateSampleToEdit();
-
-                //validate project
+            public void actionPerformed(ActionEvent e) {                                
+                //update sampleToEdit with dialog input
+                updateSampleToEdit();                
+                
+                //validate sample
                 List<String> validationMessages = GuiUtils.validateEntity(sampleToEdit);
-
                 if (validationMessages.isEmpty()) {
                     int index;
                     EntityChangeEvent.Type type;
@@ -158,19 +159,19 @@ public class SampleEditController implements Controllable {
                     if (sampleToEdit.getId() != null) {
                         sampleService.update(sampleToEdit);
 
-                        index = experimentEditController.getSelectedSampleIndex();
+                        index = projectManagementController.getSelectedSampleIndex();
                         type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         //set experiment
-                        sampleToEdit.setExperiment(experimentEditController.getExperimentToEdit());
+                        sampleToEdit.setExperiment(projectManagementController.getSelectedExperiment());
 
                         sampleService.save(sampleToEdit);
 
-                        index = experimentEditController.getSamplesSize() - 1;
+                        index = projectManagementController.getSamplesSize() - 1;
                         type = EntityChangeEvent.Type.CREATED;
 
                         //add sample to overview table
-                        experimentEditController.addSample(sampleToEdit);
+                        projectManagementController.addSample(sampleToEdit);
 
                         sampleEditDialog.getSaveOrUpdateButton().setText("update");
                         updateAnalyticalRunButtonsState(true);
@@ -180,9 +181,6 @@ public class SampleEditController implements Controllable {
                     
                     MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
-
-                    //refresh selection in sample table
-                    experimentEditController.setSelectedSample(index);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
@@ -273,7 +271,7 @@ public class SampleEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(experimentEditController.getExperimentEditDialog(), sampleEditDialog);
+        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), sampleEditDialog);
         sampleEditDialog.setVisible(true);
     }
 

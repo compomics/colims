@@ -1,9 +1,9 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DualList;
-import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
@@ -18,7 +18,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
-    public SampleEditDialog(final Dialog parent, final boolean modal) {
+    public SampleEditDialog(final JFrame parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();

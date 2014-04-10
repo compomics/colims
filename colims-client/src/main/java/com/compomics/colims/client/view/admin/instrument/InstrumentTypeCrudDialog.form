@@ -97,8 +97,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="instrumentTypeListScrollPane" min="-2" pref="287" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="instrumentTypeListScrollPane" min="-2" pref="291" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="deleteInstrumentTypeButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="addInstrumentTypeButton" alignment="0" min="-2" max="-2" attributes="0"/>

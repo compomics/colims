@@ -67,6 +67,8 @@ public class ProjectManagementController implements Controllable {
     private ExperimentEditController experimentEditController;
     @Autowired
     private SampleEditController sampleEditController;
+    @Autowired
+    private AnalyticalRunSetupController analyticalRunSetupController;
     //parent controller
     @Autowired
     private ColimsController colimsController;
@@ -98,6 +100,7 @@ public class ProjectManagementController implements Controllable {
         projectEditController.init();
         experimentEditController.init();
         sampleEditController.init();
+        analyticalRunSetupController.init();
 
         //init projects table        
         SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
@@ -288,11 +291,28 @@ public class ProjectManagementController implements Controllable {
                 }
             }
         });
+        
+        projectManagementPanel.getAddAnalyticalRunButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {    
+                Sample selectedSample = getSelectedSample();
+                if (selectedSample != null) {
+                    analyticalRunSetupController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                }                
+            }
+        });
 
         projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sampleEditController.updateView(createDefaultSample());
+                if (getSelectedExperiment() != null) {
+                    sampleEditController.updateView(createDefaultSample());
+                } else {
+                    eventBus.post(new MessageEvent("sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
+                }                
             }
         });
 
@@ -456,6 +476,47 @@ public class ProjectManagementController implements Controllable {
         }
 
         return selectedExperiment;
+    }
+    
+    /**
+     * Get the row index of the selected sample in the samples table
+     *
+     * @return
+     */
+    public int getSelectedSampleIndex() {
+        return samplesSelectionModel.getLeadSelectionIndex();
+    }
+
+    /**
+     * Set the selected sample in the samples table
+     *
+     * @param index
+     */
+    public void setSelectedSample(int index) {
+        samplesSelectionModel.clearSelection();
+        samplesSelectionModel.setLeadSelectionIndex(index);
+    }
+
+    /**
+     * Add a sample to the samples table
+     *
+     * @param sample
+     */
+    public void addSample(Sample sample) {
+        samples.add(sample);
+        
+        //add the sample to the selected experiment and update the experiments table
+        getSelectedExperiment().getSamples().add(sample);
+        projectManagementPanel.getProjectsTable().updateUI();
+    }
+
+    /**
+     * Get the number of samples in the samples table
+     *
+     * @return
+     */
+    public int getSamplesSize() {
+        return samples.size();
     }
     
     /**

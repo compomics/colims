@@ -1,5 +1,6 @@
 package com.compomics.colims.client.view;
 
+import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JTable;
 
@@ -23,6 +24,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         
         samplesTableScrollPane.getViewport().setOpaque(false);
         samplesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        addAnalyticalRunButton.setMargin(new Insets(4,10,4,10));
     }
 
     public JButton getAddExperimentButton() {
@@ -71,6 +74,10 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
     public JTable getSamplesTable() {
         return samplesTable;
+    }      
+
+    public JButton getAddAnalyticalRunButton() {
+        return addAnalyticalRunButton;
     }        
 
     /**
@@ -101,6 +108,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         samplesTableScrollPane = new javax.swing.JScrollPane();
         samplesTable = new javax.swing.JTable();
         deleteSampleButton = new javax.swing.JButton();
+        addAnalyticalRunButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.GridBagLayout());
@@ -295,6 +303,11 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         deleteSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        addAnalyticalRunButton.setText("add run...");
+        addAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        addAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        addAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout samplesOverviewPanelLayout = new javax.swing.GroupLayout(samplesOverviewPanel);
         samplesOverviewPanel.setLayout(samplesOverviewPanelLayout);
         samplesOverviewPanelLayout.setHorizontalGroup(
@@ -304,12 +317,14 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 .addGroup(samplesOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(samplesOverviewPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(samplesTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(samplesTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE))
                 .addContainerGap())
         );
         samplesOverviewPanelLayout.setVerticalGroup(
@@ -321,7 +336,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
                 .addGroup(samplesOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteSampleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -334,6 +350,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         add(samplesOverviewPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addAnalyticalRunButton;
     private javax.swing.JButton addExperimentButton;
     private javax.swing.JButton addProjectButton;
     private javax.swing.JButton addSampleButton;

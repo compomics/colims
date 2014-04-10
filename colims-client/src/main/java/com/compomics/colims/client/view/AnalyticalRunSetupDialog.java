@@ -2,17 +2,13 @@ package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DateTimePicker;
 import java.awt.Color;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -30,10 +26,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         initComponents();
-
-        projectsScrollPane.getViewport().setOpaque(false);
-        experimentsScrollPane.getViewport().setOpaque(false);
-        samplesScrollPane.getViewport().setOpaque(false);
+       
         this.getContentPane().setBackground(Color.WHITE);
     }
 
@@ -55,19 +48,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
     public JLabel getInfoLabel() {
         return infoLabel;
-    }
-
-    public JTable getExperimentsTable() {
-        return experimentsTable;
-    }
-
-    public JTable getProjectsTable() {
-        return projectsTable;
-    }
-
-    public JTable getSamplesTable() {
-        return samplesTable;
-    }
+    }    
 
     public JButton getCloseButton() {
         return closeButton;
@@ -122,16 +103,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         dataTypeButtonGroup = new javax.swing.ButtonGroup();
         parentPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
-        sampleSelectionPanel = new javax.swing.JPanel();
-        projectsPanel = new javax.swing.JPanel();
-        projectsScrollPane = new javax.swing.JScrollPane();
-        projectsTable = new javax.swing.JTable();
-        experimentsPanel = new javax.swing.JPanel();
-        experimentsScrollPane = new javax.swing.JScrollPane();
-        experimentsTable = new javax.swing.JTable();
-        samplesPanel = new javax.swing.JPanel();
-        samplesScrollPane = new javax.swing.JScrollPane();
-        samplesTable = new javax.swing.JTable();
         metadataSelectionPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         dataTypeSelectionLabel = new javax.swing.JLabel();
@@ -165,189 +136,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         topPanel.setOpaque(false);
         topPanel.setPreferredSize(new java.awt.Dimension(400, 285));
         topPanel.setLayout(new java.awt.CardLayout());
-
-        sampleSelectionPanel.setName("sampleSelectionPanel"); // NOI18N
-        sampleSelectionPanel.setOpaque(false);
-
-        projectsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("projects"));
-        projectsPanel.setOpaque(false);
-        projectsPanel.setPreferredSize(new java.awt.Dimension(306, 176));
-
-        projectsScrollPane.setOpaque(false);
-
-        projectsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                { new Integer(1), "A", "Project 1"},
-                { new Integer(2), "B", "Project 2"},
-                { new Integer(3), "B", "Project 3"},
-                { new Integer(4), "C", "Project 4"}
-            },
-            new String [] {
-                "", "Label", "Title"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        projectsTable.setPreferredSize(new java.awt.Dimension(150, 64));
-        projectsScrollPane.setViewportView(projectsTable);
-
-        javax.swing.GroupLayout projectsPanelLayout = new javax.swing.GroupLayout(projectsPanel);
-        projectsPanel.setLayout(projectsPanelLayout);
-        projectsPanelLayout.setHorizontalGroup(
-            projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        projectsPanelLayout.setVerticalGroup(
-            projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        experimentsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
-        experimentsPanel.setOpaque(false);
-        experimentsPanel.setPreferredSize(new java.awt.Dimension(306, 176));
-
-        experimentsScrollPane.setOpaque(false);
-
-        experimentsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                { new Integer(1), "Exp A"},
-                { new Integer(2), "Exp B"},
-                { new Integer(3), "Exp C"},
-                { new Integer(4), "Exp D"}
-            },
-            new String [] {
-                "", "Title"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        experimentsScrollPane.setViewportView(experimentsTable);
-
-        javax.swing.GroupLayout experimentsPanelLayout = new javax.swing.GroupLayout(experimentsPanel);
-        experimentsPanel.setLayout(experimentsPanelLayout);
-        experimentsPanelLayout.setHorizontalGroup(
-            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(experimentsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        experimentsPanelLayout.setVerticalGroup(
-            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(experimentsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("samples"));
-        samplesPanel.setOpaque(false);
-        samplesPanel.setPreferredSize(new java.awt.Dimension(306, 176));
-
-        samplesScrollPane.setOpaque(false);
-
-        samplesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                { new Integer(1), "Sample A"},
-                { new Integer(2), "Sample B"},
-                { new Integer(3), "Sample C"},
-                { new Integer(4), "Sample D"}
-            },
-            new String [] {
-                "", "Name"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        samplesScrollPane.setViewportView(samplesTable);
-
-        javax.swing.GroupLayout samplesPanelLayout = new javax.swing.GroupLayout(samplesPanel);
-        samplesPanel.setLayout(samplesPanelLayout);
-        samplesPanelLayout.setHorizontalGroup(
-            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(samplesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        samplesPanelLayout.setVerticalGroup(
-            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(samplesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout sampleSelectionPanelLayout = new javax.swing.GroupLayout(sampleSelectionPanel);
-        sampleSelectionPanel.setLayout(sampleSelectionPanelLayout);
-        sampleSelectionPanelLayout.setHorizontalGroup(
-            sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sampleSelectionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        sampleSelectionPanelLayout.setVerticalGroup(
-            sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sampleSelectionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(sampleSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        topPanel.add(sampleSelectionPanel, "sampleSelectionPanel");
 
         metadataSelectionPanel.setName("metadataSelectionPanel"); // NOI18N
         metadataSelectionPanel.setOpaque(false);
@@ -595,9 +383,6 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.ButtonGroup dataTypeButtonGroup;
     private javax.swing.JLabel dataTypeSelectionLabel;
     private com.compomics.colims.client.compoment.DateTimePicker dateTimePicker;
-    private javax.swing.JPanel experimentsPanel;
-    private javax.swing.JScrollPane experimentsScrollPane;
-    private javax.swing.JTable experimentsTable;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox instrumentComboBox;
@@ -610,14 +395,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     private javax.swing.JRadioButton peptideShakerRadioButton;
     private javax.swing.JButton proceedButton;
-    private javax.swing.JPanel projectsPanel;
-    private javax.swing.JScrollPane projectsScrollPane;
-    private javax.swing.JTable projectsTable;
     private javax.swing.JPanel rightPanel;
-    private javax.swing.JPanel sampleSelectionPanel;
-    private javax.swing.JPanel samplesPanel;
-    private javax.swing.JScrollPane samplesScrollPane;
-    private javax.swing.JTable samplesTable;
     private javax.swing.JSeparator separator;
     private javax.swing.JLabel startDataLabel;
     private javax.swing.JLabel storageDescriptionLabel;

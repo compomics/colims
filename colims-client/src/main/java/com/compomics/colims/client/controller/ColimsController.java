@@ -60,7 +60,7 @@ public class ColimsController implements Controllable, ActionListener {
      * The project EventList that is used as table model in the project
      * management and overview tabs.
      */
-    private EventList<Project> projects = new BasicEventList<>();
+    private final EventList<Project> projects = new BasicEventList<>();
     //views
     private ColimsFrame colimsFrame;
     private UserLoginDialog userLoginDialog;
@@ -73,9 +73,7 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private StorageMonitoringController storageMonitoringController;
     @Autowired
-    private ProtocolManagementController protocolManagementController;
-    @Autowired
-    private AnalyticalRunSetupController analyticalRunSetupController;
+    private ProtocolManagementController protocolManagementController;    
     @Autowired
     private UserManagementController userManagementController;
     @Autowired
@@ -143,8 +141,7 @@ public class ColimsController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
-        storageMonitoringController.init();
-        analyticalRunSetupController.init();
+        storageMonitoringController.init();        
         cvTermManagementController.init();
 
         //add panel components                        
@@ -161,7 +158,6 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
         colimsFrame.getStorageMonitoringMenuItem().addActionListener(this);
-        colimsFrame.getNewRunMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
@@ -223,8 +219,6 @@ public class ColimsController implements Controllable, ActionListener {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getStorageMonitoringMenuItem().getText())) {
             storageMonitoringController.showView();
-        } else if (menuItemLabel.equals(colimsFrame.getNewRunMenuItem().getText())) {
-            analyticalRunSetupController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
             userManagementController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {

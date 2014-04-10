@@ -1,18 +1,9 @@
 package com.compomics.colims.client.controller;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.swing.AdvancedTableModel;
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
-import ca.odell.glazedlists.swing.GlazedListsSwing;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
@@ -21,8 +12,6 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.comparator.IdComparator;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
@@ -32,7 +21,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,9 +34,6 @@ public class ExperimentEditController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
     //model   
-    private EventList<Sample> samples = new BasicEventList<>();
-    private AdvancedTableModel<Sample> samplesTableModel;
-    private DefaultEventSelectionModel<Sample> samplesSelectionModel;
     private Experiment experimentToEdit;
     //view
     private ExperimentEditDialog experimentEditDialog;
@@ -92,14 +77,14 @@ public class ExperimentEditController implements Controllable {
             public void actionPerformed(ActionEvent e) {
                 List<String> validationMessages = new ArrayList<>();
 
-                //update projectToEdit with dialog input, catch NumberFormatException for experiment number
+                //update experimentToEdit with dialog input, catch NumberFormatException for experiment number
                 try {
                     updateExperimentToEdit();
                 } catch (NumberFormatException nfe) {
                     validationMessages.add("The experiment number must be a number.");
                 }
 
-                //validate project
+                //validate experiment
                 validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
                 //check for a new experiment if the experiment title already exists in the db                
                 if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
@@ -244,49 +229,7 @@ public class ExperimentEditController implements Controllable {
         experimentEditDialog.getStorageLocationTextField().setText(experimentToEdit.getStorageLocation());
         experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
 
-        //fill project experiments table                        
-        GlazedLists.replaceAll(samples, experimentToEdit.getSamples(), false);
-
         showView();
-    }
-
-    /**
-     * Get the row index of the selected sample in the samples table
-     *
-     * @return
-     */
-    public int getSelectedSampleIndex() {
-        return samplesSelectionModel.getLeadSelectionIndex();
-    }
-
-    /**
-     * Set the selected sample in the samples table
-     *
-     * @param index
-     */
-    public void setSelectedSample(int index) {
-        samplesSelectionModel.clearSelection();
-        samplesSelectionModel.setLeadSelectionIndex(index);
-    }
-
-    /**
-     * Add a sample to the samples table
-     *
-     * @param sample
-     */
-    public void addSample(Sample sample) {
-        samples.add(sample);
-
-        experimentToEdit.getSamples().add(sample);
-    }
-
-    /**
-     * Get the number of samples in the samples table
-     *
-     * @return
-     */
-    public int getSamplesSize() {
-        return samples.size();
     }
 
     /**
