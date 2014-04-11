@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -28,12 +29,14 @@ public class FastaDb extends DatabaseEntity {
      * The official name of the fasta db
      */
     @Basic(optional = false)
+    @NotBlank(message = "Please insert a fasta DB name")
     @Column(name = "name", nullable = false)
     private String name;
     /**
      * The name of the fasta db file
      */
     @Basic(optional = false)
+    @NotBlank(message = "Please insert a fasta DB file name")
     @Column(name = "file_name", nullable = false)
     private String fileName;
     /**
@@ -46,8 +49,8 @@ public class FastaDb extends DatabaseEntity {
      * The taxonomy ID
      */
     @Basic(optional = true)
-    @Column(name = "taxonomy_id", nullable = true)
-    private Integer taxonomyId;
+    @Column(name = "taxonomy_accession", nullable = true)
+    private String taxonomyAccession;
     /**
      * The species name
      */
@@ -57,8 +60,9 @@ public class FastaDb extends DatabaseEntity {
     /**
      * The version of the fasta db
      */
-    @Basic(optional = true)
-    @Column(name = "version", nullable = true)
+    @Basic(optional = false)
+    @NotBlank(message = "Please insert a fasta DB version")
+    @Column(name = "version", nullable = false)
     private String version;
     /**
      * The MD5 checksum of the fasta db
@@ -85,13 +89,13 @@ public class FastaDb extends DatabaseEntity {
         this.fileName = fileName;
     }
 
-    public Integer getTaxonomyId() {
-        return taxonomyId;
+    public String getTaxonomyAccession() {
+        return taxonomyAccession;
     }
 
-    public void setTaxonomyId(Integer taxonomyId) {
-        this.taxonomyId = taxonomyId;
-    }  
+    public void setTaxonomyAccession(String taxonomyAccession) {
+        this.taxonomyAccession = taxonomyAccession;
+    }      
 
     public String getFilePath() {
         return filePath;
@@ -135,9 +139,9 @@ public class FastaDb extends DatabaseEntity {
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
         hash = 37 * hash + Objects.hashCode(this.name);
-        hash = 37 * hash + Objects.hashCode(this.taxonomyId);
+        hash = 37 * hash + Objects.hashCode(this.taxonomyAccession);
         hash = 37 * hash + Objects.hashCode(this.species);
         hash = 37 * hash + Objects.hashCode(this.version);
         return hash;
@@ -155,7 +159,7 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.taxonomyId, other.taxonomyId)) {
+        if (!Objects.equals(this.taxonomyAccession, other.taxonomyAccession)) {
             return false;
         }
         if (!Objects.equals(this.species, other.species)) {
@@ -165,6 +169,6 @@ public class FastaDb extends DatabaseEntity {
             return false;
         }
         return true;
-    }        
+    }    
     
 }

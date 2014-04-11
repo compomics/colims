@@ -71,10 +71,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
-        selectMaxQuantDirectoryButton.setText("browse");
+        selectMaxQuantDirectoryButton.setText("browse...");
         selectMaxQuantDirectoryButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        selectFastaButton.setText("browse");
+        selectFastaButton.setText("browse...");
         selectFastaButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         fastaFileSelectionLabel.setText("Select a FASTA file");

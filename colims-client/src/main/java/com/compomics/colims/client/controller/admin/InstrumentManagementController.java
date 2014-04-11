@@ -470,8 +470,8 @@ public class InstrumentManagementController implements Controllable {
                 if (instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
                     InstrumentType instrumentTypeToDelete = getSelectedInstrumentType();
 
-                    //check if permission has an id.
-                    //If so, try to delete the permission from the db.
+                    //check if the instrument type has an id.
+                    //If so, try to delete the instrument type from the db.
                     if (instrumentTypeToDelete.getId() != null) {
                         try {
                             instrumentTypeService.delete(instrumentTypeToDelete);
@@ -515,7 +515,7 @@ public class InstrumentManagementController implements Controllable {
                         instrumentTypeService.update(selectedInstrumentType);
                     } else {
                         instrumentTypeService.save(selectedInstrumentType);
-                        //refresh permission list
+                        //refresh instrument type list
                         instrumentTypeCrudDialog.getInstrumentTypeList().updateUI();
                     }
                     instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setEnabled(false);

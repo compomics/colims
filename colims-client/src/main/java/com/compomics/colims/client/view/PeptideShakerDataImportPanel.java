@@ -101,7 +101,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        selectCpsButton.setText("browse");
+        selectCpsButton.setText("browse...");
         selectCpsButton.setMaximumSize(new java.awt.Dimension(80, 25));
         selectCpsButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectCpsButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -112,7 +112,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
-        selectFastaButton.setText("browse");
+        selectFastaButton.setText("browse...");
         selectFastaButton.setMaximumSize(new java.awt.Dimension(80, 25));
         selectFastaButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectFastaButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -175,7 +175,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         mgfFilesScrollPane.setViewportView(mgfFileList);
 
-        addMgfButton.setText("add");
+        addMgfButton.setText("add...");
         addMgfButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addMgfButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addMgfButton.setPreferredSize(new java.awt.Dimension(80, 25));

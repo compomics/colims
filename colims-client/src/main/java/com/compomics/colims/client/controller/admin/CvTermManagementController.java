@@ -65,7 +65,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
     @Override
     public void init() {
-        //get view
+        //init view
         cvTermManagementDialog = new CvTermManagementDialog(colimsController.getColimsFrame(), true);
 
         //register to event bus

@@ -85,7 +85,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="selectCpsButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="browse"/>
+            <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -118,7 +118,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="selectFastaButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="browse"/>
+            <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -220,7 +220,7 @@
         </Container>
         <Component class="javax.swing.JButton" name="addMgfButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="add"/>
+            <Property name="text" type="java.lang.String" value="add..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
