@@ -87,6 +87,7 @@ public class MaxQuantParser {
                 spectraPerRunMap.get(spectrum.getFileName()).addASpectrum(spectrum);
             } else {
                 MaxQuantAnalyticalRun maxQuantRun = new MaxQuantAnalyticalRun();
+                maxQuantRun.setAnalyticalRunName(spectrum.getFileName());
                 maxQuantRun.addASpectrum(spectrum);
                 spectraPerRunMap.put((spectrum.getFileName()), maxQuantRun);
             }

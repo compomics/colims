@@ -109,3 +109,4 @@ colims-distributed/data/localhost/KahaDB/lock
 colims-distributed/src/test/resources/log4j.properties
 colims-distributed/src/test/resources/colims-distributed-context.xml
 colims-distributed/derby.log
+colims-core/src/test/resources/data/maxquant/testfasta.fasta.cui

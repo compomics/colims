@@ -19,7 +19,6 @@ import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

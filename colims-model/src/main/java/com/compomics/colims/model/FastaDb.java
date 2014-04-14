@@ -141,10 +141,12 @@ public class FastaDb extends DatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.name);
-        hash = 37 * hash + Objects.hashCode(this.taxonomyAccession);
-        hash = 37 * hash + Objects.hashCode(this.species);
-        hash = 37 * hash + Objects.hashCode(this.version);
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + Objects.hashCode(this.fileName);
+        hash = 97 * hash + Objects.hashCode(this.filePath);
+        hash = 97 * hash + Objects.hashCode(this.taxonomyAccession);
+        hash = 97 * hash + Objects.hashCode(this.species);
+        hash = 97 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
@@ -158,6 +160,12 @@ public class FastaDb extends DatabaseEntity {
         }
         final FastaDb other = (FastaDb) obj;
         if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.fileName, other.fileName)) {
+            return false;
+        }
+        if (!Objects.equals(this.filePath, other.filePath)) {
             return false;
         }
         if (!Objects.equals(this.taxonomyAccession, other.taxonomyAccession)) {

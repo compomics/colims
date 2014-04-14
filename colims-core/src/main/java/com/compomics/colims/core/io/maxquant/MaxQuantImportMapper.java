@@ -88,8 +88,11 @@ public class MaxQuantImportMapper {
 
                 for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
                     Spectrum targetSpectrum = new Spectrum();
-
-                //for the spectra we can just use the standard utilities mapper
+                    
+                    //set entity relation
+                    targetSpectrum.setAnalyticalRun(targetRun);
+                    
+                    //for the spectra we can just use the standard utilities mapper
                     //@TODO get the fragmentation type 
                     utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
                     mappedSpectra.add(targetSpectrum);

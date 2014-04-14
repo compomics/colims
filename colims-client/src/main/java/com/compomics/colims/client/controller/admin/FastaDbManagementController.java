@@ -199,7 +199,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                     } else {
                         fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
                         fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
-                        //clearFastaDbDetailFields();
+                        clearFastaDbDetailFields();
                     }
                 }
             }
