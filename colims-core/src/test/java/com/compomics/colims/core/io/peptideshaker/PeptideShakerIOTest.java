@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.peptideshaker;
 
+import com.compomics.colims.model.FastaDb;
 import java.io.File;
 import java.io.IOException;
 
@@ -59,10 +60,15 @@ public class PeptideShakerIOTest {
     public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
         File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_ps_0_27_4.cps").getFile();
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
+        FastaDb fastaDb = new FastaDb();
+        fastaDb.setName(fastaFile.getName());
+        fastaDb.setFileName(fastaFile.getName());
+        fastaDb.setFilePath(fastaFile.getAbsolutePath());
+        
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
 
-        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaFile, mgfFiles);
+        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaDb, mgfFiles);
         UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);
 
         Assert.assertNotNull(unpackedPsDataImport);
@@ -74,7 +80,7 @@ public class PeptideShakerIOTest {
         MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
 
-        Assert.assertEquals(fastaFile, unpackedPsDataImport.getFastaFile());
+        Assert.assertEquals(fastaDb, unpackedPsDataImport.getFastaDb());
         Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
     }
 }

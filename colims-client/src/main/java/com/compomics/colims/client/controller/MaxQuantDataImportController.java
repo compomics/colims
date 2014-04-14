@@ -1,8 +1,9 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
 import com.compomics.colims.core.io.maxquant.MaxQuantDataImport;
-import com.compomics.util.io.filefilters.FastaFileFilter;
+import com.compomics.colims.model.FastaDb;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,6 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,12 +25,15 @@ public class MaxQuantDataImportController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
     //model
     private File maxQuantDirectory;
-    private File fastaFile;
+    private FastaDb fastaDb;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
     //parent controller
     @Autowired
     private AnalyticalRunSetupController analyticalRunSetupController;
+    //child controller
+    @Autowired
+    private FastaDbManagementController fastaDbManagementController;
     //services
     @Autowired
     private EventBus eventBus;
@@ -58,28 +61,19 @@ public class MaxQuantDataImportController implements Controllable {
                     maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
 
                     //show MaxQuant directory name in label
-                    maxQuantDataImportPanel.getMaxQuantDirectoryLabel().setText(maxQuantDirectory.getName());
+                    maxQuantDataImportPanel.getMaxQuantDirectoryLabel().setText(maxQuantDirectory.getAbsolutePath());
                 }
             }
         });
-
-        //init fasta file selection
-        //disable select multiple files
-        maxQuantDataImportPanel.getFastaFileChooser().setMultiSelectionEnabled(false);
-        //set fasta file filter
-        maxQuantDataImportPanel.getFastaFileChooser().setFileFilter(new FastaFileFilter());
-
+        
         maxQuantDataImportPanel.getSelectFastaButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //in response to the button click, show open dialog 
-                int returnVal = maxQuantDataImportPanel.getFastaFileChooser().showOpenDialog(maxQuantDataImportPanel);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fastaFile = maxQuantDataImportPanel.getFastaFileChooser().getSelectedFile();
-
-                    //show fasta file name in label
-                    maxQuantDataImportPanel.getFastaFileLabel().setText(fastaFile.getName());
-                }
+                fastaDbManagementController.showView();
+                
+                fastaDb = fastaDbManagementController.getFastaDb();
+                
+                maxQuantDataImportPanel.getFastaDbLabel().setText(fastaDb.getFilePath());
             }
         });
     }
@@ -88,7 +82,7 @@ public class MaxQuantDataImportController implements Controllable {
     public void showView() {
         //reset the input fields
         maxQuantDataImportPanel.getMaxQuantDirectoryLabel().setText("");
-        maxQuantDataImportPanel.getFastaFileLabel().setText("");
+        maxQuantDataImportPanel.getFastaDbLabel().setText("");
     }
 
     /**
@@ -103,7 +97,7 @@ public class MaxQuantDataImportController implements Controllable {
         if (maxQuantDirectory == null) {
             validationMessages.add("Please select a MaxQuant data files directory.");
         }
-        if (fastaFile == null) {
+        if (fastaDb == null) {
             validationMessages.add("Please select a FASTA file.");
         }
 
@@ -111,7 +105,7 @@ public class MaxQuantDataImportController implements Controllable {
     }
 
     public MaxQuantDataImport getDataImport() {
-        MaxQuantDataImport maxQuantDataImport = new MaxQuantDataImport(maxQuantDirectory, fastaFile);
+        MaxQuantDataImport maxQuantDataImport = new MaxQuantDataImport(maxQuantDirectory, fastaDb);
 
         return maxQuantDataImport;
     }

@@ -1,6 +1,6 @@
 package com.compomics.colims.core.io;
 
-import java.io.File;
+import com.compomics.colims.model.FastaDb;
 import java.io.Serializable;
 
 /**
@@ -12,23 +12,23 @@ public abstract class DataImport implements Serializable {
     private static final long serialVersionUID = 1L;       
 
     /**
-     * The fasta file
+     * The fasta DB
      */
-    protected File fastaFile;
+    protected FastaDb fastaDb;
 
     public DataImport() {
     }
 
-    public DataImport(File fastaFile) {
-        this.fastaFile = fastaFile;
+    public DataImport(FastaDb fastaDb) {
+        this.fastaDb = fastaDb;
     }
 
-    public File getFastaFile() {
-        return fastaFile;
+    public FastaDb getFastaDb() {
+        return fastaDb;
     }
 
-    public void setFastaFile(File fastaFile) {
-        this.fastaFile = fastaFile;
-    }    
+    public void setFastaDb(FastaDb fastaDb) {
+        this.fastaDb = fastaDb;
+    }      
 
 }

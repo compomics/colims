@@ -15,6 +15,7 @@ import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
@@ -74,7 +75,12 @@ public class Playground2 {
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
-        unpackedPsDataImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        FastaDb fastaDb = new FastaDb();
+        fastaDb.setName(fastaFile.getName());
+        fastaDb.setFileName(fastaFile.getName());
+        fastaDb.setFilePath(fastaFile.getAbsolutePath());
+        unpackedPsDataImport.setFastaDb(fastaDb);
 
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
 
@@ -97,7 +103,7 @@ public class Playground2 {
         mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
-        unpackedPsDataImport.setFastaFile(new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile());
+        unpackedPsDataImport.setFastaDb(fastaDb);
 
         analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
 

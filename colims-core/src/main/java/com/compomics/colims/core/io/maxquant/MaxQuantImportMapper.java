@@ -75,7 +75,7 @@ public class MaxQuantImportMapper {
             //just in case
             maxQuantParser.clearParsedProject();
             clearMappingResources();
-            loadFastaFile(aMaxQuantImport.getFastaFile());
+            loadFastaFile(aMaxQuantImport.getFastaDb().getFilePath());
 
             maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
 
@@ -119,11 +119,11 @@ public class MaxQuantImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaFile the fasta file
+     * @param fastaFilePath  the fasta file path
      */
-    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaFile(String fastaFilePath) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaFile);
+        sequenceFactory.loadFastaFile(new File(fastaFilePath), null);
         LOGGER.debug("Finish loading FASTA file.");
     }
 }

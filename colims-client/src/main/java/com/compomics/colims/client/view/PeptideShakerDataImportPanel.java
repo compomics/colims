@@ -15,8 +15,7 @@ import javax.swing.border.EmptyBorder;
 public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
     private final JFileChooser cpsFileChooser = new JFileChooser();
-    private final JFileChooser mgfFileChooser = new JFileChooser();
-    private final JFileChooser fastaFileChooser = new JFileChooser();    
+    private final JFileChooser mgfFileChooser = new JFileChooser();  
 
     /**
      * Creates new form PeptideShakerDataImportPanel
@@ -35,10 +34,6 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         return mgfFileChooser;
     }
 
-    public JFileChooser getFastaFileChooser() {
-        return fastaFileChooser;
-    }
-
     public JButton getAddMgfButton() {
         return addMgfButton;
     }
@@ -47,8 +42,8 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         return cpsFileLabel;
     }
 
-    public JLabel getFastaFileLabel() {
-        return fastaFileLabel;
+    public JLabel getFastaDbLabel() {
+        return fastaDbLabel;
     }
 
     public JList getMgfFileList() {
@@ -66,9 +61,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
     public JButton getSelectFastaButton() {
         return selectFastaButton;
     }
-    
-    
-
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -83,7 +76,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         selectCpsButton = new javax.swing.JButton();
         cpsFileLabel = new javax.swing.JLabel();
         cpsFileSelectionLabel = new javax.swing.JLabel();
-        fastaFileLabel = new javax.swing.JLabel();
+        fastaDbLabel = new javax.swing.JLabel();
         selectFastaButton = new javax.swing.JButton();
         fastaFileSelectionLabel = new javax.swing.JLabel();
         rightPanel = new javax.swing.JPanel();
@@ -110,7 +103,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         cpsFileSelectionLabel.setText("Select a PeptideShaker cps file");
 
-        fastaFileLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
+        fastaDbLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
         selectFastaButton.setText("browse...");
         selectFastaButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -127,7 +120,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(leftPanelLayout.createSequentialGroup()
-                        .addComponent(fastaFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(fastaDbLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(fastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -152,7 +145,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
                 .addComponent(fastaFileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fastaFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fastaDbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -236,7 +229,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JButton addMgfButton;
     private javax.swing.JLabel cpsFileLabel;
     private javax.swing.JLabel cpsFileSelectionLabel;
-    private javax.swing.JLabel fastaFileLabel;
+    private javax.swing.JLabel fastaDbLabel;
     private javax.swing.JLabel fastaFileSelectionLabel;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JList mgfFileList;

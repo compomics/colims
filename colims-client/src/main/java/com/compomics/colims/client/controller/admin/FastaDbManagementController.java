@@ -11,13 +11,17 @@ import com.compomics.colims.model.CvTerm;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.model.factory.CvTermFactory;
+import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -37,6 +41,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.tukaani.xz.common.Util;
 
 /**
  *
@@ -66,14 +71,14 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     public void init() {
         //init view
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunSetupController.getAnalyticalRunSetupDialog(), true);
-        
+
         //register to event bus
         eventBus.register(this);
-        
+
         //init binding
         bindingGroup = new BindingGroup();
 
-        fastaDbBindingList = ObservableCollections.observableList(fastaDbService.findAll());
+        fastaDbBindingList = ObservableCollections.observableList(new ArrayList<FastaDb>());
         JListBinding userListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
         bindingGroup.addBinding(userListBinding);
 
@@ -86,14 +91,44 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.version"), fastaDbManagementDialog.getVersionTextField(), ELProperty.create("${text}"), "versionBinding");
         bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.taxonomy"), fastaDbManagementDialog.getTaxonomyTextField(), ELProperty.create("${text}"), "taxonomyBinding");
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.taxonomyAccession"), fastaDbManagementDialog.getTaxonomyTextField(), ELProperty.create("${text}"), "taxonomyBinding");
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.species"), fastaDbManagementDialog.getSpeciesTextField(), ELProperty.create("${text}"), "speciesBinding");
         bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
-        
+
         //add listeners
+        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showOlsDialog(true);
+            }
+        });
+        
+        
+        //init fasta file selection
+        //disable select multiple files
+        fastaDbManagementDialog.getFastaFileChooser().setMultiSelectionEnabled(false);
+        //set fasta file filter
+        fastaDbManagementDialog.getFastaFileChooser().setFileFilter(new FastaFileFilter());
+
+        fastaDbManagementDialog.getBrowseFastaButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //in response to the button click, show open dialog 
+                int returnVal = fastaDbManagementDialog.getFastaFileChooser().showOpenDialog(fastaDbManagementDialog);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File fastaFile = fastaDbManagementDialog.getFastaFileChooser().getSelectedFile();
+
+                    //show fasta file name and path in textfields
+                    fastaDbManagementDialog.getFileNameTextField().setText(fastaFile.getName());
+                    fastaDbManagementDialog.getFilePathTextField().setText(fastaFile.getAbsolutePath());
+                }
+            }
+        });
+
         fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -114,7 +149,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                         } else {
                             fastaDbManagementDialog.getNameTextField().setEnabled(true);
                             fastaDbManagementDialog.getSaveOrUpdateButton().setText("save");
-                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This instrument type hasn't been persisted to the database.");
+                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been persisted to the database.");
                         }
                     } else {
                         fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(false);
@@ -175,11 +210,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             public void actionPerformed(ActionEvent e) {
                 FastaDb selectedFastaDb = getSelectedFastaDb();
                 //validate fasta DB
-                List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);                
-                if (selectedFastaDb.getId() != null) {
-                    validationMessages.add(selectedFastaDb.getName() + " already exists in the database,"
-                            + "\n" + "please choose another instrument type name.");
-                }
+                List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
                 if (validationMessages.isEmpty()) {
                     if (selectedFastaDb.getId() != null) {
                         fastaDbService.update(selectedFastaDb);
@@ -201,6 +232,29 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             }
         });
 
+        fastaDbManagementDialog.getDoneButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FastaDb fastaDb = getSelectedFastaDb();
+
+                //validate before closing dialog
+                List<String> validationMessages = new ArrayList<>();
+                if (fastaDb == null) {
+                    validationMessages.add("Please select a fasta DB from the list.");
+                } else {
+                    //validate user input
+                    validationMessages.addAll(validate(fastaDb));
+                }
+
+                if (validationMessages.isEmpty()) {
+                    fastaDbManagementDialog.dispose();
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
+            }
+        });
+
         fastaDbManagementDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -211,13 +265,18 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
     @Override
     public void showView() {
+        //renew fasta DB list
+        fastaDbBindingList.clear();
+        fastaDbBindingList.addAll(fastaDbService.findAll());
+
         GuiUtils.centerDialogOnComponent(analyticalRunSetupController.getAnalyticalRunSetupDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);
     }
 
     @Override
     public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
-
+        fastaDbManagementDialog.getTaxonomyTextField().setText(accession);
+        fastaDbManagementDialog.getSpeciesTextField().setText(selectedValue);
     }
 
     @Override
@@ -226,22 +285,47 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
+     * Return the selected fasta DB.
+     *
+     * @return
+     */
+    public FastaDb getFastaDb() {
+        return getSelectedFastaDb();
+    }
+
+    /**
+     * Validate the user input and return a list of validation messages.
+     *
+     * @param fastaDb
+     * @return
+     */
+    private List<String> validate(FastaDb fastaDb) {
+        List<String> validationMessages = new ArrayList();
+
+        if (fastaDb.getId() == null) {
+            validationMessages.add("You need to save the selected fasta DB before using it.");
+        }
+
+        return validationMessages;
+    }
+
+    /**
      * Show the OLS dialog.
      *
      * @param isNewCvTerm is the CV term new or did already exist in the DB
      */
     private void showOlsDialog(boolean isNewCvTerm) {
-        String ontology = "PSI Mass Spectrometry Ontology [MS]";
+        String ontology = "NEWT UniProt Taxonomy Database [NEWT]";
 
         Map<String, List<String>> preselectedOntologies = new HashMap<>();
-        preselectedOntologies.put("MS", null);
+        preselectedOntologies.put("NEWT", null);
 
         String field = (isNewCvTerm) ? NEW_TAXONOMY_TERM : UPDATE_TAXONOMY_TERM;
 
         //show new OLS dialog
         new OLSDialog(fastaDbManagementDialog, this, true, field, ontology, null, preselectedOntologies);
     }
-    
+
     /**
      * Get the selected fasta DB in the fasta DB JList.
      *
@@ -252,17 +336,17 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         FastaDb selectedFastaDb = (selectedIndex != -1) ? fastaDbBindingList.get(selectedIndex) : null;
         return selectedFastaDb;
     }
-    
+
     /**
      * Clear the fasta DB detail fields
      */
     private void clearFastaDbDetailFields() {
         fastaDbManagementDialog.getNameTextField().setText("");
-        fastaDbManagementDialog.getFileNameTextField().setText("");        
-        fastaDbManagementDialog.getFilePathTextField().setText("");        
+        fastaDbManagementDialog.getFileNameTextField().setText("");
+        fastaDbManagementDialog.getFilePathTextField().setText("");
         fastaDbManagementDialog.getVersionTextField().setText("");
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
         fastaDbManagementDialog.getSpeciesTextField().setText("");
-    }        
+    }
 
 }

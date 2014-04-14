@@ -34,7 +34,7 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     private String name;
     @Basic(optional = true)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = true)
     protected Date startDate;
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne

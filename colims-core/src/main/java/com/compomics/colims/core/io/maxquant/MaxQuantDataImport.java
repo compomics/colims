@@ -1,8 +1,8 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.model.FastaDb;
 import java.io.File;
-import java.util.Map;
 
 /**
  *
@@ -16,10 +16,10 @@ public class MaxQuantDataImport extends DataImport {
      * Constructor
      * 
      * @param maxQuantDirectory
-     * @param fastaFile
+     * @param fastaDb
      */
-    public MaxQuantDataImport(final File maxQuantDirectory, final File fastaFile){
-        super(fastaFile);
+    public MaxQuantDataImport(final File maxQuantDirectory, final FastaDb fastaDb){
+        super(fastaDb);
         this.maxQuantDirectory = maxQuantDirectory;
     }
 

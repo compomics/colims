@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.FastaDb;
 import java.io.File;
 
 import org.junit.Test;
@@ -31,11 +32,16 @@ public class MaxQuantImportMapperTest {
     MaxQuantImportMapper maxQuantImportMapper;
 
     private File maxQuantTextDirectory;
-    private File maxQuantTestFastaFile;
+    private FastaDb maxQuantTestFastaDb;
 
     public MaxQuantImportMapperTest() throws IOException {
         maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
-        maxQuantTestFastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
+        
+        File fastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
+        maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(fastaFile.getAbsolutePath());                
     }
 
     /**
@@ -44,7 +50,7 @@ public class MaxQuantImportMapperTest {
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         System.out.println("map");
-        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextDirectory, maxQuantTestFastaFile);
+        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         List<AnalyticalRun> result = maxQuantImportMapper.map(testImport);
         assertThat(result.size(), is(not(0)));
     }

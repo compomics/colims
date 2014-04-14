@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.model.FastaDb;
 import java.io.File;
 import java.util.List;
 
@@ -23,11 +24,11 @@ public class PeptideShakerDataImport extends DataImport {
      * Constructor
      *
      * @param peptideShakerCpsArchive
-     * @param fastaResource
+     * @param fastaDb
      * @param mgfResources
      */
-    public PeptideShakerDataImport(final File peptideShakerCpsArchive, final File fastaResource, final List<File> mgfResources) {
-        super(fastaResource);
+    public PeptideShakerDataImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfResources) {
+        super(fastaDb);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfFiles = mgfResources;
     }

@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
@@ -13,6 +14,7 @@ import com.compomics.colims.distributed.model.StorageMetadata;
 import com.compomics.colims.distributed.model.StorageTask;
 import com.compomics.colims.distributed.model.enums.StorageType;
 import com.compomics.colims.model.Instrument;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
@@ -61,12 +63,15 @@ public class AnalyticalRunSetupController implements Controllable {
     //parent controller
     @Autowired
     private ColimsController colimsController;
+    @Autowired
     private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
     private PeptideShakerDataImportController peptideShakerDataImportController;
     @Autowired
     private MaxQuantDataImportController maxQuantDataImportController;
+    @Autowired
+    private FastaDbManagementController fastaDbManagementController;
     //services
     @Autowired
     private InstrumentService instrumentService;
@@ -92,6 +97,7 @@ public class AnalyticalRunSetupController implements Controllable {
         eventBus.register(this);
 
         //init child controller
+        fastaDbManagementController.init();
         peptideShakerDataImportController.init();
         maxQuantDataImportController.init();
 
@@ -117,7 +123,7 @@ public class AnalyticalRunSetupController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-                switch (currentCardName) {                    
+                switch (currentCardName) {
                     case METADATA_SELECTION_CARD:
                         instrument = getSelectedInstrument();
                         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
@@ -166,7 +172,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
-                        List<String> psValidationMessages = peptideShakerDataImportController.validateBeforeUnpacking();
+                        List<String> psValidationMessages = peptideShakerDataImportController.validate();
                         if (psValidationMessages.isEmpty()) {
                             sendStorageTask(peptideShakerDataImportController.getDataImport());
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
@@ -199,14 +205,14 @@ public class AnalyticalRunSetupController implements Controllable {
                 analyticalRunSetupDialog.dispose();
             }
         });
-    }    
+    }
 
     @Override
     public void showView() {
         //check if the user has the rights to add a run
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
             //check connection to distributed queues
-            if (queueManager.testConnection()) {                
+            if (queueManager.testConnection()) {
                 //reset instrument selection
                 if (!instrumentBindingList.isEmpty()) {
                     analyticalRunSetupDialog.getInstrumentComboBox().setSelectedIndex(0);
@@ -244,7 +250,12 @@ public class AnalyticalRunSetupController implements Controllable {
     }
 
     private void sendStorageTask(DataImport dataImport) {
-        StorageMetadata storageMetadata = new StorageMetadata(getSelectedStorageType(), analyticalRunSetupDialog.getStorageDescriptionTextField().getText(), authenticationBean.getCurrentUser().getName(), analyticalRunSetupDialog.getDateTimePicker().getDate(), instrument, projectManagementController.getSelectedSample());
+        String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
+        String userName = authenticationBean.getCurrentUser().getName();
+        Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
+        Sample sample = projectManagementController.getSelectedSample();
+        
+        StorageMetadata storageMetadata = new StorageMetadata(storageType, storageDescription, userName, startDate, instrument, sample);
         StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
 
         try {
@@ -270,7 +281,7 @@ public class AnalyticalRunSetupController implements Controllable {
      */
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-        switch (currentCardName) {            
+        switch (currentCardName) {
             case METADATA_SELECTION_CARD:
                 analyticalRunSetupDialog.getBackButton().setEnabled(false);
                 analyticalRunSetupDialog.getProceedButton().setEnabled(true);
@@ -309,7 +320,7 @@ public class AnalyticalRunSetupController implements Controllable {
      */
     private void updateInfo(String message) {
         analyticalRunSetupDialog.getInfoLabel().setText(message);
-    }    
+    }
 
     /**
      * Get the selected storage type.

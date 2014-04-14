@@ -85,7 +85,7 @@ public class PeptideShakerImportMapper {
             loadExperimentSettings(msExperiment);
 
             //load fasta resource in sequence factory        
-            loadFastaFile(unpackedPsDataImport.getFastaFile());
+            loadFastaFile(unpackedPsDataImport.getFastaDb().getFilePath());
 
             //iterate over samples
             for (com.compomics.util.experiment.biology.Sample sourceSample : msExperiment.getSamples().values()) {
@@ -180,11 +180,11 @@ public class PeptideShakerImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaFile the fasta file
+     * @param fastaFilePath  the fasta file path
      */
-    private void loadFastaFile(File fastaFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaFile(String fastaFilePath) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(fastaFile, null);
+        sequenceFactory.loadFastaFile(new File(fastaFilePath), null);
         LOGGER.debug("Finish loading FASTA file.");
     }
 

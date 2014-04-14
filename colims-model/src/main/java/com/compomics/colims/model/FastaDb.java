@@ -42,28 +42,29 @@ public class FastaDb extends DatabaseEntity {
     /**
      * The fasta db file path
      */
-    @Basic(optional = true)
-    @Column(name = "file_path", nullable = true)
+    @Basic(optional = false)
+    @NotBlank(message = "Please insert a fasta DB file path")
+    @Column(name = "file_path", nullable = false)
     protected String filePath;
     /**
      * The taxonomy ID
      */
     @Basic(optional = true)
     @Column(name = "taxonomy_accession", nullable = true)
-    private String taxonomyAccession;
+    private String taxonomyAccession = "N/A";
     /**
      * The species name
      */
     @Basic(optional = true)
     @Column(name = "species", nullable = true)
-    private String species;
+    private String species = "N/A";
     /**
      * The version of the fasta db
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB version")
     @Column(name = "version", nullable = false)
-    private String version;
+    private String version = "N/A";
     /**
      * The MD5 checksum of the fasta db
      */
@@ -170,5 +171,10 @@ public class FastaDb extends DatabaseEntity {
         }
         return true;
     }    
+
+    @Override
+    public String toString() {
+        return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
+    }        
     
 }
