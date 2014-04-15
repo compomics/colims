@@ -222,7 +222,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         experimentsTableScrollPane.setViewportView(experimentsTable);
 
         deleteExperimentButton.setText("delete");
-        deleteExperimentButton.setToolTipText("add a new experiment");
+        deleteExperimentButton.setToolTipText("delete an experiment");
         deleteExperimentButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -270,13 +270,13 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         samplesOverviewPanel.setPreferredSize(new java.awt.Dimension(20, 20));
 
         addSampleButton.setText("add...");
-        addSampleButton.setToolTipText("add a new experiment");
+        addSampleButton.setToolTipText("add a new sample");
         addSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         editSampleButton.setText("edit...");
-        editSampleButton.setToolTipText("edit the metadata of an existing experiment");
+        editSampleButton.setToolTipText("edit the metadata of an existing sample");
         editSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -298,12 +298,13 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         samplesTableScrollPane.setViewportView(samplesTable);
 
         deleteSampleButton.setText("delete");
-        deleteSampleButton.setToolTipText("add a new experiment");
+        deleteSampleButton.setToolTipText("delete a sample");
         deleteSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         addAnalyticalRunButton.setText("add run...");
+        addAnalyticalRunButton.setToolTipText("add an analytical run to the selected sample");
         addAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
