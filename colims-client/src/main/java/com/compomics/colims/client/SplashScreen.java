@@ -6,6 +6,9 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -22,9 +25,9 @@ import org.springframework.context.ApplicationContextAware;
  * @author Peter De Bruycker
  */
 public class SplashScreen implements ApplicationContextAware, BeanPostProcessor, InitializingBean {
-
+    
     private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
-
+    
     private JWindow window;
     private Image image;
     private final String imageResourcePath;
@@ -33,13 +36,13 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     private int progress = 0;
     private int maximum;
     private final boolean showProgressLabel;
-
+    
     public SplashScreen() {
         progressBar = new JProgressBar();
-        imageResourcePath = "/icons/colims_icon.png";
+        imageResourcePath = "/icons/colims-splash.png";
         showProgressLabel = true;
     }
-
+    
     public int getMaximum() {
         return maximum;
     }
@@ -49,6 +52,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      */
     public void splash() {
         window = new JWindow();
+        
         if (image == null) {
             image = loadImage(imageResourcePath);
             if (image == null) {
@@ -62,12 +66,12 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         } catch (InterruptedException e) {
             LOGGER.warn("Interrupted while waiting for splash image to load.");
         }
-
+        
         window.getContentPane().add(new JLabel(new ImageIcon(image)));
         window.getContentPane().add(progressBar, BorderLayout.SOUTH);
         window.pack();
         center(window);
-
+        
         window.setVisible(true);
     }
 
@@ -104,7 +108,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         if (showProgressLabel) {
             progressBar.setString("Loading bean " + name + "...");
         }
-
+        
         return bean;
     }
 
@@ -150,13 +154,13 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
             progressBar.setString(progressMessage);
         }
     }
-
+    
     private void center(JWindow window) {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         Rectangle r = window.getBounds();
         window.setLocation((screen.width - r.width) / 2, (screen.height - r.height) / 2);
     }
-
+    
     private Image loadImage(String path) {
         URL url = this.getClass().getResource(path);
         if (url == null) {
@@ -165,5 +169,5 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         }
         return Toolkit.getDefaultToolkit().createImage(url);
     }
-
+    
 }
