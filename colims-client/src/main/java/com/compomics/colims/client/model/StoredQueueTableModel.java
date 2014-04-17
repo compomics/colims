@@ -1,8 +1,8 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.StoredTask;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.CompletedDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,21 +27,21 @@ public class StoredQueueTableModel extends AbstractTableModel {
     private static final int SAMPLE_INDEX = 6;
     private static final int START_INDEX = 7;
     private static final int DURATION_INDEX = 8;
-    private List<StoredTask> messages;
+    private List<CompletedDbTask> messages;
 
     public StoredQueueTableModel() {
         messages = new ArrayList<>();
     }
 
-    public StoredQueueTableModel(List<StoredTask> messages) {
+    public StoredQueueTableModel(List<CompletedDbTask> messages) {
         this.messages = messages;
     }
 
-    public List<StoredTask> getMessages() {
+    public List<CompletedDbTask> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<StoredTask> messages) {
+    public void setMessages(List<CompletedDbTask> messages) {
         this.messages = messages;
         this.fireTableDataChanged();
     }
@@ -81,8 +81,8 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        StoredTask storedTask = messages.get(rowIndex);
-        StorageMetadata storageMetadata = storedTask.getStorageTask().getStorageMetadata();
+        CompletedDbTask storedTask = messages.get(rowIndex);
+        PersistMetadata storageMetadata = storedTask.getStorageTask().getStorageMetadata();
 
         switch (columnIndex) {
             case QUEUE_INDEX:

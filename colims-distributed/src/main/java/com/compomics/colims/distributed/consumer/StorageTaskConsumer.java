@@ -11,11 +11,11 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.model.StorageError;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.StoredTask;
+import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.producer.StorageErrorProducer;
-import com.compomics.colims.distributed.producer.StoredTaskProducer;
+import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class StorageTaskConsumer implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(StorageTaskConsumer.class);
 
     @Autowired
-    private StoredTaskProducer storedTaskProducer;
+    private CompletedTaskProducer storedTaskProducer;
     @Autowired
     private StorageErrorProducer storageErrorProducer;
     @Autowired
@@ -68,7 +68,7 @@ public class StorageTaskConsumer implements MessageListener {
     public void onMessage(Message message) {
         try {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
-            StorageTask storageTask = (StorageTask) objectMessage.getObject();
+            PersistDbTask storageTask = (PersistDbTask) objectMessage.getObject();
 
             LOGGER.info("Received storage task message of type " + storageTask.getStorageMetadata().getStorageType().userFriendlyName());
 
@@ -82,11 +82,11 @@ public class StorageTaskConsumer implements MessageListener {
                 storeAnalyticalRuns(storageTask, analyticalRuns);
 
                 //wrap the StorageTask in a StoredTask and send it to the stored task queue
-                storedTaskProducer.sendStoredTask(new StoredTask(started, System.currentTimeMillis(), storageTask));
+                storedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), storageTask));
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 //wrap the StorageTask in a StorageError and send it to the error queue
-                storageErrorProducer.sendStorageError(new StorageError(storageTask, e));
+                storageErrorProducer.sendStorageError(new DbTaskError(storageTask, e));
             }
         } catch (JMSException e) {
             LOGGER.error(e.getMessage(), e);
@@ -100,7 +100,7 @@ public class StorageTaskConsumer implements MessageListener {
      * @return the list of analytical runs
      * @throws MappingException
      */
-    private List<AnalyticalRun> mapDataImport(StorageTask storageTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
+    private List<AnalyticalRun> mapDataImport(PersistDbTask storageTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
         switch (storageTask.getStorageMetadata().getStorageType()) {
@@ -125,7 +125,7 @@ public class StorageTaskConsumer implements MessageListener {
      * @param storageTask the storage task
      * @param analyticalRuns the list of analytical runs
      */
-    private void storeAnalyticalRuns(StorageTask storageTask, List<AnalyticalRun> analyticalRuns) {
+    private void storeAnalyticalRuns(PersistDbTask storageTask, List<AnalyticalRun> analyticalRuns) {
         for (AnalyticalRun analyticalRun : analyticalRuns) {
             analyticalRun.setCreationDate(new Date());
             analyticalRun.setModificationDate(new Date());

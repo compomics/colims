@@ -56,10 +56,6 @@ public class PeptideShakerImportMapper {
      */
     private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
-     * The map of new proteins (key: protein accession, value: the protein)
-     */
-    private Map<String, Protein> newProteins = new HashMap<>();
-    /**
      * The cache used to store objects.
      */
     private ObjectsCache objectsCache;
@@ -174,7 +170,6 @@ public class PeptideShakerImportMapper {
         sequenceFactory.clearFactory();
         objectsCache = new ObjectsCache();
         objectsCache.setAutomatedMemoryManagement(true);
-        newProteins.clear();
     }
 
     /**

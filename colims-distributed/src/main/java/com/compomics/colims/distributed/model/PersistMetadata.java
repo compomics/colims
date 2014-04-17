@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.model;
 
-import com.compomics.colims.distributed.model.enums.StorageType;
-import com.compomics.colims.model.enums.SearchEngineType;
+import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import java.io.Serializable;
@@ -12,14 +11,14 @@ import java.util.Objects;
  *
  * @author Niels Hulstaert
  */
-public class StorageMetadata implements Serializable {
+public class PersistMetadata implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * The storage type of the task
      */
-    private StorageType storageType;
+    private PersistType storageType;
     /**
      * The submission timestamp
      */
@@ -45,10 +44,10 @@ public class StorageMetadata implements Serializable {
      */
     private Sample sample;
 
-    public StorageMetadata() {
+    public PersistMetadata() {
     }
 
-    public StorageMetadata(StorageType storageType, String description, String userName, Date startDate, Instrument instrument, Sample sample) {
+    public PersistMetadata(PersistType storageType, String description, String userName, Date startDate, Instrument instrument, Sample sample) {
         this.storageType = storageType;
         this.description = description;
         this.userName = userName;
@@ -58,11 +57,11 @@ public class StorageMetadata implements Serializable {
         submissionTimestamp = System.currentTimeMillis();
     }
 
-    public StorageType getStorageType() {
+    public PersistType getStorageType() {
         return storageType;
     }
 
-    public void setStorageType(StorageType storageType) {
+    public void setStorageType(PersistType storageType) {
         this.storageType = storageType;
     }
 
@@ -135,7 +134,7 @@ public class StorageMetadata implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StorageMetadata other = (StorageMetadata) obj;
+        final PersistMetadata other = (PersistMetadata) obj;
         if (this.storageType != other.storageType) {
             return false;
         }

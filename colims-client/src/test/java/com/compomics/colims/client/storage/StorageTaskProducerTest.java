@@ -2,9 +2,9 @@ package com.compomics.colims.client.storage;
 
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.Sample;
 import java.util.List;
@@ -34,12 +34,12 @@ public class StorageTaskProducerTest {
     
     @Test
     public void testSendStorageTaskMessage() throws JMSException, Exception {
-        final StorageTask storageTask = new StorageTask();
+        final PersistDbTask storageTask = new PersistDbTask();
         
-        StorageMetadata storageMetadata = new StorageMetadata();
+        PersistMetadata storageMetadata = new PersistMetadata();
         storageMetadata.setDescription("test description");
         storageMetadata.setSample(new Sample("test sample name"));
-        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+        storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
         storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
         storageMetadata.setUserName("test user");        
         storageTask.setStorageMetadata(storageMetadata);
@@ -47,7 +47,7 @@ public class StorageTaskProducerTest {
         DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
         storageTask.setDataImport(dataImport);
         
-        List<StorageTask> messages = queueManager.monitorQueue(storageQueueName);
+        List<PersistDbTask> messages = queueManager.monitorQueue(storageQueueName);
         //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
         
@@ -58,7 +58,7 @@ public class StorageTaskProducerTest {
         //there should be one message on the queue
         Assert.assertEquals(1, messages.size());
         
-        StorageMetadata storageMetaDataOnQueue = messages.get(0).getStorageMetadata();
+        PersistMetadata storageMetaDataOnQueue = messages.get(0).getStorageMetadata();
         Assert.assertEquals(storageMetadata, storageMetaDataOnQueue);
         
         //remove message from queue        

@@ -1,7 +1,7 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.distributed.model.StorageError;
-import com.compomics.colims.distributed.model.StorageMetadata;
+import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.distributed.model.PersistMetadata;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,21 +24,21 @@ public class ErrorQueueTableModel extends AbstractTableModel {
     private static final int INSTRUMENT_INDEX = 5;
     private static final int SAMPLE_INDEX = 6;
     private static final int ERROR_INDEX = 7;
-    private List<StorageError> messages;
+    private List<DbTaskError> messages;
 
     public ErrorQueueTableModel() {
         messages = new ArrayList<>();
     }
 
-    public ErrorQueueTableModel(List<StorageError> messages) {
+    public ErrorQueueTableModel(List<DbTaskError> messages) {
         this.messages = messages;
     }
 
-    public List<StorageError> getMessages() {
+    public List<DbTaskError> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<StorageError> messages) {
+    public void setMessages(List<DbTaskError> messages) {
         this.messages = messages;
         this.fireTableDataChanged();
     }
@@ -78,8 +78,8 @@ public class ErrorQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        StorageError storageError = messages.get(rowIndex);
-        StorageMetadata storageMetadata = storageError.getStorageTask().getStorageMetadata();
+        DbTaskError storageError = messages.get(rowIndex);
+        PersistMetadata storageMetadata = storageError.getStorageTask().getStorageMetadata();
 
         switch (columnIndex) {
             case QUEUE_INDEX:

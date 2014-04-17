@@ -45,10 +45,14 @@ public class UtilitiesModificationMapper {
     @Autowired
     private PtmFactoryWrapper ptmFactoryWrapper;
     /**
-     * The map of new modifications (key: modification name, value: the
+     * The map of cached modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();
+    private Map<String, Modification> cachedModifications = new HashMap<>();
+
+    public Map<String, Modification> getCachedModifications() {
+        return cachedModifications;
+    }
 
     /**
      * Map the utilities modification matches onto the colims peptide. The
@@ -142,7 +146,7 @@ public class UtilitiesModificationMapper {
         Modification modification;
 
         //look for the modification in the newModifications map
-        modification = newModifications.get(modificationMatch.getTheoreticPtm());
+        modification = cachedModifications.get(modificationMatch.getTheoreticPtm());
 
         if (modification == null) {
             //the modification was not found in the newModifications map    
@@ -152,7 +156,8 @@ public class UtilitiesModificationMapper {
             if (modification == null) {
                 //the modification was not found in the database
                 //look for the modification in the PSI-MOD ontology by exact name
-                modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());
+                //modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());
+                modification = null;
 
                 if (modification == null) {
                     //the modification was not found by name in the PSI-MOD ontology
@@ -170,9 +175,12 @@ public class UtilitiesModificationMapper {
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(ptM.getMass());
 
-                    //add to newModifications
-                    newModifications.put(modification.getAccession(), modification);
+                    //add to cached modifications
+                    cachedModifications.put(modification.getAccession(), modification);
                 }
+            } else {
+                //add to cached modifications
+                cachedModifications.put(modification.getAccession(), modification);
             }
         }
 
@@ -190,7 +198,7 @@ public class UtilitiesModificationMapper {
         Modification modification;
 
         //look for the modification in the newModifications map
-        modification = newModifications.get(cvTerm.getAccession());
+        modification = cachedModifications.get(cvTerm.getAccession());
 
         if (modification == null) {
             //the modification was not found in the newModifications map    
@@ -202,14 +210,18 @@ public class UtilitiesModificationMapper {
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
                     //look for the modification in the PSI-MOD ontology by accession                
                     modification = olsService.findModifiationByAccession(cvTerm.getAccession());
-                } else if(cvTerm.getOntology().equals("UNIMOD")){
+                } else if (cvTerm.getOntology().equals("UNIMOD")) {
                     //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
                     modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
                 }
 
                 if (modification != null) {
-                    newModifications.put(modification.getAccession(), modification);
+                    //add to cached modifications
+                    cachedModifications.put(modification.getAccession(), modification);
                 }
+            } else {
+                //add to cached modifications
+                cachedModifications.put(modification.getAccession(), modification);
             }
         }
 

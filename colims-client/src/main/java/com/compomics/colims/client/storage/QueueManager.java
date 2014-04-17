@@ -1,7 +1,7 @@
 package com.compomics.colims.client.storage;
 
-import com.compomics.colims.distributed.model.AbstractMessage;
-import com.compomics.colims.distributed.model.StorageError;
+import com.compomics.colims.distributed.model.QueueMessage;
+import com.compomics.colims.distributed.model.DbTaskError;
 import java.util.List;
 import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
@@ -23,7 +23,7 @@ public interface QueueManager {
      * @return
      * @throws JMSException
      */
-    <T extends AbstractMessage> List<T> monitorQueue(String queueName) throws JMSException;
+    <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException;
 
     /**
      * Redirect the given StorageError to the given queue.
@@ -33,7 +33,7 @@ public interface QueueManager {
      * @throws JMSException
      * @throws javax.management.MalformedObjectNameException
      */
-    void redirectStorageError(String queueName, StorageError storageError) throws JMSException, MalformedObjectNameException, Exception;
+    void redirectStorageError(String queueName, DbTaskError storageError) throws JMSException, MalformedObjectNameException, Exception;
 
     /**
      * Delete the given message from the given queue.

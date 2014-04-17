@@ -1,6 +1,6 @@
 package com.compomics.colims.client.storage;
 
-import com.compomics.colims.distributed.model.StorageTask;
+import com.compomics.colims.distributed.model.PersistDbTask;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -30,7 +30,7 @@ public class StorageTaskProducer {
      * @param storageTask the StorageTask
      * @throws JmsException
      */
-    public void sendStorageTask(final StorageTask storageTask) throws JmsException {
+    public void sendStorageTask(final PersistDbTask storageTask) throws JmsException {
         
         storageTaskProducerTemplate.send(new MessageCreator() {
             @Override

@@ -2,8 +2,8 @@ package com.compomics.colims.client.storage.impl;
 
 import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.storage.StorageErrorMessageConvertor;
-import com.compomics.colims.distributed.model.AbstractMessage;
-import com.compomics.colims.distributed.model.StorageError;
+import com.compomics.colims.distributed.model.QueueMessage;
+import com.compomics.colims.distributed.model.DbTaskError;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -50,7 +50,7 @@ public class QueueManagerImpl implements QueueManager {
     private MBeanServerConnection clientConnector;
 
     @Override
-    public <T extends AbstractMessage> List<T> monitorQueue(String queueName) throws JMSException {
+    public <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException {
         List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override
@@ -88,7 +88,7 @@ public class QueueManagerImpl implements QueueManager {
     }
 
     @Override
-    public void redirectStorageError(String queueName, StorageError storageError) throws JMSException, MalformedObjectNameException, Exception {
+    public void redirectStorageError(String queueName, DbTaskError storageError) throws JMSException, MalformedObjectNameException, Exception {
         //set appropriate message convertor
         if (!(queueManagerTemplate.getMessageConverter() instanceof StorageErrorMessageConvertor)) {
             queueManagerTemplate.setMessageConverter(storageErrorMessageConvertor);

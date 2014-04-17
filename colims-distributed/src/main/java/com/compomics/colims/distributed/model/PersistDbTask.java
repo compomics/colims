@@ -8,32 +8,30 @@ import java.util.Objects;
  *
  * @author Niels Hulstaert
  */
-public class StorageTask extends AbstractMessage implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class PersistDbTask extends DbTask {
 
     /**
-     * The storage metadata
+     * The perist metadata
      */
-    private StorageMetadata storageMetadata;
+    private PersistMetadata storageMetadata;
     /**
      * The resources necessary for storing
      */
     private DataImport dataImport;
 
-    public StorageTask() {
+    public PersistDbTask() {
     }
 
-    public StorageTask(StorageMetadata storageMetadata, DataImport dataImport) {
+    public PersistDbTask(PersistMetadata storageMetadata, DataImport dataImport) {
         this.storageMetadata = storageMetadata;
         this.dataImport = dataImport;
     }
 
-    public StorageMetadata getStorageMetadata() {
+    public PersistMetadata getStorageMetadata() {
         return storageMetadata;
     }
 
-    public void setStorageMetadata(StorageMetadata storageMetadata) {
+    public void setStorageMetadata(PersistMetadata storageMetadata) {
         this.storageMetadata = storageMetadata;
     }
 
@@ -61,7 +59,7 @@ public class StorageTask extends AbstractMessage implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StorageTask other = (StorageTask) obj;
+        final PersistDbTask other = (PersistDbTask) obj;
         if (!Objects.equals(this.storageMetadata, other.storageMetadata)) {
             return false;
         }

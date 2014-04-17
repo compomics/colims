@@ -1,5 +1,7 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.ErrorQueueTableModel;
@@ -8,14 +10,13 @@ import com.compomics.colims.client.model.StoredQueueTableModel;
 import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
-import com.compomics.colims.distributed.model.StorageError;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.StoredTask;
+import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -85,7 +86,7 @@ public class StorageMonitoringController implements Controllable {
                 int selectedRowIndex = storageMonitoringDialog.getStorageQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && storageQueueTableModel.getRowCount() != 0) {
                     try {
-                        StorageTask storageTask = storageQueueTableModel.getMessages().get(selectedRowIndex);
+                        PersistDbTask storageTask = storageQueueTableModel.getMessages().get(selectedRowIndex);
 
                         queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
 
@@ -107,7 +108,7 @@ public class StorageMonitoringController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
                     if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
-                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+                        DbTaskError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
                         if (storageError.getCause().getMessage() != null) {
                             storageMonitoringDialog.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
@@ -128,7 +129,7 @@ public class StorageMonitoringController implements Controllable {
                 int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
                     try {
-                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+                        DbTaskError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
                         queueManager.redirectStorageError(storageQueueName, storageError);
 
@@ -151,7 +152,7 @@ public class StorageMonitoringController implements Controllable {
                 int selectedRowIndex = storageMonitoringDialog.getErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && errorQueueTableModel.getRowCount() != 0) {
                     try {
-                        StorageError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
+                        DbTaskError storageError = errorQueueTableModel.getMessages().get(selectedRowIndex);
 
                         queueManager.deleteMessage(errorQueueName, storageError.getMessageId());
 
@@ -188,7 +189,7 @@ public class StorageMonitoringController implements Controllable {
                 int selectedRowIndex = storageMonitoringDialog.getStoredQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && storedQueueTableModel.getRowCount() != 0) {
                     try {
-                        StoredTask storedTask = storedQueueTableModel.getMessages().get(selectedRowIndex);
+                        CompletedDbTask storedTask = storedQueueTableModel.getMessages().get(selectedRowIndex);
 
                         queueManager.deleteMessage(storedQueueName, storedTask.getMessageId());
 
@@ -235,6 +236,7 @@ public class StorageMonitoringController implements Controllable {
 
     @Override
     public void showView() {
+        
         //check connection to distributed queues
         if (queueManager.testConnection()) {
             updateMonitoringTables();
@@ -252,13 +254,13 @@ public class StorageMonitoringController implements Controllable {
      */
     private void updateMonitoringTables() {
         try {
-            List<StorageTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
+            List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             storageQueueTableModel.setMessages(storageTaskMessages);
 
-            List<StoredTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
+            List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
             storedQueueTableModel.setMessages(storedTaskMessages);
 
-            List<StorageError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
+            List<DbTaskError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
             errorQueueTableModel.setMessages(storageErrorMessages);
 
             //clear selections

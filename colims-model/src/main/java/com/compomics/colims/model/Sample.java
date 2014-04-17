@@ -56,7 +56,7 @@ public class Sample extends AuditableDatabaseEntity {
                 @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     public Sample() {

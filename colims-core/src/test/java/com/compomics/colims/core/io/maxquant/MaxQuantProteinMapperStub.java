@@ -68,11 +68,11 @@ public class MaxQuantProteinMapperStub extends UtilitiesProteinMapper {
     @Override
     public Protein getProtein(String proteinAccession) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
         Protein protein = new Protein();
-        if (!newProteins.containsKey(proteinAccession)) {
+        if (!getCachedProteins().containsKey(proteinAccession)) {
             protein.setAccession(proteinAccession);
 
         } else {
-            protein = newProteins.get(proteinAccession);
+            protein = getCachedProteins().get(proteinAccession);
         }
         return protein;
     }

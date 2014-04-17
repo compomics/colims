@@ -10,9 +10,9 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.enums.DefaultPermission;
@@ -56,7 +56,7 @@ public class AnalyticalRunSetupController implements Controllable {
     //model       
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
-    private StorageType storageType;
+    private PersistType storageType;
     private Instrument instrument;
     //view
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
@@ -255,8 +255,8 @@ public class AnalyticalRunSetupController implements Controllable {
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
         
-        StorageMetadata storageMetadata = new StorageMetadata(storageType, storageDescription, userName, startDate, instrument, sample);
-        StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
+        PersistMetadata storageMetadata = new PersistMetadata(storageType, storageDescription, userName, startDate, instrument, sample);
+        PersistDbTask storageTask = new PersistDbTask(storageMetadata, dataImport);
 
         try {
             storageTaskProducer.sendStorageTask(storageTask);
@@ -327,15 +327,15 @@ public class AnalyticalRunSetupController implements Controllable {
      *
      * @return the selected StorageType
      */
-    private StorageType getSelectedStorageType() {
-        StorageType selectedStorageType = null;
+    private PersistType getSelectedStorageType() {
+        PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
         for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                selectedStorageType = StorageType.getByUserFriendlyName(button.getText());
+                selectedStorageType = PersistType.getByUserFriendlyName(button.getText());
             }
         }
 

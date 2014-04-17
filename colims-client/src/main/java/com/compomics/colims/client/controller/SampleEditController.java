@@ -18,6 +18,7 @@ import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTabl
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
+import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
@@ -79,6 +80,8 @@ public class SampleEditController implements Controllable {
     //services
     @Autowired
     private SampleService sampleService;
+    @Autowired
+    private AnalyticalRunService analyticalRunService;    
     @Autowired
     private MaterialService materialService;
     @Autowired
@@ -265,6 +268,16 @@ public class SampleEditController implements Controllable {
                 } else {
                     eventBus.post(new MessageEvent("analytical run selection", "Please select an analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
+            }
+        });
+        
+        sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+                if (selectedAnalyticalRun != null) {
+                    analyticalRunService.delete(selectedAnalyticalRun);
+                } 
             }
         });
     }

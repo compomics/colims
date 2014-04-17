@@ -1,6 +1,6 @@
 package com.compomics.colims.distributed.producer;
 
-import com.compomics.colims.distributed.model.StorageError;
+import com.compomics.colims.distributed.model.DbTaskError;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -30,7 +30,7 @@ public class StorageErrorProducer {
      * @param storageError the StorageError
      * @throws JmsException
      */
-    public void sendStorageError(final StorageError storageError) throws JmsException {
+    public void sendStorageError(final DbTaskError storageError) throws JmsException {
 
         storageErrorProducerTemplate.send(new MessageCreator() {
             @Override

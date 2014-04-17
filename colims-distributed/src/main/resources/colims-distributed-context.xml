@@ -50,17 +50,17 @@
     </jms:listener-container>
     
     <!-- storage error queue -->          
-    <amq:queue id="storageErrorDestination" physicalName="${distributed.queue.error}" />
+    <amq:queue id="dbTaskErrorDestination" physicalName="${distributed.queue.error}" />
     
     <bean id="storageErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="storageErrorDestination" />    
     
-    <!-- stored task queue -->
-    <amq:queue id="storedTaskDestination" physicalName="${distributed.queue.stored}" />
+    <!-- completed db task queue -->
+    <amq:queue id="completedDbTaskDestination" physicalName="${distributed.queue.completed}" />
     
-    <bean id="storedTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="completedDbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="storedTaskDestination" />                      
+          p:defaultDestination-ref="completedDbTaskDestination" />                      
                           
 </beans>

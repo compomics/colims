@@ -1,7 +1,7 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,21 +23,21 @@ public class StorageQueueTableModel extends AbstractTableModel {
     private static final int USER_INDEX = 4;
     private static final int INSTRUMENT_INDEX = 5;
     private static final int SAMPLE_INDEX = 6;
-    private List<StorageTask> messages;
+    private List<PersistDbTask> messages;
 
     public StorageQueueTableModel() {
         messages = new ArrayList<>();
     }
 
-    public StorageQueueTableModel(List<StorageTask> messages) {
+    public StorageQueueTableModel(List<PersistDbTask> messages) {
         this.messages = messages;
     }
 
-    public List<StorageTask> getMessages() {
+    public List<PersistDbTask> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<StorageTask> messages) {
+    public void setMessages(List<PersistDbTask> messages) {
         this.messages = messages;
         this.fireTableDataChanged();
     }
@@ -69,7 +69,7 @@ public class StorageQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        StorageMetadata storageMetadata = messages.get(rowIndex).getStorageMetadata();
+        PersistMetadata storageMetadata = messages.get(rowIndex).getStorageMetadata();
 
         switch (columnIndex) {
             case QUEUE_INDEX:

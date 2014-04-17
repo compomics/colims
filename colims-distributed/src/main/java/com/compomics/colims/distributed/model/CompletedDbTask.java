@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * @author Niels Hulstaert
  */
-public class StoredTask extends AbstractMessage implements Serializable {
+public class CompletedDbTask extends QueueMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,14 +21,14 @@ public class StoredTask extends AbstractMessage implements Serializable {
     /**
      * The storage task
      */
-    private StorageTask storageTask;
+    private PersistDbTask storageTask;
 
-    public StoredTask() {
+    public CompletedDbTask() {
         startedTimestamp = System.currentTimeMillis();
         endedTimestamp = System.currentTimeMillis();
     }
 
-    public StoredTask(Long startedTimestamp, Long endedTimestamp, StorageTask storageTask) {
+    public CompletedDbTask(Long startedTimestamp, Long endedTimestamp, PersistDbTask storageTask) {
         this.startedTimestamp = startedTimestamp;
         this.endedTimestamp = endedTimestamp;
         this.storageTask = storageTask;
@@ -50,11 +50,11 @@ public class StoredTask extends AbstractMessage implements Serializable {
         this.endedTimestamp = endedTimestamp;
     }
 
-    public StorageTask getStorageTask() {
+    public PersistDbTask getStorageTask() {
         return storageTask;
     }
 
-    public void setStorageTask(StorageTask storageTask) {
+    public void setStorageTask(PersistDbTask storageTask) {
         this.storageTask = storageTask;
     }
 

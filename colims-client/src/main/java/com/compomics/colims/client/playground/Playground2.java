@@ -14,9 +14,9 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.client.storage.StorageTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
@@ -55,9 +55,9 @@ public class Playground2 {
         Instrument instrument = instrumentService.findAll().get(0);
         StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
         
-        StorageTask storageTask = new StorageTask();
-        StorageMetadata storageMetadata = new StorageMetadata();
-        storageMetadata.setStorageType(StorageType.PEPTIDESHAKER);
+        PersistDbTask storageTask = new PersistDbTask();
+        PersistMetadata storageMetadata = new PersistMetadata();
+        storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
         storageMetadata.setDescription("test description2");
         storageMetadata.setSample(new Sample("sample name4"));
         storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
