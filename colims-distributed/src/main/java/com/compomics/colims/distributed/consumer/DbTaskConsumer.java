@@ -14,6 +14,8 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.DbTaskError;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.model.CompletedDbTask;
+import com.compomics.colims.distributed.model.DbTask;
+import com.compomics.colims.distributed.model.DeleteDbTask;
 import com.compomics.colims.distributed.producer.StorageErrorProducer;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.model.AnalyticalRun;
@@ -35,10 +37,10 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("storageTaskConsumer")
-public class StorageTaskConsumer implements MessageListener {
+@Component("dbTaskConsumer")
+public class DbTaskConsumer implements MessageListener {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageTaskConsumer.class);
+    private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
 
     @Autowired
     private CompletedTaskProducer storedTaskProducer;
@@ -68,49 +70,53 @@ public class StorageTaskConsumer implements MessageListener {
     public void onMessage(Message message) {
         try {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
-            PersistDbTask storageTask = (PersistDbTask) objectMessage.getObject();
+            DbTask dbTask = (DbTask) objectMessage.getObject();
 
-            LOGGER.info("Received storage task message of type " + storageTask.getStorageMetadata().getStorageType().userFriendlyName());
-
-            try {
-                Long started = System.currentTimeMillis();
-
-                //map the task
-                List<AnalyticalRun> analyticalRuns = mapDataImport(storageTask);
-
-                //store the analytical run(s)
-                storeAnalyticalRuns(storageTask, analyticalRuns);
-
-                //wrap the StorageTask in a StoredTask and send it to the stored task queue
-                storedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), storageTask));
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-                //wrap the StorageTask in a StorageError and send it to the error queue
-                storageErrorProducer.sendStorageError(new DbTaskError(storageTask, e));
+            if (dbTask instanceof PersistDbTask) {
+                LOGGER.info("Received db task message of type " + ((PersistDbTask) dbTask).getPersistMetadata().getStorageType().userFriendlyName());
+            } else if (dbTask instanceof DeleteDbTask) {
+                LOGGER.info("Received db task message of type " + ((DeleteDbTask) dbTask).getDbEntityType().userFriendlyName());
             }
+
+//            try {
+//                Long started = System.currentTimeMillis();
+//
+//                //map the task
+//                List<AnalyticalRun> analyticalRuns = mapDataImport(storageTask);
+//
+//                //store the analytical run(s)
+//                storeAnalyticalRuns(storageTask, analyticalRuns);
+//
+//                //wrap the StorageTask in a StoredTask and send it to the stored task queue
+//                storedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), storageTask));
+//            } catch (Exception e) {
+//                LOGGER.error(e.getMessage(), e);
+//                //wrap the StorageTask in a StorageError and send it to the error queue
+//                storageErrorProducer.sendStorageError(new DbTaskError(storageTask, e));
+//            }
         } catch (JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
 
     /**
-     * Map the storage task onto a list of analytical runs
+     * Map the persist db task onto a list of analytical runs
      *
-     * @param storageTask the storage taks containing the DataImport object
+     * @param persistDbTask the persist task containing the DataImport object
      * @return the list of analytical runs
      * @throws MappingException
      */
-    private List<AnalyticalRun> mapDataImport(PersistDbTask storageTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
+    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
-        switch (storageTask.getStorageMetadata().getStorageType()) {
+        switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
-                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) storageTask.getDataImport()));
+                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) persistDbTask.getDataImport()));
                 analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
                 break;
             case MAX_QUANT:
-                analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) storageTask.getDataImport());
+                analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) persistDbTask.getDataImport());
                 break;
             default:
                 break;
@@ -122,17 +128,19 @@ public class StorageTaskConsumer implements MessageListener {
     /**
      * Store the analytical runs in the database.
      *
-     * @param storageTask the storage task
+     * @param persistDbTask the persist database task
      * @param analyticalRuns the list of analytical runs
      */
-    private void storeAnalyticalRuns(PersistDbTask storageTask, List<AnalyticalRun> analyticalRuns) {
+    private void storeAnalyticalRuns(PersistDbTask persistDbTask, List<AnalyticalRun> analyticalRuns) {
         for (AnalyticalRun analyticalRun : analyticalRuns) {
             analyticalRun.setCreationDate(new Date());
             analyticalRun.setModificationDate(new Date());
-            analyticalRun.setUserName(storageTask.getStorageMetadata().getUserName());
-            analyticalRun.setStartDate(storageTask.getStorageMetadata().getStartDate());
-            analyticalRun.setSample(storageTask.getStorageMetadata().getSample());
-            analyticalRun.setInstrument(storageTask.getStorageMetadata().getInstrument());
+            //@todo find the user name by id
+//            analyticalRun.setUserName(persistDbTask.getMessageId());
+            analyticalRun.setStartDate(persistDbTask.getPersistMetadata().getStartDate());
+            //@todo find the sample name by id
+//            analyticalRun.setSample(persistDbTask.getPersistMetadata().getSample());
+            analyticalRun.setInstrument(persistDbTask.getPersistMetadata().getInstrument());
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
     }

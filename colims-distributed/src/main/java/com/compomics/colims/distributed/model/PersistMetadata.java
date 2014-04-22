@@ -2,7 +2,6 @@ package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Sample;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -16,21 +15,13 @@ public class PersistMetadata implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The storage type of the task
+     * The persist type of the task
      */
     private PersistType storageType;
-    /**
-     * The submission timestamp
-     */
-    private Long submissionTimestamp;
     /**
      * The storage task description
      */
     private String description;
-    /**
-     * The name of the user that submitted the task
-     */
-    private String userName;
     /**
      * The start date of the run(s)
      */
@@ -39,22 +30,26 @@ public class PersistMetadata implements Serializable {
      * The instrument the run is executed on
      */
     private Instrument instrument;
-    /**
-     * The sample the run(s) will be added to
-     */
-    private Sample sample;
 
+    /**
+     * Constructor.
+     */
     public PersistMetadata() {
     }
 
-    public PersistMetadata(PersistType storageType, String description, String userName, Date startDate, Instrument instrument, Sample sample) {
+    /**
+     * Constructor.
+     *
+     * @param storageType
+     * @param description
+     * @param startDate
+     * @param instrument
+     */
+    public PersistMetadata(PersistType storageType, String description, Date startDate, Instrument instrument) {
         this.storageType = storageType;
         this.description = description;
-        this.userName = userName;
         this.startDate = startDate;
         this.instrument = instrument;
-        this.sample = sample;
-        submissionTimestamp = System.currentTimeMillis();
     }
 
     public PersistType getStorageType() {
@@ -63,14 +58,6 @@ public class PersistMetadata implements Serializable {
 
     public void setStorageType(PersistType storageType) {
         this.storageType = storageType;
-    }
-
-    public Long getSubmissionTimestamp() {
-        return submissionTimestamp;
-    }
-
-    public void setSubmissionTimestamp(Long submissionTimestamp) {
-        this.submissionTimestamp = submissionTimestamp;
     }
 
     public String getDescription() {
@@ -89,14 +76,6 @@ public class PersistMetadata implements Serializable {
         this.startDate = startDate;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public Instrument getInstrument() {
         return instrument;
     }
@@ -105,24 +84,13 @@ public class PersistMetadata implements Serializable {
         this.instrument = instrument;
     }
 
-    public Sample getSample() {
-        return sample;
-    }
-
-    public void setSample(Sample sample) {
-        this.sample = sample;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 43 * hash + Objects.hashCode(this.storageType);
-        hash = 43 * hash + Objects.hashCode(this.submissionTimestamp);
-        hash = 43 * hash + Objects.hashCode(this.description);
-        hash = 43 * hash + Objects.hashCode(this.startDate);
-        hash = 43 * hash + Objects.hashCode(this.userName);
-        hash = 43 * hash + Objects.hashCode(this.instrument);
-        hash = 43 * hash + Objects.hashCode(this.sample);
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.storageType);
+        hash = 73 * hash + Objects.hashCode(this.description);
+        hash = 73 * hash + Objects.hashCode(this.startDate);
+        hash = 73 * hash + Objects.hashCode(this.instrument);
         return hash;
     }
 
@@ -138,22 +106,13 @@ public class PersistMetadata implements Serializable {
         if (this.storageType != other.storageType) {
             return false;
         }
-        if (!Objects.equals(this.submissionTimestamp, other.submissionTimestamp)) {
-            return false;
-        }
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
         if (!Objects.equals(this.startDate, other.startDate)) {
             return false;
         }
-        if (!Objects.equals(this.userName, other.userName)) {
-            return false;
-        }
         if (!Objects.equals(this.instrument, other.instrument)) {
-            return false;
-        }
-        if (!Objects.equals(this.sample, other.sample)) {
             return false;
         }
         return true;

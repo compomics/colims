@@ -45,16 +45,16 @@
         <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
     </bean>
     
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="storageTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
-        <jms:listener destination="${distributed.queue.storage}" ref="storageTaskConsumer"/>
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="dbTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
+        <jms:listener destination="${distributed.queue.storage}" ref="dbTaskConsumer"/>
     </jms:listener-container>
     
     <!-- storage error queue -->          
     <amq:queue id="dbTaskErrorDestination" physicalName="${distributed.queue.error}" />
     
-    <bean id="storageErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="dbTaskErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="storageErrorDestination" />    
+          p:defaultDestination-ref="dbTaskErrorDestination" />    
     
     <!-- completed db task queue -->
     <amq:queue id="completedDbTaskDestination" physicalName="${distributed.queue.completed}" />

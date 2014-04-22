@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -19,19 +20,19 @@ public class CompletedDbTask extends QueueMessage implements Serializable {
      */
     private Long endedTimestamp;
     /**
-     * The storage task
+     * The db task
      */
-    private PersistDbTask storageTask;
+    private DbTask dbTask;
 
     public CompletedDbTask() {
         startedTimestamp = System.currentTimeMillis();
         endedTimestamp = System.currentTimeMillis();
     }
 
-    public CompletedDbTask(Long startedTimestamp, Long endedTimestamp, PersistDbTask storageTask) {
+    public CompletedDbTask(Long startedTimestamp, Long endedTimestamp, DbTask dbTask) {
         this.startedTimestamp = startedTimestamp;
         this.endedTimestamp = endedTimestamp;
-        this.storageTask = storageTask;
+        this.dbTask = dbTask;
     }
 
     public Long getStartedTimestamp() {
@@ -50,12 +51,42 @@ public class CompletedDbTask extends QueueMessage implements Serializable {
         this.endedTimestamp = endedTimestamp;
     }
 
-    public PersistDbTask getStorageTask() {
-        return storageTask;
+    public DbTask getDbTask() {
+        return dbTask;
     }
 
-    public void setStorageTask(PersistDbTask storageTask) {
-        this.storageTask = storageTask;
+    public void setDbTask(DbTask dbTask) {
+        this.dbTask = dbTask;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.startedTimestamp);
+        hash = 97 * hash + Objects.hashCode(this.endedTimestamp);
+        hash = 97 * hash + Objects.hashCode(this.dbTask);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CompletedDbTask other = (CompletedDbTask) obj;
+        if (!Objects.equals(this.startedTimestamp, other.startedTimestamp)) {
+            return false;
+        }
+        if (!Objects.equals(this.endedTimestamp, other.endedTimestamp)) {
+            return false;
+        }
+        if (!Objects.equals(this.dbTask, other.dbTask)) {
+            return false;
+        }
+        return true;
+    }
+        
 }

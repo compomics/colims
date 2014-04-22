@@ -1,7 +1,7 @@
 package com.compomics.colims.client.storage;
 
+import com.compomics.colims.distributed.model.DbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
-import com.compomics.colims.distributed.model.PersistDbTask;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -16,9 +16,9 @@ public class StorageErrorMessageConvertor implements MessageConverter {
 
     @Override
     public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
-        PersistDbTask storageTask = ((DbTaskError) object).getStorageTask();
+        DbTask dbTask = ((DbTaskError) object).getDbTask();
 
-        return session.createObjectMessage(storageTask);
+        return session.createObjectMessage(dbTask);
     }
 
     @Override

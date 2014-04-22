@@ -4,9 +4,9 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
-import com.compomics.colims.client.model.ErrorQueueTableModel;
-import com.compomics.colims.client.model.StorageQueueTableModel;
-import com.compomics.colims.client.model.StoredQueueTableModel;
+import com.compomics.colims.client.model.DbTaskErrorQueueTableModel;
+import com.compomics.colims.client.model.DbTaskQueueTableModel;
+import com.compomics.colims.client.model.CompletedDbTaskQueueTableModel;
 import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.StorageMonitoringDialog;
@@ -44,9 +44,9 @@ public class StorageMonitoringController implements Controllable {
     private String storedQueueName;
     @Value("${distributed.queue.error}")
     private String errorQueueName;
-    private StorageQueueTableModel storageQueueTableModel;
-    private StoredQueueTableModel storedQueueTableModel;
-    private ErrorQueueTableModel errorQueueTableModel;
+    private DbTaskQueueTableModel storageQueueTableModel;
+    private CompletedDbTaskQueueTableModel storedQueueTableModel;
+    private DbTaskErrorQueueTableModel errorQueueTableModel;
     //view
     private StorageMonitoringDialog storageMonitoringDialog;
     //parent controller
@@ -71,11 +71,11 @@ public class StorageMonitoringController implements Controllable {
         storageMonitoringDialog = new StorageMonitoringDialog(colimsController.getColimsFrame(), true);
 
         //init and set table models
-        storageQueueTableModel = new StorageQueueTableModel();
+        storageQueueTableModel = new DbTaskQueueTableModel();
         storageMonitoringDialog.getStorageQueueTable().setModel(storageQueueTableModel);
-        storedQueueTableModel = new StoredQueueTableModel();
+        storedQueueTableModel = new CompletedDbTaskQueueTableModel();
         storageMonitoringDialog.getStoredQueueTable().setModel(storedQueueTableModel);
-        errorQueueTableModel = new ErrorQueueTableModel();
+        errorQueueTableModel = new DbTaskErrorQueueTableModel();
         storageMonitoringDialog.getErrorQueueTable().setModel(errorQueueTableModel);
 
         //add action listeners        

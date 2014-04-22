@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -34,7 +35,6 @@ public class SecurityUtils {
         } else {
             throw new IOException("string could not be digested");
         }
-
     }
 
     public static byte[] md5DigestFasta(ByteBuffer input) throws NoSuchAlgorithmException, IOException {
@@ -47,8 +47,8 @@ public class SecurityUtils {
             throw new IOException("could not be digested");
         }
     }
-    
-        public static byte[] sha1DigestFasta(File fastaFile) throws NoSuchAlgorithmException, IOException {
+
+    public static byte[] sha1DigestFasta(File fastaFile) throws NoSuchAlgorithmException, IOException {
         MessageDigest digest = MessageDigest.getInstance("SHA1");
         if (fastaFile != null && fastaFile.exists()) {
             digest.update(Files.readAllBytes(Paths.get(fastaFile.getAbsolutePath())));
@@ -79,13 +79,12 @@ public class SecurityUtils {
             throw new IOException("could not be digested");
         }
     }
-    
-    public static DigestInputStream md5DigestInputStream(InputStream aStream) throws NoSuchAlgorithmException{
+
+    public static DigestInputStream md5DigestInputStream(InputStream aStream) throws NoSuchAlgorithmException {
         return new DigestInputStream(aStream, MessageDigest.getInstance("MD5"));
     }
-    
-    
-    public static DigestInputStream sha1DigestInputStream(InputStream aStream) throws NoSuchAlgorithmException{
+
+    public static DigestInputStream sha1DigestInputStream(InputStream aStream) throws NoSuchAlgorithmException {
         return new DigestInputStream(aStream, MessageDigest.getInstance("SHA1"));
     }
 }

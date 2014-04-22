@@ -5,8 +5,8 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.model.enums.PersistType;
-import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.Instrument;
+import java.util.Date;
 import java.util.List;
 import javax.jms.JMSException;
 import org.junit.Assert;
@@ -23,48 +23,51 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-client-context.xml", "classpath:colims-client-test-context.xml"})
-public class StorageTaskProducerTest {
+public class DbTaskProducerTest {
     
-    @Value("${distributed.queue.storage}")
-    private String storageQueueName;
+    @Value("${distributed.queue.dbtask}")
+    private String dbTaskQueueName;
     @Autowired
-    private StorageTaskProducer storageTaskProducer;
+    private DbTaskProducer storageTaskProducer;
     @Autowired
     private QueueManager queueManager;
     
     @Test
     public void testSendStorageTaskMessage() throws JMSException, Exception {
-        final PersistDbTask storageTask = new PersistDbTask();
+        final PersistDbTask persistDbTask = new PersistDbTask();
         
-        PersistMetadata storageMetadata = new PersistMetadata();
-        storageMetadata.setDescription("test description");
-        storageMetadata.setSample(new Sample("test sample name"));
-        storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
-        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-        storageMetadata.setUserName("test user");        
-        storageTask.setStorageMetadata(storageMetadata);
+        persistDbTask.setEnitityId(1L);
+        persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
+        persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
+        
+        PersistMetadata persistMetadata = new PersistMetadata();
+        persistMetadata.setDescription("test description");
+        persistMetadata.setStorageType(PersistType.PEPTIDESHAKER);
+        persistMetadata.setInstrument(new Instrument("test instrument"));
+        persistMetadata.setStartDate(new Date());
+        persistDbTask.setPersistMetadata(persistMetadata);
         
         DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
-        storageTask.setDataImport(dataImport);
+        persistDbTask.setDataImport(dataImport);
         
-        List<PersistDbTask> messages = queueManager.monitorQueue(storageQueueName);
+        List<PersistDbTask> messages = queueManager.monitorQueue(dbTaskQueueName);
         //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
         
         //send the test message
-        storageTaskProducer.sendStorageTask(storageTask);
+        storageTaskProducer.sendDbTask(persistDbTask);
         
-        messages = queueManager.monitorQueue(storageQueueName);
+        messages = queueManager.monitorQueue(dbTaskQueueName);
         //there should be one message on the queue
         Assert.assertEquals(1, messages.size());
         
-        PersistMetadata storageMetaDataOnQueue = messages.get(0).getStorageMetadata();
-        Assert.assertEquals(storageMetadata, storageMetaDataOnQueue);
+        PersistMetadata storageMetaDataOnQueue = messages.get(0).getPersistMetadata();
+        Assert.assertEquals(persistMetadata, storageMetaDataOnQueue);
         
         //remove message from queue        
-        queueManager.deleteMessage(storageQueueName, messages.get(0).getMessageId());
+        queueManager.deleteMessage(dbTaskQueueName, messages.get(0).getMessageId());
         
-        messages = queueManager.monitorQueue(storageQueueName);
+        messages = queueManager.monitorQueue(dbTaskQueueName);
         //the queue must be empty
         Assert.assertTrue(messages.isEmpty());
     }

@@ -11,11 +11,12 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.client.storage.StorageTaskProducer;
+import com.compomics.colims.client.storage.DbTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.AnalyticalRun;
@@ -45,29 +46,28 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  * @author Niels Hulstaert
  */
 public class Playground2 {
-
+    
     public static void main(String[] args) throws IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, InvalidSelectorException, OpenDataException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
 //        QueueManager queueManager = applicationContext.getBean("queueManager", QueueManager.class);
-        
         InstrumentService instrumentService = applicationContext.getBean("instrumentService", InstrumentService.class);
         Instrument instrument = instrumentService.findAll().get(0);
-        StorageTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", StorageTaskProducer.class);
+        DbTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", DbTaskProducer.class);
         
-        PersistDbTask storageTask = new PersistDbTask();
+        PersistDbTask persistDbTask = new PersistDbTask();
+        persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
+        persistDbTask.setUserId(1L);
+        persistDbTask.setDbEntityType(DbEntityType.ANALYTICAL_RUN);
         PersistMetadata storageMetadata = new PersistMetadata();
         storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
-        storageMetadata.setDescription("test description2");
-        storageMetadata.setSample(new Sample("sample name4"));
-        storageMetadata.setSubmissionTimestamp(System.currentTimeMillis());
-        storageMetadata.setUserName("testUser");
+        storageMetadata.setDescription("test description2");        
         storageMetadata.setInstrument(instrument);
-
-        storageTask.setStorageMetadata(storageMetadata);
-        storageTask.setDataImport(new PeptideShakerDataImport(null, null, null));
-
-        storageTaskProducer.sendStorageTask(storageTask);
+        
+        persistDbTask.setPersistMetadata(storageMetadata);
+        persistDbTask.setDataImport(new PeptideShakerDataImport(null, null, null));
+        
+        storageTaskProducer.sendDbTask(persistDbTask);
 
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
 //        List<StorageMetadata> messages = queueMonitor.getMessages("test");

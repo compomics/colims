@@ -1,8 +1,11 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.distributed.model.PersistMetadata;
-import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
+import com.compomics.colims.distributed.model.DbTask;
+import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.distributed.model.PersistDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,27 +16,30 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Niels Hulstaert
  */
-public class StoredQueueTableModel extends AbstractTableModel {
+public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
 
+    private static final String NOT_APPLICABLE = "N/A";
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "instrument", "sample", "start", "duration"};
+    private static final String PERSIST = "store ";
+    private static final String DELETE = "delete ";
+    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "start", "duration"};
     private static final int QUEUE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
     private static final int SUBMITTED_INDEX = 2;
     private static final int DESCRIPTION_INDEX = 3;
     private static final int USER_INDEX = 4;
-    private static final int INSTRUMENT_INDEX = 5;
-    private static final int SAMPLE_INDEX = 6;
-    private static final int START_INDEX = 7;
-    private static final int DURATION_INDEX = 8;
+    private static final int START_INDEX = 5;
+    private static final int DURATION_INDEX = 6;
     private List<CompletedDbTask> messages;
+    private UserService userService;
 
-    public StoredQueueTableModel() {
+    public CompletedDbTaskQueueTableModel() {
         messages = new ArrayList<>();
+        userService = ApplicationContextProvider.getInstance().getBean("userService");
     }
 
-    public StoredQueueTableModel(List<CompletedDbTask> messages) {
+    public CompletedDbTaskQueueTableModel(List<CompletedDbTask> messages) {
         this.messages = messages;
     }
 
@@ -81,30 +87,35 @@ public class StoredQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        CompletedDbTask storedTask = messages.get(rowIndex);
-        PersistMetadata storageMetadata = storedTask.getStorageTask().getStorageMetadata();
+        CompletedDbTask completedDbTask = messages.get(rowIndex);
+        DbTask dbTask = completedDbTask.getDbTask();
 
         switch (columnIndex) {
             case QUEUE_INDEX:
                 return rowIndex;
             case TYPE_INDEX:
-                return storageMetadata.getStorageType().userFriendlyName();
+                if (dbTask instanceof PersistDbTask) {
+                    return PERSIST + ((PersistDbTask) dbTask).getDbEntityType().userFriendlyName();
+                } else {
+                    return DELETE + ((DeleteDbTask) dbTask).getDbEntityType().userFriendlyName();
+                }
             case SUBMITTED_INDEX:
-                return DATE_TIME_FORMAT.format(new Date(storageMetadata.getSubmissionTimestamp()));
+                return DATE_TIME_FORMAT.format(new Date(dbTask.getSubmissionTimestamp()));
             case DESCRIPTION_INDEX:
-                return storageMetadata.getDescription();
+                if (dbTask instanceof PersistDbTask) {
+                    return ((PersistDbTask) dbTask).getPersistMetadata().getDescription();
+                } else {
+                    return NOT_APPLICABLE;
+                }
             case USER_INDEX:
-                return storageMetadata.getUserName();
-            case INSTRUMENT_INDEX:
-                return storageMetadata.getInstrument().toString();
-            case SAMPLE_INDEX:
-                return storageMetadata.getSample().getName();
+                return userService.findUserNameById(dbTask.getUserId());
             case START_INDEX:
-                return DATE_TIME_FORMAT.format(new Date(storedTask.getStartedTimestamp()));
+                return DATE_TIME_FORMAT.format(new Date(completedDbTask.getStartedTimestamp()));
             case DURATION_INDEX:
-                return TIME_FORMAT.format(new Date(storedTask.getEndedTimestamp() - storedTask.getStartedTimestamp()));
+                return TIME_FORMAT.format(new Date(completedDbTask.getEndedTimestamp() - completedDbTask.getStartedTimestamp()));
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }
+                
     }
 }

@@ -14,5 +14,13 @@ public interface ProteinService extends GenericService<Protein, Long> {
      * @param accession the protein accession
      * @return the found protein
      */
-    Protein findByAccession(String accession);   
+    Protein findByAccession(String accession);  
+    
+    /**
+     * Find a protein by the accession and sequence digest.
+     *
+     * @param accessionSequenceDigest the protein accession and sequence digest
+     * @return the found protein
+     */
+    Protein findByAccessionSequenceDigest(String accessionSequenceDigest);
 }

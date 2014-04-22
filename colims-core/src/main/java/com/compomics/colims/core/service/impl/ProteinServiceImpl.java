@@ -60,4 +60,9 @@ public class ProteinServiceImpl implements ProteinService {
     public long countAll() {
         return proteinRepository.countAll();
     }
+
+    @Override
+    public Protein findByAccessionSequenceDigest(String accessionSequenceDigest) {
+        return proteinRepository.findByAccessionSequenceDigest(accessionSequenceDigest);
+    }
 }

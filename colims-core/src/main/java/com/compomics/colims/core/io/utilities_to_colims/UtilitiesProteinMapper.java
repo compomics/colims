@@ -15,6 +15,7 @@ import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class UtilitiesProteinMapper {
     @Autowired
     private ProteinService proteinService;
     /**
-     * The map of chached proteins (key: protein accession, value: the protein)
+     * The map of chached proteins (key: accession and sequence digest, value: the protein)
      */
     protected Map<String, Protein> cachedProteins = new HashMap<>();
 
@@ -93,12 +94,12 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Get the colims Protein by protein accession. This method looks for the
+     * Get the colims Protein by protein accession sequence digest. This method looks for the
      * protein in the newly added proteins and the database. If it was not
      * found, look in the utilities SequenceFactory and it to newly added
      * proteins.
      *
-     * @param proteinAccession the protein accession
+     * @param accessionSequenceDigest the protein accession sequence digest
      * @return
      * @throws IOException
      * @throws IllegalArgumentException
@@ -106,29 +107,32 @@ public class UtilitiesProteinMapper {
      * @throws FileNotFoundException
      * @throws ClassNotFoundException
      */
-    public Protein getProtein(String proteinAccession) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
+    public Protein getProtein(String accessionSequenceDigest) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
         //@todo configure hibernate cache and check performance
-        targetProtein = cachedProteins.get(proteinAccession);
+        targetProtein = cachedProteins.get(accessionSequenceDigest);
         if (targetProtein == null) {
             //check if the protein is found in the db
-            targetProtein = proteinService.findByAccession(proteinAccession);
+            targetProtein = proteinService.findByAccessionSequenceDigest(accessionSequenceDigest);
 
             if (targetProtein == null) {
                 //get utilities Protein from SequenceFactory
                 com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
 
                 if (sourceProtein != null) {
+                    //calculate accession and sequence digest
+                    String accessionSequenceDigest = DigestUtils.md5Hex(sourceProtein.getAccession() + sourceProtein.getSequence());
+                    
                     //map the utilities protein onto the colims protein
-                    targetProtein = new Protein(sourceProtein.getAccession(), sourceProtein.getSequence(), sourceProtein.getDatabaseType());
+                    targetProtein = new Protein(sourceProtein.getAccession(), sourceProtein.getSequence(), accessionSequenceDigest, sourceProtein.getDatabaseType());
                     //add to cached proteins map
                     cachedProteins.put(targetProtein.getAccession(), targetProtein);
                 }
             } else {
                 //add to cached proteins
-                cachedProteins.put(targetProtein.getAccession(), targetProtein);
+                cachedProteins.put(targetProtein.getAccessionSequenceDigest(), targetProtein);
             }
         }
 

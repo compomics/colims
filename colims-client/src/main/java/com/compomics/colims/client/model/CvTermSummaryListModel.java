@@ -9,6 +9,7 @@ import javax.swing.AbstractListModel;
 /**
  *
  * @author Niels Hulstaert
+ * @param <T>
  */
 public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel {
 
@@ -72,7 +73,7 @@ public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel 
      * Update the model with EnumMaps for the single and multiple CV terms
      *
      * @param singleCvTerms
-     * @param multipleCvTerms
+     * @param multiCvTerms
      */
     public void update(EnumMap<CvTermType, T> singleCvTerms, EnumMap<CvTermType, List<T>> multiCvTerms) {
         this.singleCvTerms = singleCvTerms;

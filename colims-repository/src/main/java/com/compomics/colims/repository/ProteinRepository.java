@@ -15,4 +15,12 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      * @return the found protein
      */
     Protein findByAccession(String accession);
+    
+    /**
+     * Find a protein by the accession and sequence digest.
+     *
+     * @param accessionSequenceDigest the protein accession and sequence digest
+     * @return the found protein
+     */
+    Protein findByAccessionSequenceDigest(String accessionSequenceDigest);
 }

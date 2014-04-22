@@ -5,16 +5,18 @@ import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.StorageTaskProducer;
+import com.compomics.colims.client.storage.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
@@ -80,7 +82,7 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
-    private StorageTaskProducer storageTaskProducer;
+    private DbTaskProducer storageTaskProducer;
     @Autowired
     private QueueManager queueManager;
 
@@ -251,15 +253,15 @@ public class AnalyticalRunSetupController implements Controllable {
 
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
-        String userName = authenticationBean.getCurrentUser().getName();
+        User currentUser = authenticationBean.getCurrentUser();
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
         
-        PersistMetadata storageMetadata = new PersistMetadata(storageType, storageDescription, userName, startDate, instrument, sample);
-        PersistDbTask storageTask = new PersistDbTask(storageMetadata, dataImport);
+        PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
+        PersistDbTask persistDbTask = new PersistDbTask(DbEntityType.ANALYTICAL_RUN, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
         try {
-            storageTaskProducer.sendStorageTask(storageTask);
+            storageTaskProducer.sendDbTask(persistDbTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
             MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);

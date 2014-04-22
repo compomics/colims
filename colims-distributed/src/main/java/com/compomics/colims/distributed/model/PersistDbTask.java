@@ -1,7 +1,7 @@
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.core.io.DataImport;
-import java.io.Serializable;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
 import java.util.Objects;
 
 /**
@@ -11,29 +11,43 @@ import java.util.Objects;
 public class PersistDbTask extends DbTask {
 
     /**
-     * The perist metadata
+     * The persist metadata
      */
-    private PersistMetadata storageMetadata;
+    private PersistMetadata persistMetadata;
     /**
      * The resources necessary for storing
      */
     private DataImport dataImport;
 
+    /**
+     * Constructor
+     */
     public PersistDbTask() {
-    }
-
-    public PersistDbTask(PersistMetadata storageMetadata, DataImport dataImport) {
-        this.storageMetadata = storageMetadata;
+        super();
+    }            
+    
+    /**
+     * Constructor
+     * 
+     * @param dbEntityType
+     * @param enitityId
+     * @param userId
+     * @param persistMetadata
+     * @param dataImport
+     */
+    public PersistDbTask(DbEntityType dbEntityType, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
+        super(dbEntityType, enitityId, userId);
+        this.persistMetadata = persistMetadata;
         this.dataImport = dataImport;
     }
 
-    public PersistMetadata getStorageMetadata() {
-        return storageMetadata;
+    public PersistMetadata getPersistMetadata() {
+        return persistMetadata;
     }
 
-    public void setStorageMetadata(PersistMetadata storageMetadata) {
-        this.storageMetadata = storageMetadata;
-    }
+    public void setPersistMetadata(PersistMetadata persistMetadata) {
+        this.persistMetadata = persistMetadata;
+    }    
 
     public DataImport getDataImport() {
         return dataImport;
@@ -41,12 +55,12 @@ public class PersistDbTask extends DbTask {
 
     public void setDataImport(DataImport dataImport) {
         this.dataImport = dataImport;
-    }
+    }  
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.storageMetadata);
+        hash = 79 * hash + Objects.hashCode(this.persistMetadata);
         hash = 79 * hash + Objects.hashCode(this.dataImport);
         return hash;
     }
@@ -60,7 +74,7 @@ public class PersistDbTask extends DbTask {
             return false;
         }
         final PersistDbTask other = (PersistDbTask) obj;
-        if (!Objects.equals(this.storageMetadata, other.storageMetadata)) {
+        if (!Objects.equals(this.persistMetadata, other.persistMetadata)) {
             return false;
         }
         if (!Objects.equals(this.dataImport, other.dataImport)) {

@@ -109,4 +109,16 @@ public class UserServiceImpl implements UserService {
 
         return isDefaultUser;
     }
+
+    @Override
+    public String findUserNameById(Long userId) {
+        String userName = "N/A";
+        
+        User foundUser = userRepository.findById(userId);  
+        if(foundUser != null){
+            userName = foundUser.getName();
+        }
+        
+        return userName;
+    }
 }

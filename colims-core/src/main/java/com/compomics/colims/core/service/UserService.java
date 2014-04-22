@@ -35,8 +35,8 @@ public interface UserService extends GenericService<User, Long> {
      *
      * @param user the given user
      */
-    void fetchAuthenticationRelations(User user);      
-    
+    void fetchAuthenticationRelations(User user);
+
     /**
      * Check if the user is a default user.
      *
@@ -44,5 +44,14 @@ public interface UserService extends GenericService<User, Long> {
      * @return
      */
     boolean isDefaultUser(User user);
+
+    /**
+     * Find the user name by the given user ID. Returns N/A is no user was
+     * found.
+     *
+     * @param userId
+     * @return
+     */
+    String findUserNameById(Long userId);
 
 }

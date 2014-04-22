@@ -13,10 +13,19 @@ import org.hibernate.Criteria;
  */
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
+    
     @Override
     public Protein findByAccession(final String accession) {
         Criteria criteria = createCriteria(Restrictions.eq("accession", accession));
         criteria.setCacheable(true);
         return (Protein) criteria.uniqueResult();
     }
+
+    @Override
+    public Protein findByAccessionSequenceDigest(String accessionSequenceDigest) {
+        Criteria criteria = createCriteria(Restrictions.eq("accessionSequenceDigest", accessionSequenceDigest));
+        criteria.setCacheable(true);
+        return (Protein) criteria.uniqueResult();
+    }
+        
 }
