@@ -5,12 +5,12 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.protein.Header.DatabaseType;
@@ -49,9 +49,11 @@ public class ColimsPeptideMapperTest {
         sourcePeptide.setSequence("MYFHSFLDTFSKYLGSTSCPLLRLSR");
         sourcePeptide.setTheoreticalMass(210.598);
 
-        List<PeptideHasProtein> peptideHasProtList = new ArrayList<PeptideHasProtein>();
+        List<PeptideHasProtein> peptideHasProtList = new ArrayList<>();
         PeptideHasProtein parentProt = new PeptideHasProtein();
-        Protein aProtein = new Protein("fakeProt1", "AKJFDAEMYFHSFLDTFSKYLGSTSCPLLRLSRRRREADSAERRUIEAL", DatabaseType.Generic_Header);
+        Protein aProtein = new Protein("AKJFDAEMYFHSFLDTFSKYLGSTSCPLLRLSRRRREADSAERRUIEAL");
+        ProteinAccession proteinAccession = new ProteinAccession("fakeProt1", DatabaseType.Generic_Header);
+        aProtein.getProteinAccessions().add(proteinAccession);
         parentProt.setMainGroupProtein(aProtein);
         parentProt.setProtein(aProtein);
         parentProt.setPeptideProbability(97.65);
@@ -59,7 +61,7 @@ public class ColimsPeptideMapperTest {
 
         sourcePeptide.setPeptideHasProteins(peptideHasProtList);
 
-        List<PeptideHasModification> peptideHasModList = new ArrayList<PeptideHasModification>();
+        List<PeptideHasModification> peptideHasModList = new ArrayList<>();
         double[] alphaScores = new double[]{0.001, 0.001, 0.003};
         double[] deltaScores = new double[]{0.003, 0.002, 0.001};
         int[] positions = new int[]{5, 7, 12};

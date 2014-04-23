@@ -9,6 +9,7 @@ import com.compomics.colims.core.io.colims_to_utilities.ColimsPsmMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
@@ -47,9 +48,9 @@ public class ColimsPsmMapperTest {
     public void testMap() throws Exception {
         System.out.println("Test mapping colims spectra to a list of spectrumMatch objects");
 
-        Protein inputProtein = new Protein();
-        inputProtein.setAccession("P0C9F1");
-        inputProtein.setSequence("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
+        Protein inputProtein = new Protein("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
+        ProteinAccession proteinAccession = new ProteinAccession("P0C9F1");
+        inputProtein.getProteinAccessions().add(proteinAccession);
 
         File inputSpectra = new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile();
         byte[] data = Files.readAllBytes(inputSpectra.toPath());

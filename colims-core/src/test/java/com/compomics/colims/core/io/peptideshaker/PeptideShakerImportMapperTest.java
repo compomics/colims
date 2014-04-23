@@ -110,9 +110,10 @@ public class PeptideShakerImportMapperTest {
                             Assert.assertNotNull(peptideHasProtein.getPeptide());
                             Protein protein = peptideHasProtein.getProtein();
                             Assert.assertNotNull(protein);
-                            Assert.assertFalse(protein.getAccession().isEmpty());
+                            Assert.assertFalse(protein.getProteinAccessions().isEmpty());
+                            Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
                             Assert.assertFalse(protein.getSequence().isEmpty());
-                            Assert.assertNotNull(protein.getDatabaseType());
+                            Assert.assertNotNull(protein.getProteinAccessions().get(0).getDatabaseType());
                         }
                     }
                     if (!peptide.getPeptideHasModifications().isEmpty()) {

@@ -11,11 +11,11 @@ import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class UtilitiesProteinMapper {
     @Autowired
     private ProteinService proteinService;
     /**
-     * The map of chached proteins (key: accession and sequence digest, value: the protein)
+     * The map of chached proteins (key: sequence, value: the protein)
      */
     protected Map<String, Protein> cachedProteins = new HashMap<>();
 
@@ -55,14 +55,18 @@ public class UtilitiesProteinMapper {
             for (ProteinMatch proteinMatch : proteinMatches) {
                 //iterate over all possible matches                
                 if (proteinMatch != null) {
+                    //get utilities Protein from SequenceFactory
+                    com.compomics.util.experiment.biology.Protein mainSourceProtein = SequenceFactory.getInstance().getProtein(proteinMatch.getMainMatch());
                     //get main match
-                    Protein mainMatchedProtein = getProtein(proteinMatch.getMainMatch());
+                    Protein mainMatchedProtein = getProtein(mainSourceProtein);
                     //iterate over theoretic protein accessions if there is more than one.
                     //This means there is a protein group and the main matched protein is the main group protein.
                     //Note that the peptide scores will be the same for all group members
                     if (proteinMatch.getTheoreticProteinsAccessions().size() > 1) {
                         for (String proteinAccession : proteinMatch.getTheoreticProteinsAccessions()) {
-                            Protein matchedProtein = getProtein(proteinAccession);
+                            //get utilities Protein from SequenceFactory
+                            com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
+                            Protein matchedProtein = getProtein(sourceProtein);
                             if (matchedProtein != null) {
                                 PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
                                 peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
@@ -94,12 +98,12 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Get the colims Protein by protein accession sequence digest. This method looks for the
-     * protein in the newly added proteins and the database. If it was not
-     * found, look in the utilities SequenceFactory and it to newly added
-     * proteins.
+     * Get the colims Protein by protein accession or sequence digest. This
+     * method looks for the protein in the newly added proteins and the
+     * database. If it was not found, look in the utilities SequenceFactory and
+     * it to newly added proteins.
      *
-     * @param accessionSequenceDigest the protein accession sequence digest
+     * @param sourceProtein the utilities protein
      * @return
      * @throws IOException
      * @throws IllegalArgumentException
@@ -107,32 +111,26 @@ public class UtilitiesProteinMapper {
      * @throws FileNotFoundException
      * @throws ClassNotFoundException
      */
-    public Protein getProtein(String accessionSequenceDigest) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
+    public Protein getProtein(com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
         //@todo configure hibernate cache and check performance
-        targetProtein = cachedProteins.get(accessionSequenceDigest);
+        targetProtein = cachedProteins.get(sourceProtein.getSequence());
         if (targetProtein == null) {
             //check if the protein is found in the db
-            targetProtein = proteinService.findByAccessionSequenceDigest(accessionSequenceDigest);
+            targetProtein = proteinService.findBySequence(sourceProtein.getSequence());
 
             if (targetProtein == null) {
-                //get utilities Protein from SequenceFactory
-                com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
-
-                if (sourceProtein != null) {
-                    //calculate accession and sequence digest
-                    String accessionSequenceDigest = DigestUtils.md5Hex(sourceProtein.getAccession() + sourceProtein.getSequence());
-                    
-                    //map the utilities protein onto the colims protein
-                    targetProtein = new Protein(sourceProtein.getAccession(), sourceProtein.getSequence(), accessionSequenceDigest, sourceProtein.getDatabaseType());
-                    //add to cached proteins map
-                    cachedProteins.put(targetProtein.getAccession(), targetProtein);
-                }
+                //map the utilities protein onto the colims protein
+                targetProtein = new Protein(sourceProtein.getSequence());
+                ProteinAccession proteinAccession = new ProteinAccession(sourceProtein.getAccession(), sourceProtein.getDatabaseType());
+                targetProtein.getProteinAccessions().add(proteinAccession);
+                //add to cached proteins map
+                cachedProteins.put(targetProtein.getSequence(), targetProtein);
             } else {
                 //add to cached proteins
-                cachedProteins.put(targetProtein.getAccessionSequenceDigest(), targetProtein);
+                cachedProteins.put(targetProtein.getSequence(), targetProtein);
             }
         }
 

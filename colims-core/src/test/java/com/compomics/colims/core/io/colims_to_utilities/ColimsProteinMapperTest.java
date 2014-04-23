@@ -5,10 +5,10 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.colims_to_utilities.ColimsProteinMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +35,16 @@ public class ColimsProteinMapperTest {
 
     /**
      * Test of map method, of class ColimsProteinMapper.
+     * @throws java.lang.Exception
      */
     @Test
     public void testMap() throws Exception {
         System.out.println("Mapping Proteins ");
-        Protein inputProtein = new Protein();
-        inputProtein.setAccession("P0C9F1");
-        inputProtein.setSequence("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
+        Protein inputProtein = new Protein("MVRLFHNPIKCLFYRGSRKTREKKLRKSLKKLNFYHPPGDCCQIYRLLENVPGGTYFITENMTNELIMIVKDSVDKKIKSVKLNFYGSYIKIHQHYYINIYMYLMRYTQIYKYPLICFNKYSYCNS");
+        ProteinAccession proteinAccession = new ProteinAccession("P0C9F1");
+        inputProtein.getProteinAccessions().add(proteinAccession);
 
-        List<PeptideHasProtein> peptideHasProtList = new ArrayList<PeptideHasProtein>();
+        List<PeptideHasProtein> peptideHasProtList = new ArrayList<>();
         PeptideHasProtein peptide = new PeptideHasProtein();
         Peptide aPeptide = new Peptide();
         aPeptide.setTheoreticalMass(33.3);
@@ -66,7 +67,7 @@ public class ColimsProteinMapperTest {
 
         inputProtein.setPeptideHasProteins(peptideHasProtList);
 
-        List<ProteinMatch> proteinMatches = new ArrayList<ProteinMatch>();
+        List<ProteinMatch> proteinMatches = new ArrayList<>();
         colimsProteinMapper.map(inputProtein, proteinMatches);
         Assert.assertEquals(proteinMatches.get(0).isDecoy(), false);
         Assert.assertEquals("SRKIQEKKLRKSLKKLNFYHP", proteinMatches.get(0).getPeptideMatches().get(0));

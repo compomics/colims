@@ -7,20 +7,12 @@ import com.compomics.colims.model.Protein;
  * @author Niels Hulstaert
  */
 public interface ProteinRepository extends GenericRepository<Protein, Long> {
-
-    /**
-     * Find a protein by the accession.
-     *
-     * @param accession the protein accession
-     * @return the found protein
-     */
-    Protein findByAccession(String accession);
     
     /**
-     * Find a protein by the accession and sequence digest.
+     * Find a protein by the sequence.
      *
-     * @param accessionSequenceDigest the protein accession and sequence digest
+     * @param sequence the protein sequence
      * @return the found protein
      */
-    Protein findByAccessionSequenceDigest(String accessionSequenceDigest);
+    Protein findBySequence(String sequence);
 }

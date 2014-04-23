@@ -22,8 +22,8 @@ public class ProteinServiceImpl implements ProteinService {
     private ProteinRepository proteinRepository;
 
     @Override
-    public Protein findByAccession(final String accession) {
-        return proteinRepository.findByAccession(accession);
+    public Protein findBySequence(final String sequence) {
+        return proteinRepository.findBySequence(sequence);
     }
 
     @Override
@@ -59,10 +59,5 @@ public class ProteinServiceImpl implements ProteinService {
     @Override
     public long countAll() {
         return proteinRepository.countAll();
-    }
-
-    @Override
-    public Protein findByAccessionSequenceDigest(String accessionSequenceDigest) {
-        return proteinRepository.findByAccessionSequenceDigest(accessionSequenceDigest);
     }
 }

@@ -31,16 +31,16 @@ public class ColimsProteinMapper {
      * @throws MappingException
      */
     public void map(final Protein sourceProtein, final List<ProteinMatch> proteinMatches) throws MappingException {
-        LOGGER.debug("Mapping proteins from " + sourceProtein.getAccession() + " to new list of ProteinMatch objects");
-        ProteinMatch protMatch = new ProteinMatch();
-        protMatch.setMainMatch(sourceProtein.getAccession());
-        for (PeptideHasProtein pepHasProt : sourceProtein.getPeptideHasProteins()) {
-            PeptideMatch pepMatch = new PeptideMatch();
-            //map the peptide to utilitiespeptides
-            colimsPeptideMapper.map(pepHasProt.getPeptide(), pepMatch, protMatch);
-            //add the peptide to proteinmatches
-            protMatch.addPeptideMatch(pepMatch.getKey());
-        }
-        proteinMatches.add(protMatch);
+//        LOGGER.debug("Mapping proteins from " + sourceProtein.getAccession() + " to new list of ProteinMatch objects");
+//        ProteinMatch protMatch = new ProteinMatch();
+//        protMatch.setMainMatch(sourceProtein.getAccession());
+//        for (PeptideHasProtein pepHasProt : sourceProtein.getPeptideHasProteins()) {
+//            PeptideMatch pepMatch = new PeptideMatch();
+//            //map the peptide to utilitiespeptides
+//            colimsPeptideMapper.map(pepHasProt.getPeptide(), pepMatch, protMatch);
+//            //add the peptide to proteinmatches
+//            protMatch.addPeptideMatch(pepMatch.getKey());
+//        }
+//        proteinMatches.add(protMatch);
     }
 }

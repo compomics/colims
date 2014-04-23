@@ -26,21 +26,21 @@ public class PeptideMapper {
     private static final Logger LOGGER = Logger.getLogger(PeptideMapper.class);
 
     public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) {
-        LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
-
-        //TODO : REVERT THE MODIFICATIONMAPPING !!!!
-        //map PTMs
-        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        //fetch PeptideHasModifications
-        peptideService.fetchPeptideHasModificiations(sourcePeptide);
-        colimsModMapper.map(sourcePeptide, modificationMatches);
-
-        ArrayList<String> parentProteinAccessions = new ArrayList<>();
-        for (PeptideHasProtein peptideHasProtein : sourcePeptide.getPeptideHasProteins()) {
-            parentProteinAccessions.add(peptideHasProtein.getProtein().getAccession());
-        }
-
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modificationMatches);
-        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
+//        LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
+//
+//        //TODO : REVERT THE MODIFICATIONMAPPING !!!!
+//        //map PTMs
+//        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+//        //fetch PeptideHasModifications
+//        peptideService.fetchPeptideHasModificiations(sourcePeptide);
+//        colimsModMapper.map(sourcePeptide, modificationMatches);
+//
+//        ArrayList<String> parentProteinAccessions = new ArrayList<>();
+//        for (PeptideHasProtein peptideHasProtein : sourcePeptide.getPeptideHasProteins()) {
+//            parentProteinAccessions.add(peptideHasProtein.getProtein().getAccession());
+//        }
+//
+//        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modificationMatches);
+//        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 }
