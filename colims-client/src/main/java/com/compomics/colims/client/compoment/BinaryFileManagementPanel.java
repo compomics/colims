@@ -24,6 +24,7 @@ import org.jmol.export.dialog.FileChooser;
 /**
  *
  * @author Niels Hulstaert
+ * @param <T>
  */
 public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing.JPanel {
 
@@ -138,7 +139,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                     int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         try {
-                            File exportDirectory = fileChooser.getCurrentDirectory();
+                            File exportDirectory = exportDirectoryChooser.getCurrentDirectory();
                             exportBinaryFile(exportDirectory, binaryFileToExport);
                         } catch (IOException ex) {
                             LOGGER.error(ex.getMessage(), ex);

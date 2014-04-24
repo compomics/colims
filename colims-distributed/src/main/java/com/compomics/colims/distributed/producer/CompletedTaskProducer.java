@@ -37,11 +37,11 @@ public class CompletedTaskProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set CompletedDbTask instance as message body
-                ObjectMessage completedDbTask = session.createObjectMessage();
+                ObjectMessage completedDbTaskMessage = session.createObjectMessage(completedDbTask);
 
                 LOGGER.info("Sending completed db task");
 
-                return completedDbTask;
+                return completedDbTaskMessage;
             }
         });
     }

@@ -46,7 +46,7 @@
     </bean>
     
     <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="dbTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
-        <jms:listener destination="${distributed.queue.storage}" ref="dbTaskConsumer"/>
+        <jms:listener destination="${distributed.queue.dbtask}" ref="dbTaskConsumer"/>
     </jms:listener-container>
     
     <!-- storage error queue -->          

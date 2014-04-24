@@ -1,15 +1,12 @@
 package com.compomics.colims.distributed.model;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public class CompletedDbTask extends QueueMessage implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class CompletedDbTask extends QueueMessage {
 
     /**
      * The storage start timestamp

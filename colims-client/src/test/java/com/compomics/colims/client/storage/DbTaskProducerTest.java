@@ -33,7 +33,7 @@ public class DbTaskProducerTest {
     private QueueManager queueManager;
     
     @Test
-    public void testSendStorageTaskMessage() throws JMSException, Exception {
+    public void testSendDbTaskMessage() throws JMSException, Exception {
         final PersistDbTask persistDbTask = new PersistDbTask();        
         persistDbTask.setEnitityId(1L);
         persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);

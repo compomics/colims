@@ -36,7 +36,7 @@ public class DbTaskErrorProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set DbTaskError instance as message body
-                ObjectMessage dbTaskErrorMessage = session.createObjectMessage();
+                ObjectMessage dbTaskErrorMessage = session.createObjectMessage(dbTaskError);
 
                 LOGGER.info("Sending database task error");
 

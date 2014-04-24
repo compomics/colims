@@ -38,9 +38,9 @@ public class StorageMonitoringController implements Controllable {
     private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
 
     //model
-    @Value("${distributed.queue.storage}")
+    @Value("${distributed.queue.dbtask}")
     private String storageQueueName;
-    @Value("${distributed.queue.stored}")
+    @Value("${distributed.queue.completed}")
     private String storedQueueName;
     @Value("${distributed.queue.error}")
     private String errorQueueName;

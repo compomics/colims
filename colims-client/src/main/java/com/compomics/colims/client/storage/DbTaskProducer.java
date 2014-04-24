@@ -37,7 +37,7 @@ public class DbTaskProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set DbTask instance as message body
-                ObjectMessage dbTaskTaskMessage = session.createObjectMessage();
+                ObjectMessage dbTaskTaskMessage = session.createObjectMessage(dbTask); 
 
                 LOGGER.info("Sending db task of class " + dbTaskTaskMessage.getClass().getSimpleName());
 
