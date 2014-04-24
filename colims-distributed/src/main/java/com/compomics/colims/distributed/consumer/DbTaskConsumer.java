@@ -16,7 +16,7 @@ import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTask;
 import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.distributed.producer.StorageErrorProducer;
+import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -45,7 +45,7 @@ public class DbTaskConsumer implements MessageListener {
     @Autowired
     private CompletedTaskProducer storedTaskProducer;
     @Autowired
-    private StorageErrorProducer storageErrorProducer;
+    private DbTaskErrorProducer storageErrorProducer;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired

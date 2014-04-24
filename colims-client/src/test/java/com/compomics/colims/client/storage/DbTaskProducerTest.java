@@ -28,14 +28,13 @@ public class DbTaskProducerTest {
     @Value("${distributed.queue.dbtask}")
     private String dbTaskQueueName;
     @Autowired
-    private DbTaskProducer storageTaskProducer;
+    private DbTaskProducer dbTaskProducer;
     @Autowired
     private QueueManager queueManager;
     
     @Test
     public void testSendStorageTaskMessage() throws JMSException, Exception {
-        final PersistDbTask persistDbTask = new PersistDbTask();
-        
+        final PersistDbTask persistDbTask = new PersistDbTask();        
         persistDbTask.setEnitityId(1L);
         persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
         persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
@@ -44,7 +43,7 @@ public class DbTaskProducerTest {
         persistMetadata.setDescription("test description");
         persistMetadata.setStorageType(PersistType.PEPTIDESHAKER);
         persistMetadata.setInstrument(new Instrument("test instrument"));
-        persistMetadata.setStartDate(new Date());
+        persistMetadata.setStartDate(new Date());        
         persistDbTask.setPersistMetadata(persistMetadata);
         
         DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
@@ -55,7 +54,7 @@ public class DbTaskProducerTest {
         Assert.assertTrue(messages.isEmpty());
         
         //send the test message
-        storageTaskProducer.sendDbTask(persistDbTask);
+        dbTaskProducer.sendDbTask(persistDbTask);
         
         messages = queueManager.monitorQueue(dbTaskQueueName);
         //there should be one message on the queue

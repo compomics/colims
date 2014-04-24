@@ -16,31 +16,31 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("storageErrorProducer")
-public class StorageErrorProducer {
+@Component("dbTaskErrorProducer")
+public class DbTaskErrorProducer {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageErrorProducer.class);
+    private static final Logger LOGGER = Logger.getLogger(DbTaskErrorProducer.class);
 
     @Autowired
-    private JmsTemplate storageErrorProducerTemplate;
+    private JmsTemplate dbTaskErrorProducerTemplate;
 
     /**
-     * Send the serialized StorageError to the error queue.
+     * Send the serialized DbTaskError to the error queue.
      *
-     * @param storageError the StorageError
+     * @param dbTaskError the DbTaskError
      * @throws JmsException
      */
-    public void sendStorageError(final DbTaskError storageError) throws JmsException {
+    public void sendDbTaskError(final DbTaskError dbTaskError) throws JmsException {
 
-        storageErrorProducerTemplate.send(new MessageCreator() {
+        dbTaskErrorProducerTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
-                //set StorageError instance as message body
-                ObjectMessage storageErrorMessage = session.createObjectMessage(storageError);
+                //set DbTaskError instance as message body
+                ObjectMessage dbTaskErrorMessage = session.createObjectMessage();
 
-                LOGGER.info("Sending storage error");
+                LOGGER.info("Sending database task error");
 
-                return storageErrorMessage;
+                return dbTaskErrorMessage;
             }
         });
     }

@@ -53,7 +53,7 @@
     <!-- ActiveMQ Destination -->  
     <amq:queue id="dbTaskDestination" physicalName="${distributed.queue.dbtask}" />
     
-    <bean id="storageTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+    <bean id="dbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="dbTaskDestination" />    
     

@@ -1,4 +1,5 @@
-create table colims.analytical_run (
+
+    create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -241,9 +242,15 @@ create table colims.analytical_run (
 
     create table colims.protein (
         id bigint not null auto_increment,
-        accession varchar(255) not null,
-        database_type varchar(255) not null,
         protein_sequence longtext not null,
+        primary key (id)
+    );
+
+    create table colims.protein_accession (
+        id bigint not null auto_increment,
+        accession varchar(255) not null,
+        database_type integer,
+        l_protein_id bigint,
         primary key (id)
     );
 
@@ -615,6 +622,11 @@ create table colims.analytical_run (
         foreign key (l_project_id) 
         references colims.project (id);
 
+    alter table colims.protein_accession 
+        add constraint FK_7mnvsvxdpjtoi386cssgoyp00 
+        foreign key (l_protein_id) 
+        references colims.protein (id);
+
     alter table colims.protocol 
         add constraint FK_68woyi6fqi6j99t2511tiayb2 
         foreign key (l_cell_based_cv_id) 
@@ -774,7 +786,6 @@ create table colims.analytical_run (
         add constraint FK_e2guk3ak57dupnvkd5k3u9dfk 
         foreign key (l_user_id) 
         references colims.colims_user (id);
-
 		
 -- create default value insertions
 -- insert default admin and distributed users

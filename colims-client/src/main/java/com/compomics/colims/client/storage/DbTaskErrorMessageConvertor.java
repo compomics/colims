@@ -12,7 +12,7 @@ import org.springframework.jms.support.converter.MessageConverter;
  *
  * @author Niels Hulstaert
  */
-public class StorageErrorMessageConvertor implements MessageConverter {
+public class DbTaskErrorMessageConvertor implements MessageConverter {
 
     @Override
     public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {

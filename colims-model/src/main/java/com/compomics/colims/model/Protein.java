@@ -16,7 +16,10 @@ import javax.persistence.Table;
 
 import java.util.Objects;
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -45,7 +48,8 @@ public class Protein extends DatabaseEntity {
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(mappedBy = "mainGroupProtein")
     private List<PeptideHasProtein> peptideHasMainGroupProteins = new ArrayList<>();
-    @OneToMany(mappedBy = "protein")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "protein")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinAccession> proteinAccessions = new ArrayList<>();
 
     public Protein() {

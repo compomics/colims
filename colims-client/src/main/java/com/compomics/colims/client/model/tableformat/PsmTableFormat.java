@@ -6,6 +6,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.Spectrum;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
@@ -101,21 +102,21 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     }
 
     /**
-     * Get the protein accessions as a concatenated String
+     * Get the protein accessions as a concatenated String.
      *
      * @param peptide
      * @return
      */
     private String getProteinAccessions(Peptide peptide) {
-        String proteinAccessionsString = "";
+        String proteinAccessionsString;
 
-        List<Protein> proteins = new ArrayList<>();
-        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
-            proteins.add(peptideHasProtein.getProtein());
+        List<ProteinAccession> proteinAccessions = new ArrayList<>();
+        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {           
+            proteinAccessions.addAll(peptideHasProtein.getProtein().getProteinAccessions());
         }
 
         Joiner joiner = Joiner.on(", ");
-        proteinAccessionsString = joiner.join(proteins);
+        proteinAccessionsString = joiner.join(proteinAccessions);
 
         return proteinAccessionsString;
     }
