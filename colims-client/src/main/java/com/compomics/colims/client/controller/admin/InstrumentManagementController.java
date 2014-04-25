@@ -226,7 +226,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(new ActionListener() {
+        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentManagementDialog.dispose();
@@ -357,7 +357,7 @@ public class InstrumentManagementController implements Controllable {
                     
                     eventBus.post(new InstrumentChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("instrument persist confirmation", "Instrument " + instrumentToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("instrument persist confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in instrument list in management overview dialog                    
@@ -383,7 +383,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(new ActionListener() {
+        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentEditDialog.dispose();
@@ -522,7 +522,7 @@ public class InstrumentManagementController implements Controllable {
                     instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
                     instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("instrument type persist confirmation", "Instrument type " + selectedInstrumentType.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("instrument type persist confirmation", "Instrument type " + selectedInstrumentType.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
@@ -531,7 +531,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentTypeCrudDialog.getCloseInstrumentTypeCrudButton().addActionListener(new ActionListener() {
+        instrumentTypeCrudDialog.getCancelInstrumentTypeCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentTypeCrudDialog.dispose();

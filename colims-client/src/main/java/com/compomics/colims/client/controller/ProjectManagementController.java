@@ -186,7 +186,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedProject != null) {
                     projectEditController.updateView(selectedProject);
                 } else {
-                    eventBus.post(new MessageEvent("project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -215,7 +215,7 @@ public class ProjectManagementController implements Controllable {
                         }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -241,7 +241,7 @@ public class ProjectManagementController implements Controllable {
                 if (getSelectedProject() != null) {
                     experimentEditController.updateView(createDefaultExperiment());
                 } else {
-                    eventBus.post(new MessageEvent("experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -253,7 +253,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedExperiment != null) {
                     experimentEditController.updateView(selectedExperiment);
                 } else {
-                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -287,7 +287,7 @@ public class ProjectManagementController implements Controllable {
                         }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -300,7 +300,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedSample != null) {
                     analyticalRunSetupController.showView();
                 } else {
-                    eventBus.post(new MessageEvent("analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
                 }                
             }
         });
@@ -311,7 +311,7 @@ public class ProjectManagementController implements Controllable {
                 if (getSelectedExperiment() != null) {
                     sampleEditController.updateView(createDefaultSample());
                 } else {
-                    eventBus.post(new MessageEvent("sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
                 }                
             }
         });
@@ -323,7 +323,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedSample != null) {
                     sampleEditController.updateView(selectedSample);
                 } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -357,7 +357,7 @@ public class ProjectManagementController implements Controllable {
                         }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

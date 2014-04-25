@@ -219,7 +219,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
+        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialManagementDialog.dispose();
@@ -359,7 +359,7 @@ public class MaterialManagementController implements Controllable {
 
                     eventBus.post(new MaterialChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in material list in management overview dialog
@@ -372,7 +372,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
+        materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialEditDialog.dispose();

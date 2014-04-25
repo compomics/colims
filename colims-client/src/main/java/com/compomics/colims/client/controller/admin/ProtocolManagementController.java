@@ -222,7 +222,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
+        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolManagementDialog.dispose();
@@ -359,7 +359,7 @@ public class ProtocolManagementController implements Controllable {
 
                     eventBus.post(new ProtocolChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
@@ -372,7 +372,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
+        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolEditDialog.dispose();

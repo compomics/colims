@@ -583,7 +583,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        projectsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("projects"));
+        projectsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));
         projectsPanel.setOpaque(false);
         projectsPanel.setPreferredSize(new java.awt.Dimension(306, 176));
 
@@ -635,7 +635,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
                 .addContainerGap())
         );
 
-        experimentsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
+        experimentsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Experiments"));
         experimentsPanel.setOpaque(false);
         experimentsPanel.setPreferredSize(new java.awt.Dimension(306, 176));
 
@@ -686,7 +686,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
                 .addContainerGap())
         );
 
-        samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("samples"));
+        samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Experiment samples"));
         samplesPanel.setOpaque(false);
         samplesPanel.setPreferredSize(new java.awt.Dimension(306, 176));
 
@@ -737,7 +737,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
                 .addContainerGap())
         );
 
-        analyticalRunsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("analytical runs"));
+        analyticalRunsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Sample analytical runs"));
         analyticalRunsPanel.setOpaque(false);
         analyticalRunsPanel.setPreferredSize(new java.awt.Dimension(306, 176));
 
@@ -788,7 +788,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
                 .addContainerGap())
         );
 
-        psmPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("peptide spectrum matches"));
+        psmPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Peptide spectrum matches"));
         psmPanel.setOpaque(false);
 
         psmScrollPane.setOpaque(false);

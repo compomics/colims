@@ -48,7 +48,7 @@
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
@@ -66,7 +66,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="saveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -89,9 +89,9 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="closeButton">
+        <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="close"/>
+            <Property name="text" type="java.lang.String" value="cancel"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
@@ -131,7 +131,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="analytical runs"/>
+                    <TitledBorder title="Analytical runs"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -231,7 +231,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="detail"/>
+                    <TitledBorder title="Detail"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -250,10 +250,10 @@
                                       <Component id="protocolLabel" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="nameTextField" alignment="1" min="-2" pref="542" max="-2" attributes="0"/>
-                                      <Component id="conditionTextField" alignment="1" min="-2" pref="542" max="-2" attributes="0"/>
-                                      <Component id="protocolComboBox" alignment="0" min="-2" pref="255" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="nameTextField" alignment="0" pref="542" max="32767" attributes="0"/>
+                                      <Component id="conditionTextField" alignment="0" pref="542" max="32767" attributes="0"/>
+                                      <Component id="protocolComboBox" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
@@ -322,19 +322,19 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="attachementsLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="attachments"/>
+                    <Property name="text" type="java.lang.String" value="Attachments"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="conditionTextField">
                 </Component>
                 <Component class="javax.swing.JLabel" name="nameLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="name"/>
+                    <Property name="text" type="java.lang.String" value="Name"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="storageLocationLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="storage location"/>
+                    <Property name="text" type="java.lang.String" value="Storage location"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="attachementsTextField">
@@ -358,12 +358,12 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="protocolLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="protocol"/>
+                    <Property name="text" type="java.lang.String" value="Protocol"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="conditionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="condition"/>
+                    <Property name="text" type="java.lang.String" value="Condition"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="nameTextField">
@@ -379,7 +379,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="attachementsLabel1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="materials"/>
+                    <Property name="text" type="java.lang.String" value="Materials"/>
                   </Properties>
                 </Component>
               </SubComponents>

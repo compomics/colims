@@ -3,7 +3,7 @@
 <Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="colims database login"/>
+    <Property name="title" type="java.lang.String" value="Colims database login"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -88,14 +88,14 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="dbUserNameLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="database username"/>
+        <Property name="text" type="java.lang.String" value="Database User Name"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="dbUserNameTextField">
     </Component>
     <Component class="javax.swing.JLabel" name="dbPasswordLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="database password"/>
+        <Property name="text" type="java.lang.String" value="Database Password"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="dbPasswordTextField">
@@ -116,7 +116,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="dbUrlLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="database url"/>
+        <Property name="text" type="java.lang.String" value="Database Url"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
@@ -137,7 +137,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="loginInfoLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="please provide the colims database login credentials:"/>
+        <Property name="text" type="java.lang.String" value="Please provide the colims database login credentials:"/>
       </Properties>
     </Component>
   </SubComponents>

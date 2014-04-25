@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="storage monitoring"/>
+    <Property name="title" type="java.lang.String" value="Task monitoring"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -24,12 +24,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="storageMonitoringTabbedPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="taskMonitoringTabbedPane" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+              <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -37,10 +37,10 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="storageMonitoringTabbedPane" min="-2" pref="398" max="-2" attributes="0"/>
+              <Component id="taskMonitoringTabbedPane" min="-2" pref="398" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="refreshButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -49,18 +49,18 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JTabbedPane" name="storageMonitoringTabbedPane">
+    <Container class="javax.swing.JTabbedPane" name="taskMonitoringTabbedPane">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="storageQueuePanel">
+        <Container class="javax.swing.JPanel" name="taskQueuePanel">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="storage tasks">
-                <Property name="tabTitle" type="java.lang.String" value="storage tasks"/>
+              <JTabbedPaneConstraints tabName="Tasks">
+                <Property name="tabTitle" type="java.lang.String" value="Tasks"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -71,10 +71,10 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="storageQueueScrollPane" pref="671" max="32767" attributes="0"/>
+                          <Component id="taskQueueScrollPane" pref="671" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="deleteStorageTaskButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteDbTaskButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -85,16 +85,16 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="storageQueueScrollPane" pref="317" max="32767" attributes="0"/>
+                      <Component id="taskQueueScrollPane" pref="317" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="deleteStorageTaskButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="deleteDbTaskButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="storageQueueScrollPane">
+            <Container class="javax.swing.JScrollPane" name="taskQueueScrollPane">
               <Properties>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -104,7 +104,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="storageQueueTable">
+                <Component class="javax.swing.JTable" name="taskQueueTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -146,7 +146,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="deleteStorageTaskButton">
+            <Component class="javax.swing.JButton" name="deleteDbTaskButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -162,14 +162,14 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="storedQueuePanel">
+        <Container class="javax.swing.JPanel" name="completedTaskQueuePanel">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="stored tasks">
-                <Property name="tabTitle" type="java.lang.String" value="stored tasks"/>
+              <JTabbedPaneConstraints tabName="Completed tasks">
+                <Property name="tabTitle" type="java.lang.String" value="Completed tasks"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -180,12 +180,12 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="storedQueueScrollPane" alignment="0" pref="671" max="32767" attributes="0"/>
+                          <Component id="completedTaskQueueScrollPane" alignment="0" pref="671" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="deleteStoredTaskButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteCompletedTaskButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="purgeStoredTasksButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="purgeCompletedTasksButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -196,11 +196,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="storedQueueScrollPane" pref="317" max="32767" attributes="0"/>
+                      <Component id="completedTaskQueueScrollPane" pref="317" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="deleteStoredTaskButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="purgeStoredTasksButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteCompletedTaskButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="purgeCompletedTasksButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -208,7 +208,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="storedQueueScrollPane">
+            <Container class="javax.swing.JScrollPane" name="completedTaskQueueScrollPane">
               <Properties>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -218,7 +218,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="storedQueueTable">
+                <Component class="javax.swing.JTable" name="completedTaskQueueTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -234,7 +234,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="deleteStoredTaskButton">
+            <Component class="javax.swing.JButton" name="deleteCompletedTaskButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
                 <Property name="toolTipText" type="java.lang.String" value="remove the selected storage error"/>
@@ -249,7 +249,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="purgeStoredTasksButton">
+            <Component class="javax.swing.JButton" name="purgeCompletedTasksButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="purge"/>
                 <Property name="toolTipText" type="java.lang.String" value="remove all messages (irreversable!)"/>
@@ -266,14 +266,14 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="exceptionQueuePanel">
+        <Container class="javax.swing.JPanel" name="taskErrorQueuePanel">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="storage errors">
-                <Property name="tabTitle" type="java.lang.String" value="storage errors"/>
+              <JTabbedPaneConstraints tabName="Task Errors">
+                <Property name="tabTitle" type="java.lang.String" value="Task Errors"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -284,7 +284,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="errorQueueScrollPane" pref="671" max="32767" attributes="0"/>
+                          <Component id="taskErrorQueueScrollPane" pref="671" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="errorDetailLabel" min="-2" pref="145" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -292,11 +292,11 @@
                           <Component id="errorDetailTextAreaScrollPane" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="resendStorageErrorButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="resendTaskErrorButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="deleteStorageErrorButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteTaskErrorButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="purgeStorageErrorsButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="purgeTaskErrorsButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -307,16 +307,16 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="errorQueueScrollPane" pref="168" max="32767" attributes="0"/>
+                      <Component id="taskErrorQueueScrollPane" pref="168" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="errorDetailLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="errorDetailTextAreaScrollPane" min="-2" pref="118" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="deleteStorageErrorButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="resendStorageErrorButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="purgeStorageErrorsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteTaskErrorButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="resendTaskErrorButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="purgeTaskErrorsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -324,7 +324,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="errorQueueScrollPane">
+            <Container class="javax.swing.JScrollPane" name="taskErrorQueueScrollPane">
               <Properties>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -334,7 +334,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="errorQueueTable">
+                <Component class="javax.swing.JTable" name="taskErrorQueueTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -373,7 +373,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="deleteStorageErrorButton">
+            <Component class="javax.swing.JButton" name="deleteTaskErrorButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
                 <Property name="toolTipText" type="java.lang.String" value="remove the selected storage error"/>
@@ -388,7 +388,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="resendStorageErrorButton">
+            <Component class="javax.swing.JButton" name="resendTaskErrorButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="resend"/>
                 <Property name="toolTipText" type="java.lang.String" value="resend the storage error as a storage task"/>
@@ -403,7 +403,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="purgeStorageErrorsButton">
+            <Component class="javax.swing.JButton" name="purgeTaskErrorsButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="purge"/>
                 <Property name="toolTipText" type="java.lang.String" value="remove all messages (irreversable!)"/>
@@ -422,9 +422,9 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="closeButton">
+    <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="close"/>
+        <Property name="text" type="java.lang.String" value="cancel"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[80, 25]"/>
         </Property>

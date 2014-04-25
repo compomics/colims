@@ -223,7 +223,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                     fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
                     fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("fasta DB persist confirmation", "Fasta DB " + selectedFastaDb.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("fasta DB persist confirmation", "Fasta DB " + selectedFastaDb.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
@@ -232,7 +232,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             }
         });
 
-        fastaDbManagementDialog.getDoneButton().addActionListener(new ActionListener() {
+        fastaDbManagementDialog.getOkButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FastaDb fastaDb = getSelectedFastaDb();
@@ -255,7 +255,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             }
         });
 
-        fastaDbManagementDialog.getCloseButton().addActionListener(new ActionListener() {
+        fastaDbManagementDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fastaDbManagementDialog.dispose();

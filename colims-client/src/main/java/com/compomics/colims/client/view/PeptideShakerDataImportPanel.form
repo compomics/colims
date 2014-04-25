@@ -106,7 +106,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="cpsFileSelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select a PeptideShaker cps file"/>
+            <Property name="text" type="java.lang.String" value="Select a PeptideShaker .cps file:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="fastaDbLabel">
@@ -132,7 +132,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="fastaFileSelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select a FASTA file"/>
+            <Property name="text" type="java.lang.String" value="Select a FASTA file:"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -193,7 +193,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="mgfFileSelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select MGF file(s)"/>
+            <Property name="text" type="java.lang.String" value="Select MGF file(s):"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="mgfFilesScrollPane">

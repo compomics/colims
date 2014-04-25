@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("colimsController")
 public class ColimsController implements Controllable, ActionListener {
-
+    
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
     //model
     @Value("${colims-client.version}")
@@ -89,11 +89,11 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
-
+    
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
     }
-
+    
     public EventList<Project> getProjects() {
         return projects;
     }
@@ -149,7 +149,7 @@ public class ColimsController implements Controllable, ActionListener {
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-
+        
         colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
 
@@ -159,7 +159,7 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
         colimsFrame.getStorageMonitoringMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
-
+        
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -170,15 +170,15 @@ public class ColimsController implements Controllable, ActionListener {
                 }
             }
         });
-
-        userLoginDialog.getCloseButton().addActionListener(new ActionListener() {
+        
+        userLoginDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 userLoginDialog.dispose();
                 System.exit(0);
             }
         });
-
+        
         userLoginDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
@@ -198,7 +198,7 @@ public class ColimsController implements Controllable, ActionListener {
 //        }
 //        showView();
     }
-
+    
     @Override
     public void showView() {
         colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -208,12 +208,14 @@ public class ColimsController implements Controllable, ActionListener {
         userLoginDialog.setLocationRelativeTo(colimsFrame);
         userLoginDialog.setVisible(true);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
-
-        if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
+        
+        if (menuItemLabel.equals(colimsFrame.getExitMenuItem().getText())) {
+            System.exit(0);
+        } else if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
@@ -321,7 +323,7 @@ public class ColimsController implements Controllable, ActionListener {
             //set current user in authentication bean 
             userService.fetchAuthenticationRelations(currentUser);
             authenticationBean.setCurrentUser(currentUser);
-
+            
             if (authenticationBean.isAdmin()) {
                 initAdminSection();
             } else {
@@ -352,7 +354,7 @@ public class ColimsController implements Controllable, ActionListener {
             textArea.setEditable(false);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
-
+            
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);
@@ -376,5 +378,5 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
         colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
-
+    
 }

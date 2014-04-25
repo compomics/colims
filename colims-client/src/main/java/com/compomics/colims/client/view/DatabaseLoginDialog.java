@@ -67,25 +67,25 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
         loginInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("colims database login");
+        setTitle("Colims database login");
 
-        dbUserNameLabel.setText("database username");
+        dbUserNameLabel.setText("Database User Name");
 
-        dbPasswordLabel.setText("database password");
+        dbPasswordLabel.setText("Database Password");
 
         loginButton.setText("login");
         loginButton.setMaximumSize(new java.awt.Dimension(80, 25));
         loginButton.setMinimumSize(new java.awt.Dimension(80, 25));
         loginButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        dbUrlLabel.setText("database url");
+        dbUrlLabel.setText("Database Url");
 
         closeButton.setText("close");
         closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        loginInfoLabel.setText("please provide the colims database login credentials:");
+        loginInfoLabel.setText("Please provide the colims database login credentials:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

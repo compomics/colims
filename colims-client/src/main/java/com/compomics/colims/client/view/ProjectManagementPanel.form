@@ -25,7 +25,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="projects"/>
+            <TitledBorder title="Projects"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -152,7 +152,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="project experiments"/>
+            <TitledBorder title="Project experiments"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -279,7 +279,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="experiment samples"/>
+            <TitledBorder title="Experiment samples"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>

@@ -201,7 +201,7 @@ public class AnalyticalRunSetupController implements Controllable {
             }
         });
 
-        analyticalRunSetupDialog.getCloseButton().addActionListener(new ActionListener() {
+        analyticalRunSetupDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 analyticalRunSetupDialog.dispose();

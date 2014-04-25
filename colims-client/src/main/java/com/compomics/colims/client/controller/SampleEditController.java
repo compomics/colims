@@ -182,7 +182,7 @@ public class SampleEditController implements Controllable {
                     SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
                     eventBus.post(sampleChangeEvent);
                     
-                    MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
@@ -235,7 +235,7 @@ public class SampleEditController implements Controllable {
             }
         });
 
-        sampleBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
+        sampleBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sampleBinaryFileDialog.dispose();
@@ -252,7 +252,7 @@ public class SampleEditController implements Controllable {
             }
         });
 
-        sampleEditDialog.getCloseButton().addActionListener(new ActionListener() {
+        sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sampleEditDialog.dispose();

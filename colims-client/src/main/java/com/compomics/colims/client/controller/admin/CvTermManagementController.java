@@ -145,7 +145,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                     cvTermManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("CV term persist confirmation", "CV term " + selectedCvTerm.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("CV term persist confirmation", "CV term " + selectedCvTerm.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     eventBus.post(new CvTermChangeEvent());
@@ -197,7 +197,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             }
         });
         
-        cvTermManagementDialog.getCloseButton().addActionListener(new ActionListener() {
+        cvTermManagementDialog.getCancelButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {

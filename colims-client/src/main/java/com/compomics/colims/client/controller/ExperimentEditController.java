@@ -117,7 +117,7 @@ public class ExperimentEditController implements Controllable {
                     ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
                     eventBus.post(experimentChangeEvent);
 
-                    MessageEvent messageEvent = new MessageEvent("experiment persist confirmation", "Experiment " + experimentToEdit.getNumber() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("experiment persist confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in experiment table
@@ -173,7 +173,7 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        experimentBinaryFileDialog.getCloseButton().addActionListener(new ActionListener() {
+        experimentBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 experimentBinaryFileDialog.dispose();
@@ -190,7 +190,7 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        experimentEditDialog.getCloseButton().addActionListener(new ActionListener() {
+        experimentEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 experimentEditDialog.dispose();

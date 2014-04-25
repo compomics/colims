@@ -29,7 +29,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="experimentEditPanel" min="-2" max="-2" attributes="0"/>
+          <Component id="experimentEditPanel" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -48,7 +48,7 @@
                   <EmptySpace pref="499" max="32767" attributes="0"/>
                   <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Component id="detailPanel" alignment="0" max="32767" attributes="0"/>
@@ -57,11 +57,11 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="detailPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="detailPanel" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="saveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -84,9 +84,9 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="closeButton">
+        <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="close"/>
+            <Property name="text" type="java.lang.String" value="cancel"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
@@ -120,7 +120,7 @@
                                   <Component id="storageLocationLabel" min="-2" max="-2" attributes="0"/>
                                   <Component id="attachementsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="32" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="storageLocationTextField" min="-2" pref="542" max="-2" attributes="0"/>
                                   <Group type="102" alignment="1" attributes="0">
@@ -136,9 +136,9 @@
                                   <Component id="numberLabel" alignment="0" min="-2" pref="60" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="numberTextField" min="-2" pref="255" max="-2" attributes="0"/>
-                                  <Component id="titleTextField" min="-2" pref="542" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="titleTextField" pref="542" max="32767" attributes="0"/>
+                                  <Component id="numberTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -161,10 +161,13 @@
                       </Group>
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="descriptionLabel" min="-2" max="-2" attributes="0"/>
                           <Component id="descriptionScrollPanel" pref="107" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="descriptionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="storageLocationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="storageLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -183,19 +186,19 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="attachementsLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="attachments"/>
+                <Property name="text" type="java.lang.String" value="Attachments"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="numberTextField">
             </Component>
             <Component class="javax.swing.JLabel" name="titleLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="title"/>
+                <Property name="text" type="java.lang.String" value="Title"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="storageLocationLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="storage location"/>
+                <Property name="text" type="java.lang.String" value="Storage Location"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="attachementsTextField">
@@ -236,12 +239,12 @@
             </Container>
             <Component class="javax.swing.JLabel" name="descriptionLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="description"/>
+                <Property name="text" type="java.lang.String" value="Description"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="numberLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="number"/>
+                <Property name="text" type="java.lang.String" value="Number"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="titleTextField">

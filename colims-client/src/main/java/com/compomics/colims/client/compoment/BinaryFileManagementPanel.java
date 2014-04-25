@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
@@ -126,7 +127,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
                         BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
                     }
-                }
+                }                
             }
         });
 
@@ -139,12 +140,17 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                     int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         try {
-                            File exportDirectory = exportDirectoryChooser.getCurrentDirectory();
-                            exportBinaryFile(exportDirectory, binaryFileToExport);
+                            File exportDirectory = exportDirectoryChooser.getSelectedFile();
+                            if (exportDirectory.isDirectory()) {
+                                exportBinaryFile(exportDirectory, binaryFileToExport);
+                            }
                         } catch (IOException ex) {
                             LOGGER.error(ex.getMessage(), ex);
                         }
                     }
+                }
+                else{
+                    JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to export.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -189,6 +195,9 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
                     BinaryFileManagementPanel.this.firePropertyChange(REMOVE, null, binaryFileToRemove);
                 }
+                else{
+                    JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to delete.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
     }
@@ -222,7 +231,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
      * @param exportDirectory
      * @param binaryFile
      */
-    private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {        
+    private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {
         IOUtils.unzipAndWrite(binaryFile.getContent(), new File(exportDirectory, binaryFile.getFileName()));
     }
 
@@ -257,7 +266,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
         deleteButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         exportButton.setText("export");
-        exportButton.setToolTipText("export the selected file");
+        exportButton.setToolTipText("export the selected attachment");
         exportButton.setMaximumSize(new java.awt.Dimension(80, 25));
         exportButton.setMinimumSize(new java.awt.Dimension(80, 25));
         exportButton.setPreferredSize(new java.awt.Dimension(80, 25));

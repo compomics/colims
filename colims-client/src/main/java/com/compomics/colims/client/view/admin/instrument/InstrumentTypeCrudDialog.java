@@ -55,8 +55,8 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
         return instrumentTypeStateInfoLabel;
     }        
 
-    public JButton getCloseInstrumentTypeCrudButton() {
-        return closeInstrumentTypeCrudButton;
+    public JButton getCancelInstrumentTypeCrudButton() {
+        return cancelInstrumentTypeCrudButton;
     }        
 
     /**
@@ -82,14 +82,14 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
         instrumentTypeStateInfoLabel = new javax.swing.JLabel();
         instrumentTypeDescriptionScrollPane = new javax.swing.JScrollPane();
         instrumentTypeDescriptionTextArea = new javax.swing.JTextArea();
-        closeInstrumentTypeCrudButton = new javax.swing.JButton();
+        cancelInstrumentTypeCrudButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("instrument type management");
+        setTitle("Instrument type management");
 
         instrumentTypeCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("overview"));
+        instrumentTypeOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         instrumentTypeOverviewPanel.setOpaque(false);
         instrumentTypeOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -113,12 +113,12 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
             instrumentTypeOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(instrumentTypeOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(instrumentTypeListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(instrumentTypeListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(instrumentTypeOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(deleteInstrumentTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addInstrumentTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12))
         );
         instrumentTypeOverviewPanelLayout.setVerticalGroup(
             instrumentTypeOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,15 +126,14 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(instrumentTypeOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(instrumentTypeOverviewPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addInstrumentTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteInstrumentTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(instrumentTypeListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(instrumentTypeListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        instrumentTypeDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
+        instrumentTypeDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
         instrumentTypeDetailPanel.setOpaque(false);
         instrumentTypeDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -150,6 +149,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
 
         instrumentTypeStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         instrumentTypeStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
+        instrumentTypeStateInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         instrumentTypeStateInfoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         instrumentTypeStateInfoLabel.setMaximumSize(new java.awt.Dimension(100, 20));
         instrumentTypeStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
@@ -167,42 +167,45 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
             .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
-                        .addComponent(instrumentTypeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentTypeDetailPanelLayout.createSequentialGroup()
+                        .addComponent(instrumentTypeStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(instrumentTypeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
-                        .addComponent(instrumentTypeDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(instrumentTypeDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(instrumentTypeStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentTypeDetailPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(instrumentTypeDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                            .addComponent(instrumentTypeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(instrumentTypeDescriptionScrollPane)
+                            .addComponent(instrumentTypeNameTextField))))
                 .addContainerGap())
         );
         instrumentTypeDetailPanelLayout.setVerticalGroup(
             instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
-                .addComponent(instrumentTypeStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instrumentTypeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(instrumentTypeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(instrumentTypeDescriptionLabel))
+                    .addGroup(instrumentTypeDetailPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(instrumentTypeDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(instrumentTypeDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(instrumentTypeDescriptionLabel)
-                    .addComponent(instrumentTypeDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(instrumentTypeSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instrumentTypeStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
-        closeInstrumentTypeCrudButton.setText("close");
-        closeInstrumentTypeCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeInstrumentTypeCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeInstrumentTypeCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentTypeCrudButton.setText("cancel");
+        cancelInstrumentTypeCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentTypeCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelInstrumentTypeCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout instrumentTypeCrudPanelLayout = new javax.swing.GroupLayout(instrumentTypeCrudPanel);
         instrumentTypeCrudPanel.setLayout(instrumentTypeCrudPanelLayout);
@@ -214,7 +217,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
                     .addComponent(instrumentTypeOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
                     .addGroup(instrumentTypeCrudPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(closeInstrumentTypeCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cancelInstrumentTypeCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(instrumentTypeDetailPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -224,9 +227,9 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(instrumentTypeOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(instrumentTypeDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(instrumentTypeDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeInstrumentTypeCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelInstrumentTypeCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -250,7 +253,7 @@ public class InstrumentTypeCrudDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addInstrumentTypeButton;
-    private javax.swing.JButton closeInstrumentTypeCrudButton;
+    private javax.swing.JButton cancelInstrumentTypeCrudButton;
     private javax.swing.JButton deleteInstrumentTypeButton;
     private javax.swing.JPanel instrumentTypeCrudPanel;
     private javax.swing.JLabel instrumentTypeDescriptionLabel;

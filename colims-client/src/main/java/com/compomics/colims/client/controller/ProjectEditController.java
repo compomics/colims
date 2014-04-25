@@ -126,7 +126,7 @@ public class ProjectEditController implements Controllable {
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
                     }                    
-                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in project list in management overview dialog
@@ -138,7 +138,7 @@ public class ProjectEditController implements Controllable {
             }
         });
 
-        projectEditDialog.getCloseButton().addActionListener(new ActionListener() {
+        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 projectEditDialog.dispose();
