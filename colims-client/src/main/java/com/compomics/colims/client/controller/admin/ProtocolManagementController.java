@@ -213,6 +213,8 @@ public class ProtocolManagementController implements Controllable {
                         protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
                         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -225,6 +227,8 @@ public class ProtocolManagementController implements Controllable {
                     //show dialog
                     GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
                     protocolEditDialog.setVisible(true);
+                } else {
+                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

@@ -193,7 +193,7 @@ public class MaterialManagementController implements Controllable {
 
                             materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                             materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-                            
+
                             eventBus.post(new MaterialChangeEvent(EntityChangeEvent.Type.DELETED));
                         } catch (DataIntegrityViolationException dive) {
                             //check if the material can be deleted without breaking existing database relations,
@@ -210,6 +210,8 @@ public class MaterialManagementController implements Controllable {
                         materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Material selection", "Please select a material to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -222,6 +224,8 @@ public class MaterialManagementController implements Controllable {
                     //show dialog
                     GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
                     materialEditDialog.setVisible(true);
+                } else {
+                    eventBus.post(new MessageEvent("Material selection", "Please select a material to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
