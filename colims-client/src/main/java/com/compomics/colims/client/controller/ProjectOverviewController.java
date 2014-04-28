@@ -113,6 +113,10 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ProjectOverviewPanel getProjectOverviewPanel() {
         return projectOverviewPanel;
     }
@@ -134,10 +138,14 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
 
         //set column widths
-        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setPreferredWidth(10);
-        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.TITLE).setPreferredWidth(100);
-        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.LABEL).setPreferredWidth(50);
-        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(20);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setPreferredWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setMaxWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.PROJECT_ID).setMinWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.TITLE).setPreferredWidth(300);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.LABEL).setPreferredWidth(100);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(65);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setMaxWidth(65);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setMinWidth(65);
 
         //set sorting
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
@@ -152,10 +160,14 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
 
         //set column widths
-        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setPreferredWidth(10);
-        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.TITLE).setPreferredWidth(100);
-        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER).setPreferredWidth(20);
-        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(20);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setPreferredWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setMaxWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.EXPERIMENT_ID).setMinWidth(35);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.TITLE).setPreferredWidth(300);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER).setPreferredWidth(100);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(65);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setMaxWidth(65);
+        projectOverviewPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentSimpleTableFormat.NUMBER_OF_SAMPLES).setMinWidth(65);
 
         //set sorting
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
@@ -170,9 +182,13 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
 
         //set column widths
-        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setPreferredWidth(10);
-        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NAME).setPreferredWidth(100);
-        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setPreferredWidth(20);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setPreferredWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setMaxWidth(35);
+        projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(SampleSimpleTableFormat.SAMPLE_ID).setMinWidth(35);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NAME).setPreferredWidth(300);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setPreferredWidth(65);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setMaxWidth(65);
+        projectOverviewPanel.getSamplesTable().getColumnModel().getColumn(SampleSimpleTableFormat.NUMBER_OF_RUNS).setMinWidth(65);
 
         //set sorting
         TableComparatorChooser samplesTableSorter = TableComparatorChooser.install(
@@ -187,14 +203,18 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
 
         //set column widths
-        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setPreferredWidth(10);
-        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NAME).setPreferredWidth(50);
-        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.START_DATE).setPreferredWidth(50);
-        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(20);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setPreferredWidth(35);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setMaxWidth(35);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.RUN_ID).setMinWidth(35);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NAME).setPreferredWidth(100);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.START_DATE).setPreferredWidth(100);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(65);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(65);
+        projectOverviewPanel.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunSimpleTableFormat.NUMBER_OF_SPECTRA).setMinWidth(65);
 
         //set sorting
         TableComparatorChooser analyticalRunsTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getSamplesTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
+                projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample analyticalruns table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, new IdComparator());
@@ -205,7 +225,9 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().setSelectionModel(psmsSelectionModel);
 
         //set column widths
-        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(10);
+        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(35);
+        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMaxWidth(35);
+        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMinWidth(35);
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(10);
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(50);
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_INTENSITY).setPreferredWidth(50);
@@ -343,9 +365,10 @@ public class ProjectOverviewController implements Controllable {
             }
         }
     }
-    
+
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table
+     * if necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent
      */
@@ -469,7 +492,7 @@ public class ProjectOverviewController implements Controllable {
 
                         // create the intensity histograms
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(annotations, spectrum, INTENSITY_LEVEL));
-                        
+
                         // create the miniature mass error plot
                         //@todo is annotationPreferences.getFragmentIonAccuracy() the correct mass tolerance
                         MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, spectrum, annotationPreferences.getFragmentIonAccuracy(), false);
@@ -601,7 +624,7 @@ public class ProjectOverviewController implements Controllable {
             }
         }
     }
-    
+
     /**
      * Get the selected analytical run from the analytical run table.
      *
@@ -618,7 +641,7 @@ public class ProjectOverviewController implements Controllable {
 
         return selectedAnalyticalRun;
     }
-    
+
     /**
      * Update the given analytical run in the analytical runs EventList.
      *
@@ -649,7 +672,7 @@ public class ProjectOverviewController implements Controllable {
         }
 
         return selectedPsm;
-    }        
+    }
 
     /**
      * Set the PSM table cell renderers.

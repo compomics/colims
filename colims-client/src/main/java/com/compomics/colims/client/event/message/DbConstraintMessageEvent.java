@@ -12,6 +12,11 @@ public class DbConstraintMessageEvent extends MessageEvent {
             + "\n" + "it is being used in a relation between the '%s' database table and another one."
             + "\n" + "Remove any existing relations between this entry and other entries and try again.";
 
+    /**
+     *
+     * @param className
+     * @param entityName
+     */
     public DbConstraintMessageEvent(final String className, final String entityName) {
         super("database constraint violation", String.format(CONSTRAINT_MESSAGE, entityName, className), JOptionPane.WARNING_MESSAGE);
     }

@@ -3,10 +3,8 @@ package com.compomics.colims.client.storage;
 import com.compomics.colims.distributed.model.QueueMessage;
 import com.compomics.colims.distributed.model.DbTaskError;
 import java.util.List;
-import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
 import javax.management.MalformedObjectNameException;
-import javax.management.openmbean.OpenDataException;
 
 /**
  *

@@ -238,7 +238,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
         taskErrorQueueTable.setOpaque(false);
         taskErrorQueueScrollPane.setViewportView(taskErrorQueueTable);
 
-        errorDetailLabel.setText("error detail");
+        errorDetailLabel.setText("Error detail");
 
         errorDetailTextArea.setEditable(false);
         errorDetailTextArea.setColumns(20);

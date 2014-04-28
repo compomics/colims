@@ -84,9 +84,16 @@ public class InstrumentManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public InstrumentManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public InstrumentManagementDialog getInstrumentManagementOverviewDialog() {
         return instrumentManagementDialog;
     }
@@ -357,14 +364,14 @@ public class InstrumentManagementController implements Controllable {
                     
                     eventBus.post(new InstrumentChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("instrument persist confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Instrument store confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in instrument list in management overview dialog                    
                     instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
                     instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -522,10 +529,10 @@ public class InstrumentManagementController implements Controllable {
                     instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
                     instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("instrument type persist confirmation", "Instrument type " + selectedInstrumentType.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Instrument type store confirmation", "Instrument type " + selectedInstrumentType.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

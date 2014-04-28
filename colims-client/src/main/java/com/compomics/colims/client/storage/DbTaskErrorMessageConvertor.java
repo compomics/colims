@@ -14,6 +14,14 @@ import org.springframework.jms.support.converter.MessageConverter;
  */
 public class DbTaskErrorMessageConvertor implements MessageConverter {
 
+    /**
+     *
+     * @param object
+     * @param session
+     * @return
+     * @throws JMSException
+     * @throws MessageConversionException
+     */
     @Override
     public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
         DbTask dbTask = ((DbTaskError) object).getDbTask();
@@ -21,6 +29,13 @@ public class DbTaskErrorMessageConvertor implements MessageConverter {
         return session.createObjectMessage(dbTask);
     }
 
+    /**
+     *
+     * @param message
+     * @return
+     * @throws JMSException
+     * @throws MessageConversionException
+     */
     @Override
     public Object fromMessage(Message message) throws JMSException, MessageConversionException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

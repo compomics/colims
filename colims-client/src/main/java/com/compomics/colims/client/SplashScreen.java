@@ -37,12 +37,19 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     private int maximum;
     private final boolean showProgressLabel;
     
+    /**
+     *
+     */
     public SplashScreen() {
         progressBar = new JProgressBar();
         imageResourcePath = "/icons/colims-splash.png";
         showProgressLabel = true;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getMaximum() {
         return maximum;
     }

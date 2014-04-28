@@ -76,9 +76,16 @@ public class MaterialManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public MaterialManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
     }
@@ -359,14 +366,14 @@ public class MaterialManagementController implements Controllable {
 
                     eventBus.post(new MaterialChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Material store confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in material list in management overview dialog
                     materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     materialManagementDialog.getMaterialList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

@@ -76,9 +76,16 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public ProtocolManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;
     }
@@ -359,14 +366,14 @@ public class ProtocolManagementController implements Controllable {
 
                     eventBus.post(new ProtocolChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Protocol store confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
                     protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     protocolManagementDialog.getProtocolList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

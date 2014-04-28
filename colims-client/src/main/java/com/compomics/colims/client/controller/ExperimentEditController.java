@@ -53,10 +53,18 @@ public class ExperimentEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ExperimentEditDialog getExperimentEditDialog() {
         return experimentEditDialog;
     }
 
+    /**
+     *
+     * @return
+     */
     public Experiment getExperimentToEdit() {
         return experimentToEdit;
     }
@@ -117,13 +125,13 @@ public class ExperimentEditController implements Controllable {
                     ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
                     eventBus.post(experimentChangeEvent);
 
-                    MessageEvent messageEvent = new MessageEvent("experiment persist confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Experiment store confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in experiment table
                     projectManagementController.setSelectedExperiment(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

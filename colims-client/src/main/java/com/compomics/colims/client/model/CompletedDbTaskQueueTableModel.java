@@ -24,13 +24,13 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "start", "duration"};
-    private static final int QUEUE_INDEX = 0;
-    private static final int TYPE_INDEX = 1;
-    private static final int SUBMITTED_INDEX = 2;
-    private static final int DESCRIPTION_INDEX = 3;
-    private static final int USER_INDEX = 4;
-    private static final int START_INDEX = 5;
-    private static final int DURATION_INDEX = 6;
+    public static final int QUEUE_INDEX = 0;
+    public static final int TYPE_INDEX = 1;
+    public static final int SUBMITTED_INDEX = 2;
+    public static final int DESCRIPTION_INDEX = 3;
+    public static final int USER_INDEX = 4;
+    public static final int START_INDEX = 5;
+    public static final int DURATION_INDEX = 6;
     private List<CompletedDbTask> messages;
     private UserService userService;
 

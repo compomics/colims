@@ -223,10 +223,10 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                     fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
                     fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("fasta DB persist confirmation", "Fasta DB " + selectedFastaDb.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Fasta DB store confirmation", "Fasta DB " + selectedFastaDb.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -249,7 +249,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                 if (validationMessages.isEmpty()) {
                     fastaDbManagementDialog.dispose();
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -273,12 +273,27 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.setVisible(true);
     }
 
+    /**
+     *
+     * @param field
+     * @param selectedValue
+     * @param accession
+     * @param ontologyShort
+     * @param ontologyLong
+     * @param modifiedRow
+     * @param mappedTerm
+     * @param metadata
+     */
     @Override
     public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
         fastaDbManagementDialog.getTaxonomyTextField().setText(accession);
         fastaDbManagementDialog.getSpeciesTextField().setText(selectedValue);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Window getWindow() {
         return fastaDbManagementDialog;

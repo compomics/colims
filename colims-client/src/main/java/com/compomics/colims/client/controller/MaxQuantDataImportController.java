@@ -104,6 +104,10 @@ public class MaxQuantDataImportController implements Controllable {
         return validationMessages;
     }
 
+    /**
+     *
+     * @return
+     */
     public MaxQuantDataImport getDataImport() {
         MaxQuantDataImport maxQuantDataImport = new MaxQuantDataImport(maxQuantDirectory, fastaDb);
 

@@ -7,9 +7,25 @@ package com.compomics.colims.client.event;
  */
 public abstract class EntityChangeEvent {
     
+    /**
+     *
+     */
     public static enum Type {
 
-        CREATED, DELETED, UPDATED;                
+        /**
+         * Created entity event.
+         */
+        CREATED,                
+
+        /**
+         * Deleted entity event.
+         */
+        DELETED,                
+
+        /**
+         * Updated entity event.
+         */
+        UPDATED;                
     }
     
     /**
@@ -17,10 +33,18 @@ public abstract class EntityChangeEvent {
      */
     protected Type type;
 
+    /**
+     *
+     * @param type
+     */
     public EntityChangeEvent(final Type type) {
         this.type = type;
-    }    
-    
+    }
+
+    /**
+     *
+     * @return
+     */
     public Type getType() {
         return type;
     }             

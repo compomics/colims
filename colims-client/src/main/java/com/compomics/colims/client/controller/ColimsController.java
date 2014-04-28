@@ -90,10 +90,18 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private EventBus eventBus;
     
+    /**
+     *
+     * @return
+     */
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
     }
     
+    /**
+     *
+     * @return
+     */
     public EventList<Project> getProjects() {
         return projects;
     }
@@ -263,7 +271,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showPermissionErrorDialog(String message) {
-        showMessageDialog("permission warning", "A permission warning occured: "
+        showMessageDialog("Permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }

@@ -32,9 +32,16 @@ public class UserManagementController implements Controllable {
     @Autowired
     private PermissionCrudController permissionCrudController;
 
+    /**
+     *
+     */
     public UserManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public UserManagementDialog getUserManagementDialog() {
         return userManagementDialog;
     }

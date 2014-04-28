@@ -352,7 +352,7 @@
             </Container>
             <Component class="javax.swing.JLabel" name="errorDetailLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="error detail"/>
+                <Property name="text" type="java.lang.String" value="Error detail"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="errorDetailTextAreaScrollPane">

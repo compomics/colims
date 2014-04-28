@@ -6,7 +6,7 @@ package com.compomics.colims.distributed.model.enums;
  */
 public enum DbEntityType {
 
-    PROJECT("project"), EXPERIMENT("experiment"), ANALYTICAL_RUN("analytical run");
+    PROJECT("project"), EXPERIMENT("experiment"), SAMPLE("sample"), ANALYTICAL_RUN("analytical run");
 
     /**
      * The user friendly name of the delete type
@@ -20,5 +20,5 @@ public enum DbEntityType {
     public String userFriendlyName() {
         return userFriendlyName;
     }
-    
+
 }

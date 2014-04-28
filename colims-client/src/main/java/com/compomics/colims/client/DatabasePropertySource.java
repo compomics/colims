@@ -11,12 +11,21 @@ public class DatabasePropertySource extends PropertySource<String> {
 
     private final Map<String, String> databaseProperties;
 
+    /**
+     *
+     * @param databaseProperties
+     */
     public DatabasePropertySource(Map<String, String> databaseProperties) {
         super("custom");
 
         this.databaseProperties = databaseProperties;
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     @Override
     public String getProperty(String name) {
         if (databaseProperties.containsKey(name)) {

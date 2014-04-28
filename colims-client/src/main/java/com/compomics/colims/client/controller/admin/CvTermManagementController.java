@@ -59,6 +59,10 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     @Autowired
     private Query olsClient;
 
+    /**
+     *
+     * @return
+     */
     public CvTermManagementDialog getCvTermManagementDialog() {
         return cvTermManagementDialog;
     }
@@ -145,12 +149,12 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                     cvTermManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("CV term persist confirmation", "CV term " + selectedCvTerm.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("CV term store confirmation", "CV term " + selectedCvTerm.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     eventBus.post(new CvTermChangeEvent());
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -230,6 +234,17 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
     }
 
+    /**
+     *
+     * @param field
+     * @param selectedValue
+     * @param accession
+     * @param ontologyShort
+     * @param ontologyLong
+     * @param modifiedRow
+     * @param mappedTerm
+     * @param metadata
+     */
     @Override
     public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {        
         //check wether a CV term has to be added or updated
@@ -256,6 +271,10 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Window getWindow() {
         return cvTermManagementDialog;

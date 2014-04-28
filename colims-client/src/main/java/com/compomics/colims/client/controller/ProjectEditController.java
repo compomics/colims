@@ -57,6 +57,10 @@ public class ProjectEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ProjectEditDialog getProjectEditDialog() {
         return projectEditDialog;
     }
@@ -126,13 +130,13 @@ public class ProjectEditController implements Controllable {
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
                     }                    
-                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in project list in management overview dialog
                     projectManagementController.setSelectedProject(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }

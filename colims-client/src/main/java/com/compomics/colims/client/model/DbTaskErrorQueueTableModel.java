@@ -23,12 +23,12 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
     private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "error"};
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
-    private static final int QUEUE_INDEX = 0;
-    private static final int TYPE_INDEX = 1;
-    private static final int SUBMITTED_INDEX = 2;
-    private static final int DESCRIPTION_INDEX = 3;
-    private static final int USER_INDEX = 4;
-    private static final int ERROR_INDEX = 5;
+    public static final int QUEUE_INDEX = 0;
+    public static final int TYPE_INDEX = 1;
+    public static final int SUBMITTED_INDEX = 2;
+    public static final int DESCRIPTION_INDEX = 3;
+    public static final int USER_INDEX = 4;
+    public static final int ERROR_INDEX = 5;
     private List<DbTaskError> messages;
     private UserService userService;
 

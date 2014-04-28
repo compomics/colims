@@ -5,6 +5,10 @@ package com.compomics.colims.client.event;
  */
 public class MaterialChangeEvent extends EntityChangeEvent {
 
+    /**
+     *
+     * @param type
+     */
     public MaterialChangeEvent(final Type type) {
         super(type);
     }    

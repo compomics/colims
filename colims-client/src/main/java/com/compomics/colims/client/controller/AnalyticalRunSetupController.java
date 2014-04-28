@@ -86,6 +86,10 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private QueueManager queueManager;
 
+    /**
+     *
+     * @return
+     */
     public AnalyticalRunSetupDialog getAnalyticalRunSetupDialog() {
         return analyticalRunSetupDialog;
     }
@@ -141,7 +145,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             }
                             onCardSwitch();
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         break;
@@ -179,7 +183,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             sendStorageTask(peptideShakerDataImportController.getDataImport());
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         onCardSwitch();
@@ -190,7 +194,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             sendStorageTask(maxQuantDataImportController.getDataImport());
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         onCardSwitch();
@@ -236,7 +240,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
             }
         } else {
-            eventBus.post(new MessageEvent("authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
+            eventBus.post(new MessageEvent("Authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
 
@@ -264,7 +268,7 @@ public class AnalyticalRunSetupController implements Controllable {
             storageTaskProducer.sendDbTask(persistDbTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
-            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
+            MessageEvent messageEvent = new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
         }
     }
 

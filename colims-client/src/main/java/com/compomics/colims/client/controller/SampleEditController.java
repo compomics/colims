@@ -91,6 +91,10 @@ public class SampleEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public SampleEditDialog getSampleEditDialog() {
         return sampleEditDialog;
     }
@@ -182,10 +186,10 @@ public class SampleEditController implements Controllable {
                     SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
                     eventBus.post(sampleChangeEvent);
                     
-                    MessageEvent messageEvent = new MessageEvent("sample persist confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -266,7 +270,7 @@ public class SampleEditController implements Controllable {
                 if (selectedAnalyticalRun != null) {
                     analyticalRunEditController.updateView(selectedAnalyticalRun);
                 } else {
-                    eventBus.post(new MessageEvent("analytical run selection", "Please select an analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
