@@ -260,7 +260,7 @@ public class AnalyticalRunSetupController implements Controllable {
         User currentUser = authenticationBean.getCurrentUser();
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
-        
+
         PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
         PersistDbTask persistDbTask = new PersistDbTask(DbEntityType.ANALYTICAL_RUN, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
@@ -268,7 +268,7 @@ public class AnalyticalRunSetupController implements Controllable {
             storageTaskProducer.sendDbTask(persistDbTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
-            MessageEvent messageEvent = new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
+            eventBus.post(new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE));
         }
     }
 

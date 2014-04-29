@@ -41,7 +41,7 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
         searchParameters.setIonSearched1(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon1Type()));
         searchParameters.setIonSearched2(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon2Type()));
 
-        searchParameters.setnMissedCleavages(colimsSearchParametersSettings.getMaxMissedCleavages());
+        searchParameters.setnMissedCleavages(colimsSearchParametersSettings.getNumberOfMissedCleavages());
         searchParameters.setPrecursorAccuracy(colimsSearchParametersSettings.getPrecMassTolerance());
         searchParameters.setPrecursorAccuracyType(colimsSearchParametersSettings.getPrecMassToleranceUnit());
         searchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParametersSettings.getPrecursorUpperCharge()));

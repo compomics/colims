@@ -112,18 +112,15 @@ public class ProjectEditController implements Controllable {
                 }                
                 if (validationMessages.isEmpty()) {
                     int index;
-                    EntityChangeEvent.Type type;
                     
                     if (projectToEdit.getId() != null) {
                         projectService.update(projectToEdit);
                         
                         index = projectManagementController.getSelectedProjectIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         projectService.save(projectToEdit);
 
                         index = projectManagementController.getProjectsSize() - 1;
-                        type = EntityChangeEvent.Type.CREATED;
                         
                         //add project to overview table
                         projectManagementController.addProject(projectToEdit);                        

@@ -211,6 +211,9 @@ public class SampleEditController implements Controllable {
 
                     MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
+                    
+                    //refresh selection in sample table
+                    projectManagementController.setSelectedSample(index);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);

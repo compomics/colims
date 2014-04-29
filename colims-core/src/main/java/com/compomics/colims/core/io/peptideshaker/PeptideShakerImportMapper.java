@@ -4,9 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -16,7 +14,6 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.db.ObjectsCache;
 import com.compomics.util.experiment.MsExperiment;
@@ -175,7 +172,7 @@ public class PeptideShakerImportMapper {
     /**
      * Load the fasta file in the SequenceFactory.
      *
-     * @param fastaFilePath  the fasta file path
+     * @param fastaFilePath the fasta file path
      */
     private void loadFastaFile(String fastaFilePath) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");

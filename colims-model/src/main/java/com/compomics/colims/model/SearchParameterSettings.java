@@ -31,8 +31,8 @@ public class SearchParameterSettings extends DatabaseEntity {
     @Column(name = "enzyme")
     private String enzyme;
     @Basic(optional = true)
-    @Column(name = "max_missed_cleavages")
-    private int maxMissedCleavages;
+    @Column(name = "missed_cleavages")
+    private int numberOfMissedCleavages;
     @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance")
     private double precMassTolerance;
@@ -74,13 +74,13 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.enzyme = enzyme;
     }
 
-    public int getMaxMissedCleavages() {
-        return maxMissedCleavages;
+    public int getNumberOfMissedCleavages() {
+        return numberOfMissedCleavages;
     }
 
-    public void setMaxMissedCleavages(final int maxMissedCleavages) {
-        this.maxMissedCleavages = maxMissedCleavages;
-    }
+    public void setNumberOfMissedCleavages(int numberOfMissedCleavages) {
+        this.numberOfMissedCleavages = numberOfMissedCleavages;
+    }    
 
     public double getPrecMassTolerance() {
         return precMassTolerance;
