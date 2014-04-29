@@ -404,6 +404,8 @@ public class MaterialManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Material CV term type selection", "Please select a material CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

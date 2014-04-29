@@ -9,12 +9,16 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.MaterialChangeEvent;
 import com.compomics.colims.client.event.ProtocolChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
+import com.compomics.colims.client.storage.DbTaskProducer;
+import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
@@ -23,13 +27,18 @@ import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
+import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
+import com.compomics.colims.model.enums.DefaultPermission;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -66,6 +75,8 @@ public class SampleEditController implements Controllable {
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private Sample sampleToEdit;
     private List<Material> materials;
+    @Autowired
+    private AuthenticationBean authenticationBean;
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
@@ -81,13 +92,17 @@ public class SampleEditController implements Controllable {
     @Autowired
     private SampleService sampleService;
     @Autowired
-    private AnalyticalRunService analyticalRunService;    
+    private AnalyticalRunService analyticalRunService;
     @Autowired
     private MaterialService materialService;
     @Autowired
     private ProtocolService protocolService;
     @Autowired
     private BinaryFileService binaryFileService;
+    @Autowired
+    private DbTaskProducer dbTaskProducer;
+    @Autowired
+    private QueueManager queueManager;
     @Autowired
     private EventBus eventBus;
 
@@ -114,7 +129,7 @@ public class SampleEditController implements Controllable {
 
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
-        
+
         materials = materialService.findAll();
 
         //init sample analyticalruns table
@@ -126,11 +141,19 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
 
         //set column widths
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(5);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(35);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMaxWidth(35);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMinWidth(35);
         sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NAME).setPreferredWidth(200);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setPreferredWidth(50);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setPreferredWidth(50);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(50);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setPreferredWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMaxWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMinWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setPreferredWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMaxWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMinWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(80);
+        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMinWidth(80);
 
         //add binding
         bindingGroup = new BindingGroup();
@@ -153,10 +176,10 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {                                
+            public void actionPerformed(ActionEvent e) {
                 //update sampleToEdit with dialog input
-                updateSampleToEdit();                
-                
+                updateSampleToEdit();
+
                 //validate sample
                 List<String> validationMessages = GuiUtils.validateEntity(sampleToEdit);
                 if (validationMessages.isEmpty()) {
@@ -185,7 +208,7 @@ public class SampleEditController implements Controllable {
                     }
                     SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
                     eventBus.post(sampleChangeEvent);
-                    
+
                     MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
@@ -274,14 +297,27 @@ public class SampleEditController implements Controllable {
                 }
             }
         });
-        
+
         sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
-                if (selectedAnalyticalRun != null) {
-                    analyticalRunService.delete(selectedAnalyticalRun);
-                } 
+                AnalyticalRun analyticalRunToDelete = getSelectedAnalyticalRun();
+
+                if (analyticalRunToDelete != null) {
+                    boolean deleteConfirmation = deleteEntity(analyticalRunToDelete, DbEntityType.ANALYTICAL_RUN);
+                    if (deleteConfirmation) {
+                        //remove from overview table and clear selection
+                        analyticalRuns.remove(analyticalRunToDelete);
+                        analyticalRunsSelectionModel.clearSelection();
+                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, analyticalRunToDelete));
+
+                        //remove analytical run from the selected sample and update the table
+                        sampleToEdit.getAnalyticalRuns().remove(analyticalRunToDelete);
+                        sampleEditDialog.getAnalyticalRunsTable().updateUI();
+                    }
+                } else {
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
+                }
             }
         });
     }
@@ -365,7 +401,7 @@ public class SampleEditController implements Controllable {
         analyticalRunsSelectionModel.clearSelection();
         analyticalRunsSelectionModel.setLeadSelectionIndex(index);
     }
-    
+
     /**
      * Listen to a ProtocolChangeEvent.
      *
@@ -386,7 +422,41 @@ public class SampleEditController implements Controllable {
     public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {
         materials = materialService.findAll();
     }
-    
+
+    /**
+     * Delete the database entity (project, experiment, analytical runs) from
+     * the database. Shows a confirmation dialog first. When confirmed, a
+     * DeleteDbTask message is sent to the DB task queue.
+     *
+     * @param entity
+     * @param dbEntityType
+     * @return true if the delete task is confirmed.
+     */
+    private boolean deleteEntity(DatabaseEntity entity, DbEntityType dbEntityType) {
+        boolean deleteConfirmation = false;
+
+        //check delete permissions
+        if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
+            int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
+                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityType.userFriendlyName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                //check connection
+                if (queueManager.testConnection()) {
+                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityType, entity.getId(), authenticationBean.getCurrentUser().getId());
+                    dbTaskProducer.sendDbTask(deleteDbTask);
+
+                    deleteConfirmation = true;
+                } else {
+                    eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+                }
+            }
+        } else {
+            colimsController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
+        }
+
+        return deleteConfirmation;
+    }
+
     /**
      * Update the instance fields of the selected sample in the samples table
      */

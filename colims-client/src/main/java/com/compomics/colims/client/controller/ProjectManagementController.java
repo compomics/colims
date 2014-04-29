@@ -11,7 +11,6 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
@@ -44,9 +43,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -246,8 +243,6 @@ public class ProjectManagementController implements Controllable {
                 if (projectToDelete != null) {
                     boolean deleteConfirmation = deleteEntity(projectToDelete, DbEntityType.PROJECT);
                     if (deleteConfirmation) {
-                        projectService.delete(projectToDelete);
-
                         //remove from overview table and clear selection
                         colimsController.getProjects().remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
@@ -302,6 +297,7 @@ public class ProjectManagementController implements Controllable {
                 Experiment experimentToDelete = getSelectedExperiment();
 
                 if (experimentToDelete != null) {
+                    //send DeleteDbTask to DbTask queue                    
                     boolean deleteConfirmation = deleteEntity(experimentToDelete, DbEntityType.EXPERIMENT);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection

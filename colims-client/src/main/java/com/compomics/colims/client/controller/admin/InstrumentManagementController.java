@@ -420,6 +420,8 @@ public class InstrumentManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Instrument CV term type selection", "Please select an instrument CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

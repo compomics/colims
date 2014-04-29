@@ -404,6 +404,8 @@ public class ProtocolManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Protocol CV term type selection", "Please select a protocol CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

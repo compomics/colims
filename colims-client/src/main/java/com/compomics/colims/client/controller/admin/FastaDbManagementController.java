@@ -26,6 +26,7 @@ import no.uib.olsdialog.OLSDialog;
 import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
 import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_NAME_SEARCH;
 import no.uib.olsdialog.OLSInputable;
+import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -47,6 +48,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("fastaDbManagementController")
 public class FastaDbManagementController implements Controllable, OLSInputable {
+
+    private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
 
     //model
     private BindingGroup bindingGroup;
@@ -335,13 +338,12 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         preselectedOntologies.put("NEWT", null);
 
         String field = "";
-        String term = fastaDbManagementDialog.getTaxonomyTextField().getText();
 
         fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        
+
         //show new OLS dialog
-        new OLSDialog(fastaDbManagementDialog, this, true, field, ontology, -1, term, null, null, OLS_DIALOG_TERM_ID_SEARCH, preselectedOntologies);
-        
+        new OLSDialog(fastaDbManagementDialog, this, true, field, ontology, -1, null, null, null, OLS_DIALOG_TERM_ID_SEARCH, preselectedOntologies);
+
         fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }
 
