@@ -29,7 +29,7 @@ public class MaxQuantParserTest {
     
     @Autowired
     MaxQuantParser maxQuantParser;
-    public static File testFolder;
+    private static File testFolder;
     
     @After
     public void clearMaxQuantParser() {

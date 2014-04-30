@@ -76,15 +76,5 @@ public class Playground {
 //            analyticalRunService.save(analyticalRun);
 //        }
 
-        List<String> colors = new ArrayList<String>();
-        for (Map.Entry<Object, Object> entry : UIManager.getDefaults().entrySet()) {
-            if (entry.getValue() instanceof Color) {
-                colors.add((String) entry.getKey()); // all the keys are strings
-            }
-        }
-        Collections.sort(colors);
-        for (String name : colors) {
-            System.out.println(name);
-        }
     }
 }

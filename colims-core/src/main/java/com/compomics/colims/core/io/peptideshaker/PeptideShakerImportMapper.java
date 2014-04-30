@@ -25,7 +25,12 @@ import com.compomics.util.experiment.identification.identifications.Ms2Identific
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import com.compomics.util.preferences.GenePreferences;
+import com.compomics.util.preferences.IdFilter;
+import com.compomics.util.preferences.PTMScoringPreferences;
+import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.peptideshaker.myparameters.PSParameter;
+import eu.isas.peptideshaker.myparameters.PSSettings;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,7 +214,7 @@ public class PeptideShakerImportMapper {
      */
     private void loadSpectraFromMgfFile(File mgfFile) throws FileNotFoundException, IOException, ClassNotFoundException {
         LOGGER.debug("Start importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
-        spectrumFactory.addSpectra(mgfFile);
+        spectrumFactory.addSpectra(mgfFile, null);
         LOGGER.debug("Finish importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
     }
 
@@ -250,6 +255,33 @@ public class PeptideShakerImportMapper {
      * @return
      */
     private void loadExperimentSettings(MsExperiment msExperiment) {
-        experimentSettings = (PeptideShakerSettings) msExperiment.getUrParam(experimentSettings);
+        experimentSettings = new PeptideShakerSettings();
+        
+        if (msExperiment.getUrParam(experimentSettings) instanceof PSSettings) {
+
+            // convert old settings files using utilities version 3.10.68 or older
+
+            // convert the old ProcessingPreferences object
+            PSSettings tempSettings = (PSSettings) msExperiment.getUrParam(experimentSettings);
+            ProcessingPreferences tempProcessingPreferences = new ProcessingPreferences();
+            tempProcessingPreferences.setProteinFDR(tempSettings.getProcessingPreferences().getProteinFDR());
+            tempProcessingPreferences.setPeptideFDR(tempSettings.getProcessingPreferences().getPeptideFDR());
+            tempProcessingPreferences.setPsmFDR(tempSettings.getProcessingPreferences().getPsmFDR());
+
+            // convert the old PTMScoringPreferences object
+            PTMScoringPreferences tempPTMScoringPreferences = new PTMScoringPreferences();
+            tempPTMScoringPreferences.setaScoreCalculation(tempSettings.getPTMScoringPreferences().aScoreCalculation());
+            tempPTMScoringPreferences.setaScoreNeutralLosses(tempSettings.getPTMScoringPreferences().isaScoreNeutralLosses());
+            tempPTMScoringPreferences.setFlrThreshold(tempSettings.getPTMScoringPreferences().getFlrThreshold());
+
+            experimentSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
+                    tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
+                    tempSettings.getDisplayPreferences(),
+                    tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
+                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter());
+
+        } else {
+            experimentSettings = (PeptideShakerSettings) msExperiment.getUrParam(experimentSettings);
+        }
     }
 }

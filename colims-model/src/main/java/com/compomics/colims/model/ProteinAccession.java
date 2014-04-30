@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.compomics.util.protein.Header;
-import com.compomics.util.protein.Header.DatabaseType;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
@@ -29,8 +27,6 @@ public class ProteinAccession extends DatabaseEntity {
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     private String accession;
-    @Column(name = "database_type", nullable = true)
-    private Header.DatabaseType databaseType;
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Protein protein;
@@ -41,27 +37,14 @@ public class ProteinAccession extends DatabaseEntity {
     public ProteinAccession(String accession) {
         this.accession = accession;
     }
-
-    public ProteinAccession(String accession, DatabaseType databaseType) {
-        this.accession = accession;
-        this.databaseType = databaseType;
-    }
-
+    
     public String getAccession() {
         return accession;
     }
 
     public void setAccession(String accession) {
         this.accession = accession;
-    }
-
-    public DatabaseType getDatabaseType() {
-        return databaseType;
-    }
-
-    public void setDatabaseType(DatabaseType databaseType) {
-        this.databaseType = databaseType;
-    }
+    }   
 
     public Protein getProtein() {
         return protein;
@@ -74,9 +57,7 @@ public class ProteinAccession extends DatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 17 * hash + Objects.hashCode(this.accession);
-        hash = 17 * hash + Objects.hashCode(this.databaseType);
-        hash = 17 * hash + Objects.hashCode(this.protein);
+        hash = 29 * hash + Objects.hashCode(this.accession);
         return hash;
     }
 
@@ -92,14 +73,8 @@ public class ProteinAccession extends DatabaseEntity {
         if (!Objects.equals(this.accession, other.accession)) {
             return false;
         }
-        if (this.databaseType != other.databaseType) {
-            return false;
-        }
-        if (!Objects.equals(this.protein, other.protein)) {
-            return false;
-        }
         return true;
-    }
+    }     
 
     @Override
     public String toString() {

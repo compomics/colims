@@ -4,8 +4,8 @@ import com.compomics.colims.core.io.Mapper;
 
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.SearchParameters;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
  */
-@Component("utilitiesSearchParametersMapper")
+@Component("utilitiesSearchParameterSMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters, SearchParameterSettings> {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
@@ -30,28 +30,27 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
     public void map(final SearchParameters utilitiesSearchParameters, final SearchParameterSettings searchParameterSettings) {
         //enzyme
         Enzyme enzyme = utilitiesSearchParameters.getEnzyme();
-        searchParameterSettings.setEnzyme(enzyme.getName().toLowerCase());        
+        searchParameterSettings.setEnzyme(enzyme.getName().toLowerCase());
         //number of missed cleavages
         searchParameterSettings.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());
-        //precursor mass tolerance
-        SearchParameters.MassAccuracyType precursorAccuracyType = utilitiesSearchParameters.getPrecursorAccuracyType();        
-//        searchParameterSettings.setPrecMassTolerance();
         //precursor mass tolerance unit
-//        searchParameterSettings.setPrecMassToleranceUnit(utilitiesSearchParameters.getPrecMassToleranceUnit());
-//        //precursor lower charge
-//        searchParameterSettings.setPrecursorLowerCharge(utilitiesSearchParameters.getPrecursorLowerCharge());
-//        //precursor upper charge
-//        searchParameterSettings.setPrecursorUpperCharge(utilitiesSearchParameters.getPrecursorUpperCharge());
-//        //fragment mass tolerance
-//        searchParameterSettings.setFragMassTolerance(utilitiesSearchParameters.getFragMassTolerance());
-//        //fragment mass tolerance unit
-//        searchParameterSettings.setPrecMassToleranceUnit(utilitiesSearchParameters.getFragMassToleranceUnit());
-//        //fragment ion type 1
-//        searchParameterSettings.setFragmentIon1Type(utilitiesSearchParameters.getFragmentIon1Type());
-//        //fragment ion type 2
-//        searchParameterSettings.setFragmentIon2Type(utilitiesSearchParameters.getFragmentIon2Type());
-//        //hitlist length
-//        searchParameterSettings.setHitlistLength(utilitiesSearchParameters.getHitlistLength());
+        MassAccuracyType precursorMassAccuracyType = MassAccuracyType.getByUtilitiesMassAccuracyType(utilitiesSearchParameters.getPrecursorAccuracyType());
+        searchParameterSettings.setPrecMassToleranceUnit(precursorMassAccuracyType);
+        //precursor mass tolerance
+        searchParameterSettings.setPrecMassTolerance(utilitiesSearchParameters.getPrecursorAccuracy());
+        //precursor lower charge
+        searchParameterSettings.setLowerCharge(utilitiesSearchParameters.getMinChargeSearched().value);
+        //precursor upper charge
+        searchParameterSettings.setUpperCharge(utilitiesSearchParameters.getMaxChargeSearched().value);
+        //fragment mass tolerance unit
+        MassAccuracyType fragmentMassAccuracyType = MassAccuracyType.getByUtilitiesMassAccuracyType(utilitiesSearchParameters.getFragmentAccuracyType());
+        searchParameterSettings.setFragMassToleranceUnit(fragmentMassAccuracyType);
+        //fragment mass tolerance
+        searchParameterSettings.setFragMassTolerance(utilitiesSearchParameters.getFragmentIonAccuracy());
+        //fragment ion type 1
+        searchParameterSettings.setFirstSearchedIonType(utilitiesSearchParameters.getIonSearched1());
+        //fragment ion type 2
+        searchParameterSettings.setSecondSearchedIonType(utilitiesSearchParameters.getIonSearched2());
     }
 
 }

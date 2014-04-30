@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("maxQuantParameterParser")
 public class MaxQuantParameterParser {
-    
-    //pretty ductapey atm, needs to be cleaned up 
 
+    //pretty ductapey atm, needs to be cleaned up 
     /**
      * parses the settings for the search per run searched
      *
@@ -103,14 +102,15 @@ public class MaxQuantParameterParser {
 
     public Map<String, String> parseParameters(File parameterFile) throws FileNotFoundException, IOException {
         Map<String, String> parameters = new HashMap<>();
-        LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] split = line.split("\t");
-            if (split.length == 2) {
-                parameters.put(split[0], split[1]);
-            } else {
-                parameters.put(split[0], "");
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] split = line.split("\t");
+                if (split.length == 2) {
+                    parameters.put(split[0], split[1]);
+                } else {
+                    parameters.put(split[0], "");
+                }
             }
         }
         return parameters;

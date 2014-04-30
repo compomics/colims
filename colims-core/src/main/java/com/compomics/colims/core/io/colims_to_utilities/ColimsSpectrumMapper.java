@@ -14,6 +14,7 @@ import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +36,13 @@ public class ColimsSpectrumMapper {
      * @param targetSpectrum the utilities MSnSpectrum
      * @throws MappingException
      */
-    public void map(final Spectrum sourceSpectrum, final MSnSpectrum targetSpectrum) throws MappingException {        
+    public void map(final Spectrum sourceSpectrum, final MSnSpectrum targetSpectrum) throws MappingException {
         if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
-        
+
         LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getTitle());
-        
+
         //Build the precursor
         double retentionTime = sourceSpectrum.getRetentionTime();
         double moverz = sourceSpectrum.getMzRatio();
@@ -57,8 +58,8 @@ public class ColimsSpectrumMapper {
         for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
             try {
                 Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(aFile);
-                for (Double mz : mzAndIntensities.keySet()) {
-                    Peak peak = new Peak(mz, mzAndIntensities.get(mz));
+                for (Map.Entry<Double, Double> entry : mzAndIntensities.entrySet()) {
+                    Peak peak = new Peak(entry.getKey(), entry.getValue());
                     targetSpectrum.addPeak(peak);
                 }
             } catch (IOException ex) {

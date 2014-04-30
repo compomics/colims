@@ -52,7 +52,7 @@ public class ColimsPeptideMapperTest {
         List<PeptideHasProtein> peptideHasProtList = new ArrayList<>();
         PeptideHasProtein parentProt = new PeptideHasProtein();
         Protein aProtein = new Protein("AKJFDAEMYFHSFLDTFSKYLGSTSCPLLRLSRRRREADSAERRUIEAL");
-        ProteinAccession proteinAccession = new ProteinAccession("fakeProt1", DatabaseType.Generic_Header);
+        ProteinAccession proteinAccession = new ProteinAccession("fakeProt1");
         aProtein.getProteinAccessions().add(proteinAccession);
         parentProt.setMainGroupProtein(aProtein);
         parentProt.setProtein(aProtein);

@@ -76,13 +76,13 @@ public class PeptideShakerImportMapperTest {
     @Test
     public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException {
         //import PeptideShaker .cps file
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_peptideshaker_project.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
         
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
@@ -113,7 +113,6 @@ public class PeptideShakerImportMapperTest {
                             Assert.assertFalse(protein.getProteinAccessions().isEmpty());
                             Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
                             Assert.assertFalse(protein.getSequence().isEmpty());
-                            Assert.assertNotNull(protein.getProteinAccessions().get(0).getDatabaseType());
                         }
                     }
                     if (!peptide.getPeptideHasModifications().isEmpty()) {

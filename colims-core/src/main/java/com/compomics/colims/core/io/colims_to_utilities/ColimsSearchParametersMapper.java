@@ -30,22 +30,22 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
      */
     @Override
     public void map(final SearchParameterSettings colimsSearchParametersSettings, final SearchParameters searchParameters) {
-        LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
-//        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
-        //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?
-        Enzyme enzyme = new Enzyme(0, colimsSearchParametersSettings.getEnzyme(), "", "", "", "");
-        searchParameters.setEnzyme(enzyme);
-        searchParameters.setMaxEValue(colimsSearchParametersSettings.getEvalueCutoff());
-        searchParameters.setFragmentIonAccuracy(colimsSearchParametersSettings.getFragMassTolerance());
-
-        searchParameters.setIonSearched1(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon1Type()));
-        searchParameters.setIonSearched2(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon2Type()));
-
-        searchParameters.setnMissedCleavages(colimsSearchParametersSettings.getNumberOfMissedCleavages());
-        searchParameters.setPrecursorAccuracy(colimsSearchParametersSettings.getPrecMassTolerance());
-        searchParameters.setPrecursorAccuracyType(colimsSearchParametersSettings.getPrecMassToleranceUnit());
-        searchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParametersSettings.getPrecursorUpperCharge()));
-        searchParameters.setMinChargeSearched(new Charge(1, colimsSearchParametersSettings.getPrecursorLowerCharge()));
+//        LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
+////        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
+//        //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?
+//        Enzyme enzyme = new Enzyme(0, colimsSearchParametersSettings.getEnzyme(), "", "", "", "");
+//        searchParameters.setEnzyme(enzyme);
+//        searchParameters.setMaxEValue(colimsSearchParametersSettings.getEvalueCutoff());
+//        searchParameters.setFragmentIonAccuracy(colimsSearchParametersSettings.getFragMassTolerance());
+//
+//        searchParameters.setIonSearched1(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon1Type()));
+//        searchParameters.setIonSearched2(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon2Type()));
+//
+//        searchParameters.setnMissedCleavages(colimsSearchParametersSettings.getNumberOfMissedCleavages());
+//        searchParameters.setPrecursorAccuracy(colimsSearchParametersSettings.getPrecMassTolerance());
+//        searchParameters.setPrecursorAccuracyType(colimsSearchParametersSettings.getPrecMassToleranceUnit());
+//        searchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParametersSettings.getUpperCharge()));
+//        searchParameters.setMinChargeSearched(new Charge(1, colimsSearchParametersSettings.getLowerCharge()));
 
     }
 

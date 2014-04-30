@@ -124,7 +124,7 @@ public class UtilitiesProteinMapper {
             if (targetProtein == null) {
                 //map the utilities protein onto the colims protein
                 targetProtein = new Protein(sourceProtein.getSequence());
-                ProteinAccession proteinAccession = new ProteinAccession(sourceProtein.getAccession(), sourceProtein.getDatabaseType());
+                ProteinAccession proteinAccession = new ProteinAccession(sourceProtein.getAccession());
                 targetProtein.getProteinAccessions().add(proteinAccession);
                 //add to cached proteins map
                 cachedProteins.put(targetProtein.getSequence(), targetProtein);

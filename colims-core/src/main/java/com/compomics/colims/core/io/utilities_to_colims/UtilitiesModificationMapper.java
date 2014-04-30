@@ -156,8 +156,7 @@ public class UtilitiesModificationMapper {
             if (modification == null) {
                 //the modification was not found in the database
                 //look for the modification in the PSI-MOD ontology by exact name
-                //modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());
-                modification = null;
+                modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());                
 
                 if (modification == null) {
                     //the modification was not found by name in the PSI-MOD ontology
