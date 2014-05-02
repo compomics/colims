@@ -66,7 +66,7 @@ public class PeptideShakerIOTest {
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
         
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
 
         PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaDb, mgfFiles);
         UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);

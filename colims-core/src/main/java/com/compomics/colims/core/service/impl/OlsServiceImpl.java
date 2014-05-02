@@ -96,6 +96,7 @@ public class OlsServiceImpl implements OlsService {
         //first, find the modifications by name        
         Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
         if (modificationsTerms.getItem() != null) {
+            String tempAccession = null;
             //iterate over the modificiations
             outerloop:
             for (MapItem mapItem : modificationsTerms.getItem()) {
@@ -103,14 +104,24 @@ public class OlsServiceImpl implements OlsService {
                 //get the Xrefs
                 Map termXrefs = olsClient.getTermXrefs(accession, "MOD");
                 for (MapItem xref : termXrefs.getItem()) {
-//                    if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
-                    if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
-                        Modification foundModification = findModifiationByAccession(accession);
-                        if (foundModification != null) {
-                            modification = foundModification;
-                            break outerloop;
+                    if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
+                        if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
+                            Modification foundModification = findModifiationByAccession(accession);
+                            if (foundModification != null) {
+                                modification = foundModification;
+                                break outerloop;
+                            }
+                        } else {
+                            //keep track of the next best thing
+                            tempAccession = accession;
                         }
                     }
+                }
+            }
+            if (modification == null && tempAccession != null) {
+                Modification foundModification = findModifiationByAccession(tempAccession);
+                if (foundModification != null) {
+                    modification = foundModification;                    
                 }
             }
         }
@@ -118,4 +129,32 @@ public class OlsServiceImpl implements OlsService {
         return modification;
     }
 
+//    @Override
+//    public Modification findModifiationByNameAndUnimodAccession(String name, String unimodAccession) {
+//        Modification modification = null;
+//
+//        //first, find the modifications by name        
+//        Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);                   
+//        if (modificationsTerms.getItem() != null) {
+//            //iterate over the modificiations
+//            outerloop:
+//            for (MapItem mapItem : modificationsTerms.getItem()) {
+//                String accession = mapItem.getKey().toString();
+//                //get the Xrefs
+//                Map termXrefs = olsClient.getTermXrefs(accession, "MOD");
+//                for (MapItem xref : termXrefs.getItem()) {
+////                    if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
+//                    if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
+//                        Modification foundModification = findModifiationByAccession(accession);
+//                        if (foundModification != null) {
+//                            modification = foundModification;
+//                            break outerloop;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return modification;
+//    }
 }

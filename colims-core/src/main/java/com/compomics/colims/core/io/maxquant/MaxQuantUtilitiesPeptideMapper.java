@@ -9,7 +9,6 @@ import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Davy
  */
-@Component("MaxQuantUtilitiesPeptideMapper")
+@Component("maxQuantUtilitiesPeptideMapper")
 public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption, Peptide> {
 
     @Autowired
@@ -49,6 +48,6 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
             ptmScores.addMainModificationSite(match.getTheoreticPtm(), match.getModificationSite());
             ptmScores.addPtmScoring(match.getTheoreticPtm(), ptmScoring);
         }
-        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, target);
+        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);
     }
 }

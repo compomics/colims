@@ -13,7 +13,6 @@ import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import com.compomics.util.protein.Header.DatabaseType;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -45,7 +44,7 @@ public class ColimsPeptideMapperTest {
         System.out.println("Test mapping from colims to utilities for Peptides");
         Peptide sourcePeptide = new Peptide();
 
-        sourcePeptide.setExperimentalMass(210.574);
+//        sourcePeptide.setExperimentalMass(210.574);
         sourcePeptide.setSequence("MYFHSFLDTFSKYLGSTSCPLLRLSR");
         sourcePeptide.setTheoreticalMass(210.598);
 

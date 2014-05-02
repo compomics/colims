@@ -36,22 +36,19 @@ public class UtilitiesPsmMapper {
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
+        
+        String key = sourcePeptide.getKey();
+        System.out.println("key: " + key);
 
         PSParameter psmProbabilities = new PSParameter();
         PSParameter peptideProbabilities = new PSParameter();
-        PSParameter proteinProbabilities = new PSParameter();
+//        PSParameter proteinProbabilities = new PSParameter();
         Peptide targetPeptide = new Peptide();
         try {
             //get psm and peptide probabilities            
             psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
             peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
-        } catch (SQLException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | IOException | ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
         }
@@ -61,7 +58,7 @@ public class UtilitiesPsmMapper {
         if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
             ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
         }
-        utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, ptmScores, targetPeptide);
+        utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, ptmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
         //set entity relations
         targetSpectrum.getPeptides().add(targetPeptide);
         targetPeptide.setSpectrum(targetSpectrum);
@@ -82,7 +79,14 @@ public class UtilitiesPsmMapper {
             throw new MappingException(ex);
         }
         //map proteins
-        MatchScore peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
+        MatchScore peptideMatchScore = null;
+        if(peptideProbabilities != null){
+            peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
+        }
+        else{
+            peptideMatchScore = new MatchScore(10.0, 10.0);
+            System.out.println("----------------null");
+        }
 
         utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
     }

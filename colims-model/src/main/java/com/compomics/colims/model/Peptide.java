@@ -35,9 +35,6 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
     @Basic(optional = true)
-    @Column(name = "experimental_mass", nullable = true)
-    private Double experimentalMass;
-    @Basic(optional = true)
     @Column(name = "theoretical_mass", nullable = true)
     private Double theoreticalMass;
     /**
@@ -75,14 +72,6 @@ public class Peptide extends DatabaseEntity {
 
     public void setSequence(String sequence) {
         this.sequence = sequence;
-    }
-
-    public Double getExperimentalMass() {
-        return experimentalMass;
-    }
-
-    public void setExperimentalMass(Double experimentalMass) {
-        this.experimentalMass = experimentalMass;
     }
 
     public Double getTheoreticalMass() {
@@ -165,7 +154,6 @@ public class Peptide extends DatabaseEntity {
     public int hashCode() {
         int hash = 7;
         hash = 47 * hash + Objects.hashCode(this.sequence);
-        hash = 47 * hash + Objects.hashCode(this.experimentalMass);
         hash = 47 * hash + Objects.hashCode(this.theoreticalMass);
         hash = 47 * hash + Objects.hashCode(this.charge);
         hash = 47 * hash + Objects.hashCode(this.psmProbability);
@@ -183,9 +171,6 @@ public class Peptide extends DatabaseEntity {
         }
         final Peptide other = (Peptide) obj;
         if (!Objects.equals(this.sequence, other.sequence)) {
-            return false;
-        }
-        if (!Objects.equals(this.experimentalMass, other.experimentalMass)) {
             return false;
         }
         if (!Objects.equals(this.theoreticalMass, other.theoreticalMass)) {

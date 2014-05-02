@@ -39,7 +39,7 @@ public class UtilitiesProteinMapperTest {
     @BeforeClass
     public static void setupOnce() throws IOException, FileNotFoundException, ClassNotFoundException {
         //load SequenceFactory for testing
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
         SequenceFactory.getInstance().loadFastaFile(fastaFile, null);
     }
 

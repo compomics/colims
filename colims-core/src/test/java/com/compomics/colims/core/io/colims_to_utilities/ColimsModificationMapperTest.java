@@ -41,7 +41,7 @@ public class ColimsModificationMapperTest {
     public void testMap() throws Exception {
         System.out.println("Test mapping from colims to utilities for Modifications");
         Peptide targetPeptide = new Peptide();
-        targetPeptide.setExperimentalMass(210.574);
+//        targetPeptide.setExperimentalMass(210.574);
         targetPeptide.setSequence("MYFHSFLDTFSKYLGSTSCPLLRLSR");
         targetPeptide.setTheoreticalMass(210.598);
         List<PeptideHasModification> peptideHasModList = new ArrayList<PeptideHasModification>();

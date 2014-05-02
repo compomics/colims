@@ -42,10 +42,11 @@ public class UtilitiesPeptideMapperTest {
         MatchScore psmMatchScore = new MatchScore(0.5, 0.1);
 
         Peptide targetPeptide = new Peptide();
-        utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, null, targetPeptide);
+        utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, null, 2, targetPeptide);
 
         Assert.assertEquals(sourcePeptide.getSequence(), targetPeptide.getSequence());
         Assert.assertEquals(sourcePeptide.getMass(), targetPeptide.getTheoreticalMass(), 0.001);
+        Assert.assertEquals(2, targetPeptide.getCharge().intValue());
         Assert.assertEquals(psmMatchScore.getProbability(), targetPeptide.getPsmProbability(), 0.001);
         Assert.assertEquals(psmMatchScore.getPostErrorProbability(), targetPeptide.getPsmPostErrorProbability(), 0.001);
     }

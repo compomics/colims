@@ -256,11 +256,10 @@ public class PeptideShakerImportMapper {
      */
     private void loadExperimentSettings(MsExperiment msExperiment) {
         experimentSettings = new PeptideShakerSettings();
-        
+
         if (msExperiment.getUrParam(experimentSettings) instanceof PSSettings) {
 
             // convert old settings files using utilities version 3.10.68 or older
-
             // convert the old ProcessingPreferences object
             PSSettings tempSettings = (PSSettings) msExperiment.getUrParam(experimentSettings);
             ProcessingPreferences tempProcessingPreferences = new ProcessingPreferences();

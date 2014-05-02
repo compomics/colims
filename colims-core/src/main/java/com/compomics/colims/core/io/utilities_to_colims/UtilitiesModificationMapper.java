@@ -194,6 +194,10 @@ public class UtilitiesModificationMapper {
      * @return the colims Modification entity
      */
     private Modification mapModificationMatch(CvTerm cvTerm) {
+        if(cvTerm.getName().equals("Ammonia-loss")){
+            System.out.println("test");
+        }
+        
         Modification modification;
 
         //look for the modification in the newModifications map
