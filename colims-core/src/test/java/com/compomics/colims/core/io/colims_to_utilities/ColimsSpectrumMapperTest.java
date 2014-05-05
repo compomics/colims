@@ -35,9 +35,6 @@ public class ColimsSpectrumMapperTest {
     @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
 
-    public ColimsSpectrumMapperTest() {
-    }
-
     /**
      * Test of map method, of class ColimsSpectrumMapper.
      */

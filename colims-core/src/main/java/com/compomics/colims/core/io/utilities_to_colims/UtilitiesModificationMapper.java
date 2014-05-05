@@ -156,7 +156,7 @@ public class UtilitiesModificationMapper {
             if (modification == null) {
                 //the modification was not found in the database
                 //look for the modification in the PSI-MOD ontology by exact name
-                modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());                
+                modification = olsService.findModifiationByExactName(modificationMatch.getTheoreticPtm());
 
                 if (modification == null) {
                     //the modification was not found by name in the PSI-MOD ontology
@@ -194,10 +194,6 @@ public class UtilitiesModificationMapper {
      * @return the colims Modification entity
      */
     private Modification mapModificationMatch(CvTerm cvTerm) {
-        if(cvTerm.getName().equals("Ammonia-loss")){
-            System.out.println("test");
-        }
-        
         Modification modification;
 
         //look for the modification in the newModifications map
@@ -218,10 +214,15 @@ public class UtilitiesModificationMapper {
                     modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
                 }
 
-                if (modification != null) {
-                    //add to cached modifications
-                    cachedModifications.put(modification.getAccession(), modification);
+                if (modification == null) {
+                    modification = new Modification(cvTerm.getAccession(), cvTerm.getName());
+
+                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                    modification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
                 }
+
+                //add to cached modifications
+                cachedModifications.put(modification.getAccession(), modification);
             } else {
                 //add to cached modifications
                 cachedModifications.put(modification.getAccession(), modification);
