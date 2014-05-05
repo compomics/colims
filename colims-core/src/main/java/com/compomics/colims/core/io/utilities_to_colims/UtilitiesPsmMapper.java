@@ -33,12 +33,11 @@ public class UtilitiesPsmMapper {
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException, InterruptedException {
+        LOGGER.info("Started mapping psm------");
+        
         //get best assumption
         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-        
-        String key = sourcePeptide.getKey();
-        System.out.println("key: " + key);
 
         PSParameter psmProbabilities = new PSParameter();
         PSParameter peptideProbabilities = new PSParameter();
@@ -89,5 +88,7 @@ public class UtilitiesPsmMapper {
         }
 
         utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+        
+        LOGGER.info("Finished mapping psm------");
     }
 }

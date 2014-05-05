@@ -170,17 +170,12 @@ public class UtilitiesModificationMapper {
                     }
 
                     modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
-
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(ptM.getMass());
-
-                    //add to cached modifications
-                    cachedModifications.put(modification.getAccession(), modification);
                 }
-            } else {
-                //add to cached modifications
-                cachedModifications.put(modification.getAccession(), modification);
             }
+            //add to cached modifications
+            cachedModifications.put(modification.getAccession(), modification);
         }
 
         return modification;
@@ -220,13 +215,9 @@ public class UtilitiesModificationMapper {
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
                 }
-
-                //add to cached modifications
-                cachedModifications.put(modification.getAccession(), modification);
-            } else {
-                //add to cached modifications
-                cachedModifications.put(modification.getAccession(), modification);
             }
+            //add to cached modifications
+            cachedModifications.put(cvTerm.getAccession(), modification);
         }
 
         return modification;

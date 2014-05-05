@@ -165,13 +165,14 @@ public class PeptideShakerImportMapper {
     }
 
     /**
-     * Clear the mapping resources: reset the SpectrumFactory, ...
+     * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
      */
     private void clearMappingResources() throws IOException, SQLException {
         spectrumFactory.clearFactory();
         sequenceFactory.clearFactory();
         objectsCache = new ObjectsCache();
         objectsCache.setAutomatedMemoryManagement(true);
+        
     }
 
     /**

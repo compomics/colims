@@ -5,7 +5,6 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
-import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;

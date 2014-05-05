@@ -61,7 +61,7 @@ public class Peptide extends DatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides = new ArrayList<>();
+    private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
     public Peptide() {
     }
@@ -138,13 +138,13 @@ public class Peptide extends DatabaseEntity {
         this.peptideHasProteins = peptideHasProteins;
     }
 
-    public List<QuantificationGroupHasPeptide> getQuantificationGroupHasPeptides() {
-        return quantificationGroupHasPeptides;
+    public List<QuantificationGroup> getQuantificationGroups() {
+        return quantificationGroups;
     }
 
-    public void setQuantificationGroupHasPeptides(List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides) {
-        this.quantificationGroupHasPeptides = quantificationGroupHasPeptides;
-    }
+    public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
+        this.quantificationGroups = quantificationGroups;
+    }    
 
     public int getLength() {
         return sequence.length();

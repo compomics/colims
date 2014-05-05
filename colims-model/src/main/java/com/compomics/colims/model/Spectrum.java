@@ -69,8 +69,6 @@ public class Spectrum extends DatabaseEntity {
     private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<Quantification> quantifications = new ArrayList<>();
 
     public Spectrum() {
     }
@@ -169,14 +167,6 @@ public class Spectrum extends DatabaseEntity {
 
     public void setSpectrumFiles(List<SpectrumFile> spectrumFiles) {
         this.spectrumFiles = spectrumFiles;
-    }
-
-    public List<Quantification> getQuantifications() {
-        return quantifications;
-    }
-
-    public void setQuantifications(List<Quantification> quantifications) {
-        this.quantifications = quantifications;
     }
 
     @Override

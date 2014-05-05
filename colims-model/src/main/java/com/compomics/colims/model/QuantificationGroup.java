@@ -18,47 +18,33 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-/**
- *
- * @author Kenneth Verheggen
- */
 @Table(name = "quantification_group")
 @Entity
 public class QuantificationGroup extends DatabaseEntity {
-    
+
     private static final long serialVersionUID = 1L;
-   
-    @JoinColumn(name = "l_quantification_file_id", referencedColumnName = "id")
+
+    @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationFile quantificationFile;    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationGroup")
-    private List<Quantification> quantifications = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationGroup")
-    private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides = new ArrayList<>();
-    
-    
-    public QuantificationFile getQuantificationFile() {
-        return quantificationFile;
+    private Peptide peptide;
+    @JoinColumn(name = "l_quantification_id", referencedColumnName = "id")
+    @ManyToOne
+    private Quantification quantification;
+
+    public Peptide getPeptide() {
+        return peptide;
     }
 
-    public void setQuantificationFile(QuantificationFile quantificationFile) {
-        this.quantificationFile = quantificationFile;
+    public void setPeptide(Peptide peptide) {
+        this.peptide = peptide;
     }
 
-    public List<Quantification> getQuantifications() {
-        return quantifications;
+    public Quantification getQuantification() {
+        return quantification;
     }
 
-    public void setQuantifications(List<Quantification> quantifications) {
-        this.quantifications = quantifications;
-    }
+    public void setQuantification(Quantification quantification) {
+        this.quantification = quantification;
+    }        
 
-    public List<QuantificationGroupHasPeptide> getQuantificationGroupHasPeptides() {
-        return quantificationGroupHasPeptides;
-    }
-
-    public void setQuantificationGroupHasPeptides(List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides) {
-        this.quantificationGroupHasPeptides = quantificationGroupHasPeptides;
-    }
-    
 }
