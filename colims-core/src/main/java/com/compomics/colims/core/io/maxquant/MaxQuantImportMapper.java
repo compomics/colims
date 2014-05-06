@@ -12,7 +12,10 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,16 +70,18 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException {
+    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException, FileNotFoundException, ClassNotFoundException {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
-
+        File preparedFastaFile = null;
         try {
             //just in case
             maxQuantParser.clearParsedProject();
             clearMappingResources();
-            loadFastaFile(aMaxQuantImport.getFastaDb().getFilePath());
-
+            preparedFastaFile = prepareFasta(aMaxQuantImport.getFastaDb().getFilePath());
+            LOGGER.debug("Start loading FASTA file.");
+            sequenceFactory.loadFastaFile(preparedFastaFile, null);
+            LOGGER.debug("Finish loading FASTA file.");
             maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
 
             for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
@@ -88,10 +93,10 @@ public class MaxQuantImportMapper {
 
                 for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
                     Spectrum targetSpectrum = new Spectrum();
-                    
+
                     //set entity relation
                     targetSpectrum.setAnalyticalRun(targetRun);
-                    
+
                     //for the spectra we can just use the standard utilities mapper
                     //@TODO get the fragmentation type 
                     utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
@@ -103,12 +108,16 @@ public class MaxQuantImportMapper {
                 targetRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(targetRun);
             }
-        } catch (IOException | SQLException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
+        } catch (IOException | ClassNotFoundException | SQLException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
+            throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
+        } finally {
+            if (preparedFastaFile != null) {
+                preparedFastaFile.delete();
+            }
         }
-
         return mappedRuns;
+
     }
 
     private void clearMappingResources() throws IOException, SQLException {
@@ -119,14 +128,65 @@ public class MaxQuantImportMapper {
         newProteins.clear();
     }
 
-    /**
-     * Load the fasta file in the SequenceFactory.
-     *
-     * @param fastaFilePath  the fasta file path
-     */
-    private void loadFastaFile(String fastaFilePath) throws FileNotFoundException, IOException, ClassNotFoundException {
-        LOGGER.debug("Start loading FASTA file.");
-        sequenceFactory.loadFastaFile(new File(fastaFilePath), null);
-        LOGGER.debug("Finish loading FASTA file.");
+    private File prepareFasta(String filePath) throws IOException {
+        File originalFile = new File(filePath);
+        File preparedFile = new File(System.getProperty("java.io.tmpdir") + "/maxquantspikedfastas", originalFile.getName());
+        if (!preparedFile.getParentFile().exists()) {
+            preparedFile.getParentFile().mkdir();
+        }
+        if (preparedFile.exists()) {
+            preparedFile.delete();
+        }
+        String line;
+        try (FileWriter writer = new FileWriter(preparedFile)) {
+            LineNumberReader originalReader = new LineNumberReader(new FileReader(originalFile));
+            line = null;
+            while ((line = originalReader.readLine()) != null) {
+                writer.write(line + "\n");
+            }
+            originalReader.close();
+            File contaminantsFile = new File("C:/Users/Davy/maxquant/contaminants.fasta");
+            LineNumberReader contaminantsReader = new LineNumberReader(new FileReader(contaminantsFile));
+            while ((line = contaminantsReader.readLine()) != null) {
+                writer.write(line + "\n");
+            }
+            writer.flush();
+        }
+        File finalFile = new File(preparedFile.getParentFile(), preparedFile.getName() + "_spiked.fasta");
+        if (finalFile.exists()) {
+            finalFile.delete();
+        }
+        LineNumberReader preparedFileReader = new LineNumberReader(new FileReader(preparedFile));
+        FileWriter finalWriter = new FileWriter(finalFile);
+        StringBuilder normalBuffer = new StringBuilder();
+        StringBuilder reverseBuffer = new StringBuilder();
+        while ((line = preparedFileReader.readLine()) != null) {
+            if (line.contains(">")) {
+                finalWriter.write(normalBuffer.toString());
+                finalWriter.write(reverseBuffer.toString());
+                normalBuffer = new StringBuilder();
+                reverseBuffer = new StringBuilder();
+
+                if (line.contains(">sp|")) {
+                    reverseBuffer.append(line.replaceFirst("\\|", "|REV__")).append("\n");
+                } else if (line.contains("CON__")) {
+                    line = line.replace(">", ">generic|");
+                    line = line.replaceFirst(" ", "|");
+                    reverseBuffer.append(line.replaceFirst("CON__", "REV__CON__")).append("\n");
+                }
+                normalBuffer.append(line).append("\n");
+            } else {
+                normalBuffer.append(line).append("\n");
+                reverseBuffer.append(line).append("\n");
+            }
+        }
+        if (normalBuffer.length() != 0 && reverseBuffer.length() != 0) {
+            finalWriter.append(normalBuffer.toString()).append("\n");
+            finalWriter.append(reverseBuffer.toString()).append("\n");
+        }
+        preparedFile.delete();
+        finalWriter.flush();
+        finalWriter.close();
+        return finalFile;
     }
 }

@@ -76,19 +76,23 @@ public class MaxQuantPSMParser {
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create a peptide for this line
+            if (EvidenceHeaders.MS_MS_IDs.getColumnName() == null) {
+                throw new UnparseableException("missing the MS/MS scan header");
+            }
             PeptideAssumption assumption = createPeptide(values);
             //linkPeptideToProtein(peptide, values);
             //linkPeptideToModifications(peptide, values);
-            if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName())) {
+            if (values.containsKey(EvidenceHeaders.MS_MS_IDs.getColumnName()) && values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()) != null) {
                 String[] msmsIds = values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).split(";");
                 for (String msmsId : msmsIds) {
-                    if (parsedPeptideMap.containsKey(Integer.parseInt(msmsId))) {
-                        throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
+                    if (!msmsId.isEmpty()) {
+                        if (parsedPeptideMap.containsKey(Integer.parseInt(msmsId))) {
+                            throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
+                        }
+
+                        parsedPeptideMap.put(Integer.parseInt(msmsId), assumption);
                     }
-                    parsedPeptideMap.put(Integer.parseInt(msmsId), assumption);
                 }
-            } else {
-                throw new UnparseableException("no spectrum found for an identified peptide");
             }
         }
         // QuantificationGroupHasPeptide
@@ -127,57 +131,50 @@ public class MaxQuantPSMParser {
      * evidence row
      */
     public final PeptideAssumption createPeptide(final Map<String, String> values) throws UnparseableException, HeaderEnumNotInitialisedException {
-        if (values.get(EvidenceHeaders.MS_MS_IDs.getColumnName()).isEmpty()) {
-            //can't have evidence without proof
-            throw new UnparseableException("peptide does not have an MS/MS scan");
-        } else {
-            String sequence = values.get(EvidenceHeaders.Sequence.getColumnName());
+        String sequence = values.get(EvidenceHeaders.Sequence.getColumnName());
 
-            // The charge corrected mass of the precursor ion.
-            //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+        // The charge corrected mass of the precursor ion.
+        //Double massCorrected = Double.valueOf(values.get(EvidenceHeaders.Mass.column));
+        ArrayList<String> proteinIds = new ArrayList<>();
 
-
-            ArrayList<String> proteinIds = new ArrayList<>();
-
-            if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.getColumnName())) {
-                proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.getColumnName()).split(";")));
-            }
-            /**
-             * else { }
-             */
-            // Create peptide
-            Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
-            double score = -1;
-            double pep = -1;
-            if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
-                if (!values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
-                    score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
-                }
-            } else if (values.containsKey(EvidenceHeaders.Delta_score.getColumnName())) {
-                if (!values.get(EvidenceHeaders.Delta_score.getColumnName()).equalsIgnoreCase("NAN")) {
-                    score = Double.parseDouble(values.get(EvidenceHeaders.Delta_score.getColumnName()));
-                }
-            }
-            if (values.containsKey(EvidenceHeaders.PEP.getColumnName())) {
-                pep = Double.parseDouble(values.get(EvidenceHeaders.PEP.getColumnName()));
-            }
-            //we do what we can because we must
-            Charge identificationCharge = null;
-
-            if (values.containsKey(EvidenceHeaders.Charge.getColumnName())) {
-                identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.getColumnName())));
-            }
-
-            //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
-            PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
-            assumption.addUrParam(new MatchScore(score, pep));
-            return assumption;
+        if (values.containsKey(EvidenceHeaders.Protein_Group_IDs.getColumnName())) {
+            proteinIds = new ArrayList(Arrays.asList(values.get(EvidenceHeaders.Protein_Group_IDs.getColumnName()).split(";")));
         }
+        /**
+         * else { }
+         */
+        // Create peptide
+        Peptide peptide = new Peptide(sequence, proteinIds, extractModifications(values));
+        double score = -1;
+        double pep = -1;
+        if (values.containsKey(EvidenceHeaders.Score.getColumnName())) {
+            if (!values.get(EvidenceHeaders.Score.getColumnName()).equalsIgnoreCase("NAN")) {
+                score = Double.parseDouble(values.get(EvidenceHeaders.Score.getColumnName()));
+            }
+        } else if (values.containsKey(EvidenceHeaders.Delta_score.getColumnName())) {
+            if (!values.get(EvidenceHeaders.Delta_score.getColumnName()).equalsIgnoreCase("NAN")) {
+                score = Double.parseDouble(values.get(EvidenceHeaders.Delta_score.getColumnName()));
+            }
+        }
+        if (values.containsKey(EvidenceHeaders.PEP.getColumnName())) {
+            pep = Double.parseDouble(values.get(EvidenceHeaders.PEP.getColumnName()));
+        }
+        //we do what we can because we must
+        Charge identificationCharge = null;
+
+        if (values.containsKey(EvidenceHeaders.Charge.getColumnName())) {
+            identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(EvidenceHeaders.Charge.getColumnName())));
+        }
+
+        //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
+        PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
+        assumption.addUrParam(new MatchScore(score, pep));
+        return assumption;
     }
 
     /**
-     * @todo uncomment this method
-     * Create a new PeptideQuant instance from the values contained in the map.
+     * @todo uncomment this method Create a new PeptideQuant instance from the
+     * values contained in the map.
      *
      * @param values
      * @return
@@ -197,7 +194,6 @@ public class MaxQuantPSMParser {
 //        pepQuant.addRatio(id, utilitiesRatio);
 //        return pepQuant;
 //    }
-
     public void addModification(String aModification) {
         modificationList.add(aModification);
     }
@@ -262,7 +258,6 @@ public class MaxQuantPSMParser {
                 return modificationsForPeptide;
             }
 
-
             for (String modificationHeader : modificationList) {
                 int location = -1;
                 String modificationString;
@@ -319,7 +314,7 @@ public class MaxQuantPSMParser {
                                     score.setScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
 
                                     modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-                                    location = modificationLocations[i -1].length();
+                                    location = modificationLocations[i - 1].length();
                                     ModificationMatch match = new ModificationMatch(modificationHeader, true, location);
                                     match.addUrParam(score);
                                     modificationsForPeptide.add(match);

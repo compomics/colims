@@ -33,17 +33,18 @@ public class MaxQuantSpectrumParser {
 
     private HashMap<Double, Peak> parsePeakList(String peaklist, String intensities, String masses) {
         HashMap<Double, Peak> peakMap = new HashMap<>();
-        String[] peakList = peaklist.split(";");
-        String[] intensityList = intensities.split(";");
-        String[] massList = masses.split(";");
-        for (int i = 0; i < peakList.length; i++) {
-            int charge = 1;
+        if (!peaklist.isEmpty() && !intensities.isEmpty() && !masses.isEmpty()) {
+            String[] peakList = peaklist.split(";");
+            String[] intensityList = intensities.split(";");
+            String[] massList = masses.split(";");
+            for (int i = 0; i < peakList.length; i++) {
+                int charge = 1;
 //            if (peakList[i].contains("")) {
 //            }
-            Double moverz = Double.parseDouble(massList[i]) / charge;
-            peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
+                Double moverz = Double.parseDouble(massList[i]) / charge;
+                peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
+            }
         }
-
         return peakMap;
     }
 
