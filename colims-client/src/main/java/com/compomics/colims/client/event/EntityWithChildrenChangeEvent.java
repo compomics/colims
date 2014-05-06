@@ -12,11 +12,21 @@ public abstract class EntityWithChildrenChangeEvent extends EntityChangeEvent {
      */
     protected boolean childrenAffected;
 
+    /**
+     *
+     * @param type
+     * @param childrenAffected
+     */
     public EntityWithChildrenChangeEvent(final Type type, final boolean childrenAffected) {
         super(type);        
         this.childrenAffected = childrenAffected;
     }                  
 
+    /**
+     * Are children collection affected by the change event?
+     * 
+     * @return
+     */
     public boolean areChildrenAffected() {
         return childrenAffected;
     }        

@@ -7,12 +7,12 @@ import com.compomics.colims.model.Protein;
  * @author Niels Hulstaert
  */
 public interface ProteinService extends GenericService<Protein, Long> {
-    
+             
     /**
-     * Find a protein by the accession.
+     * Find a protein by the sequence.
      *
-     * @param accession the protein accession
+     * @param sequence the protein sequence
      * @return the found protein
      */
-    Protein findByAccession(String accession);   
+    Protein findBySequence(String sequence);
 }

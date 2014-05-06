@@ -50,8 +50,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         return infoLabel;
     }    
 
-    public JButton getCloseButton() {
-        return closeButton;
+    public JButton getCancelButton() {
+        return cancelButton;
     }
 
     public ButtonGroup getDataTypeButtonGroup() {
@@ -125,10 +125,10 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         proceedButton = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
         finishButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("analytical run setup");
+        setTitle("Analytical run setup");
 
         parentPanel.setOpaque(false);
 
@@ -144,7 +144,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        dataTypeSelectionLabel.setText("Select the analytical run data type");
+        dataTypeSelectionLabel.setText("Select the analytical run data type:");
 
         dataTypeButtonGroup.add(peptideShakerRadioButton);
         peptideShakerRadioButton.setText("PeptideShaker");
@@ -154,7 +154,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         maxQuantRadioButton.setText("MaxQuant");
         maxQuantRadioButton.setOpaque(false);
 
-        instrumentSelectionLabel.setText("Select the instrument");
+        instrumentSelectionLabel.setText("Select the instrument:");
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
@@ -197,9 +197,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        storageDescriptionLabel.setText("Provide an optional description for monitoring purposes");
+        storageDescriptionLabel.setText("Provide an optional description for monitoring purposes:");
 
-        startDataLabel.setText("Select the start date of the run(s)");
+        startDataLabel.setText("Select the start date of the run(s):");
 
         dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
         dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
@@ -304,8 +304,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         finishButton.setMinimumSize(new java.awt.Dimension(80, 25));
         finishButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        closeButton.setText("close");
-        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelButton.setText("cancel");
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
         bottomPanel.setLayout(bottomPanelLayout);
@@ -321,7 +321,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(finishButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         bottomPanelLayout.setVerticalGroup(
@@ -334,7 +334,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
                         .addComponent(proceedButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(finishButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -377,7 +377,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
-    private javax.swing.JButton closeButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JLabel confirmationLabel;
     private javax.swing.JPanel confirmationPanel;
     private javax.swing.ButtonGroup dataTypeButtonGroup;

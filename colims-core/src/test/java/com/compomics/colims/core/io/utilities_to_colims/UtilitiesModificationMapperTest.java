@@ -232,13 +232,14 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The mapper
-     * should throw a MappingException.
+     * Test the mapping for a peptide with 1 nonsense modification. The
+     * modification is not found in the db, the PtmToPrideMap or the ols
+     * service.
      *
      * @throws MappingException
      * @throws IOException
      */
-    @Test(expected = MappingException.class)
+    @Test
     public void testMapModification_3() throws MappingException, IOException {
         //create ModificationMatches       
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
@@ -249,5 +250,20 @@ public class UtilitiesModificationMapperTest {
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
         utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+        
+        //check modification mapping
+        Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
+        //the modifications are not present in the db, so the IDs should be null
+        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+            //check for null values
+            Assert.assertNotNull(peptideHasModification.getModification());
+            Assert.assertNotNull(peptideHasModification.getModificationType());
+            Assert.assertNotNull(peptideHasModification.getLocation());
+            Assert.assertNotNull(peptideHasModification.getPeptide());
+            
+            Modification modification = peptideHasModification.getModification();
+            Assert.assertNull(modification.getId());            
+        }
     }
 }

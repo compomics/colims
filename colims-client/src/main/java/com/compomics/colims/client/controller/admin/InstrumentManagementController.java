@@ -84,9 +84,16 @@ public class InstrumentManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public InstrumentManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public InstrumentManagementDialog getInstrumentManagementOverviewDialog() {
         return instrumentManagementDialog;
     }
@@ -120,7 +127,7 @@ public class InstrumentManagementController implements Controllable {
      * Listen to a CV term change event posted by the
      * CvTermManagementController. If the InstrumentManagementDialog is visible,
      * clear the selection in the CV term summary list.
-     * 
+     *
      * @param cvTermChangeEvent
      */
     @Subscribe
@@ -192,7 +199,7 @@ public class InstrumentManagementController implements Controllable {
 
                             instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
                             instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
-                            
+
                             eventBus.post(new InstrumentChangeEvent(EntityChangeEvent.Type.DELETED));
                         } catch (DataIntegrityViolationException dive) {
                             //check if the instrument can be deleted without breaking existing database relations,
@@ -209,6 +216,8 @@ public class InstrumentManagementController implements Controllable {
                         instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
                         instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -222,16 +231,22 @@ public class InstrumentManagementController implements Controllable {
                     //show dialog
                     GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
                     instrumentEditDialog.setVisible(true);
+                } else {
+                    eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
-        });
+        }
+        );
 
-        instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                instrumentManagementDialog.dispose();
-            }
-        });
+        instrumentManagementDialog.getCancelInstrumentManagementButton()
+                .addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e
+                    ) {
+                        instrumentManagementDialog.dispose();
+                    }
+                }
+                );
 
     }
 
@@ -263,6 +278,7 @@ public class InstrumentManagementController implements Controllable {
                         List<InstrumentCvTerm> availableCvTerms = cvTermService.findByCvTermByType(InstrumentCvTerm.class, selectedcvTermType);
 
                         List<InstrumentCvTerm> addedCvTerms;
+
                         if (cvTermSummaryListModel.isSingleCvTerm(selectedcvTermType)) {
                             addedCvTerms = new ArrayList<>();
                             InstrumentCvTerm instrumentCvTerm = cvTermSummaryListModel.getSingleCvTerms().get(selectedcvTermType);
@@ -337,13 +353,13 @@ public class InstrumentManagementController implements Controllable {
                 if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
                     validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
                             + "\n" + "please choose another instrument name.");
-                }                
+                }
                 if (validationMessages.isEmpty()) {
                     int index;
                     EntityChangeEvent.Type type;
                     if (instrumentToEdit.getId() != null) {
                         instrumentService.update(instrumentToEdit);
-                        index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();                        
+                        index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
                         type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         instrumentService.save(instrumentToEdit);
@@ -354,17 +370,17 @@ public class InstrumentManagementController implements Controllable {
                         type = EntityChangeEvent.Type.CREATED;
                     }
                     instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
-                    
+
                     eventBus.post(new InstrumentChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("instrument persist confirmation", "Instrument " + instrumentToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Instrument store confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in instrument list in management overview dialog                    
                     instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
                     instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -383,7 +399,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(new ActionListener() {
+        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentEditDialog.dispose();
@@ -404,6 +420,8 @@ public class InstrumentManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Instrument CV term type selection", "Please select an instrument CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -522,16 +540,16 @@ public class InstrumentManagementController implements Controllable {
                     instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
                     instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
 
-                    MessageEvent messageEvent = new MessageEvent("instrument type persist confirmation", "Instrument type " + selectedInstrumentType.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Instrument type store confirmation", "Instrument type " + selectedInstrumentType.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        instrumentTypeCrudDialog.getCloseInstrumentTypeCrudButton().addActionListener(new ActionListener() {
+        instrumentTypeCrudDialog.getCancelInstrumentTypeCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 instrumentTypeCrudDialog.dispose();
@@ -606,6 +624,7 @@ public class InstrumentManagementController implements Controllable {
         List<InstrumentType> instrumentTypes = instrumentTypeService.findAll();
         if (!instrumentTypes.isEmpty()) {
             defaultInstrument.setInstrumentType(instrumentTypes.get(0));
+
         }
         //find sources
         List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
@@ -614,11 +633,13 @@ public class InstrumentManagementController implements Controllable {
         }
         //find detectors
         List<InstrumentCvTerm> detectors = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.DETECTOR);
+
         if (!detectors.isEmpty()) {
             defaultInstrument.setDetector(detectors.get(0));
         }
         //find analyzers
         List<InstrumentCvTerm> analyzers = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.ANALYZER);
+
         if (!analyzers.isEmpty()) {
             List<InstrumentCvTerm> defaultAnalyzers = new ArrayList<>();
             defaultAnalyzers.add(analyzers.get(0));
@@ -655,20 +676,24 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getNameTextField().setText(instrumentToEdit.getName());
 
         //add the single CV terms
-        EnumMap<CvTermType, InstrumentCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class);
+        EnumMap<CvTermType, InstrumentCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class
+        );
         singleCvTerms.put(CvTermType.SOURCE, instrumentToEdit.getSource());
         singleCvTerms.put(CvTermType.DETECTOR, instrumentToEdit.getDetector());
 
         //add the multiple CV terms
         EnumMap<CvTermType, List<InstrumentCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
+
         multipleCvTerms.put(CvTermType.ANALYZER, instrumentToEdit.getAnalyzers());
         cvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
 
         //set the selected item in the instrument type combobox        
-        instrumentEditDialog.getTypeComboBox().setSelectedItem(instrumentToEdit.getInstrumentType());
+        instrumentEditDialog.getTypeComboBox()
+                .setSelectedItem(instrumentToEdit.getInstrumentType());
 
         //clear selection in CV term summary list
-        instrumentEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
+        instrumentEditDialog.getCvTermSummaryList()
+                .getSelectionModel().clearSelection();
     }
 
     /**

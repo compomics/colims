@@ -76,9 +76,16 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public ProtocolManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;
     }
@@ -206,6 +213,8 @@ public class ProtocolManagementController implements Controllable {
                         protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
                         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -218,11 +227,13 @@ public class ProtocolManagementController implements Controllable {
                     //show dialog
                     GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
                     protocolEditDialog.setVisible(true);
+                } else {
+                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
 
-        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(new ActionListener() {
+        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolManagementDialog.dispose();
@@ -359,20 +370,20 @@ public class ProtocolManagementController implements Controllable {
 
                     eventBus.post(new ProtocolChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("protocol persist confirmation", "Protocol " + protocolToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Protocol store confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in protocol list in management overview dialog
                     protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
                     protocolManagementDialog.getProtocolList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        protocolEditDialog.getCloseProtocolEditButton().addActionListener(new ActionListener() {
+        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 protocolEditDialog.dispose();
@@ -393,6 +404,8 @@ public class ProtocolManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Protocol CV term type selection", "Please select a protocol CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

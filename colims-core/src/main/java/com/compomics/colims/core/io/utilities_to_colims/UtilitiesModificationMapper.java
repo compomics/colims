@@ -45,10 +45,14 @@ public class UtilitiesModificationMapper {
     @Autowired
     private PtmFactoryWrapper ptmFactoryWrapper;
     /**
-     * The map of new modifications (key: modification name, value: the
+     * The map of cached modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> newModifications = new HashMap<>();
+    private Map<String, Modification> cachedModifications = new HashMap<>();
+
+    public Map<String, Modification> getCachedModifications() {
+        return cachedModifications;
+    }
 
     /**
      * Map the utilities modification matches onto the colims peptide. The
@@ -142,7 +146,7 @@ public class UtilitiesModificationMapper {
         Modification modification;
 
         //look for the modification in the newModifications map
-        modification = newModifications.get(modificationMatch.getTheoreticPtm());
+        modification = cachedModifications.get(modificationMatch.getTheoreticPtm());
 
         if (modification == null) {
             //the modification was not found in the newModifications map    
@@ -166,14 +170,12 @@ public class UtilitiesModificationMapper {
                     }
 
                     modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
-
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(ptM.getMass());
-
-                    //add to newModifications
-                    newModifications.put(modification.getAccession(), modification);
                 }
             }
+            //add to cached modifications
+            cachedModifications.put(modification.getAccession(), modification);
         }
 
         return modification;
@@ -190,7 +192,7 @@ public class UtilitiesModificationMapper {
         Modification modification;
 
         //look for the modification in the newModifications map
-        modification = newModifications.get(cvTerm.getAccession());
+        modification = cachedModifications.get(cvTerm.getAccession());
 
         if (modification == null) {
             //the modification was not found in the newModifications map    
@@ -202,15 +204,20 @@ public class UtilitiesModificationMapper {
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
                     //look for the modification in the PSI-MOD ontology by accession                
                     modification = olsService.findModifiationByAccession(cvTerm.getAccession());
-                } else if(cvTerm.getOntology().equals("UNIMOD")){
+                } else if (cvTerm.getOntology().equals("UNIMOD")) {
                     //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
                     modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
                 }
 
-                if (modification != null) {
-                    newModifications.put(modification.getAccession(), modification);
+                if (modification == null) {
+                    modification = new Modification(cvTerm.getAccession(), cvTerm.getName());
+
+                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                    modification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
                 }
             }
+            //add to cached modifications
+            cachedModifications.put(cvTerm.getAccession(), modification);
         }
 
         return modification;

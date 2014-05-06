@@ -65,7 +65,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         setOpaque(false);
 
-        maxQuantDirectorySelectionLabel.setText("Select the MaxQuant text files directory");
+        maxQuantDirectorySelectionLabel.setText("Select the MaxQuant text files directory:");
 
         maxQuantDirectoryLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
@@ -77,7 +77,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectFastaButton.setText("browse...");
         selectFastaButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        fastaFileSelectionLabel.setText("Select a FASTA file");
+        fastaFileSelectionLabel.setText("Select a FASTA file:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

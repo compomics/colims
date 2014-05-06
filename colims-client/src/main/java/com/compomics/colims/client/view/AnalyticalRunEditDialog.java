@@ -23,8 +23,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         initComponents();
     } 
 
-    public JButton getCloseButton() {
-        return closeButton;
+    public JButton getCancelButton() {
+        return cancelButton;
     }
 
     public DateTimePicker getDateTimePicker() {
@@ -59,19 +59,19 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         instrumentLabel = new javax.swing.JLabel();
         instrumentComboBox = new javax.swing.JComboBox();
         updateButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         dateTimePicker = new com.compomics.colims.client.compoment.DateTimePicker();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("project metadata management");
+        setTitle("Analytical run metadata management");
 
         projectEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        nameLabel.setText("name");
+        nameLabel.setText("Name");
 
-        labelLabel.setText("start date");
+        labelLabel.setText("Start Date");
 
-        instrumentLabel.setText("instrument");
+        instrumentLabel.setText("Instrument");
 
         updateButton.setText("update");
         updateButton.setToolTipText("");
@@ -79,11 +79,11 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         updateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         updateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        closeButton.setText("close");
-        closeButton.setToolTipText("");
-        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelButton.setText("cancel");
+        cancelButton.setToolTipText("");
+        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
         dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
@@ -99,7 +99,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(projectEditPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,14 +108,13 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                                     .addComponent(labelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(instrumentLabel))
                                 .addGap(18, 18, 18)
-                                .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(instrumentComboBox, 0, 255, Short.MAX_VALUE)
-                                    .addComponent(dateTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(dateTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(projectEditPanelLayout.createSequentialGroup()
                                 .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         projectEditPanelLayout.setVerticalGroup(
@@ -135,7 +134,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                     .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(projectEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -154,7 +153,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeButton;
+    private javax.swing.JButton cancelButton;
     private com.compomics.colims.client.compoment.DateTimePicker dateTimePicker;
     private javax.swing.JComboBox instrumentComboBox;
     private javax.swing.JLabel instrumentLabel;

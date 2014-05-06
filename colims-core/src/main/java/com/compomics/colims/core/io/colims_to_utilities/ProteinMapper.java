@@ -26,14 +26,13 @@ public class ProteinMapper {
      * @throws MappingException
      */
     public void map(final List<PeptideHasProtein> peptideHasProteins, final List<ProteinMatch> proteinMatches, final String peptideMatchKey) {
-        for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {
-            ProteinMatch proteinMatch = new ProteinMatch(peptideHasProtein.getProtein().getAccession());
-
-            //add the peptide to proteinmatches
-            proteinMatch.addPeptideMatch(peptideMatchKey);
-
-            proteinMatches.add(proteinMatch);
-        }
-
+//        for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {
+//            ProteinMatch proteinMatch = new ProteinMatch(peptideHasProtein.getProtein().getAccession());
+//
+//            //add the peptide to proteinmatches
+//            proteinMatch.addPeptideMatch(peptideMatchKey);
+//
+//            proteinMatches.add(proteinMatch);
+//        }
     }
 }

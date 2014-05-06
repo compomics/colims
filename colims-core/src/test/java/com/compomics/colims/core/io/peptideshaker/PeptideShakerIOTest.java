@@ -37,7 +37,7 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_27_4.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -58,7 +58,7 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
-        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_ps_0_27_4.cps").getFile();
+        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile();
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
@@ -66,7 +66,7 @@ public class PeptideShakerIOTest {
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
         
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
 
         PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaDb, mgfFiles);
         UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);

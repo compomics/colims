@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view;
 
-import java.awt.Color;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -18,7 +17,7 @@ public class ColimsFrame extends javax.swing.JFrame {
     public ColimsFrame() {
         initComponents();
         
-        this.getContentPane().setBackground(Color.WHITE);
+        //this.getContentPane().setBackground(Color.WHITE);
     }
 
     public JPanel getProjectsManagementParentPanel() {
@@ -49,8 +48,8 @@ public class ColimsFrame extends javax.swing.JFrame {
         return projectsOverviewMenuItem;
     }       
 
-    public JMenu getAdminMenu() {
-        return adminMenu;
+    public JMenu getEditMenu() {
+        return editMenu;
     }
 
     public JMenuItem getInstrumentManagementMenuItem() {
@@ -67,6 +66,14 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getStorageMonitoringMenuItem() {
         return storageMonitoringMenuItem;
+    }     
+
+    public JMenu getAdminMenu() {
+        return adminMenu;
+    }
+
+    public JMenuItem getExitMenuItem() {
+        return exitMenuItem;
     }        
 
     /**
@@ -82,67 +89,79 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
-        viewMenu = new javax.swing.JMenu();
-        projectsManagementMenuItem = new javax.swing.JMenuItem();
-        projectsOverviewMenuItem = new javax.swing.JMenuItem();
-        storageMonitoringMenuItem = new javax.swing.JMenuItem();
+        fileMenu = new javax.swing.JMenu();
+        exitMenuItem = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
         adminMenu = new javax.swing.JMenu();
-        managementMenu = new javax.swing.JMenu();
         userManagementMenuItem = new javax.swing.JMenuItem();
         instrumentManagementMenuItem = new javax.swing.JMenuItem();
         materialManagementMenuItem = new javax.swing.JMenuItem();
         protocolManagementMenuItem = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        projectsManagementMenuItem = new javax.swing.JMenuItem();
+        projectsOverviewMenuItem = new javax.swing.JMenuItem();
+        storageMonitoringMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 700));
 
+        mainTabbedPane.setTabPlacement(javax.swing.JTabbedPane.RIGHT);
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N
+        mainTabbedPane.setOpaque(true);
 
-        projectsManagementParentPanel.setOpaque(false);
+        projectsManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsManagementParentPanel.setLayout(new java.awt.GridBagLayout());
-        mainTabbedPane.addTab("Projects management", projectsManagementParentPanel);
+        mainTabbedPane.addTab("Management", projectsManagementParentPanel);
 
+        projectsOverviewParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
-        mainTabbedPane.addTab("Projects overview", projectsOverviewParentPanel);
+        mainTabbedPane.addTab("Overview", projectsOverviewParentPanel);
+
+        fileMenu.setText("File");
+
+        exitMenuItem.setText("Exit");
+        fileMenu.add(exitMenuItem);
+
+        menuBar.add(fileMenu);
+
+        editMenu.setText("Edit");
+
+        adminMenu.setText("Admin");
+
+        userManagementMenuItem.setText("Users...");
+        adminMenu.add(userManagementMenuItem);
+
+        instrumentManagementMenuItem.setText("Instruments...");
+        adminMenu.add(instrumentManagementMenuItem);
+
+        materialManagementMenuItem.setText("Materials...");
+        adminMenu.add(materialManagementMenuItem);
+
+        protocolManagementMenuItem.setText("Protocols...");
+        adminMenu.add(protocolManagementMenuItem);
+
+        editMenu.add(adminMenu);
+
+        menuBar.add(editMenu);
 
         viewMenu.setText("View");
 
-        projectsManagementMenuItem.setText("projects management");
+        projectsManagementMenuItem.setText("Projects management");
         viewMenu.add(projectsManagementMenuItem);
 
-        projectsOverviewMenuItem.setText("projects overview");
+        projectsOverviewMenuItem.setText("Projects overview");
         viewMenu.add(projectsOverviewMenuItem);
 
-        storageMonitoringMenuItem.setText("storage monitoring...");
+        storageMonitoringMenuItem.setText("Storage monitoring...");
         viewMenu.add(storageMonitoringMenuItem);
 
         menuBar.add(viewMenu);
 
-        adminMenu.setText("Admin");
-
-        managementMenu.setText("management");
-
-        userManagementMenuItem.setText("users...");
-        managementMenu.add(userManagementMenuItem);
-
-        instrumentManagementMenuItem.setText("instruments...");
-        managementMenu.add(instrumentManagementMenuItem);
-
-        materialManagementMenuItem.setText("materials...");
-        managementMenu.add(materialManagementMenuItem);
-
-        protocolManagementMenuItem.setText("protocols...");
-        managementMenu.add(protocolManagementMenuItem);
-
-        adminMenu.add(managementMenu);
-
-        menuBar.add(adminMenu);
-
         helpMenu.setText("Help");
 
-        helpMenuItem.setText("help...");
+        helpMenuItem.setText("Help...");
         helpMenu.add(helpMenuItem);
 
         menuBar.add(helpMenu);
@@ -164,11 +183,13 @@ public class ColimsFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu adminMenu;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JMenuItem instrumentManagementMenuItem;
     private javax.swing.JTabbedPane mainTabbedPane;
-    private javax.swing.JMenu managementMenu;
     private javax.swing.JMenuItem materialManagementMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem projectsManagementMenuItem;

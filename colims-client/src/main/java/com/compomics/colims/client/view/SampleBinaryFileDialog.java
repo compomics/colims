@@ -26,8 +26,8 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
         return binaryFileManagementPanel;
     }     
 
-    public JButton getCloseButton() {
-        return closeButton;
+    public JButton getCancelButton() {
+        return cancelButton;
     }        
 
     /**
@@ -41,20 +41,20 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
 
         binaryFileManagementParentPanel = new javax.swing.JPanel();
         binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<SampleBinaryFile>();
-        closeButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("experiment metadata management");
+        setTitle("Sample attachment management");
         setBackground(new java.awt.Color(240, 240, 240));
 
         binaryFileManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         binaryFileManagementPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        closeButton.setText("close");
-        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelButton.setText("cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout binaryFileManagementParentPanelLayout = new javax.swing.GroupLayout(binaryFileManagementParentPanel);
         binaryFileManagementParentPanel.setLayout(binaryFileManagementParentPanelLayout);
@@ -66,7 +66,7 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
                     .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, binaryFileManagementParentPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         binaryFileManagementParentPanelLayout.setVerticalGroup(
@@ -75,7 +75,7 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(binaryFileManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -95,6 +95,6 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.compomics.colims.client.compoment.BinaryFileManagementPanel<SampleBinaryFile> binaryFileManagementPanel;
     private javax.swing.JPanel binaryFileManagementParentPanel;
-    private javax.swing.JButton closeButton;
+    private javax.swing.JButton cancelButton;
     // End of variables declaration//GEN-END:variables
 }

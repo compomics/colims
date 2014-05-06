@@ -113,7 +113,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.GridBagLayout());
 
-        projectsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("projects"));
+        projectsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));
         projectsOverviewPanel.setOpaque(false);
         projectsOverviewPanel.setPreferredSize(new java.awt.Dimension(20, 20));
 
@@ -189,7 +189,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(projectsOverviewPanel, gridBagConstraints);
 
-        experimentsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("project experiments"));
+        experimentsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project experiments"));
         experimentsOverviewPanel.setOpaque(false);
         experimentsOverviewPanel.setPreferredSize(new java.awt.Dimension(20, 20));
 
@@ -265,7 +265,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(experimentsOverviewPanel, gridBagConstraints);
 
-        samplesOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("experiment samples"));
+        samplesOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Experiment samples"));
         samplesOverviewPanel.setOpaque(false);
         samplesOverviewPanel.setPreferredSize(new java.awt.Dimension(20, 20));
 

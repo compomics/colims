@@ -39,7 +39,7 @@ public class UtilitiesProteinMapperTest {
     @BeforeClass
     public static void setupOnce() throws IOException, FileNotFoundException, ClassNotFoundException {
         //load SequenceFactory for testing
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
         SequenceFactory.getInstance().loadFastaFile(fastaFile, null);
     }
 
@@ -79,7 +79,7 @@ public class UtilitiesProteinMapperTest {
         Assert.assertNotNull(peptideHasProtein.getProtein());
         Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
         Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
-        Assert.assertEquals("P16083", peptideHasProtein.getProtein().getAccession());
+        Assert.assertEquals("P16083", peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession());
 
         //main group protein should be null
         Assert.assertNull(peptideHasProtein.getMainGroupProtein());
@@ -125,10 +125,10 @@ public class UtilitiesProteinMapperTest {
             Assert.assertNotNull(peptideHasProtein.getProtein());
             Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
             Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
-            Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(peptideHasProtein.getProtein().getAccession()));
+            Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));
             //main group protein should not be null
             Assert.assertNotNull(peptideHasProtein.getMainGroupProtein());
-            Assert.assertEquals("P06241", peptideHasProtein.getMainGroupProtein().getAccession());
+            Assert.assertEquals("P06241", peptideHasProtein.getMainGroupProtein().getProteinAccessions().get(0).getAccession());
         }
 
     }

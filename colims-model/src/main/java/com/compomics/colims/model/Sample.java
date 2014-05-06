@@ -20,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -30,8 +32,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 public class Sample extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Basic(optional = false)
+    @NotBlank(message = "Please insert a sample name")
+    @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = true)
@@ -56,7 +60,7 @@ public class Sample extends AuditableDatabaseEntity {
                 @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     public Sample() {

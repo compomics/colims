@@ -22,12 +22,24 @@ public class MessageEvent {
      */
     private final int messageType;
 
+    /**
+     *
+     * @param messageTitle
+     * @param message
+     * @param messageType
+     */
     public MessageEvent(final String messageTitle, final String message, final int messageType) {
         this.messageTitle = messageTitle;
         this.message = message;
         this.messageType = messageType;
     }
 
+    /**
+     *
+     * @param messageTitle
+     * @param messages
+     * @param messageType
+     */
     public MessageEvent(final String messageTitle, final List<String> messages, final int messageType) {
         this.messageTitle = messageTitle;
         Joiner joiner = Joiner.on("\n");
@@ -36,14 +48,26 @@ public class MessageEvent {
         this.messageType = messageType;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMessageTitle() {
         return messageTitle;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMessageType() {
         return messageType;
     }

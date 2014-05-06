@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.compomics.colims.model.QuantificationFile;
 import com.compomics.colims.model.QuantificationGroup;
-import com.compomics.colims.model.QuantificationMethod;
+import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
@@ -63,15 +63,15 @@ public class MaxQuantParser {
         // Create a single QuantificationFile file to the argument folder, and store it in the database
         QuantificationFile quantificationFile = new QuantificationFile();
         // TODO Probably store the folder name in quantificationFile, but there are no such fields available
-        // Associate the correct QuantificationMethod with this QuantificationFile
+        // Associate the correct QuantificationSettings with this QuantificationFile
         // TODO Actually retrieve or create and store quantificationMethod, but it currently lacks a field for names
-        QuantificationMethod quantificationMethod = null;
-        quantificationFile.setQuantificationMethod(quantificationMethod);
+        QuantificationSettings quantificationMethod = null;
+        quantificationFile.setQuantificationSettings(quantificationMethod);
         // TODO Store quantificationFile; we are currently missing a Hibernate Repository to do so, so skip for now
 
         // Create a new QuantificationGroup to group all the Quantifications found and link it to the QuantificationFile
         QuantificationGroup quantificationGroup = new QuantificationGroup();
-        quantificationGroup.setQuantificationFile(quantificationFile);
+//        quantificationGroup.setQuantificationFile(quantificationFile);
         // TODO Store quantificationGroup; we are currently missing a Hibernate Repository to do so, so skip for now
 
         // Parse msms.txt and create and persist the objects found within

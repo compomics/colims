@@ -28,10 +28,10 @@ public class PeptideHasProtein extends DatabaseEntity {
     @ManyToOne
     private Peptide peptide;
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Protein protein;
     @JoinColumn(name = "l_main_group_protein_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Protein mainGroupProtein;
 
     public Double getPeptideProbability() {

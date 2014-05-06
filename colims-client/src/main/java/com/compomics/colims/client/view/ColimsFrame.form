@@ -4,6 +4,52 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
+        <Menu class="javax.swing.JMenu" name="fileMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="File"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Exit"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="editMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Edit"/>
+          </Properties>
+          <SubComponents>
+            <Menu class="javax.swing.JMenu" name="adminMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Admin"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="userManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Users..."/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Instruments..."/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="materialManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Materials..."/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="protocolManagementMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Protocols..."/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+          </SubComponents>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="viewMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="View"/>
@@ -11,53 +57,19 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="projectsManagementMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="projects management"/>
+                <Property name="text" type="java.lang.String" value="Projects management"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="projectsOverviewMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="projects overview"/>
+                <Property name="text" type="java.lang.String" value="Projects overview"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="storageMonitoringMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="storage monitoring..."/>
+                <Property name="text" type="java.lang.String" value="Storage monitoring..."/>
               </Properties>
             </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="adminMenu">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Admin"/>
-          </Properties>
-          <SubComponents>
-            <Menu class="javax.swing.JMenu" name="managementMenu">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="management"/>
-              </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="userManagementMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="users..."/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="instrumentManagementMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="instruments..."/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="materialManagementMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="materials..."/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="protocolManagementMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="protocols..."/>
-                  </Properties>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
@@ -67,7 +79,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="helpMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="help..."/>
+                <Property name="text" type="java.lang.String" value="Help..."/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -113,19 +125,23 @@
   <SubComponents>
     <Container class="javax.swing.JTabbedPane" name="mainTabbedPane">
       <Properties>
+        <Property name="tabPlacement" type="int" value="4"/>
         <Property name="name" type="java.lang.String" value="mainTabbedPane" noResource="true"/>
+        <Property name="opaque" type="boolean" value="true"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="projectsManagementParentPanel">
           <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Projects management">
-                <Property name="tabTitle" type="java.lang.String" value="Projects management"/>
+              <JTabbedPaneConstraints tabName="Management">
+                <Property name="tabTitle" type="java.lang.String" value="Management"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -133,10 +149,15 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
         </Container>
         <Container class="javax.swing.JPanel" name="projectsOverviewParentPanel">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Projects overview">
-                <Property name="tabTitle" type="java.lang.String" value="Projects overview"/>
+              <JTabbedPaneConstraints tabName="Overview">
+                <Property name="tabTitle" type="java.lang.String" value="Overview"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

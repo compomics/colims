@@ -73,7 +73,7 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private StorageMonitoringController storageMonitoringController;
     @Autowired
-    private ProtocolManagementController protocolManagementController;    
+    private ProtocolManagementController protocolManagementController;
     @Autowired
     private UserManagementController userManagementController;
     @Autowired
@@ -90,10 +90,18 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
     }
 
+    /**
+     *
+     * @return
+     */
     public EventList<Project> getProjects() {
         return projects;
     }
@@ -111,6 +119,8 @@ public class ColimsController implements Controllable, ActionListener {
                 //check for permission exceptions
                 if (e instanceof PermissionException) {
                     showPermissionErrorDialog(e.getMessage());
+                } else if (e instanceof ArrayIndexOutOfBoundsException) {
+                    showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
                 } else if (e instanceof EncryptionOperationNotPossibleException) {
                     showMessageDialog("password encryption error", "The password for the jasypt encryption framework is not correct. "
                             + "\n" + "Check if the 'jasypt.password' property in the colims client config file contains the correct value.", JOptionPane.ERROR_MESSAGE);
@@ -141,7 +151,7 @@ public class ColimsController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
-        storageMonitoringController.init();        
+        storageMonitoringController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -171,7 +181,7 @@ public class ColimsController implements Controllable, ActionListener {
             }
         });
 
-        userLoginDialog.getCloseButton().addActionListener(new ActionListener() {
+        userLoginDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 userLoginDialog.dispose();
@@ -213,7 +223,9 @@ public class ColimsController implements Controllable, ActionListener {
     public void actionPerformed(ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
-        if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
+        if (menuItemLabel.equals(colimsFrame.getExitMenuItem().getText())) {
+            System.exit(0);
+        } else if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
@@ -261,7 +273,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showPermissionErrorDialog(String message) {
-        showMessageDialog("permission warning", "A permission warning occured: "
+        showMessageDialog("Permission warning", "A permission warning occured: "
                 + "\n" + message
                 + "\n" + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }

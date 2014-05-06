@@ -76,9 +76,16 @@ public class MaterialManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     */
     public MaterialManagementController() {
     }
 
+    /**
+     *
+     * @return
+     */
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
     }
@@ -186,7 +193,7 @@ public class MaterialManagementController implements Controllable {
 
                             materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                             materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-                            
+
                             eventBus.post(new MaterialChangeEvent(EntityChangeEvent.Type.DELETED));
                         } catch (DataIntegrityViolationException dive) {
                             //check if the material can be deleted without breaking existing database relations,
@@ -203,6 +210,8 @@ public class MaterialManagementController implements Controllable {
                         materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Material selection", "Please select a material to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -215,11 +224,13 @@ public class MaterialManagementController implements Controllable {
                     //show dialog
                     GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
                     materialEditDialog.setVisible(true);
+                } else {
+                    eventBus.post(new MessageEvent("Material selection", "Please select a material to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
 
-        materialManagementDialog.getCloseMaterialManagementButton().addActionListener(new ActionListener() {
+        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialManagementDialog.dispose();
@@ -359,20 +370,20 @@ public class MaterialManagementController implements Controllable {
 
                     eventBus.post(new MaterialChangeEvent(type));
 
-                    MessageEvent messageEvent = new MessageEvent("material persist confirmation", "Material " + materialToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Material store confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in material list in management overview dialog
                     materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
                     materialManagementDialog.getMaterialList().setSelectedIndex(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        materialEditDialog.getCloseMaterialEditButton().addActionListener(new ActionListener() {
+        materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 materialEditDialog.dispose();
@@ -393,6 +404,8 @@ public class MaterialManagementController implements Controllable {
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
 
                     cvTermManagementController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Material CV term type selection", "Please select a material CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

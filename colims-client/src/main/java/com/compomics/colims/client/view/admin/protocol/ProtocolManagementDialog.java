@@ -46,8 +46,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         return protocolEditButton;
     }        
 
-    public JButton getCloseProtocolManagementButton() {
-        return closeProtocolManagementButton;
+    public JButton getCancelProtocolManagementButton() {
+        return cancelProtocolManagementButton;
     }           
 
     /**
@@ -69,14 +69,14 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         protocolDetailPanel = new javax.swing.JPanel();
         protocolDetailsTableScrollPane = new javax.swing.JScrollPane();
         protocolDetailsTable = new javax.swing.JTable();
-        closeProtocolManagementButton = new javax.swing.JButton();
+        cancelProtocolManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("protocol management overview");
 
         protocolCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        protocolOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("overview"));
+        protocolOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         protocolOverviewPanel.setOpaque(false);
         protocolOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -104,14 +104,13 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
             protocolOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(protocolOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(protocolListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(protocolListScrollPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(protocolOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(protocolOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(addProtocolButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(deleteProtocolButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(protocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deleteProtocolButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(protocolEditButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addProtocolButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         protocolOverviewPanelLayout.setVerticalGroup(
             protocolOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,11 +123,12 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(protocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteProtocolButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(deleteProtocolButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        protocolDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("detail"));
+        protocolDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
         protocolDetailPanel.setOpaque(false);
         protocolDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -143,8 +143,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
             protocolDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(protocolDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(protocolDetailsTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(protocolDetailsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
+                .addContainerGap())
         );
         protocolDetailPanelLayout.setVerticalGroup(
             protocolDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,8 +154,8 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        closeProtocolManagementButton.setText("close");
-        closeProtocolManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelProtocolManagementButton.setText("cancel");
+        cancelProtocolManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout protocolCrudPanelLayout = new javax.swing.GroupLayout(protocolCrudPanel);
         protocolCrudPanel.setLayout(protocolCrudPanelLayout);
@@ -163,13 +163,10 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
             protocolCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(protocolCrudPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(protocolCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(protocolOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
-                    .addComponent(protocolDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolCrudPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(closeProtocolManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(protocolCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(protocolOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
+                    .addComponent(protocolDetailPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
+                    .addComponent(cancelProtocolManagementButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         protocolCrudPanelLayout.setVerticalGroup(
@@ -180,7 +177,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(protocolDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeProtocolManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelProtocolManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -204,7 +201,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addProtocolButton;
-    private javax.swing.JButton closeProtocolManagementButton;
+    private javax.swing.JButton cancelProtocolManagementButton;
     private javax.swing.JButton deleteProtocolButton;
     private javax.swing.JPanel protocolCrudPanel;
     private javax.swing.JPanel protocolDetailPanel;

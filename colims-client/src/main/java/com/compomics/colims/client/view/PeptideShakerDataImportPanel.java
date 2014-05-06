@@ -101,7 +101,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
 
         cpsFileLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
-        cpsFileSelectionLabel.setText("Select a PeptideShaker cps file");
+        cpsFileSelectionLabel.setText("Select a PeptideShaker .cps file:");
 
         fastaDbLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
@@ -110,7 +110,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         selectFastaButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectFastaButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        fastaFileSelectionLabel.setText("Select a FASTA file");
+        fastaFileSelectionLabel.setText("Select a FASTA file:");
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
@@ -161,7 +161,7 @@ public class PeptideShakerDataImportPanel extends javax.swing.JPanel {
         rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        mgfFileSelectionLabel.setText("Select MGF file(s)");
+        mgfFileSelectionLabel.setText("Select MGF file(s):");
 
         mgfFilesScrollPane.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
         mgfFilesScrollPane.setOpaque(false);

@@ -5,6 +5,10 @@ package com.compomics.colims.client.event;
  */
 public class InstrumentChangeEvent extends EntityChangeEvent {    
 
+    /**
+     *
+     * @param type
+     */
     public InstrumentChangeEvent(final Type type) {
         super(type);        
     }

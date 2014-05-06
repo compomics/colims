@@ -98,7 +98,7 @@
     <Component class="javax.swing.JButton" name="exportButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="export"/>
-        <Property name="toolTipText" type="java.lang.String" value="export the selected file"/>
+        <Property name="toolTipText" type="java.lang.String" value="export the selected attachment"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[80, 25]"/>
         </Property>

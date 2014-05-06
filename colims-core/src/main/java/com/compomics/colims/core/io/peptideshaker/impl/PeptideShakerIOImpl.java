@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 public class PeptideShakerIOImpl implements PeptideShakerIO {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerIOImpl.class);
-    private static final String PEPTIDESHAKER_SERIALIZATION_DIR = "resources/matches";
+    private static final String PEPTIDESHAKER_SERIALIZATION_DIR = "matches";
     private static final String PEPTIDESHAKER_SERIALIZIZED_EXP_NAME = "experiment";
     @Value("${peptideshakerio.buffer_size}")
     private int buffer;

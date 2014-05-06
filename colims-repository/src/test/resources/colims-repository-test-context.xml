@@ -24,7 +24,7 @@
         <!--<property name="configLocation" value="classpath:/hibernate.cfg.xml"/>-->
         <property name="packagesToScan" value="com.compomics.colims.model"/>
         <!-- Adding Interceptor here -->
-<!--        <property name="entityInterceptor">
+        <!--        <property name="entityInterceptor">
             <bean class="com.compomics.colims.repository.audit.AuditInterceptor"></bean>
         </property>-->
         <property name="hibernateProperties">
@@ -35,7 +35,10 @@
                 <prop key="hibernate.format_sql">true</prop>                         
                 <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop> 
                 <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>  
-                <prop key="hibernate.generate_statistics">true</prop>              
+                <prop key="hibernate.generate_statistics">true</prop>  
+                <prop key="hibernate.search.default.directory_provider">ram</prop>
+<!--                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.index.directory}</prop>            -->
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
                 <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>

@@ -1,9 +1,9 @@
 package com.compomics.colims.client.storage.impl;
 
 import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.StorageErrorMessageConvertor;
-import com.compomics.colims.distributed.model.AbstractMessage;
-import com.compomics.colims.distributed.model.StorageError;
+import com.compomics.colims.client.storage.DbTaskErrorMessageConvertor;
+import com.compomics.colims.distributed.model.QueueMessage;
+import com.compomics.colims.distributed.model.DbTaskError;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -41,7 +41,7 @@ public class QueueManagerImpl implements QueueManager {
     private String brokerJmxUrl;
     @Value("${distributed.queue.error}")
     private String errorQueueName;
-    private final StorageErrorMessageConvertor storageErrorMessageConvertor = new StorageErrorMessageConvertor();
+    private final DbTaskErrorMessageConvertor storageErrorMessageConvertor = new DbTaskErrorMessageConvertor();
     private final String queueObjectName = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
     private final String brokerObjectName = "org.apache.activemq:type=Broker,brokerName=%s";
     @Autowired
@@ -50,7 +50,7 @@ public class QueueManagerImpl implements QueueManager {
     private MBeanServerConnection clientConnector;
 
     @Override
-    public <T extends AbstractMessage> List<T> monitorQueue(String queueName) throws JMSException {
+    public <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException {
         List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override
@@ -88,17 +88,17 @@ public class QueueManagerImpl implements QueueManager {
     }
 
     @Override
-    public void redirectStorageError(String queueName, StorageError storageError) throws JMSException, MalformedObjectNameException, Exception {
+    public void redirectStorageError(String queueName, DbTaskError dbTaskError) throws JMSException, MalformedObjectNameException, Exception {
         //set appropriate message convertor
-        if (!(queueManagerTemplate.getMessageConverter() instanceof StorageErrorMessageConvertor)) {
+        if (!(queueManagerTemplate.getMessageConverter() instanceof DbTaskErrorMessageConvertor)) {
             queueManagerTemplate.setMessageConverter(storageErrorMessageConvertor);
         }
 
         //send the message
-        queueManagerTemplate.convertAndSend(queueName, storageError);
+        queueManagerTemplate.convertAndSend(queueName, dbTaskError);
 
         //remove the message from the error queue
-        deleteMessage(errorQueueName, storageError.getMessageId());
+        deleteMessage(errorQueueName, dbTaskError.getMessageId());
     }
 
     @Override

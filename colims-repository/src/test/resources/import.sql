@@ -65,4 +65,4 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 INSERT INTO modification (id, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, accession, database_type, protein_sequence) VALUES (1, 'Q8IWA5', 'UniProt', 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'Q13233', 'UniProt', 'MAAAAGNRASSSGFPGARAT');
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');

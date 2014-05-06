@@ -28,8 +28,8 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    public JButton getCloseProtocolEditButton() {
-        return closeProtocolEditButton;
+    public JButton getCancelProtocolEditButton() {
+        return cancelProtocolEditButton;
     }
 
     public DualList<ProtocolCvTerm> getCvTermDualList() {
@@ -66,7 +66,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         protocolEditPanel = new javax.swing.JPanel();
-        closeProtocolEditButton = new javax.swing.JButton();
+        cancelProtocolEditButton = new javax.swing.JButton();
         protocolSaveOrUpdateButton = new javax.swing.JButton();
         cvTermsPanel = new javax.swing.JPanel();
         cvTermSummaryScrollPane = new javax.swing.JScrollPane();
@@ -79,13 +79,14 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("protocol management");
+        setPreferredSize(new java.awt.Dimension(720, 377));
 
         protocolEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        closeProtocolEditButton.setText("close");
-        closeProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        closeProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        closeProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setText("cancel");
+        cancelProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         protocolSaveOrUpdateButton.setText("save");
         protocolSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -123,17 +124,18 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
             .addGroup(cvTermsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
                     .addComponent(cvTermDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(protocolCvTermsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        nameLabel.setText("name");
+        nameLabel.setText("Name");
 
         protocolStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         protocolStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
+        protocolStateInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout protocolEditPanelLayout = new javax.swing.GroupLayout(protocolEditPanel);
         protocolEditPanel.setLayout(protocolEditPanelLayout);
@@ -144,33 +146,32 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                 .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolEditPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(protocolEditPanelLayout.createSequentialGroup()
+                        .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolEditPanelLayout.createSequentialGroup()
                         .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nameTextField)))
                 .addContainerGap())
         );
         protocolEditPanelLayout.setVerticalGroup(
             protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(protocolEditPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLabel)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -184,7 +185,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 375, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(protocolEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -193,7 +194,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeProtocolEditButton;
+    private javax.swing.JButton cancelProtocolEditButton;
     private com.compomics.colims.client.compoment.DualList<ProtocolCvTerm> cvTermDualList;
     private javax.swing.JList cvTermSummaryList;
     private javax.swing.JScrollPane cvTermSummaryScrollPane;

@@ -23,6 +23,14 @@ public class SpectrumPanelGenerator {
     @Autowired
     private IonLadderMassesCalculator ionLadderCalculator;
 
+    /**
+     *
+     * @param mzRatio
+     * @param charge
+     * @param spectrumPeaks
+     * @param peptide
+     * @return
+     */
     public SpectrumPanel getSpectrumPanel(final double mzRatio, final int charge, final Map<Double, Double> spectrumPeaks, final Peptide peptide) {
         //initialize new SpectrumPanel
         SpectrumPanel spectrumPanel = new SpectrumPanel(

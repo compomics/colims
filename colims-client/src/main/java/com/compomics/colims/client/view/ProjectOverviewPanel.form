@@ -426,7 +426,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="projects"/>
+            <TitledBorder title="Projects"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -503,7 +503,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="experiments"/>
+            <TitledBorder title="Project Experiments"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -571,7 +571,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="samples"/>
+            <TitledBorder title="Experiment samples"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -639,7 +639,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="analytical runs"/>
+            <TitledBorder title="Sample analytical runs"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
@@ -707,7 +707,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="peptide spectrum matches"/>
+            <TitledBorder title="Peptide spectrum matches"/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>

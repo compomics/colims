@@ -8,6 +8,10 @@ import javax.swing.JOptionPane;
  */
 public class UnexpectedErrorMessageEvent extends MessageEvent {
 
+    /**
+     *
+     * @param message
+     */
     public UnexpectedErrorMessageEvent(final String message) {
         super("Unexpected Error", "An unexpected error occured: "
                 + "\n" + message + "."

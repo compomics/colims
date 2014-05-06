@@ -10,11 +10,21 @@ public class RoleChangeEvent extends EntityWithChildrenChangeEvent {
 
     private final Role role;
 
+    /**
+     *
+     * @param type
+     * @param childrenAffected
+     * @param role
+     */
     public RoleChangeEvent(final Type type, final boolean childrenAffected, final Role role) {
         super(type, childrenAffected);
         this.role = role;
     }
 
+    /**
+     *
+     * @return
+     */
     public Role getRole() {
         return role;
     }

@@ -37,25 +37,28 @@ public class Spectrum extends DatabaseEntity {
     @Column(name = "accession", nullable = false)
     private String accession;
     @Basic(optional = true)
-    @Column(name = "title")
+    @Column(name = "title", nullable = true)
     private String title;
     @Basic(optional = false)
     @Column(name = "scan_number", nullable = false)
     private String scanNumber;
-    @Basic(optional = false)
-    @Column(name = "mz_ratio", nullable = false)
+    @Basic(optional = true)
+    @Column(name = "mz_ratio", nullable = true)
     private Double mzRatio;
     @Basic(optional = true)
     @Column(name = "charge", nullable = true)
     private Integer charge;
     @Basic(optional = true)
-    @Column(name = "scan_time")
+    @Column(name = "scan_time", nullable = true)
     private Double scanTime;
-    @Column(name = "intensity")
+    @Basic(optional = true)
+    @Column(name = "intensity", nullable = true)    
     private Double intensity;
-    @Column(name = "retention_time")
+    @Basic(optional = true)
+    @Column(name = "retention_time", nullable = true)
     private Double retentionTime;
-    @Column(name = "fragmentation_type")
+    @Basic(optional = true)
+    @Column(name = "fragmentation_type", nullable = true)
     @Enumerated(EnumType.STRING)
     private FragmentationType fragmentationType;
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
@@ -66,8 +69,6 @@ public class Spectrum extends DatabaseEntity {
     private List<Peptide> peptides = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
-    private List<Quantification> quantifications = new ArrayList<>();
 
     public Spectrum() {
     }
@@ -166,14 +167,6 @@ public class Spectrum extends DatabaseEntity {
 
     public void setSpectrumFiles(List<SpectrumFile> spectrumFiles) {
         this.spectrumFiles = spectrumFiles;
-    }
-
-    public List<Quantification> getQuantifications() {
-        return quantifications;
-    }
-
-    public void setQuantifications(List<Quantification> quantifications) {
-        this.quantifications = quantifications;
     }
 
     @Override

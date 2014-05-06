@@ -6,9 +6,9 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -36,11 +35,14 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
     @Basic(optional = true)
-    @Column(name = "experimental_mass", nullable = true)
-    private Double experimentalMass;
-    @Basic(optional = true)
     @Column(name = "theoretical_mass", nullable = true)
     private Double theoreticalMass;
+    /**
+     * The charge assigned by the search engine.
+     */
+    @Basic(optional = true)
+    @Column(name = "charge", nullable = true)
+    private Integer charge;
     @Basic(optional = true)
     @Column(name = "psm_prob", nullable = true)
     private Double psmProbability;
@@ -59,7 +61,7 @@ public class Peptide extends DatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides = new ArrayList<>();
+    private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
     public Peptide() {
     }
@@ -72,14 +74,6 @@ public class Peptide extends DatabaseEntity {
         this.sequence = sequence;
     }
 
-    public Double getExperimentalMass() {
-        return experimentalMass;
-    }
-
-    public void setExperimentalMass(Double experimentalMass) {
-        this.experimentalMass = experimentalMass;
-    }
-
     public Double getTheoreticalMass() {
         return theoreticalMass;
     }
@@ -87,6 +81,14 @@ public class Peptide extends DatabaseEntity {
     public void setTheoreticalMass(Double theoreticalMass) {
         this.theoreticalMass = theoreticalMass;
     }
+
+    public Integer getCharge() {
+        return charge;
+    }
+
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }        
 
     public IdentificationFile getIdentificationFile() {
         return identificationFile;
@@ -136,13 +138,13 @@ public class Peptide extends DatabaseEntity {
         this.peptideHasProteins = peptideHasProteins;
     }
 
-    public List<QuantificationGroupHasPeptide> getQuantificationGroupHasPeptides() {
-        return quantificationGroupHasPeptides;
+    public List<QuantificationGroup> getQuantificationGroups() {
+        return quantificationGroups;
     }
 
-    public void setQuantificationGroupHasPeptides(List<QuantificationGroupHasPeptide> quantificationGroupHasPeptides) {
-        this.quantificationGroupHasPeptides = quantificationGroupHasPeptides;
-    }
+    public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
+        this.quantificationGroups = quantificationGroups;
+    }    
 
     public int getLength() {
         return sequence.length();
@@ -151,7 +153,11 @@ public class Peptide extends DatabaseEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + (this.sequence != null ? this.sequence.hashCode() : 0);
+        hash = 47 * hash + Objects.hashCode(this.sequence);
+        hash = 47 * hash + Objects.hashCode(this.theoreticalMass);
+        hash = 47 * hash + Objects.hashCode(this.charge);
+        hash = 47 * hash + Objects.hashCode(this.psmProbability);
+        hash = 47 * hash + Objects.hashCode(this.psmPostErrorProbability);
         return hash;
     }
 
@@ -164,9 +170,22 @@ public class Peptide extends DatabaseEntity {
             return false;
         }
         final Peptide other = (Peptide) obj;
-        if ((this.sequence == null) ? (other.sequence != null) : !this.sequence.equals(other.sequence)) {
+        if (!Objects.equals(this.sequence, other.sequence)) {
+            return false;
+        }
+        if (!Objects.equals(this.theoreticalMass, other.theoreticalMass)) {
+            return false;
+        }
+        if (!Objects.equals(this.charge, other.charge)) {
+            return false;
+        }
+        if (!Objects.equals(this.psmProbability, other.psmProbability)) {
+            return false;
+        }
+        if (!Objects.equals(this.psmPostErrorProbability, other.psmPostErrorProbability)) {
             return false;
         }
         return true;
     }
+    
 }

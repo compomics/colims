@@ -64,7 +64,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="maxQuantDirectorySelectionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Select the MaxQuant text files directory"/>
+        <Property name="text" type="java.lang.String" value="Select the MaxQuant text files directory:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="maxQuantDirectoryLabel">
@@ -99,7 +99,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="fastaFileSelectionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Select a FASTA file"/>
+        <Property name="text" type="java.lang.String" value="Select a FASTA file:"/>
       </Properties>
     </Component>
   </SubComponents>

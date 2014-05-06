@@ -11,22 +11,29 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
+import com.compomics.colims.client.storage.DbTaskProducer;
+import com.compomics.colims.client.storage.QueueManager;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
+import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.IdComparator;
+import com.compomics.colims.model.enums.DefaultPermission;
+import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,9 +43,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,6 +63,8 @@ public class ProjectManagementController implements Controllable {
     private EventList<Sample> samples = new BasicEventList<>();
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
+    @Autowired
+    private AuthenticationBean authenticationBean;
     //view
     private ProjectManagementPanel projectManagementPanel;
     //child controller
@@ -82,8 +89,16 @@ public class ProjectManagementController implements Controllable {
     @Autowired
     private UserService userService;
     @Autowired
+    private DbTaskProducer dbTaskProducer;
+    @Autowired
+    private QueueManager queueManager;
+    @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ProjectManagementPanel getProjectManagementPanel() {
         return projectManagementPanel;
     }
@@ -111,12 +126,22 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getProjectsTable().setSelectionModel(projectsSelectionModel);
 
         //set column widths
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(5);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(100);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(100);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(50);
-        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(50);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setPreferredWidth(40);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setMaxWidth(40);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.PROJECT_ID).setMinWidth(40);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.TITLE).setPreferredWidth(500);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setPreferredWidth(250);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setMaxWidth(250);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.LABEL).setMinWidth(250);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(150);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setMaxWidth(150);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.OWNER).setPreferredWidth(150);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setPreferredWidth(120);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setMaxWidth(120);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.CREATED).setMinWidth(120);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setPreferredWidth(120);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setMaxWidth(120);
+        projectManagementPanel.getProjectsTable().getColumnModel().getColumn(ProjectManagementTableFormat.NUMBER_OF_EXPERIMENTS).setMinWidth(120);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
@@ -127,11 +152,19 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getExperimentsTable().setSelectionModel(experimentsSelectionModel);
 
         //set column widths
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(5);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(300);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(100);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(50);
-        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(50);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setPreferredWidth(40);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setMaxWidth(40);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.EXPERIMENT_ID).setMinWidth(40);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.TITLE).setPreferredWidth(500);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setPreferredWidth(150);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setMaxWidth(150);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER).setMinWidth(150);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setPreferredWidth(120);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setMaxWidth(120);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.CREATED).setMinWidth(120);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setPreferredWidth(120);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setMaxWidth(120);
+        projectManagementPanel.getExperimentsTable().getColumnModel().getColumn(ExperimentManagementTableFormat.NUMBER_OF_SAMPLES).setMinWidth(120);
 
         //init experiment samples table
         SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
@@ -142,11 +175,22 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
 
         //set column widths
-        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(5);
-        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(300);
-        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(100);
-        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(50);
-        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(50);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setPreferredWidth(40);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setMaxWidth(40);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.SAMPLE_ID).setMinWidth(40);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NAME).setPreferredWidth(500);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setPreferredWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setMaxWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CONDITION).setMinWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setPreferredWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setMaxWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.PROTOCOL).setMinWidth(200);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setPreferredWidth(120);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setMaxWidth(120);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.CREATED).setMinWidth(120);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setPreferredWidth(120);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setMaxWidth(120);
+        projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setMinWidth(120);
 
         //set sorting
         TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
@@ -170,7 +214,7 @@ public class ProjectManagementController implements Controllable {
                     }
                 }
             }
-        });                
+        });
 
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
@@ -186,7 +230,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedProject != null) {
                     projectEditController.updateView(selectedProject);
                 } else {
-                    eventBus.post(new MessageEvent("project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -197,29 +241,18 @@ public class ProjectManagementController implements Controllable {
                 Project projectToDelete = getSelectedProject();
 
                 if (projectToDelete != null) {
-                    try {
-                        projectService.delete(projectToDelete);
-
+                    boolean deleteConfirmation = deleteEntity(projectToDelete, DbEntityType.PROJECT);
+                    if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         colimsController.getProjects().remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the project can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("project", projectToDelete.getLabel());
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -241,7 +274,7 @@ public class ProjectManagementController implements Controllable {
                 if (getSelectedProject() != null) {
                     experimentEditController.updateView(createDefaultExperiment());
                 } else {
-                    eventBus.post(new MessageEvent("experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -253,7 +286,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedExperiment != null) {
                     experimentEditController.updateView(selectedExperiment);
                 } else {
-                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -264,9 +297,9 @@ public class ProjectManagementController implements Controllable {
                 Experiment experimentToDelete = getSelectedExperiment();
 
                 if (experimentToDelete != null) {
-                    try {
-                        experimentService.delete(experimentToDelete);
-
+                    //send DeleteDbTask to DbTask queue                    
+                    boolean deleteConfirmation = deleteEntity(experimentToDelete, DbEntityType.EXPERIMENT);
+                    if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         experiments.remove(experimentToDelete);
                         experimentsSelectionModel.clearSelection();
@@ -275,33 +308,23 @@ public class ProjectManagementController implements Controllable {
                         //remove experiment from the selected project and update the table
                         getSelectedProject().getExperiments().remove(experimentToDelete);
                         projectManagementPanel.getProjectsTable().updateUI();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the experiment can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("experiment", Long.toString(experimentToDelete.getNumber()));
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         projectManagementPanel.getAddAnalyticalRunButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {    
+            public void actionPerformed(ActionEvent e) {
                 Sample selectedSample = getSelectedSample();
                 if (selectedSample != null) {
                     analyticalRunSetupController.showView();
                 } else {
-                    eventBus.post(new MessageEvent("analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
-                }                
+                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                }
             }
         });
 
@@ -311,8 +334,8 @@ public class ProjectManagementController implements Controllable {
                 if (getSelectedExperiment() != null) {
                     sampleEditController.updateView(createDefaultSample());
                 } else {
-                    eventBus.post(new MessageEvent("sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
-                }                
+                    eventBus.post(new MessageEvent("Sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
+                }
             }
         });
 
@@ -323,7 +346,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedSample != null) {
                     sampleEditController.updateView(selectedSample);
                 } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -334,9 +357,8 @@ public class ProjectManagementController implements Controllable {
                 Sample sampleToDelete = getSelectedSample();
 
                 if (sampleToDelete != null) {
-                    try {
-                        sampleService.delete(sampleToDelete);
-
+                    boolean deleteConfirmation = deleteEntity(sampleToDelete, DbEntityType.SAMPLE);
+                    if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         samples.remove(sampleToDelete);
                         samplesSelectionModel.clearSelection();
@@ -345,19 +367,9 @@ public class ProjectManagementController implements Controllable {
                         //remove sample from the selected experiment and update the table
                         getSelectedExperiment().getSamples().remove(sampleToDelete);
                         projectManagementPanel.getExperimentsTable().updateUI();
-                    } catch (DataIntegrityViolationException dive) {
-                        //check if the sample can be deleted without breaking existing database relations,
-                        //i.e. are there any constraints violations
-                        if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("sample", sampleToDelete.getName());
-                            eventBus.post(dbConstraintMessageEvent);
-                        } else {
-                            //pass the exception
-                            throw dive;
-                        }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -477,7 +489,7 @@ public class ProjectManagementController implements Controllable {
 
         return selectedExperiment;
     }
-    
+
     /**
      * Get the row index of the selected sample in the samples table
      *
@@ -504,7 +516,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addSample(Sample sample) {
         samples.add(sample);
-        
+
         //add the sample to the selected experiment and update the experiments table
         getSelectedExperiment().getSamples().add(sample);
         projectManagementPanel.getProjectsTable().updateUI();
@@ -518,7 +530,7 @@ public class ProjectManagementController implements Controllable {
     public int getSamplesSize() {
         return samples.size();
     }
-    
+
     /**
      * Get the selected sample from the sample overview table.
      *
@@ -533,6 +545,40 @@ public class ProjectManagementController implements Controllable {
         }
 
         return selectedSample;
+    }
+
+    /**
+     * Delete the database entity (project, experiment, analytical runs) from
+     * the database. Shows a confirmation dialog first. When confirmed, a
+     * DeleteDbTask message is sent to the DB task queue.
+     *
+     * @param entity
+     * @param dbEntityType
+     * @return true if the delete task is confirmed.
+     */
+    private boolean deleteEntity(DatabaseEntity entity, DbEntityType dbEntityType) {
+        boolean deleteConfirmation = false;
+
+        //check delete permissions
+        if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
+            int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
+                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityType.userFriendlyName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                //check connection
+                if (queueManager.testConnection()) {
+                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityType, entity.getId(), authenticationBean.getCurrentUser().getId());
+                    dbTaskProducer.sendDbTask(deleteDbTask);
+
+                    deleteConfirmation = true;
+                } else {
+                    eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+                }
+            }
+        } else {
+            colimsController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
+        }
+
+        return deleteConfirmation;
     }
 
     /**
@@ -570,7 +616,7 @@ public class ProjectManagementController implements Controllable {
 
         return defaultExperiment;
     }
-    
+
     /**
      * Create a default sample, with some default properties.
      *

@@ -19,12 +19,23 @@ public class UtilitiesPeptideMapper {
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
-    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final Peptide targetPeptide) throws MappingException {
+    /**
+     * Map the utilities objects onto the colims Peptide.
+     *
+     * @param sourcePeptide
+     * @param psmMatchScore
+     * @param ptmScores
+     * @param identificationCharge
+     * @param targetPeptide
+     * @throws MappingException
+     */
+    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws MappingException {
         //set sequence
         targetPeptide.setSequence(sourcePeptide.getSequence());
         //set theoretical mass
         targetPeptide.setTheoreticalMass(sourcePeptide.getMass());
-        //@todo how to get experimental mass
+        //set identification charge
+        targetPeptide.setCharge(identificationCharge);
         //set psm probability
         targetPeptide.setPsmProbability(psmMatchScore.getProbability());
         //set psm posterior error probability

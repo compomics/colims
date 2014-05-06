@@ -164,6 +164,10 @@ public class PeptideShakerDataImportController implements Controllable {
         return validationMessages;
     }
 
+    /**
+     *
+     * @return
+     */
     public PeptideShakerDataImport getDataImport() {
         List<File> mgfFiles = new ArrayList<>();
         for (int i = 0; i < mgfFileListModel.size(); i++) {

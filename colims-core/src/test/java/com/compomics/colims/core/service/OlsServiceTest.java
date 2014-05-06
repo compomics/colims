@@ -26,7 +26,7 @@ public class OlsServiceTest {
     private OlsService olsService;
 
     /**
-     * Test the find modification by accession method from the OlsService
+     * Test the find modification by accession method from the OlsService.
      */
     @Test
     public void testFindModificationByAccession() {
@@ -48,7 +48,7 @@ public class OlsServiceTest {
     }
 
     /**
-     * Test the find modification by exact name method from the OlsService
+     * Test the find modification by exact name method from the OlsService.
      */
     @Test
     public void testFindModificationByExactName() {
@@ -70,7 +70,7 @@ public class OlsServiceTest {
     }
 
     /**
-     * Test the find modification by name method from the OlsService
+     * Test the find modification by name method from the OlsService.
      */
     @Test
     public void testFindModificationByName() {
@@ -84,15 +84,21 @@ public class OlsServiceTest {
     }
     
     /**
-     * Test the find modification by name and UNIMOD accession method from the OlsService
+     * Test the find a modification by name and UNIMOD accession method from the OlsService.
      */
     @Test
-    public void testFindModificationByNameAndUnimodAccession() {
-        //try to find an existing modification
-//        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Oxidation", "UNIMOD:35");
-//        Assert.assertNotNull(modification);
-        
+    public void testFindModificationByNameAndUnimodAccession_1() {        
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
     }
+    
+    /**
+     * Test the find a modification by name and UNIMOD accession method from the OlsService.
+     */
+    @Test
+    public void testFindModificationByNameAndUnimodAccession_2() {        
+        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
+        Assert.assertNotNull(modification);
+    }
+    
 }

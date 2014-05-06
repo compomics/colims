@@ -57,6 +57,10 @@ public class ProjectEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public ProjectEditDialog getProjectEditDialog() {
         return projectEditDialog;
     }
@@ -108,37 +112,34 @@ public class ProjectEditController implements Controllable {
                 }                
                 if (validationMessages.isEmpty()) {
                     int index;
-                    EntityChangeEvent.Type type;
                     
                     if (projectToEdit.getId() != null) {
                         projectService.update(projectToEdit);
                         
                         index = projectManagementController.getSelectedProjectIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
                     } else {
                         projectService.save(projectToEdit);
 
                         index = projectManagementController.getProjectsSize() - 1;
-                        type = EntityChangeEvent.Type.CREATED;
                         
                         //add project to overview table
                         projectManagementController.addProject(projectToEdit);                        
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
                     }                    
-                    MessageEvent messageEvent = new MessageEvent("project persist confirmation", "Project " + projectToEdit.getLabel() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in project list in management overview dialog
                     projectManagementController.setSelectedProject(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        projectEditDialog.getCloseButton().addActionListener(new ActionListener() {
+        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 projectEditDialog.dispose();

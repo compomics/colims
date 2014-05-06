@@ -52,6 +52,10 @@ public class AnalyticalRunEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    /**
+     *
+     * @return
+     */
     public AnalyticalRunEditDialog getAnalyticalRunEditDialog() {
         return analyticalRunEditDialog;
     }
@@ -91,19 +95,19 @@ public class AnalyticalRunEditController implements Controllable {
                     analyticalRunService.update(analyticalRunToEdit);
                     int index = sampleEditController.getSelectedAnalyticalRunIndex();
 
-                    MessageEvent messageEvent = new MessageEvent("analytical run persist confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was persisted successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Analytical run store confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
                     //refresh selection in analytical list in sample edit dialog
                     sampleEditController.setSelectedAnalyticalRun(index);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
         });
 
-        analyticalRunEditDialog.getCloseButton().addActionListener(new ActionListener() {
+        analyticalRunEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 analyticalRunEditDialog.dispose();

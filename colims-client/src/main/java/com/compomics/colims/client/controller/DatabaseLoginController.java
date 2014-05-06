@@ -36,12 +36,21 @@ public class DatabaseLoginController implements Controllable {
     //view
     private DatabaseLoginDialog databaseLoginDialog;
 
+    /**
+     *
+     * @throws ConfigurationException
+     * @throws IOException
+     */
     public DatabaseLoginController() throws ConfigurationException, IOException {
         //load client properties file
         Resource clientProperties = getResourceByRelativePath("config/colims-client.properties");
         propertiesConfiguration = new PropertiesConfiguration(clientProperties.getURL());
     }
 
+    /**
+     *
+     * @return
+     */
     public DatabaseLoginDialog getDatabaseLoginDialog() {
         return databaseLoginDialog;
     }

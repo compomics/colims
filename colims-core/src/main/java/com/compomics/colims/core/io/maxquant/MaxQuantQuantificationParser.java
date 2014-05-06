@@ -74,12 +74,12 @@ public class MaxQuantQuantificationParser {
                 lightQuant.setIntensity(lightIntensity);
                 // lightQuant.setSpectrum(null);
                 lightQuant.setWeight(QuantificationWeight.LIGHT);
-                lightQuant.setQuantificationGroup(quantGroup);
+//                lightQuant.setQuantificationGroup(quantGroup);
 
                 heavyQuant.setIntensity(heavyIntensity);
                 //  heavyQuant.setSpectrum(null);
                 heavyQuant.setWeight(QuantificationWeight.HEAVY);
-                heavyQuant.setQuantificationGroup(quantGroup);
+//                heavyQuant.setQuantificationGroup(quantGroup);
 
                 spectrumSpecificQuantificationsList.add(lightQuant);
                 spectrumSpecificQuantificationsList.add(heavyQuant);
@@ -87,7 +87,7 @@ public class MaxQuantQuantificationParser {
                 mergeIntoTotalResults(spectrumID, spectrumSpecificQuantificationsList, processedSpectrumMap);
                 quantificationsList.addAll(spectrumSpecificQuantificationsList);
             }
-            quantGroup.setQuantifications(quantificationsList);
+//            quantGroup.setQuantifications(quantificationsList);
 
         }
 

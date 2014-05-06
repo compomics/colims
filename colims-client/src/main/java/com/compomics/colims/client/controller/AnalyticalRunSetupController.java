@@ -5,16 +5,18 @@ import com.compomics.colims.client.event.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.StorageTaskProducer;
+import com.compomics.colims.client.storage.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.StorageMetadata;
-import com.compomics.colims.distributed.model.StorageTask;
-import com.compomics.colims.distributed.model.enums.StorageType;
+import com.compomics.colims.distributed.model.PersistMetadata;
+import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.enums.DbEntityType;
+import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
@@ -56,7 +58,7 @@ public class AnalyticalRunSetupController implements Controllable {
     //model       
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
-    private StorageType storageType;
+    private PersistType storageType;
     private Instrument instrument;
     //view
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
@@ -80,10 +82,14 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
-    private StorageTaskProducer storageTaskProducer;
+    private DbTaskProducer storageTaskProducer;
     @Autowired
     private QueueManager queueManager;
 
+    /**
+     *
+     * @return
+     */
     public AnalyticalRunSetupDialog getAnalyticalRunSetupDialog() {
         return analyticalRunSetupDialog;
     }
@@ -139,7 +145,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             }
                             onCardSwitch();
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         break;
@@ -177,7 +183,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             sendStorageTask(peptideShakerDataImportController.getDataImport());
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         onCardSwitch();
@@ -188,7 +194,7 @@ public class AnalyticalRunSetupController implements Controllable {
                             sendStorageTask(maxQuantDataImportController.getDataImport());
                             getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
-                            MessageEvent messageEvent = new MessageEvent("validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
                         }
                         onCardSwitch();
@@ -199,7 +205,7 @@ public class AnalyticalRunSetupController implements Controllable {
             }
         });
 
-        analyticalRunSetupDialog.getCloseButton().addActionListener(new ActionListener() {
+        analyticalRunSetupDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 analyticalRunSetupDialog.dispose();
@@ -234,7 +240,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
             }
         } else {
-            eventBus.post(new MessageEvent("authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
+            eventBus.post(new MessageEvent("Authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
 
@@ -251,18 +257,18 @@ public class AnalyticalRunSetupController implements Controllable {
 
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
-        String userName = authenticationBean.getCurrentUser().getName();
+        User currentUser = authenticationBean.getCurrentUser();
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
-        
-        StorageMetadata storageMetadata = new StorageMetadata(storageType, storageDescription, userName, startDate, instrument, sample);
-        StorageTask storageTask = new StorageTask(storageMetadata, dataImport);
+
+        PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
+        PersistDbTask persistDbTask = new PersistDbTask(DbEntityType.ANALYTICAL_RUN, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
         try {
-            storageTaskProducer.sendStorageTask(storageTask);
+            storageTaskProducer.sendDbTask(persistDbTask);
         } catch (JmsException jmsException) {
             LOGGER.error(jmsException.getMessage(), jmsException);
-            MessageEvent messageEvent = new MessageEvent("connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE);
+            eventBus.post(new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE));
         }
     }
 
@@ -327,15 +333,15 @@ public class AnalyticalRunSetupController implements Controllable {
      *
      * @return the selected StorageType
      */
-    private StorageType getSelectedStorageType() {
-        StorageType selectedStorageType = null;
+    private PersistType getSelectedStorageType() {
+        PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
         for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                selectedStorageType = StorageType.getByUserFriendlyName(button.getText());
+                selectedStorageType = PersistType.getByUserFriendlyName(button.getText());
             }
         }
 

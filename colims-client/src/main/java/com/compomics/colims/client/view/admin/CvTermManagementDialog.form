@@ -49,10 +49,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="cvTermOverviewPanel" min="-2" pref="534" max="-2" attributes="0"/>
-                      <Component id="cvTermDetailPanel" alignment="0" min="-2" pref="534" max="-2" attributes="0"/>
+                      <Component id="cvTermOverviewPanel" pref="534" max="32767" attributes="0"/>
+                      <Component id="cvTermDetailPanel" alignment="0" pref="534" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -66,7 +66,7 @@
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Component id="cvTermDetailPanel" pref="343" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="closeButton" min="-2" pref="23" max="-2" attributes="0"/>
+                  <Component id="cancelButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -77,7 +77,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="overview"/>
+                <TitledBorder title="Overview"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -91,14 +91,15 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cvTermTableScrollPane" min="-2" pref="502" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="addCvTermButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="deleteCvTermButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="336" max="32767" attributes="0"/>
+                              <Component id="addCvTermButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="deleteCvTermButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="cvTermTableScrollPane" alignment="0" max="32767" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -179,7 +180,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="detail"/>
+                <TitledBorder title="Detail"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -192,81 +193,77 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="cvTermStateInfoLabel" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="editUsingOlsCvTermButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="69" max="32767" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" pref="389" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="cvTermStateInfoLabel" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="ontologyLabel" pref="158" max="32767" attributes="0"/>
-                                          <Component id="ontologyLabelLabel" max="32767" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
                                   <Component id="accessionLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="ontologyLabelLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="ontologyLabel" alignment="0" pref="85" max="32767" attributes="0"/>
+                                  <Component id="definitionLabel" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="ontologyTextField" pref="270" max="32767" attributes="0"/>
-                                  <Component id="ontologyLabelTextField" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="accessionTextField" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="accessionTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="nameTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="ontologyTextField" max="32767" attributes="0"/>
+                                  <Component id="ontologyLabelTextField" alignment="1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                      <Component id="cvTermStateInfoLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="ontologyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ontologyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="ontologyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="ontologyLabelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ontologyLabelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="ontologyLabelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="accessionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="accessionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="accessionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="117" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="143" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="saveOrUpdateButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                          <Component id="editUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="saveOrUpdateButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="editUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="cvTermStateInfoLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -274,7 +271,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="ontologyLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="ontology name"/>
+                <Property name="text" type="java.lang.String" value="Ontology Name"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="ontologyTextField">
@@ -284,7 +281,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="ontologyLabelLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="ontology label"/>
+                <Property name="text" type="java.lang.String" value="Ontology Label"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="ontologyLabelTextField">
@@ -294,12 +291,12 @@
             </Component>
             <Component class="javax.swing.JLabel" name="accessionLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="accession"/>
+                <Property name="text" type="java.lang.String" value="Accession"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="nameLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="name"/>
+                <Property name="text" type="java.lang.String" value="Name"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="accessionTextField">
@@ -334,6 +331,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="ff" type="rgb"/>
                 </Property>
+                <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="horizontalTextPosition" type="int" value="2"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[100, 20]"/>
@@ -348,7 +346,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="definitionLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="definition"/>
+                <Property name="text" type="java.lang.String" value="Definition"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -386,9 +384,9 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="closeButton">
+        <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="close"/>
+            <Property name="text" type="java.lang.String" value="cancel"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
