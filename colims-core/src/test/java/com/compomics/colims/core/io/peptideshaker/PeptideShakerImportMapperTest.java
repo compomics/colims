@@ -25,6 +25,7 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -74,21 +75,24 @@ public class PeptideShakerImportMapperTest {
     }
 
     @Test
-    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException {
+    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException {
         //import PeptideShaker .cps file
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
         
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
         unpackedPsDataImport.setFastaDb(fastaDb);
 
+        //clear resources
+        peptideShakerImportMapper.clear();
+        
         List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
 
         //analytical run
@@ -96,7 +100,7 @@ public class PeptideShakerImportMapperTest {
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
-        Assert.assertEquals(4706, testAnalyticalRun.getSpectrums().size());
+        Assert.assertEquals(6538, testAnalyticalRun.getSpectrums().size());
 
         //spectra
         for (Spectrum spectrum : testAnalyticalRun.getSpectrums()) {
@@ -120,7 +124,7 @@ public class PeptideShakerImportMapperTest {
                             Assert.assertNotNull(peptideHasModification.getPeptide());
                             Modification modification = peptideHasModification.getModification();
                             Assert.assertNotNull(modification);
-                            //Assert.assertNotNull(modification.getPeptideHasModifications());
+                            Assert.assertNotNull(modification.getPeptideHasModifications());
                             Assert.assertFalse(modification.getName().isEmpty());
                         }
                     }
