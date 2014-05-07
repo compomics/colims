@@ -169,13 +169,12 @@ public class MaxQuantImportMapper {
                 finalWriter.write(reverseBuffer.toString());
                 normalBuffer = new StringBuilder();
                 reverseBuffer = new StringBuilder();
-
-                if (line.contains(">sp|")) {
-                    reverseBuffer.append(line.replaceFirst("\\|", "|REV__")).append("\n");
-                } else if (line.contains("CON__")) {
+                if (line.contains("CON__")) {
                     line = line.replace(">", ">generic|");
                     line = line.replaceFirst(" ", "|");
                     reverseBuffer.append(line.replaceFirst("CON__", "REV__CON__")).append("\n");
+                } else if (line.matches(">.*|")) {
+                    reverseBuffer.append(line.replaceFirst("\\|", "|REV__")).append("\n");
                 }
                 normalBuffer.append(line).append("\n");
             } else {
