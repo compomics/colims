@@ -91,6 +91,8 @@ public class PersistDbTaskHandler {
                 analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
                 break;
             case MAX_QUANT:
+                //clear resources before mapping
+                maxQuantImportMapper.clear();
                 analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) persistDbTask.getDataImport());
                 break;
             default:

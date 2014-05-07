@@ -53,10 +53,6 @@ public class MaxQuantImportMapper {
      * The map of new proteins (key: protein accession, value: the protein)
      */
     private Map<String, Protein> newProteins = new HashMap<>();
-    /**
-     * The cache used to store objects.
-     */
-    private ObjectsCache objectsCache;
 
     /**
      * method to import a max quant search into colims
@@ -79,8 +75,7 @@ public class MaxQuantImportMapper {
         File preparedFastaFile = null;
         try {
             //just in case
-            maxQuantParser.clearParsedProject();
-            clearMappingResources();
+            maxQuantParser.clearParsedProject();            
             preparedFastaFile = prepareFasta(aMaxQuantImport.getFastaDb().getFilePath());
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(preparedFastaFile, null);
@@ -111,7 +106,7 @@ public class MaxQuantImportMapper {
                 targetRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(targetRun);
             }
-        } catch (IOException | ClassNotFoundException | SQLException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
+        } catch (IOException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         } finally {
@@ -123,11 +118,12 @@ public class MaxQuantImportMapper {
 
     }
 
-    private void clearMappingResources() throws IOException, SQLException {
+    /**
+     * Clear resources.
+     */
+    public void clear() throws IOException, SQLException {
         spectrumFactory.clearFactory();
-        sequenceFactory.clearFactory();
-        objectsCache = new ObjectsCache();
-        objectsCache.setAutomatedMemoryManagement(true);
+        sequenceFactory.clearFactory();        
         newProteins.clear();
     }
 
