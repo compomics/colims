@@ -142,12 +142,12 @@ public class MaxQuantImportMapper {
         }
         String line;
         try (FileWriter writer = new FileWriter(preparedFile)) {
-            LineNumberReader originalReader = new LineNumberReader(new FileReader(originalFile));
-            line = null;
-            while ((line = originalReader.readLine()) != null) {
-                writer.write(line + "\n");
+            try (LineNumberReader originalReader = new LineNumberReader(new FileReader(originalFile))) {
+                line = null;
+                while ((line = originalReader.readLine()) != null) {
+                    writer.write(line + "\n");
+                }
             }
-            originalReader.close();
             InputStream fileStream = new ClassPathResource("config/contaminants.fasta").getInputStream();
             LineNumberReader contaminantsReader = new LineNumberReader(new InputStreamReader(fileStream));
             while ((line = contaminantsReader.readLine()) != null) {
