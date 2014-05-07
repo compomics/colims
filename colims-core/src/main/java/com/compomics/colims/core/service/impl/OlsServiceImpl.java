@@ -26,14 +26,17 @@ public class OlsServiceImpl implements OlsService {
         Modification modification = null;
 
         //find the modification by exact name        
-        Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
-        if (modificationTerms.getItem() != null) {
-            //get the modificiation accession
-            for (MapItem mapItem : modificationTerms.getItem()) {
-                modification = findModifiationByAccession(mapItem.getKey().toString());
+        try {
+            Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
+            if (modificationTerms.getItem() != null) {
+                //get the modificiation accession
+                for (MapItem mapItem : modificationTerms.getItem()) {
+                    modification = findModifiationByAccession(mapItem.getKey().toString());
+                }
             }
-        }
+        } catch (Exception e) {
 
+        }
         return modification;
     }
 
@@ -123,7 +126,10 @@ public class OlsServiceImpl implements OlsService {
                 Modification foundModification = findModifiationByAccession(tempAccession);
                 if (foundModification != null) {
                     modification = foundModification;
+<<<<<<< HEAD
                     modification.setAlternativeAccession(unimodAccession);
+=======
+>>>>>>> 7e947417971c1d884b324b359d413aa18960c583
                 }
             }
         }

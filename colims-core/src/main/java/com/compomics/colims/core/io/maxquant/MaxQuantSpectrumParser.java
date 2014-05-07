@@ -33,17 +33,18 @@ public class MaxQuantSpectrumParser {
 
     private HashMap<Double, Peak> parsePeakList(String peaklist, String intensities, String masses) {
         HashMap<Double, Peak> peakMap = new HashMap<>();
-        String[] peakList = peaklist.split(";");
-        String[] intensityList = intensities.split(";");
-        String[] massList = masses.split(";");
-        for (int i = 0; i < peakList.length; i++) {
-            int charge = 1;
+        if (!peaklist.isEmpty() && !intensities.isEmpty() && !masses.isEmpty()) {
+            String[] peakList = peaklist.split(";");
+            String[] intensityList = intensities.split(";");
+            String[] massList = masses.split(";");
+            for (int i = 0; i < peakList.length; i++) {
+                int charge = 1;
 //            if (peakList[i].contains("")) {
 //            }
-            Double moverz = Double.parseDouble(massList[i]) / charge;
-            peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
+                Double moverz = Double.parseDouble(massList[i]) / charge;
+                peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
+            }
         }
-
         return peakMap;
     }
 
@@ -124,7 +125,11 @@ public class MaxQuantSpectrumParser {
         if (values.containsKey(MsmsHeaders.Charge.getColumnName()) && values.containsKey(MsmsHeaders.Precursor_Intensity.getColumnName())) {
             ArrayList<Charge> charges = new ArrayList<>();
             charges.add(new Charge(Charge.PLUS, Integer.valueOf(values.get(MsmsHeaders.Charge.getColumnName()))));
-            Double precursorIntensity = Double.parseDouble(values.get(MsmsHeaders.Precursor_Intensity.getColumnName()));
+            String precursorIntensityString = values.get(MsmsHeaders.Precursor_Intensity.getColumnName());
+            if (precursorIntensityString.equalsIgnoreCase("NAN")) {
+                precursorIntensityString = "-1";
+            }
+            Double precursorIntensity = Double.parseDouble(precursorIntensityString);
             precursor = new Precursor(rt, mz, precursorIntensity, charges);
         } else {
             throw new UnparseableException("could not parse precursor");
