@@ -44,8 +44,8 @@
                 <!--                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>
                 <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>-->
                 <prop key="hibernate.generate_statistics">false</prop>      
-                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
-                <prop key="hibernate.search.default.indexBase">${hibernate.search.index.directory}</prop>                                      
+<!--                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.index.directory}</prop>                                      -->
                 <prop key="hibernate.cache.use_structured_entries">true</prop>                         
                 <prop key="hibernate.cache.use_query_cache">true</prop>                         
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>       

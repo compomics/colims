@@ -36,4 +36,12 @@ public class MaxQuantUtilitiesPsmMapper {
         targetSpectrum.getPeptides().add(targetPeptide);
         targetPeptide.setSpectrum(targetSpectrum);
     }
+
+    /**
+     * Clear resources.
+     */
+    public void clear() {
+        utilitiesProteinMapper.clear();
+        maxQuantUtilitiesPeptideMapper.clear();
+    }
 }

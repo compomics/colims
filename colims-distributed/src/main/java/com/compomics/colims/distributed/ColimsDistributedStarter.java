@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed;
 
-import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;

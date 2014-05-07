@@ -32,7 +32,7 @@ import org.hibernate.search.annotations.Store;
  */
 @Table(name = "protein")
 @Entity
-@Indexed
+//@Indexed
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Protein extends DatabaseEntity {

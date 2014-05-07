@@ -24,14 +24,14 @@ public class ProteinRepositoryTest {
     @Autowired
     private ProteinRepository proteinRepository;
 
-    @Test
+//    @Test
     public void testHibernateSearchFindBySequence() {
-        //(re)build the lucene indexes
-        proteinRepository.rebuildIndex();
-        
-        Protein foundProtein = proteinRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
-        Assert.assertNotNull(foundProtein);
-        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
+//        //(re)build the lucene indexes
+//        proteinRepository.rebuildIndex();
+//        
+//        Protein foundProtein = proteinRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
+//        Assert.assertNotNull(foundProtein);
+//        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
     }
         
 }

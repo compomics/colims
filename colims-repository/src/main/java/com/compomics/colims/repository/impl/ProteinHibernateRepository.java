@@ -27,29 +27,29 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
         return (Protein) criteria.uniqueResult();
     }
 
-    @Override
-    public Protein hibernateSearchFindBySequence(String sequence) {
-        FullTextSession fullTextSession = Search.getFullTextSession(getCurrentSession());
-
-        final QueryBuilder queryBuilder = fullTextSession.getSearchFactory()
-                .buildQueryBuilder().forEntity(Protein.class).get();
-
-        org.apache.lucene.search.Query luceneQuery
-                = queryBuilder.keyword().onField("sequence").matching(sequence).createQuery();
-
-        org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Protein.class);
-        
-        return (Protein) fullTextQuery.uniqueResult();
-    }
-
-    @Override
-    public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getCurrentSession());
-        try {
-            fullTextSession.createIndexer(Protein.class).startAndWait();
-        } catch (InterruptedException ex) {
-            LOGGER.error(ex);
-        }
-    }
+//    @Override
+//    public Protein hibernateSearchFindBySequence(String sequence) {
+//        FullTextSession fullTextSession = Search.getFullTextSession(getCurrentSession());
+//
+//        final QueryBuilder queryBuilder = fullTextSession.getSearchFactory()
+//                .buildQueryBuilder().forEntity(Protein.class).get();
+//
+//        org.apache.lucene.search.Query luceneQuery
+//                = queryBuilder.keyword().onField("sequence").matching(sequence).createQuery();
+//
+//        org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Protein.class);
+//        
+//        return (Protein) fullTextQuery.uniqueResult();
+//    }
+//
+//    @Override
+//    public void rebuildIndex() {
+//        FullTextSession fullTextSession = Search.getFullTextSession(getCurrentSession());
+//        try {
+//            fullTextSession.createIndexer(Protein.class).startAndWait();
+//        } catch (InterruptedException ex) {
+//            LOGGER.error(ex);
+//        }
+//    }
 
 }

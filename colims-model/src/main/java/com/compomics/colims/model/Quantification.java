@@ -11,6 +11,8 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -31,6 +33,7 @@ public class Quantification extends DatabaseEntity {
     @Column(name = "intensity", nullable = false)
     private double intensity;
     @Basic(optional = false)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "weight", nullable = false)
     private QuantificationWeight weight;
     @JoinColumn(name = "l_quantification_file_id", referencedColumnName = "id")

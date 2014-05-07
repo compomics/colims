@@ -48,7 +48,7 @@ public class UtilitiesPeptideMapper {
     }
     
     /**
-     * Clear resources after usage.
+     * Clear resources.
      */
     public void clear(){
         utilitiesModificationMapper.clear();

@@ -50,4 +50,11 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
         }
         utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);
     }
+
+    /**
+     * Clear resources.
+     */
+    public void clear() {
+        utilitiesPeptideMapper.clear();
+    }
 }

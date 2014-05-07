@@ -82,7 +82,7 @@ public class Playground2 {
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
         unpackedPsDataImport.setFastaDb(fastaDb);
 
-        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
 
         //get sample from db
         Sample sample = sampleService.findAll().get(0);
@@ -105,7 +105,7 @@ public class Playground2 {
         unpackedPsDataImport.setMgfFiles(mgfFiles);
         unpackedPsDataImport.setFastaDb(fastaDb);
 
-        analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
+        analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
 
         //get sample from db
         sample = sampleService.findAll().get(0);
@@ -163,8 +163,8 @@ public class Playground2 {
 //        ptmScoring.addDeltaScore(locations, oxidationScore);
 //        ptmScores.addPtmScoring(oxidationMatch.getTheoreticPtm(), ptmScoring);
 //
-//        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
-//        utilitiesPeptideMapper.map(sourcePeptide, peptideMatchScore, ptmScores, targetPeptide);
+//        utilitiesProteinMapper.mapAnalyticalRuns(proteinMatches, peptideMatchScore, targetPeptide);
+//        utilitiesPeptideMapper.mapAnalyticalRuns(sourcePeptide, peptideMatchScore, ptmScores, targetPeptide);
 //
 //        peptideService.saveOrUpdate(targetPeptide);
     }

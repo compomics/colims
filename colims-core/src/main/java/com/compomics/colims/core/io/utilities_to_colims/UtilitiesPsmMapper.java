@@ -9,12 +9,10 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
-import eu.isas.peptideshaker.scoring.MatchValidationLevel;
 import java.io.IOException;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
@@ -35,39 +33,19 @@ public class UtilitiesPsmMapper {
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
     public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException, InterruptedException {
-        //get psm probabilities
-        PSParameter psmProbabilities = new PSParameter();
-        try {
-            psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException(ex);
-        }
-
-        //check if the psm has been validated
-        if (psmProbabilities.getMatchValidationLevel().isValidated()) {
-            if (spectrumMatch.getBestPeptideAssumption() != null) {
+        if (spectrumMatch.getBestPeptideAssumption() != null) {
+            try {
                 //get best assumption
                 PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
                 com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-
-                PSParameter peptideProbabilities = new PSParameter();
-//                PSParameter proteinProbabilities = new PSParameter();
                 Peptide targetPeptide = new Peptide();
-                try {
-//                    for (String peptideKey : ms2Identification.getPeptideIdentification()) {
-//                        PeptideMatch peptideMatch = ms2Identification.getPeptideMatch(peptideKey);                        
-//                        peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(peptideKey, peptideProbabilities);
-//                        if (peptideProbabilities == null) {
-//                            System.out.println("-------------------------");
-//                        }
-//                    }                    
-                    //get peptide probabilities            
-                    peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
-                } catch (SQLException | IOException | ClassNotFoundException ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                    throw new MappingException(ex);
-                }
+
+                PSParameter psmProbabilities = new PSParameter();
+                PSParameter peptideProbabilities = new PSParameter();
+//                PSParameter proteinProbabilities = new PSParameter();                                
+                //get psm and peptide probabilities  
+                psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
+                peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
 
                 MatchScore psmMatchScore = new MatchScore(psmProbabilities.getPsmProbabilityScore(), psmProbabilities.getPsmProbability());
                 PSPtmScores ptmScores = null;
@@ -81,19 +59,15 @@ public class UtilitiesPsmMapper {
 
                 List<ProteinMatch> proteinMatches = new ArrayList<>();
                 //iterate over protein keys        
-                try {
-                    //get parent proteins without remapping them
-                    //@todo this is probably the way to go for maxquant, but what about peptideshaker?
-                    for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {
-                        ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
-                        if (proteinMatch != null) {
-                            proteinMatches.add(proteinMatch);
-                        }
+                //get parent proteins without remapping them
+                //@todo this is the way to go for maxquant, but what about peptideshaker?
+                for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {
+                    ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
+                    if (proteinMatch != null) {
+                        proteinMatches.add(proteinMatch);
                     }
-                } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                    throw new MappingException(ex);
                 }
+
                 //map proteins
                 MatchScore peptideMatchScore = null;
                 if (peptideProbabilities != null) {
@@ -104,14 +78,18 @@ public class UtilitiesPsmMapper {
                 }
 
                 utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
-            } else {
-                LOGGER.debug("No best match was found for spectrum match " + spectrumMatch.getKey());
+            } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                throw new MappingException(ex);
             }
         } else {
-            LOGGER.info("The PSM was not validated for spectrum match " + spectrumMatch.getKey());
+            LOGGER.debug("No best match was found for spectrum match " + spectrumMatch.getKey());
         }
     }
 
+    /**
+     * Clear resources.
+     */
     public void clear() {
         utilitiesPeptideMapper.clear();
         utilitiesProteinMapper.clear();

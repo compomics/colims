@@ -36,7 +36,7 @@
                 <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop> 
                 <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>  
                 <prop key="hibernate.generate_statistics">true</prop>  
-                <prop key="hibernate.search.default.directory_provider">ram</prop>
+<!--                <prop key="hibernate.search.default.directory_provider">ram</prop>-->
 <!--                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
                 <prop key="hibernate.search.default.indexBase">${hibernate.search.index.directory}</prop>            -->
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>

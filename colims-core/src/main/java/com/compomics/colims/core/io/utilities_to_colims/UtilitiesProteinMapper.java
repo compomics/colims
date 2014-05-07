@@ -132,15 +132,50 @@ public class UtilitiesProteinMapper {
                 //map the utilities protein onto the colims protein
                 targetProtein = new Protein(sourceProtein.getSequence());
                 ProteinAccession proteinAccession = new ProteinAccession(sourceProtein.getAccession());
+
+                //set entity relations
+                proteinAccession.setProtein(targetProtein);
                 targetProtein.getProteinAccessions().add(proteinAccession);
+
                 //add to cached proteins map
                 cachedProteins.put(targetProtein.getSequence(), targetProtein);
             } else {
+                updateAccessions(targetProtein, sourceProtein.getAccession());
+
                 //add to cached proteins
                 cachedProteins.put(targetProtein.getSequence(), targetProtein);
             }
+        } else {
+            updateAccessions(targetProtein, sourceProtein.getAccession());
         }
 
         return targetProtein;
+    }
+
+    /**
+     * Update the ProteinAccessions linked to a Protein.
+     *
+     * @param protein
+     * @param accession
+     */
+    private void updateAccessions(Protein protein, String accession) {
+        //check if the protein accession is already linked to the protein
+        boolean proteinAccessionPresent = false;
+
+        for (ProteinAccession proteinAccession : protein.getProteinAccessions()) {
+            if (proteinAccession.getAccession().equals(accession)) {
+                proteinAccessionPresent = true;
+                break;
+            }
+        }
+
+        if (!proteinAccessionPresent) {
+            ProteinAccession proteinAccession = new ProteinAccession(accession);
+            protein.getProteinAccessions().add(proteinAccession);
+
+            //set entity relations
+            proteinAccession.setProtein(protein);
+            protein.getProteinAccessions().add(proteinAccession);
+        }
     }
 }
