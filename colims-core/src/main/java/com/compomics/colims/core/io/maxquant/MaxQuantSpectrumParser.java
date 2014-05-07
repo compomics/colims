@@ -125,7 +125,11 @@ public class MaxQuantSpectrumParser {
         if (values.containsKey(MsmsHeaders.Charge.getColumnName()) && values.containsKey(MsmsHeaders.Precursor_Intensity.getColumnName())) {
             ArrayList<Charge> charges = new ArrayList<>();
             charges.add(new Charge(Charge.PLUS, Integer.valueOf(values.get(MsmsHeaders.Charge.getColumnName()))));
-            Double precursorIntensity = Double.parseDouble(values.get(MsmsHeaders.Precursor_Intensity.getColumnName()));
+            String precursorIntensityString = values.get(MsmsHeaders.Precursor_Intensity.getColumnName());
+            if (precursorIntensityString.equalsIgnoreCase("NAN")) {
+                precursorIntensityString = "-1";
+            }
+            Double precursorIntensity = Double.parseDouble(precursorIntensityString);
             precursor = new Precursor(rt, mz, precursorIntensity, charges);
         } else {
             throw new UnparseableException("could not parse precursor");
