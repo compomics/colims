@@ -90,6 +90,7 @@ public class OlsServiceTest {
     public void testFindModificationByNameAndUnimodAccession_1() {        
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
+        Assert.assertNotNull(modification.getAlternativeAccession());
     }
     
     /**
@@ -99,6 +100,7 @@ public class OlsServiceTest {
     public void testFindModificationByNameAndUnimodAccession_2() {        
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
+        Assert.assertNotNull(modification.getAlternativeAccession());
     }
     
 }

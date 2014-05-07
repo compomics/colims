@@ -109,6 +109,7 @@ public class OlsServiceImpl implements OlsService {
                             Modification foundModification = findModifiationByAccession(accession);
                             if (foundModification != null) {
                                 modification = foundModification;
+                                modification.setAlternativeAccession(unimodAccession);
                                 break outerloop;
                             }
                         } else {
@@ -121,7 +122,8 @@ public class OlsServiceImpl implements OlsService {
             if (modification == null && tempAccession != null) {
                 Modification foundModification = findModifiationByAccession(tempAccession);
                 if (foundModification != null) {
-                    modification = foundModification;                    
+                    modification = foundModification;
+                    modification.setAlternativeAccession(unimodAccession);
                 }
             }
         }

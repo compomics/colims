@@ -1,6 +1,4 @@
-
-    
-    create table colims.analytical_run (
+       create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -173,6 +171,7 @@
     create table colims.modification (
         id bigint not null auto_increment,
         accession varchar(255),
+        alternative_accession varchar(255),
         average_mass double precision,
         average_mass_shift double precision,
         monoisotopic_mass double precision,
@@ -291,6 +290,10 @@
 
     create table colims.quant_parameter_settings (
         id bigint not null auto_increment,
+        error double precision,
+        include_modifications bit,
+        label_count integer,
+        minimum_ratio_count integer,
         primary key (id)
     );
 

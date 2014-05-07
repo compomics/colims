@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -20,6 +21,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
@@ -61,6 +64,8 @@ public class PeptideShakerImportMapperTest {
     private AuthenticationBean authenticationBean;
     @Autowired
     private UserService userService;
+    @Autowired
+    private InstrumentService instrumentService;
 
     @Before
     public void setup() throws FileNotFoundException, IOException, XmlPullParserException {
@@ -93,7 +98,7 @@ public class PeptideShakerImportMapperTest {
         //clear resources
         peptideShakerImportMapper.clear();
         
-        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
@@ -135,14 +140,18 @@ public class PeptideShakerImportMapperTest {
 //        //get sample from db
 //        Sample sample = sampleService.findAll().get(0);
 //        
-//        //set sample and persist
-//        for(AnalyticalRun analyticalRun : analyticalRuns){
+//        for (AnalyticalRun analyticalRun : analyticalRuns) {
+//            analyticalRun.setCreationDate(new Date());
+//            analyticalRun.setModificationDate(new Date());
+//            analyticalRun.setUserName("testing");
+//            analyticalRun.setStartDate(new Date());
 //            analyticalRun.setSample(sample);
+//            analyticalRun.setInstrument(instrumentService.findAll().get(0));
 //            analyticalRunService.saveOrUpdate(analyticalRun);
-//        }  
+//        }
 //        
 //        //do it again
-//        analyticalRuns = peptideShakerImportMapper.map(peptideShakerImport);
+//        analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(peptideShakerImport);
 //        
 //        for(AnalyticalRun analyticalRun : analyticalRuns){
 //            analyticalRun.setSample(sample);

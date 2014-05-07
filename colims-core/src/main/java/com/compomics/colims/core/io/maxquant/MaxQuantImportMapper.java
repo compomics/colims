@@ -47,10 +47,6 @@ public class MaxQuantImportMapper {
      * The map of new proteins (key: protein accession, value: the protein)
      */
     private Map<String, Protein> newProteins = new HashMap<>();
-    /**
-     * The cache used to store objects.
-     */
-    private ObjectsCache objectsCache;
 
     /**
      * method to import a max quant search into colims
@@ -74,7 +70,7 @@ public class MaxQuantImportMapper {
         try {
             //just in case
             maxQuantParser.clearParsedProject();
-            clearMappingResources();
+            clear();
             loadFastaFile(aMaxQuantImport.getFastaDb().getFilePath());
 
             maxQuantParser.parseMaxQuantTextFolder(aMaxQuantImport.getMaxQuantDirectory());
@@ -111,12 +107,11 @@ public class MaxQuantImportMapper {
         return mappedRuns;
     }
 
-    private void clearMappingResources() throws IOException, SQLException {
+    public void clear() throws IOException, SQLException {
         spectrumFactory.clearFactory();
-        sequenceFactory.clearFactory();
-        objectsCache = new ObjectsCache();
-        objectsCache.setAutomatedMemoryManagement(true);
+        sequenceFactory.clearFactory();        
         newProteins.clear();
+        
     }
 
     /**

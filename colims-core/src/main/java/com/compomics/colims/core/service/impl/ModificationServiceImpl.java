@@ -66,4 +66,9 @@ public class ModificationServiceImpl implements ModificationService {
         return modificationRepository.countAll();
     }
 
+    @Override
+    public Modification findByAlternativeAccession(String alternativeAccession) {
+        return modificationRepository.findByAlternativeAccession(alternativeAccession);
+    }
+
 }

@@ -42,7 +42,8 @@ public class PeptideHasModification extends DatabaseEntity {
     @ManyToOne
     private Peptide peptide;
     @JoinColumn(name = "l_modification_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Modification modification;
 
     public PeptideHasModification() {

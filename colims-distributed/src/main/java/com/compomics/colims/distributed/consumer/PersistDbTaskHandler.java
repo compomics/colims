@@ -18,6 +18,7 @@ import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,14 +79,16 @@ public class PersistDbTaskHandler {
      * @return the list of analytical runs
      * @throws MappingException
      */
-    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
+    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
                 UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) persistDbTask.getDataImport()));
-                analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
+                //clear resources before mapping
+                peptideShakerImportMapper.clear();
+                analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
                 break;
             case MAX_QUANT:
                 analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) persistDbTask.getDataImport());

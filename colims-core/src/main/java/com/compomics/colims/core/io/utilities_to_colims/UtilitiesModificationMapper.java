@@ -134,7 +134,7 @@ public class UtilitiesModificationMapper {
             targetPeptide.setPeptideHasModifications(peptideHasModifications);
         }
     }
-    
+
     /**
      * Clear resources after usage.
      */
@@ -176,7 +176,7 @@ public class UtilitiesModificationMapper {
                         LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be found in the PtmFactory.");
                     }
 
-                    modification = new Modification(modificationMatch.getTheoreticPtm(), modificationMatch.getTheoreticPtm());
+                    modification = new Modification(modificationMatch.getTheoreticPtm());
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(ptM.getMass());
                 }
@@ -205,15 +205,30 @@ public class UtilitiesModificationMapper {
             //the modification was not found in the newModifications map    
             //look for the modification in the database by accession          
             modification = modificationService.findByAccession(cvTerm.getAccession());
+            //for UNIMOD mods, look for the alternative accession
+            if (cvTerm.getOntology().equals("UNIMOD") && modification == null) {
+                //look for the modification in the database by alternative accession
+                modification = modificationService.findByAlternativeAccession(cvTerm.getAccession());
+            }
 
             if (modification == null) {
                 //the modification was not found in the database
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
                     //look for the modification in the PSI-MOD ontology by accession                
                     modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+
+                    if (modification != null) {
+                        //add to cached modifications
+                        cachedModifications.put(modification.getAccession(), modification);
+                    }
                 } else if (cvTerm.getOntology().equals("UNIMOD")) {
                     //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
                     modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
+
+                    if (modification != null) {
+                        //add to cached modifications
+                        cachedModifications.put(cvTerm.getAccession(), modification);
+                    }
                 }
 
                 if (modification == null) {
@@ -221,13 +236,14 @@ public class UtilitiesModificationMapper {
 
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
                     modification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
+
+                    //add to cached modifications
+                    cachedModifications.put(modification.getAccession(), modification);
                 }
             }
-            //add to cached modifications
-            cachedModifications.put(cvTerm.getAccession(), modification);
         }
 
         return modification;
     }
-    
+
 }

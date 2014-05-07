@@ -32,6 +32,9 @@ public class Modification extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "accession", nullable = true)
     private String accession;
+    @Basic(optional = true)
+    @Column(name = "alternative_accession", nullable = true)
+    private String alternativeAccession;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
@@ -68,6 +71,14 @@ public class Modification extends DatabaseEntity {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public String getAlternativeAccession() {
+        return alternativeAccession;
+    }
+
+    public void setAlternativeAccession(String alternativeAccession) {
+        this.alternativeAccession = alternativeAccession;
     }
 
     public String getName() {
