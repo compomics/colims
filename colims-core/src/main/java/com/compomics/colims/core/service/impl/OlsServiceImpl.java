@@ -127,7 +127,10 @@ public class OlsServiceImpl implements OlsService {
                 if (foundModification != null) {
                     modification = foundModification;
 <<<<<<< HEAD
+<<<<<<< HEAD
                     modification.setAlternativeAccession(unimodAccession);
+=======
+>>>>>>> 7e947417971c1d884b324b359d413aa18960c583
 =======
 >>>>>>> 7e947417971c1d884b324b359d413aa18960c583
                 }
