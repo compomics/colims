@@ -134,6 +134,13 @@ public class UtilitiesModificationMapper {
             targetPeptide.setPeptideHasModifications(peptideHasModifications);
         }
     }
+    
+    /**
+     * Clear resources after usage.
+     */
+    public void clear() {
+        cachedModifications.clear();
+    }
 
     /**
      * Map the given ModificationMatch object to a Modification instance. Return
@@ -222,4 +229,5 @@ public class UtilitiesModificationMapper {
 
         return modification;
     }
+    
 }

@@ -50,11 +50,11 @@ public class PeptideShakerImportMapper {
     @Autowired
     private UtilitiesPsmMapper utilitiesPsmMapper;
     /**
-     * Compomics utilities spectrum factory
+     * Compomics utilities spectrum factory.
      */
     private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
-     * Compomics utilities sequence factory
+     * Compomics utilities sequence factory.
      */
     private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
@@ -71,9 +71,6 @@ public class PeptideShakerImportMapper {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
         try {
-            //clear mapping resources
-            clearMappingResources();
-
             LOGGER.info("Start mapping PeptideShaker experiment " + unpackedPsDataImport.getMsExperiment().getReference() + " on domain model Experiment class");
 
             //get the MsExperiment object
@@ -103,7 +100,7 @@ public class PeptideShakerImportMapper {
 
                     if (ms2Identification.isDB()) {
                         try {
-                            //connect to derby db                            
+                            //connect to the db                            
                             ms2Identification.establishConnection(unpackedPsDataImport.getDbDirectory().getAbsolutePath(), false, objectsCache);
                         } catch (SQLException ex) {
                             LOGGER.error(ex);
@@ -114,7 +111,7 @@ public class PeptideShakerImportMapper {
                     }
 
                     //@todo is this necessary?
-                    //load spectrum, peptide and protein matches
+                    //load spectrum, peptide and protein matches                   
                     loadSpectrumMatches(ms2Identification, unpackedPsDataImport);
                     loadPeptideMatches(ms2Identification);
                     loadProteinMatches(ms2Identification);
@@ -122,11 +119,8 @@ public class PeptideShakerImportMapper {
                     List<Spectrum> spectrums = new ArrayList<>();
                     //iterate over spectrum files
                     for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-                        //iterate over the spectrum titles in the SpectrumFactory for the given file
-                        for (String spectrumTitle : spectrumFactory.getSpectrumTitles(spectrumFileName)) {
-                            //get the spectrum key
-                            String spectrumKey = com.compomics.util.experiment.massspectrometry.Spectrum.getSpectrumKey(spectrumFileName, spectrumTitle);
-
+                        //iterate over the spectrum identifications
+                        for (String spectrumKey : ms2Identification.getSpectrumIdentification(spectrumFileName)) {
                             //get spectrum by key
                             MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(spectrumKey);
 
@@ -165,14 +159,19 @@ public class PeptideShakerImportMapper {
     }
 
     /**
-     * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
+     * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory,
+     * ...
+     *
+     * @throws java.io.IOException
+     * @throws java.sql.SQLException
      */
-    private void clearMappingResources() throws IOException, SQLException {
+    public void clear() throws IOException, SQLException {
         spectrumFactory.clearFactory();
         sequenceFactory.clearFactory();
         objectsCache = new ObjectsCache();
         objectsCache.setAutomatedMemoryManagement(true);
-        
+        utilitiesPsmMapper.clear();
+        utilitiesPsmMapper.clear();
     }
 
     /**
@@ -223,7 +222,6 @@ public class PeptideShakerImportMapper {
      * Load the peptide matches from the Ms2Identification.
      *
      * @param ms2Identification the Ms2Identification
-     * @param peptideProbabilities
      * @throws SQLException
      * @throws IOException
      * @throws ClassNotFoundException
@@ -238,7 +236,6 @@ public class PeptideShakerImportMapper {
      * Load the protein matches from the Ms2Identification.
      *
      * @param ms2Identification the Ms2Identification
-     * @param proteinProbabilities
      * @throws SQLException
      * @throws IOException
      * @throws ClassNotFoundException
@@ -253,7 +250,6 @@ public class PeptideShakerImportMapper {
      * Load the PeptideShaker settings.
      *
      * @param msExperiment
-     * @return
      */
     private void loadExperimentSettings(MsExperiment msExperiment) {
         experimentSettings = new PeptideShakerSettings();

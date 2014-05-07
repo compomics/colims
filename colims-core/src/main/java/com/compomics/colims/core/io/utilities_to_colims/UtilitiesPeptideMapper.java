@@ -18,7 +18,7 @@ public class UtilitiesPeptideMapper {
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
-
+    
     /**
      * Map the utilities objects onto the colims Peptide.
      *
@@ -45,5 +45,12 @@ public class UtilitiesPeptideMapper {
         if (!sourcePeptide.getModificationMatches().isEmpty()) {
             utilitiesModificationMapper.map(sourcePeptide.getModificationMatches(), ptmScores, targetPeptide);
         }
+    }
+    
+    /**
+     * Clear resources after usage.
+     */
+    public void clear(){
+        utilitiesModificationMapper.clear();
     }
 }

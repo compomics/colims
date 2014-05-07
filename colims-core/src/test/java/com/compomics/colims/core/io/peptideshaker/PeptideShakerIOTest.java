@@ -37,7 +37,7 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile());
+        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -58,8 +58,8 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
-        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/test_ps_0_28_1.cps").getFile();
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-(taxonomy_9606)+AND+reviewed_yes_concatenated_target_decoy.fasta").getFile();
+        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());

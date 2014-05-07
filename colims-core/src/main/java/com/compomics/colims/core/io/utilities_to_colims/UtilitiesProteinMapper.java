@@ -98,6 +98,13 @@ public class UtilitiesProteinMapper {
     }
 
     /**
+     * Clear resources after usage.
+     */
+    public void clear() {
+        cachedProteins.clear();
+    }
+
+    /**
      * Get the colims Protein by protein accession or sequence digest. This
      * method looks for the protein in the newly added proteins and the
      * database. If it was not found, look in the utilities SequenceFactory and
@@ -111,7 +118,7 @@ public class UtilitiesProteinMapper {
      * @throws FileNotFoundException
      * @throws ClassNotFoundException
      */
-    public Protein getProtein(com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
+    private Protein getProtein(com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
