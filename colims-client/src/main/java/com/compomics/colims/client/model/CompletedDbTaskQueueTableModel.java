@@ -20,7 +20,7 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("mm");
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "start", "duration"};

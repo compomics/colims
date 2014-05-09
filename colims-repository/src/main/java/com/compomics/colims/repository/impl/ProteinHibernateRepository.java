@@ -7,9 +7,6 @@ import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
 
 /**
  *

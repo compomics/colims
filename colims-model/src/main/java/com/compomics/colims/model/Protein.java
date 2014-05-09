@@ -20,11 +20,6 @@ import javax.persistence.CascadeType;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
 
 /**
  *
@@ -42,7 +37,7 @@ public class Protein extends DatabaseEntity {
     @Lob
     @Basic(optional = false)
     @Column(name = "protein_sequence", nullable = false)
-    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
+//    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;    
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();

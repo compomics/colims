@@ -182,7 +182,7 @@ public class UtilitiesModificationMapper {
                 }
             }
             //add to cached modifications
-            cachedModifications.put(modification.getAccession(), modification);
+            cachedModifications.put(modification.getName(), modification);
         }
 
         return modification;

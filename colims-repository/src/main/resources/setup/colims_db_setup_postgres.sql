@@ -1,7 +1,6 @@
 -- set search path
 SET search_path TO colims;
-
-    
+  
     create table colims.analytical_run (
         id  bigserial not null,
         creation_date timestamp not null,
@@ -175,6 +174,7 @@ SET search_path TO colims;
     create table colims.modification (
         id  bigserial not null,
         accession varchar(255),
+        alternative_accession varchar(255),
         average_mass float8,
         average_mass_shift float8,
         monoisotopic_mass float8,
@@ -185,7 +185,7 @@ SET search_path TO colims;
 
     create table colims.peptide (
         id  bigserial not null,
-        experimental_mass float8,
+        charge int4,
         psm_post_error_prob float8,
         psm_prob float8,
         peptide_sequence varchar(255) not null,
@@ -245,9 +245,14 @@ SET search_path TO colims;
 
     create table colims.protein (
         id  bigserial not null,
-        accession varchar(255) not null,
-        database_type varchar(255) not null,
         protein_sequence text not null,
+        primary key (id)
+    );
+
+    create table colims.protein_accession (
+        id  bigserial not null,
+        accession varchar(255) not null,
+        l_protein_id int8,
         primary key (id)
     );
 
@@ -286,55 +291,52 @@ SET search_path TO colims;
         l_other_cv_term_id int8 not null
     );
 
-    create table colims.quant_method_has_quant_engine (
+    create table colims.quant_parameter_settings (
         id  bigserial not null,
-        l_quantification_engine_id int8,
-        l_quantification_method_id int8,
-        l_quant_param_settings_id int8,
+        error float8,
+        include_modifications boolean,
+        label_count int4,
+        minimum_ratio_count int4,
         primary key (id)
     );
 
     create table colims.quantification (
         id  bigserial not null,
-        intensity float8,
-        weight int4,
-        l_quantification_group_id int8,
-        l_spectrum_id int8,
+        intensity float8 not null,
+        weight int4 not null,
+        l_quantification_file_id int8,
         primary key (id)
     );
 
     create table colims.quantification_engine (
         id  bigserial not null,
+        type varchar(255) not null,
+        version varchar(255),
         primary key (id)
     );
 
     create table colims.quantification_file (
         id  bigserial not null,
-        l_quantification_method_id int8,
+        file_type varchar(255),
+        content oid,
+        file_name varchar(255) not null,
+        file_path varchar(255),
+        l_quant_settings_id int8,
         primary key (id)
     );
 
     create table colims.quantification_group (
         id  bigserial not null,
-        l_quantification_file_id int8,
-        primary key (id)
-    );
-
-    create table colims.quantification_group_has_peptide (
-        id  bigserial not null,
         l_peptide_id int8,
-        l_quantification_group_id int8,
+        l_quantification_id int8,
         primary key (id)
     );
 
-    create table colims.quantification_method (
+    create table colims.quantification_settings (
         id  bigserial not null,
         l_experiment_id int8,
-        primary key (id)
-    );
-
-    create table colims.quantification_parameter_setting (
-        id  bigserial not null,
+        l_quant_engine_id int8,
+        l_quant_param_settings_id int8,
         primary key (id)
     );
 
@@ -349,7 +351,7 @@ SET search_path TO colims;
         modification_date timestamp not null,
         user_name varchar(255) not null,
         sample_condition varchar(255),
-        name varchar(255) not null,
+        name varchar(100) not null,
         storage_location varchar(255),
         l_experiment_id int8,
         l_protocol_id int8,
@@ -393,16 +395,15 @@ SET search_path TO colims;
         id  bigserial not null,
         enzyme varchar(255),
         evalue_cutoff float8,
+        search_ion_type_1 int4,
         fragment_mass_tolerance float8,
         fragment_mass_tolerance_unit int4,
-        fragment_ion_1_type int4,
-        fragment_ion_2_type int4,
-        hitlist_length int4,
-        max_missed_cleavages int4,
+        lower_charge int4,
+        missed_cleavages int4,
         precursor_mass_tolerance float8,
         precursor_mass_tolerance_unit int4,
-        precursor_lower_charge int4,
-        precursor_upper_charge int4,
+        search_ion_type_2 int4,
+        upper_charge int4,
         primary key (id)
     );
 
@@ -412,7 +413,7 @@ SET search_path TO colims;
         charge int4,
         fragmentation_type varchar(255),
         intensity float8,
-        mz_ratio float8 not null,
+        mz_ratio float8,
         retention_time float8,
         scan_number varchar(255) not null,
         scan_time float8,
@@ -619,6 +620,11 @@ SET search_path TO colims;
         foreign key (l_project_id) 
         references colims.project;
 
+    alter table colims.protein_accession 
+        add constraint FK_7mnvsvxdpjtoi386cssgoyp00 
+        foreign key (l_protein_id) 
+        references colims.protein;
+
     alter table colims.protocol 
         add constraint FK_68woyi6fqi6j99t2511tiayb2 
         foreign key (l_cell_based_cv_id) 
@@ -654,55 +660,40 @@ SET search_path TO colims;
         foreign key (l_protocol_id) 
         references colims.protocol;
 
-    alter table colims.quant_method_has_quant_engine 
-        add constraint FK_oasqydotqql6ck89k2ussm1gy 
-        foreign key (l_quantification_engine_id) 
-        references colims.quantification_engine;
-
-    alter table colims.quant_method_has_quant_engine 
-        add constraint FK_4gxen92cgpdm0md37a122fobt 
-        foreign key (l_quantification_method_id) 
-        references colims.quantification_method;
-
-    alter table colims.quant_method_has_quant_engine 
-        add constraint FK_lhjhago1pcj6fhc0bey8ylnba 
-        foreign key (l_quant_param_settings_id) 
-        references colims.quantification_parameter_setting;
-
     alter table colims.quantification 
-        add constraint FK_pqbxof18u1h1hv14dmnyo44mr 
-        foreign key (l_quantification_group_id) 
-        references colims.quantification_group;
-
-    alter table colims.quantification 
-        add constraint FK_crk8scd9ju0k4q8ajo4g48s33 
-        foreign key (l_spectrum_id) 
-        references colims.spectrum;
-
-    alter table colims.quantification_file 
-        add constraint FK_rqi1kve6lkstnkaj90pgej8k2 
-        foreign key (l_quantification_method_id) 
-        references colims.quantification_method;
-
-    alter table colims.quantification_group 
-        add constraint FK_jx8ix1plsndh02i3cpcetcs54 
+        add constraint FK_o1pngv9c5nym7t3guesme7guy 
         foreign key (l_quantification_file_id) 
         references colims.quantification_file;
 
-    alter table colims.quantification_group_has_peptide 
-        add constraint FK_b9yiwf6dqhkcx01kdhm1t3it5 
+    alter table colims.quantification_file 
+        add constraint FK_7uqibw8f0ebtk6kyd9yyne6mt 
+        foreign key (l_quant_settings_id) 
+        references colims.quantification_settings;
+
+    alter table colims.quantification_group 
+        add constraint FK_jjmhtgpt9pj69yftuldr43byk 
         foreign key (l_peptide_id) 
         references colims.peptide;
 
-    alter table colims.quantification_group_has_peptide 
-        add constraint FK_3y5qhhppnpirl5g7efvnr611l 
-        foreign key (l_quantification_group_id) 
-        references colims.quantification_group;
+    alter table colims.quantification_group 
+        add constraint FK_rndw3g424dyq25bytkskynfr6 
+        foreign key (l_quantification_id) 
+        references colims.quantification;
 
-    alter table colims.quantification_method 
-        add constraint FK_qaaks315j06c978q4nj9nn6yf 
+    alter table colims.quantification_settings 
+        add constraint FK_7yyahob7fruseylo348enfa7d 
         foreign key (l_experiment_id) 
         references colims.experiment;
+
+    alter table colims.quantification_settings 
+        add constraint FK_opawj8lyblvsk6bifd8g898id 
+        foreign key (l_quant_engine_id) 
+        references colims.quantification_engine;
+
+    alter table colims.quantification_settings 
+        add constraint FK_cjhxlyajclvflr45jxcw09oet 
+        foreign key (l_quant_param_settings_id) 
+        references colims.quant_parameter_settings;
 
     alter table colims.role_has_permission 
         add constraint FK_sp2yl1puui1jbdknkehlvhxq4 
