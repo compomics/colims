@@ -1,12 +1,13 @@
 -- set search path
 SET search_path TO colims;
    
+    
     create table colims.analytical_run (
         id  bigserial not null,
         creation_date timestamp not null,
         modification_date timestamp not null,
         user_name varchar(255) not null,
-        name varchar(255) not null,
+        name varchar(100) not null,
         start_date timestamp,
         l_instrument_id int8,
         l_sample_id int8,
@@ -33,9 +34,9 @@ SET search_path TO colims;
         modification_date timestamp not null,
         user_name varchar(255) not null,
         description varchar(500),
-        number int8 not null,
+        number int8,
         storage_location varchar(255),
-        title varchar(255) not null,
+        title varchar(100) not null,
         l_project_id int8,
         primary key (id)
     );
@@ -54,13 +55,13 @@ SET search_path TO colims;
 
     create table colims.fasta_db (
         id  bigserial not null,
-        file_name varchar(255) not null,
-        file_path varchar(255) not null,
+        file_name varchar(200) not null,
+        file_path varchar(250) not null,
         md5_checksum varchar(255),
-        name varchar(255) not null,
+        name varchar(100) not null,
         species varchar(255),
         taxonomy_accession varchar(255),
-        version varchar(255) not null,
+        version varchar(20) not null,
         primary key (id)
     );
 
@@ -98,8 +99,8 @@ SET search_path TO colims;
         city varchar(30) not null,
         country varchar(30) not null,
         name varchar(30) not null,
-        number int4 not null,
-        postal_code int4 not null,
+        number int4 not null check (number>=1),
+        postal_code int4 check (postal_code>=1),
         street varchar(20) not null,
         primary key (id)
     );

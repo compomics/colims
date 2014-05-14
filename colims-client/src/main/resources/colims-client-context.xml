@@ -24,7 +24,6 @@
                 </value>
             </list>
         </property>        
-        <!--<property name="localOverride" value="true"/>-->
         <property name="order" value="-1"/>     
         <!-- ignore the fact the the db.password property is not found in the client context as it is user input -->
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
