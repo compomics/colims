@@ -50,8 +50,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("groupCrudController")
-public class GroupCrudController implements Controllable {
+@Component("groupManagementController")
+public class GroupManagementController implements Controllable {
 
     //model
     /**
@@ -74,7 +74,7 @@ public class GroupCrudController implements Controllable {
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
-    private UserManagementController userManagementController;
+    private UserManagementParentController userManagementController;
     @Autowired
     private EventBus eventBus;
     //services

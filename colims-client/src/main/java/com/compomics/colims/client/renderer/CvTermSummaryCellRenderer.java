@@ -11,6 +11,7 @@ import javax.swing.JList;
 /**
  *
  * @author Niels Hulstaert
+ * @param <T>
  */
 public class CvTermSummaryCellRenderer<T extends CvTerm> extends DefaultListCellRenderer {
 

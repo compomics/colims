@@ -1,6 +1,6 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.event.InstrumentChangeEvent;
+import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunEditDialog;

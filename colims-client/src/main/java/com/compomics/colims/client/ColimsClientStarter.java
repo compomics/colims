@@ -53,14 +53,14 @@ public class ColimsClientStarter {
 
             //override database properties that require user input by adding a new PropertySource
             DatabasePropertySource databasePropertySource = new DatabasePropertySource(databaseLoginController.getDbProperties());
-            applicationContext.getEnvironment().getPropertySources().addLast(databasePropertySource);
+            applicationContext.getEnvironment().getPropertySources().addFirst(databasePropertySource);
+
+            //refresh the application context
+            applicationContext.refresh();
 
             //reset database properties for security
             databaseLoginController.reset();
             databasePropertySource.reset();
-
-            //refresh the application context
-            applicationContext.refresh();
 
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);

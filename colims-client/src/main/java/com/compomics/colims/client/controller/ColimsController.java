@@ -2,15 +2,15 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.controller.admin.user.UserManagementController;
+import com.compomics.colims.client.controller.admin.user.UserManagementParentController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.InstrumentChangeEvent;
-import com.compomics.colims.client.event.MaterialChangeEvent;
-import com.compomics.colims.client.event.ProtocolChangeEvent;
+import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
+import com.compomics.colims.client.event.admin.MaterialChangeEvent;
+import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.UserLoginDialog;
@@ -75,7 +75,7 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProtocolManagementController protocolManagementController;
     @Autowired
-    private UserManagementController userManagementController;
+    private UserManagementParentController userManagementParentController;
     @Autowired
     private CvTermManagementController cvTermManagementController;
     @Autowired
@@ -232,7 +232,7 @@ public class ColimsController implements Controllable, ActionListener {
         } else if (menuItemLabel.equals(colimsFrame.getStorageMonitoringMenuItem().getText())) {
             storageMonitoringController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
-            userManagementController.showView();
+            userManagementParentController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getMaterialManagementMenuItem().getText())) {
@@ -377,7 +377,7 @@ public class ColimsController implements Controllable, ActionListener {
      */
     private void initAdminSection() {
         //init admin controllers
-        userManagementController.init();
+        userManagementParentController.init();
         instrumentManagementController.init();
         materialManagementController.init();
         protocolManagementController.init();

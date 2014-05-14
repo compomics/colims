@@ -24,7 +24,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import no.uib.olsdialog.OLSDialog;
 import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
-import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_NAME_SEARCH;
 import no.uib.olsdialog.OLSInputable;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
@@ -77,8 +76,8 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         bindingGroup = new BindingGroup();
 
         fastaDbBindingList = ObservableCollections.observableList(new ArrayList<FastaDb>());
-        JListBinding userListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
-        bindingGroup.addBinding(userListBinding);
+        JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
+        bindingGroup.addBinding(fastaDbListBinding);
 
         //user bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.name"), fastaDbManagementDialog.getNameTextField(), ELProperty.create("${text}"), "nameBinding");

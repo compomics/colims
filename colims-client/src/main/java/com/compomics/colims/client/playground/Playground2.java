@@ -1,7 +1,7 @@
 package com.compomics.colims.client.playground;
 
-import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.impl.QueueManagerImpl;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.impl.QueueManagerImpl;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.client.storage.DbTaskProducer;
+import com.compomics.colims.client.distributed.DbTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;

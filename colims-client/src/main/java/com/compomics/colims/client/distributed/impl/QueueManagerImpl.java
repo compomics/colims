@@ -1,7 +1,7 @@
-package com.compomics.colims.client.storage.impl;
+package com.compomics.colims.client.distributed.impl;
 
-import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.DbTaskErrorMessageConvertor;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.DbTaskErrorMessageConvertor;
 import com.compomics.colims.distributed.model.QueueMessage;
 import com.compomics.colims.distributed.model.DbTaskError;
 import java.lang.reflect.UndeclaredThrowableException;

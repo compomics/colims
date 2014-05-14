@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
@@ -30,6 +31,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB name")
+    @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
     /**
@@ -37,6 +39,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB file name")
+    @Length(min = 5, max = 200, message = "File name must be between {min} and {max} characters")
     @Column(name = "file_name", nullable = false)
     private String fileName;
     /**
@@ -44,8 +47,9 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB file path")
+    @Length(min = 5, max = 250, message = "File path must be between {min} and {max} characters")
     @Column(name = "file_path", nullable = false)
-    protected String filePath;
+    private String filePath;
     /**
      * The taxonomy ID
      */
@@ -63,6 +67,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB version")
+    @Length(min = 5, max = 20, message = "Version must be between {min} and {max} characters")
     @Column(name = "version", nullable = false)
     private String version = "N/A";
     /**

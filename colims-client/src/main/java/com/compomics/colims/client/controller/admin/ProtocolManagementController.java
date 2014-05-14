@@ -4,7 +4,7 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.ProtocolChangeEvent;
+import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -75,13 +75,7 @@ public class ProtocolManagementController implements Controllable {
     private CvTermService cvTermService;
     @Autowired
     private EventBus eventBus;
-
-    /**
-     *
-     */
-    public ProtocolManagementController() {
-    }
-
+    
     /**
      *
      * @return

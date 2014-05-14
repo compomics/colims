@@ -50,8 +50,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("roleCrudController")
-public class RoleCrudController implements Controllable {
+@Component("roleManagementController")
+public class RoleManagementController implements Controllable {
 
     //model
     private ObservableList<Role> roleBindingList;
@@ -62,7 +62,7 @@ public class RoleCrudController implements Controllable {
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
-    private UserManagementController userManagementController;
+    private UserManagementParentController userManagementController;
     @Autowired
     private EventBus eventBus;
     //services

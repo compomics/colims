@@ -40,8 +40,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("permissionCrudController")
-public class PermissionCrudController implements Controllable {
+@Component("permissionManagementController")
+public class PermissionManagementController implements Controllable {
 
     //model
     private ObservableList<Permission> permissionBindingList;
@@ -50,7 +50,7 @@ public class PermissionCrudController implements Controllable {
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
-    private UserManagementController userManagementController;
+    private UserManagementParentController userManagementController;
     //event bus    
     @Autowired
     private EventBus eventBus;

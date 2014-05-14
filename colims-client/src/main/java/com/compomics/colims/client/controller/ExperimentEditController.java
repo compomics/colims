@@ -9,7 +9,6 @@ import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.google.common.base.Joiner;
@@ -46,8 +45,6 @@ public class ExperimentEditController implements Controllable {
     //services
     @Autowired
     private ExperimentService experimentService;
-    @Autowired
-    private SampleService sampleService;
     @Autowired
     private BinaryFileService binaryFileService;
     @Autowired

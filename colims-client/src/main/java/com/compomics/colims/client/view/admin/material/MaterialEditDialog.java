@@ -130,7 +130,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Name*");
 
         materialStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         materialStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));

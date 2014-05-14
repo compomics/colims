@@ -102,7 +102,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
         attachementsLabel.setText("Attachments");
 
-        titleLabel.setText("Title");
+        titleLabel.setText("Title*");
 
         storageLocationLabel.setText("Storage Location");
 

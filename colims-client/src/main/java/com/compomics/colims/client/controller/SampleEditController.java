@@ -11,14 +11,14 @@ import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.MaterialChangeEvent;
-import com.compomics.colims.client.event.ProtocolChangeEvent;
+import com.compomics.colims.client.event.admin.MaterialChangeEvent;
+import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
-import com.compomics.colims.client.storage.DbTaskProducer;
-import com.compomics.colims.client.storage.QueueManager;
+import com.compomics.colims.client.distributed.DbTaskProducer;
+import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
@@ -419,7 +419,7 @@ public class SampleEditController implements Controllable {
     /**
      * Listen to MaterialChangeEvent.
      *
-     * @param materialChangeEvent the protocol change event
+     * @param materialChangeEvent the material change event
      */
     @Subscribe
     public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {

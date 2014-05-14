@@ -131,7 +131,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Name*");
 
         protocolStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         protocolStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));

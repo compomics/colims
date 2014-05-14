@@ -67,7 +67,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
         projectEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Name*");
 
         labelLabel.setText("Start Date");
 

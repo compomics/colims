@@ -1,11 +1,11 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
-import com.compomics.colims.client.event.InstrumentChangeEvent;
+import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
-import com.compomics.colims.client.storage.QueueManager;
-import com.compomics.colims.client.storage.DbTaskProducer;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;

@@ -189,7 +189,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
 
         attachementsLabel.setText("Attachments");
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Name*");
 
         storageLocationLabel.setText("Storage location");
 

@@ -25,17 +25,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="fastaDbManagmentParentPanel" alignment="1" max="32767" attributes="0"/>
+          <Component id="institutionManagementParentPanel" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="fastaDbManagmentParentPanel" alignment="0" max="32767" attributes="0"/>
+          <Component id="institutionManagementParentPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="fastaDbManagmentParentPanel">
+    <Container class="javax.swing.JPanel" name="institutionManagementParentPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -46,24 +46,19 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="780" max="32767" attributes="0"/>
-                  <Component id="okButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="fastaDbManagementPanel" alignment="0" max="32767" attributes="0"/>
+              <Component id="institutionManagementPanel" alignment="0" pref="956" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="fastaDbManagementPanel" pref="337" max="32767" attributes="0"/>
+                  <Component id="institutionManagementPanel" pref="287" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -84,28 +79,14 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="okButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="ok"/>
-            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
-            </Property>
-            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Container class="javax.swing.JPanel" name="fastaDbManagementPanel">
+        <Container class="javax.swing.JPanel" name="institutionManagementPanel">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="fastaDbOverviewPanel">
+            <Container class="javax.swing.JPanel" name="institutionOverviewPanel">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -128,16 +109,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="institutionListScrollPane" pref="278" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="fastaDbListScrollPane" pref="278" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="addButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                                      <Component id="deleteButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Component id="fastaDbListInfoScrollPane" max="32767" attributes="0"/>
+                              <Component id="addButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteButton" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -146,17 +122,15 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="fastaDbListInfoScrollPane" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="institutionListScrollPane" pref="237" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="addButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteButton" min="-2" pref="23" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="fastaDbListScrollPane" pref="189" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -164,7 +138,7 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Container class="javax.swing.JScrollPane" name="fastaDbListScrollPane">
+                <Container class="javax.swing.JScrollPane" name="institutionListScrollPane">
                   <Properties>
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
@@ -174,7 +148,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JList" name="fastaDbList">
+                    <Component class="javax.swing.JList" name="institutionList">
                       <Properties>
                         <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                           <StringArray count="0"/>
@@ -211,31 +185,9 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JScrollPane" name="fastaDbListInfoScrollPane">
-                  <AuxValues>
-                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                  </AuxValues>
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                  <SubComponents>
-                    <Component class="javax.swing.JTextArea" name="fastaDbListInfoTextArea">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="columns" type="int" value="20"/>
-                        <Property name="lineWrap" type="boolean" value="true"/>
-                        <Property name="rows" type="int" value="5"/>
-                        <Property name="text" type="java.lang.String" value="Please select a fasta DB from the list. If necessary, add a new one. &#xa;You can select a file by clicking the &quot;browse&quot; button next to the &quot;file name&quot; text field. "/>
-                        <Property name="wrapStyleWord" type="boolean" value="true"/>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="null"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="fastaDbDetailParentPanel">
+            <Container class="javax.swing.JPanel" name="institutionDetailParentPanel">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -255,7 +207,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="fastaDbDetailPanel">
+                <Container class="javax.swing.JPanel" name="institutionDetailPanel">
                   <Properties>
                     <Property name="opaque" type="boolean" value="false"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -276,43 +228,37 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="fileNameLabel" max="32767" attributes="0"/>
-                                          <Component id="nameLabel" pref="66" max="32767" attributes="0"/>
+                                          <Component id="abbreviationLabel" max="32767" attributes="0"/>
+                                          <Component id="nameLabel" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Component id="fileNameTextField" max="32767" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="browseFastaButton" min="-2" max="-2" attributes="0"/>
-                                          </Group>
                                           <Component id="nameTextField" max="32767" attributes="0"/>
+                                          <Component id="abbreviationTextField" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <Component id="fastaDbStateInfoLabel" pref="428" max="32767" attributes="0"/>
+                                      <Component id="institutionStateInfoLabel" pref="428" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="speciesLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
+                                          <Component id="postalCodeLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
                                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="taxonomyLabel" alignment="0" pref="66" max="32767" attributes="0"/>
+                                              <Component id="cityLabel" alignment="0" pref="66" max="32767" attributes="0"/>
                                               <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="filePathLabel" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="streetLabel" alignment="0" max="32767" attributes="0"/>
                                           </Group>
+                                          <Component id="countryLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="speciesTextField" alignment="0" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="taxonomyTextField" max="32767" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Component id="versionTextField" max="32767" attributes="0"/>
-                                          <Component id="filePathTextField" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="postalCodeTextField" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="numberTextField" max="32767" attributes="0"/>
+                                          <Component id="streetTextField" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="cityTextField" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="countryTextField" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -330,37 +276,38 @@
                               </Group>
                               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="fileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="fileNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="browseFastaButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="abbreviationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="abbreviationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="filePathLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="filePathTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="streetLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="streetTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="versionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="versionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="taxonomyTextField" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="taxonomyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="browseTaxonomyButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="numberTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="speciesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="speciesTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cityTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="77" max="32767" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="postalCodeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="postalCodeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="countryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="countryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="fastaDbStateInfoLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="institutionStateInfoLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -378,78 +325,48 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="fileNameLabel">
+                    <Component class="javax.swing.JLabel" name="abbreviationLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="File Name*"/>
+                        <Property name="text" type="java.lang.String" value="Abbreviation*"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="fileNameTextField">
+                    <Component class="javax.swing.JTextField" name="abbreviationTextField">
                     </Component>
-                    <Component class="javax.swing.JLabel" name="filePathLabel">
+                    <Component class="javax.swing.JLabel" name="streetLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="File Path*"/>
+                        <Property name="text" type="java.lang.String" value="Street*"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="filePathTextField">
-                    </Component>
-                    <Component class="javax.swing.JButton" name="browseFastaButton">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="browse..."/>
-                        <Property name="toolTipText" type="java.lang.String" value="select a fasta file to set the file name and the file path text fields"/>
-                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                      </Properties>
+                    <Component class="javax.swing.JTextField" name="streetTextField">
                     </Component>
                     <Component class="javax.swing.JLabel" name="versionLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Version*"/>
+                        <Property name="text" type="java.lang.String" value="Number*"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[48, 14]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="versionTextField">
+                    <Component class="javax.swing.JTextField" name="numberTextField">
                     </Component>
-                    <Component class="javax.swing.JLabel" name="taxonomyLabel">
+                    <Component class="javax.swing.JLabel" name="cityLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Taxonomy"/>
+                        <Property name="text" type="java.lang.String" value="City*"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="taxonomyTextField">
+                    <Component class="javax.swing.JTextField" name="cityTextField">
                     </Component>
-                    <Component class="javax.swing.JButton" name="browseTaxonomyButton">
+                    <Component class="javax.swing.JLabel" name="postalCodeLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="browse..."/>
-                        <Property name="toolTipText" type="java.lang.String" value="select taxonomy ID and species from the NEWT taxonomy ontology"/>
-                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[80, 25]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="speciesLabel">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Species"/>
+                        <Property name="text" type="java.lang.String" value="Postal Code"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[48, 14]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="speciesTextField">
+                    <Component class="javax.swing.JTextField" name="postalCodeTextField">
                     </Component>
-                    <Component class="javax.swing.JLabel" name="fastaDbStateInfoLabel">
+                    <Component class="javax.swing.JLabel" name="institutionStateInfoLabel">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="11" style="1"/>
@@ -483,6 +400,16 @@
                           <Dimension value="[80, 25]"/>
                         </Property>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="countryLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Country*"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 14]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="countryTextField">
                     </Component>
                   </SubComponents>
                 </Container>

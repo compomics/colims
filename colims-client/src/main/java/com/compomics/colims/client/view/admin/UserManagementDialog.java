@@ -4,6 +4,7 @@ import com.compomics.colims.client.compoment.DualList;
 import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -177,6 +178,14 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
     public JButton getCloseButton() {
         return cancelButton;
+    } 
+
+    public JComboBox getInstitutionComboBox() {
+        return institutionComboBox;
+    }
+
+    public JButton getInstitutionManagementButton() {
+        return institutionManagementButton;
     }        
 
     /**
@@ -211,6 +220,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
         userStateInfoLabel = new javax.swing.JLabel();
         groupDualList = new com.compomics.colims.client.compoment.DualList();
         groupsLabel = new javax.swing.JLabel();
+        institutionLabel = new javax.swing.JLabel();
+        institutionComboBox = new javax.swing.JComboBox();
+        institutionManagementButton = new javax.swing.JButton();
         groupCrudPanel = new javax.swing.JPanel();
         groupOverviewPanel = new javax.swing.JPanel();
         groupListScrollPane = new javax.swing.JScrollPane();
@@ -325,15 +337,15 @@ public class UserManagementDialog extends javax.swing.JDialog {
         userDetailPanel.setOpaque(false);
         userDetailPanel.setPreferredSize(new java.awt.Dimension(10, 10));
 
-        firstNameLabel.setText("First Name");
+        firstNameLabel.setText("First Name*");
 
-        lastNameLabel.setText("Last Name");
+        lastNameLabel.setText("Last Name*");
 
-        emailLabel.setText("Email");
+        emailLabel.setText("Email*");
 
-        passwordLabel.setText("Password");
+        passwordLabel.setText("Password*");
 
-        userNameLabel.setText("User Name");
+        userNameLabel.setText("User Name*");
         userNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         userSaveOrUpdateButton.setText("save");
@@ -351,6 +363,15 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         groupsLabel.setText("Group(s)");
 
+        institutionLabel.setText("Institution");
+
+        institutionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        institutionManagementButton.setText("edit...");
+        institutionManagementButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        institutionManagementButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        institutionManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout userDetailPanelLayout = new javax.swing.GroupLayout(userDetailPanel);
         userDetailPanel.setLayout(userDetailPanelLayout);
         userDetailPanelLayout.setHorizontalGroup(
@@ -365,7 +386,8 @@ public class UserManagementDialog extends javax.swing.JDialog {
                             .addComponent(firstNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
                             .addComponent(groupsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lastNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(userNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(userNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(institutionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(passwordTextField, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -373,7 +395,11 @@ public class UserManagementDialog extends javax.swing.JDialog {
                             .addComponent(lastNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(firstNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(userNameTextField)
-                            .addComponent(groupDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)))
+                            .addComponent(groupDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                            .addGroup(userDetailPanelLayout.createSequentialGroup()
+                                .addComponent(institutionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(institutionManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(userDetailPanelLayout.createSequentialGroup()
                         .addComponent(userStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -404,11 +430,16 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addComponent(passwordLabel)
                     .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(institutionLabel)
+                    .addComponent(institutionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(institutionManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(groupDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(userDetailPanelLayout.createSequentialGroup()
                         .addComponent(groupsLabel)
-                        .addGap(0, 170, Short.MAX_VALUE))
-                    .addComponent(groupDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(0, 134, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(userSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -488,7 +519,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         groupDescriptionLabel.setText("Description");
 
-        groupNameLabel.setText("Name");
+        groupNameLabel.setText("Name*");
         groupNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         groupSaveOrUpdateButton.setText("save");
@@ -628,7 +659,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         roleDescriptionLabel.setText("Description");
 
-        roleNameLabel.setText("Name");
+        roleNameLabel.setText("Name*");
         roleNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         roleSaveOrUpdateButton.setText("save");
@@ -774,7 +805,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         permissionDescriptionLabel.setText("description");
 
-        permissionNameLabel.setText("name");
+        permissionNameLabel.setText("name*");
         permissionNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         permissionSaveOrUpdateButton.setText("save");
@@ -901,6 +932,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton groupSaveOrUpdateButton;
     private javax.swing.JLabel groupStateInfoLabel;
     private javax.swing.JLabel groupsLabel;
+    private javax.swing.JComboBox institutionComboBox;
+    private javax.swing.JLabel institutionLabel;
+    private javax.swing.JButton institutionManagementButton;
     private javax.swing.JLabel lastNameLabel;
     private javax.swing.JTextField lastNameTextField;
     private javax.swing.JLabel passwordLabel;

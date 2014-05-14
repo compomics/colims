@@ -57,8 +57,8 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         return typeComboBox;
     }
 
-    public JButton getInstrumentTypesCrudButton() {
-        return instrumentTypesCrudButton;
+    public JButton getInstrumentTypeManagementButton() {
+        return instrumentTypeManagementButton;
     }     
 
     public JLabel getInstrumentStateInfoLabel() {
@@ -80,7 +80,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         typeLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         typeComboBox = new javax.swing.JComboBox();
-        instrumentTypesCrudButton = new javax.swing.JButton();
+        instrumentTypeManagementButton = new javax.swing.JButton();
         cancelInstrumentEditButton = new javax.swing.JButton();
         instrumentSaveOrUpdateButton = new javax.swing.JButton();
         cvTermsPanel = new javax.swing.JPanel();
@@ -102,14 +102,14 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         instrumentStateInfoLabel.setMinimumSize(new java.awt.Dimension(0, 20));
         instrumentStateInfoLabel.setPreferredSize(new java.awt.Dimension(0, 20));
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Name*");
 
         typeLabel.setText("Type");
 
-        instrumentTypesCrudButton.setText("edit...");
-        instrumentTypesCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        instrumentTypesCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        instrumentTypesCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        instrumentTypeManagementButton.setText("edit...");
+        instrumentTypeManagementButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        instrumentTypeManagementButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        instrumentTypeManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         cancelInstrumentEditButton.setText("cancel");
         cancelInstrumentEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -182,7 +182,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(typeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(instrumentTypesCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(instrumentTypeManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         instrumentEditPanelLayout.setVerticalGroup(
@@ -194,7 +194,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
                     .addComponent(nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(instrumentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(instrumentTypesCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instrumentTypeManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(typeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -235,7 +235,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
     private javax.swing.JPanel instrumentEditPanel;
     private javax.swing.JButton instrumentSaveOrUpdateButton;
     private javax.swing.JLabel instrumentStateInfoLabel;
-    private javax.swing.JButton instrumentTypesCrudButton;
+    private javax.swing.JButton instrumentTypeManagementButton;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JComboBox typeComboBox;

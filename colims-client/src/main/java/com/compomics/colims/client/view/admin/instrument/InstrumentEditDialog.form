@@ -74,7 +74,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="typeComboBox" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="instrumentTypesCrudButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="instrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -91,7 +91,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="instrumentTypesCrudButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="instrumentTypeManagementButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="typeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="typeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -131,7 +131,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="nameLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Name"/>
+            <Property name="text" type="java.lang.String" value="Name*"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="typeLabel">
@@ -148,7 +148,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="instrumentTypesCrudButton">
+        <Component class="javax.swing.JButton" name="instrumentTypeManagementButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="edit..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

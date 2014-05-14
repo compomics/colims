@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -30,10 +31,12 @@ public class Experiment extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
+    @NotBlank(message = "Please insert an experiment title")
+    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
     @Column(name = "title", nullable = false, unique = true)
     private String title;
-    @Basic(optional = false)
-    @Column(name = "number", nullable = false)
+    @Basic(optional = true)
+    @Column(name = "number", nullable = true)
     private Long number;
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")

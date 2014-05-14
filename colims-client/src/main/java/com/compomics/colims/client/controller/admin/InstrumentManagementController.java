@@ -4,7 +4,7 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.InstrumentChangeEvent;
+import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -14,7 +14,7 @@ import com.compomics.colims.client.renderer.CvTermSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.instrument.InstrumentEditDialog;
 import com.compomics.colims.client.view.admin.instrument.InstrumentManagementDialog;
-import com.compomics.colims.client.view.admin.instrument.InstrumentTypeCrudDialog;
+import com.compomics.colims.client.view.admin.instrument.InstrumentTypeManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.InstrumentTypeService;
@@ -68,7 +68,7 @@ public class InstrumentManagementController implements Controllable {
     //view
     private InstrumentManagementDialog instrumentManagementDialog;
     private InstrumentEditDialog instrumentEditDialog;
-    private InstrumentTypeCrudDialog instrumentTypeCrudDialog;
+    private InstrumentTypeManagementDialog instrumentTypeManagementDialog;
     //parent controller
     @Autowired
     private ColimsController colimsController;
@@ -108,7 +108,7 @@ public class InstrumentManagementController implements Controllable {
 
         //init views     
         initInstrumentManagementDialog();
-        initInstrumentTypeCrudDialog();
+        initInstrumentTypeManagementDialog();
         initInstrumentEditDialog();
 
         bindingGroup.bind();
@@ -248,7 +248,7 @@ public class InstrumentManagementController implements Controllable {
                 }
                 );
 
-    }
+    }        
 
     private void initInstrumentEditDialog() {
         instrumentEditDialog = new InstrumentEditDialog(instrumentManagementDialog, true);
@@ -298,11 +298,11 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getInstrumentTypesCrudButton().addActionListener(new ActionListener() {
+        instrumentEditDialog.getInstrumentTypeManagementButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiUtils.centerDialogOnComponent(instrumentEditDialog, instrumentTypeCrudDialog);
-                instrumentTypeCrudDialog.setVisible(true);
+                GuiUtils.centerDialogOnComponent(instrumentEditDialog, instrumentTypeManagementDialog);
+                instrumentTypeManagementDialog.setVisible(true);
             }
         });
 
@@ -427,65 +427,65 @@ public class InstrumentManagementController implements Controllable {
         });
     }
 
-    private void initInstrumentTypeCrudDialog() {
-        instrumentTypeCrudDialog = new InstrumentTypeCrudDialog(instrumentEditDialog, true);
+    private void initInstrumentTypeManagementDialog() {
+        instrumentTypeManagementDialog = new InstrumentTypeManagementDialog(instrumentEditDialog, true);
 
         instrumentTypeBindingList = ObservableCollections.observableList(instrumentTypeService.findAll());
-        JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentTypeCrudDialog.getInstrumentTypeList());
+        JListBinding instrumentTypeListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeBindingList, instrumentTypeManagementDialog.getInstrumentTypeList());
         bindingGroup.addBinding(instrumentTypeListBinding);
 
         //instrument type bindings
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeCrudDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.name"), instrumentTypeCrudDialog.getInstrumentTypeNameTextField(), ELProperty.create("${text}"), "nameBinding");
+        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeManagementDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.name"), instrumentTypeManagementDialog.getInstrumentTypeNameTextField(), ELProperty.create("${text}"), "nameBinding");
         bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeCrudDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.description"), instrumentTypeCrudDialog.getInstrumentTypeDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentTypeManagementDialog.getInstrumentTypeList(), BeanProperty.create("selectedElement.description"), instrumentTypeManagementDialog.getInstrumentTypeDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
         bindingGroup.addBinding(binding);
 
         //add listeners
-        instrumentTypeCrudDialog.getInstrumentTypeList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        instrumentTypeManagementDialog.getInstrumentTypeList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
+                    if (instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
                         InstrumentType instrumentType = getSelectedInstrumentType();
 
                         //enable save and delete button
-                        instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(true);
-                        instrumentTypeCrudDialog.getDeleteInstrumentTypeButton().setEnabled(true);
+                        instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(true);
+                        instrumentTypeManagementDialog.getDeleteInstrumentTypeButton().setEnabled(true);
 
                         //check if the instrument type has an ID.
                         //If so, disable the name text field and change the save button label.
                         if (instrumentType.getId() != null) {
-                            instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setEnabled(false);
-                            instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
-                            instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
+                            instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(false);
+                            instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
+                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("");
                         } else {
-                            instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setEnabled(true);
-                            instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("save");
-                            instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("This instrument type hasn't been persisted to the database.");
+                            instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(true);
+                            instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("save");
+                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("This instrument type hasn't been persisted to the database.");
                         }
                     } else {
-                        instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(false);
+                        instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(false);
                         clearInstrumentTypeDetailFields();
                     }
                 }
             }
         });
 
-        instrumentTypeCrudDialog.getAddInstrumentTypeButton().addActionListener(new ActionListener() {
+        instrumentTypeManagementDialog.getAddInstrumentTypeButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 InstrumentType newInstrumentType = new InstrumentType();
                 newInstrumentType.setName("name");
                 instrumentTypeBindingList.add(newInstrumentType);
-                instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setEnabled(true);
-                instrumentTypeCrudDialog.getInstrumentTypeList().setSelectedIndex(instrumentTypeBindingList.size() - 1);
+                instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(true);
+                instrumentTypeManagementDialog.getInstrumentTypeList().setSelectedIndex(instrumentTypeBindingList.size() - 1);
             }
         });
 
-        instrumentTypeCrudDialog.getDeleteInstrumentTypeButton().addActionListener(new ActionListener() {
+        instrumentTypeManagementDialog.getDeleteInstrumentTypeButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
+                if (instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex() != -1) {
                     InstrumentType instrumentTypeToDelete = getSelectedInstrumentType();
 
                     //check if the instrument type has an id.
@@ -494,8 +494,8 @@ public class InstrumentManagementController implements Controllable {
                         try {
                             instrumentTypeService.delete(instrumentTypeToDelete);
 
-                            instrumentTypeBindingList.remove(instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex());
-                            instrumentTypeCrudDialog.getInstrumentTypeList().getSelectionModel().clearSelection();
+                            instrumentTypeBindingList.remove(instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex());
+                            instrumentTypeManagementDialog.getInstrumentTypeList().getSelectionModel().clearSelection();
                             //clearInstrumentTypeDetailFields();
                         } catch (DataIntegrityViolationException dive) {
                             //check if the instrument type can be deleted without breaking existing database relations,
@@ -509,15 +509,15 @@ public class InstrumentManagementController implements Controllable {
                             }
                         }
                     } else {
-                        instrumentTypeBindingList.remove(instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex());
-                        instrumentTypeCrudDialog.getInstrumentTypeList().getSelectionModel().clearSelection();
+                        instrumentTypeBindingList.remove(instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex());
+                        instrumentTypeManagementDialog.getInstrumentTypeList().getSelectionModel().clearSelection();
                         //clearInstrumentTypeDetailFields();
                     }
                 }
             }
         });
 
-        instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().addActionListener(new ActionListener() {
+        instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 InstrumentType selectedInstrumentType = getSelectedInstrumentType();
@@ -534,11 +534,11 @@ public class InstrumentManagementController implements Controllable {
                     } else {
                         instrumentTypeService.save(selectedInstrumentType);
                         //refresh instrument type list
-                        instrumentTypeCrudDialog.getInstrumentTypeList().updateUI();
+                        instrumentTypeManagementDialog.getInstrumentTypeList().updateUI();
                     }
-                    instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setEnabled(false);
-                    instrumentTypeCrudDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
-                    instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
+                    instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(false);
+                    instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("update");
+                    instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("");
 
                     MessageEvent messageEvent = new MessageEvent("Instrument type store confirmation", "Instrument type " + selectedInstrumentType.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
@@ -549,10 +549,10 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentTypeCrudDialog.getCancelInstrumentTypeCrudButton().addActionListener(new ActionListener() {
+        instrumentTypeManagementDialog.getCancelInstrumentTypeManagmentButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instrumentTypeCrudDialog.dispose();
+                instrumentTypeManagementDialog.dispose();
             }
         });
     }
@@ -608,7 +608,7 @@ public class InstrumentManagementController implements Controllable {
      * @return the selected instrument type
      */
     private InstrumentType getSelectedInstrumentType() {
-        int selectedIndex = instrumentTypeCrudDialog.getInstrumentTypeList().getSelectedIndex();
+        int selectedIndex = instrumentTypeManagementDialog.getInstrumentTypeList().getSelectedIndex();
         InstrumentType selectedInstrumentType = (selectedIndex != -1) ? instrumentTypeBindingList.get(selectedIndex) : null;
         return selectedInstrumentType;
     }
@@ -707,8 +707,8 @@ public class InstrumentManagementController implements Controllable {
      * Clear the instrument type detail fields
      */
     private void clearInstrumentTypeDetailFields() {
-        instrumentTypeCrudDialog.getInstrumentTypeStateInfoLabel().setText("");
-        instrumentTypeCrudDialog.getInstrumentTypeNameTextField().setText("");
-        instrumentTypeCrudDialog.getInstrumentTypeDescriptionTextArea().setText("");
+        instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("");
+        instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setText("");
+        instrumentTypeManagementDialog.getInstrumentTypeDescriptionTextArea().setText("");
     }
 }

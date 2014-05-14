@@ -1,4 +1,4 @@
-       create table colims.analytical_run (
+    create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -96,7 +96,7 @@
         country varchar(30) not null,
         name varchar(30) not null,
         number integer not null,
-        postal_code integer not null,
+        postal_code integer,
         street varchar(20) not null,
         primary key (id)
     );

@@ -1,4 +1,6 @@
-package com.compomics.colims.client.event;
+package com.compomics.colims.client.event.admin;
+
+import com.compomics.colims.client.event.EntityChangeEvent;
 
 /**
  * @author Niels Hulstaert

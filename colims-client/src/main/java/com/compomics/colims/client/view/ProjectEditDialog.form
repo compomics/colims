@@ -139,7 +139,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="titleLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Title"/>
+            <Property name="text" type="java.lang.String" value="Title*"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="descriptionScrollPanel">
@@ -161,7 +161,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="labelLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Label"/>
+            <Property name="text" type="java.lang.String" value="Label*"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="ownerLabel">

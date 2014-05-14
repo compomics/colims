@@ -4,10 +4,13 @@
  */
 package com.compomics.colims.model;
 
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -23,12 +26,12 @@ public class Institution extends AuditableDatabaseEntity {
 
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name")
-    @Length(min = 5, max = 30, message = "Institution name must be between {min} and {max} characters")
+    @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
-//    @NotBlank(message = "Please insert an institution abbreviation")
+    @NotBlank(message = "Please insert an institution abbreviation")
     @Basic(optional = false)
-    @Length(min = 1, max = 10, message = "Institution abbreviation must be between {min} and {max} characters")
+    @Length(min = 2, max = 10, message = "Institution abbreviation must be between {min} and {max} characters")
     @Column(name = "abbreviation", nullable = false)
     private String abbreviation;
     @Basic(optional = false)
@@ -36,18 +39,18 @@ public class Institution extends AuditableDatabaseEntity {
     @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters")
     @Column(name = "street", nullable = false)
     private String street;
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert a street number")
-    @Column(name = "number", nullable = false)
+    @Basic(optional = false)    
+    @Min(value = 1, message = "Number must be higher or equal to 1")
+    @Column(name = "number", nullable = false)    
     private Integer number;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
-    @Length(min = 3, max = 30, message = "Institution city name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "City name must be between {min} and {max} characters")
     @Column(name = "city", nullable = false)
     private String city;
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert a postal code")
-    @Column(name = "postal_code", nullable = false)
+    @Basic(optional = true)
+    @Min(value = 1, message = "Postal code must be higher or equal to 1")
+    @Column(name = "postal_code", nullable = true)
     private Integer postalCode;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a country")
@@ -110,4 +113,52 @@ public class Institution extends AuditableDatabaseEntity {
     public void setCountry(final String country) {
         this.country = country;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.abbreviation);
+        hash = 29 * hash + Objects.hashCode(this.street);
+        hash = 29 * hash + Objects.hashCode(this.number);
+        hash = 29 * hash + Objects.hashCode(this.city);
+        hash = 29 * hash + Objects.hashCode(this.country);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Institution other = (Institution) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.abbreviation, other.abbreviation)) {
+            return false;
+        }
+        if (!Objects.equals(this.street, other.street)) {
+            return false;
+        }
+        if (!Objects.equals(this.number, other.number)) {
+            return false;
+        }
+        if (!Objects.equals(this.city, other.city)) {
+            return false;
+        }
+        if (!Objects.equals(this.country, other.country)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + abbreviation + ")";
+    }
+
 }

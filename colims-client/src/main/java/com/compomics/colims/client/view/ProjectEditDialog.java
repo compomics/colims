@@ -83,7 +83,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
 
         descriptionLabel.setText("Description");
 
-        titleLabel.setText("Title");
+        titleLabel.setText("Title*");
 
         descriptionTextArea.setColumns(20);
         descriptionTextArea.setLineWrap(true);
@@ -91,7 +91,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         descriptionTextArea.setAutoscrolls(false);
         descriptionScrollPanel.setViewportView(descriptionTextArea);
 
-        labelLabel.setText("Label");
+        labelLabel.setText("Label*");
 
         ownerLabel.setText("Owner");
 

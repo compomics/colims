@@ -19,6 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -30,6 +32,8 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
+    @NotBlank(message = "Please insert an analytical run name")
+    @Length(min = 1, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = true)
