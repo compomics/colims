@@ -125,7 +125,8 @@
                 <version>2.4</version>
                 <configuration>
                     <archive>
-                        <manifest>                            
+                        <manifest>
+                            <mainClass>com.compomics.colims.distributed.ColimsDistributedStarter</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>              

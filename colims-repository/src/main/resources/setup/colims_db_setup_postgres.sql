@@ -1,6 +1,5 @@
 -- set search path
 SET search_path TO colims;
-  
     
     create table colims.analytical_run (
         id  bigserial not null,
