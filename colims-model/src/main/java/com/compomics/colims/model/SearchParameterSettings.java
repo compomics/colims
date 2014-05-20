@@ -25,30 +25,28 @@ public class SearchParameterSettings extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToMany(mappedBy = "searchParameterSettings")
-    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
     @Basic(optional = true)
     @Column(name = "enzyme", nullable = true)
     private String enzyme;
     @Basic(optional = true)
     @Column(name = "missed_cleavages", nullable = true)
-    private int numberOfMissedCleavages;
+    private Integer numberOfMissedCleavages;
     @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance", nullable = true)
-    private double precMassTolerance;
+    private Double precMassTolerance;
     @Basic(optional = true)
     @Column(name = "lower_charge", nullable = true)
-    private int lowerCharge;
+    private Integer lowerCharge;
     @Basic(optional = true)
     @Column(name = "upper_charge", nullable = true)
-    private int upperCharge;
+    private Integer upperCharge;
     @Basic(optional = true)
     @Column(name = "precursor_mass_tolerance_unit", nullable = true)
     @Enumerated(EnumType.ORDINAL)
     private MassAccuracyType precMassToleranceUnit;
     @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance", nullable = true)
-    private double fragMassTolerance;
+    private Double fragMassTolerance;
     @Basic(optional = true)
     @Column(name = "fragment_mass_tolerance_unit", nullable = true)
     @Enumerated(EnumType.ORDINAL)
@@ -61,61 +59,63 @@ public class SearchParameterSettings extends DatabaseEntity {
     private Integer secondSearchedIonType;
     @Basic(optional = true)
     @Column(name = "evalue_cutoff", nullable = true)
-    private double evalueCutoff;
+    private Double evalueCutoff;
+    @OneToMany(mappedBy = "searchParameterSettings")
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public String getEnzyme() {
         return enzyme;
     }
 
-    public void setEnzyme(final String enzyme) {
+    public void setEnzyme(String enzyme) {
         this.enzyme = enzyme;
     }
 
-    public int getNumberOfMissedCleavages() {
+    public Integer getNumberOfMissedCleavages() {
         return numberOfMissedCleavages;
     }
 
-    public void setNumberOfMissedCleavages(int numberOfMissedCleavages) {
+    public void setNumberOfMissedCleavages(Integer numberOfMissedCleavages) {
         this.numberOfMissedCleavages = numberOfMissedCleavages;
     }
 
-    public double getPrecMassTolerance() {
+    public Double getPrecMassTolerance() {
         return precMassTolerance;
     }
 
-    public void setPrecMassTolerance(final double precMassTolerance) {
+    public void setPrecMassTolerance(Double precMassTolerance) {
         this.precMassTolerance = precMassTolerance;
     }
 
-    public int getLowerCharge() {
+    public Integer getLowerCharge() {
         return lowerCharge;
     }
 
-    public void setLowerCharge(final int lowerCharge) {
+    public void setLowerCharge(Integer lowerCharge) {
         this.lowerCharge = lowerCharge;
     }
 
-    public int getUpperCharge() {
+    public Integer getUpperCharge() {
         return upperCharge;
     }
 
-    public void setUpperCharge(final int precursorUpperCharge) {
-        this.upperCharge = precursorUpperCharge;
+    public void setUpperCharge(Integer upperCharge) {
+        this.upperCharge = upperCharge;
     }
 
     public MassAccuracyType getPrecMassToleranceUnit() {
         return precMassToleranceUnit;
     }
 
-    public void setPrecMassToleranceUnit(final MassAccuracyType precMassToleranceUnit) {
+    public void setPrecMassToleranceUnit(MassAccuracyType precMassToleranceUnit) {
         this.precMassToleranceUnit = precMassToleranceUnit;
     }
 
-    public double getFragMassTolerance() {
+    public Double getFragMassTolerance() {
         return fragMassTolerance;
     }
 
-    public void setFragMassTolerance(final double fragMassTolerance) {
+    public void setFragMassTolerance(Double fragMassTolerance) {
         this.fragMassTolerance = fragMassTolerance;
     }
 
@@ -123,7 +123,7 @@ public class SearchParameterSettings extends DatabaseEntity {
         return fragMassToleranceUnit;
     }
 
-    public void setFragMassToleranceUnit(final MassAccuracyType fragMassToleranceUnit) {
+    public void setFragMassToleranceUnit(MassAccuracyType fragMassToleranceUnit) {
         this.fragMassToleranceUnit = fragMassToleranceUnit;
     }
 
@@ -143,14 +143,14 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.secondSearchedIonType = secondSearchedIonType;
     }
 
-    public double getEvalueCutoff() {
+    public Double getEvalueCutoff() {
         return evalueCutoff;
     }
 
-    public void setEvalueCutoff(final double evalueCutoff) {
+    public void setEvalueCutoff(Double evalueCutoff) {
         this.evalueCutoff = evalueCutoff;
     }
-    
+
     public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
         return searchAndValidationSettingses;
     }

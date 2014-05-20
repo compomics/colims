@@ -13,7 +13,11 @@ import java.io.File;
 public class UnpackedPsDataImport extends DataImport {
 
     /**
-     * The location of the db contained in the PeptideShaker .cps archive
+     * The root directory of the unpacked PeptideShaker .cps archive
+     */
+    private File directory;
+    /**
+     * The directory of the db contained in the PeptideShaker .cps archive
      */
     private File dbDirectory;
     /**
@@ -25,11 +29,20 @@ public class UnpackedPsDataImport extends DataImport {
      */
     private MsExperiment msExperiment;
 
-    public UnpackedPsDataImport(final MsExperiment msExperiment, final File dbDirectory) {
-        this.dbDirectory = dbDirectory;
+    public UnpackedPsDataImport(final MsExperiment msExperiment, final File directory, final File dbDirectory) {        
         this.msExperiment = msExperiment;
+        this.directory = directory;
+        this.dbDirectory = dbDirectory;
     }
 
+    public File getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(File directory) {
+        this.directory = directory;
+    }    
+    
     public File getDbDirectory() {
         return dbDirectory;
     }

@@ -1,7 +1,4 @@
-
 package com.compomics.colims.distributed.model;
-
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 
 /**
  *
@@ -9,8 +6,8 @@ import com.compomics.colims.distributed.model.enums.DbEntityType;
  */
 public class DeleteDbTask extends DbTask {
 
-    public DeleteDbTask(DbEntityType dbEntityType, Long enitityId, Long userId) {
-        super(dbEntityType, enitityId, userId);
+    public DeleteDbTask(Class dbEntityClass, Long enitityId, Long userId) {
+        super(dbEntityClass, enitityId, userId);
     }
-                   
+
 }

@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.model;
 
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import java.util.Objects;
 
 /**
@@ -10,9 +9,9 @@ import java.util.Objects;
 public abstract class DbTask extends QueueMessage {
 
     /**
-     * The datatabe entity type of the task
+     * The datatabe entity class of the task
      */
-    protected DbEntityType dbEntityType;
+    protected Class dbEntityClass;
     /**
      * The ID of the database entity
      */
@@ -35,23 +34,23 @@ public abstract class DbTask extends QueueMessage {
     /**
      * Constructor.
      *
-     * @param dbEntityType
+     * @param dbEntityClass
      * @param enitityId
      * @param userId
      */
-    public DbTask(DbEntityType dbEntityType, Long enitityId, Long userId) {
-        this.dbEntityType = dbEntityType;
+    public DbTask(Class dbEntityClass, Long enitityId, Long userId) {
+        this.dbEntityClass = dbEntityClass;
         this.enitityId = enitityId;
         this.submissionTimestamp = System.currentTimeMillis();
         this.userId = userId;
     }
 
-    public DbEntityType getDbEntityType() {
-        return dbEntityType;
+    public Class getDbEntityClass() {
+        return dbEntityClass;
     }
 
-    public void setDbEntityType(DbEntityType dbEntityType) {
-        this.dbEntityType = dbEntityType;
+    public void setDbEntityClass(Class dbEntityClass) {
+        this.dbEntityClass = dbEntityClass;
     }
 
     public Long getEnitityId() {
@@ -80,11 +79,11 @@ public abstract class DbTask extends QueueMessage {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 29 * hash + Objects.hashCode(this.dbEntityType);
-        hash = 29 * hash + Objects.hashCode(this.enitityId);
-        hash = 29 * hash + Objects.hashCode(this.submissionTimestamp);
-        hash = 29 * hash + Objects.hashCode(this.userId);
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.dbEntityClass);
+        hash = 79 * hash + Objects.hashCode(this.enitityId);
+        hash = 79 * hash + Objects.hashCode(this.submissionTimestamp);
+        hash = 79 * hash + Objects.hashCode(this.userId);
         return hash;
     }
 
@@ -97,7 +96,7 @@ public abstract class DbTask extends QueueMessage {
             return false;
         }
         final DbTask other = (DbTask) obj;
-        if (this.dbEntityType != other.dbEntityType) {
+        if (!Objects.equals(this.dbEntityClass, other.dbEntityClass)) {
             return false;
         }
         if (!Objects.equals(this.enitityId, other.enitityId)) {
@@ -110,6 +109,6 @@ public abstract class DbTask extends QueueMessage {
             return false;
         }
         return true;
-    }
+    }    
 
 }

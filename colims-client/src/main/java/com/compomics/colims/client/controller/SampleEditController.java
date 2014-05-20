@@ -28,7 +28,6 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.model.Material;
@@ -307,7 +306,7 @@ public class SampleEditController implements Controllable {
                 AnalyticalRun analyticalRunToDelete = getSelectedAnalyticalRun();
 
                 if (analyticalRunToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(analyticalRunToDelete, DbEntityType.ANALYTICAL_RUN);
+                    boolean deleteConfirmation = deleteEntity(analyticalRunToDelete, AnalyticalRun.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         analyticalRuns.remove(analyticalRunToDelete);
@@ -432,20 +431,20 @@ public class SampleEditController implements Controllable {
      * DeleteDbTask message is sent to the DB task queue.
      *
      * @param entity
-     * @param dbEntityType
+     * @param dbEntityClass
      * @return true if the delete task is confirmed.
      */
-    private boolean deleteEntity(DatabaseEntity entity, DbEntityType dbEntityType) {
+    private boolean deleteEntity(DatabaseEntity entity, Class dbEntityClass) {
         boolean deleteConfirmation = false;
 
         //check delete permissions
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
             int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
-                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityType.userFriendlyName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
                 if (queueManager.testConnection()) {
-                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityType, entity.getId(), authenticationBean.getCurrentUser().getId());
+                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), authenticationBean.getCurrentUser().getId());
                     dbTaskProducer.sendDbTask(deleteDbTask);
 
                     deleteConfirmation = true;

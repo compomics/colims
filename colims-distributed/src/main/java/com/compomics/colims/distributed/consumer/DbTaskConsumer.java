@@ -32,7 +32,7 @@ public class DbTaskConsumer implements MessageListener {
      */
     @Override
     public void onMessage(Message message) {
-        try {
+        try {            
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
             DbTask dbTask = (DbTask) objectMessage.getObject();
 
@@ -40,10 +40,9 @@ public class DbTaskConsumer implements MessageListener {
                 LOGGER.info("Received persist db task message of type " + ((PersistDbTask) dbTask).getPersistMetadata().getStorageType().userFriendlyName());
                 persistDbTaskHandler.handlePersistDbTask((PersistDbTask) dbTask);
             } else if (dbTask instanceof DeleteDbTask) {
-                LOGGER.info("Received delete db task message of type " + ((DeleteDbTask) dbTask).getDbEntityType().userFriendlyName());
+                LOGGER.info("Received delete db task message of type " + ((DeleteDbTask) dbTask).getDbEntityClass());
                 deleteDbTaskHandler.handleDeleteDbTask((DeleteDbTask) dbTask);
             }
-
         } catch (JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }

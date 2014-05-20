@@ -16,7 +16,6 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.AnalyticalRun;
@@ -58,7 +57,7 @@ public class Playground2 {
         PersistDbTask persistDbTask = new PersistDbTask();
         persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
         persistDbTask.setUserId(1L);
-        persistDbTask.setDbEntityType(DbEntityType.ANALYTICAL_RUN);
+        persistDbTask.setDbEntityClass(AnalyticalRun.class);
         PersistMetadata storageMetadata = new PersistMetadata();
         storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
         storageMetadata.setDescription("test description2");        

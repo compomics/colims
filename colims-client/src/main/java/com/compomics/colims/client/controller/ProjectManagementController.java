@@ -24,7 +24,6 @@ import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
@@ -241,7 +240,7 @@ public class ProjectManagementController implements Controllable {
                 Project projectToDelete = getSelectedProject();
 
                 if (projectToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(projectToDelete, DbEntityType.PROJECT);
+                    boolean deleteConfirmation = deleteEntity(projectToDelete, Project.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         colimsController.getProjects().remove(projectToDelete);
@@ -298,7 +297,7 @@ public class ProjectManagementController implements Controllable {
 
                 if (experimentToDelete != null) {
                     //send DeleteDbTask to DbTask queue                    
-                    boolean deleteConfirmation = deleteEntity(experimentToDelete, DbEntityType.EXPERIMENT);
+                    boolean deleteConfirmation = deleteEntity(experimentToDelete, Experiment.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         experiments.remove(experimentToDelete);
@@ -357,7 +356,7 @@ public class ProjectManagementController implements Controllable {
                 Sample sampleToDelete = getSelectedSample();
 
                 if (sampleToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(sampleToDelete, DbEntityType.SAMPLE);
+                    boolean deleteConfirmation = deleteEntity(sampleToDelete, Sample.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
                         samples.remove(sampleToDelete);
@@ -553,20 +552,20 @@ public class ProjectManagementController implements Controllable {
      * DeleteDbTask message is sent to the DB task queue.
      *
      * @param entity
-     * @param dbEntityType
+     * @param dbEntityClass
      * @return true if the delete task is confirmed.
      */
-    private boolean deleteEntity(DatabaseEntity entity, DbEntityType dbEntityType) {
+    private boolean deleteEntity(DatabaseEntity entity, Class dbEntityClass) {
         boolean deleteConfirmation = false;
 
         //check delete permissions
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
             int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
-                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityType.userFriendlyName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
                 if (queueManager.testConnection()) {
-                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityType, entity.getId(), authenticationBean.getCurrentUser().getId());
+                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), authenticationBean.getCurrentUser().getId());
                     dbTaskProducer.sendDbTask(deleteDbTask);
 
                     deleteConfirmation = true;

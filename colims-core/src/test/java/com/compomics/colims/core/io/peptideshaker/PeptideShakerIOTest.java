@@ -16,6 +16,7 @@ import com.compomics.util.experiment.MsExperiment;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -40,6 +41,10 @@ public class PeptideShakerIOTest {
         UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
+        
+        File directory = unpackedPsDataImport.getDirectory();
+        Assert.assertNotNull(directory);
+        Assert.assertTrue(directory.exists());
 
         File dbDirectory = unpackedPsDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
@@ -47,6 +52,10 @@ public class PeptideShakerIOTest {
 
         MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
+        
+        //delete directory
+        FileUtils.deleteDirectory(directory);
+        Assert.assertFalse(directory.exists());
     }
 
     /**
@@ -64,7 +73,7 @@ public class PeptideShakerIOTest {
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
-        
+
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
 
@@ -72,6 +81,10 @@ public class PeptideShakerIOTest {
         UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);
 
         Assert.assertNotNull(unpackedPsDataImport);
+
+        File directory = unpackedPsDataImport.getDirectory();
+        Assert.assertNotNull(directory);
+        Assert.assertTrue(directory.exists());
 
         File dbDirectory = unpackedPsDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
@@ -82,5 +95,9 @@ public class PeptideShakerIOTest {
 
         Assert.assertEquals(fastaDb, unpackedPsDataImport.getFastaDb());
         Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
+
+        //delete directory
+        FileUtils.deleteDirectory(directory);
+        Assert.assertFalse(directory.exists());
     }
 }

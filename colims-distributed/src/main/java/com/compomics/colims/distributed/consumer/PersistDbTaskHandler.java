@@ -17,12 +17,14 @@ import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
+import com.google.common.io.Files;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -86,9 +88,17 @@ public class PersistDbTaskHandler {
             case PEPTIDESHAKER:
                 //unpack .cps archive
                 UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) persistDbTask.getDataImport()));
+
                 //clear resources before mapping
                 peptideShakerImportMapper.clear();
+
                 analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
+
+                //delete the temporary directory with the unpacked .cps file
+                FileUtils.deleteDirectory(unpackedPsDataImport.getDirectory());
+                if (!unpackedPsDataImport.getDirectory().exists()) {
+                    LOGGER.warn("The directory " + unpackedPsDataImport.getDbDirectory() + " could not be deleted.");
+                }
                 break;
             case MAX_QUANT:
                 //clear resources before mapping

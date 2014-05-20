@@ -40,16 +40,16 @@ public class Modification extends DatabaseEntity {
     private String name;
     @Basic(optional = true)
     @Column(name = "monoisotopic_mass_shift")
-    private double monoIsotopicMassShift;
+    private Double monoIsotopicMassShift;
     @Basic(optional = true)
     @Column(name = "average_mass_shift")
-    private double averageMassShift;
+    private Double averageMassShift;
     @Basic(optional = true)
     @Column(name = "monoisotopic_mass")
-    private double monoIsotopicMass;
+    private Double monoIsotopicMass;
     @Basic(optional = true)
     @Column(name = "average_mass")
-    private double averageMass;
+    private Double averageMass;
     @OneToMany(mappedBy = "modification")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
@@ -89,37 +89,37 @@ public class Modification extends DatabaseEntity {
         this.name = name;
     }
 
-    public double getMonoIsotopicMassShift() {
+    public Double getMonoIsotopicMassShift() {
         return monoIsotopicMassShift;
     }
 
-    public void setMonoIsotopicMassShift(double monoIsotopicMassShift) {
+    public void setMonoIsotopicMassShift(Double monoIsotopicMassShift) {
         this.monoIsotopicMassShift = monoIsotopicMassShift;
     }
 
-    public double getAverageMassShift() {
+    public Double getAverageMassShift() {
         return averageMassShift;
     }
 
-    public void setAverageMassShift(double averageMassShift) {
+    public void setAverageMassShift(Double averageMassShift) {
         this.averageMassShift = averageMassShift;
     }
 
-    public double getMonoIsotopicMass() {
+    public Double getMonoIsotopicMass() {
         return monoIsotopicMass;
     }
 
-    public void setMonoIsotopicMass(double monoIsotopicMass) {
+    public void setMonoIsotopicMass(Double monoIsotopicMass) {
         this.monoIsotopicMass = monoIsotopicMass;
     }
 
-    public double getAverageMass() {
+    public Double getAverageMass() {
         return averageMass;
     }
 
-    public void setAverageMass(double averageMass) {
+    public void setAverageMass(Double averageMass) {
         this.averageMass = averageMass;
-    }
+    }    
 
     public List<PeptideHasModification> getPeptideHasModifications() {
         return peptideHasModifications;
