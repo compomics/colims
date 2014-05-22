@@ -91,8 +91,6 @@ public class SampleEditController implements Controllable {
     @Autowired
     private SampleService sampleService;
     @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
     private MaterialService materialService;
     @Autowired
     private ProtocolService protocolService;
@@ -210,7 +208,7 @@ public class SampleEditController implements Controllable {
 
                     MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
-                    
+
                     //refresh selection in sample table
                     projectManagementController.setSelectedSample(index);
                 } else {
@@ -274,10 +272,15 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
+                if (sampleToEdit.getId() != null) {
+                    sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
 
-                GuiUtils.centerDialogOnComponent(sampleEditDialog, sampleBinaryFileDialog);
-                sampleBinaryFileDialog.setVisible(true);
+                    GuiUtils.centerDialogOnComponent(sampleEditDialog, sampleBinaryFileDialog);
+                    sampleBinaryFileDialog.setVisible(true);
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Sample attachments", "Please save the sample first before adding attachments.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
