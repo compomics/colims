@@ -3,7 +3,7 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
@@ -168,15 +168,15 @@ public class PeptideShakerDataImportController implements Controllable {
      *
      * @return
      */
-    public PeptideShakerDataImport getDataImport() {
+    public PeptideShakerImport getDataImport() {
         List<File> mgfFiles = new ArrayList<>();
         for (int i = 0; i < mgfFileListModel.size(); i++) {
             mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(cpsArchive, fastaDb, mgfFiles);
+        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(cpsArchive, fastaDb, mgfFiles);
 
-        return peptideShakerDataImport;
+        return peptideShakerImport;
     }
 
 }

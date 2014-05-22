@@ -51,7 +51,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class PeptideShakerImportMapperTest {
 
     @Autowired
-    private PeptideShakerImportMapper peptideShakerImportMapper;
+    private PeptideShakerImporter peptideShakerImporter;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -82,7 +82,7 @@ public class PeptideShakerImportMapperTest {
     @Test
     public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException {
         //import PeptideShaker .cps file
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
@@ -96,9 +96,9 @@ public class PeptideShakerImportMapperTest {
         unpackedPsDataImport.setFastaDb(fastaDb);
 
         //clear resources
-        peptideShakerImportMapper.clear();
+        peptideShakerImporter.clear();
         
-        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);

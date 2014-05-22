@@ -1,12 +1,12 @@
 package com.compomics.colims.distributed.consumer;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.maxquant.MaxQuantDataImport;
-import com.compomics.colims.core.io.maxquant.MaxQuantImportMapper;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.maxquant.MaxQuantImport;
+import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -17,7 +17,6 @@ import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
-import com.google.common.io.Files;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,9 +44,9 @@ public class PersistDbTaskHandler {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
-    private PeptideShakerImportMapper peptideShakerImportMapper;
+    private PeptideShakerImporter peptideShakerImporter;
     @Autowired
-    private MaxQuantImportMapper maxQuantImportMapper;
+    private MaxQuantImporter maxQuantImporter;
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired
@@ -87,23 +86,23 @@ public class PersistDbTaskHandler {
         switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
-                UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(((PeptideShakerDataImport) persistDbTask.getDataImport()));
+                UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
 
                 //clear resources before mapping
-                peptideShakerImportMapper.clear();
+                peptideShakerImporter.clear();
 
-                analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
+                analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPeptideShakerImport);
 
                 //delete the temporary directory with the unpacked .cps file
-                FileUtils.deleteDirectory(unpackedPsDataImport.getDirectory());
-                if (!unpackedPsDataImport.getDirectory().exists()) {
-                    LOGGER.warn("The directory " + unpackedPsDataImport.getDbDirectory() + " could not be deleted.");
+                FileUtils.deleteDirectory(unpackedPeptideShakerImport.getDirectory());
+                if (!unpackedPeptideShakerImport.getDirectory().exists()) {
+                    LOGGER.warn("The directory " + unpackedPeptideShakerImport.getDbDirectory() + " could not be deleted.");
                 }
                 break;
             case MAX_QUANT:
                 //clear resources before mapping
-                maxQuantImportMapper.clear();
-                analyticalRuns = maxQuantImportMapper.map((MaxQuantDataImport) persistDbTask.getDataImport());
+                maxQuantImporter.clear();
+                analyticalRuns = maxQuantImporter.map((MaxQuantImport) persistDbTask.getDataImport());
                 break;
             default:
                 break;

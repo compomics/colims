@@ -3,8 +3,8 @@ package com.compomics.colims.client.playground;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -40,7 +40,7 @@ public class Playground {
 //        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 //
 //        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-//        PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
+//        PeptideShakerImporter peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImporter.class);
 //        UserService userService = applicationContext.getBean("userService", UserService.class);
 //        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
 //        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
@@ -58,7 +58,7 @@ public class Playground {
 //        authenticationBean.setCurrentUser(adminUser);
 //
 //        //import PeptideShaker .cps file
-//        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+//        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
 //        //set mgf files and fasta file
 //        List<File> mgfFiles = new ArrayList<>();
 //        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());

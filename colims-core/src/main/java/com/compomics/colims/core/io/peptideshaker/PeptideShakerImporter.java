@@ -41,11 +41,11 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Niels Hulstaert
  */
-@Component("peptideShakerImportMapper")
+@Component("peptideShakerImporter")
 @Transactional
-public class PeptideShakerImportMapper {
+public class PeptideShakerImporter {
 
-    private static final Logger LOGGER = Logger.getLogger(PeptideShakerImportMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
@@ -63,7 +63,7 @@ public class PeptideShakerImportMapper {
      */
     private ObjectsCache objectsCache;    
 
-    public SearchAndValidationSettings mapSearchAndValidationSettings(File peptideShakerCpsArchive, UnpackedPsDataImport unpackedPsDataImport){
+    public SearchAndValidationSettings mapSearchAndValidationSettings(File peptideShakerCpsArchive, UnpackedPeptideShakerImport unpackedPsDataImport){
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
         
         //load experiment settings
@@ -73,7 +73,7 @@ public class PeptideShakerImportMapper {
         return searchAndValidationSettings;
     }
     
-    public List<AnalyticalRun> mapAnalyticalRuns(UnpackedPsDataImport unpackedPsDataImport) throws MappingException {
+    public List<AnalyticalRun> mapAnalyticalRuns(UnpackedPeptideShakerImport unpackedPsDataImport) throws MappingException {
         //the analytical runs onto the utilities replicates will be mapped
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
@@ -206,7 +206,7 @@ public class PeptideShakerImportMapper {
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    private void loadSpectrumMatches(Ms2Identification ms2Identification, UnpackedPsDataImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadSpectrumMatches(Ms2Identification ms2Identification, UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);

@@ -10,7 +10,7 @@ import java.io.File;
  *
  * @author Niels Hulstaert
  */
-public class UnpackedPsDataImport extends DataImport {
+public class UnpackedPeptideShakerImport extends DataImport {
 
     /**
      * The root directory of the unpacked PeptideShaker .cps archive
@@ -29,7 +29,7 @@ public class UnpackedPsDataImport extends DataImport {
      */
     private MsExperiment msExperiment;
 
-    public UnpackedPsDataImport(final MsExperiment msExperiment, final File directory, final File dbDirectory) {        
+    public UnpackedPeptideShakerImport(final MsExperiment msExperiment, final File directory, final File dbDirectory) {        
         this.msExperiment = msExperiment;
         this.directory = directory;
         this.dbDirectory = dbDirectory;

@@ -13,9 +13,9 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.io.Files;
@@ -41,9 +41,8 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 //    private void init() {
 //        eventBus.register(this);
 //    }
-
     @Override
-    public UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException {
         File tempDirectory = Files.createTempDir();
         if (tempDirectory.exists()) {
             return this.unpackPeptideShakerCpsArchive(peptideShakerCpsArchive, tempDirectory);
@@ -53,7 +52,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         MsExperiment msExperiment;
@@ -98,25 +97,27 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 
         //get serialized experiment object file
         File serializedExperimentFile = new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR + File.separator + PEPTIDESHAKER_SERIALIZIZED_EXP_NAME);
+
         //deserialize the experiment
         LOGGER.info("Deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
-        msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
 
-        UnpackedPsDataImport unpackedPsDataImport = new UnpackedPsDataImport(msExperiment, destinationDirectory, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
+        msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
+        UnpackedPeptideShakerImport unpackedPeptideShakerImport = new UnpackedPeptideShakerImport(msExperiment, destinationDirectory, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
+
         LOGGER.info("Finished importing PeptideShaker file " + peptideShakerCpsArchive.getName());
 
-        return unpackedPsDataImport;
+        return unpackedPeptideShakerImport;
     }
 
     @Override
-    public UnpackedPsDataImport unpackPeptideShakerDataImport(PeptideShakerDataImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException {
-        //unpack the .cps archive
-        UnpackedPsDataImport unpackedPsDataImport = unpackPeptideShakerCpsArchive(peptideShakerDataImport.getPeptideShakerCpsArchive());
+    public UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException {
+        //unpacked PeptideShakerImport .cps archive
+        UnpackedPeptideShakerImport unpackedPeptideShakerImport = unpackPeptideShakerCpsArchive(peptideShakerDataImport.getPeptideShakerCpsArchive());
 
         //set fast file and MGF files
-        unpackedPsDataImport.setFastaDb(peptideShakerDataImport.getFastaDb());
-        unpackedPsDataImport.setMgfFiles(peptideShakerDataImport.getMgfFiles());
+        unpackedPeptideShakerImport.setFastaDb(peptideShakerDataImport.getFastaDb());
+        unpackedPeptideShakerImport.setMgfFiles(peptideShakerDataImport.getMgfFiles());
 
-        return unpackedPsDataImport;
+        return unpackedPeptideShakerImport;
     }
 }

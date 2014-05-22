@@ -5,14 +5,14 @@ import com.compomics.colims.client.distributed.impl.QueueManagerImpl;
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPsDataImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.client.distributed.DbTaskProducer;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
@@ -64,14 +64,14 @@ public class Playground2 {
         storageMetadata.setInstrument(instrument);
         
         persistDbTask.setPersistMetadata(storageMetadata);
-        persistDbTask.setDataImport(new PeptideShakerDataImport(null, null, null));
+        persistDbTask.setDataImport(new PeptideShakerImport(null, null, null));
         
         storageTaskProducer.sendDbTask(persistDbTask);
 
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);
 //        List<StorageMetadata> messages = queueMonitor.getMessages("test");
 //        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-//        PeptideShakerImportMapper peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImportMapper.class);
+//        PeptideShakerImporter peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImporter.class);
 //        UserService userService = applicationContext.getBean("userService", UserService.class);
 //        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
 //        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
@@ -89,7 +89,7 @@ public class Playground2 {
 //        authenticationBean.setCurrentUser(adminUser);
 //
 //        //import PeptideShaker .cps file
-//        PeptideShakerDataImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
+//        PeptideShakerImport peptideShakerImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
 //        //set mgf files and fasta file
 //        List<File> mgfFiles = new ArrayList<>();
 //        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());

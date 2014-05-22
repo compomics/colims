@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public class PeptideShakerDataImport extends DataImport {
+public class PeptideShakerImport extends DataImport {
 
     /**
      * The PeptideShaker .cps file
@@ -27,7 +27,7 @@ public class PeptideShakerDataImport extends DataImport {
      * @param fastaDb
      * @param mgfResources
      */
-    public PeptideShakerDataImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfResources) {
+    public PeptideShakerImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfResources) {
         super(fastaDb);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfFiles = mgfResources;

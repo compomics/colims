@@ -11,8 +11,9 @@ import org.apache.commons.compress.archivers.ArchiveException;
 public interface PeptideShakerIO {
 
     /**
-     * Unpack a PeptideShaker .cps file and return a PeptideShakerImport
-     * instance. The .cps archive is unzipped in a temp folder.
+     * Unpack a PeptideShaker .cps file and return an
+     * UnpackedPeptideShakerImport instance. The .cps archive is unzipped in a
+     * temp folder.
      *
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
      * @return the PeptideShaker import object
@@ -20,11 +21,12 @@ public interface PeptideShakerIO {
      * @throws org.apache.commons.compress.archivers.ArchiveException
      * @throws java.lang.ClassNotFoundException
      */
-    UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException;
 
     /**
-     * Unpack a PeptideShaker .cps file and return PeptideShakerImport instance.
-     * The .cps archive is unzippped in the given destination directory.
+     * Unpack a PeptideShaker .cps file and return an
+     * UnpackedPeptideShakerImport instance. The .cps archive is unzippped in
+     * the given destination directory.
      *
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
      * @param destinationDirectory the destination directory
@@ -33,12 +35,12 @@ public interface PeptideShakerIO {
      * @throws org.apache.commons.compress.archivers.ArchiveException
      * @throws java.lang.ClassNotFoundException
      */
-    UnpackedPsDataImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException;
 
     /**
-     * Unpack the given PeptideShakerDataImport instance: unpack the
-     * PeptideShaker .cps file and return a UnpackedPsDataImport instance. The
-     * .cps archive is unzipped in a temp folder.
+     * Unpack the given PeptideShakerImport instance: unpack the PeptideShaker
+     * .cps fileand return an UnpackedPeptideShakerImport instance. The .cps
+     * archive is unzipped in a temp folder.
      *
      * @param peptideShakerDataImport the PepitideShakerDataImport
      * @return the PeptideShaker import object
@@ -46,5 +48,5 @@ public interface PeptideShakerIO {
      * @throws org.apache.commons.compress.archivers.ArchiveException
      * @throws java.lang.ClassNotFoundException
      */
-    UnpackedPsDataImport unpackPeptideShakerDataImport(PeptideShakerDataImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException;
+    UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException;
 }

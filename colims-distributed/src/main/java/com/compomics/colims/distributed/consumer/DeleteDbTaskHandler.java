@@ -1,8 +1,8 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.core.io.maxquant.MaxQuantImportMapper;
+import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -31,9 +31,9 @@ public class DeleteDbTaskHandler {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
-    private PeptideShakerImportMapper peptideShakerImportMapper;
+    private PeptideShakerImporter peptideShakerImporter;
     @Autowired
-    private MaxQuantImportMapper maxQuantImportMapper;
+    private MaxQuantImporter maxQuantImporter;
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired

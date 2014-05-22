@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
-import com.compomics.colims.core.io.maxquant.MaxQuantDataImport;
+import com.compomics.colims.core.io.maxquant.MaxQuantImport;
 import com.compomics.colims.model.FastaDb;
 import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
@@ -108,8 +108,8 @@ public class MaxQuantDataImportController implements Controllable {
      *
      * @return
      */
-    public MaxQuantDataImport getDataImport() {
-        MaxQuantDataImport maxQuantDataImport = new MaxQuantDataImport(maxQuantDirectory, fastaDb);
+    public MaxQuantImport getDataImport() {
+        MaxQuantImport maxQuantDataImport = new MaxQuantImport(maxQuantDirectory, fastaDb);
 
         return maxQuantDataImport;
     }

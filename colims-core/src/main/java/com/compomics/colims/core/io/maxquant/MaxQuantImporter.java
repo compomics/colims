@@ -2,7 +2,7 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImportMapper;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
@@ -34,9 +34,9 @@ import org.springframework.stereotype.Component;
  * @author Davy
  */
 @Component("maxQuantImportMapper")
-public class MaxQuantImportMapper {
+public class MaxQuantImporter {
 
-    private static final Logger LOGGER = Logger.getLogger(PeptideShakerImportMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
@@ -70,7 +70,7 @@ public class MaxQuantImportMapper {
      * added to the header enum that did not have a possible header name
      * @throws MappingException if a mapping could not be completed
      */
-    public List<AnalyticalRun> map(MaxQuantDataImport aMaxQuantImport) throws MappingException, FileNotFoundException, ClassNotFoundException {
+    public List<AnalyticalRun> map(MaxQuantImport aMaxQuantImport) throws MappingException, FileNotFoundException, ClassNotFoundException {
         LOGGER.info("started mapping folder: " + aMaxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
         File preparedFastaFile = null;
