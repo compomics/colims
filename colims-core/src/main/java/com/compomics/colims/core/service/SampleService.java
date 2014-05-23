@@ -6,15 +6,12 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
-import java.util.List;
 
 /**
  *
  * @author Kenneth Verheggen
  */
 public interface SampleService extends GenericService<Sample, Long> {
-
-    List<Sample> findSampleByExperimentId(Long experimentId);
     
     /**
      * Fetch the sample binary files

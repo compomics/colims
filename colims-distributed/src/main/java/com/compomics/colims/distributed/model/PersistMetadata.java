@@ -17,7 +17,7 @@ public class PersistMetadata implements Serializable {
     /**
      * The persist type of the task
      */
-    private PersistType storageType;
+    private PersistType persistType;
     /**
      * The storage task description
      */
@@ -40,24 +40,24 @@ public class PersistMetadata implements Serializable {
     /**
      * Constructor.
      *
-     * @param storageType
+     * @param persistType
      * @param description
      * @param startDate
      * @param instrument
      */
-    public PersistMetadata(PersistType storageType, String description, Date startDate, Instrument instrument) {
-        this.storageType = storageType;
+    public PersistMetadata(PersistType persistType, String description, Date startDate, Instrument instrument) {
+        this.persistType = persistType;
         this.description = description;
         this.startDate = startDate;
         this.instrument = instrument;
     }
 
     public PersistType getStorageType() {
-        return storageType;
+        return persistType;
     }
 
     public void setStorageType(PersistType storageType) {
-        this.storageType = storageType;
+        this.persistType = storageType;
     }
 
     public String getDescription() {
@@ -87,7 +87,7 @@ public class PersistMetadata implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.storageType);
+        hash = 73 * hash + Objects.hashCode(this.persistType);
         hash = 73 * hash + Objects.hashCode(this.description);
         hash = 73 * hash + Objects.hashCode(this.startDate);
         hash = 73 * hash + Objects.hashCode(this.instrument);
@@ -103,7 +103,7 @@ public class PersistMetadata implements Serializable {
             return false;
         }
         final PersistMetadata other = (PersistMetadata) obj;
-        if (this.storageType != other.storageType) {
+        if (this.persistType != other.persistType) {
             return false;
         }
         if (!Objects.equals(this.description, other.description)) {

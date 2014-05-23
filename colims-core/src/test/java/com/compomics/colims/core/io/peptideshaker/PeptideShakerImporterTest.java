@@ -48,7 +48,7 @@ import org.xmlpull.v1.XmlPullParserException;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class PeptideShakerImportMapperTest {
+public class PeptideShakerImporterTest {
 
     @Autowired
     private PeptideShakerImporter peptideShakerImporter;

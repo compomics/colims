@@ -66,3 +66,6 @@ INSERT INTO modification (id, name, accession, average_mass, average_mass_shift,
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
+
+--insert test search engine
+INSERT INTO search_engine (id, type, version) VALUES (1, 'PEPTIDESHAKER', '0.28.0');
