@@ -95,7 +95,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                             cvTermManagementDialog.getCvTermStateInfoLabel().setText("");
                         } else {
                             cvTermManagementDialog.getSaveOrUpdateButton().setText("save");
-                            cvTermManagementDialog.getCvTermStateInfoLabel().setText("This CV term hasn't been persisted to the database.");
+                            cvTermManagementDialog.getCvTermStateInfoLabel().setText("This CV term hasn't been stored to the database.");
                         }
 
                         //set details fields

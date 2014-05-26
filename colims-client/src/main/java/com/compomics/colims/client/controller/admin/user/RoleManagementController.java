@@ -138,7 +138,7 @@ public class RoleManagementController implements Controllable {
                         } else {
                             userManagementDialog.getRoleNameTextField().setEnabled(true);
                             userManagementDialog.getRoleSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been persisted to the database.");
+                            userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been stored to the database.");
                         }
 
                         //populate dual list with permission                        

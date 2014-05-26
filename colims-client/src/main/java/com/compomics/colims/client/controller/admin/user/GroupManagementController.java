@@ -150,7 +150,7 @@ public class GroupManagementController implements Controllable {
                         } else {
                             userManagementDialog.getGroupNameTextField().setEnabled(true);
                             userManagementDialog.getGroupSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been persisted to the database.");
+                            userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been stored to the database.");
                         }
 
                         //populate dual list with roles                        

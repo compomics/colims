@@ -188,10 +188,15 @@ public class ExperimentEditController implements Controllable {
         experimentEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
+                if (experimentToEdit.getId() != null) {
+                    experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
 
-                GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentBinaryFileDialog);
-                experimentBinaryFileDialog.setVisible(true);
+                    GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentBinaryFileDialog);
+                    experimentBinaryFileDialog.setVisible(true);
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Experiment attachments", "Please save the experiment first before adding attachments.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
@@ -221,11 +226,11 @@ public class ExperimentEditController implements Controllable {
         experimentToEdit = experiment;
 
         if (experimentToEdit.getId() != null) {
-            experimentEditDialog.getSaveOrUpdateButton().setText("update");            
+            experimentEditDialog.getSaveOrUpdateButton().setText("update");
             //fetch experiment binary files
             experimentService.fetchBinaryFiles(experimentToEdit);
         } else {
-            experimentEditDialog.getSaveOrUpdateButton().setText("save");            
+            experimentEditDialog.getSaveOrUpdateButton().setText("save");
         }
 
         experimentEditDialog.getTitleTextField().setText(experimentToEdit.getTitle());
