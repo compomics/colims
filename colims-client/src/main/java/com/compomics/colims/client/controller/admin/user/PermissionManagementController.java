@@ -117,7 +117,7 @@ public class PermissionManagementController implements Controllable {
                         } else {
                             userManagementDialog.getPermissionNameTextField().setEnabled(true);
                             userManagementDialog.getPermissionSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been persisted to the database.");
+                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been stored to the database.");
                         }
                     } else {
                         userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);

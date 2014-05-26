@@ -29,7 +29,7 @@ public class ModificationRepositoryTest {
         modification.setAccession(accession);
         modificationRepository.save(modification);
 
-        //Ensure it's persisted
+        //Ensure it's stored
         Assert.assertNotNull("Identifier should be assigned now", id = modification.getId());
     }
 

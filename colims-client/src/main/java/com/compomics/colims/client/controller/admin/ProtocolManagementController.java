@@ -465,7 +465,7 @@ public class ProtocolManagementController implements Controllable {
             protocolEditDialog.getProtocolStateInfoLabel().setText("");
         } else {
             protocolEditDialog.getProtocolSaveOrUpdateButton().setText("save");
-            protocolEditDialog.getProtocolStateInfoLabel().setText("This protocol hasn't been persisted to the database.");
+            protocolEditDialog.getProtocolStateInfoLabel().setText("This protocol hasn't been stored to the database.");
         }
 
         protocolEditDialog.getNameTextField().setText(protocolToEdit.getName());

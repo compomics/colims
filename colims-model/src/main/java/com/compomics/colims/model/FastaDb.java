@@ -67,7 +67,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB version")
-    @Length(min = 5, max = 20, message = "Version must be between {min} and {max} characters")
+    @Length(min = 3, max = 20, message = "Version must be between {min} and {max} characters")
     @Column(name = "version", nullable = false)
     private String version = "N/A";
     /**

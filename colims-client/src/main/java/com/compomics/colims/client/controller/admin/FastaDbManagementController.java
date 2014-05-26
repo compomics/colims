@@ -145,7 +145,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                         } else {
                             fastaDbManagementDialog.getNameTextField().setEnabled(true);
                             fastaDbManagementDialog.getSaveOrUpdateButton().setText("save");
-                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been persisted to the database.");
+                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been stored to the database.");
                         }
                     } else {
                         fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(false);

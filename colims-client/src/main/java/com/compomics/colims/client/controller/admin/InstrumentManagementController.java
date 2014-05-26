@@ -461,7 +461,7 @@ public class InstrumentManagementController implements Controllable {
                         } else {
                             instrumentTypeManagementDialog.getInstrumentTypeNameTextField().setEnabled(true);
                             instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setText("save");
-                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("This instrument type hasn't been persisted to the database.");
+                            instrumentTypeManagementDialog.getInstrumentTypeStateInfoLabel().setText("This instrument type hasn't been stored to the database.");
                         }
                     } else {
                         instrumentTypeManagementDialog.getInstrumentTypeSaveOrUpdateButton().setEnabled(false);
@@ -670,7 +670,7 @@ public class InstrumentManagementController implements Controllable {
             instrumentEditDialog.getInstrumentStateInfoLabel().setText("");
         } else {
             instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("save");
-            instrumentEditDialog.getInstrumentStateInfoLabel().setText("This instrument hasn't been persisted to the database.");
+            instrumentEditDialog.getInstrumentStateInfoLabel().setText("This instrument hasn't been stored to the database.");
         }
 
         instrumentEditDialog.getNameTextField().setText(instrumentToEdit.getName());

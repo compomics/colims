@@ -106,7 +106,7 @@ public class InstitutionManagementController implements Controllable {
                             institutionManagementDialog.getInstitutionStateInfoLabel().setText("");
                         } else {
                             institutionManagementDialog.getSaveOrUpdateButton().setText("save");
-                            institutionManagementDialog.getInstitutionStateInfoLabel().setText("This institution hasn't been persisted to the database.");
+                            institutionManagementDialog.getInstitutionStateInfoLabel().setText("This institution hasn't been stored to the database.");
                         }
                     } else {
                         institutionManagementDialog.getSaveOrUpdateButton().setEnabled(false);
