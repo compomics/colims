@@ -14,6 +14,6 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @param name the instrument by name
      * @return the found instrument
      */
-    Instrument findByName(String name);    
+    Instrument findByName(String name);        
     
 }

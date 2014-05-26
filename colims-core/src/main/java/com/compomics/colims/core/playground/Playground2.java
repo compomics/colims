@@ -82,7 +82,8 @@ public class Playground2 {
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
         unpackedPsDataImport.setFastaDb(fastaDb);
 
-        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+//        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
         //get sample from db
         Sample sample = sampleService.findAll().get(0);
@@ -105,7 +106,7 @@ public class Playground2 {
         unpackedPsDataImport.setMgfFiles(mgfFiles);
         unpackedPsDataImport.setFastaDb(fastaDb);
 
-        analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+//        analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
 
         //get sample from db
         sample = sampleService.findAll().get(0);

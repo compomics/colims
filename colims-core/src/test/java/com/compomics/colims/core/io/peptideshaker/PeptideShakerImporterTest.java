@@ -21,7 +21,6 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -29,7 +28,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
@@ -96,9 +94,10 @@ public class PeptideShakerImporterTest {
         unpackedPsDataImport.setFastaDb(fastaDb);
 
         //clear resources
-        peptideShakerImporter.clear();
+        //peptideShakerImporter.clear();
         
-        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+//        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = new ArrayList();
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
