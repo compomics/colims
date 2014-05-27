@@ -66,3 +66,9 @@ INSERT INTO modification (id, name, accession, average_mass, average_mass_shift,
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'Q8IWA5'), (2, 'Q13233');
+
+-- insert test search engine
+INSERT INTO search_engine (id, type, version) VALUES (1, 'PEPTIDESHAKER', '0.28.0');
+
+-- insert test fasta db
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, taxonomy_accession, version) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', 'Homo sapiens (Human)', '9606', '1.2.3');

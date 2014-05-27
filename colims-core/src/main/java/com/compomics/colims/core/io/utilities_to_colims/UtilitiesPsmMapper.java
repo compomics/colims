@@ -1,10 +1,11 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
+import com.compomics.colims.core.io.MappingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
+import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
@@ -32,56 +33,67 @@ public class UtilitiesPsmMapper {
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
-    public void map(Ms2Identification ms2Identification, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws MappingException, InterruptedException {
+    /**
+     *
+     *
+     * @param ms2Identification
+     * @param identificationFile
+     * @param spectrumMatch
+     * @param targetSpectrum
+     * @throws SQLException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     * @throws MappingException
+     */
+    public void map(Ms2Identification ms2Identification, IdentificationFile identificationFile, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws SQLException, IOException, ClassNotFoundException, InterruptedException, MappingException {
         if (spectrumMatch.getBestPeptideAssumption() != null) {
-            try {
-                //get best assumption
-                PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
-                com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
-                Peptide targetPeptide = new Peptide();
+            //get best assumption
+            PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
+            com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
+            Peptide targetPeptide = new Peptide();
 
-                PSParameter psmProbabilities = new PSParameter();
-                PSParameter peptideProbabilities = new PSParameter();
+            PSParameter psmProbabilities = new PSParameter();
+            PSParameter peptideProbabilities = new PSParameter();
 //                PSParameter proteinProbabilities = new PSParameter();                                
-                //get psm and peptide probabilities  
-                psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
-                peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
+            //get psm and peptide probabilities  
+            psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
+            peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
 
-                MatchScore psmMatchScore = new MatchScore(psmProbabilities.getPsmProbabilityScore(), psmProbabilities.getPsmProbability());
-                PSPtmScores ptmScores = null;
-                if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
-                    ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
-                }
-                utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, ptmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
-                //set entity relations
-                targetSpectrum.getPeptides().add(targetPeptide);
-                targetPeptide.setSpectrum(targetSpectrum);
-
-                List<ProteinMatch> proteinMatches = new ArrayList<>();
-                //iterate over protein keys        
-                //get parent proteins without remapping them
-                //@todo this is the way to go for maxquant, but what about peptideshaker?
-                for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {
-                    ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
-                    if (proteinMatch != null) {
-                        proteinMatches.add(proteinMatch);
-                    }
-                }
-
-                //map proteins
-                MatchScore peptideMatchScore = null;
-                if (peptideProbabilities != null) {
-                    peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
-                } else {
-                    LOGGER.info("No peptide match score found for peptide: " + targetPeptide.getSequence());
-                    peptideMatchScore = new MatchScore(0.0, 0.0);
-                }
-
-                utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
-            } catch (IllegalArgumentException | SQLException | IOException | ClassNotFoundException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                throw new MappingException(ex);
+            MatchScore psmMatchScore = new MatchScore(psmProbabilities.getPsmProbabilityScore(), psmProbabilities.getPsmProbability());
+            PSPtmScores ptmScores = null;
+            if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
+                ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
             }
+            utilitiesPeptideMapper.map(sourcePeptide, psmMatchScore, ptmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
+            //link the IdentificationFile to the peptide
+            targetPeptide.setIdentificationFile(identificationFile);
+
+            //set entity relations
+            targetSpectrum.getPeptides().add(targetPeptide);
+            targetPeptide.setSpectrum(targetSpectrum);
+
+            List<ProteinMatch> proteinMatches = new ArrayList<>();
+            //iterate over protein keys        
+            //get parent proteins without remapping them
+            //@todo this is the way to go for maxquant, but what about peptideshaker?
+            for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {
+                ProteinMatch proteinMatch = ms2Identification.getProteinMatch(proteinKey);
+                if (proteinMatch != null) {
+                    proteinMatches.add(proteinMatch);
+                }
+            }
+
+            //map proteins
+            MatchScore peptideMatchScore = null;
+            if (peptideProbabilities != null) {
+                peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
+            } else {
+                LOGGER.info("No peptide match score found for peptide: " + targetPeptide.getSequence());
+                peptideMatchScore = new MatchScore(0.0, 0.0);
+            }
+
+            utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
         } else {
             LOGGER.debug("No best match was found for spectrum match " + spectrumMatch.getKey());
         }

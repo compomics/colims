@@ -21,6 +21,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -94,11 +95,15 @@ public class PeptideShakerImporterTest {
         unpackedPsDataImport.setFastaDb(fastaDb);
 
         //clear resources
-        //peptideShakerImporter.clear();
+        peptideShakerImporter.clear();
         
-//        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
-        List<AnalyticalRun> analyticalRuns = new ArrayList();
+        peptideShakerImporter.initImport(unpackedPsDataImport);
+        SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
+        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
 
+        //search and validation settings
+        Assert.assertNotNull(searchAndValidationSettings);
+        
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
         Assert.assertNotNull(testAnalyticalRun);

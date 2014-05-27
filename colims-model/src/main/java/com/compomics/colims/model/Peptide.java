@@ -51,6 +51,7 @@ public class Peptide extends DatabaseEntity {
     private Double psmPostErrorProbability;
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
     @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private IdentificationFile identificationFile;
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
     @ManyToOne

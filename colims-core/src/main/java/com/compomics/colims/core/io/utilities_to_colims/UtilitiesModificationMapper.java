@@ -1,12 +1,8 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
@@ -18,7 +14,11 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +61,9 @@ public class UtilitiesModificationMapper {
      * @param modificationMatches the list of modification matches
      * @param ptmScores the PeptideShaker PTM scores
      * @param targetPeptide the colims target peptide
-     * @throws MappingException
+     * @throws com.compomics.colims.core.io.ModificationMappingException
      */
-    public void map(ArrayList<ModificationMatch> modificationMatches, PSPtmScores ptmScores, Peptide targetPeptide) throws MappingException {
+    public void map(ArrayList<ModificationMatch> modificationMatches, PSPtmScores ptmScores, Peptide targetPeptide) throws ModificationMappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //iterate over modification matches
@@ -126,7 +126,7 @@ public class UtilitiesModificationMapper {
                 peptideHasModification.setPeptide(targetPeptide);
             } else {
                 LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
-                throw new MappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+                throw new ModificationMappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
             }
         }
 

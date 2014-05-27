@@ -21,6 +21,7 @@ import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.FileNotFoundException;
 import java.util.Map;
+import org.junit.Before;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
@@ -31,24 +32,17 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class UtilitiesSpectrumMapperTest {
 
+    private MSnSpectrum mSnSpectrum;
+    private HashMap<Double, Peak> peaks;
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
     private SpectrumService spectrumService;
 
-    /**
-     * Test the mapping of a utilities spectrum to a colims spectrum.
-     *
-     * @throws MappingException
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws ClassNotFoundException
-     * @throws MzMLUnmarshallerException
-     */
-    @Test
-    public void testMapSpectrum() throws MappingException, IOException, FileNotFoundException, ClassNotFoundException, MzMLUnmarshallerException {
+    @Before
+    public void init() {
         //create new MSnSpectrum
-        HashMap<Double, Peak> peaks = new HashMap<>();
+        peaks = new HashMap<>();
         peaks.put(123.3, new Peak(123.3, 100.0, 22.5));
         peaks.put(356.8, new Peak(356.8, 100.0, 22.5));
         peaks.put(452.1, new Peak(452.1, 100.0, 22.5));
@@ -63,10 +57,22 @@ public class UtilitiesSpectrumMapperTest {
         ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, 2));
         Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);
-        MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
+        mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
         mSnSpectrum.setScanNumber("1200");
         mSnSpectrum.setScanStartTime(300.5);
+    }
 
+    /**
+     * Test the mapping of a utilities spectrum to a colims spectrum.
+     *
+     * @throws MappingException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws MzMLUnmarshallerException
+     */
+    @Test
+    public void testMapSpectrum() throws MappingException, IOException, FileNotFoundException, ClassNotFoundException, MzMLUnmarshallerException {
         Spectrum spectrum = new Spectrum();
 
         utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.CID, spectrum);

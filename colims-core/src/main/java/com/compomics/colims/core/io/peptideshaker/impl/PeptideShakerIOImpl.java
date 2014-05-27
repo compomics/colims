@@ -102,7 +102,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         LOGGER.info("Deserializing experiment from file " + serializedExperimentFile.getAbsolutePath());
 
         msExperiment = ExperimentIO.loadExperiment(serializedExperimentFile);
-        UnpackedPeptideShakerImport unpackedPeptideShakerImport = new UnpackedPeptideShakerImport(msExperiment, destinationDirectory, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR));
+        UnpackedPeptideShakerImport unpackedPeptideShakerImport = new UnpackedPeptideShakerImport(peptideShakerCpsArchive, destinationDirectory, new File(destinationDirectory, PEPTIDESHAKER_SERIALIZATION_DIR), msExperiment);
 
         LOGGER.info("Finished importing PeptideShaker file " + peptideShakerCpsArchive.getName());
 

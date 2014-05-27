@@ -42,7 +42,7 @@ public class PeptideShakerIOTest {
 
         Assert.assertNotNull(unpackedPsDataImport);
         
-        File directory = unpackedPsDataImport.getDirectory();
+        File directory = unpackedPsDataImport.getUnpackedDirectory();
         Assert.assertNotNull(directory);
         Assert.assertTrue(directory.exists());
 
@@ -82,7 +82,7 @@ public class PeptideShakerIOTest {
 
         Assert.assertNotNull(unpackedPsDataImport);
 
-        File directory = unpackedPsDataImport.getDirectory();
+        File directory = unpackedPsDataImport.getUnpackedDirectory();
         Assert.assertNotNull(directory);
         Assert.assertTrue(directory.exists());
 

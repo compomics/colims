@@ -101,7 +101,7 @@ public class IOUtils {
      * @return the byte array
      * @throws java.io.IOException
      */
-    public static byte[] readAndUnzip(File file) throws IOException {
+    public static byte[] readAndZip(File file) throws IOException {
         byte[] zippedBytes;
 
         //get file as byte array

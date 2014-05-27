@@ -89,13 +89,13 @@ public class PersistDbTaskHandler {
                 UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
 
                 //clear resources before mapping
-                peptideShakerImporter.clear();
+                //peptideShakerImporter.clear();
 
-                analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPeptideShakerImport);
+                //analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPeptideShakerImport);
 
                 //delete the temporary directory with the unpacked .cps file
-                FileUtils.deleteDirectory(unpackedPeptideShakerImport.getDirectory());
-                if (!unpackedPeptideShakerImport.getDirectory().exists()) {
+                FileUtils.deleteDirectory(unpackedPeptideShakerImport.getUnpackedDirectory());
+                if (!unpackedPeptideShakerImport.getUnpackedDirectory().exists()) {
                     LOGGER.warn("The directory " + unpackedPeptideShakerImport.getDbDirectory() + " could not be deleted.");
                 }
                 break;
