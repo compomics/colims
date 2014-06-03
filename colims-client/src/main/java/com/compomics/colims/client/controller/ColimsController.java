@@ -37,7 +37,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,10 +120,6 @@ public class ColimsController implements Controllable, ActionListener {
                     showPermissionErrorDialog(e.getMessage());
                 } else if (e instanceof ArrayIndexOutOfBoundsException) {
                     showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
-                } else if (e instanceof EncryptionOperationNotPossibleException) {
-                    showMessageDialog("password encryption error", "The password for the jasypt encryption framework is not correct. "
-                            + "\n" + "Check if the 'jasypt.password' property in the colims client config file contains the correct value.", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
                 } else {
                     showUnexpectedErrorDialog(e.getMessage());
                     System.exit(0);
@@ -176,7 +171,7 @@ public class ColimsController implements Controllable, ActionListener {
                 if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
-                    showMessageDialog("login validation fail", "Please provide an user name and password.", JOptionPane.WARNING_MESSAGE);
+                    showMessageDialog("Login validation fail", "Please provide an user name and password.", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -261,7 +256,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showUnexpectedErrorDialog(String message) {
-        showMessageDialog("unexpected error", "An unexpected error occured: "
+        showMessageDialog("Unexpected error", "An unexpected error occured: "
                 + "\n" + message
                 + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
@@ -341,7 +336,7 @@ public class ColimsController implements Controllable, ActionListener {
                 colimsFrame.getAdminMenu().setEnabled(false);
             }
         } else {
-            showMessageDialog("login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
+            showMessageDialog("Login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
             userLoginDialog.getUserNameTextField().setText("");
             userLoginDialog.getUserPasswordTextField().setText("");
         }

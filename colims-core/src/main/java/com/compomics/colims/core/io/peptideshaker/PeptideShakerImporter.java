@@ -3,8 +3,6 @@ package com.compomics.colims.core.io.peptideshaker;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
-import org.apache.log4j.Logger;
-
 import com.compomics.colims.core.io.SearchSettingsMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationSettings;
@@ -17,9 +15,12 @@ import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.peptideshaker.myparameters.PSSettings;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
@@ -62,7 +63,9 @@ public class PeptideShakerImporter implements DataImporter {
             PeptideShakerSettings peptideShakerSettings = loadExperimentSettings(unpackedPeptideShakerImport.getMsExperiment());
             String version = peptideShakerSettings.getProjectDetails().getPeptideShakerVersion();
 
-            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, unpackedPeptideShakerImport.getFastaDb(), peptideShakerSettings.getSearchParameters(), unpackedPeptideShakerImport.getPeptideShakerCpsArchive(), false);
+            List<File> identificationFiles = new ArrayList<>();
+            identificationFiles.add(unpackedPeptideShakerImport.getPeptideShakerCpsArchive());
+            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, unpackedPeptideShakerImport.getFastaDb(), peptideShakerSettings.getSearchParameters(), identificationFiles, false);
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex.getMessage(), ex);

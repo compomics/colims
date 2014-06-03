@@ -48,7 +48,7 @@ public class UtilitiesModificationMapper {
      * The map of cached modifications (key: modification name, value: the
      * modification)
      */
-    private Map<String, Modification> cachedModifications = new HashMap<>();
+    private final Map<String, Modification> cachedModifications = new HashMap<>();
 
     public Map<String, Modification> getCachedModifications() {
         return cachedModifications;

@@ -17,6 +17,7 @@ import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -89,13 +90,15 @@ public class PersistDbTaskHandler {
                 UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
 
                 //clear resources before mapping
-                //peptideShakerImporter.clear();
+                peptideShakerImporter.clear();
 
-                //analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPeptideShakerImport);
+                peptideShakerImporter.initImport(unpackedPeptideShakerImport);
+                SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();                
+                analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);                                
 
                 //delete the temporary directory with the unpacked .cps file
                 FileUtils.deleteDirectory(unpackedPeptideShakerImport.getUnpackedDirectory());
-                if (!unpackedPeptideShakerImport.getUnpackedDirectory().exists()) {
+                if (unpackedPeptideShakerImport.getUnpackedDirectory().exists()) {
                     LOGGER.warn("The directory " + unpackedPeptideShakerImport.getDbDirectory() + " could not be deleted.");
                 }
                 break;
@@ -136,5 +139,7 @@ public class PersistDbTaskHandler {
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
     }
+    
+    //private void storeMappedDataImport(Experiment experiment, SearchAndValidationSettings searchAndValidationSettings, )
 
 }

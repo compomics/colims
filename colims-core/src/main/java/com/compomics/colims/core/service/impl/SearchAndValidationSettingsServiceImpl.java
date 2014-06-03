@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SearchAndValidationSettingsServiceImpl implements SearchAndValidationSettingsService {
 
-    private static final Logger LOGGER = Logger.getLogger(SearchAndValidationSettingsServiceImpl.class);
-
     @Autowired
     private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
     @Autowired

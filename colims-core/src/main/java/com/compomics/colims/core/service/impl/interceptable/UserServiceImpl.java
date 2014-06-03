@@ -54,11 +54,12 @@ public class UserServiceImpl implements UserService {
     public User findByLoginCredentials(final String name, final String password) {
         User user = userRepository.findByName(name);
         if (user != null) {
-            if (user.getPassword().equals(password)) {
-                return user;
+            //check the password digest
+            if (!user.checkPassword(password)) {
+                user = null;
             }
         }
-        return null;
+        return user;
     }
 
     @Override

@@ -1,14 +1,21 @@
 package com.compomics.colims.core.io;
 
+import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +34,7 @@ public class SearchSettingsMapperTest {
 
     private SearchParameters searchParameters;
     private FastaDb fastaDb;
-    private File identificationFile;
+    private List<File> identificationFiles;
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
     @Autowired    
@@ -58,11 +65,42 @@ public class SearchSettingsMapperTest {
         fastaDb = fastaDbService.findById(1L);
         
         //set stub IdentificationFile
-        identificationFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
+        File identificationFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
+        identificationFiles = new ArrayList<>();
+        identificationFiles.add(identificationFile);
     }
          
     @Test
     public void testMap() throws IOException {
-        SearchAndValidationSettings map = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDb, searchParameters, identificationFile, false);
+        SearchAndValidationSettings searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDb, searchParameters, identificationFiles, false);
+        
+        Assert.assertNotNull(searchAndValidationSettings);
+        
+        //identification files
+        Assert.assertNotNull(searchAndValidationSettings.getIdentificationFiles());        
+        Assert.assertFalse(searchAndValidationSettings.getIdentificationFiles().isEmpty());
+        Assert.assertEquals(1, searchAndValidationSettings.getIdentificationFiles().size());
+        IdentificationFile mappedIdentificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
+        Assert.assertEquals(identificationFiles.get(0).getName(), mappedIdentificationFile.getFileName());
+        Assert.assertEquals(identificationFiles.get(0).getCanonicalPath(), mappedIdentificationFile.getFilePath());
+        Assert.assertNull(mappedIdentificationFile.getBinaryFileType());
+        Assert.assertNull(mappedIdentificationFile.getContent());
+        Assert.assertNotNull(mappedIdentificationFile.getSearchAndValidationSettings());
+        Assert.assertEquals(searchAndValidationSettings, mappedIdentificationFile.getSearchAndValidationSettings());
+        
+        //search parameters
+        Assert.assertNotNull(searchAndValidationSettings.getSearchParameterSettings());
+//        Assert.assertTrue(searchAndValidationSettings.getSearchParameterSettings().getSearchAndValidationSettingses().contains(searchAndValidationSettings));
+        
+        //search engine
+        Assert.assertNotNull(searchAndValidationSettings.getSearchEngine());
+        SearchEngine searchEngine = searchAndValidationSettings.getSearchEngine();
+        Assert.assertEquals(SearchEngineType.PEPTIDESHAKER, searchEngine.getSearchEngineType());
+        Assert.assertEquals("0.28.0", searchEngine.getVersion());
+//        Assert.assertTrue(searchEngine.getSearchAndValidationSettingses().contains(searchAndValidationSettings));
+        
+        //fasta db
+        Assert.assertNotNull(searchAndValidationSettings.getFastaDb());
+//        Assert.assertTrue(searchAndValidationSettings.getFastaDb().getSearchAndValidationSettingses().contains(searchAndValidationSettings));          
     }
 }

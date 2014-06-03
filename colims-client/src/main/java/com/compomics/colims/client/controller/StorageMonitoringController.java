@@ -316,7 +316,7 @@ public class StorageMonitoringController implements Controllable {
      * @param message the error message
      */
     private void postConnectionErrorMessage(String message) {
-        eventBus.post(new MessageEvent("connection error", "The storage module cannot be reached:"
+        eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
                 + "\n" + message, JOptionPane.ERROR_MESSAGE));
     }
 

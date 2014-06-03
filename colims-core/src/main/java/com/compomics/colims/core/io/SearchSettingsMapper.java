@@ -13,6 +13,7 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,12 +36,12 @@ public class SearchSettingsMapper {
      * @param version
      * @param fastaDb
      * @param searchParameters
-     * @param identificationFile
+     * @param identificationFiles
      * @param storeIdentificationFile
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, SearchParameters searchParameters, File identificationFile, boolean storeIdentificationFile) throws IOException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, SearchParameters searchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
@@ -52,25 +53,30 @@ public class SearchSettingsMapper {
 
         //look for the given search parameter settings in the database
         SearchParameterSettings searchParamterSettings = searchAndValidationSettingsService.getSearchParamterSettings(searchParameterSettings);
+        //set entity relations
         searchAndValidationSettings.setSearchParameterSettings(searchParameterSettings);
+//        searchParamterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * SearchEngine
          */
         SearchEngine searchEngine = searchAndValidationSettingsService.getSearchEngine(searchEngineType, version);
+        //set entity relations
         searchAndValidationSettings.setSearchEngine(searchEngine);
+//        searchEngine.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * FastaDb
          */
+        //set entity relations
         searchAndValidationSettings.setFastaDb(fastaDb);
+//        fastaDb.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * IdentificationFile(s)
          */
-        IdentificationFile identificationFileEntity = new IdentificationFile(identificationFile.getName(), identificationFile.getCanonicalPath());
+        BinaryFileType binaryFileType = null;
         if (storeIdentificationFile) {
-            BinaryFileType binaryFileType = null;
             switch (searchEngineType) {
                 case PEPTIDESHAKER:
                     binaryFileType = BinaryFileType.TEXT;
@@ -81,14 +87,20 @@ public class SearchSettingsMapper {
                 default:
                     break;
             }
-            identificationFileEntity.setBinaryFileType(binaryFileType);
-            byte[] content = IOUtils.readAndZip(identificationFile);
-            identificationFileEntity.setContent(content);
         }
 
-        //set entity relations
-        identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
-        searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
+        for (File identificationFile : identificationFiles) {
+            IdentificationFile identificationFileEntity = new IdentificationFile(identificationFile.getName(), identificationFile.getCanonicalPath());
+            if (storeIdentificationFile) {
+                identificationFileEntity.setBinaryFileType(binaryFileType);
+                byte[] content = IOUtils.readAndZip(identificationFile);
+                identificationFileEntity.setContent(content);
+            }
+
+            //set entity relations
+            identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
+            searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
+        }
 
         return searchAndValidationSettings;
     }

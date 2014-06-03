@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FastaDbServiceImpl implements FastaDbService {
 
-    private static final Logger LOGGER = Logger.getLogger(FastaDbServiceImpl.class);
-
     @Autowired
     private FastaDbRepository fastaDbRepository;
 
