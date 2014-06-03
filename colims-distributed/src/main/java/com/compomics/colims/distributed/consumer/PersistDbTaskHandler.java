@@ -12,10 +12,13 @@ import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.distributed.model.MappedDataImport;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import java.io.IOException;
@@ -58,12 +61,22 @@ public class PersistDbTaskHandler {
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         try {
             Long started = System.currentTimeMillis();
+                        
+            if(!persistDbTask.getDbEntityClass().equals(Sample.class)){
+               throw new IllegalArgumentException("The entity to persist should be of class " + Sample.class.getName());
+            }
+            
+            //get the sample
+            Sample sample = sampleService.findById(persistDbTask.getEnitityId());
+            if(sample == null){
+                throw new IllegalArgumentException("The sample entity with ID " + persistDbTask.getEnitityId() + " was not found in the database.");
+            }
 
             //map the task
-            List<AnalyticalRun> analyticalRuns = mapDataImport(persistDbTask);
+            MappedDataImport mappedDataImport = mapDataImport(sample.getExperiment(), persistDbTask);
 
             //store the analytical run(s)
-            storeAnalyticalRuns(persistDbTask, analyticalRuns);
+//            storeAnalyticalRuns(persistDbTask, analyticalRuns);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -75,14 +88,15 @@ public class PersistDbTaskHandler {
     }
 
     /**
-     * Map the persist db task onto a list of analytical runs
+     * Map the persist db task.
      *
+     * @param sample the sample
      * @param persistDbTask the persist task containing the DataImport object
-     * @return the list of analytical runs
+     * @return
      * @throws MappingException
      */
-    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
-        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+    private MappedDataImport mapDataImport(Sample sample, PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
+        MappedDataImport mappedDataImport = null;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
@@ -94,7 +108,9 @@ public class PersistDbTaskHandler {
 
                 peptideShakerImporter.initImport(unpackedPeptideShakerImport);
                 SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();                
-                analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);                                
+                List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);   
+                                
+                mappedDataImport = new MappedDataImport(sample, searchAndValidationSettings, null, analyticalRuns);
 
                 //delete the temporary directory with the unpacked .cps file
                 FileUtils.deleteDirectory(unpackedPeptideShakerImport.getUnpackedDirectory());
@@ -111,7 +127,7 @@ public class PersistDbTaskHandler {
                 break;
         }
 
-        return analyticalRuns;
+        return mappedDataImport;
     }
 
     /**
@@ -140,6 +156,24 @@ public class PersistDbTaskHandler {
         }
     }
     
-    //private void storeMappedDataImport(Experiment experiment, SearchAndValidationSettings searchAndValidationSettings, )
+    /**
+     * 
+     * 
+     * @param mappedDataImport 
+     */
+    private void storeMappedDataImport(MappedDataImport mappedDataImport){
+        //find the user name by ID for auditing
+        String userName = userService.findUserNameById(persistDbTask.getUserId());        
+
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            analyticalRun.setCreationDate(new Date());
+            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setUserName(userName);
+            analyticalRun.setStartDate(persistDbTask.getPersistMetadata().getStartDate());
+            analyticalRun.setSample(sample);
+            analyticalRun.setInstrument(persistDbTask.getPersistMetadata().getInstrument());
+            analyticalRunService.saveOrUpdate(analyticalRun);
+        }
+    }
 
 }
