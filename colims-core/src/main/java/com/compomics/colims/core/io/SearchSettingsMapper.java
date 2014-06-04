@@ -52,7 +52,7 @@ public class SearchSettingsMapper {
         utilitiesSearchParametersMapper.map(searchParameters, searchParameterSettings);
 
         //look for the given search parameter settings in the database
-        SearchParameterSettings searchParamterSettings = searchAndValidationSettingsService.getSearchParamterSettings(searchParameterSettings);
+        searchParameterSettings = searchAndValidationSettingsService.getSearchParamterSettings(searchParameterSettings);
         //set entity relations
         searchAndValidationSettings.setSearchParameterSettings(searchParameterSettings);
 //        searchParamterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);

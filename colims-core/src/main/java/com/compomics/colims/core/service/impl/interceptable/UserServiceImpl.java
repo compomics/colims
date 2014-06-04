@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String findUserNameById(Long userId) {
-        String userName = "N/A";
+        String userName = null;
         
         User foundUser = userRepository.findById(userId);  
         if(foundUser != null){

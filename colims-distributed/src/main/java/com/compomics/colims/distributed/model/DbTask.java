@@ -13,7 +13,8 @@ public abstract class DbTask extends QueueMessage {
      */
     protected Class dbEntityClass;
     /**
-     * The ID of the database entity
+     * The ID of the database entity. In case of a PersistDbTask, this is the ID
+     * of the parent entity.
      */
     private Long enitityId;
     /**
@@ -109,6 +110,6 @@ public abstract class DbTask extends QueueMessage {
             return false;
         }
         return true;
-    }    
+    }
 
 }

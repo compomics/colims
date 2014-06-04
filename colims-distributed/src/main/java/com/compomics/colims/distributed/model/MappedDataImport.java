@@ -13,25 +13,15 @@ import java.util.List;
  */
 public class MappedDataImport {
     
-    private Sample sample;
     private SearchAndValidationSettings searchAndValidationSettings;
     private QuantificationSettings quantificationSettings;
     private List<AnalyticalRun> analyticalRuns;
 
-    public MappedDataImport(Sample sample, SearchAndValidationSettings searchAndValidationSettings, QuantificationSettings quantificationSettings, List<AnalyticalRun> analyticalRuns) {
-        this.sample = sample;
+    public MappedDataImport(SearchAndValidationSettings searchAndValidationSettings, QuantificationSettings quantificationSettings, List<AnalyticalRun> analyticalRuns) {
         this.searchAndValidationSettings = searchAndValidationSettings;
         this.quantificationSettings = quantificationSettings;
         this.analyticalRuns = analyticalRuns;
-    }
-
-    public Sample getSample() {
-        return sample;
-    }
-
-    public void setSample(Sample sample) {
-        this.sample = sample;
-    }    
+    }       
 
     public SearchAndValidationSettings getSearchAndValidationSettings() {
         return searchAndValidationSettings;

@@ -46,8 +46,8 @@ public interface UserService extends GenericService<User, Long> {
     boolean isDefaultUser(User user);
 
     /**
-     * Find the user name by the given user ID. Returns N/A is no user was
-     * found.
+     * Find the user name by the given user ID. Returns null is no user with the
+     * given ID was found.
      *
      * @param userId
      * @return
