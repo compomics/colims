@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.bean.PtmFactoryWrapper;
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.OlsService;
@@ -202,7 +201,7 @@ public class UtilitiesModificationMapper {
         modification = cachedModifications.get(cvTerm.getAccession());
 
         if (modification == null) {
-            //the modification was not found in the newModifications map    
+            //the modification was not found in the cachedModifications map    
             //look for the modification in the database by accession          
             modification = modificationService.findByAccession(cvTerm.getAccession());
             //for UNIMOD mods, look for the alternative accession
@@ -240,6 +239,8 @@ public class UtilitiesModificationMapper {
                     //add to cached modifications
                     cachedModifications.put(modification.getAccession(), modification);
                 }
+            } else {
+                cachedModifications.put(cvTerm.getAccession(), modification);
             }
         }
 
