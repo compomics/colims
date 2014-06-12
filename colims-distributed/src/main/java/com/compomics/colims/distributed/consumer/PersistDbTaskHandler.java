@@ -66,7 +66,7 @@ public class PersistDbTaskHandler {
 
             //check if the entity class is of the right type
             if (!persistDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
-                throw new IllegalArgumentException("The entity to persist should be of class " + Sample.class.getName());
+                throw new IllegalArgumentException("The entity to persist should be of class " + AnalyticalRun.class.getName());
             }
 
             //get the sample
