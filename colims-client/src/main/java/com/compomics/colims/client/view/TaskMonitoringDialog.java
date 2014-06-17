@@ -111,7 +111,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Task monitoring");
 
-        taskQueuePanel.setOpaque(false);
+        taskQueuePanel.setBackground(java.awt.Color.white);
 
         taskQueueScrollPane.setOpaque(false);
 
@@ -159,7 +159,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
 
         taskMonitoringTabbedPane.addTab("Tasks", taskQueuePanel);
 
-        completedTaskQueuePanel.setOpaque(false);
+        completedTaskQueuePanel.setBackground(java.awt.Color.white);
 
         completedTaskQueueScrollPane.setOpaque(false);
 
@@ -219,7 +219,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
 
         taskMonitoringTabbedPane.addTab("Completed tasks", completedTaskQueuePanel);
 
-        taskErrorQueuePanel.setOpaque(false);
+        taskErrorQueuePanel.setBackground(java.awt.Color.white);
 
         taskErrorQueueScrollPane.setOpaque(false);
 

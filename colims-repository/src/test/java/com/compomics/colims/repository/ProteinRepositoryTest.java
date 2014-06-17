@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  *
  * @author Niels Hulstaert
@@ -24,14 +23,20 @@ public class ProteinRepositoryTest {
     @Autowired
     private ProteinRepository proteinRepository;
 
+    @Test
+    public void testFindBySequence() {
+        Protein foundProtein = proteinRepository.findBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
+        Assert.assertNotNull(foundProtein);
+        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
+    }
+
 //    @Test
-    public void testHibernateSearchFindBySequence() {
+//    public void testHibernateSearchFindBySequence() {
 //        //(re)build the lucene indexes
 //        proteinRepository.rebuildIndex();
 //        
 //        Protein foundProtein = proteinRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
 //        Assert.assertNotNull(foundProtein);
 //        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
-    }
-        
+//    }
 }

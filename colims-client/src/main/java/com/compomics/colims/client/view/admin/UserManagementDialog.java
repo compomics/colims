@@ -272,13 +272,13 @@ public class UserManagementDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("user management");
+        setTitle("User management");
         setModal(true);
 
         userManagementTabbedPane.setBackground(new java.awt.Color(255, 255, 255));
         userManagementTabbedPane.setOpaque(true);
 
-        userCrudPanel.setOpaque(false);
+        userCrudPanel.setBackground(java.awt.Color.white);
         userCrudPanel.setLayout(new java.awt.GridBagLayout());
 
         userOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
@@ -383,7 +383,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addGroup(userDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(passwordLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(emailLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(firstNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                            .addComponent(firstNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                             .addComponent(groupsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lastNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(userNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -458,7 +458,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Users", userCrudPanel);
 
-        groupCrudPanel.setOpaque(false);
+        groupCrudPanel.setBackground(java.awt.Color.white);
         groupCrudPanel.setLayout(new java.awt.GridBagLayout());
 
         groupOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
@@ -556,7 +556,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addGroup(groupDetailPanelLayout.createSequentialGroup()
                         .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(groupNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(groupDescriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                            .addComponent(groupDescriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 60, Short.MAX_VALUE)
                             .addComponent(rolesLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(10, 10, 10)
                         .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -598,7 +598,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Groups", groupCrudPanel);
 
-        roleCrudPanel.setOpaque(false);
+        roleCrudPanel.setBackground(java.awt.Color.white);
         roleCrudPanel.setLayout(new java.awt.GridBagLayout());
 
         roleOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
@@ -742,7 +742,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
         userManagementTabbedPane.addTab("Roles", roleCrudPanel);
 
-        permissionCrudPanel.setOpaque(false);
+        permissionCrudPanel.setBackground(java.awt.Color.white);
         permissionCrudPanel.setLayout(new java.awt.GridBagLayout());
 
         permissionOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
@@ -839,7 +839,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addComponent(permissionSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(permissionDetailPanelLayout.createSequentialGroup()
                         .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(permissionDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                            .addComponent(permissionDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, Short.MAX_VALUE)
                             .addComponent(permissionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
