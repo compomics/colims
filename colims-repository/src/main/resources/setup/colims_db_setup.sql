@@ -770,7 +770,7 @@
 		
 -- create default value insertions
 -- insert default admin and distributed users
-INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','lEGFv0p//m40EoHCJtk1c5QVxjIoIQiD'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','Fe4BGoLvzGyUpcCVUTiBvb1Oy2qsrM3O');
+INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','InR5YT91InowUTtgX+/mHYoxbUY5wNQE'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','Cpf9+FuhtsPGaYuPrF/O4DAOduORXzmC');
 
 -- insert default admin and distributed groups
 INSERT INTO user_group (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed group description','distributed');

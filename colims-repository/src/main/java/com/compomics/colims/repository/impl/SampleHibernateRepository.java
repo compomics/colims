@@ -10,7 +10,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -18,14 +17,6 @@ import org.hibernate.criterion.Restrictions;
  */
 @Repository("sampleRepository")
 public class SampleHibernateRepository extends GenericHibernateRepository<Sample, Long> implements SampleRepository {
-
-    @Override
-    public List<Sample> findSampleByExperimentId(final Long experimentId) {
-        Criteria subCriteria = createCriteria().createCriteria("l_experiment_id");
-        @SuppressWarnings("unchecked")
-        List<Sample> list = subCriteria.add(Restrictions.eq("id", experimentId)).list();
-        return list;
-    }
     
     @Override
     public Protocol getMostUsedProtocol() {

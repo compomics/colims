@@ -58,19 +58,7 @@
             
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
-    </bean>                                                                              
-    
-    <!-- jasypt encryption beans -->
-    <bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" lazy-init="false">
-        <property name="algorithm" value="PBEWithMD5AndDES"/>
-        <property name="password" value="${jasypt.password}"/>
-    </bean>
-
-    <bean id="hibernateEncryptor" class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor" lazy-init="false">
-        <!-- This property value must match "encryptorRegisteredName" used when defining hibernate user types -->
-        <property name="registeredName" value="jasyptHibernateEncryptor"/>
-        <property name="encryptor" ref="stringEncryptor"/>
-    </bean>        
+    </bean>                                                                                             
     
     <!-- repository beans -->
     <context:component-scan base-package="com.compomics.colims.repository">

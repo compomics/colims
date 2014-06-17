@@ -14,6 +14,6 @@ public interface InstrumentTypeService extends GenericService<InstrumentType, Lo
      * @param name the instrument type name
      * @return the found instrument type
      */
-    InstrumentType findByName(String name);    
+    InstrumentType findByName(String name);            
    
 }

@@ -276,11 +276,17 @@
             <artifactId>jsparklines</artifactId>
             <version>0.6.4</version>
         </dependency>
+        
         <dependency>
             <groupId>net.sourceforge.jmol</groupId>
             <artifactId>jmol</artifactId>
             <version>12.2.34</version>
             <type>jar</type>
         </dependency>
+        
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency> 
     </dependencies>
 </project>

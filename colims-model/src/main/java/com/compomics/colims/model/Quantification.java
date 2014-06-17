@@ -31,7 +31,7 @@ public class Quantification extends DatabaseEntity {
     
     @Basic(optional = false)
     @Column(name = "intensity", nullable = false)
-    private double intensity;
+    private Double intensity;
     @Basic(optional = false)
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "weight", nullable = false)
@@ -42,13 +42,13 @@ public class Quantification extends DatabaseEntity {
     @OneToMany(mappedBy = "quantification")
     private List<QuantificationGroup> quantificationGroups = new ArrayList<>();    
 
-    public double getIntensity() {
+    public Double getIntensity() {
         return intensity;
     }
 
-    public void setIntensity(final double intensity) {
+    public void setIntensity(Double intensity) {
         this.intensity = intensity;
-    }
+    }    
 
     public void setWeight(final QuantificationWeight weight) {
         this.weight = weight;

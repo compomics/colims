@@ -19,7 +19,7 @@ import com.compomics.colims.repository.InstrumentRepository;
 public class InstrumentServiceImpl implements InstrumentService {
     
     @Autowired
-    private InstrumentRepository instrumentRepository;
+    private InstrumentRepository instrumentRepository;    
     
     @Override
     public Instrument findById(final Long id) {

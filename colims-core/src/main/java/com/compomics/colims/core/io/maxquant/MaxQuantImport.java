@@ -8,17 +8,20 @@ import java.io.File;
  *
  * @author Davy
  */
-public class MaxQuantDataImport extends DataImport {
- 
+public class MaxQuantImport extends DataImport {
+
+    /**
+     * The directory containing the MaxQuant files.
+     */
     private File maxQuantDirectory;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param maxQuantDirectory
      * @param fastaDb
      */
-    public MaxQuantDataImport(final File maxQuantDirectory, final FastaDb fastaDb){
+    public MaxQuantImport(final File maxQuantDirectory, final FastaDb fastaDb) {
         super(fastaDb);
         this.maxQuantDirectory = maxQuantDirectory;
     }
@@ -30,5 +33,5 @@ public class MaxQuantDataImport extends DataImport {
     public void setMaxQuantDirectory(final File maxQuantDirectory) {
         this.maxQuantDirectory = maxQuantDirectory;
     }
-      
+
 }

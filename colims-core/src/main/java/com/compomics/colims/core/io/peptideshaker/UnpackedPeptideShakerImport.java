@@ -10,10 +10,18 @@ import java.io.File;
  *
  * @author Niels Hulstaert
  */
-public class UnpackedPsDataImport extends DataImport {
+public class UnpackedPeptideShakerImport extends DataImport {
 
     /**
-     * The location of the db contained in the PeptideShaker .cps archive
+     * The PeptideShaker .cps archive
+     */
+    private File peptideShakerCpsArchive;
+    /**
+     * The root directory of the unpacked PeptideShaker .cps archive
+     */
+    private File unpackedDirectory;
+    /**
+     * The directory of the db contained in the PeptideShaker .cps archive
      */
     private File dbDirectory;
     /**
@@ -25,16 +33,42 @@ public class UnpackedPsDataImport extends DataImport {
      */
     private MsExperiment msExperiment;
 
-    public UnpackedPsDataImport(final MsExperiment msExperiment, final File dbDirectory) {
+    /**
+     * Constructor.
+     *
+     * @param peptideShakerCpsArchive
+     * @param unpackedDirectory
+     * @param dbDirectory
+     * @param msExperiment
+     */
+    public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final MsExperiment msExperiment) {
+        this.peptideShakerCpsArchive = peptideShakerCpsArchive;
+        this.unpackedDirectory = unpackedDirectory;
         this.dbDirectory = dbDirectory;
         this.msExperiment = msExperiment;
+    }
+
+    public File getPeptideShakerCpsArchive() {
+        return peptideShakerCpsArchive;
+    }
+
+    public void setPeptideShakerCpsArchive(File peptideShakerCpsArchive) {
+        this.peptideShakerCpsArchive = peptideShakerCpsArchive;
+    }
+
+    public File getUnpackedDirectory() {
+        return unpackedDirectory;
+    }
+
+    public void setUnpackedDirectory(File unpackedDirectory) {
+        this.unpackedDirectory = unpackedDirectory;
     }
 
     public File getDbDirectory() {
         return dbDirectory;
     }
 
-    public void setDbDirectory(final File dbDirectory) {
+    public void setDbDirectory(File dbDirectory) {
         this.dbDirectory = dbDirectory;
     }
 
@@ -42,7 +76,7 @@ public class UnpackedPsDataImport extends DataImport {
         return mgfFiles;
     }
 
-    public void setMgfFiles(final List<File> mgfFiles) {
+    public void setMgfFiles(List<File> mgfFiles) {
         this.mgfFiles = mgfFiles;
     }
 
@@ -50,7 +84,7 @@ public class UnpackedPsDataImport extends DataImport {
         return msExperiment;
     }
 
-    public void setMsExperiment(final MsExperiment msExperiment) {
+    public void setMsExperiment(MsExperiment msExperiment) {
         this.msExperiment = msExperiment;
     }
 

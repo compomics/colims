@@ -54,11 +54,12 @@ public class UserServiceImpl implements UserService {
     public User findByLoginCredentials(final String name, final String password) {
         User user = userRepository.findByName(name);
         if (user != null) {
-            if (user.getPassword().equals(password)) {
-                return user;
+            //check the password digest
+            if (!user.checkPassword(password)) {
+                user = null;
             }
         }
-        return null;
+        return user;
     }
 
     @Override
@@ -112,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String findUserNameById(Long userId) {
-        String userName = "N/A";
+        String userName = null;
         
         User foundUser = userRepository.findById(userId);  
         if(foundUser != null){

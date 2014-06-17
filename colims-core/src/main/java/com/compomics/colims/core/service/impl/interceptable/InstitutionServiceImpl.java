@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.InstitutionService;
-import com.compomics.colims.core.service.InstrumentTypeService;
 import com.compomics.colims.model.Institution;
 import java.util.List;
 
@@ -9,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.repository.InstitutionRepository;
-import com.compomics.colims.repository.InstrumentTypeRepository;
 
 /**
  *

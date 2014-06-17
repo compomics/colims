@@ -29,7 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 public class MaxQuantImportMapperTest {
 
     @Autowired
-    MaxQuantImportMapper maxQuantImportMapper;
+    MaxQuantImporter maxQuantImportMapper;
 
     private File maxQuantTextDirectory;
     private FastaDb maxQuantTestFastaDb;
@@ -45,12 +45,12 @@ public class MaxQuantImportMapperTest {
     }
 
     /**
-     * Test of map method, of class MaxQuantImportMapper.
+     * Test of map method, of class MaxQuantImporter.
      */
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         System.out.println("map");
-        MaxQuantDataImport testImport = new MaxQuantDataImport(maxQuantTextDirectory, maxQuantTestFastaDb);
+        MaxQuantImport testImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         List<AnalyticalRun> result = maxQuantImportMapper.map(testImport);
         assertThat(result.size(), is(not(0)));
     }

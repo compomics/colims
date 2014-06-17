@@ -220,7 +220,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
         binaryFile.setFileName(file.getName());
         binaryFile.setBinaryFileType(BinaryFileType.TEXT);
 
-        binaryFile.setContent(IOUtils.readAndUnzip(file));
+        binaryFile.setContent(IOUtils.readAndZip(file));
 
         return binaryFile;
     }

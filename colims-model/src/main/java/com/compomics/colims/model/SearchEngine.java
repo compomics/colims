@@ -43,6 +43,14 @@ public class SearchEngine extends DatabaseEntity {
     @OneToMany(mappedBy = "searchEngine")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();  
 
+    public SearchEngine() {
+    }    
+    
+    public SearchEngine(SearchEngineType searchEngineType, String version) {
+        this.searchEngineType = searchEngineType;
+        this.version = version;
+    }    
+    
     public SearchEngineType getSearchEngineType() {
         return searchEngineType;
     }

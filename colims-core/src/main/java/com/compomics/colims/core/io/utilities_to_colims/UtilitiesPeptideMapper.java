@@ -1,7 +1,7 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.Peptide;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;
@@ -27,9 +27,9 @@ public class UtilitiesPeptideMapper {
      * @param ptmScores
      * @param identificationCharge
      * @param targetPeptide
-     * @throws MappingException
+     * @throws com.compomics.colims.core.io.ModificationMappingException
      */
-    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws MappingException {
+    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
         //set sequence
         targetPeptide.setSequence(sourcePeptide.getSequence());
         //set theoretical mass

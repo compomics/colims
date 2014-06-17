@@ -3,7 +3,7 @@ package com.compomics.colims.client.storage;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.DbTaskProducer;
 import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerDataImport;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.model.enums.PersistType;
@@ -48,7 +48,7 @@ public class DbTaskProducerTest {
         persistMetadata.setStartDate(new Date());        
         persistDbTask.setPersistMetadata(persistMetadata);
         
-        DataImport dataImport = new PeptideShakerDataImport(null, null, null);        
+        DataImport dataImport = new PeptideShakerImport(null, null, null);        
         persistDbTask.setDataImport(dataImport);
         
         List<PersistDbTask> messages = queueManager.monitorQueue(dbTaskQueueName);

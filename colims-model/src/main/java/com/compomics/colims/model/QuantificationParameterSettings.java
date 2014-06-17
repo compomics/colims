@@ -25,50 +25,50 @@ public class QuantificationParameterSettings extends DatabaseEntity {
 
     @Basic(optional = true)
     @Column(name = "label_count", nullable = true)
-    private int labelCount;
+    private Integer labelCount;
     @Basic(optional = true)
     @Column(name = "minimum_ratio_count", nullable = true)
-    private int minimumRatioCount;
+    private Integer minimumRatioCount;
     @Basic(optional = true)
     @Column(name = "error", nullable = true)
-    private double error;
+    private Double error;
     @Basic(optional = true)
     @Column(name = "include_modifications", nullable = true)
-    private boolean includeModifications;
+    private Boolean includeModifications;
     @OneToMany(mappedBy = "quantificationParameterSettings")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
 
-    public int getLabelCount() {
+    public Integer getLabelCount() {
         return labelCount;
     }
 
-    public void setLabelCount(int labelCount) {
+    public void setLabelCount(Integer labelCount) {
         this.labelCount = labelCount;
     }
 
-    public int getMinimumRatioCount() {
+    public Integer getMinimumRatioCount() {
         return minimumRatioCount;
     }
 
-    public void setMinimumRatioCount(int minimumRatioCount) {
+    public void setMinimumRatioCount(Integer minimumRatioCount) {
         this.minimumRatioCount = minimumRatioCount;
     }
 
-    public double getError() {
+    public Double getError() {
         return error;
     }
 
-    public void setError(double error) {
+    public void setError(Double error) {
         this.error = error;
     }
 
-    public boolean isIncludeModifications() {
+    public Boolean isIncludeModifications() {
         return includeModifications;
     }
 
-    public void setIncludeModifications(boolean includeModifications) {
+    public void setIncludeModifications(Boolean includeModifications) {
         this.includeModifications = includeModifications;
-    }    
+    }     
     
     public List<QuantificationSettings> getQuantificationSettingses() {
         return quantificationSettingses;

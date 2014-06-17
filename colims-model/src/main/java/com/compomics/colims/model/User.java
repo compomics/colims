@@ -6,6 +6,7 @@ package com.compomics.colims.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -17,13 +18,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import org.jasypt.hibernate4.type.EncryptedStringType;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 
 /**
  *
@@ -31,11 +29,6 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
  */
 @Table(name = "colims_user")
 @Entity
-@TypeDef(name = "encryptedString",
-        typeClass = EncryptedStringType.class,
-        parameters = {
-            @Parameter(name = "encryptorRegisteredName", value = "jasyptHibernateEncryptor")
-        })
 public class User extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -61,7 +54,6 @@ public class User extends AuditableDatabaseEntity {
     private String email;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a password")
-    @Type(type = "encryptedString")
     @Column(name = "password", nullable = false)
     private String password;
     @ManyToOne
@@ -124,7 +116,9 @@ public class User extends AuditableDatabaseEntity {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+        String encryptedPassword = passwordEncryptor.encryptPassword(password);
+        this.password = encryptedPassword;
     }
 
     public List<Group> getGroups() {
@@ -159,6 +153,25 @@ public class User extends AuditableDatabaseEntity {
         this.projects = projects;
     }
 
+    /**
+     * Check the user input against the digested password in the database.
+     * Returns true if the check was successful.
+     *
+     * @param plainPassword
+     * @return
+     */
+    public boolean checkPassword(String plainPassword) {
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+        return passwordEncryptor.checkPassword(plainPassword, password);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -168,22 +181,11 @@ public class User extends AuditableDatabaseEntity {
             return false;
         }
         final User other = (User) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 53 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
-    }
+    }        
 
     @Override
     public String toString() {

@@ -59,6 +59,16 @@ public class IdentificationFile extends DatabaseEntity {
     @OneToMany(mappedBy = "identificationFile")
     private List<Peptide> peptides = new ArrayList<>();
 
+    public IdentificationFile(String fileName, String filePath, BinaryFileType binaryFileType) {
+        this(fileName, filePath);
+        this.binaryFileType = binaryFileType;
+    }
+
+    public IdentificationFile(String fileName, String filePath) {
+        this.fileName = fileName;
+        this.filePath = filePath;
+    }
+
     public String getFileName() {
         return fileName;
     }
@@ -89,7 +99,7 @@ public class IdentificationFile extends DatabaseEntity {
 
     public void setContent(byte[] content) {
         this.content = content;
-    }    
+    }
 
     public SearchAndValidationSettings getSearchAndValidationSettings() {
         return searchAndValidationSettings;
@@ -97,7 +107,7 @@ public class IdentificationFile extends DatabaseEntity {
 
     public void setSearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings) {
         this.searchAndValidationSettings = searchAndValidationSettings;
-    }              
+    }
 
     public List<Peptide> getPeptides() {
         return peptides;
@@ -136,5 +146,5 @@ public class IdentificationFile extends DatabaseEntity {
         }
         return true;
     }
-        
+
 }

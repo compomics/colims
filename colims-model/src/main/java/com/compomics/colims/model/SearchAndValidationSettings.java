@@ -30,13 +30,16 @@ public class SearchAndValidationSettings extends DatabaseEntity {
     private Experiment experiment;
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
     @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchEngine searchEngine;
     @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
     @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
     @JoinColumn(name = "l_search_param_settings_id", referencedColumnName = "id")
     @ManyToOne
-    private SearchParameterSettings searchParameterSettings;    
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    private SearchParameterSettings searchParameterSettings;
 
     public List<IdentificationFile> getIdentificationFiles() {
         return identificationFiles;
@@ -76,6 +79,6 @@ public class SearchAndValidationSettings extends DatabaseEntity {
 
     public void setSearchParameterSettings(SearchParameterSettings searchParameterSettings) {
         this.searchParameterSettings = searchParameterSettings;
-    }    
+    }
 
 }

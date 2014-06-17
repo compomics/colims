@@ -12,8 +12,8 @@ import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import com.compomics.colims.distributed.model.enums.PersistType;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
@@ -262,7 +262,7 @@ public class AnalyticalRunSetupController implements Controllable {
         Sample sample = projectManagementController.getSelectedSample();
 
         PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
-        PersistDbTask persistDbTask = new PersistDbTask(DbEntityType.ANALYTICAL_RUN, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
+        PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
         try {
             storageTaskProducer.sendDbTask(persistDbTask);

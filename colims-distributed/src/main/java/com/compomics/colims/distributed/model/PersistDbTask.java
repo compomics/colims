@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.distributed.model.enums.DbEntityType;
 import java.util.Objects;
 
 /**
@@ -24,19 +23,19 @@ public class PersistDbTask extends DbTask {
      */
     public PersistDbTask() {
         super();
-    }            
-    
+    }
+
     /**
      * Constructor
-     * 
-     * @param dbEntityType
+     *
+     * @param dbEntityClass
      * @param enitityId
      * @param userId
      * @param persistMetadata
      * @param dataImport
      */
-    public PersistDbTask(DbEntityType dbEntityType, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
-        super(dbEntityType, enitityId, userId);
+    public PersistDbTask(Class dbEntityClass, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
+        super(dbEntityClass, enitityId, userId);
         this.persistMetadata = persistMetadata;
         this.dataImport = dataImport;
     }
@@ -47,7 +46,7 @@ public class PersistDbTask extends DbTask {
 
     public void setPersistMetadata(PersistMetadata persistMetadata) {
         this.persistMetadata = persistMetadata;
-    }    
+    }
 
     public DataImport getDataImport() {
         return dataImport;
@@ -55,7 +54,7 @@ public class PersistDbTask extends DbTask {
 
     public void setDataImport(DataImport dataImport) {
         this.dataImport = dataImport;
-    }  
+    }
 
     @Override
     public int hashCode() {

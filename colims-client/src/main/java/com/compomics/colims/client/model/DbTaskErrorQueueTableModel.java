@@ -93,9 +93,9 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
                 return rowIndex;
             case TYPE_INDEX:
                 if (dbTask instanceof PersistDbTask) {
-                    return PERSIST + ((PersistDbTask) dbTask).getDbEntityType().userFriendlyName();
+                    return PERSIST + ((PersistDbTask) dbTask).getDbEntityClass().getSimpleName();
                 } else {
-                    return DELETE + ((DeleteDbTask) dbTask).getDbEntityType().userFriendlyName();
+                    return DELETE + ((DeleteDbTask) dbTask).getDbEntityClass().getSimpleName();
                 }
             case SUBMITTED_INDEX:
                 return DATE_TIME_FORMAT.format(new Date(dbTask.getSubmissionTimestamp()));

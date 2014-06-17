@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 /**
  *
@@ -95,9 +98,9 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
                 return rowIndex;
             case TYPE_INDEX:
                 if (dbTask instanceof PersistDbTask) {
-                    return PERSIST + ((PersistDbTask) dbTask).getDbEntityType().userFriendlyName();
+                    return PERSIST + ((PersistDbTask) dbTask).getDbEntityClass().getSimpleName();
                 } else {
-                    return DELETE + ((DeleteDbTask) dbTask).getDbEntityType().userFriendlyName();
+                    return DELETE + ((DeleteDbTask) dbTask).getDbEntityClass().getSimpleName();
                 }
             case SUBMITTED_INDEX:
                 return DATE_TIME_FORMAT.format(new Date(dbTask.getSubmissionTimestamp()));
@@ -112,7 +115,9 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
             case START_INDEX:
                 return DATE_TIME_FORMAT.format(new Date(completedDbTask.getStartedTimestamp()));
             case DURATION_INDEX:
-                return TIME_FORMAT.format(new Date(completedDbTask.getEndedTimestamp() - completedDbTask.getStartedTimestamp()));
+                Duration duration = new Duration(completedDbTask.getStartedTimestamp(), completedDbTask.getEndedTimestamp());
+                return duration.toStandardMinutes().toString();
+//                return TIME_FORMAT.format(new Date(completedDbTask.getEndedTimestamp() - completedDbTask.getStartedTimestamp()));
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }

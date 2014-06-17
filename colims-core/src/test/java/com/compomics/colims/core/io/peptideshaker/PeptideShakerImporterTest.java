@@ -21,7 +21,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
@@ -48,10 +47,10 @@ import org.xmlpull.v1.XmlPullParserException;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class PeptideShakerImportMapperTest {
+public class PeptideShakerImporterTest {
 
     @Autowired
-    private PeptideShakerImportMapper peptideShakerImportMapper;
+    private PeptideShakerImporter peptideShakerImporter;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -82,7 +81,7 @@ public class PeptideShakerImportMapperTest {
     @Test
     public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException {
         //import PeptideShaker .cps file
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
@@ -96,10 +95,15 @@ public class PeptideShakerImportMapperTest {
         unpackedPsDataImport.setFastaDb(fastaDb);
 
         //clear resources
-        peptideShakerImportMapper.clear();
+        peptideShakerImporter.clear();
         
-        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(unpackedPsDataImport);
+        peptideShakerImporter.initImport(unpackedPsDataImport);
+        SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
+        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
 
+        //search and validation settings
+        Assert.assertNotNull(searchAndValidationSettings);
+        
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
         Assert.assertNotNull(testAnalyticalRun);

@@ -16,6 +16,7 @@ import com.compomics.util.experiment.MsExperiment;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -37,9 +38,13 @@ public class PeptideShakerIOTest {
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
+        
+        File directory = unpackedPsDataImport.getUnpackedDirectory();
+        Assert.assertNotNull(directory);
+        Assert.assertTrue(directory.exists());
 
         File dbDirectory = unpackedPsDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
@@ -47,10 +52,14 @@ public class PeptideShakerIOTest {
 
         MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
+        
+        //delete directory
+        FileUtils.deleteDirectory(directory);
+        Assert.assertFalse(directory.exists());
     }
 
     /**
-     * Test the unpacking of a PeptideShakerDataImport instance.
+     * Test the unpacking of a PeptideShakerImport instance.
      *
      * @throws IOException
      * @throws ArchiveException
@@ -64,14 +73,18 @@ public class PeptideShakerIOTest {
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
-        
+
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
 
-        PeptideShakerDataImport peptideShakerDataImport = new PeptideShakerDataImport(peptideShakerCpsFile, fastaDb, mgfFiles);
-        UnpackedPsDataImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerDataImport(peptideShakerDataImport);
+        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDb, mgfFiles);
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport);
 
         Assert.assertNotNull(unpackedPsDataImport);
+
+        File directory = unpackedPsDataImport.getUnpackedDirectory();
+        Assert.assertNotNull(directory);
+        Assert.assertTrue(directory.exists());
 
         File dbDirectory = unpackedPsDataImport.getDbDirectory();
         Assert.assertNotNull(dbDirectory);
@@ -82,5 +95,9 @@ public class PeptideShakerIOTest {
 
         Assert.assertEquals(fastaDb, unpackedPsDataImport.getFastaDb());
         Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
+
+        //delete directory
+        FileUtils.deleteDirectory(directory);
+        Assert.assertFalse(directory.exists());
     }
 }

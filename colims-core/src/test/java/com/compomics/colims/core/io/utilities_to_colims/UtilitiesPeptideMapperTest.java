@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 

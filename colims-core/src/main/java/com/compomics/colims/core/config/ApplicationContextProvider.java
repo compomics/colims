@@ -20,7 +20,7 @@ public class ApplicationContextProvider {
     private ApplicationContextProvider() {
     }
 
-    public synchronized static ApplicationContextProvider getInstance() throws ExceptionInInitializerError {
+    public synchronized static ApplicationContextProvider getInstance() {
         return APPLICATION_CONTEXT_PROVIDER;
     }
 
@@ -35,10 +35,10 @@ public class ApplicationContextProvider {
         this.applicationContext = applicationContext;
     }
 
-    public void setDefaultApplicationContext() {
+    public void setDefaultApplicationContext() throws ExceptionInInitializerError {
         this.applicationContext = new ClassPathXmlApplicationContext("colims-core-context.xml");
     }
-    
+
     public <T> T getBean(String beanName) {
         return (T) applicationContext.getBean(beanName);
     }

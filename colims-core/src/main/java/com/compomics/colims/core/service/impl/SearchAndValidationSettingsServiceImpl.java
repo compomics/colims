@@ -2,7 +2,12 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.SearchEngine;
+import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
+import com.compomics.colims.repository.SearchEngineRepository;
+import com.compomics.colims.repository.SearchParameterSettingsRepository;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SearchAndValidationSettingsServiceImpl implements SearchAndValidationSettingsService {
 
-    private static final Logger LOGGER = Logger.getLogger(SearchAndValidationSettingsServiceImpl.class);
-
     @Autowired
-    private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;    
+    private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
+    @Autowired
+    private SearchEngineRepository searchEngineRepository;
+    @Autowired
+    private SearchParameterSettingsRepository searchParameterSettingsRepository;
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {
@@ -55,6 +62,31 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     @Override
     public long countAll() {
         return searchAndValidationSettingsRepository.countAll();
-    }    
+    }
+
+    @Override
+    public SearchEngine getSearchEngine(SearchEngineType searchEngineType, String version) {
+        SearchEngine searchEngine = searchEngineRepository.findByNameAndVersion(searchEngineType, version);
+
+        if (searchEngine == null) {
+            searchEngine = new SearchEngine(searchEngineType, version);
+            searchEngineRepository.save(searchEngine);
+        }
+
+        return searchEngine;
+    }
+
+    @Override
+    public SearchParameterSettings getSearchParamterSettings(SearchParameterSettings searchParameterSettings) {
+        //find SearchParameterSettings by example
+        List<SearchParameterSettings> searchParameterSettingses = searchParameterSettingsRepository.findByExample(searchParameterSettings);
+        if (!searchParameterSettingses.isEmpty()) {
+            return searchParameterSettingses.get(0);
+        } else {
+            //save the given instance
+            searchParameterSettingsRepository.save(searchParameterSettings);
+            return searchParameterSettings;
+        }
+    }
 
 }
