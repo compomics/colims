@@ -772,7 +772,7 @@ SET search_path TO colims;
 		
 -- create default value insertions
 -- insert default admin and distributed users
-INSERT INTO colims_user (creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES ('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','InR5YT91InowUTtgX+/mHYoxbUY5wNQE'),('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','Cpf9+FuhtsPGaYuPrF/O4DAOduORXzmC');
+INSERT INTO colims_user (creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES ('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','ud5JjaDO0ztrMKdcQDXxhq8G21LuDCOj'),('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','4a1zr6paBPFaEP8ixjm3hDSVLpXvzP98');
 
 -- insert default admin and distributed groups
 INSERT INTO user_group (creation_date, modification_date, user_name, description, name) VALUES ('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),('2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed group description','distributed');

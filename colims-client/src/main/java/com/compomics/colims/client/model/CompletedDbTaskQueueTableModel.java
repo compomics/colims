@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
 
 /**
  *

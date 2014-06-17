@@ -45,7 +45,7 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testDigestedPassword() {
-        User user = userRepository.findByName("admin1");
+        User user = userRepository.findByName("admin1");        
                 
         Assert.assertFalse(user.checkPassword("nonsense"));        
         Assert.assertTrue(user.checkPassword("admin1admin1"));        
