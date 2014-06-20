@@ -84,7 +84,7 @@ public class PersistDbTaskHandler {
             //map the task
             MappedDataImport mappedDataImport = mapDataImport(persistDbTask);
 
-            store(sample, userName, persistDbTask, mappedDataImport);
+            store(persistDbTask, sample, userName, mappedDataImport);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -142,15 +142,15 @@ public class PersistDbTaskHandler {
     }
 
     @Transactional
-    private void store(Sample sample, String userName, PersistDbTask persistDbTask, MappedDataImport mappedDataImport) {
+    private void store(PersistDbTask persistDbTask, Sample sample, String userName, MappedDataImport mappedDataImport) {
         //get experiment for sample
         Experiment experiment = sample.getExperiment();
 
         //first store the SearchAndValidationSettings
         SearchAndValidationSettings searchAndValidationSettings = mappedDataImport.getSearchAndValidationSettings();
         searchAndValidationSettings.setExperiment(experiment);
-        searchAndValidationSettingsService.save(searchAndValidationSettings);
-
+        searchAndValidationSettingsService.save(searchAndValidationSettings);        
+        
         for (AnalyticalRun analyticalRun : mappedDataImport.getAnalyticalRuns()) {
             analyticalRun.setCreationDate(new Date());
             analyticalRun.setModificationDate(new Date());
@@ -159,6 +159,8 @@ public class PersistDbTaskHandler {
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(persistDbTask.getPersistMetadata().getInstrument());
             analyticalRunService.saveOrUpdate(analyticalRun);
+            //rollback test
+            throw new IllegalArgumentException();
         }
     }
 

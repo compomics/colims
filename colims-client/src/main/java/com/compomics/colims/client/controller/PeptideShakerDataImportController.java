@@ -69,7 +69,7 @@ public class PeptideShakerDataImportController implements Controllable {
                     cpsArchive = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile();
 
                     //show cps file name in label
-                    peptideShakerDataImportPanel.getCpsFileLabel().setText(cpsArchive.getAbsolutePath());
+                    peptideShakerDataImportPanel.getCpsTextField().setText(cpsArchive.getAbsolutePath());
                 }
             }
         });
@@ -83,7 +83,7 @@ public class PeptideShakerDataImportController implements Controllable {
                 fastaDb = fastaDbManagementController.getFastaDb();
 
                 if (fastaDb != null) {
-                    peptideShakerDataImportPanel.getFastaDbLabel().setText(fastaDb.getFilePath());
+                    peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
                 }
             }
         });
@@ -137,8 +137,8 @@ public class PeptideShakerDataImportController implements Controllable {
     @Override
     public void showView() {
         //reset the input fields
-        peptideShakerDataImportPanel.getCpsFileLabel().setText("");
-        peptideShakerDataImportPanel.getFastaDbLabel().setText("");
+        peptideShakerDataImportPanel.getCpsTextField().setText("");
+        peptideShakerDataImportPanel.getFastaDbTextField().setText("");
         mgfFileListModel.clear();
     }
 

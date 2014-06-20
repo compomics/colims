@@ -4,6 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
@@ -31,12 +32,12 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return fastaFileChooser;
     }
 
-    public JLabel getFastaDbLabel() {
-        return fastaDbLabel;
+    public JTextField getFastaDbTextField() {
+        return fastaDbTextField;
     }
 
-    public JLabel getMaxQuantDirectoryLabel() {
-        return maxQuantDirectoryLabel;
+    public JTextField getMaxQuantDirectoryTextField() {
+        return MaxQuantDirectoryTextField;
     }
 
     public JButton getSelectFastaButton() {
@@ -57,19 +58,15 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         maxQuantDirectorySelectionLabel = new javax.swing.JLabel();
-        maxQuantDirectoryLabel = new javax.swing.JLabel();
-        fastaDbLabel = new javax.swing.JLabel();
         selectMaxQuantDirectoryButton = new javax.swing.JButton();
         selectFastaButton = new javax.swing.JButton();
         fastaFileSelectionLabel = new javax.swing.JLabel();
+        MaxQuantDirectoryTextField = new javax.swing.JTextField();
+        fastaDbTextField = new javax.swing.JTextField();
 
         setOpaque(false);
 
         maxQuantDirectorySelectionLabel.setText("Select the MaxQuant text files directory:");
-
-        maxQuantDirectoryLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
-
-        fastaDbLabel.setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
 
         selectMaxQuantDirectoryButton.setText("browse...");
         selectMaxQuantDirectoryButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -79,6 +76,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         fastaFileSelectionLabel.setText("Select a FASTA file:");
 
+        MaxQuantDirectoryTextField.setEditable(false);
+
+        fastaDbTextField.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,17 +87,20 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(maxQuantDirectoryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(MaxQuantDirectoryTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(fastaDbLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fastaDbTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(fastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(452, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 118, Short.MAX_VALUE)))
+                .addGap(452, 452, 452))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,24 +108,24 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(maxQuantDirectorySelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(maxQuantDirectoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(MaxQuantDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fastaFileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fastaDbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(163, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel fastaDbLabel;
+    private javax.swing.JTextField MaxQuantDirectoryTextField;
+    private javax.swing.JTextField fastaDbTextField;
     private javax.swing.JLabel fastaFileSelectionLabel;
-    private javax.swing.JLabel maxQuantDirectoryLabel;
     private javax.swing.JLabel maxQuantDirectorySelectionLabel;
     private javax.swing.JButton selectFastaButton;
     private javax.swing.JButton selectMaxQuantDirectoryButton;

@@ -61,7 +61,7 @@ public class MaxQuantDataImportController implements Controllable {
                     maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
 
                     //show MaxQuant directory name in label
-                    maxQuantDataImportPanel.getMaxQuantDirectoryLabel().setText(maxQuantDirectory.getAbsolutePath());
+                    maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.getAbsolutePath());
                 }
             }
         });
@@ -73,7 +73,7 @@ public class MaxQuantDataImportController implements Controllable {
                 
                 fastaDb = fastaDbManagementController.getFastaDb();
                 
-                maxQuantDataImportPanel.getFastaDbLabel().setText(fastaDb.getFilePath());
+                maxQuantDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
             }
         });
     }
@@ -81,8 +81,8 @@ public class MaxQuantDataImportController implements Controllable {
     @Override
     public void showView() {
         //reset the input fields
-        maxQuantDataImportPanel.getMaxQuantDirectoryLabel().setText("");
-        maxQuantDataImportPanel.getFastaDbLabel().setText("");
+        maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText("");
+        maxQuantDataImportPanel.getFastaDbTextField().setText("");
     }
 
     /**
