@@ -13,7 +13,8 @@ import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
-import com.compomics.colims.distributed.model.MappedDataImport;
+import com.compomics.colims.core.io.MappedDataImport;
+import com.compomics.colims.core.service.MappedDataImportService;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
@@ -52,13 +53,11 @@ public class PersistDbTaskHandler {
     @Autowired
     private MaxQuantImporter maxQuantImporter;
     @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
     private UserService userService;
     @Autowired
     private SampleService sampleService;
     @Autowired
-    private SearchAndValidationSettingsService searchAndValidationSettingsService;
+    private MappedDataImportService mappedDataImportService;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         try {
@@ -84,7 +83,7 @@ public class PersistDbTaskHandler {
             //map the task
             MappedDataImport mappedDataImport = mapDataImport(persistDbTask);
 
-            store(persistDbTask, sample, userName, mappedDataImport);
+            store(mappedDataImport, persistDbTask, sample, userName);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -141,27 +140,8 @@ public class PersistDbTaskHandler {
         return mappedDataImport;
     }
 
-    @Transactional
-    private void store(PersistDbTask persistDbTask, Sample sample, String userName, MappedDataImport mappedDataImport) {
-        //get experiment for sample
-        Experiment experiment = sample.getExperiment();
-
-        //first store the SearchAndValidationSettings
-        SearchAndValidationSettings searchAndValidationSettings = mappedDataImport.getSearchAndValidationSettings();
-        searchAndValidationSettings.setExperiment(experiment);
-        searchAndValidationSettingsService.save(searchAndValidationSettings);        
-        
-        for (AnalyticalRun analyticalRun : mappedDataImport.getAnalyticalRuns()) {
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
-            analyticalRun.setUserName(userName);
-            analyticalRun.setStartDate(persistDbTask.getPersistMetadata().getStartDate());
-            analyticalRun.setSample(sample);
-            analyticalRun.setInstrument(persistDbTask.getPersistMetadata().getInstrument());
-            analyticalRunService.saveOrUpdate(analyticalRun);
-            //rollback test
-            throw new IllegalArgumentException();
-        }
+    private void store(MappedDataImport mappedDataImport, PersistDbTask persistDbTask, Sample sample, String userName) {
+        mappedDataImportService.store(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }

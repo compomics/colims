@@ -19,6 +19,7 @@ import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.io.Files;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,12 +73,9 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 //                int progress;
                 while ((archiveEntry = tarInput.getNextEntry()) != null) {
                     //for each entry in the archive, make a new file
-                    LOGGER.debug("Creating file for archive entry " + archiveEntry.getName());
-                    String archiveEntryName = archiveEntry.getName();
-                    if(SystemUtils.IS_OS_LINUX){
-                        archiveEntryName = archiveEntryName.replaceAll("\\", "/");
-                    }
-                    File destinationFile = new File(destinationDirectory, archiveEntryName);
+                    LOGGER.debug("Creating file for archive entry " + archiveEntry.getName());                    
+                    
+                    File destinationFile = new File(destinationDirectory, FilenameUtils.separatorsToSystem(archiveEntry.getName()));
 
                     //create the necessary directories in the destination directory
                     boolean madeDirs = destinationFile.getParentFile().mkdirs();

@@ -1,9 +1,8 @@
 
-package com.compomics.colims.distributed.model;
+package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationSettings;
-import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import java.util.List;
 
