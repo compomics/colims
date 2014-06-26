@@ -9,7 +9,7 @@ import java.util.Date;
  *
  * @author Niels Hulstaert
  */
-public interface MappedDataImportService {
+public interface DataStorageService {
     
     /**
      * Store the AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings.
@@ -20,6 +20,6 @@ public interface MappedDataImportService {
      * @param userName the user name
      * @param startDate the start date of the runs
      */
-    void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate);
+    void storeMappedData(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate);
     
 }

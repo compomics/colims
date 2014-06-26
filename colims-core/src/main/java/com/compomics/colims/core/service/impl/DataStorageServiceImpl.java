@@ -6,7 +6,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.io.MappedDataImport;
-import com.compomics.colims.core.service.MappedDataImportService;
+import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
@@ -23,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Niels Hulstaert
  */
-@Service("mappedDataImportService")
+@Service("dataStorageService")
 @Transactional
-public class MappedDataImportServiceImpl implements MappedDataImportService {
+public class DataStorageServiceImpl implements DataStorageService {
 
     @Autowired
     private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
@@ -33,7 +33,7 @@ public class MappedDataImportServiceImpl implements MappedDataImportService {
     private AnalyticalRunRepository analyticalRunRepository;
 
     @Override
-    public void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate) {
+    public void storeMappedData(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate) {
         //get experiment for sample
         Experiment experiment = sample.getExperiment();
 

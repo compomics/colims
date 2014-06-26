@@ -14,7 +14,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
 import com.compomics.colims.core.io.MappedDataImport;
-import com.compomics.colims.core.service.MappedDataImportService;
+import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
@@ -57,7 +57,7 @@ public class PersistDbTaskHandler {
     @Autowired
     private SampleService sampleService;
     @Autowired
-    private MappedDataImportService mappedDataImportService;
+    private DataStorageService dataStorageService;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         try {
@@ -141,7 +141,7 @@ public class PersistDbTaskHandler {
     }
 
     private void store(MappedDataImport mappedDataImport, PersistDbTask persistDbTask, Sample sample, String userName) {
-        mappedDataImportService.store(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
+        dataStorageService.storeMappedData(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }
