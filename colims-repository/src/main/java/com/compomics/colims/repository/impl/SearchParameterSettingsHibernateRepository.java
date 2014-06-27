@@ -13,7 +13,7 @@ import com.compomics.colims.repository.SearchParameterSettingsRepository;
  *
  * @author Kenneth Verheggen
  */
-@Repository("parameterRepository")
+@Repository("searchParameterSettingsRepository")
 public class SearchParameterSettingsHibernateRepository extends GenericHibernateRepository<SearchParameterSettings, Long> implements SearchParameterSettingsRepository {
 
 }

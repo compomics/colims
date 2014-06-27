@@ -1,13 +1,13 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameterSettings;
-import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
-import com.compomics.colims.repository.SearchEngineRepository;
-import com.compomics.colims.repository.SearchParameterSettingsRepository;
+import com.compomics.colims.core.service.QuantificationSettingsService;
+import com.compomics.colims.model.QuantificationEngine;
+import com.compomics.colims.model.QuantificationParameterSettings;
+import com.compomics.colims.model.QuantificationSettings;
+import com.compomics.colims.model.enums.QuantificationEngineType;
+import com.compomics.colims.repository.QuantificationEngineRepository;
+import com.compomics.colims.repository.QuantificationParameterSettingsRepository;
+import com.compomics.colims.repository.QuantificationSettingsRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,72 +19,72 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("quantificationSettingsService")
 @Transactional
-public class QuantificationSettingsServiceImpl implements SearchAndValidationSettingsService {
+public class QuantificationSettingsServiceImpl implements QuantificationSettingsService {
 
     @Autowired
-    private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
+    private QuantificationSettingsRepository quantificationSettingsRepository;
     @Autowired
-    private SearchEngineRepository searchEngineRepository;
+    private QuantificationEngineRepository quantificationEngineRepository;
     @Autowired
-    private SearchParameterSettingsRepository searchParameterSettingsRepository;
+    private QuantificationParameterSettingsRepository quantificationParameterSettingsRepository;
 
     @Override
-    public SearchAndValidationSettings findById(final Long id) {
-        return searchAndValidationSettingsRepository.findById(id);
+    public QuantificationSettings findById(final Long id) {
+        return quantificationSettingsRepository.findById(id);
     }
 
     @Override
-    public List<SearchAndValidationSettings> findAll() {
-        return searchAndValidationSettingsRepository.findAll();
+    public List<QuantificationSettings> findAll() {
+        return quantificationSettingsRepository.findAll();
     }
 
     @Override
-    public void save(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.save(entity);
+    public void save(final QuantificationSettings entity) {
+        quantificationSettingsRepository.save(entity);
     }
 
     @Override
-    public void update(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.update(entity);
+    public void update(final QuantificationSettings entity) {
+        quantificationSettingsRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.saveOrUpdate(entity);
+    public void saveOrUpdate(final QuantificationSettings entity) {
+        quantificationSettingsRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.delete(entity);
+    public void delete(final QuantificationSettings entity) {
+        quantificationSettingsRepository.delete(entity);
     }
 
     @Override
     public long countAll() {
-        return searchAndValidationSettingsRepository.countAll();
+        return quantificationSettingsRepository.countAll();
     }
 
     @Override
-    public SearchEngine getSearchEngine(SearchEngineType searchEngineType, String version) {
-        SearchEngine searchEngine = searchEngineRepository.findByNameAndVersion(searchEngineType, version);
+    public QuantificationEngine getQuantificationEngine(QuantificationEngineType quantificationEngineType, String version) {
+        QuantificationEngine quantificationEngine = quantificationEngineRepository.findByNameAndVersion(quantificationEngineType, version);
 
-        if (searchEngine == null) {
-            searchEngine = new SearchEngine(searchEngineType, version);
-            searchEngineRepository.save(searchEngine);
+        if (quantificationEngine == null) {
+            quantificationEngine = new QuantificationEngine(quantificationEngineType, version);
+            quantificationEngineRepository.save(quantificationEngine);
         }
 
-        return searchEngine;
+        return quantificationEngine;
     }
 
     @Override
-    public SearchParameterSettings getSearchParamterSettings(SearchParameterSettings searchParameterSettings) {
-        //find SearchParameterSettings by example
-        List<SearchParameterSettings> searchParameterSettingses = searchParameterSettingsRepository.findByExample(searchParameterSettings);
-        if (!searchParameterSettingses.isEmpty()) {
-            return searchParameterSettingses.get(0);
+    public QuantificationParameterSettings getQuantificationParamterSettings(QuantificationParameterSettings quantificationParameterSettings) {
+        //find QuantificationParameterSettings by example
+        List<QuantificationParameterSettings> quantificationParameterSettingses = quantificationParameterSettingsRepository.findByExample(quantificationParameterSettings);
+        if (!quantificationParameterSettingses.isEmpty()) {
+            return quantificationParameterSettingses.get(0);
         } else {
             //save the given instance
-            searchParameterSettingsRepository.save(searchParameterSettings);
-            return searchParameterSettings;
+            quantificationParameterSettingsRepository.save(quantificationParameterSettings);
+            return quantificationParameterSettings;
         }
     }
 

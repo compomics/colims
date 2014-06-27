@@ -26,7 +26,7 @@ import javax.persistence.Table;
 public class QuantificationEngine extends DatabaseEntity {
 
     private static final long serialVersionUID = 1L;
-
+        
     /**
      * The quantification engine type
      */
@@ -43,6 +43,14 @@ public class QuantificationEngine extends DatabaseEntity {
     @OneToMany(mappedBy = "quantificationEngine")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
 
+    public QuantificationEngine() {
+    }
+
+    public QuantificationEngine(QuantificationEngineType quantificationEngineType, String version) {
+        this.quantificationEngineType = quantificationEngineType;
+        this.version = version;
+    }    
+    
     public QuantificationEngineType getQuantificationEngineType() {
         return quantificationEngineType;
     }
