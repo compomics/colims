@@ -24,17 +24,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="projectEditPanel" alignment="1" max="32767" attributes="0"/>
+          <Component id="analyticalRunEditPanel" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="projectEditPanel" min="-2" max="-2" attributes="0"/>
+          <Component id="analyticalRunEditPanel" min="-2" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="projectEditPanel">
+    <Container class="javax.swing.JPanel" name="analyticalRunEditPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -54,23 +54,16 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="nameLabel" max="32767" attributes="0"/>
+                              <Component id="instrumentLabel" max="32767" attributes="0"/>
+                              <Component id="labelLabel" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="labelLabel" alignment="0" min="-2" pref="60" max="-2" attributes="0"/>
-                                      <Component id="instrumentLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="dateTimePicker" max="32767" attributes="0"/>
-                                      <Component id="instrumentComboBox" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="nameLabel" min="-2" pref="60" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="nameTextField" min="-2" pref="400" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="dateTimePicker" pref="389" max="32767" attributes="0"/>
+                              <Component id="nameTextField" max="32767" attributes="0"/>
+                              <Component id="instrumentComboBox" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>

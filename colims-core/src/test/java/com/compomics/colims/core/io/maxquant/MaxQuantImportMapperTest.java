@@ -29,7 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 public class MaxQuantImportMapperTest {
 
     @Autowired
-    MaxQuantImporter maxQuantImportMapper;
+    MaxQuantImporter maxQuantImporter;
 
     private File maxQuantTextDirectory;
     private FastaDb maxQuantTestFastaDb;
@@ -46,12 +46,20 @@ public class MaxQuantImportMapperTest {
 
     /**
      * Test of map method, of class MaxQuantImporter.
+     * @throws java.io.IOException
+     * @throws com.compomics.colims.core.io.maxquant.UnparseableException
+     * @throws com.compomics.colims.core.io.maxquant.HeaderEnumNotInitialisedException
+     * @throws com.compomics.colims.core.io.MappingException
+     * @throws java.sql.SQLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.lang.ClassNotFoundException
      */
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
         System.out.println("map");
-        MaxQuantImport testImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
-        List<AnalyticalRun> result = maxQuantImportMapper.map(testImport);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
+        maxQuantImporter.initImport(maxQuantImport);
+        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(null, null);
         assertThat(result.size(), is(not(0)));
     }
 }

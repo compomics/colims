@@ -131,7 +131,10 @@ public class PersistDbTaskHandler {
             case MAX_QUANT:
                 //clear resources before mapping
                 maxQuantImporter.clear();
-                analyticalRuns = maxQuantImporter.map((MaxQuantImport) persistDbTask.getDataImport());
+                                
+                analyticalRuns = maxQuantImporter.importInputAndResults(null, null);
+                
+                mappedDataImport = new MappedDataImport(null, null, analyticalRuns);
                 break;
             default:
                 break;
@@ -141,7 +144,7 @@ public class PersistDbTaskHandler {
     }
 
     private void store(MappedDataImport mappedDataImport, PersistDbTask persistDbTask, Sample sample, String userName) {
-        dataStorageService.storeMappedData(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
+        dataStorageService.store(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }

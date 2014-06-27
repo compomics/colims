@@ -33,7 +33,7 @@ public class DataStorageServiceImpl implements DataStorageService {
     private AnalyticalRunRepository analyticalRunRepository;
 
     @Override
-    public void storeMappedData(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate) {
+    public void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate) {
         //get experiment for sample
         Experiment experiment = sample.getExperiment();
 

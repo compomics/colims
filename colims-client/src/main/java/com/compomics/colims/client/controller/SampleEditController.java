@@ -22,7 +22,7 @@ import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
-import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.io.mztab.MzTabExporter;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
@@ -45,7 +45,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.log4j.Logger;
@@ -88,6 +91,8 @@ public class SampleEditController implements Controllable {
     @Autowired
     private AnalyticalRunEditController analyticalRunEditController;
     //services
+    @Autowired
+    private MzTabExporter mzTabExporter;
     @Autowired
     private SampleService sampleService;
     @Autowired
@@ -322,6 +327,24 @@ public class SampleEditController implements Controllable {
                     }
                 } else {
                     eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        });
+
+        sampleEditDialog.getExportAnalyticalRunButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+                if (selectedAnalyticalRun != null) {
+                    int returnVal = sampleEditDialog.getExportDirectoryChooser().showOpenDialog(sampleEditDialog);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File exportDirectory = sampleEditDialog.getExportDirectoryChooser().getSelectedFile();
+                        if (exportDirectory.isDirectory()) {
+                            mzTabExporter.exportAnalyticalRun(exportDirectory, selectedAnalyticalRun);
+                        }
+                    }
+                } else {
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to export.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });

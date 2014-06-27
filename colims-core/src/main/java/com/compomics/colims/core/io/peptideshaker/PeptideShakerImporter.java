@@ -29,7 +29,6 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  * @author Niels Hulstaert
  */
 @Component("peptideShakerImporter")
-//@Transactional
 public class PeptideShakerImporter implements DataImporter {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
@@ -48,7 +47,7 @@ public class PeptideShakerImporter implements DataImporter {
     @Override
     public void clear() {
         try {
-            inputAndResultsMapper.clear();
+            inputAndResultsMapper.clear();            
         } catch (IOException | SQLException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }

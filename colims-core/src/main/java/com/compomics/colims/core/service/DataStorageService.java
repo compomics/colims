@@ -20,6 +20,6 @@ public interface DataStorageService {
      * @param userName the user name
      * @param startDate the start date of the runs
      */
-    void storeMappedData(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate);
+    void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate);
     
 }

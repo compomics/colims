@@ -3,9 +3,11 @@ package com.compomics.colims.client.view;
 import com.compomics.colims.client.compoment.DualList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.jmol.export.dialog.FileChooser;
 
 /**
  *
@@ -13,8 +15,11 @@ import javax.swing.JTextField;
  */
 public class SampleEditDialog extends javax.swing.JDialog {
 
+    private final JFileChooser exportDirectoryChooser = new FileChooser();
+
     /**
      * Dialog constructor
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
@@ -22,6 +27,11 @@ public class SampleEditDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         initComponents();
+
+        //select only directories
+        exportDirectoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //select multiple file
+        exportDirectoryChooser.setMultiSelectionEnabled(Boolean.FALSE);
 
         analyticalRunsTableScrollPane.getViewport().setOpaque(false);
         analyticalRunsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -37,7 +47,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
 
     public DualList getMaterialDualList() {
         return materialDualList;
-    }        
+    }
 
     public JTable getAnalyticalRunsTable() {
         return analyticalRunsTable;
@@ -73,7 +83,15 @@ public class SampleEditDialog extends javax.swing.JDialog {
 
     public JTextField getStorageLocationTextField() {
         return storageLocationTextField;
-    }    
+    }
+
+    public JButton getExportAnalyticalRunButton() {
+        return exportAnalyticalRunButton;
+    }
+
+    public JFileChooser getExportDirectoryChooser() {
+        return exportDirectoryChooser;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,6 +111,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
         analyticalRunsTable = new javax.swing.JTable();
         deleteAnalyticalRunButton = new javax.swing.JButton();
         editAnalyticalRunButton = new javax.swing.JButton();
+        exportAnalyticalRunButton = new javax.swing.JButton();
         detailPanel = new javax.swing.JPanel();
         attachementsLabel = new javax.swing.JLabel();
         conditionTextField = new javax.swing.JTextField();
@@ -157,6 +176,12 @@ public class SampleEditDialog extends javax.swing.JDialog {
         editAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        exportAnalyticalRunButton.setText("export...");
+        exportAnalyticalRunButton.setToolTipText("export the selected analytical run in mzTab format");
+        exportAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        exportAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        exportAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
         analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
         analyticalRunsPanelLayout.setHorizontalGroup(
@@ -167,6 +192,8 @@ public class SampleEditDialog extends javax.swing.JDialog {
                     .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(exportAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -176,11 +203,12 @@ public class SampleEditDialog extends javax.swing.JDialog {
             analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -225,7 +253,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
                     .addGroup(detailPanelLayout.createSequentialGroup()
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(attachementsLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(storageLocationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(storageLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, Short.MAX_VALUE)
                             .addComponent(attachementsLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,6 +366,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteAnalyticalRunButton;
     private javax.swing.JPanel detailPanel;
     private javax.swing.JButton editAnalyticalRunButton;
+    private javax.swing.JButton exportAnalyticalRunButton;
     private com.compomics.colims.client.compoment.DualList materialDualList;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
