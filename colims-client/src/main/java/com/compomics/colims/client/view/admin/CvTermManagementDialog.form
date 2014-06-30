@@ -203,16 +203,18 @@
                               <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="accessionLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="ontologyLabelLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="ontologyLabel" alignment="0" pref="85" max="32767" attributes="0"/>
-                                  <Component id="definitionLabel" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="accessionLabel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="ontologyLabelLabel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="definitionLabel" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="ontologyLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane1" alignment="0" pref="377" max="32767" attributes="0"/>
                                   <Component id="accessionTextField" alignment="1" max="32767" attributes="0"/>
                                   <Component id="nameTextField" alignment="1" max="32767" attributes="0"/>
                                   <Component id="ontologyTextField" max="32767" attributes="0"/>
@@ -249,7 +251,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" pref="143" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="107" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>

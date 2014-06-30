@@ -143,7 +143,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="analyticalRunsTableScrollPane" pref="655" max="32767" attributes="0"/>
+                              <Component id="analyticalRunsTableScrollPane" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="exportAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
@@ -175,9 +175,6 @@
               </Layout>
               <SubComponents>
                 <Container class="javax.swing.JScrollPane" name="analyticalRunsTableScrollPane">
-                  <Properties>
-                    <Property name="opaque" type="boolean" value="false"/>
-                  </Properties>
                   <AuxValues>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
@@ -267,7 +264,7 @@
                                       <Component id="nameLabel" alignment="1" max="32767" attributes="0"/>
                                       <Component id="protocolLabel" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="nameTextField" alignment="0" pref="542" max="32767" attributes="0"/>
                                       <Component id="conditionTextField" alignment="0" pref="542" max="32767" attributes="0"/>
@@ -277,10 +274,13 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="attachementsLabel" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="storageLocationLabel" pref="109" max="32767" attributes="0"/>
                                       <Component id="attachementsLabel1" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="storageLocationLabel" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Group type="102" attributes="0">

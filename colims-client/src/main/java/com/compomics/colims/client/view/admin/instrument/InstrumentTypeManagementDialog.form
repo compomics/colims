@@ -53,8 +53,8 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="instrumentTypeDetailPanel" alignment="0" pref="411" max="32767" attributes="0"/>
-                      <Component id="instrumentTypeOverviewPanel" pref="411" max="32767" attributes="0"/>
+                      <Component id="instrumentTypeDetailPanel" alignment="0" pref="419" max="32767" attributes="0"/>
+                      <Component id="instrumentTypeOverviewPanel" pref="419" max="32767" attributes="0"/>
                       <Component id="cancelInstrumentTypeMangementButton" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -65,9 +65,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentTypeOverviewPanel" pref="209" max="32767" attributes="0"/>
+                  <Component id="instrumentTypeOverviewPanel" pref="214" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="instrumentTypeDetailPanel" pref="213" max="32767" attributes="0"/>
+                  <Component id="instrumentTypeDetailPanel" pref="217" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="cancelInstrumentTypeMangementButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -123,9 +123,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="instrumentTypeListScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -196,13 +193,13 @@
                               <Component id="instrumentTypeSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="instrumentTypeDescriptionLabel" pref="60" max="32767" attributes="0"/>
-                                  <Component id="instrumentTypeNameLabel" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="instrumentTypeDescriptionScrollPane" max="32767" attributes="0"/>
+                                  <Component id="instrumentTypeNameLabel" min="-2" pref="60" max="-2" attributes="0"/>
+                                  <Component id="instrumentTypeDescriptionLabel" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="instrumentTypeDescriptionScrollPane" pref="296" max="32767" attributes="0"/>
                                   <Component id="instrumentTypeNameTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -226,7 +223,7 @@
                           </Group>
                           <Group type="102" attributes="0">
                               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                              <Component id="instrumentTypeDescriptionScrollPane" pref="106" max="32767" attributes="0"/>
+                              <Component id="instrumentTypeDescriptionScrollPane" pref="94" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>

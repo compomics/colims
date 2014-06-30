@@ -21,13 +21,16 @@ import org.springframework.stereotype.Component;
 @Component("mzTabExporter")
 public class MzTabExporter {
 
-    private static final Logger LOGGER = Logger.getLogger(MzTabExporter.class);
+    private static final Logger LOGGER = Logger.getLogger(MzTabExporter.class);    
     private static final String MZTAB_EXTENSION = ".mzTab";
+    private static final String COLUMN_DELIMETER = "/t";
+    private static final String COMMENT_PREFIX = "COM";
+    private static final String METADATA_PREFIX = "MTD";
 
     public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION))))) {
 
-            pw.println("test");
+            pw.println("under development");
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

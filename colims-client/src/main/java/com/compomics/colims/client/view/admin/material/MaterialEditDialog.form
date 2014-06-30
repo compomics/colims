@@ -62,8 +62,8 @@
                           <Component id="cancelMaterialEditButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="nameLabel" min="-2" pref="50" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Component id="nameTextField" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -165,9 +165,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="cvTermSummaryScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>

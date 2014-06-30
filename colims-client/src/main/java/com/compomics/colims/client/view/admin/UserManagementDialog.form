@@ -540,16 +540,16 @@
                                   <Component id="groupSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="groupDescriptionLabel" alignment="0" max="32767" attributes="0"/>
                                       <Component id="groupNameLabel" max="32767" attributes="0"/>
-                                      <Component id="groupDescriptionLabel" alignment="0" pref="60" max="32767" attributes="0"/>
                                       <Component id="rolesLabel" alignment="0" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="groupDescriptionScrollPane" max="32767" attributes="0"/>
-                                      <Component id="roleDualList" pref="424" max="32767" attributes="0"/>
-                                      <Component id="groupNameTextField" max="32767" attributes="0"/>
+                                      <Component id="roleDualList" pref="403" max="32767" attributes="0"/>
+                                      <Component id="groupNameTextField" alignment="1" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -561,19 +561,22 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="groupNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="groupNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                  <Component id="groupNameLabel" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="groupNameTextField" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="groupDescriptionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="groupDescriptionScrollPane" min="-2" max="-2" attributes="0"/>
+                              <Component id="groupDescriptionLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="rolesLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="roleDualList" pref="200" max="32767" attributes="0"/>
+                              <Component id="roleDualList" pref="186" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -801,25 +804,24 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
+                              <Group type="102" attributes="0">
                                   <Component id="roleStateInfoLabel" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="roleSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Component id="permissionsLabel" min="-2" pref="68" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                                  <Component id="permissionDualList" pref="416" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="roleNameLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
-                                      <Component id="roleDescriptionLabel" alignment="0" min="-2" pref="62" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="roleDescriptionLabel" max="32767" attributes="0"/>
+                                          <Component id="roleNameLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="permissionsLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="permissionDualList" pref="0" max="32767" attributes="0"/>
                                       <Component id="roleNameTextField" max="32767" attributes="0"/>
-                                      <Component id="roleDescriptionScrollPane" pref="418" max="32767" attributes="0"/>
+                                      <Component id="roleDescriptionScrollPane" pref="389" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -845,7 +847,7 @@
                               <Component id="permissionDualList" pref="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="permissionsLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="187" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="172" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -1005,9 +1007,6 @@
               </Layout>
               <SubComponents>
                 <Container class="javax.swing.JScrollPane" name="permissionListScrollPane">
-                  <Properties>
-                    <Property name="opaque" type="boolean" value="false"/>
-                  </Properties>
                   <AuxValues>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
@@ -1083,14 +1082,14 @@
                                   <Component id="permissionSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="permissionDescriptionLabel" pref="60" max="32767" attributes="0"/>
-                                      <Component id="permissionNameLabel" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="permissionNameLabel" min="-2" pref="60" max="-2" attributes="0"/>
+                                      <Component id="permissionDescriptionLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="permissionNameTextField" max="32767" attributes="0"/>
-                                      <Component id="permissionDescriptionScrollPane" pref="424" max="32767" attributes="0"/>
+                                      <Component id="permissionDescriptionScrollPane" pref="403" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -1112,7 +1111,7 @@
                                   <Component id="permissionDescriptionLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="permissionDescriptionScrollPane" pref="308" max="32767" attributes="0"/>
+                              <Component id="permissionDescriptionScrollPane" pref="287" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -1127,12 +1126,12 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="permissionDescriptionLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="description"/>
+                    <Property name="text" type="java.lang.String" value="Description"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="permissionNameLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="name*"/>
+                    <Property name="text" type="java.lang.String" value="Name*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[48, 14]"/>
                     </Property>

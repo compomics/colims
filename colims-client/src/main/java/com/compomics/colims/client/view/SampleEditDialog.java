@@ -149,8 +149,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         analyticalRunsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Analytical runs"));
         analyticalRunsPanel.setOpaque(false);
 
-        analyticalRunsTableScrollPane.setOpaque(false);
-
         analyticalRunsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -189,7 +187,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, analyticalRunsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+                    .addComponent(analyticalRunsTableScrollPane)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(exportAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -245,7 +243,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
                             .addComponent(conditionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(protocolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(nameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                             .addComponent(conditionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
@@ -253,9 +251,11 @@ public class SampleEditDialog extends javax.swing.JDialog {
                     .addGroup(detailPanelLayout.createSequentialGroup()
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(attachementsLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(storageLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, Short.MAX_VALUE)
-                            .addComponent(attachementsLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(attachementsLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(detailPanelLayout.createSequentialGroup()
+                                .addComponent(storageLocationLabel)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(detailPanelLayout.createSequentialGroup()

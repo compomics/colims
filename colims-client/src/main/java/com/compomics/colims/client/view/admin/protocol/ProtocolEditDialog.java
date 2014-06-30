@@ -96,8 +96,6 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
         cvTermsPanel.setOpaque(false);
 
-        cvTermSummaryScrollPane.setOpaque(false);
-
         cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
 
         protocolCvTermsCrudButton.setText("edit...");
@@ -152,7 +150,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolEditPanelLayout.createSequentialGroup()
-                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(nameTextField)))
                 .addContainerGap())
@@ -161,9 +159,11 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
             protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(protocolEditPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameLabel))
+                .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(protocolEditPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

@@ -63,7 +63,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="projectsTableScrollPane" pref="148" max="32767" attributes="0"/>
+                  <Component id="projectsTableScrollPane" pref="144" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="deleteProjectButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -107,9 +107,6 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="projectsTableScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -135,6 +132,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
             <Property name="toolTipText" type="java.lang.String" value="delete a project"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -190,7 +188,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="experimentsTableScrollPane" pref="148" max="32767" attributes="0"/>
+                  <Component id="experimentsTableScrollPane" pref="144" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addExperimentButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -234,9 +232,6 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="experimentsTableScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -262,6 +257,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
             <Property name="toolTipText" type="java.lang.String" value="delete an experiment"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -319,7 +315,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="samplesTableScrollPane" pref="148" max="32767" attributes="0"/>
+                  <Component id="samplesTableScrollPane" pref="146" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addSampleButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -364,9 +360,6 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="samplesTableScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -392,6 +385,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
             <Property name="toolTipText" type="java.lang.String" value="delete a sample"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -405,7 +399,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="addAnalyticalRunButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="add run..."/>
+            <Property name="text" type="java.lang.String" value="+ run..."/>
             <Property name="toolTipText" type="java.lang.String" value="add an analytical run to the selected sample"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>

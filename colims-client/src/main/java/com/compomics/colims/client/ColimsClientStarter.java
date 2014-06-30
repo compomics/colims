@@ -5,6 +5,7 @@ import com.compomics.colims.client.controller.DatabaseLoginController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import org.apache.log4j.Logger;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -32,7 +33,13 @@ public class ColimsClientStarter {
          * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }

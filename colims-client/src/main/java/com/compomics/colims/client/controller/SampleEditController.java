@@ -38,6 +38,7 @@ import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -46,11 +47,11 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -82,6 +83,7 @@ public class SampleEditController implements Controllable {
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
+    private ProgressDialogX analyticalRunProgressDialog;
     //parent controller
     @Autowired
     private ColimsController colimsController;
@@ -340,7 +342,8 @@ public class SampleEditController implements Controllable {
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File exportDirectory = sampleEditDialog.getExportDirectoryChooser().getSelectedFile();
                         if (exportDirectory.isDirectory()) {
-                            mzTabExporter.exportAnalyticalRun(exportDirectory, selectedAnalyticalRun);
+                            AnalyticalRunExportWorker analyticalRunExportWorker = new AnalyticalRunExportWorker(exportDirectory);
+                            analyticalRunExportWorker.execute();
                         }
                     }
                 } else {
@@ -519,5 +522,27 @@ public class SampleEditController implements Controllable {
     private void updateAnalyticalRunButtonsState(boolean enable) {
         sampleEditDialog.getEditAnalyticalRunButton().setEnabled(enable);
         sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
+    }
+    
+    private class AnalyticalRunExportWorker extends SwingWorker<Void, Void>{
+
+        private final File exportDirectory;
+
+        public AnalyticalRunExportWorker(File exportDirectory) {
+            this.exportDirectory = exportDirectory;
+        }                
+        
+        @Override
+        protected Void doInBackground() throws Exception {
+            mzTabExporter.exportAnalyticalRun(exportDirectory, getSelectedAnalyticalRun());
+            
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            super.done(); //To change body of generated methods, choose Tools | Templates.
+        }
+                        
     }
 }

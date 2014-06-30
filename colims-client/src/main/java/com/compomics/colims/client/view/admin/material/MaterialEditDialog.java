@@ -95,8 +95,6 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
         cvTermsPanel.setOpaque(false);
 
-        cvTermSummaryScrollPane.setOpaque(false);
-
         cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
 
         materialCvTermsCrudButton.setText("edit...");
@@ -151,7 +149,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelMaterialEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(materialEditPanelLayout.createSequentialGroup()
-                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(nameTextField)))
                 .addContainerGap())

@@ -104,7 +104,7 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
                             .addComponent(dbUrlLabel)
                             .addComponent(dbPasswordLabel)
                             .addComponent(dbUserNameLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(dbPasswordTextField)
                             .addComponent(dbUrlTextField)

@@ -64,17 +64,20 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cancelInstrumentEditButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="nameLabel" min="-2" pref="50" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="typeLabel" max="32767" attributes="0"/>
+                              <Component id="nameLabel" max="32767" attributes="0"/>
+                          </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="nameTextField" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="typeLabel" min="-2" pref="50" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="typeComboBox" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="instrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="typeComboBox" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="instrumentTypeManagementButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="nameTextField" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -85,9 +88,12 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                          <Component id="nameLabel" min="-2" pref="15" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="nameTextField" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -232,9 +238,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="cvTermSummaryScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>

@@ -554,32 +554,34 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(groupSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(groupDetailPanelLayout.createSequentialGroup()
-                        .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(groupDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(groupNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(groupDescriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 60, Short.MAX_VALUE)
-                            .addComponent(rolesLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(10, 10, 10)
+                            .addComponent(rolesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(groupDescriptionScrollPane)
-                            .addComponent(roleDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-                            .addComponent(groupNameTextField))))
+                            .addComponent(roleDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                            .addComponent(groupNameTextField, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         groupDetailPanelLayout.setVerticalGroup(
             groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(groupDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(groupNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(groupDetailPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(groupNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(groupNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(groupDescriptionLabel)
-                    .addComponent(groupDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(groupDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(groupDescriptionLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rolesLabel)
-                    .addComponent(roleDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                    .addComponent(roleDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(groupDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groupSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -689,22 +691,21 @@ public class UserManagementDialog extends javax.swing.JDialog {
             .addGroup(roleDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(roleDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roleDetailPanelLayout.createSequentialGroup()
+                    .addGroup(roleDetailPanelLayout.createSequentialGroup()
                         .addComponent(roleStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(roleSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(roleDetailPanelLayout.createSequentialGroup()
-                        .addComponent(permissionsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(permissionDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE))
-                    .addGroup(roleDetailPanelLayout.createSequentialGroup()
                         .addGroup(roleDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(roleNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(roleDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(roleDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(roleDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(roleNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(permissionsLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(roleDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(permissionDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(roleNameTextField)
-                            .addComponent(roleDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))))
+                            .addComponent(roleDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         roleDetailPanelLayout.setVerticalGroup(
@@ -723,7 +724,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addComponent(permissionDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(roleDetailPanelLayout.createSequentialGroup()
                         .addComponent(permissionsLabel)
-                        .addGap(0, 187, Short.MAX_VALUE)))
+                        .addGap(0, 172, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(roleDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(roleSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -748,8 +749,6 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         permissionOverviewPanel.setOpaque(false);
         permissionOverviewPanel.setPreferredSize(new java.awt.Dimension(10, 10));
-
-        permissionListScrollPane.setOpaque(false);
 
         permissionListScrollPane.setViewportView(permissionList);
 
@@ -803,9 +802,9 @@ public class UserManagementDialog extends javax.swing.JDialog {
         permissionDetailPanel.setOpaque(false);
         permissionDetailPanel.setPreferredSize(new java.awt.Dimension(10, 10));
 
-        permissionDescriptionLabel.setText("description");
+        permissionDescriptionLabel.setText("Description");
 
-        permissionNameLabel.setText("name*");
+        permissionNameLabel.setText("Name*");
         permissionNameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         permissionSaveOrUpdateButton.setText("save");
@@ -838,13 +837,13 @@ public class UserManagementDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(permissionSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(permissionDetailPanelLayout.createSequentialGroup()
-                        .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(permissionDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, Short.MAX_VALUE)
-                            .addComponent(permissionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(permissionNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(permissionDescriptionLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(permissionNameTextField)
-                            .addComponent(permissionDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))))
+                            .addComponent(permissionDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         permissionDetailPanelLayout.setVerticalGroup(
@@ -859,7 +858,7 @@ public class UserManagementDialog extends javax.swing.JDialog {
                     .addGroup(permissionDetailPanelLayout.createSequentialGroup()
                         .addComponent(permissionDescriptionLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(permissionDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
+                    .addComponent(permissionDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(permissionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(permissionSaveOrUpdateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
