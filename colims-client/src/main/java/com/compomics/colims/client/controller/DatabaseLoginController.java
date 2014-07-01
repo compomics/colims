@@ -159,7 +159,7 @@ public class DatabaseLoginController implements Controllable {
             databaseLoginDialog.dispose();
         } else {
             JOptionPane.showMessageDialog(databaseLoginDialog, "The database login attempt failed."
-                    + "\n" + "Please verify your credentials and connectivity and try again.", "database login unsuccessful", JOptionPane.WARNING_MESSAGE);
+                    + "\n" + "Please verify your credentials and connectivity and try again.", "Database login unsuccessful", JOptionPane.WARNING_MESSAGE);
             Arrays.fill(dbPassword, '0');
             databaseLoginDialog.getDbPasswordTextField().selectAll();
             databaseLoginDialog.getDbPasswordTextField().requestFocusInWindow();

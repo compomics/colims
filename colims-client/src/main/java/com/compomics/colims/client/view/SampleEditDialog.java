@@ -128,7 +128,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
         attachementsLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("sample metadata management");
+        setTitle("Sample metadata management");
 
         sampleEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
