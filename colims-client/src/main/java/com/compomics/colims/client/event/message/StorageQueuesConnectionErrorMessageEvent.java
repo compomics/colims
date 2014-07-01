@@ -19,6 +19,6 @@ public class StorageQueuesConnectionErrorMessageEvent extends MessageEvent {
      * @param brokerJmxUrl
      */
     public StorageQueuesConnectionErrorMessageEvent(final String brokerName, final String brokerUrl, final String brokerJmxUrl) {
-        super("storage queueing connection error", String.format(CONNECTION_ERROR_MESSAGE, brokerName, brokerUrl, brokerJmxUrl), JOptionPane.ERROR_MESSAGE);
+        super("Storage queueing connection error", String.format(CONNECTION_ERROR_MESSAGE, brokerName, brokerUrl, brokerJmxUrl), JOptionPane.ERROR_MESSAGE);
     }
 }

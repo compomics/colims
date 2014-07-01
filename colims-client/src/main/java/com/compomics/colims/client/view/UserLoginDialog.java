@@ -59,7 +59,7 @@ public class UserLoginDialog extends javax.swing.JDialog {
         loginInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("colims user login");
+        setTitle("Colims user login");
 
         userNameLabel.setText("User Name");
 
