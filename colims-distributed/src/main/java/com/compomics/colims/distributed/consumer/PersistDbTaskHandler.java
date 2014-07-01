@@ -131,7 +131,8 @@ public class PersistDbTaskHandler {
             case MAX_QUANT:
                 //clear resources before mapping
                 maxQuantImporter.clear();
-                                
+                             
+                maxQuantImporter.initImport(persistDbTask.getDataImport());
                 analyticalRuns = maxQuantImporter.importInputAndResults(null, null);
                 
                 mappedDataImport = new MappedDataImport(null, null, analyticalRuns);

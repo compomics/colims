@@ -148,11 +148,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         dataTypeButtonGroup.add(peptideShakerRadioButton);
         peptideShakerRadioButton.setText("PeptideShaker");
-        peptideShakerRadioButton.setOpaque(false);
 
         dataTypeButtonGroup.add(maxQuantRadioButton);
         maxQuantRadioButton.setText("MaxQuant");
-        maxQuantRadioButton.setOpaque(false);
 
         instrumentSelectionLabel.setText("Select the instrument:");
 
@@ -201,9 +199,9 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
 
         startDataLabel.setText("Select the start date of the run(s):");
 
-        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
-        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
-        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 27));
+        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 27));
+        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 27));
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);

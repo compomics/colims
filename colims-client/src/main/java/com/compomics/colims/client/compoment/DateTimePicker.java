@@ -36,7 +36,7 @@ public class DateTimePicker extends JXDatePicker {
     public DateTimePicker() {
         super();
         getMonthView().setSelectionModel(new SingleDaySelectionModel());
-        getEditor().setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
+//        getEditor().setBorder(BorderFactory.createCompoundBorder(UIManager.getBorder("TextField.border"), new EmptyBorder(0, 5, 0, 0)));
     }
 
     public DateTimePicker(Date d) {

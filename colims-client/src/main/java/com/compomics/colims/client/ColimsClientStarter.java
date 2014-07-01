@@ -3,7 +3,10 @@ package com.compomics.colims.client;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.controller.DatabaseLoginController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import java.awt.Dimension;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import org.apache.log4j.Logger;
@@ -17,6 +20,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ColimsClientStarter {
 
     private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    private static final String ERROR_MESSAGE = "An error occured during startup, please try again."
+            + "\n" + "If the problem persists, contact your administrator or post an issue on the google code page.";
 
     public ColimsClientStarter(String[] contextPaths) {
         launchColimsClient(contextPaths);
@@ -83,9 +88,16 @@ public class ColimsClientStarter {
             colimsController.showView();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
-            JOptionPane.showMessageDialog(null, "An error occured during startup, please try again."
-                    + "\n" + "If the problem persists, contact your administrator or post an issue on the google code page.",
-                    "colims startup error", JOptionPane.ERROR_MESSAGE);
+            //add message to JTextArea
+            JTextArea textArea = new JTextArea(ERROR_MESSAGE + "\n" + "\n" + ex.getMessage());
+            //put JTextArea in JScrollPane
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(600, 200));
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+
+            JOptionPane.showMessageDialog(null, scrollPane, "Colims startup error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
     }
