@@ -82,7 +82,7 @@
         <org.springframework.version>4.0.2.RELEASE</org.springframework.version>
     </properties>
     
-    <build>
+    <build>                
         <pluginManagement>
             <!-- Plugins -->
             <plugins>
@@ -169,6 +169,15 @@
             <layout>default</layout>
         </repository>        
     </repositories>
+    
+    <distributionManagement>        
+        <repository>
+            <id>genesis-maven2-repo</id>
+            <name>Genesis Maven Repository</name>
+            <url>scp://genesis.ugent.be/home/maven/public_html/maven2</url>
+        </repository>
+    </distributionManagement>
+    
     <dependencyManagement>
         <dependencies>
             <!-- logging dependencies -->
