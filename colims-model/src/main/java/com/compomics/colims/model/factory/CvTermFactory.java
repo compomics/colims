@@ -1,6 +1,6 @@
 package com.compomics.colims.model.factory;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.MaterialCvTerm;
 import com.compomics.colims.model.ProtocolCvTerm;
@@ -15,8 +15,8 @@ public final class CvTermFactory {
     private CvTermFactory() {
     }
 
-    public static CvTerm newInstance(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
-        CvTerm cvTerm;
+    public static TypedCvTerm newInstance(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
+        TypedCvTerm cvTerm;
 
         CvTermType parent = cvTermType.getParent();
         if (parent.equals(CvTermType.INSTRUMENT_CV_TERM_TYPE)) {

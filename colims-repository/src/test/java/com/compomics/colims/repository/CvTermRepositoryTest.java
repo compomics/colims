@@ -1,7 +1,7 @@
 package com.compomics.colims.repository;
 
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class CvTermRepositoryTest {
     @Test
     public void testFindByAccession() {
         //look for unknown analyzer
-        CvTerm cvTerm = cvTermRepository.findByAccession("unknown analyzer", CvTermType.ANALYZER);
+        TypedCvTerm cvTerm = cvTermRepository.findByAccession("unknown analyzer", CvTermType.ANALYZER);
         Assert.assertNull(cvTerm);        
         
         //look for known analyzer
@@ -50,7 +50,7 @@ public class CvTermRepositoryTest {
     
     @Test
     public void testFindBycvTermType() {        
-        List<CvTerm> cvTerms = cvTermRepository.findByCvTermType(CvTermType.ANALYZER);
+        List<TypedCvTerm> cvTerms = cvTermRepository.findByCvTermType(CvTermType.ANALYZER);
         Assert.assertNotNull(cvTerms);  
         Assert.assertEquals(2, cvTerms.size());
         

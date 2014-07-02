@@ -1,11 +1,8 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermType;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -29,16 +26,11 @@ public abstract class CvTerm extends AuditableDatabaseEntity {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;
-    @Basic(optional = false)
-    @Column(name = "cv_property", nullable = false)
-    @Enumerated(EnumType.STRING)
-    protected CvTermType cvTermType;
 
     public CvTerm() {
     }
 
-    public CvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
-        this.cvTermType = cvTermType;
+    public CvTerm(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
@@ -76,15 +68,7 @@ public abstract class CvTerm extends AuditableDatabaseEntity {
     public void setName(final String name) {
         this.name = name;
     }
-
-    public CvTermType getcvTermType() {
-        return cvTermType;
-    }
-
-    public void setcvTermType(final CvTermType cvTermType) {
-        this.cvTermType = cvTermType;
-    }        
-
+    
     @Override
     public int hashCode() {
         int hash = 7;

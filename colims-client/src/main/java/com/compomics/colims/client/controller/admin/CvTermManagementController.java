@@ -9,7 +9,7 @@ import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvTermManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.enums.CvTermType;
 import com.compomics.colims.model.factory.CvTermFactory;
 import com.google.common.eventbus.EventBus;
@@ -86,7 +86,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                 if (!lse.getValueIsAdjusting()) {
                     int selectedRow = cvTermManagementDialog.getCvTermTable().getSelectedRow();
                     if (selectedRow != -1 && !cvTermWithoutTypeTableModel.getCvTerms().isEmpty()) {
-                        CvTerm selectedCvTerm = cvTermWithoutTypeTableModel.getCvTerms().get(selectedRow);
+                        TypedCvTerm selectedCvTerm = cvTermWithoutTypeTableModel.getCvTerms().get(selectedRow);
 
                         //check if the CV term has an ID.
                         //If so, change the save button text and the info state label.
@@ -133,7 +133,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CvTerm selectedCvTerm = getSelectedCvTerm();
+                TypedCvTerm selectedCvTerm = getSelectedCvTerm();
                 //validate CV term
                 List<String> validationMessages = GuiUtils.validateEntity(selectedCvTerm);
                 //check for a new CV term if the accession already exists in the db                
@@ -163,7 +163,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getDeleteCvTermButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CvTerm cvTermToDelete = getSelectedCvTerm();
+                TypedCvTerm cvTermToDelete = getSelectedCvTerm();
                 int selectedIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
 
                 //check if instrument type has an id.
@@ -226,7 +226,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      * @param cvTermType the cvTermType of the CV terms in the list
      * @param cvTerms the list of CV terms
      */
-    public void updateDialog(CvTermType cvTermType, List<CvTerm> cvTerms) {
+    public void updateDialog(CvTermType cvTermType, List<TypedCvTerm> cvTerms) {
         this.cvTermType = cvTermType;
 
         cvTermWithoutTypeTableModel.setCvTerms(cvTerms);
@@ -250,7 +250,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
         //check wether a CV term has to be added or updated
         if (field.equals(ADD_CV_TERM)) {
-            CvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
+            TypedCvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
 
             //add CV term to the table model
             cvTermWithoutTypeTableModel.addCvTerm(cvTerm);
@@ -259,7 +259,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(cvTermWithoutTypeTableModel.getRowCount() - 1, cvTermWithoutTypeTableModel.getRowCount() - 1);
         } else {
             //update selected CV term
-            CvTerm selectedCvTerm = getSelectedCvTerm();
+            TypedCvTerm selectedCvTerm = getSelectedCvTerm();
             updateCvTerm(selectedCvTerm, ontologyLong, ontologyShort, accession, selectedValue);
 
             //update CV term in table model
@@ -287,9 +287,9 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      * @param cvTerm the selected CV term
      * @return the does exist boolean
      */
-    private boolean isExistingCvTermAccession(CvTerm cvTerm) {
+    private boolean isExistingCvTermAccession(TypedCvTerm cvTerm) {
         boolean isExistingCvTermAccession = true;
-        CvTerm foundCvTerm = cvTermService.findByAccession(cvTerm.getAccession(), cvTerm.getcvTermType());
+        TypedCvTerm foundCvTerm = cvTermService.findByAccession(cvTerm.getAccession(), cvTerm.getcvTermType());
         if (foundCvTerm == null) {
             isExistingCvTermAccession = false;
         }
@@ -306,7 +306,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      * @param accession
      * @param name
      */
-    private void updateCvTerm(CvTerm cvTerm, String ontology, String label, String accession, String name) {
+    private void updateCvTerm(TypedCvTerm cvTerm, String ontology, String label, String accession, String name) {
         if (!cvTerm.getOntology().equalsIgnoreCase(ontology)) {
             cvTerm.setOntology(ontology);
         }
@@ -355,9 +355,9 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      *
      * @return the selected CV term
      */
-    private CvTerm getSelectedCvTerm() {
+    private TypedCvTerm getSelectedCvTerm() {
         int selectedCvTermIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-        CvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? cvTermWithoutTypeTableModel.getCvTerms().get(selectedCvTermIndex) : null;
+        TypedCvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? cvTermWithoutTypeTableModel.getCvTerms().get(selectedCvTermIndex) : null;
 
         return selectedCvTerm;
     }

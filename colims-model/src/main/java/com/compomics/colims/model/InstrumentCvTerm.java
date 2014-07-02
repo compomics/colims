@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Table(name = "instrument_cv_term")
 @Entity
-public class InstrumentCvTerm extends CvTerm {
+public class InstrumentCvTerm extends TypedCvTerm {
 
     public InstrumentCvTerm() {
     }

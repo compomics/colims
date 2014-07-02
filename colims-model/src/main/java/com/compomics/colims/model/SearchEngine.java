@@ -23,10 +23,10 @@ import javax.persistence.Table;
  */
 @Table(name = "search_engine")
 @Entity
-public class SearchEngine extends DatabaseEntity {
-    
+public class SearchEngine extends CvTerm {
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The search engine type
      */
@@ -34,23 +34,24 @@ public class SearchEngine extends DatabaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     protected SearchEngineType searchEngineType;
-     /**
+    /**
      * The version of the search engine
      */
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
-    private String version;    
+    private String version;
     @OneToMany(mappedBy = "searchEngine")
-    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();  
+    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public SearchEngine() {
-    }    
-    
-    public SearchEngine(SearchEngineType searchEngineType, String version) {
+    }
+
+    public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
+        super(ontology, label, accession, name);
         this.searchEngineType = searchEngineType;
         this.version = version;
-    }    
-    
+    }
+
     public SearchEngineType getSearchEngineType() {
         return searchEngineType;
     }
@@ -65,7 +66,7 @@ public class SearchEngine extends DatabaseEntity {
 
     public void setVersion(String version) {
         this.version = version;
-    }        
+    }
 
     public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
         return searchAndValidationSettingses;
@@ -73,13 +74,13 @@ public class SearchEngine extends DatabaseEntity {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }    
+    }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 59 * hash + Objects.hashCode(this.searchEngineType);
-        hash = 59 * hash + Objects.hashCode(this.version);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.searchEngineType);
+        hash = 97 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
@@ -99,6 +100,6 @@ public class SearchEngine extends DatabaseEntity {
             return false;
         }
         return true;
-    }
-        
+    }    
+
 }

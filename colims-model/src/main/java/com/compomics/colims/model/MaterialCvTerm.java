@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Table(name = "material_cv_term")
 @Entity
-public class MaterialCvTerm extends CvTerm {
+public class MaterialCvTerm extends TypedCvTerm {
 
     public MaterialCvTerm() {
     }    

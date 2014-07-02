@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.enums.CvTermType;
 import java.util.EnumMap;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.swing.AbstractListModel;
  * @author Niels Hulstaert
  * @param <T>
  */
-public class CvTermSummaryListModel<T extends CvTerm> extends AbstractListModel {
+public class CvTermSummaryListModel<T extends TypedCvTerm> extends AbstractListModel {
 
     /**
      * The EnumMap containing the single CV terms (key: cvTermType; value: a

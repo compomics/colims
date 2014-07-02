@@ -1,7 +1,7 @@
 
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -17,21 +17,21 @@ public class CvTermWithoutTypeTableModel extends AbstractTableModel {
     private static final int ACCESSION_INDEX = 1;
     private static final int NAME_INDEX = 2;
     
-    private List<CvTerm> cvTerms;
+    private List<TypedCvTerm> cvTerms;
 
     public CvTermWithoutTypeTableModel() {
         cvTerms = new ArrayList<>();
     }
     
-    public CvTermWithoutTypeTableModel(List<CvTerm> cvTerms) {
+    public CvTermWithoutTypeTableModel(List<TypedCvTerm> cvTerms) {
         this.cvTerms = cvTerms;
     }
 
-    public List<CvTerm> getCvTerms() {
+    public List<TypedCvTerm> getCvTerms() {
         return cvTerms;
     }
 
-    public void setCvTerms(List<CvTerm> cvTerms) {
+    public void setCvTerms(List<TypedCvTerm> cvTerms) {
         this.cvTerms = cvTerms;
         fireTableDataChanged();
     }
@@ -53,7 +53,7 @@ public class CvTermWithoutTypeTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        CvTerm selectedCvTerm = cvTerms.get(rowIndex);
+        TypedCvTerm selectedCvTerm = cvTerms.get(rowIndex);
         
         switch (columnIndex) {
              case ONTOLOGY_LABEL_INDEX:
@@ -72,7 +72,7 @@ public class CvTermWithoutTypeTableModel extends AbstractTableModel {
      * 
      * @param cvTerm the CV term to add 
      */
-    public void addCvTerm(CvTerm cvTerm){
+    public void addCvTerm(TypedCvTerm cvTerm){
         //add CV term to list
         cvTerms.add(cvTerm);
         fireTableRowsInserted(cvTerms.size() - 1, cvTerms.size() - 1);
@@ -84,7 +84,7 @@ public class CvTermWithoutTypeTableModel extends AbstractTableModel {
      * @param cvTerm the CV term to update 
      * @param rowIndex the row index of the CV term to update
      */
-    public void updateCvTerm(CvTerm cvTerm, int rowIndex){
+    public void updateCvTerm(TypedCvTerm cvTerm, int rowIndex){
         cvTerms.set(rowIndex, cvTerm);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }

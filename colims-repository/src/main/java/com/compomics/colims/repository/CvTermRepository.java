@@ -1,6 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public interface CvTermRepository extends GenericRepository<CvTerm, Long> {
+public interface CvTermRepository extends GenericRepository<TypedCvTerm, Long> {
     /**
      * Find a CV term by accession and cvTermType. Returns null if nothing
      * was found.
@@ -17,7 +17,7 @@ public interface CvTermRepository extends GenericRepository<CvTerm, Long> {
      * @param cvTermType the CV term property
      * @return the found CV term
      */
-    CvTerm findByAccession(String accession, CvTermType cvTermType);
+    TypedCvTerm findByAccession(String accession, CvTermType cvTermType);
 
     /**
      * Find CV terms by CV term property. Returns null if nothing was found.
@@ -25,5 +25,5 @@ public interface CvTermRepository extends GenericRepository<CvTerm, Long> {
      * @param cvTermType the cvTermType
      * @return the found CV terms
      */
-    List<CvTerm> findByCvTermType(CvTermType cvTermType);
+    List<TypedCvTerm> findByCvTermType(CvTermType cvTermType);
 }

@@ -16,7 +16,7 @@ import com.compomics.colims.client.view.admin.protocol.ProtocolEditDialog;
 import com.compomics.colims.client.view.admin.protocol.ProtocolManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;
@@ -140,7 +140,7 @@ public class ProtocolManagementController implements Controllable {
                         Protocol selectedProtocol = protocolBindingList.get(selectedIndex);
 
                         //init CvTermModel
-                        List<CvTerm> cvTerms = new ArrayList<>();
+                        List<TypedCvTerm> cvTerms = new ArrayList<>();
                         if (selectedProtocol.getReduction() != null) {
                             cvTerms.add(selectedProtocol.getReduction());
                         }
@@ -392,7 +392,7 @@ public class ProtocolManagementController implements Controllable {
                     //get selected cvTermType from summary list                        
                     CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                    List<CvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
+                    List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);

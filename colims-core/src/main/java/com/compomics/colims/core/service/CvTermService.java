@@ -1,6 +1,6 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public interface CvTermService extends GenericService<CvTerm, Long> {
+public interface CvTermService extends GenericService<TypedCvTerm, Long> {
 
     /**
      * Find a CV term by accession and cvTermType. Returns null if nothing
@@ -18,7 +18,7 @@ public interface CvTermService extends GenericService<CvTerm, Long> {
      * @param cvTermType the CV term property
      * @return the found CV term
      */
-    CvTerm findByAccession(String accession, CvTermType cvTermType);
+    TypedCvTerm findByAccession(String accession, CvTermType cvTermType);
 
     /**
      * Find CV terms by CvTermType. Returns null if nothing was found.
@@ -26,7 +26,7 @@ public interface CvTermService extends GenericService<CvTerm, Long> {
      * @param cvTermType the cvTermType
      * @return the found CV terms
      */
-    List<CvTerm> findByCvTermByType(CvTermType cvTermType);
+    List<TypedCvTerm> findByCvTermByType(CvTermType cvTermType);
     
     /**
      * Find CV terms by CvTermType. Returns null if nothing was found.
@@ -35,5 +35,5 @@ public interface CvTermService extends GenericService<CvTerm, Long> {
      * @param cvTermType the cvTermType
      * @return the found CV terms
      */
-    <T extends CvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType);
+    <T extends TypedCvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType);
 }

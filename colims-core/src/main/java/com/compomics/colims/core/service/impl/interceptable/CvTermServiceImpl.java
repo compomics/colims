@@ -1,7 +1,7 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.CvTermService;
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,50 +24,50 @@ public class CvTermServiceImpl implements CvTermService {
     private CvTermRepository cvTermRepository;
 
     @Override
-    public CvTerm findById(Long id) {
+    public TypedCvTerm findById(Long id) {
         return cvTermRepository.findById(id);
     }
 
     @Override
-    public List<CvTerm> findAll() {
+    public List<TypedCvTerm> findAll() {
         return cvTermRepository.findAll();
     }
 
     @Override
-    public void save(CvTerm entity) {
+    public void save(TypedCvTerm entity) {
         cvTermRepository.save(entity);
     }
 
     @Override
-    public void update(CvTerm entity) {
+    public void update(TypedCvTerm entity) {
         cvTermRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(CvTerm entity) {
+    public void saveOrUpdate(TypedCvTerm entity) {
         cvTermRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(CvTerm entity) {
+    public void delete(TypedCvTerm entity) {
         cvTermRepository.delete(entity);
     }        
 
     @Override
-    public CvTerm findByAccession(String accession, CvTermType cvTermType) {
+    public TypedCvTerm findByAccession(String accession, CvTermType cvTermType) {
         return cvTermRepository.findByAccession(accession, cvTermType);
     }
 
     @Override
-    public List<CvTerm> findByCvTermByType(CvTermType cvTermType) {
+    public List<TypedCvTerm> findByCvTermByType(CvTermType cvTermType) {
         return cvTermRepository.findByCvTermType(cvTermType);
     }
 
     @Override
-    public <T extends CvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType) {
+    public <T extends TypedCvTerm> List<T> findByCvTermByType(Class<T> clazz, CvTermType cvTermType) {
         List<T> cvTerms = new ArrayList<>();
         
-        for(CvTerm cvTerm : cvTermRepository.findByCvTermType(cvTermType)){
+        for(TypedCvTerm cvTerm : cvTermRepository.findByCvTermType(cvTermType)){
             if(clazz.isInstance(cvTerm)){
                 cvTerms.add((T) cvTerm);
             }

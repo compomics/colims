@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Table(name = "protocol_cv_term")
 @Entity
-public class ProtocolCvTerm extends CvTerm {
+public class ProtocolCvTerm extends TypedCvTerm {
 
     public ProtocolCvTerm() {
     }

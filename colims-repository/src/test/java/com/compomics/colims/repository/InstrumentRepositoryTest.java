@@ -1,6 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -80,7 +80,7 @@ public class InstrumentRepositoryTest {
 
         //analyzer cv terms
         Assert.assertEquals(2, instrument.getAnalyzers().size());
-        CvTerm analyzer = instrument.getAnalyzers().get(0);
+        TypedCvTerm analyzer = instrument.getAnalyzers().get(0);
         Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());
         analyzer = instrument.getAnalyzers().get(1);
         Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());

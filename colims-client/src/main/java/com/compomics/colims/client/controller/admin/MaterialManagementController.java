@@ -16,7 +16,7 @@ import com.compomics.colims.client.view.admin.material.MaterialEditDialog;
 import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.MaterialService;
-import com.compomics.colims.model.CvTerm;
+import com.compomics.colims.model.TypedCvTerm;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;
@@ -146,7 +146,7 @@ public class MaterialManagementController implements Controllable {
                         Material selectedMaterial = materialBindingList.get(selectedIndex);
 
                         //init CvTermModel
-                        List<CvTerm> cvTerms = new ArrayList<>();
+                        List<TypedCvTerm> cvTerms = new ArrayList<>();
                         if (selectedMaterial.getSpecies() != null) {
                             cvTerms.add(selectedMaterial.getSpecies());
                         }
@@ -398,7 +398,7 @@ public class MaterialManagementController implements Controllable {
                     //get selected cvTermType from summary list                        
                     CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                    List<CvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
+                    List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
