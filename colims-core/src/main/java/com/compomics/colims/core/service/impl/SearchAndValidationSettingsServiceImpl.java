@@ -66,10 +66,20 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
 
     @Override
     public SearchEngine getSearchEngine(SearchEngineType searchEngineType, String version) {
-        SearchEngine searchEngine = searchEngineRepository.findByNameAndVersion(searchEngineType, version);
+        SearchEngine searchEngine = searchEngineRepository.findByTypeAndVersion(searchEngineType, version);
 
         if (searchEngine == null) {
-            searchEngine = new SearchEngine(searchEngineType, version);
+            //check if the search engine can be found by type
+            searchEngine = searchEngineRepository.findByType(searchEngineType);
+
+            if (searchEngine != null) {
+                //copy the found SearchEngine fields and the given version onto a new instance
+                searchEngine = new SearchEngine(searchEngine, version);
+            } else {
+                //create a new instance with the type and version
+                searchEngine = new SearchEngine(searchEngineType, version);
+            }
+
             searchEngineRepository.save(searchEngine);
         }
 

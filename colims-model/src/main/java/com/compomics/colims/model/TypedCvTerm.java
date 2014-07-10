@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class TypedCvTerm extends CvTerm {
+public abstract class TypedCvTerm extends AuditableCvTerm {
 
     private static final long serialVersionUID = 1L;
     

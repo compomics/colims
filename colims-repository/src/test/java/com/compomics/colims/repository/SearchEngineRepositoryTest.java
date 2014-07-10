@@ -27,11 +27,11 @@ public class SearchEngineRepositoryTest {
     @Test
     public void testFindByNameAndVersion(){
         //expect to find no result with the given parameters
-        SearchEngine foundSearchEngine = searchEngineRepository.findByNameAndVersion(SearchEngineType.PEPTIDESHAKER, "3.1.6");
+        SearchEngine foundSearchEngine = searchEngineRepository.findByTypeAndVersion(SearchEngineType.PEPTIDESHAKER, "3.1.6");
         Assert.assertNull(foundSearchEngine);
 
         //expect to find a result
-        foundSearchEngine = searchEngineRepository.findByNameAndVersion(SearchEngineType.PEPTIDESHAKER, "0.28.0");
+        foundSearchEngine = searchEngineRepository.findByTypeAndVersion(SearchEngineType.PEPTIDESHAKER, "0.28.0");
         Assert.assertNotNull(foundSearchEngine);
         Assert.assertEquals(SearchEngineType.PEPTIDESHAKER, foundSearchEngine.getSearchEngineType());
         Assert.assertEquals("0.28.0", foundSearchEngine.getVersion());

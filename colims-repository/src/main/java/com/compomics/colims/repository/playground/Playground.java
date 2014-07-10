@@ -17,7 +17,7 @@ public class Playground {
         LocalSessionFactoryBean sessionFactory = (LocalSessionFactoryBean) applicationContext.getBean("&sessionFactory", LocalSessionFactoryBean.class);
 
         SchemaExport schemaExport = new SchemaExport(sessionFactory.getConfiguration());
-        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.sql");
+        schemaExport.setOutputFile("/home/niels/Desktop/testing.sql");
         schemaExport.setFormat(true);
         schemaExport.setDelimiter(";");
         schemaExport.execute(true, false, false, true);                           

@@ -26,6 +26,7 @@ import javax.persistence.Table;
 public class SearchEngine extends CvTerm {
 
     private static final long serialVersionUID = 1L;
+    private static final String NOT_APPLICABLE = "N/A";
 
     /**
      * The search engine type
@@ -46,10 +47,27 @@ public class SearchEngine extends CvTerm {
     public SearchEngine() {
     }
 
+    public SearchEngine(SearchEngineType searchEngineType, String version) {
+        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
+        this.searchEngineType = searchEngineType;
+        this.version = version;
+    }
+
     public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
         this.searchEngineType = searchEngineType;
         this.version = version;
+    }
+
+    /**
+     * Constructor that creates a new instance with all fields of the given
+     * SearchEngine and the given version.
+     *
+     * @param searchEngine the SearchEngine to copy
+     * @param version the search engine version
+     */
+    public SearchEngine(final SearchEngine searchEngine, final String version) {
+        this(searchEngine.getSearchEngineType(), version, searchEngine.getOntology(), searchEngine.getLabel(), searchEngine.getAccession(), searchEngine.getName());
     }
 
     public SearchEngineType getSearchEngineType() {
@@ -100,6 +118,6 @@ public class SearchEngine extends CvTerm {
             return false;
         }
         return true;
-    }    
+    }
 
 }

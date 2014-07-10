@@ -1,4 +1,4 @@
-   
+ 
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -120,10 +120,10 @@
         modification_date datetime not null,
         user_name varchar(255) not null,
         accession varchar(255) not null,
-        cv_property varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        cv_property varchar(255) not null,
         primary key (id)
     );
 
@@ -162,10 +162,10 @@
         modification_date datetime not null,
         user_name varchar(255) not null,
         accession varchar(255) not null,
-        cv_property varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        cv_property varchar(255) not null,
         primary key (id)
     );
 
@@ -272,10 +272,10 @@
         modification_date datetime not null,
         user_name varchar(255) not null,
         accession varchar(255) not null,
-        cv_property varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        cv_property varchar(255) not null,
         primary key (id)
     );
 
@@ -332,6 +332,9 @@
 
     create table colims.quantification_settings (
         id bigint not null auto_increment,
+        creation_date datetime not null,
+        modification_date datetime not null,
+        user_name varchar(255) not null,
         l_experiment_id bigint,
         l_quant_engine_id bigint,
         l_quant_param_settings_id bigint,
@@ -375,6 +378,9 @@
 
     create table colims.search_and_validation_settings (
         id bigint not null auto_increment,
+        creation_date datetime not null,
+        modification_date datetime not null,
+        user_name varchar(255) not null,
         l_experiment_id bigint,
         l_fasta_db_id bigint,
         l_search_engine_id bigint,
@@ -384,6 +390,10 @@
 
     create table colims.search_engine (
         id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
         type varchar(255) not null,
         version varchar(255),
         primary key (id)
@@ -454,14 +464,8 @@
     alter table colims.instrument 
         add constraint UK_11wfouotl7vb11u6ebomnbsrr  unique (name);
 
-    alter table colims.instrument_cv_term 
-        add constraint UK_p439oc8wuh3dr9wyptksrc0o4  unique (accession);
-
     alter table colims.instrument_type 
         add constraint UK_2khnihpbgyekjsr8cj9lrr0r7  unique (name);
-
-    alter table colims.material_cv_term 
-        add constraint UK_4t80knf2n488qnwc8d11xiwm4  unique (accession);
 
     alter table colims.permission 
         add constraint UK_2ojme20jpga3r4r79tdso17gi  unique (name);
@@ -471,9 +475,6 @@
 
     alter table colims.protocol 
         add constraint UK_lidqee66itlhns030fyykvptc  unique (name);
-
-    alter table colims.protocol_cv_term 
-        add constraint UK_ertrjihdksltewuvpd6m46mkk  unique (accession);
 
     alter table colims.user_group 
         add constraint UK_kas9w8ead0ska5n3csefp2bpp  unique (name);
@@ -789,6 +790,9 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 
 -- insert default role_has_permissions
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3);
+
+-- insert default search engines
+INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','PSI Mass Spectrometry Ontology [MS]','MAXQUANT', '0.0.0');
 
 -- insert some test data
 INSERT INTO project (id,creation_date,modification_date,user_name,description,label,title,l_owner_user_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','test project 1 description','test project 1 label','test project 1',1);

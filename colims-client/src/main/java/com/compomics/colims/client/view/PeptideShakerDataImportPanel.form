@@ -43,7 +43,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="fastaDbTextField" max="32767" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="selectFastaButton" min="-2" pref="92" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -52,7 +52,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="cpsFileSelectionLabel" pref="222" max="32767" attributes="0"/>
+                              <Component id="cpsFileSelectionLabel" pref="242" max="32767" attributes="0"/>
                               <Component id="cpsTextField" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -199,12 +199,6 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="mgfFilesScrollPane">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="BorderFactory.createCompoundBorder(UIManager.getBorder(&quot;TextField.border&quot;), new EmptyBorder(0, 5, 0, 0))" type="code"/>
-            </Property>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>

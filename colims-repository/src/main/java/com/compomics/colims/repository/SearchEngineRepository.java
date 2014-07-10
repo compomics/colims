@@ -10,6 +10,15 @@ import com.compomics.colims.model.enums.SearchEngineType;
 public interface SearchEngineRepository extends GenericRepository<SearchEngine, Long> {
 
     /**
+     * Find the search engine by type. If multiple were found (different
+     * versions), a random one is returned. Returns null if nothing was found.
+     *
+     * @param searchEngineType the search engine type
+     * @return the found SearchEngine
+     */
+    SearchEngine findByType(SearchEngineType searchEngineType);
+
+    /**
      * Find the search engine by type and version. Returns null if nothing was
      * found.
      *
@@ -17,6 +26,6 @@ public interface SearchEngineRepository extends GenericRepository<SearchEngine, 
      * @param version the search engine version
      * @return the found SearchEngine
      */
-    SearchEngine findByNameAndVersion(SearchEngineType searchEngineType, String version);
+    SearchEngine findByTypeAndVersion(SearchEngineType searchEngineType, String version);
 
 }

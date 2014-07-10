@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_settings")
 @Entity
-public class QuantificationSettings extends DatabaseEntity {
+public class QuantificationSettings extends AuditableDatabaseEntity {
     
     private static final long serialVersionUID = 1L;
         

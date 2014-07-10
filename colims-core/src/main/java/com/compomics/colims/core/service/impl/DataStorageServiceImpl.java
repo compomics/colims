@@ -40,8 +40,11 @@ public class DataStorageServiceImpl implements DataStorageService {
         //first store the SearchAndValidationSettings
         SearchAndValidationSettings searchAndValidationSettings = mappedDataImport.getSearchAndValidationSettings();
         if (searchAndValidationSettings != null) {
+            searchAndValidationSettings.setCreationDate(new Date());
+            searchAndValidationSettings.setModificationDate(new Date());
+            searchAndValidationSettings.setUserName(userName);
             searchAndValidationSettings.setExperiment(experiment);
-            searchAndValidationSettingsRepository.save(searchAndValidationSettings);
+            searchAndValidationSettingsRepository.saveOrUpdate(searchAndValidationSettings);
         }
 
         for (AnalyticalRun analyticalRun : mappedDataImport.getAnalyticalRuns()) {

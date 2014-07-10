@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class CvTerm extends DatabaseEntity {
+public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,10 +27,10 @@ public abstract class CvTerm extends DatabaseEntity {
     @Column(name = "name", nullable = false)
     protected String name;
 
-    public CvTerm() {
+    public AuditableCvTerm() {
     }
 
-    public CvTerm(final String ontology, final String label, final String accession, final String name) {
+    public AuditableCvTerm(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
@@ -87,7 +87,7 @@ public abstract class CvTerm extends DatabaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CvTerm other = (CvTerm) obj;
+        final AuditableCvTerm other = (AuditableCvTerm) obj;
         if (!Objects.equals(this.ontology, other.ontology)) {
             return false;
         }
