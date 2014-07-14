@@ -39,6 +39,11 @@ public class Instrument extends AuditableDatabaseEntity {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Basic(optional = false)
+    @NotNull(message = "An instrument must have a type")
+    @ManyToOne
+    @JoinColumn(name = "l_type_cv_id", referencedColumnName = "id", nullable = false)
+    private InstrumentCvTerm type;
+    @Basic(optional = false)
     @NotNull(message = "An instrument must have a source")
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
@@ -48,11 +53,6 @@ public class Instrument extends AuditableDatabaseEntity {
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvTerm detector;
-    @Basic(optional = false)
-    @NotNull(message = "An instrument must have an instrument type")
-    @ManyToOne
-    @JoinColumn(name = "l_instrument_type_id", referencedColumnName = "id", nullable = false)
-    private InstrumentType instrumentType;
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
     @NotEmpty(message = "An instrument must have at least one analyzer")
@@ -80,6 +80,14 @@ public class Instrument extends AuditableDatabaseEntity {
         this.name = name;
     }
 
+    public InstrumentCvTerm getType() {
+        return type;
+    }
+
+    public void setType(InstrumentCvTerm type) {
+        this.type = type;
+    }        
+
     public InstrumentCvTerm getSource() {
         return source;
     }
@@ -94,15 +102,7 @@ public class Instrument extends AuditableDatabaseEntity {
 
     public void setDetector(InstrumentCvTerm detector) {
         this.detector = detector;
-    }
-
-    public InstrumentType getInstrumentType() {
-        return instrumentType;
-    }
-
-    public void setInstrumentType(InstrumentType instrumentType) {
-        this.instrumentType = instrumentType;
-    }
+    }    
 
     public List<AnalyticalRun> getAnalyticalRuns() {
         return analyticalRuns;
@@ -122,12 +122,12 @@ public class Instrument extends AuditableDatabaseEntity {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.name);
-        hash = 73 * hash + Objects.hashCode(this.source);
-        hash = 73 * hash + Objects.hashCode(this.detector);
-        hash = 73 * hash + Objects.hashCode(this.instrumentType);
-        hash = 73 * hash + Objects.hashCode(this.analyzers);
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 67 * hash + Objects.hashCode(this.type);
+        hash = 67 * hash + Objects.hashCode(this.source);
+        hash = 67 * hash + Objects.hashCode(this.detector);
+        hash = 67 * hash + Objects.hashCode(this.analyzers);
         return hash;
     }
 
@@ -143,13 +143,13 @@ public class Instrument extends AuditableDatabaseEntity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
+        if (!Objects.equals(this.type, other.type)) {
+            return false;
+        }
         if (!Objects.equals(this.source, other.source)) {
             return false;
         }
         if (!Objects.equals(this.detector, other.detector)) {
-            return false;
-        }
-        if (!Objects.equals(this.instrumentType, other.instrumentType)) {
             return false;
         }
         if (!Objects.equals(this.analyzers, other.analyzers)) {
@@ -160,6 +160,6 @@ public class Instrument extends AuditableDatabaseEntity {
 
     @Override
     public String toString() {
-        return name + " [" + instrumentType + "]";
+        return name + " [" + type.getName() + "]";
     }
 }

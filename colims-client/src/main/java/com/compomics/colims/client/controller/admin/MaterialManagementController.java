@@ -8,9 +8,9 @@ import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.CvTermSummaryListModel;
-import com.compomics.colims.client.model.CvTermTableModel;
-import com.compomics.colims.client.renderer.CvTermSummaryCellRenderer;
+import com.compomics.colims.client.model.TypedCvTermSummaryListModel;
+import com.compomics.colims.client.model.TypedCvTermTableModel;
+import com.compomics.colims.client.renderer.TypedCvTermSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.material.MaterialEditDialog;
 import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
@@ -56,7 +56,7 @@ import org.springframework.stereotype.Component;
 public class MaterialManagementController implements Controllable {
 
     //model      
-    private CvTermSummaryListModel<MaterialCvTerm> cvTermSummaryListModel;
+    private TypedCvTermSummaryListModel<MaterialCvTerm> typedCvTermSummaryListModel;
     private ObservableList<Material> materialBindingList;
     private BindingGroup bindingGroup;
     private Material materialToEdit;
@@ -159,8 +159,8 @@ public class MaterialManagementController implements Controllable {
                         if (selectedMaterial.getCompartment() != null) {
                             cvTerms.add(selectedMaterial.getCompartment());
                         }
-                        CvTermTableModel cvTermTableModel = new CvTermTableModel(cvTerms);
-                        materialManagementDialog.getMaterialDetailsTable().setModel(cvTermTableModel);
+                        TypedCvTermTableModel typedCvTermTableModel = new TypedCvTermTableModel(cvTerms);
+                        materialManagementDialog.getMaterialDetailsTable().setModel(typedCvTermTableModel);
                     } else {
                         //clear detail view
                         clearMaterialDetailFields();
@@ -250,9 +250,9 @@ public class MaterialManagementController implements Controllable {
         bindingGroup.addBinding(materialNameBinding);
 
         //set model and renderer
-        cvTermSummaryListModel = new CvTermSummaryListModel();
-        materialEditDialog.getCvTermSummaryList().setModel(cvTermSummaryListModel);
-        materialEditDialog.getCvTermSummaryList().setCellRenderer(new CvTermSummaryCellRenderer<MaterialCvTerm>());
+        typedCvTermSummaryListModel = new TypedCvTermSummaryListModel();
+        materialEditDialog.getCvTermSummaryList().setModel(typedCvTermSummaryListModel);
+        materialEditDialog.getCvTermSummaryList().setCellRenderer(new TypedCvTermSummaryCellRenderer<MaterialCvTerm>());
 
         //add action listeners
         materialEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -269,16 +269,16 @@ public class MaterialManagementController implements Controllable {
                         List<MaterialCvTerm> addedCvTerms;
                         //@todo for the moment, material has only single CV terms,
                         //so this check is not necessary.
-                        if (cvTermSummaryListModel.isSingleCvTerm(selectedcvTermType)) {
+                        if (typedCvTermSummaryListModel.isSingleCvTerm(selectedcvTermType)) {
                             addedCvTerms = new ArrayList<>();
-                            MaterialCvTerm materialCvTerm = cvTermSummaryListModel.getSingleCvTerms().get(selectedcvTermType);
+                            MaterialCvTerm materialCvTerm = typedCvTermSummaryListModel.getSingleCvTerms().get(selectedcvTermType);
                             //check for null value
                             if (materialCvTerm != null) {
                                 addedCvTerms.add(materialCvTerm);
                             }
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = cvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
+                            addedCvTerms = typedCvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
                             materialEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -301,37 +301,37 @@ public class MaterialManagementController implements Controllable {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm species = addedItems.get(0);
                         materialToEdit.setSpecies(species);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, species);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, species);
                     } else {
                         materialToEdit.setSpecies(null);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, null);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.SPECIES, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.TISSUE)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm tissue = addedItems.get(0);
                         materialToEdit.setTissue(tissue);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, tissue);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, tissue);
                     } else {
                         materialToEdit.setTissue(null);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, null);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.TISSUE, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.CELL_TYPE)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm cellType = addedItems.get(0);
                         materialToEdit.setCellType(cellType);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, cellType);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, cellType);
                     } else {
                         materialToEdit.setCellType(null);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, null);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_TYPE, null);
                     }
                 } else if (selectedcvTermType.equals(CvTermType.COMPARTMENT)) {
                     if (!addedItems.isEmpty()) {
                         MaterialCvTerm compartment = addedItems.get(0);
                         materialToEdit.setCompartment(compartment);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, compartment);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, compartment);
                     } else {
                         materialToEdit.setCompartment(null);
-                        cvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, null);
+                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.COMPARTMENT, null);
                     }
                 }
 
@@ -505,7 +505,7 @@ public class MaterialManagementController implements Controllable {
 
         //add the multiple CV terms
         EnumMap<CvTermType, List<MaterialCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
-        cvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
+        typedCvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
 
         //clear selection in CV term summary list
         materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
@@ -515,6 +515,6 @@ public class MaterialManagementController implements Controllable {
      * Clear the material detail fields
      */
     private void clearMaterialDetailFields() {
-        materialManagementDialog.getMaterialDetailsTable().setModel(new CvTermTableModel());
+        materialManagementDialog.getMaterialDetailsTable().setModel(new TypedCvTermTableModel());
     }
 }

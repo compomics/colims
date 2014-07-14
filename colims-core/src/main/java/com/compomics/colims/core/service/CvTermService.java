@@ -31,6 +31,7 @@ public interface CvTermService extends GenericService<TypedCvTerm, Long> {
     /**
      * Find CV terms by CvTermType. Returns null if nothing was found.
      *
+     * @param <T>
      * @param clazz the CvTerm sub class
      * @param cvTermType the cvTermType
      * @return the found CV terms

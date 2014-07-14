@@ -5,7 +5,7 @@ import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.admin.CvTermChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.CvTermWithoutTypeTableModel;
+import com.compomics.colims.client.model.TypedCvTermTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvTermManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
@@ -41,7 +41,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     private static final String ADD_CV_TERM = "add";
     private static final String UPDATE_CV_TERM = "update";
     //model
-    private CvTermWithoutTypeTableModel cvTermWithoutTypeTableModel;
+    private TypedCvTermTableModel2 typeCvTermTableModel2;
     /**
      * The cvTermType of the CV terms in the table model.
      */
@@ -76,8 +76,8 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         eventBus.register(this);
 
         //init and set table model
-        cvTermWithoutTypeTableModel = new CvTermWithoutTypeTableModel();
-        cvTermManagementDialog.getCvTermTable().setModel(cvTermWithoutTypeTableModel);
+        typeCvTermTableModel2 = new TypedCvTermTableModel2();
+        cvTermManagementDialog.getCvTermTable().setModel(typeCvTermTableModel2);
 
         //add listeners
         cvTermManagementDialog.getCvTermTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -85,8 +85,8 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
                     int selectedRow = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-                    if (selectedRow != -1 && !cvTermWithoutTypeTableModel.getCvTerms().isEmpty()) {
-                        TypedCvTerm selectedCvTerm = cvTermWithoutTypeTableModel.getCvTerms().get(selectedRow);
+                    if (selectedRow != -1 && !typeCvTermTableModel2.getCvTerms().isEmpty()) {
+                        TypedCvTerm selectedCvTerm = typeCvTermTableModel2.getCvTerms().get(selectedRow);
 
                         //check if the CV term has an ID.
                         //If so, change the save button text and the info state label.
@@ -172,7 +172,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                     try {
                         cvTermService.delete(cvTermToDelete);
 
-                        cvTermWithoutTypeTableModel.removeCvTerm(selectedIndex);
+                        typeCvTermTableModel2.removeCvTerm(selectedIndex);
                         cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
 
                         eventBus.post(new CvTermChangeEvent());
@@ -188,7 +188,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
                         }
                     }
                 } else {
-                    cvTermWithoutTypeTableModel.removeCvTerm(selectedIndex);
+                    typeCvTermTableModel2.removeCvTerm(selectedIndex);
                     cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
                 }
             }
@@ -229,7 +229,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     public void updateDialog(CvTermType cvTermType, List<TypedCvTerm> cvTerms) {
         this.cvTermType = cvTermType;
 
-        cvTermWithoutTypeTableModel.setCvTerms(cvTerms);
+        typeCvTermTableModel2.setCvTerms(cvTerms);
 
         //clear selection
         cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
@@ -253,10 +253,10 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             TypedCvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
 
             //add CV term to the table model
-            cvTermWithoutTypeTableModel.addCvTerm(cvTerm);
+            typeCvTermTableModel2.addCvTerm(cvTerm);
 
             //set selected index to newly added CV term
-            cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(cvTermWithoutTypeTableModel.getRowCount() - 1, cvTermWithoutTypeTableModel.getRowCount() - 1);
+            cvTermManagementDialog.getCvTermTable().getSelectionModel().setSelectionInterval(typeCvTermTableModel2.getRowCount() - 1, typeCvTermTableModel2.getRowCount() - 1);
         } else {
             //update selected CV term
             TypedCvTerm selectedCvTerm = getSelectedCvTerm();
@@ -264,7 +264,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
             //update CV term in table model
             int selectedIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-            cvTermWithoutTypeTableModel.updateCvTerm(selectedCvTerm, selectedIndex);
+            typeCvTermTableModel2.updateCvTerm(selectedCvTerm, selectedIndex);
 
             //clear selection and set selected index again
             cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
@@ -357,7 +357,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      */
     private TypedCvTerm getSelectedCvTerm() {
         int selectedCvTermIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
-        TypedCvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? cvTermWithoutTypeTableModel.getCvTerms().get(selectedCvTermIndex) : null;
+        TypedCvTerm selectedCvTerm = (selectedCvTermIndex != -1) ? typeCvTermTableModel2.getCvTerms().get(selectedCvTermIndex) : null;
 
         return selectedCvTerm;
     }

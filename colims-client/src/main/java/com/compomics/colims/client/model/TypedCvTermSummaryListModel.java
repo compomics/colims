@@ -11,7 +11,7 @@ import javax.swing.AbstractListModel;
  * @author Niels Hulstaert
  * @param <T>
  */
-public class CvTermSummaryListModel<T extends TypedCvTerm> extends AbstractListModel {
+public class TypedCvTermSummaryListModel<T extends TypedCvTerm> extends AbstractListModel {
 
     /**
      * The EnumMap containing the single CV terms (key: cvTermType; value: a
@@ -32,7 +32,7 @@ public class CvTermSummaryListModel<T extends TypedCvTerm> extends AbstractListM
      */
     private CvTermType[] multiCvTermKeys;
 
-    public CvTermSummaryListModel() {
+    public TypedCvTermSummaryListModel() {
         singleCvTerms = new EnumMap<>(CvTermType.class);
         multiCvTerms = new EnumMap<>(CvTermType.class);
     }

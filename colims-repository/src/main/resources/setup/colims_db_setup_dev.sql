@@ -109,8 +109,8 @@
         user_name varchar(255) not null,
         name varchar(30) not null,
         l_detector_cv_id bigint not null,
-        l_instrument_type_id bigint not null,
         l_source_cv_id bigint not null,
+        l_type_cv_id bigint not null,
         primary key (id)
     );
 
@@ -130,16 +130,6 @@
     create table colims.instrument_has_analyzer (
         l_instrument_id bigint not null,
         l_instrument_cv_term_id bigint not null
-    );
-
-    create table colims.instrument_type (
-        id bigint not null auto_increment,
-        creation_date datetime not null,
-        modification_date datetime not null,
-        user_name varchar(255) not null,
-        description varchar(500),
-        name varchar(30) not null,
-        primary key (id)
     );
 
     create table colims.material (
@@ -464,9 +454,6 @@
     alter table colims.instrument 
         add constraint UK_11wfouotl7vb11u6ebomnbsrr  unique (name);
 
-    alter table colims.instrument_type 
-        add constraint UK_2khnihpbgyekjsr8cj9lrr0r7  unique (name);
-
     alter table colims.permission 
         add constraint UK_2ojme20jpga3r4r79tdso17gi  unique (name);
 
@@ -525,13 +512,13 @@
         references colims.instrument_cv_term (id);
 
     alter table colims.instrument 
-        add constraint FK_9mg83ll40kt1k3vs8wwrcxx84 
-        foreign key (l_instrument_type_id) 
-        references colims.instrument_type (id);
-
-    alter table colims.instrument 
         add constraint FK_amxbo4ld6m7kbyr2w00mmamf4 
         foreign key (l_source_cv_id) 
+        references colims.instrument_cv_term (id);
+
+    alter table colims.instrument 
+        add constraint FK_doq0jgu8jf6ycvanskyox0iet 
+        foreign key (l_type_cv_id) 
         references colims.instrument_cv_term (id);
 
     alter table colims.instrument_has_analyzer 
@@ -805,12 +792,11 @@ INSERT INTO experiment (id,creation_date,modification_date,user_name,description
 INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','MS:1001603','SOURCE','MS','ProteomeDiscoverer:Spectrum Selector:Ionization Source','PSI Mass Spectrometry Ontology [MS]');
 INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','MS:1002308','DETECTOR','MS','fluorescence detector','PSI Mass Spectrometry Ontology [MS]');
 INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (3,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','MS:1000254','ANALYZER','MS','electrostatic energy analyzer','PSI Mass Spectrometry Ontology [MS]');
+INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (4,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','MS:1000449','TYPE','MS','LTQ Orbitrap','PSI Mass Spectrometry Ontology [MS]');
+INSERT INTO instrument_cv_term (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (5,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','MS:1002416','TYPE','MS','Orbitrap Fusion','PSI Mass Spectrometry Ontology [MS]');
 
-INSERT INTO instrument_type (id,creation_date,modification_date,user_name,description,name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument type 1 description','instrument type 1');
-INSERT INTO instrument_type (id,creation_date,modification_date,user_name,description,name) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument type 2 description','instrument type 2');
-
-INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 1',2,1,1);
-INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_instrument_type_id,l_source_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 3',2,2,1);
+INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_type_cv_id,l_source_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 1',2,4,1);
+INSERT INTO instrument (id,creation_date,modification_date,user_name,name,l_detector_cv_id,l_type_cv_id,l_source_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','instrument 3',2,5,1);
 
 INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_term_id) VALUES (1,3);
 INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_term_id) VALUES (2,3);

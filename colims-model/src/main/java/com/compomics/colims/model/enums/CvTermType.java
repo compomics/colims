@@ -11,6 +11,7 @@ public enum CvTermType {
 
     CV_TERM_TYPE(null, null),
         INSTRUMENT_CV_TERM_TYPE(CV_TERM_TYPE, null),
+            TYPE(INSTRUMENT_CV_TERM_TYPE, true),
             SOURCE(INSTRUMENT_CV_TERM_TYPE, true),
             DETECTOR(INSTRUMENT_CV_TERM_TYPE, true),
             ANALYZER(INSTRUMENT_CV_TERM_TYPE, true),

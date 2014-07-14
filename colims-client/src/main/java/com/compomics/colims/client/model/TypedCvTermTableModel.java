@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Niels Hulstaert
  */
-public class CvTermTableModel extends AbstractTableModel {
+public class TypedCvTermTableModel extends AbstractTableModel {
 
     private final String[] columnNames = {"type", "ontology label", "accession", "name"};
     private static final int TYPE_INDEX = 0;
@@ -18,11 +18,11 @@ public class CvTermTableModel extends AbstractTableModel {
     private static final int NAME_INDEX = 3;
     private List<TypedCvTerm> cvTerms;
 
-    public CvTermTableModel() {
+    public TypedCvTermTableModel() {
         cvTerms = new ArrayList<>();
     }
 
-    public CvTermTableModel(List<TypedCvTerm> cvTerms) {
+    public TypedCvTermTableModel(List<TypedCvTerm> cvTerms) {
         this.cvTerms = cvTerms;
     }
 

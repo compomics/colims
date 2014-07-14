@@ -13,7 +13,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentType;
 import com.compomics.colims.model.enums.CvTermType;
 import java.util.List;
 import org.junit.Before;
@@ -43,12 +42,6 @@ public class InstrumentRepositoryTest {
         Instrument foundInstrument = instrumentRepository.findByName("instrument_1");
 
         Assert.assertNotNull(foundInstrument);
-
-        //instrument type term
-        InstrumentType instrumentType = instrument.getInstrumentType();
-        Assert.assertNotNull(instrumentType);
-        Assert.assertEquals("instr_type_1_name", instrumentType.getName());
-        Assert.assertEquals("instrument type 1 description", instrumentType.getDescription());
     }
 
     @Test
