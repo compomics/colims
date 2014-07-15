@@ -491,7 +491,7 @@ public class MaterialManagementController implements Controllable {
             materialEditDialog.getMaterialStateInfoLabel().setText("");
         } else {
             materialEditDialog.getMaterialSaveOrUpdateButton().setText("save");
-            materialEditDialog.getMaterialStateInfoLabel().setText("This material hasn't been stored to the database.");
+            materialEditDialog.getMaterialStateInfoLabel().setText("This material hasn't been stored in the database.");
         }
 
         materialEditDialog.getNameTextField().setText(materialToEdit.getName());

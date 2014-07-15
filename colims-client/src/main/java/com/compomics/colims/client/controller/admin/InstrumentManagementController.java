@@ -486,7 +486,7 @@ public class InstrumentManagementController implements Controllable {
             instrumentEditDialog.getInstrumentStateInfoLabel().setText("");
         } else {
             instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("save");
-            instrumentEditDialog.getInstrumentStateInfoLabel().setText("This instrument hasn't been stored to the database.");
+            instrumentEditDialog.getInstrumentStateInfoLabel().setText("This instrument hasn't been stored in the database.");
         }
 
         instrumentEditDialog.getNameTextField().setText(instrumentToEdit.getName());

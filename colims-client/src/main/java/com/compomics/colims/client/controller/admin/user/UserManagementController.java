@@ -187,7 +187,7 @@ public class UserManagementController implements Controllable {
                         } else {
                             userManagementDialog.getUserNameTextField().setEnabled(true);
                             userManagementDialog.getUserSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been stored to the database.");
+                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been stored in the database.");
                         }
 
                         //populate dual list with groups                        
