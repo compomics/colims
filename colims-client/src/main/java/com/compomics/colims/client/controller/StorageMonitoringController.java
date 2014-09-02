@@ -1,13 +1,10 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.DbTaskQueueTableModel;
 import com.compomics.colims.client.model.CompletedDbTaskQueueTableModel;
-import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.TaskMonitoringDialog;

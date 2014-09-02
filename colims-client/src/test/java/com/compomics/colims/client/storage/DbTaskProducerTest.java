@@ -1,7 +1,7 @@
 package com.compomics.colims.client.storage;
 
 import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.distributed.DbTaskProducer;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.distributed.model.PersistMetadata;

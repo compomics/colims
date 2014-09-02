@@ -17,7 +17,7 @@ import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
-import com.compomics.colims.client.distributed.DbTaskProducer;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;

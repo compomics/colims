@@ -48,9 +48,14 @@
         <constructor-arg ref="amqConnectionFactory" />
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
         <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
-    </bean>            
+    </bean>    
     
-    <!-- ActiveMQ Destination -->  
+    <!-- notification consumer -->
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" recovery-interval="${distributed.listener.retry_interval}" >                            
+        <jms:listener destination="${distributed.topic.notification}" ref="notificationConsumer"/>
+    </jms:listener-container>                
+    
+    <!-- db task queue -->  
     <amq:queue id="dbTaskDestination" physicalName="${distributed.queue.dbtask}" />
     
     <bean id="dbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"

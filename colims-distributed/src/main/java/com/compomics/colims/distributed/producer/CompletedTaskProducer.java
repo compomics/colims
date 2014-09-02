@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.producer;
 
-import com.compomics.colims.distributed.model.DbTaskError;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import javax.jms.JMSException;
 import javax.jms.Message;

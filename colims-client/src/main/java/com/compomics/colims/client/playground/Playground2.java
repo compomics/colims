@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.client.distributed.DbTaskProducer;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;

@@ -45,6 +45,7 @@
         <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
     </bean>
     
+    <!-- dbtask consumer --> 
     <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="dbTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
         <jms:listener destination="${distributed.queue.dbtask}" ref="dbTaskConsumer"/>
     </jms:listener-container>
@@ -61,6 +62,13 @@
     
     <bean id="completedDbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="completedDbTaskDestination" />                      
+          p:defaultDestination-ref="completedDbTaskDestination" />
+    
+    <!-- notification queue -->
+    <amq:topic id="notificationDestination" physicalName="${distributed.topic.notification}" />
+    
+    <bean id="notificationProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="connectionFactory"
+          p:defaultDestination-ref="notificationDestination" />                      
                           
 </beans>

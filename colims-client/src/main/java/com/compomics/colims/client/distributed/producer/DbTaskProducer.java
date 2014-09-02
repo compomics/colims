@@ -1,4 +1,4 @@
-package com.compomics.colims.client.distributed;
+package com.compomics.colims.client.distributed.producer;
 
 import com.compomics.colims.distributed.model.DbTask;
 import com.compomics.colims.distributed.model.PersistDbTask;

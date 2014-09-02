@@ -16,7 +16,7 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
-import com.compomics.colims.client.distributed.DbTaskProducer;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ExperimentService;
