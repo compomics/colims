@@ -11,7 +11,7 @@ package com.compomics.colims.distributed.model;
  */
 public class Notification extends QueueMessage {
 
-    private DbTask dbTask;       
+    private DbTask dbTask;
 
     public Notification() {
         

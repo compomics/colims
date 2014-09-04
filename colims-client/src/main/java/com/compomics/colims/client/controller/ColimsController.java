@@ -157,6 +157,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
+//        colimsFrame.getTasksMonitoringParentPanel().add(colimsFrame)
 
         //add action listeners                
         //add menu item action listeners

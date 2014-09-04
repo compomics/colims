@@ -1,7 +1,10 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.compomics.colims.client.view;
 
-import java.awt.Color;
-import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -10,17 +13,12 @@ import javax.swing.JTextArea;
  *
  * @author Niels Hulstaert
  */
-public class TaskMonitoringDialog extends javax.swing.JDialog {
+public class TaskMonitoringPanel extends javax.swing.JPanel {
 
     /**
-     * Dialog constructor
-     *
-     * @param parent the parent frame
-     * @param modal the modal boolean
+     * Creates new form TaskMonitoringPanel
      */
-    public TaskMonitoringDialog(final Frame parent, final boolean modal) {
-        super(parent, modal);
-
+    public TaskMonitoringPanel() {
         initComponents();
 
         taskQueueScrollPane.getViewport().setOpaque(false);
@@ -31,56 +29,50 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
 
         completedTaskQueueScrollPane.getViewport().setOpaque(false);
         completedTaskQueueTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        
-        this.getContentPane().setBackground(Color.WHITE);
-    }
-
-    public JTable getTaskQueueTable() {
-        return taskQueueTable;
-    }
-
-    public JTable getTaskErrorQueueTable() {
-        return taskErrorQueueTable;
-    }
-
-    public JButton getCancelButton() {
-        return cancelButton;
-    }
-
-    public JButton getRefreshButton() {
-        return refreshButton;
     }
 
     public JTable getCompletedTaskQueueTable() {
         return completedTaskQueueTable;
     }
 
-    public JTextArea getErrorDetailTextArea() {
-        return errorDetailTextArea;
-    }        
+    public JButton getDeleteCompletedTaskButton() {
+        return deleteCompletedTaskButton;
+    }
+
+    public JButton getDeleteDbTaskButton() {
+        return deleteDbTaskButton;
+    }
 
     public JButton getDeleteTaskErrorButton() {
         return deleteTaskErrorButton;
     }
 
-    public JButton getResendTaskErrorButton() {
-        return resendTaskErrorButton;
-    }   
+    public JTextArea getErrorDetailTextArea() {
+        return errorDetailTextArea;
+    }
 
-    public JButton getDeleteDbTaskButton() {
-        return deleteDbTaskButton;
+    public JTextArea getNotificationTextArea() {
+        return notificationTextArea;
+    }
+
+    public JButton getPurgeCompletedTasksButton() {
+        return purgeCompletedTasksButton;
     }
 
     public JButton getPurgeTaskErrorsButton() {
         return purgeTaskErrorsButton;
     }
 
-    public JButton getDeleteCompletedTaskButton() {
-        return deleteCompletedTaskButton;
+    public JButton getResendTaskErrorButton() {
+        return resendTaskErrorButton;
     }
 
-    public JButton getPurgeCompletedTasksButton() {
-        return purgeCompletedTasksButton;
+    public JTable getTaskErrorQueueTable() {
+        return taskErrorQueueTable;
+    }
+
+    public JTable getTaskQueueTable() {
+        return taskQueueTable;
     }        
 
     /**
@@ -91,8 +83,11 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        taskMonitoringTabbedPane = new javax.swing.JTabbedPane();
+        notificationPanel = new javax.swing.JPanel();
+        notificationScrollPanel = new javax.swing.JScrollPane();
+        notificationTextArea = new javax.swing.JTextArea();
         taskQueuePanel = new javax.swing.JPanel();
         taskQueueScrollPane = new javax.swing.JScrollPane();
         taskQueueTable = new javax.swing.JTable();
@@ -111,15 +106,47 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
         deleteTaskErrorButton = new javax.swing.JButton();
         resendTaskErrorButton = new javax.swing.JButton();
         purgeTaskErrorsButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
-        refreshButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Task monitoring");
+        setLayout(new java.awt.GridBagLayout());
+
+        notificationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        notificationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Activity"));
+
+        notificationTextArea.setColumns(20);
+        notificationTextArea.setRows(5);
+        notificationScrollPanel.setViewportView(notificationTextArea);
+
+        javax.swing.GroupLayout notificationPanelLayout = new javax.swing.GroupLayout(notificationPanel);
+        notificationPanel.setLayout(notificationPanelLayout);
+        notificationPanelLayout.setHorizontalGroup(
+            notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 661, Short.MAX_VALUE)
+            .addGroup(notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        notificationPanelLayout.setVerticalGroup(
+            notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 99, Short.MAX_VALUE)
+            .addGroup(notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(notificationPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(notificationPanel, gridBagConstraints);
 
         taskQueuePanel.setBackground(java.awt.Color.white);
-
-        taskQueueScrollPane.setOpaque(false);
+        taskQueuePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Pending"));
 
         taskQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -147,7 +174,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             .addGroup(taskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(taskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                    .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskQueuePanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(deleteDbTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -157,17 +184,22 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             taskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(taskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteDbTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        taskMonitoringTabbedPane.addTab("Tasks", taskQueuePanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(taskQueuePanel, gridBagConstraints);
 
         completedTaskQueuePanel.setBackground(java.awt.Color.white);
-
-        completedTaskQueueScrollPane.setOpaque(false);
+        completedTaskQueuePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Completed"));
 
         completedTaskQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -203,7 +235,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             .addGroup(completedTaskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                    .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, completedTaskQueuePanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(deleteCompletedTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -215,7 +247,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(completedTaskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteCompletedTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -223,11 +255,16 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        taskMonitoringTabbedPane.addTab("Completed tasks", completedTaskQueuePanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(completedTaskQueuePanel, gridBagConstraints);
 
         taskErrorQueuePanel.setBackground(java.awt.Color.white);
-
-        taskErrorQueueScrollPane.setOpaque(false);
+        taskErrorQueuePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Errors"));
 
         taskErrorQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -278,7 +315,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             .addGroup(taskErrorQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(taskErrorQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                    .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
                     .addGroup(taskErrorQueuePanelLayout.createSequentialGroup()
                         .addComponent(errorDetailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -296,7 +333,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
             taskErrorQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(taskErrorQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(errorDetailLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -309,45 +346,17 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        taskMonitoringTabbedPane.addTab("Task Errors", taskErrorQueuePanel);
-
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        refreshButton.setText("refresh");
-        refreshButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        refreshButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        refreshButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(taskMonitoringTabbedPane)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(taskMonitoringTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        pack();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(taskErrorQueuePanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
     private javax.swing.JPanel completedTaskQueuePanel;
     private javax.swing.JScrollPane completedTaskQueueScrollPane;
     private javax.swing.JTable completedTaskQueueTable;
@@ -357,14 +366,15 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
     private javax.swing.JLabel errorDetailLabel;
     private javax.swing.JTextArea errorDetailTextArea;
     private javax.swing.JScrollPane errorDetailTextAreaScrollPane;
+    private javax.swing.JPanel notificationPanel;
+    private javax.swing.JScrollPane notificationScrollPanel;
+    private javax.swing.JTextArea notificationTextArea;
     private javax.swing.JButton purgeCompletedTasksButton;
     private javax.swing.JButton purgeTaskErrorsButton;
-    private javax.swing.JButton refreshButton;
     private javax.swing.JButton resendTaskErrorButton;
     private javax.swing.JPanel taskErrorQueuePanel;
     private javax.swing.JScrollPane taskErrorQueueScrollPane;
     private javax.swing.JTable taskErrorQueueTable;
-    private javax.swing.JTabbedPane taskMonitoringTabbedPane;
     private javax.swing.JPanel taskQueuePanel;
     private javax.swing.JScrollPane taskQueueScrollPane;
     private javax.swing.JTable taskQueueTable;

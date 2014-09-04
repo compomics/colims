@@ -51,7 +51,7 @@
     </bean>    
     
     <!-- notification consumer -->
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" recovery-interval="${distributed.listener.retry_interval}" >                            
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" destination-type="topic" recovery-interval="${distributed.listener.retry_interval}" >                            
         <jms:listener destination="${distributed.topic.notification}" ref="notificationConsumer"/>
     </jms:listener-container>                
     

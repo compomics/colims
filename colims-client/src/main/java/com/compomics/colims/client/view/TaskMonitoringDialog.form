@@ -97,9 +97,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="taskQueueScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -213,9 +210,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="completedTaskQueueScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -331,9 +325,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="taskErrorQueueScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>

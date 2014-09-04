@@ -1,11 +1,13 @@
 package com.compomics.colims.client.distributed.consumer;
 
 import com.compomics.colims.distributed.model.Notification;
+import com.google.common.eventbus.EventBus;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +19,9 @@ public class NotificationConsumer implements MessageListener {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationConsumer.class);
    
-
+    @Autowired
+    private EventBus eventBus;
+    
     /**
      * Implementation of <code>MessageListener</code>.
      *
@@ -31,6 +35,7 @@ public class NotificationConsumer implements MessageListener {
 
             LOGGER.info("received notification message");
             
+            eventBus.post(notification);            
         } catch (JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }

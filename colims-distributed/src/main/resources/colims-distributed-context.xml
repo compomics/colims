@@ -64,7 +64,7 @@
           p:connectionFactory-ref="connectionFactory"
           p:defaultDestination-ref="completedDbTaskDestination" />
     
-    <!-- notification queue -->
+    <!-- notification topic -->
     <amq:topic id="notificationDestination" physicalName="${distributed.topic.notification}" />
     
     <bean id="notificationProducerTemplate" class="org.springframework.jms.core.JmsTemplate"

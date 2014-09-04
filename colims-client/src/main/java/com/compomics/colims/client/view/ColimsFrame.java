@@ -28,6 +28,10 @@ public class ColimsFrame extends javax.swing.JFrame {
         return projectsOverviewParentPanel;
     }
 
+    public JPanel getTasksMonitoringParentPanel() {
+        return tasksMonitoringParentPanel;
+    }        
+
     public JMenuItem getUserManagementMenuItem() {
         return userManagementMenuItem;
     }
@@ -88,6 +92,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         mainTabbedPane = new javax.swing.JTabbedPane();
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
+        tasksMonitoringParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -118,6 +123,19 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsOverviewParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Overview", projectsOverviewParentPanel);
+
+        javax.swing.GroupLayout tasksMonitoringParentPanelLayout = new javax.swing.GroupLayout(tasksMonitoringParentPanel);
+        tasksMonitoringParentPanel.setLayout(tasksMonitoringParentPanelLayout);
+        tasksMonitoringParentPanelLayout.setHorizontalGroup(
+            tasksMonitoringParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 865, Short.MAX_VALUE)
+        );
+        tasksMonitoringParentPanelLayout.setVerticalGroup(
+            tasksMonitoringParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 566, Short.MAX_VALUE)
+        );
+
+        mainTabbedPane.addTab("Tasks", tasksMonitoringParentPanel);
 
         fileMenu.setText("File");
 
@@ -172,11 +190,11 @@ public class ColimsFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 970, Short.MAX_VALUE)
+            .addComponent(mainTabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+            .addComponent(mainTabbedPane)
         );
 
         pack();
@@ -198,6 +216,7 @@ public class ColimsFrame extends javax.swing.JFrame {
     private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JMenuItem storageMonitoringMenuItem;
+    private javax.swing.JPanel tasksMonitoringParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
