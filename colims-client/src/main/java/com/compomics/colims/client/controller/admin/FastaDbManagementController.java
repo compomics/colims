@@ -70,7 +70,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunSetupController.getAnalyticalRunSetupDialog(), true);
 
         //register to event bus
-        eventBus.register(this);
+        //eventBus.register(this);
 
         //init binding
         bindingGroup = new BindingGroup();

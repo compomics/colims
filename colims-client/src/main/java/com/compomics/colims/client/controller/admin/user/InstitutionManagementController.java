@@ -60,7 +60,7 @@ public class InstitutionManagementController implements Controllable {
         institutionManagementDialog = new InstitutionManagementDialog(userManagementController.getUserManagementParentController().getUserManagementDialog(), true);
 
         //register to event bus
-        eventBus.register(this);
+        //eventBus.register(this);
 
         //init binding
         bindingGroup = new BindingGroup();

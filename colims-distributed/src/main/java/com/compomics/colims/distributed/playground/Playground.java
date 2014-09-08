@@ -16,7 +16,18 @@ public class Playground {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
                
         NotificationProducer notificationProducer = (NotificationProducer) applicationContext.getBean("notificationProducer");
-        notificationProducer.sendNotification(new Notification());
+        
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
+//        notificationProducer.sendNotification(new Notification());
     }
     
 }

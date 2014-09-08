@@ -73,7 +73,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog = new CvTermManagementDialog(colimsController.getColimsFrame(), true);
 
         //register to event bus
-        eventBus.register(this);
+        //eventBus.register(this);
 
         //init and set table model
         typeCvTermTableModel2 = new TypedCvTermTableModel2();

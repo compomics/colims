@@ -105,7 +105,7 @@ public class ProjectManagementController implements Controllable {
     @Override
     public void init() {
         //register to event bus
-        eventBus.register(this);
+        //eventBus.register(this);
 
         //init view
         projectManagementPanel = new ProjectManagementPanel();

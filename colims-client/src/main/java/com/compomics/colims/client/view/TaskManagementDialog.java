@@ -10,7 +10,8 @@ import javax.swing.JTextArea;
  *
  * @author Niels Hulstaert
  */
-public class TaskMonitoringDialog extends javax.swing.JDialog {
+@Deprecated
+public class TaskManagementDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
@@ -18,7 +19,7 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
      * @param parent the parent frame
      * @param modal the modal boolean
      */
-    public TaskMonitoringDialog(final Frame parent, final boolean modal) {
+    public TaskManagementDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();
@@ -119,8 +120,6 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
 
         taskQueuePanel.setBackground(java.awt.Color.white);
 
-        taskQueueScrollPane.setOpaque(false);
-
         taskQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -166,8 +165,6 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
         taskMonitoringTabbedPane.addTab("Tasks", taskQueuePanel);
 
         completedTaskQueuePanel.setBackground(java.awt.Color.white);
-
-        completedTaskQueueScrollPane.setOpaque(false);
 
         completedTaskQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -226,8 +223,6 @@ public class TaskMonitoringDialog extends javax.swing.JDialog {
         taskMonitoringTabbedPane.addTab("Completed tasks", completedTaskQueuePanel);
 
         taskErrorQueuePanel.setBackground(java.awt.Color.white);
-
-        taskErrorQueueScrollPane.setOpaque(false);
 
         taskErrorQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

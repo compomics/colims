@@ -1,19 +1,23 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.consumer.NotificationConsumer;
+import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
+import com.compomics.colims.client.model.CompletedDbTaskQueueTableModel;
 import com.compomics.colims.client.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.DbTaskQueueTableModel;
-import com.compomics.colims.client.model.CompletedDbTaskQueueTableModel;
-import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.TaskMonitoringDialog;
+import com.compomics.colims.client.view.TaskManagementPanel;
+import com.compomics.colims.distributed.model.CompletedDbTask;
+import com.compomics.colims.distributed.model.DbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
 import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.swing.JOptionPane;
@@ -29,11 +33,12 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("storageMonitoringController")
-public class StorageMonitoringController implements Controllable {
+@Component("taskManagementController")
+public class TaskManagementController implements Controllable {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageMonitoringController.class);
+    private static final Logger LOGGER = Logger.getLogger(TaskManagementController.class);
     private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
     //model
     @Value("${distributed.queue.dbtask}")
@@ -46,10 +51,8 @@ public class StorageMonitoringController implements Controllable {
     private CompletedDbTaskQueueTableModel completedDbTaskQueueTableModel;
     private DbTaskErrorQueueTableModel dbTaskErrorQueueTableModel;
     //view
-    private TaskMonitoringDialog storageMonitoringDialog;
+    private TaskManagementPanel taskManagementPanel;
     //parent controller
-    @Autowired
-    private ColimsController colimsController;
     //services
     @Autowired
     private QueueManager queueManager;
@@ -60,8 +63,8 @@ public class StorageMonitoringController implements Controllable {
      *
      * @return
      */
-    public TaskMonitoringDialog getStorageMonitoringDialog() {
-        return storageMonitoringDialog;
+    public TaskManagementPanel getTaskManagementPanel() {
+        return taskManagementPanel;
     }
 
     @Override
@@ -70,50 +73,58 @@ public class StorageMonitoringController implements Controllable {
         eventBus.register(this);
 
         //init view
-        storageMonitoringDialog = new TaskMonitoringDialog(colimsController.getColimsFrame(), true);
+        taskManagementPanel = new TaskManagementPanel();
 
         //init and set table models
         dbTaskQueueTableModel = new DbTaskQueueTableModel();
-        storageMonitoringDialog.getTaskQueueTable().setModel(dbTaskQueueTableModel);
+        taskManagementPanel.getTaskQueueTable().setModel(dbTaskQueueTableModel);
         completedDbTaskQueueTableModel = new CompletedDbTaskQueueTableModel();
-        storageMonitoringDialog.getCompletedTaskQueueTable().setModel(completedDbTaskQueueTableModel);
+        taskManagementPanel.getCompletedTaskQueueTable().setModel(completedDbTaskQueueTableModel);
         dbTaskErrorQueueTableModel = new DbTaskErrorQueueTableModel();
-        storageMonitoringDialog.getTaskErrorQueueTable().setModel(dbTaskErrorQueueTableModel);
-        
+        taskManagementPanel.getTaskErrorQueueTable().setModel(dbTaskErrorQueueTableModel);
+
         //set column widths
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setPreferredWidth(40);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setMaxWidth(40);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setMinWidth(40);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
-        
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setPreferredWidth(40);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMaxWidth(40);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMinWidth(40);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.START_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.DURATION_INDEX).setPreferredWidth(100);
-        
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setPreferredWidth(40);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMaxWidth(40);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMinWidth(40);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.USER_INDEX).setPreferredWidth(100);
-        storageMonitoringDialog.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.ERROR_INDEX).setPreferredWidth(100);
-        
-        //add action listeners        
-        storageMonitoringDialog.getDeleteDbTaskButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setPreferredWidth(50);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setMaxWidth(50);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.QUEUE_INDEX).setMinWidth(50);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
+
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setPreferredWidth(50);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMaxWidth(50);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMinWidth(50);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.START_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.DURATION_INDEX).setPreferredWidth(100);
+
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setPreferredWidth(50);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMaxWidth(50);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMinWidth(50);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.TYPE_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.USER_INDEX).setPreferredWidth(100);
+        taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.ERROR_INDEX).setPreferredWidth(100);
+
+        //add action listeners  
+        taskManagementPanel.getClearNotificationsButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRowIndex = storageMonitoringDialog.getTaskQueueTable().getSelectedRow();
+                taskManagementPanel.getNotificationTextArea().setText("");
+            }
+        });
+
+        taskManagementPanel.getDeleteDbTaskButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRowIndex = taskManagementPanel.getTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskQueueTableModel.getRowCount() != 0) {
                     try {
                         PersistDbTask storageTask = dbTaskQueueTableModel.getMessages().get(selectedRowIndex);
@@ -132,31 +143,31 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getTaskErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
-                    int selectedRowIndex = storageMonitoringDialog.getTaskErrorQueueTable().getSelectedRow();
+                    int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                     if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
 
                         if (storageError.getCause().getMessage() != null) {
-                            storageMonitoringDialog.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
+                            taskManagementPanel.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
                         } else {
-                            storageMonitoringDialog.getErrorDetailTextArea().setText(ERROR_DETAIL_NOT_AVAILABLE);
+                            taskManagementPanel.getErrorDetailTextArea().setText(ERROR_DETAIL_NOT_AVAILABLE);
                         }
                     } else {
-                        storageMonitoringDialog.getErrorDetailTextArea().setText("");
+                        taskManagementPanel.getErrorDetailTextArea().setText("");
                     }
                 }
             }
         });
 
-        storageMonitoringDialog.getResendTaskErrorButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getResendTaskErrorButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRowIndex = storageMonitoringDialog.getTaskErrorQueueTable().getSelectedRow();
+                int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
@@ -175,11 +186,11 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getDeleteTaskErrorButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getDeleteTaskErrorButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRowIndex = storageMonitoringDialog.getTaskErrorQueueTable().getSelectedRow();
+                int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
@@ -198,7 +209,7 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getPurgeTaskErrorsButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getPurgeTaskErrorsButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -212,11 +223,11 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getDeleteCompletedTaskButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getDeleteCompletedTaskButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRowIndex = storageMonitoringDialog.getCompletedTaskQueueTable().getSelectedRow();
+                int selectedRowIndex = taskManagementPanel.getCompletedTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && completedDbTaskQueueTableModel.getRowCount() != 0) {
                     try {
                         CompletedDbTask storedTask = completedDbTaskQueueTableModel.getMessages().get(selectedRowIndex);
@@ -235,7 +246,7 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getPurgeCompletedTasksButton().addActionListener(new ActionListener() {
+        taskManagementPanel.getPurgeCompletedTasksButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -249,40 +260,24 @@ public class StorageMonitoringController implements Controllable {
             }
         });
 
-        storageMonitoringDialog.getRefreshButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateMonitoringTables();
-            }
-        });
-
-        storageMonitoringDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                storageMonitoringDialog.dispose();
-            }
-        });
+//        taskManagementPanel.getRefreshButton().addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                updateMonitoringTables();
+//            }
+//        });
     }
 
     @Override
     public void showView() {
-        
-        //check connection to distributed queues
-        if (queueManager.testConnection()) {
-            updateMonitoringTables();
-
-            GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), storageMonitoringDialog);
-            storageMonitoringDialog.setVisible(true);
-        } else {
-            eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
-        }
+        //do nothing
     }
 
     /**
      * Update the monitoring tables; fetch the messages currently residing on
      * the queues.
      */
-    private void updateMonitoringTables() {
+    public void updateMonitoringTables() {
         try {
             List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             dbTaskQueueTableModel.setMessages(storageTaskMessages);
@@ -294,9 +289,9 @@ public class StorageMonitoringController implements Controllable {
             dbTaskErrorQueueTableModel.setMessages(storageErrorMessages);
 
             //clear selections
-            storageMonitoringDialog.getTaskQueueTable().getSelectionModel().clearSelection();
-            storageMonitoringDialog.getCompletedTaskQueueTable().getSelectionModel().clearSelection();
-            storageMonitoringDialog.getTaskErrorQueueTable().getSelectionModel().clearSelection();
+            taskManagementPanel.getTaskQueueTable().getSelectionModel().clearSelection();
+            taskManagementPanel.getCompletedTaskQueueTable().getSelectionModel().clearSelection();
+            taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().clearSelection();
 
 //            storageMonitoringDialog.getStorageQueueTable().updateUI();
 //            storageMonitoringDialog.getStoredQueueTable().updateUI();
@@ -308,6 +303,18 @@ public class StorageMonitoringController implements Controllable {
     }
 
     /**
+     * Listen to a NotificationEvent.
+     *
+     * @param notificationEvent the notification event
+     */
+    @Subscribe
+    public void onNotificationEvent(NotificationEvent notificationEvent) { 
+        DbTask dbTask = notificationEvent.getNotification().getDbTask();                      
+        taskManagementPanel.getNotificationTextArea().append(activityMessage);
+        taskManagementPanel.getNotificationTextArea().updateUI();
+    }
+
+    /**
      * Post a connection error message on the event bus.
      *
      * @param message the error message
@@ -315,6 +322,24 @@ public class StorageMonitoringController implements Controllable {
     private void postConnectionErrorMessage(String message) {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
                 + "\n" + message, JOptionPane.ERROR_MESSAGE));
+    }
+    
+    /**
+     * Construct the activity message.
+     * 
+     * @param dbTask the DbTaks object
+     * @return 
+     */
+    private String constructActivityMessage(DbTask dbTask){
+        StringBuilder message = new StringBuilder("\t" + DATE_TIME_FORMAT.format(new Date()) + ": ");
+        if(dbTask instanceof PersistDbTask){
+            message.append("starting storage of task " + dbTask.getMessageId());
+        }  
+        else if(dbTask instanceof CompletedDbTask){
+            message.append("finished storage of task " + dbTask.getMessageId());
+        }
+        
+        return message.toString();
     }
 
 }

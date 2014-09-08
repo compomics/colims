@@ -1,6 +1,5 @@
 package com.compomics.colims.client.view;
 
-import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JTable;
 

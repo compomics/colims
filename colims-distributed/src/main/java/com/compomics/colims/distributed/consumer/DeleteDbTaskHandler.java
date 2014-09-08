@@ -42,16 +42,15 @@ public class DeleteDbTaskHandler {
     private SampleService sampleService;
 
     public void handleDeleteDbTask(DeleteDbTask deleteDbTask) {
+        Long started = System.currentTimeMillis();
         try {
-            Long started = System.currentTimeMillis();            
-                        
             //wrap the DeleteDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), deleteDbTask));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             //wrap the DeleteDbTask in a DbTaskError and send it to the error queue
-            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(deleteDbTask, e));
+            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), deleteDbTask, e));
         }
     }
-    
+
 }

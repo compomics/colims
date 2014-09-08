@@ -4,29 +4,21 @@ package com.compomics.colims.distributed.model;
  *
  * @author Niels Hulstaert
  */
-public class DbTaskError extends QueueMessage {
+public class DbTaskError extends CompletedDbTask {
 
-    /**
-     * The db task that caused the error
-     */
-    private DbTask dbTask;
     /**
      * The cause of the error
      */
     private Exception cause;
 
-    public DbTaskError(DbTask dbTask, Exception cause) {
-        this.dbTask = dbTask;
-        this.cause = cause;
-    }
-
-    public DbTask getDbTask() {
-        return dbTask;
-    }
-
-    public void setDbTask(DbTask dbTask) {
-        this.dbTask = dbTask;
+    public DbTaskError() {
+        super();
     }    
+    
+    public DbTaskError(Long startedTimestamp, Long endedTimestamp, DbTask dbTask, Exception cause) {
+        super(startedTimestamp, endedTimestamp, dbTask);
+        this.cause = cause;
+    }       
 
     public Exception getCause() {
         return cause;

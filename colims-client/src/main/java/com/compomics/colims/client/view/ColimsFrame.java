@@ -10,6 +10,10 @@ import javax.swing.JTabbedPane;
  * @author Niels Hulstaert Hulstaert
  */
 public class ColimsFrame extends javax.swing.JFrame {
+    
+    public static final String MANAGMENT_TAB_TITLE = "Management";
+    public static final String OVERVIEW_TAB_TITLE = "Overview";
+    public static final String TASKS_TAB_TITLE = "Tasks";
 
     /**
      * Creates new form MainFrame
@@ -28,8 +32,8 @@ public class ColimsFrame extends javax.swing.JFrame {
         return projectsOverviewParentPanel;
     }
 
-    public JPanel getTasksMonitoringParentPanel() {
-        return tasksMonitoringParentPanel;
+    public JPanel getTasksManagementParentPanel() {
+        return tasksManagementParentPanel;
     }        
 
     public JMenuItem getUserManagementMenuItem() {
@@ -66,11 +70,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getProtocolManagementMenuItem() {
         return protocolManagementMenuItem;
-    }      
-
-    public JMenuItem getStorageMonitoringMenuItem() {
-        return storageMonitoringMenuItem;
-    }     
+    }               
 
     public JMenu getAdminMenu() {
         return adminMenu;
@@ -78,7 +78,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getExitMenuItem() {
         return exitMenuItem;
-    }        
+    }         
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,7 +92,7 @@ public class ColimsFrame extends javax.swing.JFrame {
         mainTabbedPane = new javax.swing.JTabbedPane();
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
-        tasksMonitoringParentPanel = new javax.swing.JPanel();
+        tasksManagementParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -105,7 +105,6 @@ public class ColimsFrame extends javax.swing.JFrame {
         viewMenu = new javax.swing.JMenu();
         projectsManagementMenuItem = new javax.swing.JMenuItem();
         projectsOverviewMenuItem = new javax.swing.JMenuItem();
-        storageMonitoringMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpMenuItem = new javax.swing.JMenuItem();
 
@@ -119,23 +118,16 @@ public class ColimsFrame extends javax.swing.JFrame {
         projectsManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsManagementParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Management", projectsManagementParentPanel);
+        projectsManagementParentPanel.getAccessibleContext().setAccessibleName("");
 
         projectsOverviewParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Overview", projectsOverviewParentPanel);
+        projectsOverviewParentPanel.getAccessibleContext().setAccessibleName("");
 
-        javax.swing.GroupLayout tasksMonitoringParentPanelLayout = new javax.swing.GroupLayout(tasksMonitoringParentPanel);
-        tasksMonitoringParentPanel.setLayout(tasksMonitoringParentPanelLayout);
-        tasksMonitoringParentPanelLayout.setHorizontalGroup(
-            tasksMonitoringParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 865, Short.MAX_VALUE)
-        );
-        tasksMonitoringParentPanelLayout.setVerticalGroup(
-            tasksMonitoringParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 566, Short.MAX_VALUE)
-        );
-
-        mainTabbedPane.addTab("Tasks", tasksMonitoringParentPanel);
+        tasksManagementParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Tasks", tasksManagementParentPanel);
+        tasksManagementParentPanel.getAccessibleContext().setAccessibleName("");
 
         fileMenu.setText("File");
 
@@ -171,9 +163,6 @@ public class ColimsFrame extends javax.swing.JFrame {
 
         projectsOverviewMenuItem.setText("Projects overview");
         viewMenu.add(projectsOverviewMenuItem);
-
-        storageMonitoringMenuItem.setText("Storage monitoring...");
-        viewMenu.add(storageMonitoringMenuItem);
 
         menuBar.add(viewMenu);
 
@@ -215,8 +204,7 @@ public class ColimsFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem projectsOverviewMenuItem;
     private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
-    private javax.swing.JMenuItem storageMonitoringMenuItem;
-    private javax.swing.JPanel tasksMonitoringParentPanel;
+    private javax.swing.JPanel tasksManagementParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables

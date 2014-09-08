@@ -2,25 +2,27 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.controller.admin.user.UserManagementParentController;
 import com.compomics.colims.client.controller.admin.CvTermManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
+import com.compomics.colims.client.controller.admin.user.UserManagementParentController;
+import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.UserLoginDialog;
 import com.compomics.colims.client.view.ColimsFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
+import com.compomics.colims.client.view.UserLoginDialog;
 import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.model.User;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -35,7 +37,10 @@ import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +75,7 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private ProjectOverviewController projectOverviewController;
     @Autowired
-    private StorageMonitoringController storageMonitoringController;
+    private TaskManagementController taskManagementController;
     @Autowired
     private ProtocolManagementController protocolManagementController;
     @Autowired
@@ -88,6 +93,8 @@ public class ColimsController implements Controllable, ActionListener {
     private ProjectService projectService;
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private QueueManager queueManager;
 
     /**
      *
@@ -146,7 +153,7 @@ public class ColimsController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
-        storageMonitoringController.init();
+        taskManagementController.init();
         cvTermManagementController.init();
 
         //add panel components                        
@@ -157,13 +164,32 @@ public class ColimsController implements Controllable, ActionListener {
 
         colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
-//        colimsFrame.getTasksMonitoringParentPanel().add(colimsFrame)
+        colimsFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
+
+        //add change listener to tabbed pane
+        colimsFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+                int index = sourceTabbedPane.getSelectedIndex();
+                if (sourceTabbedPane.getTitleAt(index).equals(ColimsFrame.TASKS_TAB_TITLE)) {
+                    //check connection to distributed queues
+                    if (queueManager.testConnection()) {
+                        taskManagementController.updateMonitoringTables();
+
+                        taskManagementController.getTaskManagementPanel().setVisible(true);
+                    } else {
+                        eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+                    }
+                }
+            }
+        });
 
         //add action listeners                
         //add menu item action listeners
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
-        colimsFrame.getStorageMonitoringMenuItem().addActionListener(this);
         colimsFrame.getHelpMenuItem().addActionListener(this);
 
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
@@ -225,8 +251,6 @@ public class ColimsController implements Controllable, ActionListener {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
         } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
             colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
-        } else if (menuItemLabel.equals(colimsFrame.getStorageMonitoringMenuItem().getText())) {
-            storageMonitoringController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
             userManagementParentController.showView();
         } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
@@ -242,7 +266,7 @@ public class ColimsController implements Controllable, ActionListener {
     }
 
     /**
-     * Listen to an MesaggeEvent.
+     * Listen to a MesaggeEvent.
      *
      * @param messageEvent the message event
      */

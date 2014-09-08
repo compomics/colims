@@ -69,7 +69,7 @@ public class ExperimentEditController implements Controllable {
     @Override
     public void init() {
         //register to event bus
-        eventBus.register(this);
+        //eventBus.register(this);
 
         //init view
         experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);

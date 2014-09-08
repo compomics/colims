@@ -11,15 +11,15 @@ public class CompletedDbTask extends QueueMessage {
     /**
      * The storage start timestamp
      */
-    private Long startedTimestamp;
+    protected Long startedTimestamp;
     /**
      * The storage end timestamp
      */
-    private Long endedTimestamp;
+    protected Long endedTimestamp;
     /**
      * The db task
      */
-    private DbTask dbTask;
+    protected DbTask dbTask;
 
     public CompletedDbTask() {
         startedTimestamp = System.currentTimeMillis();

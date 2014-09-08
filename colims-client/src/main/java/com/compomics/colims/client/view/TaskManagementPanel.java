@@ -13,12 +13,12 @@ import javax.swing.JTextArea;
  *
  * @author Niels Hulstaert
  */
-public class TaskMonitoringPanel extends javax.swing.JPanel {
+public class TaskManagementPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form TaskMonitoringPanel
      */
-    public TaskMonitoringPanel() {
+    public TaskManagementPanel() {
         initComponents();
 
         taskQueueScrollPane.getViewport().setOpaque(false);
@@ -73,6 +73,10 @@ public class TaskMonitoringPanel extends javax.swing.JPanel {
 
     public JTable getTaskQueueTable() {
         return taskQueueTable;
+    }  
+
+    public JButton getClearNotificationsButton() {
+        return clearNotificationsButton;
     }        
 
     /**
@@ -88,6 +92,7 @@ public class TaskMonitoringPanel extends javax.swing.JPanel {
         notificationPanel = new javax.swing.JPanel();
         notificationScrollPanel = new javax.swing.JScrollPane();
         notificationTextArea = new javax.swing.JTextArea();
+        clearNotificationsButton = new javax.swing.JButton();
         taskQueuePanel = new javax.swing.JPanel();
         taskQueueScrollPane = new javax.swing.JScrollPane();
         taskQueueTable = new javax.swing.JTable();
@@ -112,29 +117,37 @@ public class TaskMonitoringPanel extends javax.swing.JPanel {
         notificationPanel.setBackground(new java.awt.Color(255, 255, 255));
         notificationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Activity"));
 
+        notificationTextArea.setEditable(false);
         notificationTextArea.setColumns(20);
         notificationTextArea.setRows(5);
+        notificationTextArea.setText("...");
         notificationScrollPanel.setViewportView(notificationTextArea);
+
+        clearNotificationsButton.setText("clear");
+        clearNotificationsButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        clearNotificationsButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        clearNotificationsButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout notificationPanelLayout = new javax.swing.GroupLayout(notificationPanel);
         notificationPanel.setLayout(notificationPanelLayout);
         notificationPanelLayout.setHorizontalGroup(
             notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 661, Short.MAX_VALUE)
-            .addGroup(notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(notificationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(clearNotificationsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(notificationScrollPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE))
+                .addContainerGap())
         );
         notificationPanelLayout.setVerticalGroup(
             notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 99, Short.MAX_VALUE)
-            .addGroup(notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(notificationPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearNotificationsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -357,6 +370,7 @@ public class TaskMonitoringPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton clearNotificationsButton;
     private javax.swing.JPanel completedTaskQueuePanel;
     private javax.swing.JScrollPane completedTaskQueueScrollPane;
     private javax.swing.JTable completedTaskQueueTable;

@@ -9,6 +9,6 @@ package com.compomics.colims.distributed.model;
  *
  * @author Niels Hulstaert
  */
-public abstract class Notification extends QueueMessage {    
+public class CompletedNotification extends Notification {    
         
 }

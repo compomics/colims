@@ -1,15 +1,12 @@
 package com.compomics.colims.distributed.consumer;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.maxquant.MaxQuantImport;
 import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
-import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
@@ -19,19 +16,16 @@ import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -60,9 +54,8 @@ public class PersistDbTaskHandler {
     private DataStorageService dataStorageService;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
-        try {
-            Long started = System.currentTimeMillis();
-
+        Long started = System.currentTimeMillis();
+        try {            
             //check if the entity class is of the right type
             if (!persistDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
                 throw new IllegalArgumentException("The entity to persist should be of class " + AnalyticalRun.class.getName());
@@ -90,7 +83,7 @@ public class PersistDbTaskHandler {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             //wrap the StorageTask in a StorageError and send it to the error queue
-            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(persistDbTask, e));
+            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), persistDbTask, e));
         }
     }
 
