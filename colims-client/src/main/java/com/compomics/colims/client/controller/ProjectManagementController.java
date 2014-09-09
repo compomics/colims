@@ -561,7 +561,7 @@ public class ProjectManagementController implements Controllable {
         //check delete permissions
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
             int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
-                    + "\n" + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+                    + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
                 if (queueManager.testConnection()) {

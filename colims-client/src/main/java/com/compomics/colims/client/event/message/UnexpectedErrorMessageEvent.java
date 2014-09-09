@@ -14,7 +14,7 @@ public class UnexpectedErrorMessageEvent extends MessageEvent {
      */
     public UnexpectedErrorMessageEvent(final String message) {
         super("Unexpected Error", "An unexpected error occured: "
-                + "\n" + message + "."
-                + "\n" + "Please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
+                + System.lineSeparator() + message + "."
+                + System.lineSeparator() + "Please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
 }

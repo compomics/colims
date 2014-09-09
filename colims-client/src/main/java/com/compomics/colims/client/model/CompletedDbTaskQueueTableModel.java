@@ -20,8 +20,7 @@ import org.joda.time.Duration;
 public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
-    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("mm");
+    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "start", "duration"};
@@ -104,7 +103,7 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
                     return DELETE + ((DeleteDbTask) dbTask).getDbEntityClass().getSimpleName();
                 }
             case SUBMITTED_INDEX:
-                return DATE_TIME_FORMAT.format(new Date(dbTask.getSubmissionTimestamp()));
+                return new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date(dbTask.getSubmissionTimestamp()));
             case DESCRIPTION_INDEX:
                 if (dbTask instanceof PersistDbTask) {
                     return ((PersistDbTask) dbTask).getPersistMetadata().getDescription();
@@ -114,7 +113,7 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
             case USER_INDEX:
                 return userService.findUserNameById(dbTask.getUserId());
             case START_INDEX:
-                return DATE_TIME_FORMAT.format(new Date(completedDbTask.getStartedTimestamp()));
+                return new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date(completedDbTask.getStartedTimestamp()));
             case DURATION_INDEX:
                 Duration duration = new Duration(completedDbTask.getStartedTimestamp(), completedDbTask.getEndedTimestamp());
                 return duration.toStandardMinutes().toString();

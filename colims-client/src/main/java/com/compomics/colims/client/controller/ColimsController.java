@@ -280,8 +280,8 @@ public class ColimsController implements Controllable, ActionListener {
      */
     public void showUnexpectedErrorDialog(String message) {
         showMessageDialog("Unexpected error", "An unexpected error occured: "
-                + "\n" + message
-                + "\n" + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
+                + System.lineSeparator() + message
+                + System.lineSeparator() + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -292,8 +292,8 @@ public class ColimsController implements Controllable, ActionListener {
      */
     public void showPermissionErrorDialog(String message) {
         showMessageDialog("Permission warning", "A permission warning occured: "
-                + "\n" + message
-                + "\n" + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
+                + System.lineSeparator() + message
+                + System.lineSeparator() + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -395,7 +395,7 @@ public class ColimsController implements Controllable, ActionListener {
 
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
-            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);
+            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);            
         }
     }
 

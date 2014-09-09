@@ -339,7 +339,7 @@ public class InstrumentManagementController implements Controllable {
                 //check for a new instrument if the instrument name already exists in the db                
                 if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
                     validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
-                            + "\n" + "please choose another instrument name.");
+                            + System.lineSeparator() + "please choose another instrument name.");
                 }
                 if (validationMessages.isEmpty()) {
                     int index;

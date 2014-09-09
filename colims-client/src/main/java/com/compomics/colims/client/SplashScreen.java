@@ -35,7 +35,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     private final boolean showProgressLabel;
 
     /**
-     *
+     * Constructor
      */
     public SplashScreen() {
         progressBar = new JProgressBar();

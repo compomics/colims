@@ -343,7 +343,7 @@ public class ProtocolManagementController implements Controllable {
                 //check for a new protocol if the protocol name already exists in the db                
                 if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
                     validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
-                            + "\n" + "please choose another protocol name.");
+                            + System.lineSeparator() + "please choose another protocol name.");
                 }
                 if (validationMessages.isEmpty()) {
                     int index;

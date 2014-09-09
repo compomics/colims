@@ -37,7 +37,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     }
 
     public JTextField getMaxQuantDirectoryTextField() {
-        return MaxQuantDirectoryTextField;
+        return maxQuantDirectoryTextField;
     }
 
     public JButton getSelectFastaButton() {
@@ -61,7 +61,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectMaxQuantDirectoryButton = new javax.swing.JButton();
         selectFastaButton = new javax.swing.JButton();
         fastaFileSelectionLabel = new javax.swing.JLabel();
-        MaxQuantDirectoryTextField = new javax.swing.JTextField();
+        maxQuantDirectoryTextField = new javax.swing.JTextField();
         fastaDbTextField = new javax.swing.JTextField();
 
         setOpaque(false);
@@ -76,7 +76,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         fastaFileSelectionLabel.setText("Select a FASTA file:");
 
-        MaxQuantDirectoryTextField.setEditable(false);
+        maxQuantDirectoryTextField.setEditable(false);
 
         fastaDbTextField.setEditable(false);
 
@@ -88,7 +88,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(MaxQuantDirectoryTextField)
+                        .addComponent(maxQuantDirectoryTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -110,7 +110,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(MaxQuantDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(maxQuantDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fastaFileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -123,10 +123,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField MaxQuantDirectoryTextField;
     private javax.swing.JTextField fastaDbTextField;
     private javax.swing.JLabel fastaFileSelectionLabel;
     private javax.swing.JLabel maxQuantDirectorySelectionLabel;
+    private javax.swing.JTextField maxQuantDirectoryTextField;
     private javax.swing.JButton selectFastaButton;
     private javax.swing.JButton selectMaxQuantDirectoryButton;
     // End of variables declaration//GEN-END:variables

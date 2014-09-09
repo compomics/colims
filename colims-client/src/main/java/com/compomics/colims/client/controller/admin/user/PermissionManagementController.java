@@ -184,7 +184,7 @@ public class PermissionManagementController implements Controllable {
                 //check for a new permission if the permission name already exists in the db                
                 if (selectedPermission.getId() == null && isExistingPermissionName(selectedPermission)) {
                     validationMessages.add(selectedPermission.getName() + " already exists in the database,"
-                            + "\n" + "please choose another permission name.");
+                            + System.lineSeparator() + "please choose another permission name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedPermission.getId() != null) {

@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 public class StorageQueuesConnectionErrorMessageEvent extends MessageEvent {
 
     private static final String CONNECTION_ERROR_MESSAGE = "The storage queueing module with broker name %s (URL: %s and JMX URL: %s) cannot be reached. "
-            + "\n" + "\n" + "As a consequence, you can't add runs or monitor the queueing module. "
-            + "\n" + "\n" + "Please check if the storage queueing module is up and running and try again.";
+            + System.lineSeparator() + System.lineSeparator() + "As a consequence, you can't add runs or monitor the queueing module. "
+            + System.lineSeparator() + System.lineSeparator() + "Please check if the storage queueing module is up and running and try again.";
 
     /**
      *

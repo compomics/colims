@@ -14,20 +14,20 @@ import java.util.Comparator;
  */
 public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<AnalyticalRun> {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String[] COLUMN_NAMES = {"Id", "Name", "Start date", "Created", "# spectra"};
     public static final int RUN_ID = 0;
     public static final int NAME = 1;
     public static final int START_DATE = 2;
     public static final int CREATED = 3;
     public static final int NUMBER_OF_SPECTRA = 4;
-    private SpectrumService spectrumService;
+    private final SpectrumService spectrumService;
 
     public AnalyticalRunManagementTableFormat() {
         spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
-    }    
-    
+    }
+
     @Override
     public Class getColumnClass(final int column) {
         switch (column) {
@@ -69,10 +69,10 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
             case NAME:
                 return analyticalRun.getName();
             case START_DATE:
-                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_TIME_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
-                 return startDateString;
+                String startDateString = (analyticalRun.getStartDate() != null) ? new SimpleDateFormat(DATE_TIME_FORMAT).format(analyticalRun.getStartDate()) : "N/A";
+                return startDateString;
             case CREATED:
-                return DATE_FORMAT.format(analyticalRun.getCreationDate());
+                return new SimpleDateFormat(DATE_FORMAT).format(analyticalRun.getCreationDate());
             case NUMBER_OF_SPECTRA:
                 return spectrumService.countSpectraByAnalyticalRun(analyticalRun);
             default:

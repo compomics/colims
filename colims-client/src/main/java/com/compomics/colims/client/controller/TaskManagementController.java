@@ -36,10 +36,10 @@ import org.springframework.stereotype.Component;
  */
 @Component("taskManagementController")
 public class TaskManagementController implements Controllable {
-    
+
     private static final Logger LOGGER = Logger.getLogger(TaskManagementController.class);
     private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
-    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String STARTED_MESSAGE = "starting storage of task ";
     private static final String FINISHED_MESSAGE = "finished storage of task ";
 
@@ -71,7 +71,7 @@ public class TaskManagementController implements Controllable {
     public TaskManagementPanel getTaskManagementPanel() {
         return taskManagementPanel;
     }
-    
+
     @Override
     public void init() {
         //register to event bus
@@ -96,7 +96,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.SUBMITTED_INDEX).setPreferredWidth(100);
         taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.DESCRIPTION_INDEX).setPreferredWidth(100);
         taskManagementPanel.getTaskQueueTable().getColumnModel().getColumn(DbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
-        
+
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setPreferredWidth(50);
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMaxWidth(50);
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.QUEUE_INDEX).setMinWidth(50);
@@ -106,7 +106,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.USER_INDEX).setPreferredWidth(100);
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.START_INDEX).setPreferredWidth(100);
         taskManagementPanel.getCompletedTaskQueueTable().getColumnModel().getColumn(CompletedDbTaskQueueTableModel.DURATION_INDEX).setPreferredWidth(100);
-        
+
         taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setPreferredWidth(50);
         taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMaxWidth(50);
         taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.QUEUE_INDEX).setMinWidth(50);
@@ -118,36 +118,42 @@ public class TaskManagementController implements Controllable {
 
         //add action listeners  
         taskManagementPanel.getClearNotificationsButton().addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 taskManagementPanel.getNotificationTextArea().setText("...");
             }
         });
-        
+
         taskManagementPanel.getDeleteDbTaskButton().addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskQueueTableModel.getRowCount() != 0) {
-                    try {
-                        PersistDbTask storageTask = dbTaskQueueTableModel.getMessages().get(selectedRowIndex);
-                        
-                        queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
-                        
-                        updateMonitoringTables();
-                    } catch (JMSException ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        postConnectionErrorMessage(ex.getMessage());
-                    } catch (Exception ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        postConnectionErrorMessage(ex.getMessage());
+                    int result = JOptionPane.showConfirmDialog(taskManagementPanel, "This can't be undone."
+                            + System.lineSeparator() + "Are you sure?", "Delete task", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        try {
+                            PersistDbTask storageTask = dbTaskQueueTableModel.getMessages().get(selectedRowIndex);
+
+                            queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
+
+                            updateMonitoringTables();
+                        } catch (JMSException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
+                            postConnectionErrorMessage(ex.getMessage());
+                        } catch (Exception ex) {
+                            LOGGER.error(ex.getMessage(), ex);
+                            postConnectionErrorMessage(ex.getMessage());
+                        }
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Task selection", "Please select a task to remove.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -155,7 +161,7 @@ public class TaskManagementController implements Controllable {
                     int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                     if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-                        
+
                         if (storageError.getCause().getMessage() != null) {
                             taskManagementPanel.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
                         } else {
@@ -167,18 +173,18 @@ public class TaskManagementController implements Controllable {
                 }
             }
         });
-        
+
         taskManagementPanel.getResendTaskErrorButton().addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-                        
+
                         queueManager.redirectStorageError(storageQueueName, storageError);
-                        
+
                         updateMonitoringTables();
                     } catch (JMSException ex) {
                         LOGGER.error(ex.getMessage(), ex);
@@ -187,21 +193,23 @@ public class TaskManagementController implements Controllable {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Task error selection", "Please select a task to resend.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         taskManagementPanel.getDeleteTaskErrorButton().addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-                        
+
                         queueManager.deleteMessage(errorQueueName, storageError.getMessageId());
-                        
+
                         dbTaskErrorQueueTableModel.remove(selectedRowIndex);
                     } catch (JMSException ex) {
                         LOGGER.error(ex.getMessage(), ex);
@@ -210,16 +218,18 @@ public class TaskManagementController implements Controllable {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Task error selection", "Please select a task error to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         taskManagementPanel.getPurgeTaskErrorsButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     queueManager.purgeMessages(errorQueueName);
-                    
+
                     dbTaskErrorQueueTableModel.removeAll();
                 } catch (Exception ex) {
                     LOGGER.error(ex.getMessage(), ex);
@@ -227,18 +237,18 @@ public class TaskManagementController implements Controllable {
                 }
             }
         });
-        
+
         taskManagementPanel.getDeleteCompletedTaskButton().addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getCompletedTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && completedDbTaskQueueTableModel.getRowCount() != 0) {
                     try {
                         CompletedDbTask storedTask = completedDbTaskQueueTableModel.getMessages().get(selectedRowIndex);
-                        
+
                         queueManager.deleteMessage(storedQueueName, storedTask.getMessageId());
-                        
+
                         completedDbTaskQueueTableModel.remove(selectedRowIndex);
                     } catch (JMSException ex) {
                         LOGGER.error(ex.getMessage(), ex);
@@ -247,16 +257,18 @@ public class TaskManagementController implements Controllable {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());
                     }
+                } else {
+                    eventBus.post(new MessageEvent("Completed task selection", "Please select a completed task to remove.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
-        
+
         taskManagementPanel.getPurgeCompletedTasksButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     queueManager.purgeMessages(storedQueueName);
-                    
+
                     completedDbTaskQueueTableModel.removeAll();
                 } catch (Exception ex) {
                     LOGGER.error(ex.getMessage(), ex);
@@ -272,7 +284,7 @@ public class TaskManagementController implements Controllable {
 //            }
 //        });
     }
-    
+
     @Override
     public void showView() {
         //do nothing
@@ -286,10 +298,10 @@ public class TaskManagementController implements Controllable {
         try {
             List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
             dbTaskQueueTableModel.setMessages(storageTaskMessages);
-            
+
             List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
             completedDbTaskQueueTableModel.setMessages(storedTaskMessages);
-            
+
             List<DbTaskError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
             dbTaskErrorQueueTableModel.setMessages(storageErrorMessages);
 
@@ -313,16 +325,16 @@ public class TaskManagementController implements Controllable {
      * @param notificationEvent the notification event
      */
     @Subscribe
-    public void onNotificationEvent(NotificationEvent notificationEvent) {        
+    public void onNotificationEvent(NotificationEvent notificationEvent) {
         Notification notification = notificationEvent.getNotification();
-        String activityMessage = System.lineSeparator() + DATE_TIME_FORMAT.format(new Date()) + ": ";
+        String activityMessage = System.lineSeparator() + new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date()) + ": ";
         if (notification.getType().equals(NotificationType.STARTED)) {
             activityMessage += STARTED_MESSAGE;
         } else if (notification.getType().equals(NotificationType.FINISHED)) {
             activityMessage += FINISHED_MESSAGE;
-            
+
             //update tables if the task management tab is visible
-            if(colimsController.getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)){
+            if (colimsController.getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)) {
                 updateMonitoringTables();
             }
         }
@@ -337,7 +349,7 @@ public class TaskManagementController implements Controllable {
      */
     private void postConnectionErrorMessage(String message) {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
-                + "\n" + message, JOptionPane.ERROR_MESSAGE));
-    }    
-    
+                + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
+    }
+
 }

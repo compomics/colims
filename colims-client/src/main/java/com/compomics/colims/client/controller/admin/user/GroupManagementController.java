@@ -234,7 +234,7 @@ public class GroupManagementController implements Controllable {
                 //check for a new group if the group name already exists in the db                
                 if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database,"
-                            + "\n" + "please choose another group name.");
+                            + System.lineSeparator() + "please choose another group name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedGroup.getId() != null) {

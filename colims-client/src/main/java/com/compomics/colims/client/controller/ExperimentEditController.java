@@ -94,7 +94,7 @@ public class ExperimentEditController implements Controllable {
                 //check for a new experiment if the experiment title already exists in the db                
                 if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
                     validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
-                            + "\n" + "please choose another experiment title.");
+                            + System.lineSeparator() + "please choose another experiment title.");
                 }
                 if (validationMessages.isEmpty()) {
                     int index;
@@ -276,7 +276,7 @@ public class ExperimentEditController implements Controllable {
      * @return
      */
     private String getAttachmentsAsString() {
-        String concatenatedString = "";
+        String concatenatedString;
 
         Joiner joiner = Joiner.on(", ");
         concatenatedString = joiner.join(experimentToEdit.getBinaryFiles());

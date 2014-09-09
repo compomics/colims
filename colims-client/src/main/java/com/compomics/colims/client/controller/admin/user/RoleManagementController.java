@@ -222,7 +222,7 @@ public class RoleManagementController implements Controllable {
                 //check for a new group if the role name already exists in the db                
                 if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
                     validationMessages.add(selectedRole.getName() + " already exists in the database,"
-                            + "\n" + "please choose another role name.");
+                            + System.lineSeparator() + "please choose another role name.");
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedRole.getId() != null) {

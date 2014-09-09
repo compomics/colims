@@ -105,7 +105,7 @@ public class TypedCvTermSummaryListModel<T extends TypedCvTerm> extends Abstract
 
     @Override
     public Object getElementAt(int index) {
-        Object element = null;
+        Object element;
         if (index < singleCvTermKeys.length) {
             element = singleCvTermKeys[index];
         } else {

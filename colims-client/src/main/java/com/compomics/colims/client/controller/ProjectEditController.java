@@ -108,7 +108,7 @@ public class ProjectEditController implements Controllable {
                 //check for a new project if the project title already exists in the db                
                 if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
                     validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
-                            + "\n" + "please choose another project title.");
+                            + System.lineSeparator() + "please choose another project title.");
                 }                
                 if (validationMessages.isEmpty()) {
                     int index;

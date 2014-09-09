@@ -142,6 +142,8 @@ public class AnalyticalRunSetupController implements Controllable {
                                 case MAX_QUANT:
                                     getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
                                     break;
+                                default:
+                                    break;
                             }
                             onCardSwitch();
                         } else {
@@ -314,6 +316,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 analyticalRunSetupDialog.getProceedButton().setEnabled(false);
                 analyticalRunSetupDialog.getFinishButton().setEnabled(false);
                 updateInfo("");
+                break;
             default:
                 break;
         }

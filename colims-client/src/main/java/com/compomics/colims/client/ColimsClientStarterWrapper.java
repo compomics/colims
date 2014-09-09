@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 public class ColimsClientStarterWrapper extends CompomicsWrapper {
 
     // Class specific log4j logger for ParserStarter instances.
-    private static Logger logger = Logger.getLogger(ColimsClientStarterWrapper.class);
+    private static final Logger logger = Logger.getLogger(ColimsClientStarterWrapper.class);
 
     /**
      * Starts the launcher by calling the launch method. Use this as the main

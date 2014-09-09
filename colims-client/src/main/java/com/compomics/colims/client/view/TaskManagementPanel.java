@@ -176,6 +176,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         taskQueueScrollPane.setViewportView(taskQueueTable);
 
         deleteDbTaskButton.setText("delete");
+        deleteDbTaskButton.setToolTipText("remove the selected task (irreversable!)");
         deleteDbTaskButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteDbTaskButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteDbTaskButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -230,13 +231,13 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         completedTaskQueueScrollPane.setViewportView(completedTaskQueueTable);
 
         deleteCompletedTaskButton.setText("delete");
-        deleteCompletedTaskButton.setToolTipText("remove the selected storage error");
+        deleteCompletedTaskButton.setToolTipText("remove the selected completed task");
         deleteCompletedTaskButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteCompletedTaskButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteCompletedTaskButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         purgeCompletedTasksButton.setText("purge");
-        purgeCompletedTasksButton.setToolTipText("remove all messages (irreversable!)");
+        purgeCompletedTasksButton.setToolTipText("remove all completed tasks");
         purgeCompletedTasksButton.setMaximumSize(new java.awt.Dimension(80, 25));
         purgeCompletedTasksButton.setMinimumSize(new java.awt.Dimension(80, 25));
         purgeCompletedTasksButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -304,7 +305,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         errorDetailTextAreaScrollPane.setViewportView(errorDetailTextArea);
 
         deleteTaskErrorButton.setText("delete");
-        deleteTaskErrorButton.setToolTipText("remove the selected storage error");
+        deleteTaskErrorButton.setToolTipText("remove the selected task error");
         deleteTaskErrorButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteTaskErrorButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteTaskErrorButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -316,7 +317,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         resendTaskErrorButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         purgeTaskErrorsButton.setText("purge");
-        purgeTaskErrorsButton.setToolTipText("remove all messages (irreversable!)");
+        purgeTaskErrorsButton.setToolTipText("remove all taks errors");
         purgeTaskErrorsButton.setMaximumSize(new java.awt.Dimension(80, 25));
         purgeTaskErrorsButton.setMinimumSize(new java.awt.Dimension(80, 25));
         purgeTaskErrorsButton.setPreferredSize(new java.awt.Dimension(80, 25));

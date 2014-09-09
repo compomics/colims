@@ -23,7 +23,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="MaxQuantDirectoryTextField" max="32767" attributes="0"/>
+                      <Component id="maxQuantDirectoryTextField" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="selectMaxQuantDirectoryButton" min="-2" pref="92" max="-2" attributes="0"/>
                   </Group>
@@ -52,7 +52,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="selectMaxQuantDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="MaxQuantDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="maxQuantDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="fastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
@@ -93,7 +93,7 @@
         <Property name="text" type="java.lang.String" value="Select a FASTA file:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="MaxQuantDirectoryTextField">
+    <Component class="javax.swing.JTextField" name="maxQuantDirectoryTextField">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
       </Properties>

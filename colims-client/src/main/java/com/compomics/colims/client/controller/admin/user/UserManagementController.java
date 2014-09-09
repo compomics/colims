@@ -272,7 +272,7 @@ public class UserManagementController implements Controllable {
                 //check for a new user if the user name already exists in the db                
                 if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
                     validationMessages.add(selectedUser.getName() + " already exists in the database"
-                            + "\n" + "please choose another user name.");
+                            + System.lineSeparator() + "please choose another user name.");
                 }
                 if (validationMessages.isEmpty()) {
                     Institution selectedInstitution = null;

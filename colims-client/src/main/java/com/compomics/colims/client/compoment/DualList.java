@@ -16,6 +16,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 /**
  *
  * @author Niels Hulstaert
+ * @param <T> the object class that is used in a DualList instance.
  */
 public class DualList<T> extends javax.swing.JPanel {
 
@@ -25,6 +26,9 @@ public class DualList<T> extends javax.swing.JPanel {
     private ObservableList<T> availableItemBindingList;
     private ObservableList<T> addedItemBindingList;
     private int maximumAmountOfAddedItems;
+    /**
+     * the Comparator used for comparing T instances.
+     */
     private Comparator<? super T> comparator;
 
     /**
@@ -98,6 +102,8 @@ public class DualList<T> extends javax.swing.JPanel {
 
     /**
      * Init the component.
+     *
+     * @param comparator the Comparator used for comparing T instances.
      */
     public void init(Comparator<? super T> comparator) {
         this.comparator = comparator;

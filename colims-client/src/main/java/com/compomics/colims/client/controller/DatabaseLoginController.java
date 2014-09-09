@@ -29,7 +29,7 @@ public class DatabaseLoginController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(DatabaseLoginController.class);
 
     //model
-    private PropertiesConfiguration propertiesConfiguration;
+    private final PropertiesConfiguration propertiesConfiguration;
     private String dbUrl;
     private String dbUserName;
     private char[] dbPassword;
@@ -63,9 +63,9 @@ public class DatabaseLoginController implements Controllable {
         //set db url and user name from client properties
         databaseLoginDialog.getDbUrlTextField().setText(propertiesConfiguration.getString("db.url"));
         databaseLoginDialog.getDbUserNameTextField().setText(propertiesConfiguration.getString("db.username"));
-        
+
         databaseLoginDialog.getDbPasswordTextField().requestFocus();
-        
+
         databaseLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,7 +98,7 @@ public class DatabaseLoginController implements Controllable {
     }
 
     @Override
-    public void showView() {        
+    public void showView() {
         databaseLoginDialog.setLocationRelativeTo(null);
         databaseLoginDialog.setVisible(true);
     }
@@ -159,7 +159,7 @@ public class DatabaseLoginController implements Controllable {
             databaseLoginDialog.dispose();
         } else {
             JOptionPane.showMessageDialog(databaseLoginDialog, "The database login attempt failed."
-                    + "\n" + "Please verify your credentials and connectivity and try again.", "Database login unsuccessful", JOptionPane.WARNING_MESSAGE);
+                    + System.lineSeparator() + "Please verify your credentials and connectivity and try again.", "Database login unsuccessful", JOptionPane.WARNING_MESSAGE);
             Arrays.fill(dbPassword, '0');
             databaseLoginDialog.getDbPasswordTextField().selectAll();
             databaseLoginDialog.getDbPasswordTextField().requestFocusInWindow();
@@ -220,8 +220,8 @@ public class DatabaseLoginController implements Controllable {
         //show dialog if necessary
         if (urlChanged || userNameChanged) {
             int result = JOptionPane.showConfirmDialog(databaseLoginDialog, "The database url and/or user name differ from the ones stored"
-                    + "\n" + "in the client properties file (config/colims-client.properties)."
-                    + "\n" + "Do you want to save the current changes?", "store database property", JOptionPane.YES_NO_OPTION);
+                    + System.lineSeparator() + "in the client properties file (config/colims-client.properties)."
+                    + System.lineSeparator() + "Do you want to save the current changes?", "Store database property", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
                 //store the changes
                 if (urlChanged) {

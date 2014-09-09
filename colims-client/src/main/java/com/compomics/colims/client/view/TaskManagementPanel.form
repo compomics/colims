@@ -168,6 +168,7 @@
         <Component class="javax.swing.JButton" name="deleteDbTaskButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
+            <Property name="toolTipText" type="java.lang.String" value="remove the selected task (irreversable!)"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -258,7 +259,7 @@
         <Component class="javax.swing.JButton" name="deleteCompletedTaskButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
-            <Property name="toolTipText" type="java.lang.String" value="remove the selected storage error"/>
+            <Property name="toolTipText" type="java.lang.String" value="remove the selected completed task"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -273,7 +274,7 @@
         <Component class="javax.swing.JButton" name="purgeCompletedTasksButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="purge"/>
-            <Property name="toolTipText" type="java.lang.String" value="remove all messages (irreversable!)"/>
+            <Property name="toolTipText" type="java.lang.String" value="remove all completed tasks"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -399,7 +400,7 @@
         <Component class="javax.swing.JButton" name="deleteTaskErrorButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="delete"/>
-            <Property name="toolTipText" type="java.lang.String" value="remove the selected storage error"/>
+            <Property name="toolTipText" type="java.lang.String" value="remove the selected task error"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -429,7 +430,7 @@
         <Component class="javax.swing.JButton" name="purgeTaskErrorsButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="purge"/>
-            <Property name="toolTipText" type="java.lang.String" value="remove all messages (irreversable!)"/>
+            <Property name="toolTipText" type="java.lang.String" value="remove all taks errors"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

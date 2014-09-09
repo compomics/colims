@@ -42,7 +42,7 @@ public class MessageEvent {
      */
     public MessageEvent(final String messageTitle, final List<String> messages, final int messageType) {
         this.messageTitle = messageTitle;
-        Joiner joiner = Joiner.on("\n");
+        Joiner joiner = Joiner.on(System.lineSeparator());
         String concatenatedMessage = joiner.join(messages);
         this.message = concatenatedMessage;
         this.messageType = messageType;

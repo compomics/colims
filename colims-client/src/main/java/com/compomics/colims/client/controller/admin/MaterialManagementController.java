@@ -349,7 +349,7 @@ public class MaterialManagementController implements Controllable {
                 //check for a new material if the material name already exists in the db                
                 if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
                     validationMessages.add(materialToEdit.getName() + " already exists in the database,"
-                            + "\n" + "please choose another material name.");
+                            + System.lineSeparator() + "please choose another material name.");
                 }
                 if (validationMessages.isEmpty()) {
                     int index;

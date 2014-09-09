@@ -21,7 +21,7 @@ public class ColimsClientStarter {
 
     private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
     private static final String ERROR_MESSAGE = "An error occured during startup, please try again."
-            + "\n" + "If the problem persists, contact your administrator or post an issue on the google code page.";
+            + System.lineSeparator() + "If the problem persists, contact your administrator or post an issue on the google code page.";
 
     public ColimsClientStarter(String[] contextPaths) {
         launchColimsClient(contextPaths);
@@ -89,7 +89,7 @@ public class ColimsClientStarter {
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             //add message to JTextArea
-            JTextArea textArea = new JTextArea(ERROR_MESSAGE + "\n" + "\n" + ex.getMessage());
+            JTextArea textArea = new JTextArea(ERROR_MESSAGE + System.lineSeparator() + System.lineSeparator() + ex.getMessage());
             //put JTextArea in JScrollPane
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(600, 200));

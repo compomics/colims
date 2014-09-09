@@ -20,7 +20,7 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
     public static final int NAME = 1;
     public static final int START_DATE = 2;
     public static final int NUMBER_OF_SPECTRA = 3;
-    private SpectrumService spectrumService;
+    private final SpectrumService spectrumService;
 
     public AnalyticalRunSimpleTableFormat() {
         spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
