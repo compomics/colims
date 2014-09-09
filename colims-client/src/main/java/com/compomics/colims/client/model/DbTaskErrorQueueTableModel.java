@@ -20,15 +20,16 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "error"};
+    private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "error"};
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     public static final int QUEUE_INDEX = 0;
-    public static final int TYPE_INDEX = 1;
-    public static final int SUBMITTED_INDEX = 2;
-    public static final int DESCRIPTION_INDEX = 3;
-    public static final int USER_INDEX = 4;
-    public static final int ERROR_INDEX = 5;
+    public static final int ID = 1;
+    public static final int TYPE_INDEX = 2;
+    public static final int SUBMITTED_INDEX = 3;
+    public static final int DESCRIPTION_INDEX = 4;
+    public static final int USER_INDEX = 5;
+    public static final int ERROR_INDEX = 6;
     private List<DbTaskError> messages;
     private UserService userService;
 
@@ -91,6 +92,8 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
         switch (columnIndex) {
             case QUEUE_INDEX:
                 return rowIndex;
+            case ID:
+                return dbTask.getMessageId();
             case TYPE_INDEX:
                 if (dbTask instanceof PersistDbTask) {
                     return PERSIST + ((PersistDbTask) dbTask).getDbEntityClass().getSimpleName();

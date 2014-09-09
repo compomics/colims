@@ -2,7 +2,7 @@ package com.compomics.colims.distributed.model.enums;
 
 /**
  *
- * @author Kenneth
+ * @author Niels Hulstaert
  */
 public enum PersistType {
 

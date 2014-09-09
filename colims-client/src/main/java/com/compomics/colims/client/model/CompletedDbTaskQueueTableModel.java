@@ -24,14 +24,15 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("mm");
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
-    private final String[] columnNames = {"index", "type", "submitted on", "description", "user", "start", "duration"};
-    public static final int QUEUE_INDEX = 0;
-    public static final int TYPE_INDEX = 1;
-    public static final int SUBMITTED_INDEX = 2;
-    public static final int DESCRIPTION_INDEX = 3;
-    public static final int USER_INDEX = 4;
-    public static final int START_INDEX = 5;
-    public static final int DURATION_INDEX = 6;
+    private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "start", "duration"};
+    public static final int QUEUE_INDEX = 0;    
+    public static final int ID = 1;
+    public static final int TYPE_INDEX = 2;
+    public static final int SUBMITTED_INDEX = 3;
+    public static final int DESCRIPTION_INDEX = 4;
+    public static final int USER_INDEX = 5;
+    public static final int START_INDEX = 6;
+    public static final int DURATION_INDEX = 7;
     private List<CompletedDbTask> messages;
     private UserService userService;
 
@@ -94,6 +95,8 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
         switch (columnIndex) {
             case QUEUE_INDEX:
                 return rowIndex;
+            case ID:
+                return dbTask.getMessageId();
             case TYPE_INDEX:
                 if (dbTask instanceof PersistDbTask) {
                     return PERSIST + ((PersistDbTask) dbTask).getDbEntityClass().getSimpleName();

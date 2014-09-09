@@ -16,7 +16,7 @@ public interface QueueManager {
      * Monitor the queue with the given queue name. Returns a list of objects of
      * class T.
      *
-     * @param <T>
+     * @param <T> a class the extends QueueMessage
      * @param queueName the queue name
      * @return
      * @throws JMSException
@@ -53,7 +53,7 @@ public interface QueueManager {
     /**
      * Test the connection to the queues.
      *
-     * @return wether or not a connection could be made
+     * @return whether or not a connection could be made
      */
     boolean testConnection();
 

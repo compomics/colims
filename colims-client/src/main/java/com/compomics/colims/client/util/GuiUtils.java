@@ -83,7 +83,7 @@ public class GuiUtils {
     /**
      * Validate the entity validation annotations
      *
-     * @param <T> the enity class
+     * @param <T> the entity class
      * @param t the entity
      * @return the list of validation messages
      */

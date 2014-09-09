@@ -36,6 +36,7 @@ import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -166,26 +167,6 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
         colimsFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
-        //add change listener to tabbed pane
-        colimsFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
-                int index = sourceTabbedPane.getSelectedIndex();
-                if (sourceTabbedPane.getTitleAt(index).equals(ColimsFrame.TASKS_TAB_TITLE)) {
-                    //check connection to distributed queues
-                    if (queueManager.testConnection()) {
-                        taskManagementController.updateMonitoringTables();
-
-                        taskManagementController.getTaskManagementPanel().setVisible(true);
-                    } else {
-                        eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
-                    }
-                }
-            }
-        });
-
         //add action listeners                
         //add menu item action listeners
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
@@ -229,6 +210,23 @@ public class ColimsController implements Controllable, ActionListener {
 //            colimsFrame.getAdminMenu().setEnabled(false);
 //        }
 //        showView();
+        //add change listener to tabbed pane
+        colimsFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {                
+                if (getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)) {
+                    //check connection to distributed queues
+                    if (queueManager.testConnection()) {
+                        taskManagementController.updateMonitoringTables();
+
+                        taskManagementController.getTaskManagementPanel().setVisible(true);
+                    } else {
+                        eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -327,6 +325,16 @@ public class ColimsController implements Controllable, ActionListener {
     public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
         updateProjects(protocolChangeEvent);
     }
+    
+    /**
+     * Get the selected tab title of the main tabbed pane.
+     *
+     * @return the selected tab title
+     */
+    public String getSelectedTabTitle() {
+        JTabbedPane mainTabbedPane = colimsFrame.getMainTabbedPane();
+        return mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex());
+    }
 
     /**
      * Reload all projects from the database if necessary.
@@ -407,6 +415,6 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getInstrumentManagementMenuItem().addActionListener(this);
         colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
         colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
-    }
+    }    
 
 }

@@ -20,8 +20,6 @@ public class ColimsFrame extends javax.swing.JFrame {
      */
     public ColimsFrame() {
         initComponents();
-        
-        //this.getContentPane().setBackground(Color.WHITE);
     }
 
     public JPanel getProjectsManagementParentPanel() {
