@@ -14,7 +14,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class TypedCvTerm extends AuditableCvTerm {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5594723532938658371L;
     
     @Basic(optional = false)
     @Column(name = "cv_property", nullable = false)
@@ -35,6 +35,6 @@ public abstract class TypedCvTerm extends AuditableCvTerm {
 
     public void setcvTermType(final CvTermType cvTermType) {
         this.cvTermType = cvTermType;
-    }            
+    }                
  
 }

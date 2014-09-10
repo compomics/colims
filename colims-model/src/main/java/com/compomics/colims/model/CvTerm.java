@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class CvTerm extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3395161527675025740L;
 
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
@@ -106,6 +106,6 @@ public abstract class CvTerm extends DatabaseEntity {
     @Override
     public String toString() {
         return name + " [" + accession + "]";
-    }    
+    }        
  
 }

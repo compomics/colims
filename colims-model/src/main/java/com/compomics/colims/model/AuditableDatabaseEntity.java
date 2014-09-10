@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class AuditableDatabaseEntity extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6390297193482831504L;
 
     @Basic(optional = false)
     @Column(name = "user_name", nullable = false)
@@ -56,4 +56,5 @@ public abstract class AuditableDatabaseEntity extends DatabaseEntity {
     public void setModificationDate(final Date modificationDate) {
         this.modificationDate = modificationDate;
     }
+    
 }

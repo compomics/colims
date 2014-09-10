@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 public class QuantificationSettings extends AuditableDatabaseEntity {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5371850641629946378L;
         
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
@@ -66,6 +66,6 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
 
     public void setQuantificationParameterSettings(QuantificationParameterSettings quantificationParameterSettings) {
         this.quantificationParameterSettings = quantificationParameterSettings;
-    }    
+    }        
     
 }

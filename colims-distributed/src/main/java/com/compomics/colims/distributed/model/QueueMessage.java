@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public abstract class QueueMessage implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5987756507350846636L;
 
     /**
      * The message ID
@@ -26,6 +26,6 @@ public abstract class QueueMessage implements Serializable {
 
     public void setMessageId(String messageId) {
         this.messageId = messageId;
-    }
+    }    
 
 }

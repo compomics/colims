@@ -41,7 +41,12 @@ public class PeptideShakerImporter implements DataImporter {
 
     @Override
     public void initImport(DataImport dataImport) {
-        unpackedPeptideShakerImport = (UnpackedPeptideShakerImport) dataImport;
+        if(dataImport instanceof UnpackedPeptideShakerImport){
+            unpackedPeptideShakerImport = (UnpackedPeptideShakerImport) dataImport;
+        }        
+        else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

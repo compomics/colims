@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ProteinAccession extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 9106133371576907397L;
 
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
@@ -79,6 +79,6 @@ public class ProteinAccession extends DatabaseEntity {
     @Override
     public String toString() {
         return accession;
-    }
+    }    
 
 }

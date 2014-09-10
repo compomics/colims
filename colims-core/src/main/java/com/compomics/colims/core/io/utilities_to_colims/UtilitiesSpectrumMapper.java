@@ -1,13 +1,5 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
-
-import org.apache.log4j.Logger;
-
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
@@ -15,7 +7,14 @@ import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Precursor;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -66,7 +65,7 @@ public class UtilitiesSpectrumMapper {
         spectrumFile.setSpectrum(targetSpectrum);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(byteArrayOutputStream));
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(byteArrayOutputStream, Charset.forName("UTF-8").newEncoder()));
                 ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
 

@@ -30,9 +30,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 //@Indexed
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Protein extends DatabaseEntity {
-
-    private static final long serialVersionUID = 1L;
+public class Protein extends DatabaseEntity {    
+    
+    private static final long serialVersionUID = -8217759222711303528L;
     
     @Lob
     @Basic(optional = false)
@@ -111,6 +111,6 @@ public class Protein extends DatabaseEntity {
     @Override
     public String toString() {
         return sequence;
-    }
+    }    
 
 }

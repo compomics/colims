@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class AnalyticalRun extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8278042140876711715L;
     @Basic(optional = false)
     @NotBlank(message = "Please insert an analytical run name")
     @Length(min = 1, max = 100, message = "Name must be between {min} and {max} characters")
@@ -127,4 +127,5 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     public String toString() {
         return name;
     }
+    
 }

@@ -32,7 +32,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Spectrum extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6581466869218920103L;
+    
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     private String accession;
@@ -190,4 +191,5 @@ public class Spectrum extends DatabaseEntity {
         }
         return true;
     }
+    
 }

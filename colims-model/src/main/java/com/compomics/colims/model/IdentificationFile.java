@@ -28,8 +28,8 @@ import javax.persistence.Table;
 @Entity
 public class IdentificationFile extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -3405917820461550590L;
+    
     /**
      * The identification file name
      */
@@ -145,6 +145,6 @@ public class IdentificationFile extends DatabaseEntity {
             return false;
         }
         return true;
-    }
+    }    
 
 }

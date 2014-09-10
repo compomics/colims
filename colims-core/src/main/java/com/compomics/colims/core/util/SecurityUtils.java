@@ -30,7 +30,7 @@ public class SecurityUtils {
     public static byte[] md5DigestFasta(String fastaFile) throws NoSuchAlgorithmException, IOException {
         if (fastaFile != null) {
             MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(fastaFile.getBytes());
+            digest.update(fastaFile.getBytes("UTF-8"));
             return digest.digest();
         } else {
             throw new IOException("string could not be digested");
@@ -61,7 +61,7 @@ public class SecurityUtils {
     public static byte[] sha1DigestFasta(String fastaFile) throws NoSuchAlgorithmException, IOException {
         if (fastaFile != null) {
             MessageDigest digest = MessageDigest.getInstance("SHA1");
-            digest.update(fastaFile.getBytes());
+            digest.update(fastaFile.getBytes("UTF-8"));
             return digest.digest();
         } else {
             throw new IOException("string could not be digested");

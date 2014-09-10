@@ -32,7 +32,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 public class Instrument extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7111402094194930375L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
@@ -162,4 +163,5 @@ public class Instrument extends AuditableDatabaseEntity {
     public String toString() {
         return name + " [" + type.getName() + "]";
     }
+   
 }

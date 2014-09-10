@@ -30,7 +30,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 //@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Peptide extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7678950773201086394L;
+    
     @Basic(optional = false)
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
@@ -187,6 +188,6 @@ public class Peptide extends DatabaseEntity {
             return false;
         }
         return true;
-    }
+    }    
     
 }

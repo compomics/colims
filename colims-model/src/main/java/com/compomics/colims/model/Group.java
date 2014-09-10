@@ -25,8 +25,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "user_group")
 @Entity
 public class Group extends AuditableDatabaseEntity {
-
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 3684555329343238970L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters")
@@ -115,5 +116,5 @@ public class Group extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name;
-    }
+    }    
 }

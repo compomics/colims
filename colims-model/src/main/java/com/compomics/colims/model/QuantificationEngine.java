@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @Entity
 public class QuantificationEngine extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4719894153697846226L;
         
     /**
      * The quantification engine type
@@ -99,6 +99,6 @@ public class QuantificationEngine extends DatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }        
 
 }

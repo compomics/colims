@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class Role extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4331346270790982907L;
    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a role accession")
@@ -115,4 +115,5 @@ public class Role extends AuditableDatabaseEntity {
     public String toString() {
         return name;
     }    
+    
 }

@@ -24,8 +24,8 @@ import javax.persistence.Table;
 @Table(name = "search_engine")
 @Entity
 public class SearchEngine extends CvTerm {
-
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = -5428696863055618148L;
     private static final String NOT_APPLICABLE = "N/A";
 
     /**
@@ -118,6 +118,6 @@ public class SearchEngine extends CvTerm {
             return false;
         }
         return true;
-    }
+    }    
 
 }

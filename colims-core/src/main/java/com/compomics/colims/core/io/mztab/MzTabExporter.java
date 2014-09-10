@@ -8,9 +8,11 @@ package com.compomics.colims.core.io.mztab;
 import com.compomics.colims.model.AnalyticalRun;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +23,15 @@ import org.springframework.stereotype.Component;
 @Component("mzTabExporter")
 public class MzTabExporter {
 
-    private static final Logger LOGGER = Logger.getLogger(MzTabExporter.class);    
+    private static final Logger LOGGER = Logger.getLogger(MzTabExporter.class);
     private static final String MZTAB_EXTENSION = ".mzTab";
     private static final String COLUMN_DELIMETER = "/t";
     private static final String COMMENT_PREFIX = "COM";
     private static final String METADATA_PREFIX = "MTD";
 
     public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION))))) {
+        //try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION))))) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION)), Charset.forName("UTF-8").newEncoder())))) {
 
             pw.println("under development");
 

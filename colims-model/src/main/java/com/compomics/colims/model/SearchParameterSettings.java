@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @Entity
 public class SearchParameterSettings extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1065576089263244645L;
 
     @Basic(optional = true)
     @Column(name = "enzyme", nullable = true)
@@ -157,6 +157,6 @@ public class SearchParameterSettings extends DatabaseEntity {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }
+    }    
 
 }

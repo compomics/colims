@@ -48,7 +48,7 @@ public class PersistMetadata implements Serializable {
     public PersistMetadata(PersistType persistType, String description, Date startDate, Instrument instrument) {
         this.persistType = persistType;
         this.description = description;
-        this.startDate = startDate;
+        this.startDate = startDate != null ? new Date(startDate.getTime()) : null;
         this.instrument = instrument;
     }
 
@@ -69,11 +69,11 @@ public class PersistMetadata implements Serializable {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return new Date(startDate.getTime());
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = startDate != null ? new Date(startDate.getTime()) : null;
     }
 
     public Instrument getInstrument() {

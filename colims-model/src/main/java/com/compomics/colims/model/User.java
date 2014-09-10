@@ -31,7 +31,8 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 @Entity
 public class User extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4086933454695081685L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
     @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
@@ -191,4 +192,5 @@ public class User extends AuditableDatabaseEntity {
     public String toString() {
         return name;
     }
+    
 }

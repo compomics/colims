@@ -112,7 +112,7 @@ public class MzMLParserImpl implements MzMLParser {
                 Sample sample = new Sample(mzMLSample.getId());
 
                 //a sample can contain mutliple materials
-                Material material = new Material();
+                //Material material = new Material();
 
                 sample.setExperiment(experiment);
                 samples.add(sample);

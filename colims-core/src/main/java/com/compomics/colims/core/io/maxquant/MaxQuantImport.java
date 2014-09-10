@@ -10,6 +10,8 @@ import java.io.File;
  */
 public class MaxQuantImport extends DataImport {
 
+    private static final long serialVersionUID = 304064762112880171L;
+    
     /**
      * The directory containing the MaxQuant files.
      */
@@ -32,6 +34,6 @@ public class MaxQuantImport extends DataImport {
 
     public void setMaxQuantDirectory(final File maxQuantDirectory) {
         this.maxQuantDirectory = maxQuantDirectory;
-    }
+    }    
 
 }

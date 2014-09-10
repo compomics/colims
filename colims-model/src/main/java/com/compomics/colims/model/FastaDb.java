@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class FastaDb extends DatabaseEntity {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7674593202998529863L;
     
     /**
      * The official name of the fasta db
@@ -188,6 +188,6 @@ public class FastaDb extends DatabaseEntity {
     @Override
     public String toString() {
         return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
-    }        
+    }            
     
 }

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 public class PeptideHasProtein extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7522445376198555037L;
 
     @Basic(optional = true)
     @Column(name = "peptide_prob", nullable = true)
@@ -74,7 +74,6 @@ public class PeptideHasProtein extends DatabaseEntity {
 
     public void setMainGroupProtein(final Protein mainGroupProtein) {
         this.mainGroupProtein = mainGroupProtein;
-    }
-    
+    }        
     
 }

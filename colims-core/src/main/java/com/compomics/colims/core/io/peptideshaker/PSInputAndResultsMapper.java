@@ -248,41 +248,41 @@ public class PSInputAndResultsMapper {
         ms2Identification.loadProteinMatchParameters(new PSParameter(), null);
     }
 
-    /**
-     * Load the PeptideShaker settings.
-     *
-     * @param msExperiment
-     */
-    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {
-        PeptideShakerSettings peptideShakerSettings = new PeptideShakerSettings();
-
-        if (msExperiment.getUrParam(peptideShakerSettings) instanceof PSSettings) {
-
-            // convert old settings files using utilities version 3.10.68 or older
-            // convert the old ProcessingPreferences object
-            PSSettings tempSettings = (PSSettings) msExperiment.getUrParam(peptideShakerSettings);
-            ProcessingPreferences tempProcessingPreferences = new ProcessingPreferences();
-            tempProcessingPreferences.setProteinFDR(tempSettings.getProcessingPreferences().getProteinFDR());
-            tempProcessingPreferences.setPeptideFDR(tempSettings.getProcessingPreferences().getPeptideFDR());
-            tempProcessingPreferences.setPsmFDR(tempSettings.getProcessingPreferences().getPsmFDR());
-
-            // convert the old PTMScoringPreferences object
-            PTMScoringPreferences tempPTMScoringPreferences = new PTMScoringPreferences();
-            tempPTMScoringPreferences.setaScoreCalculation(tempSettings.getPTMScoringPreferences().aScoreCalculation());
-            tempPTMScoringPreferences.setaScoreNeutralLosses(tempSettings.getPTMScoringPreferences().isaScoreNeutralLosses());
-            tempPTMScoringPreferences.setFlrThreshold(tempSettings.getPTMScoringPreferences().getFlrThreshold());
-
-            peptideShakerSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
-                    tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
-                    tempSettings.getDisplayPreferences(),
-                    tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
-                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter());
-
-        } else {
-            peptideShakerSettings = (PeptideShakerSettings) msExperiment.getUrParam(peptideShakerSettings);
-        }
-
-        return peptideShakerSettings;
-    }
+//    /**
+//     * Load the PeptideShaker settings.
+//     *
+//     * @param msExperiment
+//     */
+//    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {
+//        PeptideShakerSettings peptideShakerSettings = new PeptideShakerSettings();
+//
+//        if (msExperiment.getUrParam(peptideShakerSettings) instanceof PSSettings) {
+//
+//            // convert old settings files using utilities version 3.10.68 or older
+//            // convert the old ProcessingPreferences object
+//            PSSettings tempSettings = (PSSettings) msExperiment.getUrParam(peptideShakerSettings);
+//            ProcessingPreferences tempProcessingPreferences = new ProcessingPreferences();
+//            tempProcessingPreferences.setProteinFDR(tempSettings.getProcessingPreferences().getProteinFDR());
+//            tempProcessingPreferences.setPeptideFDR(tempSettings.getProcessingPreferences().getPeptideFDR());
+//            tempProcessingPreferences.setPsmFDR(tempSettings.getProcessingPreferences().getPsmFDR());
+//
+//            // convert the old PTMScoringPreferences object
+//            PTMScoringPreferences tempPTMScoringPreferences = new PTMScoringPreferences();
+//            tempPTMScoringPreferences.setaScoreCalculation(tempSettings.getPTMScoringPreferences().aScoreCalculation());
+//            tempPTMScoringPreferences.setaScoreNeutralLosses(tempSettings.getPTMScoringPreferences().isaScoreNeutralLosses());
+//            tempPTMScoringPreferences.setFlrThreshold(tempSettings.getPTMScoringPreferences().getFlrThreshold());
+//
+//            peptideShakerSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
+//                    tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
+//                    tempSettings.getDisplayPreferences(),
+//                    tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
+//                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter());
+//
+//        } else {
+//            peptideShakerSettings = (PeptideShakerSettings) msExperiment.getUrParam(peptideShakerSettings);
+//        }
+//
+//        return peptideShakerSettings;
+//    }
 
 }

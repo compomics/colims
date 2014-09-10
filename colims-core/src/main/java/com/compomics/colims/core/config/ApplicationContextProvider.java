@@ -40,6 +40,9 @@ public class ApplicationContextProvider {
     }
 
     public <T> T getBean(String beanName) {
+        if (applicationContext == null) {
+            throw new IllegalStateException("The application context is not set yet.");
+        }
         return (T) applicationContext.getBean(beanName);
     }
 }

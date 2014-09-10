@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
  * @author Davy
  */
 @Component("maxQuantPeptideParser")
-public class MaxQuantPeptideParser {
-
+public class MaxQuantPeptideParser {    
+    
     private Map<Integer, MaxQuantPeptideAssertion> parsedPeptideAssertions = new HashMap<>();
 
     public Map<Integer, MaxQuantPeptideAssertion> parse(File aPeptidesFile) throws IOException, UnparseableException {

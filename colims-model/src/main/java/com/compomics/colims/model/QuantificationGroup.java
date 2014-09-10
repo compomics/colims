@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 public class QuantificationGroup extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6780345493346945685L;
 
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
@@ -45,6 +45,6 @@ public class QuantificationGroup extends DatabaseEntity {
 
     public void setQuantification(Quantification quantification) {
         this.quantification = quantification;
-    }        
+    }            
 
 }

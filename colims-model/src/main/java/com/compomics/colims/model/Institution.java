@@ -9,7 +9,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -21,9 +20,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "institution")
 @Entity
 public class Institution extends AuditableDatabaseEntity {
-
-    private static final long serialVersionUID = 1L;
-
+    
+    private static final long serialVersionUID = 2423413625675018198L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name")
     @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters")
@@ -159,6 +158,6 @@ public class Institution extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name + " (" + abbreviation + ")";
-    }
+    }    
 
 }

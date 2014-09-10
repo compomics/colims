@@ -19,8 +19,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "permission")
 @Entity
 public class Permission extends AuditableDatabaseEntity {
-
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 8437203328116083889L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a permission accession")
     @Length(min = 3, max = 20, message = "Permission name length must be between {min} and {max} characters")
@@ -93,5 +94,5 @@ public class Permission extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name;
-    }
+    }    
 }

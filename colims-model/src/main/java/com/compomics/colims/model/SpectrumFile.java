@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Entity
 public class SpectrumFile extends DatabaseEntity {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6234803421590111200L;
     
     //the gzipped mgf file
     @Lob
@@ -46,4 +46,5 @@ public class SpectrumFile extends DatabaseEntity {
     public void setContent(final byte[] content) {
         this.content = content;
     }
+    
 }

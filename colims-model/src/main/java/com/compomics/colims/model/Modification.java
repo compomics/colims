@@ -26,7 +26,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Modification extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 497141602900321901L;
 
     //@todo make mandatory?
     @Basic(optional = true)
@@ -154,4 +154,5 @@ public class Modification extends DatabaseEntity {
         }
         return true;
     }
+    
 }

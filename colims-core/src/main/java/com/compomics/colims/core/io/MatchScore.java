@@ -8,6 +8,8 @@ import com.compomics.util.experiment.personalization.UrParameter;
  */
 public class MatchScore implements UrParameter {
 
+    private static final long serialVersionUID = -7176580468851820089L;
+    
     private Double probability;
     private Double postErrorProbability;
 
@@ -42,4 +44,5 @@ public class MatchScore implements UrParameter {
     public int getIndex() {
         return 99;
     }
+    
 }

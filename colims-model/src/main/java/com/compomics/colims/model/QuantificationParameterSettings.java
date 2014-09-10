@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 public class QuantificationParameterSettings extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2166573588583909556L;
 
     @Basic(optional = true)
     @Column(name = "label_count", nullable = true)
@@ -76,6 +76,6 @@ public class QuantificationParameterSettings extends DatabaseEntity {
 
     public void setQuantificationSettingses(List<QuantificationSettings> quantificationSettingses) {
         this.quantificationSettingses = quantificationSettingses;
-    }        
+    }            
     
 }

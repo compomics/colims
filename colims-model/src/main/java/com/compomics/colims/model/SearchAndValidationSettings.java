@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 public class SearchAndValidationSettings extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3229983473906664007L;
 
     @OneToMany(mappedBy = "searchAndValidationSettings")
     private List<IdentificationFile> identificationFiles = new ArrayList<>();
@@ -79,6 +79,6 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
 
     public void setSearchParameterSettings(SearchParameterSettings searchParameterSettings) {
         this.searchParameterSettings = searchParameterSettings;
-    }
+    }    
 
 }

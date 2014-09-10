@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7434489250278743116L;
 
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
@@ -106,6 +106,6 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name + " [" + accession + "]";
-    }    
+    }       
  
 }

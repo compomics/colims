@@ -31,7 +31,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class Protocol extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4800989001609802377L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a protocol name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
@@ -188,5 +189,5 @@ public class Protocol extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name;
-    }
+    }    
 }

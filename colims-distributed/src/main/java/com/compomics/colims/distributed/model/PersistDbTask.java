@@ -9,6 +9,8 @@ import java.util.Objects;
  */
 public class PersistDbTask extends DbTask {
 
+    private static final long serialVersionUID = -3660025176317700432L;
+    
     /**
      * The persist metadata
      */
@@ -80,6 +82,6 @@ public class PersistDbTask extends DbTask {
             return false;
         }
         return true;
-    }
+    }    
 
 }

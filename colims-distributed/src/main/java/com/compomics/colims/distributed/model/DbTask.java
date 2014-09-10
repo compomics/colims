@@ -9,7 +9,7 @@ import java.util.Objects;
 public abstract class DbTask extends QueueMessage {
 
     /**
-     * The datatabe entity class of the task
+     * The datatase entity class of the task
      */
     protected Class dbEntityClass;
     /**

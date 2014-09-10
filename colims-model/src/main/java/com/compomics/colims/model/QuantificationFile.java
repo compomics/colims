@@ -30,7 +30,7 @@ import javax.persistence.Table;
 @Entity
 public class QuantificationFile extends DatabaseEntity {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5714905008883803369L;
     
     /**
      * The quantification file name
@@ -137,6 +137,6 @@ public class QuantificationFile extends DatabaseEntity {
             return false;
         }
         return true;
-    }        
+    }            
     
 }

@@ -12,6 +12,8 @@ import java.io.File;
  */
 public class UnpackedPeptideShakerImport extends DataImport {
 
+    private static final long serialVersionUID = -1854524744176973963L;
+    
     /**
      * The PeptideShaker .cps archive
      */
@@ -109,4 +111,5 @@ public class UnpackedPeptideShakerImport extends DataImport {
 
         return foundMgfFile;
     }
+    
 }

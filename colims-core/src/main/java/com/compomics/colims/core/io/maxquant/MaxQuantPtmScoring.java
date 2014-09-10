@@ -8,6 +8,8 @@ import com.compomics.util.experiment.personalization.UrParameter;
  */
 public class MaxQuantPtmScoring implements UrParameter {
 
+    private static final long serialVersionUID = -444827354332241562L;
+    
     private double score = -1;
     private double deltaScore = -1;
 
@@ -36,4 +38,5 @@ public class MaxQuantPtmScoring implements UrParameter {
     public int getIndex() {
         return 123456789;
     }
+    
 }

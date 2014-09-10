@@ -27,7 +27,7 @@ import javax.persistence.Table;
 @Entity
 public class Quantification extends DatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8721138574314561811L;
     
     @Basic(optional = false)
     @Column(name = "intensity", nullable = false)
@@ -98,6 +98,6 @@ public class Quantification extends DatabaseEntity {
             return false;
         }
         return true;
-    }
+    }    
         
 }

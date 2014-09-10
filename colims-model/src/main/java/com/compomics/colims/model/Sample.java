@@ -31,7 +31,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class Sample extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7792823489878347845L;
     
     @Basic(optional = false)
     @NotBlank(message = "Please insert a sample name")
@@ -176,4 +176,5 @@ public class Sample extends AuditableDatabaseEntity {
     public String toString() {
         return name;
     }
+    
 }

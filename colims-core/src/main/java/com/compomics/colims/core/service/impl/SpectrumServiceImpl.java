@@ -1,15 +1,5 @@
 package com.compomics.colims.core.service.impl;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.model.AnalyticalRun;
@@ -18,9 +8,18 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -92,7 +91,7 @@ public class SpectrumServiceImpl implements SpectrumService {
         byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(unzippedBytes)));) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(unzippedBytes), Charset.forName("UTF-8").newDecoder()));) {
             boolean inSpectrum = false;
             String line;
             while ((line = bufferedReader.readLine()) != null) {

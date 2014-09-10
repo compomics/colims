@@ -5,10 +5,7 @@ import com.compomics.colims.core.io.Mapper;
 import org.apache.log4j.Logger;
 
 import com.compomics.colims.model.SearchParameterSettings;
-import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.experiment.massspectrometry.Charge;
-import java.io.File;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,35 +46,37 @@ public class ColimsSearchParametersMapper implements Mapper<SearchParameterSetti
 
     }
 
-    /**
-     * Converts a fragmentIonType as int to the corresponding letter (0=a 1=b
-     * 2=c | 3=x 4=y 5=z)
-     *
-     * @param fragmentIonType
-     */
-    private String getCorrectLetter(final int fragmentIonType) {
-        String ionLetter = "a";
-        switch (fragmentIonType) {
-            case 0:
-                ionLetter = "a";
-                break;
-            case 1:
-                ionLetter = "b";
-                break;
-            case 2:
-                ionLetter = "c";
-                break;
-            case 3:
-                ionLetter = "x";
-                break;
-            case 4:
-                ionLetter = "y";
-                break;
-            case 5:
-                ionLetter = "z";
-                break;
-        }
-        return ionLetter;
-    }
+//    /**
+//     * Converts a fragmentIonType as int to the corresponding letter (0=a 1=b
+//     * 2=c | 3=x 4=y 5=z)
+//     *
+//     * @param fragmentIonType
+//     */
+//    private String getCorrectLetter(final int fragmentIonType) {
+//        String ionLetter = "a";
+//        switch (fragmentIonType) {
+//            case 0:
+//                ionLetter = "a";
+//                break;
+//            case 1:
+//                ionLetter = "b";
+//                break;
+//            case 2:
+//                ionLetter = "c";
+//                break;
+//            case 3:
+//                ionLetter = "x";
+//                break;
+//            case 4:
+//                ionLetter = "y";
+//                break;
+//            case 5:
+//                ionLetter = "z";
+//                break;
+//            default:
+//                break;
+//        }
+//        return ionLetter;
+//    }
 
 }

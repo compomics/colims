@@ -30,10 +30,10 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "project")
 @Entity
-public class Project extends AuditableDatabaseEntity {
+public class Project extends AuditableDatabaseEntity {    
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -172981262866248897L;
+    
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project title")
     @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
@@ -161,5 +161,6 @@ public class Project extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return title;
-    }
+    }    
+    
 }

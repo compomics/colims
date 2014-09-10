@@ -8,6 +8,8 @@ import java.util.Objects;
  */
 public class CompletedDbTask extends QueueMessage {
 
+    private static final long serialVersionUID = -2308086951810097990L;
+    
     /**
      * The storage start timestamp
      */
@@ -84,6 +86,6 @@ public class CompletedDbTask extends QueueMessage {
             return false;
         }
         return true;
-    }
+    }    
         
 }

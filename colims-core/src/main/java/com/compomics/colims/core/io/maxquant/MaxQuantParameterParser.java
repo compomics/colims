@@ -4,10 +4,12 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -103,7 +105,8 @@ public class MaxQuantParameterParser {
 
     public Map<String, String> parseParameters(File parameterFile) throws FileNotFoundException, IOException {
         Map<String, String> parameters = new HashMap<>();
-        try (LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile))) {
+        //try (LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile))) {
+        try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(new FileInputStream(parameterFile), Charset.forName("UTF-8").newDecoder()))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split("\t");

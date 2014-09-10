@@ -12,11 +12,13 @@ import javax.persistence.Table;
 @Entity
 public class ProtocolCvTerm extends TypedCvTerm {
 
+    private static final long serialVersionUID = -3197049656512425516L;
+    
     public ProtocolCvTerm() {
     }
 
     public ProtocolCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
-    }
+    }    
 
 }

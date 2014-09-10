@@ -6,6 +6,7 @@
 package com.compomics.colims.distributed.model;
 
 import com.compomics.colims.distributed.model.enums.NotificationType;
+import java.util.Objects;
 
 /**
  * Notification sent from the distributed module to
@@ -14,6 +15,8 @@ import com.compomics.colims.distributed.model.enums.NotificationType;
  * @author Niels Hulstaert
  */
 public class Notification extends QueueMessage {
+    
+    private static final long serialVersionUID = 2770398844385424822L;
     
     /**
      * The notification type.
@@ -43,6 +46,32 @@ public class Notification extends QueueMessage {
 
     public void setDbTaskMessageId(String dbTaskMessageId) {
         this.dbTaskMessageId = dbTaskMessageId;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.type);
+        hash = 83 * hash + Objects.hashCode(this.dbTaskMessageId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Notification other = (Notification) obj;
+        if (this.type != other.type) {
+            return false;
+        }
+        if (!Objects.equals(this.dbTaskMessageId, other.dbTaskMessageId)) {
+            return false;
+        }
+        return true;
     }        
 
 }

@@ -22,9 +22,9 @@ import javax.persistence.Table;
 @Table(name = "peptide_has_modification")
 @Entity
 public class PeptideHasModification extends DatabaseEntity {
-
-    private static final long serialVersionUID = 1L;
-
+    
+    private static final long serialVersionUID = 3283350956279991057L;
+    
     @Basic(optional = true)
     @Column(name = "location")
     private Integer location;
@@ -95,5 +95,5 @@ public class PeptideHasModification extends DatabaseEntity {
 
     public void setModification(final Modification modification) {
         this.modification = modification;
-    }
+    }    
 }

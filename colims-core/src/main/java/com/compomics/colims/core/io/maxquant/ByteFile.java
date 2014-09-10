@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
  * @author Davy
  */
 public class ByteFile extends File {
+    
+    private static final long serialVersionUID = -6109188320677916128L;
 
     private byte[] slurpedFile;
 
@@ -59,6 +61,6 @@ public class ByteFile extends File {
         } else {
             return new FileInputStream(this);
         }
-    }
+    }    
        
 }

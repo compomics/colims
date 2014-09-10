@@ -26,17 +26,17 @@ public class OlsServiceImpl implements OlsService {
         Modification modification = null;
 
         //find the modification by exact name        
-        try {
-            Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
-            if (modificationTerms.getItem() != null) {
-                //get the modificiation accession
-                for (MapItem mapItem : modificationTerms.getItem()) {
-                    modification = findModifiationByAccession(mapItem.getKey().toString());
-                }
+        //try {
+        Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
+        if (modificationTerms.getItem() != null) {
+            //get the modificiation accession
+            for (MapItem mapItem : modificationTerms.getItem()) {
+                modification = findModifiationByAccession(mapItem.getKey().toString());
             }
-        } catch (Exception e) {
-
         }
+        //} catch (Exception e) {
+        //    
+        //}
         return modification;
     }
 

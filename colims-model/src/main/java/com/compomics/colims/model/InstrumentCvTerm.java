@@ -12,6 +12,8 @@ import javax.persistence.Table;
 @Entity
 public class InstrumentCvTerm extends TypedCvTerm {
 
+    private static final long serialVersionUID = 2388796313873657999L;
+    
     public InstrumentCvTerm() {
     }
 
@@ -22,6 +24,6 @@ public class InstrumentCvTerm extends TypedCvTerm {
     @Override
     public String toString() {
         return super.toString();
-    }
+    }    
 
 }

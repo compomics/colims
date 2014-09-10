@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class PeptideShakerImport extends DataImport {
 
+    private static final long serialVersionUID = 6181185980673938925L;
+    
     /**
      * The PeptideShaker .cps file
      */
@@ -47,6 +49,6 @@ public class PeptideShakerImport extends DataImport {
 
     public void setMgfFiles(List<File> mgfFiles) {
         this.mgfFiles = mgfFiles;
-    }
+    }    
     
 }

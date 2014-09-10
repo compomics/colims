@@ -20,7 +20,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class DatabaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5095854000948409265L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,5 @@ public abstract class DatabaseEntity implements Serializable {
 
     public void setId(final Long id) {
         this.id = id;
-    }
+    }    
 }
