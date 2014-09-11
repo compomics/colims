@@ -105,8 +105,9 @@ public class MaxQuantParameterParser {
 
     public Map<String, String> parseParameters(File parameterFile) throws FileNotFoundException, IOException {
         Map<String, String> parameters = new HashMap<>();
-        //try (LineNumberReader reader = new LineNumberReader(new FileReader(parameterFile))) {
-        try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(new FileInputStream(parameterFile), Charset.forName("UTF-8").newDecoder()))) {
+        try (FileInputStream fis = new FileInputStream(parameterFile);
+                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                LineNumberReader reader = new LineNumberReader(isr)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split("\t");

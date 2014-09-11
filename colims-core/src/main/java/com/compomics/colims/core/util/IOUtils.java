@@ -36,7 +36,7 @@ public class IOUtils {
     public static byte[] read(File file) throws IOException {
         return FileUtils.readFileToByteArray(file);
     }
-    
+
     /**
      * Write the byte array to file.
      *
@@ -47,31 +47,31 @@ public class IOUtils {
     public static void write(byte[] bytes, File file) throws IOException {
         FileUtils.writeByteArrayToFile(file, bytes);
     }
-    
+
     /**
      * (G)zip the byte array.
      *
      * @param bytes the byte array
-     * @return 
+     * @return
      * @throws java.io.IOException
      */
-    public static byte[] zip(byte[] bytes) throws IOException {        
+    public static byte[] zip(byte[] bytes) throws IOException {
         byte[] zippedBytes;
 
         //gzip the byte array
-        try (ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
-            gZIPOutputStream.write(bytes);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                GZIPOutputStream gzipos = new GZIPOutputStream(baos)) {
+            gzipos.write(bytes);
 
-            gZIPOutputStream.flush();
-            gZIPOutputStream.finish();
+            gzipos.flush();
+            gzipos.finish();
 
-            zippedBytes = zippedByteArrayOutputStream.toByteArray();
+            zippedBytes = baos.toByteArray();
         }
-        
+
         return zippedBytes;
     }
-    
+
     /**
      * Unzip and write to a byte array.
      *
@@ -82,13 +82,14 @@ public class IOUtils {
     public static byte[] unzip(byte[] bytes) throws IOException {
         byte[] unzippedBytes;
 
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPInputStream gZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                GZIPInputStream gzipis = new GZIPInputStream(bais)) {
             //unzip
             //this method uses a buffer internally
-            org.apache.commons.io.IOUtils.copy(gZIPInputStream, byteArrayOutputStream);
+            org.apache.commons.io.IOUtils.copy(gzipis, baos);
 
-            unzippedBytes = byteArrayOutputStream.toByteArray();
+            unzippedBytes = baos.toByteArray();
         }
 
         return unzippedBytes;
@@ -110,7 +111,7 @@ public class IOUtils {
         zippedBytes = zip(bytes);
 
         return zippedBytes;
-    }        
+    }
 
     /**
      * Unzip and write the byte array to file.
@@ -125,5 +126,5 @@ public class IOUtils {
 
         //then write to file
         write(unzippedBytes, file);
-    }        
+    }
 }

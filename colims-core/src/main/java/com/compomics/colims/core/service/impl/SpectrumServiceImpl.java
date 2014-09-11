@@ -39,7 +39,7 @@ public class SpectrumServiceImpl implements SpectrumService {
      */
     private static final String IONS_END = "END IONS";
     @Autowired
-    private SpectrumRepository spectrumRepository;    
+    private SpectrumRepository spectrumRepository;
 
     @Override
     public Spectrum findById(Long id) {
@@ -91,10 +91,12 @@ public class SpectrumServiceImpl implements SpectrumService {
         byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(unzippedBytes), Charset.forName("UTF-8").newDecoder()));) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
+                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+                BufferedReader br = new BufferedReader(isr)) {
             boolean inSpectrum = false;
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 //Delete leading/trailing spaces.
                 line = line.trim();
                 if (line.startsWith(IONS_START)) {

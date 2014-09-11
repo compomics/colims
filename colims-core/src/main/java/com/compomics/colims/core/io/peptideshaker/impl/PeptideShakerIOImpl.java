@@ -20,7 +20,6 @@ import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;
 import com.google.common.io.Files;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -63,38 +62,39 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
             throw new IllegalArgumentException("The PeptideShaker .cps file with name: " + peptideShakerCpsArchive.getName() + " could not be found.");
         }
 
-        try (FileInputStream fileInputStream = new FileInputStream(peptideShakerCpsArchive);) {
+        try (FileInputStream fis = new FileInputStream(peptideShakerCpsArchive);
+                BufferedInputStream bis = new BufferedInputStream(fis, buffer);
+                ArchiveInputStream tarInput = new ArchiveStreamFactory().createArchiveInputStream(bis)) {
             byte data[] = new byte[buffer];
 
-            try (ArchiveInputStream tarInput = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(fileInputStream, buffer));) {
-//                long fileLength = peptideShakerCpsArchive.length();
+//            long fileLength = peptideShakerCpsArchive.length();
+            ArchiveEntry archiveEntry;
+//            int progress;
+            while ((archiveEntry = tarInput.getNextEntry()) != null) {
+                //for each entry in the archive, make a new file
+                LOGGER.debug("Creating file for archive entry " + archiveEntry.getName());
 
-                ArchiveEntry archiveEntry;
-//                int progress;
-                while ((archiveEntry = tarInput.getNextEntry()) != null) {
-                    //for each entry in the archive, make a new file
-                    LOGGER.debug("Creating file for archive entry " + archiveEntry.getName());                    
-                    
-                    File destinationFile = new File(destinationDirectory, FilenameUtils.separatorsToSystem(archiveEntry.getName()));
+                File destinationFile = new File(destinationDirectory, FilenameUtils.separatorsToSystem(archiveEntry.getName()));
 
-                    //create the necessary directories in the destination directory
-                    boolean madeDirs = destinationFile.getParentFile().mkdirs();
-                    //check if the directories have been made if they didn't exist yet
-                    if (!madeDirs && !destinationFile.getParentFile().exists()) {
-                        throw new IOException("Unable to create the necessary directories in directory " + destinationFile.getAbsolutePath()
-                                + ". Check if you have to right to write in this directory.");
+                //create the necessary directories in the destination directory
+                boolean madeDirs = destinationFile.getParentFile().mkdirs();
+                //check if the directories have been made if they didn't exist yet
+                if (!madeDirs && !destinationFile.getParentFile().exists()) {
+                    throw new IOException("Unable to create the necessary directories in directory " + destinationFile.getAbsolutePath()
+                            + ". Check if you have to right to write in this directory.");
+                }
+
+                try (FileOutputStream fos = new FileOutputStream(destinationFile);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+                    int count;
+                    while ((count = tarInput.read(data, 0, buffer)) != -1) {
+                        bos.write(data, 0, count);
                     }
-
-                    try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(destinationFile))) {
-                        int count;
-                        while ((count = tarInput.read(data, 0, buffer)) != -1) {
-                            bufferedOutputStream.write(data, 0, count);
-                        }
-                    }
+                }
 //                    //@todo do something with progress
 //                    progress = (int) (100 * tarInput.getBytesRead() / fileLength);
 //                    eventBus.post(new ProgressEvent(progress, "unzipping archive"));
-                }
+
             }
         }
 

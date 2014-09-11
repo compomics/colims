@@ -22,9 +22,6 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 -- insert test role_has_permissions
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3),(3,1);
 
--- insert test instrument types
-INSERT INTO instrument_type (id, creation_date, modification_date, user_name, name, description) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_1_name','instrument type 1 description'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','instr_type_2_name','instrument type 2 description');
-
 -- insert test instrument cv terms
 INSERT INTO instrument_cv_term (id, creation_date, modification_date, user_name, accession, label, name, ontology, cv_property) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','MS:1000073','MS','electrospray ionization', 'PSI Mass Spectrometry','SOURCE'), (2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','MS:1000111','MS','Microchannel Plate Detector', 'PSI Mass Spectrometry','DETECTOR'), (3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','MS:1000621','MS','photodiode array detector', 'PSI Mass Spectrometry Ontology','DETECTOR'), (4,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','MS:1000140','MS','4700 Proteomics Analyzer', 'PSI Mass Spectrometry Ontology','ANALYZER'), (5,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','MS:1000658','MS','4800 Proteomics Analyzer', 'PSI Mass Spectrometry Ontology','ANALYZER');
 

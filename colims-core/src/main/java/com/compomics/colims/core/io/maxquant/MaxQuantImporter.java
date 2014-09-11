@@ -154,29 +154,38 @@ public class MaxQuantImporter implements DataImporter {
             preparedFile.delete();
         }
         String line;
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(preparedFile), Charset.forName("UTF-8").newEncoder())))) {
-            try (LineNumberReader originalReader = new LineNumberReader(new InputStreamReader(new FileInputStream((originalFile)), Charset.forName("UTF-8").newDecoder()))) {
+        try (FileOutputStream fos = new FileOutputStream(preparedFile);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
+            try (FileInputStream fis = new FileInputStream((originalFile));
+                    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                    LineNumberReader originalReader = new LineNumberReader(isr)) {
                 while ((line = originalReader.readLine()) != null) {
-                    writer.println(line);
+                    pw.println(line);
                 }
             }
-            InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/contaminants.fasta").getInputStream();
-            try (LineNumberReader contaminantsReader = new LineNumberReader(new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder()))) {
+            try (InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/contaminants.fasta").getInputStream();
+                    InputStreamReader isr = new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder());
+                    LineNumberReader contaminantsReader = new LineNumberReader(isr)) {
                 while ((line = contaminantsReader.readLine()) != null) {
-                    writer.println(line);
+                    pw.println(line);
                 }
             }
-            writer.flush();
+            pw.flush();
         }
         File finalFile = new File(preparedFile.getParentFile(), preparedFile.getName() + "_spiked.fasta");
         if (finalFile.exists()) {
             finalFile.delete();
         }
-        //FileWriter finalWriter = new FileWriter(finalFile);
-        try (BufferedWriter finalWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(finalFile), Charset.forName("UTF-8").newEncoder()))) {
+        try (FileOutputStream fos = new FileOutputStream(finalFile);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter finalWriter = new BufferedWriter(osw)) {
             StringBuilder normalBuffer = new StringBuilder();
             StringBuilder reverseBuffer = new StringBuilder();
-            try (LineNumberReader preparedFileReader = new LineNumberReader(new InputStreamReader(new FileInputStream(preparedFile), Charset.forName("UTF-8").newDecoder()))) {
+            try (FileInputStream fis = new FileInputStream(preparedFile);
+                    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                    LineNumberReader preparedFileReader = new LineNumberReader(isr)) {
                 while ((line = preparedFileReader.readLine()) != null) {
                     if (line.contains(">")) {
                         finalWriter.write(normalBuffer.toString());

@@ -64,25 +64,26 @@ public class UtilitiesSpectrumMapper {
         SpectrumFile spectrumFile = new SpectrumFile();
         spectrumFile.setSpectrum(targetSpectrum);
 
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(byteArrayOutputStream, Charset.forName("UTF-8").newEncoder()));
-                ByteArrayOutputStream zippedByteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(zippedByteArrayOutputStream);) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
+                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos);) {
 
             //write MSnSpectum to a byte array output stream
-            sourceSpectrum.writeMgf(bufferedWriter);
-            bufferedWriter.flush();
+            sourceSpectrum.writeMgf(bw);
+            bw.flush();
 
             //get the bytes from the stream
-            byte[] unzippedBytes = byteArrayOutputStream.toByteArray();
+            byte[] unzippedBytes = baos.toByteArray();
 
             //gzip byte array
-            gZIPOutputStream.write(unzippedBytes);
-            gZIPOutputStream.flush();
-            gZIPOutputStream.finish();
+            gzipos.write(unzippedBytes);
+            gzipos.flush();
+            gzipos.finish();
 
             //set content of the SpectrumFile
-            spectrumFile.setContent(zippedByteArrayOutputStream.toByteArray());
+            spectrumFile.setContent(zbaos.toByteArray());
         } catch (IOException ex) {
             LOGGER.error(ex);
             throw new MappingException(ex.getMessage(), ex.getCause());

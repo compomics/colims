@@ -29,9 +29,11 @@ public class MzTabExporter {
     private static final String COMMENT_PREFIX = "COM";
     private static final String METADATA_PREFIX = "MTD";
 
-    public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
-        //try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION))))) {
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION)), Charset.forName("UTF-8").newEncoder())))) {
+    public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {        
+        try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION));
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             pw.println("under development");
 
