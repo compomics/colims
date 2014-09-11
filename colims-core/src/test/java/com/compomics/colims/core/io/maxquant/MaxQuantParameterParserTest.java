@@ -5,12 +5,9 @@ import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import static org.hamcrest.CoreMatchers.*;
-import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.*;
@@ -29,6 +26,7 @@ public class MaxQuantParameterParserTest {
 
     /**
      * Test of parse method, of class MaxQuantParameterParser.
+     * @throws java.lang.Exception
      */
     @Test
     public void testParse() throws Exception {

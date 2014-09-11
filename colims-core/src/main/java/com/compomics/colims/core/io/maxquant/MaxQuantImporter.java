@@ -165,7 +165,7 @@ public class MaxQuantImporter implements DataImporter {
                     pw.println(line);
                 }
             }
-            try (InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/contaminants.fasta").getInputStream();
+            try (InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/maxquant/contaminants.fasta").getInputStream();
                     InputStreamReader isr = new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder());
                     LineNumberReader contaminantsReader = new LineNumberReader(isr)) {
                 while ((line = contaminantsReader.readLine()) != null) {

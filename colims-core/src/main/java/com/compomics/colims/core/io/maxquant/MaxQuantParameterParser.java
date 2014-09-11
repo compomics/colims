@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -50,7 +51,7 @@ public class MaxQuantParameterParser {
             if (Arrays.asList(ParametersHeaders.KEEP_LOW_SCORING_PEPTIDES.allPossibleColumnNames()).contains(values.getKey())) {
                 globalParameters.setDiscardLowQualitySpectra(Boolean.getBoolean(values.getValue().toLowerCase(Locale.US)));
             } else if (Arrays.asList(ParametersHeaders.FASTA_FILE.allPossibleColumnNames()).contains(values.getKey())) {
-                globalParameters.setFastaFile(new File(values.getValue()));
+                globalParameters.setFastaFile(new File(FilenameUtils.separatorsToSystem(values.getValue())));
             } else if (Arrays.asList(ParametersHeaders.MIN_PEP_LENGTH.allPossibleColumnNames()).contains(values.getKey())) {
                 globalParameters.setMinPeptideLength(Integer.parseInt(values.getValue()));
             } else if (Arrays.asList(ParametersHeaders.MAX_PEP_PEP.allPossibleColumnNames()).contains(values.getKey())) {

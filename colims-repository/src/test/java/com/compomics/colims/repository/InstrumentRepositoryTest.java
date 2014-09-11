@@ -47,10 +47,10 @@ public class InstrumentRepositoryTest {
     @Test
     public void testFindAllOrderedByName() {
         List<Instrument> instruments = instrumentRepository.findAllOrderedByName();
-        
+
         Assert.assertNotNull(instruments);
         Assert.assertTrue(!instruments.isEmpty());
-        
+
         //check if the list is sorted by instrument name
         boolean sorted = true;
         for (int i = 1; i < instruments.size(); i++) {
@@ -58,11 +58,15 @@ public class InstrumentRepositoryTest {
                 sorted = false;
             }
         }
-        Assert.assertTrue(sorted);        
+        Assert.assertTrue(sorted);
     }
 
     @Test
     public void testInstrumentCvTerms() {
+        //type cv term
+        Assert.assertNotNull(instrument.getType());
+        Assert.assertEquals(CvTermType.TYPE, instrument.getType().getcvTermType());
+
         //source cv term
         Assert.assertNotNull(instrument.getSource());
         Assert.assertEquals(CvTermType.SOURCE, instrument.getSource().getcvTermType());

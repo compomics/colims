@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Niels Hulstaert
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-@TransactionConfiguration(defaultRollback = true)
-@Transactional
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+//@TransactionConfiguration(defaultRollback = true)
+//@Transactional
 public class AuthorizationInterceptorTest {
     
     @Autowired
