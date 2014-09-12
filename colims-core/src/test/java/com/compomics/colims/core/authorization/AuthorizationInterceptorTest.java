@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Niels Hulstaert
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-//@TransactionConfiguration(defaultRollback = true)
-//@Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class AuthorizationInterceptorTest {
     
     @Autowired
@@ -27,7 +27,7 @@ public class AuthorizationInterceptorTest {
     @Autowired
     private AuthenticationBean authenticationBean;
     
-    //@Test(expected = PermissionException.class)
+    @Test(expected = PermissionException.class)
     public void testBeforeSaveAdvice(){
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
@@ -42,7 +42,7 @@ public class AuthorizationInterceptorTest {
         userService.save(newUser);        
     }
     
-    //@Test(expected = PermissionException.class)
+    @Test(expected = PermissionException.class)
     public void testBeforeUpdateAdvice(){
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
@@ -54,7 +54,7 @@ public class AuthorizationInterceptorTest {
         userService.update(userToUpdate);        
     }
     
-    //@Test(expected = PermissionException.class)
+    @Test(expected = PermissionException.class)
     public void testBeforeDeleteAdvice(){
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
