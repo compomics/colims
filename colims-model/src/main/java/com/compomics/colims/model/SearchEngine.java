@@ -29,14 +29,14 @@ public class SearchEngine extends CvTerm {
     private static final String NOT_APPLICABLE = "N/A";
 
     /**
-     * The search engine type
+     * The search engine type.
      */
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     protected SearchEngineType searchEngineType;
     /**
-     * The version of the search engine
+     * The version of the search engine.
      */
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
@@ -47,13 +47,13 @@ public class SearchEngine extends CvTerm {
     public SearchEngine() {
     }
 
-    public SearchEngine(SearchEngineType searchEngineType, String version) {
+    public SearchEngine(final SearchEngineType searchEngineType, final String version) {
         super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.searchEngineType = searchEngineType;
         this.version = version;
     }
 
-    public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
+    public SearchEngine(SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
         this.searchEngineType = searchEngineType;
         this.version = version;

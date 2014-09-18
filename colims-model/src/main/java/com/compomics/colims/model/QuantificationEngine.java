@@ -23,19 +23,20 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_engine")
 @Entity
-public class QuantificationEngine extends DatabaseEntity {
-
+public class QuantificationEngine extends CvTerm {    
+    
     private static final long serialVersionUID = 4719894153697846226L;
-        
+    private static final String NOT_APPLICABLE = "N/A";
+
     /**
-     * The quantification engine type
+     * The search engine type
      */
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     protected QuantificationEngineType quantificationEngineType;
     /**
-     * The version of the quantification engine
+     * The version of the search engine
      */
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
@@ -47,15 +48,33 @@ public class QuantificationEngine extends DatabaseEntity {
     }
 
     public QuantificationEngine(QuantificationEngineType quantificationEngineType, String version) {
+        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.quantificationEngineType = quantificationEngineType;
         this.version = version;
-    }    
-    
+    }
+
+    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
+        super(ontology, label, accession, name);
+        this.quantificationEngineType = quantificationEngineType;
+        this.version = version;
+    }
+
+    /**
+     * Constructor that creates a new instance with all fields of the given
+     * QuantificationEngine and the given version.
+     *
+     * @param quantificationEngine the QuantificationEngine to copy
+     * @param version the quantification engine version
+     */
+    public QuantificationEngine(final QuantificationEngine quantificationEngine, final String version) {
+        this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getOntology(), quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
+    }
+
     public QuantificationEngineType getQuantificationEngineType() {
         return quantificationEngineType;
     }
 
-    public void setQuantificationEngineType(QuantificationEngineType quantificationEngineType) {
+    public void setQuantificationEngineType(final QuantificationEngineType quantificationEngineType) {
         this.quantificationEngineType = quantificationEngineType;
     }
 
@@ -77,9 +96,9 @@ public class QuantificationEngine extends DatabaseEntity {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.quantificationEngineType);
-        hash = 53 * hash + Objects.hashCode(this.version);
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.quantificationEngineType);
+        hash = 23 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
@@ -99,6 +118,6 @@ public class QuantificationEngine extends DatabaseEntity {
             return false;
         }
         return true;
-    }        
+    }     
 
 }
