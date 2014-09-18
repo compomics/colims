@@ -349,7 +349,7 @@ public class TaskManagementController implements Controllable {
      */
     private void postConnectionErrorMessage(String message) {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
-                + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
+                + System.lineSeparator() + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
     }
 
 }
