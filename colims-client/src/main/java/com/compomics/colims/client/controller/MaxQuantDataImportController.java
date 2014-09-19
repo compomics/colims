@@ -54,8 +54,8 @@ public class MaxQuantDataImportController implements Controllable {
 
         maxQuantDataImportPanel.getSelectMaxQuantDirectoryButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //in response to the button click, show open dialog 
+            public void actionPerformed(final ActionEvent e) {
+                //in response to the button click, show open dialog
                 int returnVal = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
@@ -65,14 +65,14 @@ public class MaxQuantDataImportController implements Controllable {
                 }
             }
         });
-        
+
         maxQuantDataImportPanel.getSelectFastaButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 fastaDbManagementController.showView();
-                
+
                 fastaDb = fastaDbManagementController.getFastaDb();
-                
+
                 maxQuantDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
             }
         });
@@ -105,8 +105,9 @@ public class MaxQuantDataImportController implements Controllable {
     }
 
     /**
+     * Get the MaxQuantImport.
      *
-     * @return
+     * @return the MaxQuantImport
      */
     public MaxQuantImport getDataImport() {
         MaxQuantImport maxQuantDataImport = new MaxQuantImport(maxQuantDirectory, fastaDb);

@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class ExperimentEditController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
-    //model   
+    //model
     private Experiment experimentToEdit;
     //view
     private ExperimentEditDialog experimentEditDialog;
@@ -51,16 +51,18 @@ public class ExperimentEditController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the main view of this controller.
      *
-     * @return
+     * @return the ExperimentEditDialog
      */
     public ExperimentEditDialog getExperimentEditDialog() {
         return experimentEditDialog;
     }
 
     /**
+     * Get the experiment to edit.
      *
-     * @return
+     * @return the experiment to edit
      */
     public Experiment getExperimentToEdit() {
         return experimentToEdit;
@@ -76,10 +78,10 @@ public class ExperimentEditController implements Controllable {
         experimentBinaryFileDialog = new ExperimentBinaryFileDialog(experimentEditDialog, true);
         experimentBinaryFileDialog.getBinaryFileManagementPanel().init(ExperimentBinaryFile.class);
 
-        //add action listeners                        
+        //add action listeners
         experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 List<String> validationMessages = new ArrayList<>();
 
                 //update experimentToEdit with dialog input, catch NumberFormatException for experiment number
@@ -91,7 +93,7 @@ public class ExperimentEditController implements Controllable {
 
                 //validate experiment
                 validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
-                //check for a new experiment if the experiment title already exists in the db                
+                //check for a new experiment if the experiment title already exists in the db
                 if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
                     validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another experiment title.");
@@ -136,7 +138,7 @@ public class ExperimentEditController implements Controllable {
 
         experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 ExperimentBinaryFile binaryFileToAdd = (ExperimentBinaryFile) evt.getNewValue();
 
                 //set experiment in binary file
@@ -152,7 +154,7 @@ public class ExperimentEditController implements Controllable {
 
         experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
 
                 if (experimentToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
@@ -168,7 +170,7 @@ public class ExperimentEditController implements Controllable {
 
         experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
 
                 //update binary file
@@ -180,14 +182,14 @@ public class ExperimentEditController implements Controllable {
 
         experimentBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 experimentBinaryFileDialog.dispose();
             }
         });
 
         experimentEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (experimentToEdit.getId() != null) {
                     experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
 
@@ -202,7 +204,7 @@ public class ExperimentEditController implements Controllable {
 
         experimentEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 experimentEditDialog.dispose();
             }
         });
@@ -222,7 +224,7 @@ public class ExperimentEditController implements Controllable {
      *
      * @param experiment
      */
-    public void updateView(Experiment experiment) {
+    public void updateView(final Experiment experiment) {
         experimentToEdit = experiment;
 
         if (experimentToEdit.getId() != null) {
@@ -244,7 +246,7 @@ public class ExperimentEditController implements Controllable {
 
     /**
      * Update the instance fields of the selected experiment in the experiments
-     * table
+     * table.
      */
     private void updateExperimentToEdit() {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
@@ -260,7 +262,7 @@ public class ExperimentEditController implements Controllable {
      * @param experiment the experiment
      * @return does the experiment title exist
      */
-    private boolean isExistingExperimentTitle(Experiment experiment) {
+    private boolean isExistingExperimentTitle(final Experiment experiment) {
         boolean isExistingExperimentTitle = true;
         Experiment foundExperiment = experimentService.findByProjectIdAndTitle(projectManagementController.getSelectedProject().getId(), experiment.getTitle());
         if (foundExperiment == null) {
@@ -273,7 +275,7 @@ public class ExperimentEditController implements Controllable {
     /**
      * Get the attachments file names as a concatenated string.
      *
-     * @return
+     * @return the joined attachments String
      */
     private String getAttachmentsAsString() {
         String concatenatedString;

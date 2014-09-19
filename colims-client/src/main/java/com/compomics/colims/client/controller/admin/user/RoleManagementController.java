@@ -141,7 +141,7 @@ public class RoleManagementController implements Controllable {
                             userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been stored in the database.");
                         }
 
-                        //populate dual list with permission                        
+                        //populate dual list with permission
                         userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
                     } else {
                         userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
@@ -202,7 +202,7 @@ public class RoleManagementController implements Controllable {
         userManagementDialog.getPermissionDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-                //change permissions of the selected role                                    
+                //change permissions of the selected role
                 List<Permission> addedPermissions = (List<Permission>) evt.getNewValue();
 
                 //add permissions to the selected role
@@ -219,7 +219,7 @@ public class RoleManagementController implements Controllable {
                 Role selectedRole = getSelectedRole();
                 //validate role
                 List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
-                //check for a new group if the role name already exists in the db                
+                //check for a new group if the role name already exists in the db
                 if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
                     validationMessages.add(selectedRole.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another role name.");

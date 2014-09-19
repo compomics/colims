@@ -37,9 +37,10 @@ public class DatabaseLoginController implements Controllable {
     private DatabaseLoginDialog databaseLoginDialog;
 
     /**
+     * No-arg constructor that loads the client preferences from the colims-client.properties file.
      *
-     * @throws ConfigurationException
-     * @throws IOException
+     * @throws ConfigurationException the ConfigurationException
+     * @throws IOException the IOException
      */
     public DatabaseLoginController() throws ConfigurationException, IOException {
         //load client properties file
@@ -48,8 +49,9 @@ public class DatabaseLoginController implements Controllable {
     }
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the DatabaseLoginDialog
      */
     public DatabaseLoginDialog getDatabaseLoginDialog() {
         return databaseLoginDialog;
@@ -68,7 +70,7 @@ public class DatabaseLoginController implements Controllable {
 
         databaseLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 dbUrl = databaseLoginDialog.getDbUrlTextField().getText();
                 dbUserName = databaseLoginDialog.getDbUserNameTextField().getText();
                 dbPassword = databaseLoginDialog.getDbPasswordTextField().getPassword();
@@ -83,7 +85,7 @@ public class DatabaseLoginController implements Controllable {
 
         databaseLoginDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 databaseLoginDialog.dispose();
                 System.exit(0);
             }
@@ -91,7 +93,7 @@ public class DatabaseLoginController implements Controllable {
 
         databaseLoginDialog.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent we) {
+            public void windowClosing(final WindowEvent we) {
                 System.exit(0);
             }
         });
@@ -107,7 +109,7 @@ public class DatabaseLoginController implements Controllable {
      * Get the database properties as map (key: property name; value: the
      * property value).
      *
-     * @return
+     * @return the map of db properties
      */
     public Map<String, String> getDbProperties() {
         Map<String, String> dbProperties = new HashMap<>();
@@ -120,7 +122,7 @@ public class DatabaseLoginController implements Controllable {
     }
 
     /**
-     * Reset the properties after use
+     * Reset the properties after use.
      */
     public void reset() {
         Arrays.fill(dbPassword, '0');
@@ -135,7 +137,7 @@ public class DatabaseLoginController implements Controllable {
      * @param relativePath the relative path of the resource
      * @return the found resource
      */
-    private Resource getResourceByRelativePath(String relativePath) {
+    private Resource getResourceByRelativePath(final String relativePath) {
         Resource resource = new FileSystemResource(relativePath);
 
         if (!resource.exists()) {
@@ -173,9 +175,9 @@ public class DatabaseLoginController implements Controllable {
      * @param url the db url
      * @param userName the db user name
      * @param password the db password
-     * @return
+     * @return is the connection successful
      */
-    private boolean testConnection(String driverClassName, String url, String userName, String password) {
+    private boolean testConnection(final String driverClassName, final String url, final String userName, final String password) {
         boolean successful = false;
 
         Connection connection = null;

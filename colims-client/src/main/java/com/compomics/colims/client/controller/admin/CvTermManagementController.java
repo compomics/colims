@@ -74,7 +74,6 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
         //register to event bus
         //eventBus.register(this);
-
         //init and set table model
         typeCvTermTableModel2 = new TypedCvTermTableModel2();
         cvTermManagementDialog.getCvTermTable().setModel(typeCvTermTableModel2);
@@ -125,18 +124,18 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
         cvTermManagementDialog.getAddCvTermButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 showOlsDialog(true);
             }
         });
 
         cvTermManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 TypedCvTerm selectedCvTerm = getSelectedCvTerm();
                 //validate CV term
                 List<String> validationMessages = GuiUtils.validateEntity(selectedCvTerm);
-                //check for a new CV term if the accession already exists in the db                
+                //check for a new CV term if the accession already exists in the db
                 if (selectedCvTerm.getId() == null && isExistingCvTermAccession(selectedCvTerm)) {
                     validationMessages.add(selectedCvTerm.getAccession() + " already exists in the database.");
                 }
@@ -162,7 +161,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
 
         cvTermManagementDialog.getDeleteCvTermButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 TypedCvTerm cvTermToDelete = getSelectedCvTerm();
                 int selectedIndex = cvTermManagementDialog.getCvTermTable().getSelectedRow();
 
@@ -197,7 +196,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getEditUsingOlsCvTermButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 showOlsDialog(false);
             }
         });
@@ -205,7 +204,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getCancelButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 cvTermManagementDialog.dispose();
             }
         });
@@ -226,7 +225,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      * @param cvTermType the cvTermType of the CV terms in the list
      * @param cvTerms the list of CV terms
      */
-    public void updateDialog(CvTermType cvTermType, List<TypedCvTerm> cvTerms) {
+    public void updateDialog(final CvTermType cvTermType, final List<TypedCvTerm> cvTerms) {
         this.cvTermType = cvTermType;
 
         typeCvTermTableModel2.setCvTerms(cvTerms);
@@ -235,19 +234,8 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         cvTermManagementDialog.getCvTermTable().getSelectionModel().clearSelection();
     }
 
-    /**
-     *
-     * @param field
-     * @param selectedValue
-     * @param accession
-     * @param ontologyShort
-     * @param ontologyLong
-     * @param modifiedRow
-     * @param mappedTerm
-     * @param metadata
-     */
     @Override
-    public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
+    public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
         //check wether a CV term has to be added or updated
         if (field.equals(ADD_CV_TERM)) {
             TypedCvTerm cvTerm = CvTermFactory.newInstance(cvTermType, ontologyLong, ontologyShort, accession, selectedValue);
@@ -272,22 +260,18 @@ public class CvTermManagementController implements Controllable, OLSInputable {
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Window getWindow() {
         return cvTermManagementDialog;
     }
 
     /**
-     * Check if the CV term with the accession exists in the database
+     * Check if the CV term with the accession exists in the database.
      *
      * @param cvTerm the selected CV term
      * @return the does exist boolean
      */
-    private boolean isExistingCvTermAccession(TypedCvTerm cvTerm) {
+    private boolean isExistingCvTermAccession(final TypedCvTerm cvTerm) {
         boolean isExistingCvTermAccession = true;
         TypedCvTerm foundCvTerm = cvTermService.findByAccession(cvTerm.getAccession(), cvTerm.getcvTermType());
         if (foundCvTerm == null) {
@@ -298,15 +282,15 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Update the given CV term. Only the modifified fields are set.
+     * Update the given CV term. Only the modified fields are set.
      *
-     * @param cvTerm
-     * @param ontology
-     * @param label
-     * @param accession
-     * @param name
+     * @param cvTerm the TypedCvTerm
+     * @param ontology the ontology
+     * @param label the label
+     * @param accession the accession
+     * @param name the name
      */
-    private void updateCvTerm(TypedCvTerm cvTerm, String ontology, String label, String accession, String name) {
+    private void updateCvTerm(final TypedCvTerm cvTerm, final String ontology, final String label, final String accession, final String name) {
         if (!cvTerm.getOntology().equalsIgnoreCase(ontology)) {
             cvTerm.setOntology(ontology);
         }
@@ -326,7 +310,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
      *
      * @param isNewCvTerm is the CV term new or did already exist in the DB
      */
-    private void showOlsDialog(boolean isNewCvTerm) {
+    private void showOlsDialog(final boolean isNewCvTerm) {
         String ontology = "PSI Mass Spectrometry Ontology [MS]";
 
         Map<String, List<String>> preselectedOntologies = new HashMap<>();
@@ -341,12 +325,12 @@ public class CvTermManagementController implements Controllable, OLSInputable {
             field = UPDATE_CV_TERM;
             term = getSelectedCvTerm().getName();
         }
-        
+
         cvTermManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
         //show new OLS dialog
         new OLSDialog(cvTermManagementDialog, this, true, field, ontology, term, preselectedOntologies);
-        
+
         cvTermManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }
 
@@ -363,7 +347,7 @@ public class CvTermManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Clear the CV term details fields
+     * Clear the CV term details fields.
      */
     private void clearCvTermDetailFields() {
         cvTermManagementDialog.getCvTermStateInfoLabel().setText("");

@@ -62,8 +62,8 @@ public class PeptideShakerDataImportController implements Controllable {
 
         peptideShakerDataImportPanel.getSelectCpsButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //in response to the button click, show open dialog 
+            public void actionPerformed(final ActionEvent e) {
+                //in response to the button click, show open dialog
                 int returnVal = peptideShakerDataImportPanel.getCpsFileChooser().showOpenDialog(peptideShakerDataImportPanel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     cpsArchive = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile();
@@ -77,7 +77,7 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getSelectFastaButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 fastaDbManagementController.showView();
 
                 fastaDb = fastaDbManagementController.getFastaDb();
@@ -94,7 +94,7 @@ public class PeptideShakerDataImportController implements Controllable {
             protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
             @Override
-            public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public java.awt.Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
                 JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
                         isSelected, cellHasFocus);
 
@@ -111,7 +111,7 @@ public class PeptideShakerDataImportController implements Controllable {
 
         peptideShakerDataImportPanel.getAddMgfButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //in response to the button click, show open dialog
                 int returnVal = peptideShakerDataImportPanel.getMgfFileChooser().showOpenDialog(peptideShakerDataImportPanel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -125,7 +125,7 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getRemoveMgfButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int[] selectedIndices = peptideShakerDataImportPanel.getMgfFileList().getSelectedIndices();
                 for (int i = 0; i < selectedIndices.length; i++) {
                     mgfFileListModel.remove(selectedIndices[i]);
@@ -165,8 +165,9 @@ public class PeptideShakerDataImportController implements Controllable {
     }
 
     /**
+     * Get the PeptideShakerImport.
      *
-     * @return
+     * @return the PeptideShakerImport
      */
     public PeptideShakerImport getDataImport() {
         List<File> mgfFiles = new ArrayList<>();

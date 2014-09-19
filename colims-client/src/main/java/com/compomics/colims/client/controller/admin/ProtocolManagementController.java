@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
 @Component("protocolManagementController")
 public class ProtocolManagementController implements Controllable {
 
-    //model      
+    //model
     private TypedCvTermSummaryListModel<ProtocolCvTerm> typedCvTermSummaryListModel;
     private ObservableList<Protocol> protocolBindingList;
     private BindingGroup bindingGroup;
@@ -75,7 +75,7 @@ public class ProtocolManagementController implements Controllable {
     private CvTermService cvTermService;
     @Autowired
     private EventBus eventBus;
-    
+
     /**
      *
      * @return
@@ -92,7 +92,7 @@ public class ProtocolManagementController implements Controllable {
         //init binding
         bindingGroup = new BindingGroup();
 
-        //init views     
+        //init views
         initProtocolManagementDialog();
         initProtocolEditDialog();
 
@@ -113,15 +113,18 @@ public class ProtocolManagementController implements Controllable {
      * CvTermManagementController. If the ProtocolManagementDialog is visible,
      * clear the selection in the CV term summary list.
      *
-     * @param cvTermChangeEvent
+     * @param cvTermChangeEvent the CvTermChangeEvent
      */
     @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+    public void onCvTermChangeEvent(final CvTermChangeEvent cvTermChangeEvent) {
         if (protocolEditDialog.isVisible()) {
             protocolEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
         }
     }
 
+    /**
+     * Init the ProtocolManagementDialog.
+     */
     private void initProtocolManagementDialog() {
         protocolManagementDialog = new ProtocolManagementDialog(colimsController.getColimsFrame(), true);
 
@@ -133,7 +136,7 @@ public class ProtocolManagementController implements Controllable {
         //add action listeners
         protocolManagementDialog.getProtocolList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
                     if (selectedIndex != -1 && protocolBindingList.get(selectedIndex) != null) {
@@ -168,7 +171,7 @@ public class ProtocolManagementController implements Controllable {
 
         protocolManagementDialog.getAddProtocolButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 updateProtocolEditDialog(createDefaultProtocol());
 
                 //show dialog
@@ -179,7 +182,7 @@ public class ProtocolManagementController implements Controllable {
 
         protocolManagementDialog.getDeleteProtocolButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
                     Protocol protocolToDelete = getSelectedProtocol();
                     //check if the protocol is already has an id.
@@ -215,7 +218,7 @@ public class ProtocolManagementController implements Controllable {
 
         protocolManagementDialog.getEditProtocolButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
                     updateProtocolEditDialog(getSelectedProtocol());
                     //show dialog
@@ -229,13 +232,16 @@ public class ProtocolManagementController implements Controllable {
 
         protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 protocolManagementDialog.dispose();
             }
         });
 
     }
 
+    /**
+     * Init the ProtocolEditDialog.
+     */
     private void initProtocolEditDialog() {
         protocolEditDialog = new ProtocolEditDialog(protocolManagementDialog, true);
 
@@ -254,10 +260,10 @@ public class ProtocolManagementController implements Controllable {
         //add action listeners
         protocolEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (protocolEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvTermType from summary list                        
+                        //get selected cvTermType from summary list
                         CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
                         //load duallist for the selected cvTermType
@@ -287,8 +293,8 @@ public class ProtocolManagementController implements Controllable {
 
         protocolEditDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                //get selected cvTermType                        
+            public void propertyChange(final PropertyChangeEvent evt) {
+                //get selected cvTermType
                 CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
                 List<ProtocolCvTerm> addedItems = (List<ProtocolCvTerm>) evt.getNewValue();
@@ -334,13 +340,13 @@ public class ProtocolManagementController implements Controllable {
 
         protocolEditDialog.getProtocolSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update with dialog input
                 updateProtocolToEdit();
 
                 //validate protocol
                 List<String> validationMessages = GuiUtils.validateEntity(protocolToEdit);
-                //check for a new protocol if the protocol name already exists in the db                
+                //check for a new protocol if the protocol name already exists in the db
                 if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
                     validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another protocol name.");
@@ -379,17 +385,17 @@ public class ProtocolManagementController implements Controllable {
 
         protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 protocolEditDialog.dispose();
             }
         });
 
         protocolEditDialog.getProtocolCvTermsCrudButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //check if a CV term group is selected in the CV term summary list
                 if (protocolEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                    //get selected cvTermType from summary list                        
+                    //get selected cvTermType from summary list
                     CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
                     List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
@@ -411,7 +417,7 @@ public class ProtocolManagementController implements Controllable {
      * @param protocol the protocol
      * @return does the protocol name exist
      */
-    private boolean isExistingProtocolName(Protocol protocol) {
+    private boolean isExistingProtocolName(final Protocol protocol) {
         boolean isExistingProtocolName = true;
         Protocol foundProtocol = protocolService.findByName(protocol.getName());
         if (foundProtocol == null) {
@@ -444,18 +450,18 @@ public class ProtocolManagementController implements Controllable {
     }
 
     /**
-     * Update the protocolToEdit with input from the protocolEditDialog
+     * Update the protocolToEdit with input from the protocolEditDialog.
      */
     public void updateProtocolToEdit() {
         protocolToEdit.setName(protocolEditDialog.getNameTextField().getText());
     }
 
     /**
-     * Update the protocol edit dialog with the given protocol
+     * Update the protocol edit dialog with the given protocol.
      *
-     * @param protocol
+     * @param protocol the Protocol
      */
-    private void updateProtocolEditDialog(Protocol protocol) {
+    private void updateProtocolEditDialog(final Protocol protocol) {
         protocolToEdit = protocol;
 
         //check if the protocol has an ID.
@@ -487,7 +493,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     /**
-     * Clear the protocol detail fields
+     * Clear the protocol detail fields.
      */
     private void clearProtocolDetailFields() {
         protocolManagementDialog.getProtocolDetailsTable().setModel(new TypedCvTermTableModel());

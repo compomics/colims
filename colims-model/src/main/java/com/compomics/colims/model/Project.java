@@ -30,10 +30,10 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Table(name = "project")
 @Entity
-public class Project extends AuditableDatabaseEntity {    
+public class Project extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -172981262866248897L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert a project title")
     @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
@@ -50,7 +50,7 @@ public class Project extends AuditableDatabaseEntity {
     private String description;
     @Basic(optional = false)
     @ManyToOne
-    @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id", nullable = false)    
+    @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id", nullable = false)
     private User owner;
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -82,7 +82,7 @@ public class Project extends AuditableDatabaseEntity {
 
     public void setLabel(String label) {
         this.label = label;
-    }        
+    }
 
     public String getDescription() {
         return description;
@@ -102,7 +102,7 @@ public class Project extends AuditableDatabaseEntity {
 
     public void setUsers(List<User> users) {
         this.users = users;
-    }        
+    }
 
     public void setExperiments(List<Experiment> experiments) {
         this.experiments = experiments;
@@ -156,11 +156,11 @@ public class Project extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }       
+    }
 
     @Override
     public String toString() {
         return title;
-    }    
-    
+    }
+
 }

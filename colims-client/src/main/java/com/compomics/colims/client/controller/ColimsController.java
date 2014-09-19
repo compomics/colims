@@ -70,7 +70,7 @@ public class ColimsController implements Controllable, ActionListener {
     private ColimsFrame colimsFrame;
     private UserLoginDialog userLoginDialog;
     private MainHelpDialog mainHelpDialog;
-    //child controllers    
+    //child controllers
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
@@ -138,7 +138,7 @@ public class ColimsController implements Controllable, ActionListener {
         //register to event bus
         eventBus.register(this);
 
-        //init views       
+        //init views
         colimsFrame = new ColimsFrame();
         colimsFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
         colimsFrame.setTitle("Colims " + version);
@@ -157,7 +157,7 @@ public class ColimsController implements Controllable, ActionListener {
         taskManagementController.init();
         cvTermManagementController.init();
 
-        //add panel components                        
+        //add panel components
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -167,7 +167,7 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
         colimsFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
-        //add action listeners                
+        //add action listeners
         //add menu item action listeners
         colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
         colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
@@ -175,7 +175,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
@@ -186,7 +186,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         userLoginDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 userLoginDialog.dispose();
                 System.exit(0);
             }
@@ -214,7 +214,7 @@ public class ColimsController implements Controllable, ActionListener {
         colimsFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
 
             @Override
-            public void stateChanged(ChangeEvent e) {                
+            public void stateChanged(ChangeEvent e) {
                 if (getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)) {
                     //check connection to distributed queues
                     if (queueManager.testConnection()) {
@@ -325,7 +325,7 @@ public class ColimsController implements Controllable, ActionListener {
     public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
         updateProjects(protocolChangeEvent);
     }
-    
+
     /**
      * Get the selected tab title of the main tabbed pane.
      *
@@ -351,14 +351,14 @@ public class ColimsController implements Controllable, ActionListener {
      * unsuccessful, show a message dialog and reset the input fields.
      */
     private void onLogin() {
-        //check if a user with given user name and password is found in the db    
+        //check if a user with given user name and password is found in the db
         LOGGER.info("Login attempt with user name: " + userLoginDialog.getUserNameTextField().getText());
         User currentUser = userService.findByLoginCredentials(userLoginDialog.getUserNameTextField().getText(), String.valueOf(userLoginDialog.getUserPasswordTextField().getPassword()));
         if (currentUser != null) {
             LOGGER.info("User " + userLoginDialog.getUserNameTextField().getText() + " successfully logged in.");
             userLoginDialog.dispose();
 
-            //set current user in authentication bean 
+            //set current user in authentication bean
             userService.fetchAuthenticationRelations(currentUser);
             authenticationBean.setCurrentUser(currentUser);
 
@@ -395,7 +395,7 @@ public class ColimsController implements Controllable, ActionListener {
 
             JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
         } else {
-            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);            
+            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);
         }
     }
 
@@ -410,11 +410,11 @@ public class ColimsController implements Controllable, ActionListener {
         materialManagementController.init();
         protocolManagementController.init();
 
-        //add action listeners                
+        //add action listeners
         colimsFrame.getUserManagementMenuItem().addActionListener(this);
         colimsFrame.getInstrumentManagementMenuItem().addActionListener(this);
         colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
         colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
-    }    
+    }
 
 }

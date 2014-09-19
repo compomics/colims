@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component("userManagementController")
 public class UserManagementParentController implements Controllable {
 
-    //model    
+    //model
     //view
     private UserManagementDialog userManagementDialog;
     //parent controller
@@ -33,14 +33,15 @@ public class UserManagementParentController implements Controllable {
     private PermissionManagementController permissionManagementController;
 
     /**
-     *
+     * No-arg constructor.
      */
     public UserManagementParentController() {
     }
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the UserManagementDialog
      */
     public UserManagementDialog getUserManagementDialog() {
         return userManagementDialog;

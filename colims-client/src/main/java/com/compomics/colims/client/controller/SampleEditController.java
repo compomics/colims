@@ -70,7 +70,7 @@ import org.springframework.stereotype.Component;
 public class SampleEditController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(SampleEditController.class);
-    //model 
+    //model
     private BindingGroup bindingGroup;
     private ObservableList<Protocol> protocolBindingList;
     private EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
@@ -168,7 +168,7 @@ public class SampleEditController implements Controllable {
 
         bindingGroup.bind();
 
-        //add action listeners 
+        //add action listeners
         sampleEditDialog.getMaterialDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -180,7 +180,7 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update sampleToEdit with dialog input
                 updateSampleToEdit();
 
@@ -227,7 +227,7 @@ public class SampleEditController implements Controllable {
 
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 SampleBinaryFile binaryFileToAdd = (SampleBinaryFile) evt.getNewValue();
 
                 //set experiment in binary file
@@ -243,7 +243,7 @@ public class SampleEditController implements Controllable {
 
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
 
                 if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
@@ -259,7 +259,7 @@ public class SampleEditController implements Controllable {
 
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
 
                 //update binary file
@@ -271,14 +271,14 @@ public class SampleEditController implements Controllable {
 
         sampleBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 sampleBinaryFileDialog.dispose();
             }
         });
 
         sampleEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (sampleToEdit.getId() != null) {
                     sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
 
@@ -293,14 +293,14 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 sampleEditDialog.dispose();
             }
         });
 
         sampleEditDialog.getEditAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
                 if (selectedAnalyticalRun != null) {
                     analyticalRunEditController.updateView(selectedAnalyticalRun);
@@ -312,7 +312,7 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 AnalyticalRun analyticalRunToDelete = getSelectedAnalyticalRun();
 
                 if (analyticalRunToDelete != null) {
@@ -335,7 +335,7 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getExportAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
                 if (selectedAnalyticalRun != null) {
                     int returnVal = sampleEditDialog.getExportDirectoryChooser().showOpenDialog(sampleEditDialog);
@@ -363,9 +363,9 @@ public class SampleEditController implements Controllable {
      * Update the sample edit dialog with the selected sample in the sample
      * overview table.
      *
-     * @param sample
+     * @param sample the Sample
      */
-    public void updateView(Sample sample) {
+    public void updateView(final Sample sample) {
         sampleToEdit = sample;
 
         if (sampleToEdit.getId() != null) {
@@ -382,7 +382,7 @@ public class SampleEditController implements Controllable {
 
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
         sampleEditDialog.getConditionTextField().setText(sampleToEdit.getCondition());
-        //set the selected item in the owner combobox        
+        //set the selected item in the owner combobox
         sampleEditDialog.getProtocolComboBox().setSelectedItem(sampleToEdit.getProtocol());
         sampleEditDialog.getStorageLocationTextField().setText(sampleToEdit.getStorageLocation());
         sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -390,7 +390,7 @@ public class SampleEditController implements Controllable {
         //populate user dual list
         sampleEditDialog.getMaterialDualList().populateLists(materials, sampleToEdit.getMaterials());
 
-        //fill analytical runs table                        
+        //fill analytical runs table
         GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
 
         showView();
@@ -398,9 +398,9 @@ public class SampleEditController implements Controllable {
 
     /**
      * Get the row index of the selected analytical run in the analytical runs
-     * table
+     * table.
      *
-     * @return
+     * @return the selected analytical run index
      */
     public int getSelectedAnalyticalRunIndex() {
         return analyticalRunsSelectionModel.getLeadSelectionIndex();
@@ -424,11 +424,11 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Set the selected analytical run in the analytical runs table
+     * Set the selected analytical run in the analytical runs table.
      *
-     * @param index
+     * @param index the selected analytical run index
      */
-    public void setSelectedAnalyticalRun(int index) {
+    public void setSelectedAnalyticalRun(final int index) {
         analyticalRunsSelectionModel.clearSelection();
         analyticalRunsSelectionModel.setLeadSelectionIndex(index);
     }
@@ -439,7 +439,7 @@ public class SampleEditController implements Controllable {
      * @param protocolChangeEvent the protocol change event
      */
     @Subscribe
-    public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
+    public void onProtocolChangeEvent(final ProtocolChangeEvent protocolChangeEvent) {
         protocolBindingList.clear();
         protocolBindingList.addAll(protocolService.findAll());
     }
@@ -450,7 +450,7 @@ public class SampleEditController implements Controllable {
      * @param materialChangeEvent the material change event
      */
     @Subscribe
-    public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {
+    public void onMaterialChangeEvent(final MaterialChangeEvent materialChangeEvent) {
         materials = materialService.findAll();
     }
 
@@ -463,7 +463,7 @@ public class SampleEditController implements Controllable {
      * @param dbEntityClass
      * @return true if the delete task is confirmed.
      */
-    private boolean deleteEntity(DatabaseEntity entity, Class dbEntityClass) {
+    private boolean deleteEntity(final DatabaseEntity entity, final Class dbEntityClass) {
         boolean deleteConfirmation = false;
 
         //check delete permissions
@@ -489,7 +489,7 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected sample in the samples table
+     * Update the instance fields of the selected sample in the samples table.
      */
     private void updateSampleToEdit() {
         sampleToEdit.setName(sampleEditDialog.getNameTextField().getText());
@@ -501,9 +501,9 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Get the attachments file names as a concatenated string.
+     * Get the attachments file names as a concatenated String.
      *
-     * @return
+     * @return the concatenated String
      */
     private String getAttachmentsAsString() {
         String concatenatedString = "";
@@ -515,34 +515,37 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the state (enables/disabled) of the analytical run related buttons
+     * Update the state (enables/disabled) of the analytical run related buttons.
      *
      * @param enable the enable the buttons boolean
      */
-    private void updateAnalyticalRunButtonsState(boolean enable) {
+    private void updateAnalyticalRunButtonsState(final boolean enable) {
         sampleEditDialog.getEditAnalyticalRunButton().setEnabled(enable);
         sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
     }
-    
+
+    /**
+     * Swingworker that exports the given AnalyticalRun in mzTab format.
+     */
     private class AnalyticalRunExportWorker extends SwingWorker<Void, Void>{
 
         private final File exportDirectory;
 
         public AnalyticalRunExportWorker(File exportDirectory) {
             this.exportDirectory = exportDirectory;
-        }                
-        
+        }
+
         @Override
         protected Void doInBackground() throws Exception {
             mzTabExporter.exportAnalyticalRun(exportDirectory, getSelectedAnalyticalRun());
-            
+
             return null;
         }
 
         @Override
         protected void done() {
-            super.done(); //To change body of generated methods, choose Tools | Templates.
+            super.done();
         }
-                        
+
     }
 }

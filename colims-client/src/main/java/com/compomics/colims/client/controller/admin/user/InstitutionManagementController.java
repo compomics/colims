@@ -60,7 +60,6 @@ public class InstitutionManagementController implements Controllable {
 
         //register to event bus
         //eventBus.register(this);
-
         //init binding
         bindingGroup = new BindingGroup();
 
@@ -86,7 +85,7 @@ public class InstitutionManagementController implements Controllable {
 
         bindingGroup.bind();
 
-        //add listeners       
+        //add listeners
         institutionManagementDialog.getInstitutionList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -117,7 +116,7 @@ public class InstitutionManagementController implements Controllable {
 
         institutionManagementDialog.getAddButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Institution newInstitution = new Institution();
                 newInstitution.setName("name");
                 institutionBindingList.add(newInstitution);
@@ -127,7 +126,7 @@ public class InstitutionManagementController implements Controllable {
 
         institutionManagementDialog.getDeleteButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
                     Institution institutionToDelete = getSelectedInstitution();
 
@@ -164,7 +163,7 @@ public class InstitutionManagementController implements Controllable {
 
         institutionManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
                     Institution selectedInstitution = getSelectedInstitution();
                     //validate institution
@@ -195,7 +194,7 @@ public class InstitutionManagementController implements Controllable {
 
         institutionManagementDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 institutionManagementDialog.dispose();
             }
         });
@@ -206,7 +205,7 @@ public class InstitutionManagementController implements Controllable {
         //renew institution list
         institutionBindingList.clear();
         institutionBindingList.addAll(institutionService.findAll());
-        
+
         institutionManagementDialog.getInstitutionStateInfoLabel().setText("");
 
         GuiUtils.centerDialogOnComponent(userManagementController.getUserManagementParentController().getUserManagementDialog(), institutionManagementDialog);
@@ -216,7 +215,7 @@ public class InstitutionManagementController implements Controllable {
     /**
      * Return the selected institution.
      *
-     * @return
+     * @return the selected institution
      */
     public Institution getInstitution() {
         return getSelectedInstitution();
@@ -225,10 +224,10 @@ public class InstitutionManagementController implements Controllable {
     /**
      * Validate the user input for number and postal code.
      *
-     * @param institution
-     * @return
+     * @param institution the Institution
+     * @return the list of validation messages
      */
-    private List<String> validateNumbers(Institution institution) {
+    private List<String> validateNumbers(final Institution institution) {
         List<String> validationMessages = new ArrayList();
 
         //catch NumberFormatExceptions
@@ -261,7 +260,7 @@ public class InstitutionManagementController implements Controllable {
     }
 
     /**
-     * Clear the institution detail fields
+     * Clear the institution detail fields.
      */
     private void clearInstitutionDetailFields() {
         institutionManagementDialog.getNameTextField().setText("");

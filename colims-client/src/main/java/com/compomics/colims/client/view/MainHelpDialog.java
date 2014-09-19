@@ -19,7 +19,8 @@ public class MainHelpDialog extends javax.swing.JDialog {
     private URI uri;
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
@@ -40,7 +41,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }
 
     /**
-     * Init the dialog
+     * Init the dialog.
      */
     private void init() {
         uriButton.addActionListener(new ActionListener() {

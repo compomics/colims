@@ -46,10 +46,10 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("analyticalRunSetupController")
-public class AnalyticalRunSetupController implements Controllable {
+@Component("mzTabExportController")
+public class MzTabExportController implements Controllable {
 
-    private static final Logger LOGGER = Logger.getLogger(AnalyticalRunSetupController.class);
+    private static final Logger LOGGER = Logger.getLogger(MzTabExportController.class);
     private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";

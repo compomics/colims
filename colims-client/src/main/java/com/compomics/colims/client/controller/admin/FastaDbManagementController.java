@@ -71,7 +71,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         //register to event bus
         //eventBus.register(this);
-
         //init binding
         bindingGroup = new BindingGroup();
 
@@ -99,7 +98,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 showOlsDialog();
             }
         });
@@ -112,8 +111,8 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getBrowseFastaButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //in response to the button click, show open dialog 
+            public void actionPerformed(final ActionEvent e) {
+                //in response to the button click, show open dialog
                 int returnVal = fastaDbManagementDialog.getFastaFileChooser().showOpenDialog(fastaDbManagementDialog);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File fastaFile = fastaDbManagementDialog.getFastaFileChooser().getSelectedFile();
@@ -127,7 +126,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                         FastaDb fastaDb = getSelectedFastaDb();
@@ -157,7 +156,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getAddButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 FastaDb newFastaDb = new FastaDb();
                 newFastaDb.setName("name");
                 fastaDbBindingList.add(newFastaDb);
@@ -168,7 +167,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getDeleteButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb fastaDbToDelete = getSelectedFastaDb();
 
@@ -205,7 +204,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb selectedFastaDb = getSelectedFastaDb();
                     //validate fasta DB
@@ -236,7 +235,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getOkButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 FastaDb fastaDb = getSelectedFastaDb();
 
                 //validate before closing dialog
@@ -259,7 +258,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
         fastaDbManagementDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 fastaDbManagementDialog.dispose();
             }
         });
@@ -275,27 +274,12 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.setVisible(true);
     }
 
-    /**
-     *
-     * @param field
-     * @param selectedValue
-     * @param accession
-     * @param ontologyShort
-     * @param ontologyLong
-     * @param modifiedRow
-     * @param mappedTerm
-     * @param metadata
-     */
     @Override
-    public void insertOLSResult(String field, String selectedValue, String accession, String ontologyShort, String ontologyLong, int modifiedRow, String mappedTerm, Map<String, String> metadata) {
+    public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, final int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
         fastaDbManagementDialog.getTaxonomyTextField().setText(accession);
         fastaDbManagementDialog.getSpeciesTextField().setText(selectedValue);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Window getWindow() {
         return fastaDbManagementDialog;
@@ -304,7 +288,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     /**
      * Return the selected fasta DB.
      *
-     * @return
+     * @return the FastaDb
      */
     public FastaDb getFastaDb() {
         return getSelectedFastaDb();
@@ -313,10 +297,10 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     /**
      * Validate the user input and return a list of validation messages.
      *
-     * @param fastaDb
-     * @return
+     * @param fastaDb the FastaDb
+     * @return the list of validation messages
      */
-    private List<String> validate(FastaDb fastaDb) {
+    private List<String> validate(final FastaDb fastaDb) {
         List<String> validationMessages = new ArrayList();
 
         if (fastaDb.getId() == null) {
@@ -358,7 +342,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Clear the fasta DB detail fields
+     * Clear the fasta DB detail fields.
      */
     private void clearFastaDbDetailFields() {
         fastaDbManagementDialog.getNameTextField().setText("");

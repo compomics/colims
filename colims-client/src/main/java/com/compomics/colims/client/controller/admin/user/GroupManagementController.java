@@ -82,7 +82,7 @@ public class GroupManagementController implements Controllable {
     private GroupService groupService;
     @Autowired
     private RoleService roleService;
-    
+
     @Override
     public void init() {
         //get view
@@ -90,7 +90,7 @@ public class GroupManagementController implements Controllable {
 
         //init dual list
         userManagementDialog.getRoleDualList().init(new RoleNameComparator());
-        
+
         areChildrenAffected = false;
 
         //register to event bus
@@ -105,7 +105,7 @@ public class GroupManagementController implements Controllable {
 
         //init binding
         bindingGroup = new BindingGroup();
-        
+
         groupBindingList = ObservableCollections.observableList(groupService.findAll());
         JListBinding groupListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, groupBindingList, userManagementDialog.getGroupList());
         bindingGroup.addBinding(groupListBinding);
@@ -115,7 +115,7 @@ public class GroupManagementController implements Controllable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, userManagementDialog.getGroupList(), BeanProperty.create("selectedElement.description"), userManagementDialog.getGroupDescriptionTextArea(), ELProperty.create("${text}"), "descriptionBinding");
         bindingGroup.addBinding(binding);
-        
+
         bindingGroup.bind();
 
         //add listeners
@@ -123,13 +123,13 @@ public class GroupManagementController implements Controllable {
             @Override
             public void focusGained(final FocusEvent e) {
             }
-            
+
             @Override
             public void focusLost(final FocusEvent e) {
                 userManagementDialog.getGroupList().updateUI();
             }
         });
-        
+
         userManagementDialog.getGroupList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(final ListSelectionEvent e) {
@@ -153,7 +153,7 @@ public class GroupManagementController implements Controllable {
                             userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been stored in the database.");
                         }
 
-                        //populate dual list with roles                        
+                        //populate dual list with roles
                         userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
                     } else {
                         userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
@@ -161,7 +161,7 @@ public class GroupManagementController implements Controllable {
                 }
             }
         });
-        
+
         userManagementDialog.getAddGroupButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -171,7 +171,7 @@ public class GroupManagementController implements Controllable {
                 userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
             }
         });
-        
+
         userManagementDialog.getDeleteGroupButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -185,7 +185,7 @@ public class GroupManagementController implements Controllable {
                             try {
                                 groupService.delete(groupToDelete);
                                 eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
-                                
+
                                 groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
                                 resetSelection();
                             } catch (DataIntegrityViolationException dive) {
@@ -202,7 +202,7 @@ public class GroupManagementController implements Controllable {
                         } else {
                             DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("group", groupToDelete.getName());
                             eventBus.post(defaultDbEntryMessageEvent);
-                        }                        
+                        }
                     } else {
                         groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
                         resetSelection();
@@ -210,28 +210,28 @@ public class GroupManagementController implements Controllable {
                 }
             }
         });
-        
+
         userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-                //change roles of the selected group                                    
+                //change roles of the selected group
                 List<Role> addedRoles = (List<Role>) evt.getNewValue();
 
                 //add roles to the selected group
                 Group selectedGroup = getSelectedGroup();
                 selectedGroup.setRoles(addedRoles);
-                
+
                 areChildrenAffected = true;
             }
         });
-        
+
         userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 Group selectedGroup = getSelectedGroup();
                 //validate group
                 List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
-                //check for a new group if the group name already exists in the db                
+                //check for a new group if the group name already exists in the db
                 if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
                     validationMessages.add(selectedGroup.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another group name.");
@@ -245,10 +245,10 @@ public class GroupManagementController implements Controllable {
                     userManagementDialog.getGroupNameTextField().setEnabled(false);
                     userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                     userManagementDialog.getGroupStateInfoLabel().setText("");
-                    
+
                     EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                     eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
-                    
+
                     MessageEvent messageEvent = new MessageEvent("Group store confirmation", "Group " + selectedGroup.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
                 } else {
@@ -258,11 +258,10 @@ public class GroupManagementController implements Controllable {
             }
         });
     }
-    
+
     @Override
     public void showView() {
         resetSelection();
-        
     }
 
     /**
@@ -320,7 +319,7 @@ public class GroupManagementController implements Controllable {
         if (foundGroup == null) {
             isExistingGroupName = false;
         }
-        
+
         return isExistingGroupName;
     }
 

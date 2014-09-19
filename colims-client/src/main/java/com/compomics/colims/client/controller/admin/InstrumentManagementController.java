@@ -51,7 +51,7 @@ import org.springframework.stereotype.Component;
 @Component("instrumentManagementController")
 public class InstrumentManagementController implements Controllable {
 
-    //model      
+    //model
     private TypedCvTermSummaryListModel<InstrumentCvTerm> typedCvTermSummaryListModel;
     private ObservableList<Instrument> instrumentBindingList;
     private BindingGroup bindingGroup;
@@ -94,7 +94,7 @@ public class InstrumentManagementController implements Controllable {
         //init binding
         bindingGroup = new BindingGroup();
 
-        //init views     
+        //init views
         initInstrumentManagementDialog();
         initInstrumentEditDialog();
 
@@ -167,7 +167,7 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentManagementDialog.getAddInstrumentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 updateInstrumentEditDialog(createDefaultInstrument());
 
                 //show dialog
@@ -178,7 +178,7 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentManagementDialog.getDeleteInstrumentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
                     Instrument instrumentToDelete = getSelectedInstrument();
                     //check if the instrument is already has an id.
@@ -214,7 +214,7 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentManagementDialog.getEditInstrumentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
                     updateInstrumentEditDialog(getSelectedInstrument());
 
@@ -231,8 +231,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentManagementDialog.getCancelInstrumentManagementButton()
                 .addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e
-                    ) {
+                    public void actionPerformed(final ActionEvent e) {
                         instrumentManagementDialog.dispose();
                     }
                 }
@@ -254,10 +253,10 @@ public class InstrumentManagementController implements Controllable {
         //add action listeners
         instrumentEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (instrumentEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvTermType from summary list                        
+                        //get selected cvTermType from summary list
                         CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
 
                         //load duallist for the selected cvTermType
@@ -286,8 +285,8 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentEditDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                //get selected cvTermType                        
+            public void propertyChange(final PropertyChangeEvent evt) {
+                //get selected cvTermType
                 CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
 
                 List<InstrumentCvTerm> addedItems = (List<InstrumentCvTerm>) evt.getNewValue();
@@ -330,13 +329,13 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentEditDialog.getInstrumentSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update with dialog input
                 updateInstrumentToEdit();
 
                 //validate instrument
                 List<String> validationMessages = GuiUtils.validateEntity(instrumentToEdit);
-                //check for a new instrument if the instrument name already exists in the db                
+                //check for a new instrument if the instrument name already exists in the db
                 if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
                     validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another instrument name.");
@@ -363,7 +362,7 @@ public class InstrumentManagementController implements Controllable {
                     MessageEvent messageEvent = new MessageEvent("Instrument store confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
-                    //refresh selection in instrument list in management overview dialog                    
+                    //refresh selection in instrument list in management overview dialog
                     instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
                     instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
                 } else {
@@ -375,17 +374,17 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 instrumentEditDialog.dispose();
             }
         });
 
         instrumentEditDialog.getInstrumentCvTermsCrudButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //check if a CV term group is selected in the CV term summary list
                 if (instrumentEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                    //get selected cvTermType from summary list                        
+                    //get selected cvTermType from summary list
                     CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
 
                     List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
@@ -408,7 +407,7 @@ public class InstrumentManagementController implements Controllable {
      * @param instrument the instrument
      * @return does the instrument name exist
      */
-    private boolean isExistingInstrumentName(Instrument instrument) {
+    private boolean isExistingInstrumentName(final Instrument instrument) {
         boolean isExistingInstrumentName = true;
         Instrument foundInstrument = instrumentService.findByName(instrument.getName());
         if (foundInstrument == null) {
@@ -465,18 +464,18 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Update the instrumentToEdit with input from the instrumentEditDialog
+     * Update the instrumentToEdit with input from the instrumentEditDialog.
      */
     public void updateInstrumentToEdit() {
         instrumentToEdit.setName(instrumentEditDialog.getNameTextField().getText());
     }
 
     /**
-     * Update the instrument edit dialog with the given instrument
+     * Update the instrument edit dialog with the given instrument.
      *
-     * @param instrument
+     * @param instrument the Instrument
      */
-    private void updateInstrumentEditDialog(Instrument instrument) {
+    private void updateInstrumentEditDialog(final Instrument instrument) {
         instrumentToEdit = instrument;
 
         //check if the instrument has an ID.
@@ -493,7 +492,7 @@ public class InstrumentManagementController implements Controllable {
 
         //add the single CV terms
         EnumMap<CvTermType, InstrumentCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class
-        );        
+        );
         singleCvTerms.put(CvTermType.TYPE, instrumentToEdit.getType());
         singleCvTerms.put(CvTermType.SOURCE, instrumentToEdit.getSource());
         singleCvTerms.put(CvTermType.DETECTOR, instrumentToEdit.getDetector());
@@ -510,7 +509,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Clear the instrument detail fields
+     * Clear the instrument detail fields.
      */
     private void clearInstrumentDetailFields() {
         instrumentManagementDialog.getInstrumentDetailsTable().setModel(new TypedCvTermTableModel());

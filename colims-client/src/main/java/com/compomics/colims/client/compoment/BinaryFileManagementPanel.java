@@ -35,7 +35,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     public static final String FILE_TYPE_CHANGE = "file type change";
     //model
     /**
-     * Keep a reference to the class type for new instance creation
+     * Keep a reference to the class type for new instance creation.
      */
     private Class<T> type;
     private final JFileChooser fileChooser = new FileChooser();
@@ -45,18 +45,18 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     private int previouslySelectedIndex = -1;
 
     /**
-     * Creates new form BinaryFileManagementPanel
+     * Creates new form BinaryFileManagementPanel.
      */
     public BinaryFileManagementPanel() {
         initComponents();
     }
 
     /**
-     * populate the binary file list
+     * populate the binary file list.
      *
-     * @param binaryFiles
+     * @param binaryFiles the list of binary files.
      */
-    public void populateList(List<T> binaryFiles) {
+    public void populateList(final List<T> binaryFiles) {
         if (type == null) {
             throw new IllegalArgumentException("The class type has not been set.");
         }
@@ -66,11 +66,11 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     }
 
     /**
-     * Init the component
+     * Init the component.
      *
-     * @param type
+     * @param type the class type
      */
-    public void init(Class<T> type) {
+    public void init(final Class<T> type) {
         this.type = type;
 
         //fill combobox
@@ -97,10 +97,10 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
         bindingGroup.bind();
 
-        //add action listeners  
+        //add action listeners
         binaryFileList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedIndex = binaryFileList.getSelectedIndex();
                     if (selectedIndex != -1) {
@@ -115,7 +115,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
         binaryFileTypeComboBox.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int selectedIndex = binaryFileList.getSelectedIndex();
                 if (selectedIndex != -1) {
                     if (previouslySelectedIndex == selectedIndex) {
@@ -127,16 +127,16 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
                         BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
                     }
-                }                
+                }
             }
         });
 
         exportButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (binaryFileList.getSelectedIndex() != -1) {
                     T binaryFileToExport = (T) binaryFileList.getSelectedValue();
-                    //in response to the button click, show open dialog 
+                    //in response to the button click, show open dialog
                     int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         try {
@@ -148,8 +148,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                             LOGGER.error(ex.getMessage(), ex);
                         }
                     }
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to export.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -157,10 +156,10 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
         addButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 T binaryFileToAdd = null;
 
-                //in response to the button click, show open dialog 
+                //in response to the button click, show open dialog
                 int returnVal = fileChooser.showOpenDialog(BinaryFileManagementPanel.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
@@ -182,7 +181,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
         deleteButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (binaryFileList.getSelectedIndex() != -1) {
                     T binaryFileToRemove = (T) binaryFileList.getSelectedValue();
 
@@ -194,8 +193,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                     }
 
                     BinaryFileManagementPanel.this.firePropertyChange(REMOVE, null, binaryFileToRemove);
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to delete.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
                 }
             }

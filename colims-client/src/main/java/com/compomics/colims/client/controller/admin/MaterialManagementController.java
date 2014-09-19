@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
 @Component("materialManagementController")
 public class MaterialManagementController implements Controllable {
 
-    //model      
+    //model
     private TypedCvTermSummaryListModel<MaterialCvTerm> typedCvTermSummaryListModel;
     private ObservableList<Material> materialBindingList;
     private BindingGroup bindingGroup;
@@ -83,8 +83,9 @@ public class MaterialManagementController implements Controllable {
     }
 
     /**
+     * Get the main view of this controller.
      *
-     * @return
+     * @return the MaterialManagementDialog
      */
     public MaterialManagementDialog getMaterialManagementOverviewDialog() {
         return materialManagementDialog;
@@ -98,7 +99,7 @@ public class MaterialManagementController implements Controllable {
         //init binding
         bindingGroup = new BindingGroup();
 
-        //init views     
+        //init views
         initMaterialManagementDialog();
         initMaterialEditDialog();
 
@@ -119,10 +120,10 @@ public class MaterialManagementController implements Controllable {
      * CvTermManagementController. If the MaterialManagementDialog is visible,
      * clear the selection in the CV term summary list.
      *
-     * @param cvTermChangeEvent
+     * @param cvTermChangeEvent the CvTermChangeEvent
      */
     @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+    public void onCvTermChangeEvent(final CvTermChangeEvent cvTermChangeEvent) {
         if (materialEditDialog.isVisible()) {
             materialEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
         }
@@ -139,7 +140,7 @@ public class MaterialManagementController implements Controllable {
         //add action listeners
         materialManagementDialog.getMaterialList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
                     if (selectedIndex != -1 && materialBindingList.get(selectedIndex) != null) {
@@ -171,7 +172,7 @@ public class MaterialManagementController implements Controllable {
 
         materialManagementDialog.getAddMaterialButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 updateMaterialEditDialog(createDefaultMaterial());
 
                 //show dialog
@@ -182,7 +183,7 @@ public class MaterialManagementController implements Controllable {
 
         materialManagementDialog.getDeleteMaterialButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
                     Material materialToDelete = getSelectedMaterial();
                     //check if the material is already has an id.
@@ -218,7 +219,7 @@ public class MaterialManagementController implements Controllable {
 
         materialManagementDialog.getEditMaterialButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
                     updateMaterialEditDialog(getSelectedMaterial());
                     //show dialog
@@ -232,7 +233,7 @@ public class MaterialManagementController implements Controllable {
 
         materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 materialManagementDialog.dispose();
             }
         });
@@ -257,10 +258,10 @@ public class MaterialManagementController implements Controllable {
         //add action listeners
         materialEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     if (materialEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvTermType from summary list                        
+                        //get selected cvTermType from summary list
                         CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
                         //load duallist for the selected cvTermType
@@ -290,8 +291,8 @@ public class MaterialManagementController implements Controllable {
 
         materialEditDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                //get selected cvTermType                        
+            public void propertyChange(final PropertyChangeEvent evt) {
+                //get selected cvTermType
                 CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
                 List<MaterialCvTerm> addedItems = (List<MaterialCvTerm>) evt.getNewValue();
@@ -340,13 +341,13 @@ public class MaterialManagementController implements Controllable {
 
         materialEditDialog.getMaterialSaveOrUpdateButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //update with dialog input
                 updateMaterialToEdit();
 
                 //validate material
                 List<String> validationMessages = GuiUtils.validateEntity(materialToEdit);
-                //check for a new material if the material name already exists in the db                
+                //check for a new material if the material name already exists in the db
                 if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
                     validationMessages.add(materialToEdit.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another material name.");
@@ -385,17 +386,17 @@ public class MaterialManagementController implements Controllable {
 
         materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 materialEditDialog.dispose();
             }
         });
 
         materialEditDialog.getMaterialCvTermsCrudButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 //check if a CV term group is selected in the CV term summary list
                 if (materialEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                    //get selected cvTermType from summary list                        
+                    //get selected cvTermType from summary list
                     CvTermType selectedcvTermType = (CvTermType) materialEditDialog.getCvTermSummaryList().getSelectedValue();
 
                     List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
@@ -417,7 +418,7 @@ public class MaterialManagementController implements Controllable {
      * @param material the material
      * @return does the material name exist
      */
-    private boolean isExistingMaterialName(Material material) {
+    private boolean isExistingMaterialName(final Material material) {
         boolean isExistingMaterialName = true;
         Material foundMaterial = materialService.findByName(material.getName());
         if (foundMaterial == null) {
@@ -470,18 +471,18 @@ public class MaterialManagementController implements Controllable {
     }
 
     /**
-     * Update the materialToEdit with input from the materialEditDialog
+     * Update the materialToEdit with input from the materialEditDialog.
      */
     public void updateMaterialToEdit() {
         materialToEdit.setName(materialEditDialog.getNameTextField().getText());
     }
 
     /**
-     * Update the material edit dialog with the given material
+     * Update the material edit dialog with the given material.
      *
-     * @param material
+     * @param material the material
      */
-    private void updateMaterialEditDialog(Material material) {
+    private void updateMaterialEditDialog(final Material material) {
         materialToEdit = material;
 
         //check if the material has an ID.
@@ -512,7 +513,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     /**
-     * Clear the material detail fields
+     * Clear the material detail fields.
      */
     private void clearMaterialDetailFields() {
         materialManagementDialog.getMaterialDetailsTable().setModel(new TypedCvTermTableModel());

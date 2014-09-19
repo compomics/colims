@@ -51,7 +51,7 @@ public class PermissionManagementController implements Controllable {
     //parent controller
     @Autowired
     private UserManagementParentController userManagementController;
-    //event bus    
+    //event bus
     @Autowired
     private EventBus eventBus;
     //services
@@ -181,7 +181,7 @@ public class PermissionManagementController implements Controllable {
                 Permission selectedPermission = getSelectedPermission();
                 //validate permission
                 List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
-                //check for a new permission if the permission name already exists in the db                
+                //check for a new permission if the permission name already exists in the db
                 if (selectedPermission.getId() == null && isExistingPermissionName(selectedPermission)) {
                     validationMessages.add(selectedPermission.getName() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another permission name.");

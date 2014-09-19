@@ -65,8 +65,9 @@ public class TaskManagementController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the TaskManagementPanel
      */
     public TaskManagementPanel getTaskManagementPanel() {
         return taskManagementPanel;
@@ -116,11 +117,11 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.USER_INDEX).setPreferredWidth(100);
         taskManagementPanel.getTaskErrorQueueTable().getColumnModel().getColumn(DbTaskErrorQueueTableModel.ERROR_INDEX).setPreferredWidth(100);
 
-        //add action listeners  
+        //add action listeners
         taskManagementPanel.getClearNotificationsButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 taskManagementPanel.getNotificationTextArea().setText("...");
             }
         });
@@ -128,7 +129,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getDeleteDbTaskButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskQueueTableModel.getRowCount() != 0) {
                     int result = JOptionPane.showConfirmDialog(taskManagementPanel, "This can't be undone."
@@ -156,7 +157,7 @@ public class TaskManagementController implements Controllable {
 
         taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent lse) {
+            public void valueChanged(final ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
                     int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                     if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
@@ -177,7 +178,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getResendTaskErrorButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
@@ -202,7 +203,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getDeleteTaskErrorButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     try {
@@ -226,7 +227,7 @@ public class TaskManagementController implements Controllable {
 
         taskManagementPanel.getPurgeTaskErrorsButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 try {
                     queueManager.purgeMessages(errorQueueName);
 
@@ -241,7 +242,7 @@ public class TaskManagementController implements Controllable {
         taskManagementPanel.getDeleteCompletedTaskButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 int selectedRowIndex = taskManagementPanel.getCompletedTaskQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && completedDbTaskQueueTableModel.getRowCount() != 0) {
                     try {
@@ -265,7 +266,7 @@ public class TaskManagementController implements Controllable {
 
         taskManagementPanel.getPurgeCompletedTasksButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 try {
                     queueManager.purgeMessages(storedQueueName);
 
@@ -325,7 +326,7 @@ public class TaskManagementController implements Controllable {
      * @param notificationEvent the notification event
      */
     @Subscribe
-    public void onNotificationEvent(NotificationEvent notificationEvent) {
+    public void onNotificationEvent(final NotificationEvent notificationEvent) {
         Notification notification = notificationEvent.getNotification();
         String activityMessage = System.lineSeparator() + new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date()) + ": ";
         if (notification.getType().equals(NotificationType.STARTED)) {
@@ -347,7 +348,7 @@ public class TaskManagementController implements Controllable {
      *
      * @param message the error message
      */
-    private void postConnectionErrorMessage(String message) {
+    private void postConnectionErrorMessage(final String message) {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
                 + System.lineSeparator() + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
     }

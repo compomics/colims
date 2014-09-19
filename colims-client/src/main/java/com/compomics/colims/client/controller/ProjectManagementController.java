@@ -53,7 +53,7 @@ import org.springframework.stereotype.Component;
 public class ProjectManagementController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
-    //model    
+    //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private EventList<Experiment> experiments = new BasicEventList<>();
@@ -116,7 +116,7 @@ public class ProjectManagementController implements Controllable {
         sampleEditController.init();
         analyticalRunSetupController.init();
 
-        //init projects table        
+        //init projects table
         SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
         projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectManagementTableFormat());
         projectManagementPanel.getProjectsTable().setModel(projectsTableModel);
@@ -206,7 +206,7 @@ public class ProjectManagementController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Project selectedProject = getSelectedProject();
                     if (selectedProject != null) {
-                        //fill project experiments table                        
+                        //fill project experiments table
                         GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
                     } else {
                         GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
@@ -217,14 +217,14 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 projectEditController.updateView(createDefaultProject());
             }
         });
 
         projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Project selectedProject = getSelectedProject();
                 if (selectedProject != null) {
                     projectEditController.updateView(selectedProject);
@@ -236,7 +236,7 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getDeleteProjectButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Project projectToDelete = getSelectedProject();
 
                 if (projectToDelete != null) {
@@ -258,7 +258,7 @@ public class ProjectManagementController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Experiment selectedExperiment = getSelectedExperiment();
                     if (selectedExperiment != null) {
-                        //fill samples table                        
+                        //fill samples table
                         GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
                     } else {
                         GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
@@ -280,7 +280,7 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Experiment selectedExperiment = getSelectedExperiment();
                 if (selectedExperiment != null) {
                     experimentEditController.updateView(selectedExperiment);
@@ -292,11 +292,11 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Experiment experimentToDelete = getSelectedExperiment();
 
                 if (experimentToDelete != null) {
-                    //send DeleteDbTask to DbTask queue                    
+                    //send DeleteDbTask to DbTask queue
                     boolean deleteConfirmation = deleteEntity(experimentToDelete, Experiment.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
@@ -317,7 +317,7 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getAddAnalyticalRunButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Sample selectedSample = getSelectedSample();
                 if (selectedSample != null) {
                     analyticalRunSetupController.showView();
@@ -329,7 +329,7 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (getSelectedExperiment() != null) {
                     sampleEditController.updateView(createDefaultSample());
                 } else {
@@ -340,7 +340,7 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getEditSampleButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Sample selectedSample = getSelectedSample();
                 if (selectedSample != null) {
                     sampleEditController.updateView(selectedSample);
@@ -352,7 +352,7 @@ public class ProjectManagementController implements Controllable {
 
         projectManagementPanel.getDeleteSampleButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 Sample sampleToDelete = getSelectedSample();
 
                 if (sampleToDelete != null) {
@@ -380,7 +380,7 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected project in the projects table
+     * Get the row index of the selected project in the projects table.
      *
      * @return
      */
@@ -389,28 +389,28 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Set the selected project in the projects table
+     * Set the selected project in the projects table.
      *
      * @param index
      */
-    public void setSelectedProject(int index) {
+    public void setSelectedProject(final int index) {
         projectsSelectionModel.clearSelection();
         projectsSelectionModel.setLeadSelectionIndex(index);
     }
 
     /**
-     * Add a project to the projects table
+     * Add a project to the projects table.
      *
      * @param project
      */
-    public void addProject(Project project) {
+    public void addProject(final Project project) {
         colimsController.getProjects().add(project);
     }
 
     /**
-     * Get the number of projects in the projects table
+     * Get the number of projects in the projects table.
      *
-     * @return
+     * @return the number of projects
      */
     public int getProjectsSize() {
         return colimsController.getProjects().size();
@@ -433,18 +433,18 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected experiment in the experiments table
+     * Get the row index of the selected experiment in the experiments table.
      *
-     * @return
+     * @return the selected experiment index
      */
     public int getSelectedExperimentIndex() {
         return experimentsSelectionModel.getLeadSelectionIndex();
     }
 
     /**
-     * Set the selected experiment in the experiments table
+     * Set the selected experiment in the experiments table.
      *
-     * @param index
+     * @param index the selected experiment index
      */
     public void setSelectedExperiment(int index) {
         experimentsSelectionModel.clearSelection();
@@ -452,11 +452,11 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Add an experiment to the experiments table
+     * Add an experiment to the experiments table.
      *
-     * @param experiment
+     * @param experiment the Experiment
      */
-    public void addExperiment(Experiment experiment) {
+    public void addExperiment(final Experiment experiment) {
         experiments.add(experiment);
 
         //add the experiment to the selected project and update the projects table
@@ -465,9 +465,9 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Get the number of experiments in the experiments table
+     * Get the number of experiments in the experiments table.
      *
-     * @return
+     * @return the number of experiments
      */
     public int getExperimentsSize() {
         return experiments.size();
@@ -490,30 +490,30 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected sample in the samples table
+     * Get the row index of the selected sample in the samples table.
      *
-     * @return
+     * @return the selected sample index
      */
     public int getSelectedSampleIndex() {
         return samplesSelectionModel.getLeadSelectionIndex();
     }
 
     /**
-     * Set the selected sample in the samples table
+     * Set the selected sample in the samples table.
      *
-     * @param index
+     * @param index the selected sample index
      */
-    public void setSelectedSample(int index) {
+    public void setSelectedSample(final int index) {
         samplesSelectionModel.clearSelection();
         samplesSelectionModel.setLeadSelectionIndex(index);
     }
 
     /**
-     * Add a sample to the samples table
+     * Add a sample to the samples table.
      *
-     * @param sample
+     * @param sample the Sample
      */
-    public void addSample(Sample sample) {
+    public void addSample(final Sample sample) {
         samples.add(sample);
 
         //add the sample to the selected experiment and update the experiments table
@@ -522,9 +522,9 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Get the number of samples in the samples table
+     * Get the number of samples in the samples table.
      *
-     * @return
+     * @return the number of samples
      */
     public int getSamplesSize() {
         return samples.size();
@@ -555,7 +555,7 @@ public class ProjectManagementController implements Controllable {
      * @param dbEntityClass
      * @return true if the delete task is confirmed.
      */
-    private boolean deleteEntity(DatabaseEntity entity, Class dbEntityClass) {
+    private boolean deleteEntity(final DatabaseEntity entity, final Class dbEntityClass) {
         boolean deleteConfirmation = false;
 
         //check delete permissions

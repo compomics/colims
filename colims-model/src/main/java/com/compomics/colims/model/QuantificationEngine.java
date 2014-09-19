@@ -23,20 +23,20 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_engine")
 @Entity
-public class QuantificationEngine extends CvTerm {    
-    
+public class QuantificationEngine extends CvTerm {
+
     private static final long serialVersionUID = 4719894153697846226L;
     private static final String NOT_APPLICABLE = "N/A";
 
     /**
-     * The search engine type
+     * The search engine type.
      */
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     protected QuantificationEngineType quantificationEngineType;
     /**
-     * The version of the search engine
+     * The version of the search engine.
      */
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
@@ -44,6 +44,9 @@ public class QuantificationEngine extends CvTerm {
     @OneToMany(mappedBy = "quantificationEngine")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
 
+    /**
+     * No arg constructor.
+     */
     public QuantificationEngine() {
     }
 
@@ -92,7 +95,7 @@ public class QuantificationEngine extends CvTerm {
 
     public void setQuantificationSettingses(List<QuantificationSettings> quantificationSettingses) {
         this.quantificationSettingses = quantificationSettingses;
-    }    
+    }
 
     @Override
     public int hashCode() {
@@ -118,6 +121,6 @@ public class QuantificationEngine extends CvTerm {
             return false;
         }
         return true;
-    }     
+    }
 
 }

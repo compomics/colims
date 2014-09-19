@@ -83,10 +83,20 @@ public class UserManagementController implements Controllable {
     @Autowired
     private GroupService groupService;
 
+    /**
+     * Get the parent controller.
+     *
+     * @return the UserManagementParentController
+     */
     public UserManagementParentController getUserManagementParentController() {
         return userManagementParentController;
     }
 
+    /**
+     * Get the institution binding list.
+     *
+     * @return the institution binding list
+     */
     public ObservableList<Institution> getInstitutionBindingList() {
         return institutionBindingList;
     }
@@ -190,7 +200,7 @@ public class UserManagementController implements Controllable {
                             userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been stored in the database.");
                         }
 
-                        //populate dual list with groups                        
+                        //populate dual list with groups
                         userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                     } else {
                         userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
@@ -252,7 +262,7 @@ public class UserManagementController implements Controllable {
         userManagementDialog.getGroupDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-                //change groups of the selected user                                    
+                //change groups of the selected user
                 List<Group> addedGroups = (List<Group>) evt.getNewValue();
 
                 //add groups to the selected user
@@ -269,7 +279,7 @@ public class UserManagementController implements Controllable {
                 User selectedUser = getSelectedUser();
                 //validate user
                 List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
-                //check for a new user if the user name already exists in the db                
+                //check for a new user if the user name already exists in the db
                 if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
                     validationMessages.add(selectedUser.getName() + " already exists in the database"
                             + System.lineSeparator() + "please choose another user name.");
@@ -277,7 +287,7 @@ public class UserManagementController implements Controllable {
                 if (validationMessages.isEmpty()) {
                     Institution selectedInstitution = null;
                     if (userManagementDialog.getInstitutionComboBox().getSelectedIndex() != -1) {
-                        selectedInstitution = (Institution) userManagementDialog.getInstitutionComboBox().getSelectedItem();                        
+                        selectedInstitution = (Institution) userManagementDialog.getInstitutionComboBox().getSelectedItem();
                     }
 
                     //save or update the user
@@ -311,7 +321,7 @@ public class UserManagementController implements Controllable {
         userManagementDialog.getInstitutionManagementButton().addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 institutionManagementController.showView();
             }
         });
@@ -353,7 +363,7 @@ public class UserManagementController implements Controllable {
     }
 
     /**
-     * Check if the CV term with the given user name exists in the database
+     * Check if the CV term with the given user name exists in the database.
      *
      * @param user the selected user
      * @return the does exist boolean
