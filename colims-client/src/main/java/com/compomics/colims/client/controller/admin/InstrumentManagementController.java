@@ -16,7 +16,7 @@ import com.compomics.colims.client.view.admin.instrument.InstrumentEditDialog;
 import com.compomics.colims.client.view.admin.instrument.InstrumentManagementDialog;
 import com.compomics.colims.core.service.CvTermService;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.model.TypedCvTerm;
+import com.compomics.colims.model.AuditableTypedCvTerm;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvTerm;
 import com.compomics.colims.model.comparator.CvTermAccessionComparator;
@@ -142,7 +142,7 @@ public class InstrumentManagementController implements Controllable {
                         Instrument selectedInstrument = instrumentBindingList.get(selectedIndex);
 
                         //init CvTermModel
-                        List<TypedCvTerm> cvTerms = new ArrayList<>();
+                        List<AuditableTypedCvTerm> cvTerms = new ArrayList<>();
                         if (selectedInstrument.getType() != null) {
                             cvTerms.add(selectedInstrument.getType());
                         }
@@ -387,7 +387,7 @@ public class InstrumentManagementController implements Controllable {
                     //get selected cvTermType from summary list
                     CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                    List<TypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
+                    List<AuditableTypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);

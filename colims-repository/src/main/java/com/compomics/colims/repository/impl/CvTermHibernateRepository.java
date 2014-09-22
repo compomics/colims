@@ -1,6 +1,6 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.TypedCvTerm;
+import com.compomics.colims.model.AuditableTypedCvTerm;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -13,14 +13,14 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Repository("cvTermRepository")
-public class CvTermHibernateRepository extends GenericHibernateRepository<TypedCvTerm, Long> implements CvTermRepository {
+public class CvTermHibernateRepository extends GenericHibernateRepository<AuditableTypedCvTerm, Long> implements CvTermRepository {
     @Override
-    public TypedCvTerm findByAccession(final String accession, final CvTermType cvTermType) {
+    public AuditableTypedCvTerm findByAccession(final String accession, final CvTermType cvTermType) {
         return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvTermType", cvTermType));
     }
 
     @Override
-    public List<TypedCvTerm> findByCvTermType(final CvTermType cvTermType) {
+    public List<AuditableTypedCvTerm> findByCvTermType(final CvTermType cvTermType) {
         return findByCriteria(Restrictions.eq("cvTermType", cvTermType));
     }
 }

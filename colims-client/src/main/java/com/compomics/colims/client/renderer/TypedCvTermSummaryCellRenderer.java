@@ -1,7 +1,7 @@
 package com.compomics.colims.client.renderer;
 
 import com.compomics.colims.client.model.TypedCvTermSummaryListModel;
-import com.compomics.colims.model.TypedCvTerm;
+import com.compomics.colims.model.AuditableTypedCvTerm;
 import com.compomics.colims.model.enums.CvTermType;
 import java.awt.Component;
 import java.util.List;
@@ -13,7 +13,7 @@ import javax.swing.JList;
  * @author Niels Hulstaert
  * @param <T>
  */
-public class TypedCvTermSummaryCellRenderer<T extends TypedCvTerm> extends DefaultListCellRenderer {
+public class TypedCvTermSummaryCellRenderer<T extends AuditableTypedCvTerm> extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {

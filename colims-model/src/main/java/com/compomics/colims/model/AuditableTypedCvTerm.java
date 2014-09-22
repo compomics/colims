@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class TypedCvTerm extends CvTerm {
+public abstract class AuditableTypedCvTerm extends AuditableCvTerm {
 
     private static final long serialVersionUID = 5594723532938658371L;
 
@@ -21,10 +21,10 @@ public abstract class TypedCvTerm extends CvTerm {
     @Enumerated(EnumType.STRING)
     protected CvTermType cvTermType;
 
-    public TypedCvTerm() {
+    public AuditableTypedCvTerm() {
     }
 
-    public TypedCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
+    public AuditableTypedCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
         this.cvTermType = cvTermType;
     }

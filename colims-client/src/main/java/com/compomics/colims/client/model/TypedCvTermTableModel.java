@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.TypedCvTerm;
+import com.compomics.colims.model.AuditableTypedCvTerm;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -16,21 +16,21 @@ public class TypedCvTermTableModel extends AbstractTableModel {
     private static final int ONTOLOGY_LABEL_INDEX = 1;
     private static final int ACCESSION_INDEX = 2;
     private static final int NAME_INDEX = 3;
-    private List<TypedCvTerm> cvTerms;
+    private List<AuditableTypedCvTerm> cvTerms;
 
     public TypedCvTermTableModel() {
         cvTerms = new ArrayList<>();
     }
 
-    public TypedCvTermTableModel(List<TypedCvTerm> cvTerms) {
+    public TypedCvTermTableModel(List<AuditableTypedCvTerm> cvTerms) {
         this.cvTerms = cvTerms;
     }
 
-    public List<TypedCvTerm> getCvTerms() {
+    public List<AuditableTypedCvTerm> getCvTerms() {
         return cvTerms;
     }
 
-    public void setCvTerms(List<TypedCvTerm> cvTerms) {
+    public void setCvTerms(List<AuditableTypedCvTerm> cvTerms) {
         this.cvTerms = cvTerms;
     }
 
@@ -51,7 +51,7 @@ public class TypedCvTermTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        TypedCvTerm selectedCvTerm = cvTerms.get(rowIndex);
+        AuditableTypedCvTerm selectedCvTerm = cvTerms.get(rowIndex);
                 
         switch (columnIndex) {
             case TYPE_INDEX:                

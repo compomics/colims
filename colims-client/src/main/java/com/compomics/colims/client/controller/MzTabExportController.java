@@ -87,7 +87,7 @@ public class MzTabExportController implements Controllable {
     private QueueManager queueManager;
 
     /**
-     * Get this view controller.
+     * Get the view of this controller.
      *
      * @return the AnalyticalRunSetupDialog
      */

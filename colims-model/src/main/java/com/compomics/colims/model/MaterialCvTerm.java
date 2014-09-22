@@ -10,15 +10,15 @@ import javax.persistence.Table;
  */
 @Table(name = "material_cv_term")
 @Entity
-public class MaterialCvTerm extends TypedCvTerm {
+public class MaterialCvTerm extends AuditableTypedCvTerm {
 
     private static final long serialVersionUID = -8458299630247265494L;
-    
+
     public MaterialCvTerm() {
-    }    
-    
+    }
+
     public MaterialCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
-    }            
-        
+    }
+
 }

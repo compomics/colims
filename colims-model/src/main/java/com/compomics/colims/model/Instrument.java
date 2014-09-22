@@ -33,7 +33,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Instrument extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7111402094194930375L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
@@ -87,7 +87,7 @@ public class Instrument extends AuditableDatabaseEntity {
 
     public void setType(InstrumentCvTerm type) {
         this.type = type;
-    }        
+    }
 
     public InstrumentCvTerm getSource() {
         return source;
@@ -103,7 +103,7 @@ public class Instrument extends AuditableDatabaseEntity {
 
     public void setDetector(InstrumentCvTerm detector) {
         this.detector = detector;
-    }    
+    }
 
     public List<AnalyticalRun> getAnalyticalRuns() {
         return analyticalRuns;
@@ -157,11 +157,11 @@ public class Instrument extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name + " [" + type.getName() + "]";
     }
-   
+
 }

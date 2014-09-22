@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Table(name = "instrument_cv_term")
 @Entity
-public class InstrumentCvTerm extends TypedCvTerm {
+public class InstrumentCvTerm extends AuditableTypedCvTerm {
 
     private static final long serialVersionUID = 2388796313873657999L;
     

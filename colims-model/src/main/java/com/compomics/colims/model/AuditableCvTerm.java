@@ -19,10 +19,10 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
     protected String ontology;
     @Basic(optional = false)
     @Column(name = "label", nullable = false)
-    protected String label; 
+    protected String label;
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
-    protected String accession;    
+    protected String accession;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;
@@ -34,7 +34,7 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
-        this.name = name;        
+        this.name = name;
     }
 
     public String getOntology() {
@@ -68,7 +68,7 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
     public void setName(final String name) {
         this.name = name;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -106,6 +106,6 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name + " [" + accession + "]";
-    }       
- 
+    }
+
 }

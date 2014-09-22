@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Table(name = "protocol_cv_term")
 @Entity
-public class ProtocolCvTerm extends TypedCvTerm {
+public class ProtocolCvTerm extends AuditableTypedCvTerm {
 
     private static final long serialVersionUID = -3197049656512425516L;
     

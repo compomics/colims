@@ -87,7 +87,7 @@ public class AnalyticalRunSetupController implements Controllable {
     private QueueManager queueManager;
 
     /**
-     * Get this view controller.
+     * Get view of this controller.
      *
      * @return the AnalyticalRunSetupDialog
      */
