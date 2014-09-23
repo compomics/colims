@@ -276,7 +276,27 @@
 
     create table colims.protocol_has_other_cv_term (
         l_protocol_id bigint not null,
-        l_other_cv_term_id bigint not null
+        l_other_cv_param_id bigint not null
+    );
+
+    create table colims.quant_param_cv_term (
+        id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
+        unit_accession varchar(255),
+        unit_label varchar(255),
+        unit_name varchar(255),
+        unit_ontology varchar(255),
+        param_value varchar(255),
+        cv_property varchar(255) not null,
+        primary key (id)
+    );
+
+    create table colims.quant_param_settings_has_reagent (
+        l_quant_param_settings_id bigint not null,
+        l_quant_param_cv_term_id bigint not null
     );
 
     create table colims.quant_parameter_settings (
@@ -285,6 +305,7 @@
         include_modifications bit,
         label_count integer,
         minimum_ratio_count integer,
+        l_method_cv_id bigint,
         primary key (id)
     );
 
@@ -298,6 +319,15 @@
 
     create table colims.quantification_engine (
         id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
+        unit_accession varchar(255),
+        unit_label varchar(255),
+        unit_name varchar(255),
+        unit_ontology varchar(255),
+        param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
         primary key (id)
@@ -384,8 +414,28 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        unit_accession varchar(255),
+        unit_label varchar(255),
+        unit_name varchar(255),
+        unit_ontology varchar(255),
+        param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
+        primary key (id)
+    );
+
+    create table colims.search_param_cv_term (
+        id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
+        unit_accession varchar(255),
+        unit_label varchar(255),
+        unit_name varchar(255),
+        unit_ontology varchar(255),
+        param_value varchar(255),
+        cv_property varchar(255) not null,
         primary key (id)
     );
 
@@ -637,14 +687,29 @@
         references colims.protocol (id);
 
     alter table colims.protocol_has_other_cv_term 
-        add constraint FK_chjm79t4wyytdkud9yrtdflua 
-        foreign key (l_other_cv_term_id) 
+        add constraint FK_2t9nbodiaeaiu6b396hn5a3dh 
+        foreign key (l_other_cv_param_id) 
         references colims.protocol_cv_term (id);
 
     alter table colims.protocol_has_other_cv_term 
         add constraint FK_obdu1ny455r0vb44a86qapib 
         foreign key (l_protocol_id) 
         references colims.protocol (id);
+
+    alter table colims.quant_param_settings_has_reagent 
+        add constraint FK_9vve0gg05i3c2luvabhk276ag 
+        foreign key (l_quant_param_cv_term_id) 
+        references colims.quant_param_cv_term (id);
+
+    alter table colims.quant_param_settings_has_reagent 
+        add constraint FK_ony26ium39mcr0apne3ak2iot 
+        foreign key (l_quant_param_settings_id) 
+        references colims.quant_parameter_settings (id);
+
+    alter table colims.quant_parameter_settings 
+        add constraint FK_8gkpneo17k47elt2faftn5dpw 
+        foreign key (l_method_cv_id) 
+        references colims.quant_param_cv_term (id);
 
     alter table colims.quantification 
         add constraint FK_o1pngv9c5nym7t3guesme7guy 

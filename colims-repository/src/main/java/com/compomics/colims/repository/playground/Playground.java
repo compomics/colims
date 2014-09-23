@@ -20,8 +20,8 @@ public class Playground {
         schemaExport.setOutputFile("/home/niels/Desktop/testing.sql");
         schemaExport.setFormat(true);
         schemaExport.setDelimiter(";");
-        schemaExport.execute(true, false, false, true);                           
+        schemaExport.execute(true, false, false, true);
 
     }
-       
+
 }
