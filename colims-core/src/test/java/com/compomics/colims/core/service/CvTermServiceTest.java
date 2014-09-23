@@ -10,8 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.InstrumentCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**
@@ -25,11 +25,11 @@ import java.util.List;
 public class CvTermServiceTest {
     
     @Autowired
-    private CvTermService cvTermService;
+    private CvParamService cvTermService;
     
     @Test
     public void testFindByCvTermByType() {         
-        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.DETECTOR);
+        List<InstrumentCvParam> sources = cvTermService.findByCvParamByType(InstrumentCvParam.class, CvParamType.DETECTOR);
         
         Assert.assertNotNull(sources);
         Assert.assertEquals(2, sources.size());

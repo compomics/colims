@@ -1,7 +1,7 @@
 package com.compomics.colims.client.view.admin.material;
 
 import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.model.MaterialCvTerm;
+import com.compomics.colims.model.MaterialCvParam;
 import java.awt.Dialog;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,18 +13,18 @@ import javax.swing.JTextField;
  * @author Niels Hulstaert
  */
 public class MaterialEditDialog extends javax.swing.JDialog {
-    
+
     /**
      * Dialog constructor
-     * 
+     *
      * @param parent the parent dialog
      * @param modal the modal boolean
      */
     public MaterialEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
-        
+
         initComponents();
-        
+
         setLocationRelativeTo(parent);
     }
 
@@ -32,29 +32,29 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         return cancelMaterialEditButton;
     }
 
-    public DualList<MaterialCvTerm> getCvTermDualList() {
-        return cvTermDualList;
+    public DualList<MaterialCvParam> getCvParamDualList() {
+        return cvParamDualList;
     }
 
-    public JList getCvTermSummaryList() {
-        return cvTermSummaryList;
+    public JList getCvParamSummaryList() {
+        return cvParamSummaryList;
     }
 
-    public JButton getMaterialCvTermsCrudButton() {
-        return materialCvTermsCrudButton;
+    public JButton getMaterialCvParamsCrudButton() {
+        return materialCvParamsCrudButton;
     }
 
     public JButton getMaterialSaveOrUpdateButton() {
         return materialSaveOrUpdateButton;
-    }  
+    }
 
     public JTextField getNameTextField() {
         return nameTextField;
-    }  
+    }
 
     public JLabel getMaterialStateInfoLabel() {
         return materialStateInfoLabel;
-    }       
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -68,11 +68,11 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         materialEditPanel = new javax.swing.JPanel();
         cancelMaterialEditButton = new javax.swing.JButton();
         materialSaveOrUpdateButton = new javax.swing.JButton();
-        cvTermsPanel = new javax.swing.JPanel();
-        cvTermSummaryScrollPane = new javax.swing.JScrollPane();
-        cvTermSummaryList = new javax.swing.JList();
-        cvTermDualList = new com.compomics.colims.client.compoment.DualList<MaterialCvTerm>();
-        materialCvTermsCrudButton = new javax.swing.JButton();
+        cvParamsPanel = new javax.swing.JPanel();
+        cvParamSummaryScrollPane = new javax.swing.JScrollPane();
+        cvParamSummaryList = new javax.swing.JList();
+        cvParamDualList = new com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.MaterialCvParam>();
+        materialCvParamsCrudButton = new javax.swing.JButton();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         materialStateInfoLabel = new javax.swing.JLabel();
@@ -92,39 +92,39 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         materialSaveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         materialSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
-        cvTermsPanel.setOpaque(false);
+        cvParamsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV params"));
+        cvParamsPanel.setOpaque(false);
 
-        cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
+        cvParamSummaryScrollPane.setViewportView(cvParamSummaryList);
 
-        materialCvTermsCrudButton.setText("edit...");
-        materialCvTermsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
-        materialCvTermsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        materialCvTermsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        materialCvTermsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        materialCvParamsCrudButton.setText("edit...");
+        materialCvParamsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
+        materialCvParamsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        materialCvParamsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        materialCvParamsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        javax.swing.GroupLayout cvTermsPanelLayout = new javax.swing.GroupLayout(cvTermsPanel);
-        cvTermsPanel.setLayout(cvTermsPanelLayout);
-        cvTermsPanelLayout.setHorizontalGroup(
-            cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvTermsPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout cvParamsPanelLayout = new javax.swing.GroupLayout(cvParamsPanel);
+        cvParamsPanel.setLayout(cvParamsPanelLayout);
+        cvParamsPanelLayout.setHorizontalGroup(
+            cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvParamsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cvParamSummaryScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(materialCvTermsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cvTermDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
+                .addGroup(cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(materialCvParamsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cvParamDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        cvTermsPanelLayout.setVerticalGroup(
-            cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cvTermsPanelLayout.createSequentialGroup()
+        cvParamsPanelLayout.setVerticalGroup(
+            cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cvParamsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                    .addComponent(cvTermDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cvParamSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                    .addComponent(cvParamDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(materialCvTermsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(materialCvParamsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -141,7 +141,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
             .addGroup(materialEditPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(materialEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cvParamsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, materialEditPanelLayout.createSequentialGroup()
                         .addComponent(materialStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -162,7 +162,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cvParamsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(materialEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(materialEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -189,19 +189,19 @@ public class MaterialEditDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelMaterialEditButton;
-    private com.compomics.colims.client.compoment.DualList<MaterialCvTerm> cvTermDualList;
-    private javax.swing.JList cvTermSummaryList;
-    private javax.swing.JScrollPane cvTermSummaryScrollPane;
-    private javax.swing.JPanel cvTermsPanel;
-    private javax.swing.JButton materialCvTermsCrudButton;
+    private com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.MaterialCvParam> cvParamDualList;
+    private javax.swing.JList cvParamSummaryList;
+    private javax.swing.JScrollPane cvParamSummaryScrollPane;
+    private javax.swing.JPanel cvParamsPanel;
+    private javax.swing.JButton materialCvParamsCrudButton;
     private javax.swing.JPanel materialEditPanel;
     private javax.swing.JButton materialSaveOrUpdateButton;
     private javax.swing.JLabel materialStateInfoLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

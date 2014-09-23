@@ -1,10 +1,9 @@
 package com.compomics.colims.client.view.admin.instrument;
 
 import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.InstrumentCvParam;
 import java.awt.Dialog;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -14,18 +13,18 @@ import javax.swing.JTextField;
  * @author Niels Hulstaert
  */
 public class InstrumentEditDialog extends javax.swing.JDialog {
-    
+
     /**
-     * Dialog constructor
-     * 
+     * Dialog constructor.
+     *
      * @param parent the parent dialog
      * @param modal the modal boolean
      */
     public InstrumentEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);
-        
+
         initComponents();
-                
+
         setLocationRelativeTo(parent);
     }
 
@@ -33,16 +32,16 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         return cancelInstrumentEditButton;
     }
 
-    public DualList<InstrumentCvTerm> getCvTermDualList() {
-        return cvTermDualList;
+    public DualList<InstrumentCvParam> getCvParamDualList() {
+        return cvParamDualList;
     }
 
-    public JList getCvTermSummaryList() {
-        return cvTermSummaryList;
+    public JList getCvParamSummaryList() {
+        return cvParamSummaryList;
     }
 
-    public JButton getInstrumentCvTermsCrudButton() {
-        return instrumentCvTermsCrudButton;
+    public JButton getInstrumentCvParamsCrudButton() {
+        return instrumentCvParamsCrudButton;
     }
 
     public JButton getInstrumentSaveOrUpdateButton() {
@@ -51,11 +50,11 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
 
     public JTextField getNameTextField() {
         return nameTextField;
-    }       
+    }
 
     public JLabel getInstrumentStateInfoLabel() {
         return instrumentStateInfoLabel;
-    }        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -72,11 +71,11 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
         cancelInstrumentEditButton = new javax.swing.JButton();
         instrumentSaveOrUpdateButton = new javax.swing.JButton();
-        cvTermsPanel = new javax.swing.JPanel();
-        cvTermSummaryScrollPane = new javax.swing.JScrollPane();
-        cvTermSummaryList = new javax.swing.JList();
-        cvTermDualList = new com.compomics.colims.client.compoment.DualList<InstrumentCvTerm>();
-        instrumentCvTermsCrudButton = new javax.swing.JButton();
+        cvParamsPanel = new javax.swing.JPanel();
+        cvParamSummaryScrollPane = new javax.swing.JScrollPane();
+        cvParamSummaryList = new javax.swing.JList();
+        cvParamDualList = new com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.InstrumentCvParam>();
+        instrumentCvParamsCrudButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Instrument management");
@@ -103,39 +102,39 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         instrumentSaveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         instrumentSaveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cvTermsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV terms"));
-        cvTermsPanel.setOpaque(false);
+        cvParamsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CV params"));
+        cvParamsPanel.setOpaque(false);
 
-        cvTermSummaryScrollPane.setViewportView(cvTermSummaryList);
+        cvParamSummaryScrollPane.setViewportView(cvParamSummaryList);
 
-        instrumentCvTermsCrudButton.setText("edit...");
-        instrumentCvTermsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
-        instrumentCvTermsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        instrumentCvTermsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        instrumentCvTermsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        instrumentCvParamsCrudButton.setText("edit...");
+        instrumentCvParamsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
+        instrumentCvParamsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        instrumentCvParamsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        instrumentCvParamsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        javax.swing.GroupLayout cvTermsPanelLayout = new javax.swing.GroupLayout(cvTermsPanel);
-        cvTermsPanel.setLayout(cvTermsPanelLayout);
-        cvTermsPanelLayout.setHorizontalGroup(
-            cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvTermsPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout cvParamsPanelLayout = new javax.swing.GroupLayout(cvParamsPanel);
+        cvParamsPanel.setLayout(cvParamsPanelLayout);
+        cvParamsPanelLayout.setHorizontalGroup(
+            cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvParamsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cvParamSummaryScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(instrumentCvTermsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cvTermDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
+                .addGroup(cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(instrumentCvParamsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cvParamDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        cvTermsPanelLayout.setVerticalGroup(
-            cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cvTermsPanelLayout.createSequentialGroup()
+        cvParamsPanelLayout.setVerticalGroup(
+            cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cvParamsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(cvTermsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cvTermSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .addComponent(cvTermDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(cvParamsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cvParamSummaryScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(cvParamDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instrumentCvTermsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(instrumentCvParamsCrudButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -146,7 +145,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
             .addGroup(instrumentEditPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(instrumentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cvTermsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cvParamsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instrumentEditPanelLayout.createSequentialGroup()
                         .addComponent(instrumentStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -169,7 +168,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
                         .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cvTermsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cvParamsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(instrumentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelInstrumentEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -195,19 +194,19 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelInstrumentEditButton;
-    private com.compomics.colims.client.compoment.DualList<InstrumentCvTerm> cvTermDualList;
-    private javax.swing.JList cvTermSummaryList;
-    private javax.swing.JScrollPane cvTermSummaryScrollPane;
-    private javax.swing.JPanel cvTermsPanel;
-    private javax.swing.JButton instrumentCvTermsCrudButton;
+    private com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.InstrumentCvParam> cvParamDualList;
+    private javax.swing.JList cvParamSummaryList;
+    private javax.swing.JScrollPane cvParamSummaryScrollPane;
+    private javax.swing.JPanel cvParamsPanel;
+    private javax.swing.JButton instrumentCvParamsCrudButton;
     private javax.swing.JPanel instrumentEditPanel;
     private javax.swing.JButton instrumentSaveOrUpdateButton;
     private javax.swing.JLabel instrumentStateInfoLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

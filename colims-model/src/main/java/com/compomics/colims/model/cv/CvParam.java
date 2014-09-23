@@ -1,5 +1,6 @@
-package com.compomics.colims.model;
+package com.compomics.colims.model.cv;
 
+import com.compomics.colims.model.DatabaseEntity;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,27 +11,69 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
+public abstract class CvParam extends DatabaseEntity {
 
-    private static final long serialVersionUID = -7434489250278743116L;
+    private static final long serialVersionUID = 3395161527675025740L;
 
+    /**
+     * The full name of the CV.
+     */
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
     protected String ontology;
+    /**
+     * The label of the CV.
+     */
     @Basic(optional = false)
     @Column(name = "label", nullable = false)
     protected String label;
+    /**
+     * The accession or ID number of this CV term in the source CV.
+     */
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     protected String accession;
+    /**
+     * The name of the parameter.
+     */
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;
+    /**
+     * The user-entered value of the parameter.
+     */
+    @Basic(optional = true)
+    @Column(name = "param_value", nullable = true)
+    protected String value;
+    /**
+     * The full name of the unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_ontology", nullable = true)
+    protected String unitOntology;
+    /**
+     * The label of the unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_label", nullable = true)
+    protected String unitLabel;
+    /**
+     * The accession or ID number of this unit CV term in the source unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_accession", nullable = true)
+    protected String unitAccession;
+    /**
+     * The name of the unit parameter.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_name", nullable = true)
+    protected String unitName;
 
-    public AuditableCvTerm() {
+    public CvParam() {
     }
 
-    public AuditableCvTerm(final String ontology, final String label, final String accession, final String name) {
+    public CvParam(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
@@ -87,7 +130,7 @@ public abstract class AuditableCvTerm extends AuditableDatabaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AuditableCvTerm other = (AuditableCvTerm) obj;
+        final CvParam other = (CvParam) obj;
         if (!Objects.equals(this.ontology, other.ontology)) {
             return false;
         }

@@ -5,22 +5,22 @@ import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
-import com.compomics.colims.client.event.admin.CvTermChangeEvent;
+import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.TypedCvTermSummaryListModel;
-import com.compomics.colims.client.model.TypedCvTermTableModel;
-import com.compomics.colims.client.renderer.TypedCvTermSummaryCellRenderer;
+import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
+import com.compomics.colims.client.model.TypedCvParamTableModel;
+import com.compomics.colims.client.renderer.TypedCvParamSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.instrument.InstrumentEditDialog;
 import com.compomics.colims.client.view.admin.instrument.InstrumentManagementDialog;
-import com.compomics.colims.core.service.CvTermService;
+import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.model.AuditableTypedCvTerm;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
-import com.compomics.colims.model.comparator.CvTermAccessionComparator;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.InstrumentCvParam;
+import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -52,7 +52,7 @@ import org.springframework.stereotype.Component;
 public class InstrumentManagementController implements Controllable {
 
     //model
-    private TypedCvTermSummaryListModel<InstrumentCvTerm> typedCvTermSummaryListModel;
+    private TypedCvParamSummaryListModel<InstrumentCvParam> typedCvParamSummaryListModel;
     private ObservableList<Instrument> instrumentBindingList;
     private BindingGroup bindingGroup;
     private Instrument instrumentToEdit;
@@ -63,12 +63,12 @@ public class InstrumentManagementController implements Controllable {
     @Autowired
     private ColimsController colimsController;
     @Autowired
-    private CvTermManagementController cvTermManagementController;
+    private CvParamManagementController cvParamManagementController;
     //services
     @Autowired
     private InstrumentService instrumentService;
     @Autowired
-    private CvTermService cvTermService;
+    private CvParamService cvParamService;
     @Autowired
     private EventBus eventBus;
 
@@ -111,16 +111,16 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV term change event posted by the
-     * CvTermManagementController. If the InstrumentManagementDialog is visible,
-     * clear the selection in the CV term summary list.
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the InstrumentManagementDialog is visible,
+     * clear the selection in the CV param summary list.
      *
-     * @param cvTermChangeEvent
+     * @param cvParamChangeEvent
      */
     @Subscribe
-    public void onCvTermChangeEvent(CvTermChangeEvent cvTermChangeEvent) {
+    public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
         if (instrumentEditDialog.isVisible()) {
-            instrumentEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
+            instrumentEditDialog.getCvParamSummaryList().getSelectionModel().clearSelection();
         }
     }
 
@@ -141,22 +141,22 @@ public class InstrumentManagementController implements Controllable {
                     if (selectedIndex != -1 && instrumentBindingList.get(selectedIndex) != null) {
                         Instrument selectedInstrument = instrumentBindingList.get(selectedIndex);
 
-                        //init CvTermModel
-                        List<AuditableTypedCvTerm> cvTerms = new ArrayList<>();
+                        //init CvParamModel
+                        List<AuditableTypedCvParam> cvParams = new ArrayList<>();
                         if (selectedInstrument.getType() != null) {
-                            cvTerms.add(selectedInstrument.getType());
+                            cvParams.add(selectedInstrument.getType());
                         }
                         if (selectedInstrument.getSource() != null) {
-                            cvTerms.add(selectedInstrument.getSource());
+                            cvParams.add(selectedInstrument.getSource());
                         }
                         if (selectedInstrument.getDetector() != null) {
-                            cvTerms.add(selectedInstrument.getDetector());
+                            cvParams.add(selectedInstrument.getDetector());
                         }
-                        for (InstrumentCvTerm analyzer : selectedInstrument.getAnalyzers()) {
-                            cvTerms.add(analyzer);
+                        for (InstrumentCvParam analyzer : selectedInstrument.getAnalyzers()) {
+                            cvParams.add(analyzer);
                         }
-                        TypedCvTermTableModel typedCvTermTableModel = new TypedCvTermTableModel(cvTerms);
-                        instrumentManagementDialog.getInstrumentDetailsTable().setModel(typedCvTermTableModel);
+                        TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+                        instrumentManagementDialog.getInstrumentDetailsTable().setModel(typedCvParamTableModel);
                     } else {
                         //clear detail view
                         clearInstrumentDetailFields();
@@ -243,85 +243,85 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog = new InstrumentEditDialog(instrumentManagementDialog, true);
 
         //init dual list
-        instrumentEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
+        instrumentEditDialog.getCvParamDualList().init(new CvParamAccessionComparator());
 
         //set model and renderer
-        typedCvTermSummaryListModel = new TypedCvTermSummaryListModel();
-        instrumentEditDialog.getCvTermSummaryList().setModel(typedCvTermSummaryListModel);
-        instrumentEditDialog.getCvTermSummaryList().setCellRenderer(new TypedCvTermSummaryCellRenderer<InstrumentCvTerm>());
+        typedCvParamSummaryListModel = new TypedCvParamSummaryListModel();
+        instrumentEditDialog.getCvParamSummaryList().setModel(typedCvParamSummaryListModel);
+        instrumentEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<InstrumentCvParam>());
 
         //add action listeners
-        instrumentEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        instrumentEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(final ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    if (instrumentEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvTermType from summary list
-                        CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
+                    if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
+                        //get selected cvParamType from summary list
+                        CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                        //load duallist for the selected cvTermType
-                        List<InstrumentCvTerm> availableCvTerms = cvTermService.findByCvTermByType(InstrumentCvTerm.class, selectedcvTermType);
+                        //load duallist for the selected cvParamType
+                        List<InstrumentCvParam> availableCvParams = cvParamService.findByCvParamByType(InstrumentCvParam.class, selectedcvParamType);
 
-                        List<InstrumentCvTerm> addedCvTerms;
+                        List<InstrumentCvParam> addedCvParams;
 
-                        if (typedCvTermSummaryListModel.isSingleCvTerm(selectedcvTermType)) {
-                            addedCvTerms = new ArrayList<>();
-                            InstrumentCvTerm instrumentCvTerm = typedCvTermSummaryListModel.getSingleCvTerms().get(selectedcvTermType);
+                        if (typedCvParamSummaryListModel.isSingleCvParam(selectedcvParamType)) {
+                            addedCvParams = new ArrayList<>();
+                            InstrumentCvParam instrumentCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedcvParamType);
                             //check for null value
-                            if (instrumentCvTerm != null) {
-                                addedCvTerms.add(instrumentCvTerm);
+                            if (instrumentCvParam != null) {
+                                addedCvParams.add(instrumentCvParam);
                             }
-                            instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
+                            instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
                         } else {
-                            addedCvTerms = typedCvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
-                            instrumentEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
+                            addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedcvParamType);
+                            instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
                         }
                     } else {
-                        instrumentEditDialog.getCvTermDualList().clear();
+                        instrumentEditDialog.getCvParamDualList().clear();
                     }
                 }
             }
         });
 
-        instrumentEditDialog.getCvTermDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
+        instrumentEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
                 //get selected cvTermType
-                CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
+                CvParamType selectedcvTermType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                List<InstrumentCvTerm> addedItems = (List<InstrumentCvTerm>) evt.getNewValue();
+                List<InstrumentCvParam> addedItems = (List<InstrumentCvParam>) evt.getNewValue();
 
                 //check for property
-                if (selectedcvTermType.equals(CvTermType.TYPE)) {
+                if (selectedcvTermType.equals(CvParamType.TYPE)) {
                     if (!addedItems.isEmpty()) {
-                        InstrumentCvTerm type = addedItems.get(0);
+                        InstrumentCvParam type = addedItems.get(0);
                         instrumentToEdit.setType(type);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.TYPE, type);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, type);
                     } else {
                         instrumentToEdit.setType(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.TYPE, null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.SOURCE)) {
+                } else if (selectedcvTermType.equals(CvParamType.SOURCE)) {
                     if (!addedItems.isEmpty()) {
-                        InstrumentCvTerm source = addedItems.get(0);
+                        InstrumentCvParam source = addedItems.get(0);
                         instrumentToEdit.setSource(source);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.SOURCE, source);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, source);
                     } else {
                         instrumentToEdit.setSource(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.SOURCE, null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.DETECTOR)) {
+                } else if (selectedcvTermType.equals(CvParamType.DETECTOR)) {
                     if (!addedItems.isEmpty()) {
-                        InstrumentCvTerm detector = addedItems.get(0);
+                        InstrumentCvParam detector = addedItems.get(0);
                         instrumentToEdit.setDetector(detector);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.DETECTOR, detector);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, detector);
                     } else {
                         instrumentToEdit.setDetector(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.DETECTOR, null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.ANALYZER)) {
+                } else if (selectedcvTermType.equals(CvParamType.ANALYZER)) {
                     instrumentToEdit.setAnalyzers(addedItems);
-                    typedCvTermSummaryListModel.updateMultiCvTerm(CvTermType.ANALYZER, addedItems);
+                    typedCvParamSummaryListModel.updateMultiCvTerm(CvParamType.ANALYZER, addedItems);
                 }
 
             }
@@ -379,20 +379,20 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getInstrumentCvTermsCrudButton().addActionListener(new ActionListener() {
+        instrumentEditDialog.getInstrumentCvParamsCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 //check if a CV term group is selected in the CV term summary list
-                if (instrumentEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
+                if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
                     //get selected cvTermType from summary list
-                    CvTermType selectedcvTermType = (CvTermType) instrumentEditDialog.getCvTermSummaryList().getSelectedValue();
+                    CvParamType selectedcvTermType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
+                    List<AuditableTypedCvParam> cvTerms = cvParamService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
-                    cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
+                    cvParamManagementController.updateDialog(selectedcvTermType, cvTerms);
 
-                    cvTermManagementController.showView();
+                    cvParamManagementController.showView();
                 } else {
                     eventBus.post(new MessageEvent("Instrument CV term type selection", "Please select an instrument CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
@@ -436,27 +436,27 @@ public class InstrumentManagementController implements Controllable {
     private Instrument createDefaultInstrument() {
         Instrument defaultInstrument = new Instrument("default instrument name");
         //find instrument types
-        List<InstrumentCvTerm> types = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.TYPE);
+        List<InstrumentCvParam> types = cvParamService.findByCvParamByType(InstrumentCvParam.class, CvParamType.TYPE);
         if (!types.isEmpty()) {
             defaultInstrument.setType(types.get(0));
 
         }
         //find sources
-        List<InstrumentCvTerm> sources = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.SOURCE);
+        List<InstrumentCvParam> sources = cvParamService.findByCvParamByType(InstrumentCvParam.class, CvParamType.SOURCE);
         if (!sources.isEmpty()) {
             defaultInstrument.setSource(sources.get(0));
         }
         //find detectors
-        List<InstrumentCvTerm> detectors = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.DETECTOR);
+        List<InstrumentCvParam> detectors = cvParamService.findByCvParamByType(InstrumentCvParam.class, CvParamType.DETECTOR);
 
         if (!detectors.isEmpty()) {
             defaultInstrument.setDetector(detectors.get(0));
         }
         //find analyzers
-        List<InstrumentCvTerm> analyzers = cvTermService.findByCvTermByType(InstrumentCvTerm.class, CvTermType.ANALYZER);
+        List<InstrumentCvParam> analyzers = cvParamService.findByCvParamByType(InstrumentCvParam.class, CvParamType.ANALYZER);
 
         if (!analyzers.isEmpty()) {
-            List<InstrumentCvTerm> defaultAnalyzers = new ArrayList<>();
+            List<InstrumentCvParam> defaultAnalyzers = new ArrayList<>();
             defaultAnalyzers.add(analyzers.get(0));
             defaultInstrument.setAnalyzers(defaultAnalyzers);
         }
@@ -491,20 +491,20 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getNameTextField().setText(instrumentToEdit.getName());
 
         //add the single CV terms
-        EnumMap<CvTermType, InstrumentCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class
+        EnumMap<CvParamType, InstrumentCvParam> singleCvTerms = new EnumMap<>(CvParamType.class
         );
-        singleCvTerms.put(CvTermType.TYPE, instrumentToEdit.getType());
-        singleCvTerms.put(CvTermType.SOURCE, instrumentToEdit.getSource());
-        singleCvTerms.put(CvTermType.DETECTOR, instrumentToEdit.getDetector());
+        singleCvTerms.put(CvParamType.TYPE, instrumentToEdit.getType());
+        singleCvTerms.put(CvParamType.SOURCE, instrumentToEdit.getSource());
+        singleCvTerms.put(CvParamType.DETECTOR, instrumentToEdit.getDetector());
 
         //add the multiple CV terms
-        EnumMap<CvTermType, List<InstrumentCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
+        EnumMap<CvParamType, List<InstrumentCvParam>> multipleCvTerms = new EnumMap<>(CvParamType.class);
 
-        multipleCvTerms.put(CvTermType.ANALYZER, instrumentToEdit.getAnalyzers());
-        typedCvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
+        multipleCvTerms.put(CvParamType.ANALYZER, instrumentToEdit.getAnalyzers());
+        typedCvParamSummaryListModel.update(singleCvTerms, multipleCvTerms);
 
         //clear selection in CV term summary list
-        instrumentEditDialog.getCvTermSummaryList()
+        instrumentEditDialog.getCvParamSummaryList()
                 .getSelectionModel().clearSelection();
     }
 
@@ -512,6 +512,6 @@ public class InstrumentManagementController implements Controllable {
      * Clear the instrument detail fields.
      */
     private void clearInstrumentDetailFields() {
-        instrumentManagementDialog.getInstrumentDetailsTable().setModel(new TypedCvTermTableModel());
+        instrumentManagementDialog.getInstrumentDetailsTable().setModel(new TypedCvParamTableModel());
     }
 }

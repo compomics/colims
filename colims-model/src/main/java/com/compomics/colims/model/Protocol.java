@@ -41,15 +41,15 @@ public class Protocol extends AuditableDatabaseEntity {
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = true)
-    private ProtocolCvTerm reduction;
+    private ProtocolCvParam reduction;
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = true)
-    private ProtocolCvTerm enzyme;
+    private ProtocolCvParam enzyme;
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = true)
-    private ProtocolCvTerm cellBased;
+    private ProtocolCvParam cellBased;
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();
     @ManyToMany
@@ -59,7 +59,7 @@ public class Protocol extends AuditableDatabaseEntity {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
         @JoinColumn(name = "l_chemical_labeling_cv_term_id", referencedColumnName = "id")})
-    private List<ProtocolCvTerm> chemicalLabels = new ArrayList<>();
+    private List<ProtocolCvParam> chemicalLabels = new ArrayList<>();
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_other_cv_term",
@@ -67,7 +67,7 @@ public class Protocol extends AuditableDatabaseEntity {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
         @JoinColumn(name = "l_other_cv_term_id", referencedColumnName = "id")})
-    private List<ProtocolCvTerm> otherCvTerms = new ArrayList<>();
+    private List<ProtocolCvParam> otherCvTerms = new ArrayList<>();
 
     public Protocol() {
     }
@@ -100,43 +100,43 @@ public class Protocol extends AuditableDatabaseEntity {
         this.name = name;
     }
 
-    public ProtocolCvTerm getReduction() {
+    public ProtocolCvParam getReduction() {
         return reduction;
     }
 
-    public void setReduction(ProtocolCvTerm reduction) {
+    public void setReduction(ProtocolCvParam reduction) {
         this.reduction = reduction;
     }
 
-    public ProtocolCvTerm getEnzyme() {
+    public ProtocolCvParam getEnzyme() {
         return enzyme;
     }
 
-    public void setEnzyme(ProtocolCvTerm enzyme) {
+    public void setEnzyme(ProtocolCvParam enzyme) {
         this.enzyme = enzyme;
     }
 
-    public ProtocolCvTerm getCellBased() {
+    public ProtocolCvParam getCellBased() {
         return cellBased;
     }
 
-    public void setCellBased(ProtocolCvTerm cellBased) {
+    public void setCellBased(ProtocolCvParam cellBased) {
         this.cellBased = cellBased;
     }
 
-    public List<ProtocolCvTerm> getChemicalLabels() {
+    public List<ProtocolCvParam> getChemicalLabels() {
         return chemicalLabels;
     }
 
-    public void setChemicalLabels(List<ProtocolCvTerm> chemicalLabels) {
+    public void setChemicalLabels(List<ProtocolCvParam> chemicalLabels) {
         this.chemicalLabels = chemicalLabels;
     }
 
-    public List<ProtocolCvTerm> getOtherCvTerms() {
+    public List<ProtocolCvParam> getOtherCvTerms() {
         return otherCvTerms;
     }
 
-    public void setOtherCvTerms(List<ProtocolCvTerm> otherCvTerms) {
+    public void setOtherCvTerms(List<ProtocolCvParam> otherCvTerms) {
         this.otherCvTerms = otherCvTerms;
     }
 

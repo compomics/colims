@@ -24,17 +24,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="cvTermCrudPanel" max="32767" attributes="0"/>
+          <Component id="cvParamCrudPanel" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="cvTermCrudPanel" alignment="0" max="32767" attributes="0"/>
+          <Component id="cvParamCrudPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="cvTermCrudPanel">
+    <Container class="javax.swing.JPanel" name="cvParamCrudPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -51,8 +51,8 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="cvTermOverviewPanel" pref="534" max="32767" attributes="0"/>
-                      <Component id="cvTermDetailPanel" alignment="0" pref="534" max="32767" attributes="0"/>
+                      <Component id="cvParamOverviewPanel" pref="534" max="32767" attributes="0"/>
+                      <Component id="cvParamDetailPanel" alignment="0" pref="534" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -62,9 +62,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cvTermOverviewPanel" pref="193" max="32767" attributes="0"/>
+                  <Component id="cvParamOverviewPanel" pref="193" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="cvTermDetailPanel" pref="343" max="32767" attributes="0"/>
+                  <Component id="cvParamDetailPanel" pref="343" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="cancelButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -73,7 +73,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="cvTermOverviewPanel">
+        <Container class="javax.swing.JPanel" name="cvParamOverviewPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -94,11 +94,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="336" max="32767" attributes="0"/>
-                              <Component id="addCvTermButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="addCvParamButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="deleteCvTermButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="deleteCvParamButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="cvTermTableScrollPane" alignment="0" max="32767" attributes="0"/>
+                          <Component id="cvParamTableScrollPane" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -108,11 +108,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="cvTermTableScrollPane" pref="117" max="32767" attributes="0"/>
+                      <Component id="cvParamTableScrollPane" pref="117" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="addCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="deleteCvTermButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="addCvParamButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteCvParamButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -120,7 +120,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="addCvTermButton">
+            <Component class="javax.swing.JButton" name="addCvParamButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="add..."/>
                 <Property name="toolTipText" type="java.lang.String" value="add a CV term with the OLS dialog"/>
@@ -135,7 +135,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="deleteCvTermButton">
+            <Component class="javax.swing.JButton" name="deleteCvParamButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="delete"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -149,17 +149,14 @@
                 </Property>
               </Properties>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="cvTermTableScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
+            <Container class="javax.swing.JScrollPane" name="cvParamTableScrollPane">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="cvTermTable">
+                <Component class="javax.swing.JTable" name="cvParamTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -176,7 +173,7 @@
             </Container>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="cvTermDetailPanel">
+        <Container class="javax.swing.JPanel" name="cvParamDetailPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -196,9 +193,9 @@
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="cvTermStateInfoLabel" max="32767" attributes="0"/>
+                              <Component id="cvParamStateInfoLabel" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editUsingOlsCvTermButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="editUsingOlsCvParamButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -261,9 +258,9 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="saveOrUpdateButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                              <Component id="editUsingOlsCvTermButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="editUsingOlsCvParamButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="cvTermStateInfoLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="cvParamStateInfoLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -325,7 +322,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="cvTermStateInfoLabel">
+            <Component class="javax.swing.JLabel" name="cvParamStateInfoLabel">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="11" style="1"/>
@@ -369,7 +366,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="editUsingOlsCvTermButton">
+            <Component class="javax.swing.JButton" name="editUsingOlsCvParamButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
                 <Property name="toolTipText" type="java.lang.String" value="add a CV term with the OLS dialog"/>

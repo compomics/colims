@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.SearchEngineType;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import javax.persistence.Table;
  */
 @Table(name = "search_engine")
 @Entity
-public class SearchEngine extends CvTerm {
+public class SearchEngine extends CvParam {
 
     private static final long serialVersionUID = -5428696863055618148L;
     private static final String NOT_APPLICABLE = "N/A";
@@ -34,7 +35,7 @@ public class SearchEngine extends CvTerm {
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    protected SearchEngineType searchEngineType;
+    private SearchEngineType searchEngineType;
     /**
      * The version of the search engine.
      */

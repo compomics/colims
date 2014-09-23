@@ -33,11 +33,11 @@ import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvTerm;
+import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
@@ -198,14 +198,14 @@ public class MzMLParserImpl implements MzMLParser {
         if (componentList.getSource() != null && !componentList.getSource().isEmpty()) {
             //for the moment, only consider the first source
             SourceComponent sourceComponent = componentList.getSource().get(0);
-            InstrumentCvTerm source = new InstrumentCvTerm();
+            InstrumentCvParam source = new InstrumentCvParam();
             if (sourceComponent.getCvParam() != null && !sourceComponent.getCvParam().isEmpty()) {
                 CVParam cVParam = sourceComponent.getCvParam().get(0);
                 source.setAccession(cVParam.getAccession());
                 source.setName(cVParam.getName());
                 source.setLabel(cVParam.getCvRef());
             }
-            source.setcvTermType(CvTermType.SOURCE);
+            source.setcvTermType(CvParamType.SOURCE);
 
             //set relations
             instrument.setSource(source);
@@ -215,14 +215,14 @@ public class MzMLParserImpl implements MzMLParser {
         if (componentList.getDetector() != null && !componentList.getDetector().isEmpty()) {
             //for the moment, only consider the first detector
             DetectorComponent detectorComponent = componentList.getDetector().get(0);
-            InstrumentCvTerm detector = new InstrumentCvTerm();
+            InstrumentCvParam detector = new InstrumentCvParam();
             if (detectorComponent.getCvParam() != null && !detectorComponent.getCvParam().isEmpty()) {
                 CVParam cVParam = detectorComponent.getCvParam().get(0);
                 detector.setAccession(cVParam.getAccession());
                 detector.setName(cVParam.getName());
                 detector.setLabel(cVParam.getCvRef());
             }
-            detector.setcvTermType(CvTermType.ANALYZER);
+            detector.setcvTermType(CvParamType.ANALYZER);
 
             //set relations
             instrument.setSource(detector);
@@ -230,16 +230,16 @@ public class MzMLParserImpl implements MzMLParser {
 
         //set analyzers
         if (componentList.getAnalyzer() != null && !componentList.getAnalyzer().isEmpty()) {
-            List<InstrumentCvTerm> analyzers = new ArrayList<>();
+            List<InstrumentCvParam> analyzers = new ArrayList<>();
             for (AnalyzerComponent analyzerComponent : componentList.getAnalyzer()) {
-                InstrumentCvTerm analyzer = new InstrumentCvTerm();
+                InstrumentCvParam analyzer = new InstrumentCvParam();
                 if (analyzerComponent.getCvParam() != null && !analyzerComponent.getCvParam().isEmpty()) {
                     CVParam cVParam = analyzerComponent.getCvParam().get(0);
                     analyzer.setAccession(cVParam.getAccession());
                     analyzer.setName(cVParam.getName());
                     analyzer.setLabel(cVParam.getCvRef());
                 }
-                analyzer.setcvTermType(CvTermType.ANALYZER);
+                analyzer.setcvTermType(CvParamType.ANALYZER);
 
                 analyzers.add(analyzer);
             }

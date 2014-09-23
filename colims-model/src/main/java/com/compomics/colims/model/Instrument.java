@@ -43,17 +43,17 @@ public class Instrument extends AuditableDatabaseEntity {
     @NotNull(message = "An instrument must have a type")
     @ManyToOne
     @JoinColumn(name = "l_type_cv_id", referencedColumnName = "id", nullable = false)
-    private InstrumentCvTerm type;
+    private InstrumentCvParam type;
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a source")
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
-    private InstrumentCvTerm source;
+    private InstrumentCvParam source;
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a detector")
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)
-    private InstrumentCvTerm detector;
+    private InstrumentCvParam detector;
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
     @NotEmpty(message = "An instrument must have at least one analyzer")
@@ -64,7 +64,7 @@ public class Instrument extends AuditableDatabaseEntity {
         @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
             inverseJoinColumns = {
         @JoinColumn(name = "l_instrument_cv_term_id", referencedColumnName = "id")})
-    private List<InstrumentCvTerm> analyzers = new ArrayList<>();
+    private List<InstrumentCvParam> analyzers = new ArrayList<>();
 
     public Instrument() {
     }
@@ -81,27 +81,27 @@ public class Instrument extends AuditableDatabaseEntity {
         this.name = name;
     }
 
-    public InstrumentCvTerm getType() {
+    public InstrumentCvParam getType() {
         return type;
     }
 
-    public void setType(InstrumentCvTerm type) {
+    public void setType(InstrumentCvParam type) {
         this.type = type;
     }
 
-    public InstrumentCvTerm getSource() {
+    public InstrumentCvParam getSource() {
         return source;
     }
 
-    public void setSource(InstrumentCvTerm source) {
+    public void setSource(InstrumentCvParam source) {
         this.source = source;
     }
 
-    public InstrumentCvTerm getDetector() {
+    public InstrumentCvParam getDetector() {
         return detector;
     }
 
-    public void setDetector(InstrumentCvTerm detector) {
+    public void setDetector(InstrumentCvParam detector) {
         this.detector = detector;
     }
 
@@ -113,11 +113,11 @@ public class Instrument extends AuditableDatabaseEntity {
         this.analyticalRuns = analyticalRuns;
     }
 
-    public List<InstrumentCvTerm> getAnalyzers() {
+    public List<InstrumentCvParam> getAnalyzers() {
         return analyzers;
     }
 
-    public void setAnalyzers(List<InstrumentCvTerm> analyzers) {
+    public void setAnalyzers(List<InstrumentCvParam> analyzers) {
         this.analyzers = analyzers;
     }
 

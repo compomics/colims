@@ -1,14 +1,14 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AuditableTypedCvTerm;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**
  *
  * @author Niels Hulstaert
  */
-public interface CvTermRepository extends GenericRepository<AuditableTypedCvTerm, Long> {
+public interface CvParamRepository extends GenericRepository<AuditableTypedCvParam, Long> {
     /**
      * Find a CV term by accession and cvTermType. Returns null if nothing
      * was found.
@@ -17,7 +17,7 @@ public interface CvTermRepository extends GenericRepository<AuditableTypedCvTerm
      * @param cvTermType the CV term property
      * @return the found CV term
      */
-    AuditableTypedCvTerm findByAccession(String accession, CvTermType cvTermType);
+    AuditableTypedCvParam findByAccession(String accession, CvParamType cvTermType);
 
     /**
      * Find CV terms by CV term property. Returns null if nothing was found.
@@ -25,5 +25,5 @@ public interface CvTermRepository extends GenericRepository<AuditableTypedCvTerm
      * @param cvTermType the cvTermType
      * @return the found CV terms
      */
-    List<AuditableTypedCvTerm> findByCvTermType(CvTermType cvTermType);
+    List<AuditableTypedCvParam> findByCvTermType(CvParamType cvTermType);
 }

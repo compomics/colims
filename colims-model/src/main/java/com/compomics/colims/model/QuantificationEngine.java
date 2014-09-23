@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import javax.persistence.Table;
  */
 @Table(name = "quantification_engine")
 @Entity
-public class QuantificationEngine extends CvTerm {
+public class QuantificationEngine extends CvParam {
 
     private static final long serialVersionUID = 4719894153697846226L;
     private static final String NOT_APPLICABLE = "N/A";
@@ -34,7 +35,7 @@ public class QuantificationEngine extends CvTerm {
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    protected QuantificationEngineType quantificationEngineType;
+    private QuantificationEngineType quantificationEngineType;
     /**
      * The version of the search engine.
      */

@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.controller.admin.CvTermManagementController;
+import com.compomics.colims.client.controller.admin.CvParamManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
@@ -82,7 +82,7 @@ public class ColimsController implements Controllable, ActionListener {
     @Autowired
     private UserManagementParentController userManagementParentController;
     @Autowired
-    private CvTermManagementController cvTermManagementController;
+    private CvParamManagementController cvParamManagementController;
     @Autowired
     private InstrumentManagementController instrumentManagementController;
     @Autowired
@@ -155,7 +155,7 @@ public class ColimsController implements Controllable, ActionListener {
         projectManagementController.init();
         projectOverviewController.init();
         taskManagementController.init();
-        cvTermManagementController.init();
+        cvParamManagementController.init();
 
         //add panel components
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

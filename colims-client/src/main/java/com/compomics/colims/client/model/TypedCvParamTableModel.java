@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.AuditableTypedCvTerm;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -9,34 +9,34 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Niels Hulstaert
  */
-public class TypedCvTermTableModel extends AbstractTableModel {
+public class TypedCvParamTableModel extends AbstractTableModel {
 
     private final String[] columnNames = {"type", "ontology label", "accession", "name"};
     private static final int TYPE_INDEX = 0;
     private static final int ONTOLOGY_LABEL_INDEX = 1;
     private static final int ACCESSION_INDEX = 2;
     private static final int NAME_INDEX = 3;
-    private List<AuditableTypedCvTerm> cvTerms;
+    private List<AuditableTypedCvParam> cvParams;
 
-    public TypedCvTermTableModel() {
-        cvTerms = new ArrayList<>();
+    public TypedCvParamTableModel() {
+        cvParams = new ArrayList<>();
     }
 
-    public TypedCvTermTableModel(List<AuditableTypedCvTerm> cvTerms) {
-        this.cvTerms = cvTerms;
+    public TypedCvParamTableModel(List<AuditableTypedCvParam> cvParams) {
+        this.cvParams = cvParams;
     }
 
-    public List<AuditableTypedCvTerm> getCvTerms() {
-        return cvTerms;
+    public List<AuditableTypedCvParam> getCvParams() {
+        return cvParams;
     }
 
-    public void setCvTerms(List<AuditableTypedCvTerm> cvTerms) {
-        this.cvTerms = cvTerms;
+    public void setCvParams(List<AuditableTypedCvParam> cvParams) {
+        this.cvParams = cvParams;
     }
 
     @Override
     public int getRowCount() {
-        return cvTerms.size();
+        return cvParams.size();
     }
 
     @Override
@@ -51,17 +51,17 @@ public class TypedCvTermTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        AuditableTypedCvTerm selectedCvTerm = cvTerms.get(rowIndex);
-                
+        AuditableTypedCvParam selectedCvParam = cvParams.get(rowIndex);
+
         switch (columnIndex) {
-            case TYPE_INDEX:                
-                return selectedCvTerm.getcvTermType();
+            case TYPE_INDEX:
+                return selectedCvParam.getCvParamType();
             case ONTOLOGY_LABEL_INDEX:
-                return selectedCvTerm.getLabel();
+                return selectedCvParam.getLabel();
             case ACCESSION_INDEX:
-                return selectedCvTerm.getAccession();
+                return selectedCvParam.getAccession();
             case NAME_INDEX:
-                return selectedCvTerm.getName();
+                return selectedCvParam.getName();
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }

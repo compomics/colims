@@ -56,7 +56,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="cvTermsPanel" alignment="1" max="32767" attributes="0"/>
+                      <Component id="cvParamsPanel" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="instrumentStateInfoLabel" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -86,7 +86,7 @@
                       <Component id="nameTextField" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cvTermsPanel" max="32767" attributes="0"/>
+                  <Component id="cvParamsPanel" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="cancelInstrumentEditButton" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -154,11 +154,11 @@
             </Property>
           </Properties>
         </Component>
-        <Container class="javax.swing.JPanel" name="cvTermsPanel">
+        <Container class="javax.swing.JPanel" name="cvParamsPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="CV terms"/>
+                <TitledBorder title="CV params"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -169,11 +169,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="cvTermSummaryScrollPane" min="-2" pref="182" max="-2" attributes="0"/>
+                      <Component id="cvParamSummaryScrollPane" min="-2" pref="182" max="-2" attributes="0"/>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="instrumentCvTermsCrudButton" min="-2" max="-2" attributes="0"/>
-                          <Component id="cvTermDualList" pref="470" max="32767" attributes="0"/>
+                          <Component id="instrumentCvParamsCrudButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="cvParamDualList" pref="470" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -184,25 +184,25 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="cvTermSummaryScrollPane" pref="214" max="32767" attributes="0"/>
-                          <Component id="cvTermDualList" pref="0" max="32767" attributes="0"/>
+                          <Component id="cvParamSummaryScrollPane" pref="214" max="32767" attributes="0"/>
+                          <Component id="cvParamDualList" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="instrumentCvTermsCrudButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="instrumentCvParamsCrudButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="cvTermSummaryScrollPane">
+            <Container class="javax.swing.JScrollPane" name="cvParamSummaryScrollPane">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JList" name="cvTermSummaryList">
+                <Component class="javax.swing.JList" name="cvParamSummaryList">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
@@ -211,12 +211,12 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="com.compomics.colims.client.compoment.DualList" name="cvTermDualList">
+            <Component class="com.compomics.colims.client.compoment.DualList" name="cvParamDualList">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;InstrumentCvTerm&gt;"/>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;com.compomics.colims.model.InstrumentCvParam&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="instrumentCvTermsCrudButton">
+            <Component class="javax.swing.JButton" name="instrumentCvParamsCrudButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
                 <Property name="toolTipText" type="java.lang.String" value="edit the available CV terms of the selected CV term type"/>

@@ -5,22 +5,22 @@ import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.ColimsController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
-import com.compomics.colims.client.event.admin.CvTermChangeEvent;
+import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.TypedCvTermSummaryListModel;
-import com.compomics.colims.client.model.TypedCvTermTableModel;
-import com.compomics.colims.client.renderer.TypedCvTermSummaryCellRenderer;
+import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
+import com.compomics.colims.client.model.TypedCvParamTableModel;
+import com.compomics.colims.client.renderer.TypedCvParamSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.protocol.ProtocolEditDialog;
 import com.compomics.colims.client.view.admin.protocol.ProtocolManagementDialog;
-import com.compomics.colims.core.service.CvTermService;
+import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.model.AuditableTypedCvTerm;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Protocol;
-import com.compomics.colims.model.ProtocolCvTerm;
-import com.compomics.colims.model.comparator.CvTermAccessionComparator;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.ProtocolCvParam;
+import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.event.ActionEvent;
@@ -56,7 +56,7 @@ import org.springframework.stereotype.Component;
 public class ProtocolManagementController implements Controllable {
 
     //model
-    private TypedCvTermSummaryListModel<ProtocolCvTerm> typedCvTermSummaryListModel;
+    private TypedCvParamSummaryListModel<ProtocolCvParam> typedCvTermSummaryListModel;
     private ObservableList<Protocol> protocolBindingList;
     private BindingGroup bindingGroup;
     private Protocol protocolToEdit;
@@ -67,12 +67,12 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private ColimsController colimsController;
     @Autowired
-    private CvTermManagementController cvTermManagementController;
+    private CvParamManagementController cvTermManagementController;
     //services
     @Autowired
     private ProtocolService protocolService;
     @Autowired
-    private CvTermService cvTermService;
+    private CvParamService cvTermService;
     @Autowired
     private EventBus eventBus;
 
@@ -116,7 +116,7 @@ public class ProtocolManagementController implements Controllable {
      * @param cvTermChangeEvent the CvTermChangeEvent
      */
     @Subscribe
-    public void onCvTermChangeEvent(final CvTermChangeEvent cvTermChangeEvent) {
+    public void onCvTermChangeEvent(final CvParamChangeEvent cvTermChangeEvent) {
         if (protocolEditDialog.isVisible()) {
             protocolEditDialog.getCvTermSummaryList().getSelectionModel().clearSelection();
         }
@@ -143,7 +143,7 @@ public class ProtocolManagementController implements Controllable {
                         Protocol selectedProtocol = protocolBindingList.get(selectedIndex);
 
                         //init CvTermModel
-                        List<AuditableTypedCvTerm> cvTerms = new ArrayList<>();
+                        List<AuditableTypedCvParam> cvTerms = new ArrayList<>();
                         if (selectedProtocol.getReduction() != null) {
                             cvTerms.add(selectedProtocol.getReduction());
                         }
@@ -153,13 +153,13 @@ public class ProtocolManagementController implements Controllable {
                         if (selectedProtocol.getCellBased() != null) {
                             cvTerms.add(selectedProtocol.getCellBased());
                         }
-                        for (ProtocolCvTerm chemicalLabeling : selectedProtocol.getChemicalLabels()) {
+                        for (ProtocolCvParam chemicalLabeling : selectedProtocol.getChemicalLabels()) {
                             cvTerms.add(chemicalLabeling);
                         }
-                        for (ProtocolCvTerm otherCvTerm : selectedProtocol.getOtherCvTerms()) {
+                        for (ProtocolCvParam otherCvTerm : selectedProtocol.getOtherCvTerms()) {
                             cvTerms.add(otherCvTerm);
                         }
-                        TypedCvTermTableModel typedCvTermTableModel = new TypedCvTermTableModel(cvTerms);
+                        TypedCvParamTableModel typedCvTermTableModel = new TypedCvParamTableModel(cvTerms);
                         protocolManagementDialog.getProtocolDetailsTable().setModel(typedCvTermTableModel);
                     } else {
                         //clear detail view
@@ -246,16 +246,16 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog = new ProtocolEditDialog(protocolManagementDialog, true);
 
         //init dual list
-        protocolEditDialog.getCvTermDualList().init(new CvTermAccessionComparator());
+        protocolEditDialog.getCvTermDualList().init(new CvParamAccessionComparator());
 
         //add binding
         Binding protocolNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, protocolManagementDialog.getProtocolList(), ELProperty.create("${selectedElement.name}"), protocolEditDialog.getNameTextField(), BeanProperty.create("text"), "protocolNameBinding");
         bindingGroup.addBinding(protocolNameBinding);
 
         //set model and renderer
-        typedCvTermSummaryListModel = new TypedCvTermSummaryListModel();
+        typedCvTermSummaryListModel = new TypedCvParamSummaryListModel();
         protocolEditDialog.getCvTermSummaryList().setModel(typedCvTermSummaryListModel);
-        protocolEditDialog.getCvTermSummaryList().setCellRenderer(new TypedCvTermSummaryCellRenderer<ProtocolCvTerm>());
+        protocolEditDialog.getCvTermSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<ProtocolCvParam>());
 
         //add action listeners
         protocolEditDialog.getCvTermSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -264,24 +264,24 @@ public class ProtocolManagementController implements Controllable {
                 if (!e.getValueIsAdjusting()) {
                     if (protocolEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
                         //get selected cvTermType from summary list
-                        CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
+                        CvParamType selectedcvTermType = (CvParamType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
                         //load duallist for the selected cvTermType
-                        List<ProtocolCvTerm> availableCvTerms = cvTermService.findByCvTermByType(ProtocolCvTerm.class, selectedcvTermType);
+                        List<ProtocolCvParam> availableCvTerms = cvTermService.findByCvParamByType(ProtocolCvParam.class, selectedcvTermType);
 
-                        List<ProtocolCvTerm> addedCvTerms;
+                        List<ProtocolCvParam> addedCvTerms;
                         //@todo for the moment, protocol has only single CV terms,
                         //so this check is not necessary.
-                        if (typedCvTermSummaryListModel.isSingleCvTerm(selectedcvTermType)) {
+                        if (typedCvTermSummaryListModel.isSingleCvParam(selectedcvTermType)) {
                             addedCvTerms = new ArrayList<>();
-                            ProtocolCvTerm protocolCvTerm = typedCvTermSummaryListModel.getSingleCvTerms().get(selectedcvTermType);
+                            ProtocolCvParam protocolCvTerm = typedCvTermSummaryListModel.getSingleCvParams().get(selectedcvTermType);
                             //check for null value
                             if (protocolCvTerm != null) {
                                 addedCvTerms.add(protocolCvTerm);
                             }
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms, 1);
                         } else {
-                            addedCvTerms = typedCvTermSummaryListModel.getMultiCvTerms().get(selectedcvTermType);
+                            addedCvTerms = typedCvTermSummaryListModel.getMultiCvParams().get(selectedcvTermType);
                             protocolEditDialog.getCvTermDualList().populateLists(availableCvTerms, addedCvTerms);
                         }
                     } else {
@@ -295,44 +295,44 @@ public class ProtocolManagementController implements Controllable {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
                 //get selected cvTermType
-                CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
+                CvParamType selectedcvTermType = (CvParamType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                List<ProtocolCvTerm> addedItems = (List<ProtocolCvTerm>) evt.getNewValue();
+                List<ProtocolCvParam> addedItems = (List<ProtocolCvParam>) evt.getNewValue();
 
                 //check for property
-                if (selectedcvTermType.equals(CvTermType.REDUCTION)) {
+                if (selectedcvTermType.equals(CvParamType.REDUCTION)) {
                     if (!addedItems.isEmpty()) {
-                        ProtocolCvTerm reduction = addedItems.get(0);
+                        ProtocolCvParam reduction = addedItems.get(0);
                         protocolToEdit.setReduction(reduction);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.REDUCTION, reduction);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, reduction);
                     } else {
                         protocolToEdit.setReduction(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.REDUCTION, null);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.ENZYME)) {
+                } else if (selectedcvTermType.equals(CvParamType.ENZYME)) {
                     if (!addedItems.isEmpty()) {
-                        ProtocolCvTerm enzyme = addedItems.get(0);
+                        ProtocolCvParam enzyme = addedItems.get(0);
                         protocolToEdit.setEnzyme(enzyme);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.ENZYME, enzyme);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, enzyme);
                     } else {
                         protocolToEdit.setEnzyme(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.ENZYME, null);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.CELL_BASED)) {
+                } else if (selectedcvTermType.equals(CvParamType.CELL_BASED)) {
                     if (!addedItems.isEmpty()) {
-                        ProtocolCvTerm cellBased = addedItems.get(0);
+                        ProtocolCvParam cellBased = addedItems.get(0);
                         protocolToEdit.setCellBased(cellBased);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_BASED, cellBased);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, cellBased);
                     } else {
                         protocolToEdit.setCellBased(null);
-                        typedCvTermSummaryListModel.updateSingleCvTerm(CvTermType.CELL_BASED, null);
+                        typedCvTermSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, null);
                     }
-                } else if (selectedcvTermType.equals(CvTermType.CHEMICAL_LABELING)) {
+                } else if (selectedcvTermType.equals(CvParamType.CHEMICAL_LABELING)) {
                     protocolToEdit.setChemicalLabels(addedItems);
-                    typedCvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
-                } else if (selectedcvTermType.equals(CvTermType.OTHER)) {
+                    typedCvTermSummaryListModel.updateMultiCvTerm(CvParamType.CHEMICAL_LABELING, addedItems);
+                } else if (selectedcvTermType.equals(CvParamType.OTHER)) {
                     protocolToEdit.setOtherCvTerms(addedItems);
-                    typedCvTermSummaryListModel.updateMultiCvTerm(CvTermType.CHEMICAL_LABELING, addedItems);
+                    typedCvTermSummaryListModel.updateMultiCvTerm(CvParamType.CHEMICAL_LABELING, addedItems);
                 }
 
             }
@@ -396,9 +396,9 @@ public class ProtocolManagementController implements Controllable {
                 //check if a CV term group is selected in the CV term summary list
                 if (protocolEditDialog.getCvTermSummaryList().getSelectedIndex() != -1) {
                     //get selected cvTermType from summary list
-                    CvTermType selectedcvTermType = (CvTermType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
+                    CvParamType selectedcvTermType = (CvParamType) protocolEditDialog.getCvTermSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvTerm> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
+                    List<AuditableTypedCvParam> cvTerms = cvTermService.findByCvTermByType(selectedcvTermType);
 
                     //update the CV term list
                     cvTermManagementController.updateDialog(selectedcvTermType, cvTerms);
@@ -477,15 +477,15 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog.getNameTextField().setText(protocolToEdit.getName());
 
         //add the single CV terms
-        EnumMap<CvTermType, ProtocolCvTerm> singleCvTerms = new EnumMap<>(CvTermType.class);
-        singleCvTerms.put(CvTermType.REDUCTION, protocolToEdit.getReduction());
-        singleCvTerms.put(CvTermType.ENZYME, protocolToEdit.getEnzyme());
-        singleCvTerms.put(CvTermType.CELL_BASED, protocolToEdit.getCellBased());
+        EnumMap<CvParamType, ProtocolCvParam> singleCvTerms = new EnumMap<>(CvParamType.class);
+        singleCvTerms.put(CvParamType.REDUCTION, protocolToEdit.getReduction());
+        singleCvTerms.put(CvParamType.ENZYME, protocolToEdit.getEnzyme());
+        singleCvTerms.put(CvParamType.CELL_BASED, protocolToEdit.getCellBased());
 
         //add the multiple CV terms
-        EnumMap<CvTermType, List<ProtocolCvTerm>> multipleCvTerms = new EnumMap<>(CvTermType.class);
-        multipleCvTerms.put(CvTermType.CHEMICAL_LABELING, protocolToEdit.getChemicalLabels());
-        multipleCvTerms.put(CvTermType.OTHER, protocolToEdit.getOtherCvTerms());
+        EnumMap<CvParamType, List<ProtocolCvParam>> multipleCvTerms = new EnumMap<>(CvParamType.class);
+        multipleCvTerms.put(CvParamType.CHEMICAL_LABELING, protocolToEdit.getChemicalLabels());
+        multipleCvTerms.put(CvParamType.OTHER, protocolToEdit.getOtherCvTerms());
         typedCvTermSummaryListModel.update(singleCvTerms, multipleCvTerms);
 
         //clear selection in CV term summary list
@@ -496,6 +496,6 @@ public class ProtocolManagementController implements Controllable {
      * Clear the protocol detail fields.
      */
     private void clearProtocolDetailFields() {
-        protocolManagementDialog.getProtocolDetailsTable().setModel(new TypedCvTermTableModel());
+        protocolManagementDialog.getProtocolDetailsTable().setModel(new TypedCvParamTableModel());
     }
 }

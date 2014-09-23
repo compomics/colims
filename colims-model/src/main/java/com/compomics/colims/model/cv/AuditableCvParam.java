@@ -1,5 +1,6 @@
-package com.compomics.colims.model;
+package com.compomics.colims.model.cv;
 
+import com.compomics.colims.model.AuditableDatabaseEntity;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,31 +11,31 @@ import javax.persistence.MappedSuperclass;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
-public abstract class CvTerm extends DatabaseEntity {
+public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = 3395161527675025740L;
+    private static final long serialVersionUID = -7434489250278743116L;
 
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
     protected String ontology;
     @Basic(optional = false)
     @Column(name = "label", nullable = false)
-    protected String label; 
+    protected String label;
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
-    protected String accession;    
+    protected String accession;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;
 
-    public CvTerm() {
+    public AuditableCvParam() {
     }
 
-    public CvTerm(final String ontology, final String label, final String accession, final String name) {
+    public AuditableCvParam(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
-        this.name = name;        
+        this.name = name;
     }
 
     public String getOntology() {
@@ -68,7 +69,7 @@ public abstract class CvTerm extends DatabaseEntity {
     public void setName(final String name) {
         this.name = name;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -87,7 +88,7 @@ public abstract class CvTerm extends DatabaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CvTerm other = (CvTerm) obj;
+        final AuditableCvParam other = (AuditableCvParam) obj;
         if (!Objects.equals(this.ontology, other.ontology)) {
             return false;
         }
@@ -106,6 +107,6 @@ public abstract class CvTerm extends DatabaseEntity {
     @Override
     public String toString() {
         return name + " [" + accession + "]";
-    }        
- 
+    }
+
 }

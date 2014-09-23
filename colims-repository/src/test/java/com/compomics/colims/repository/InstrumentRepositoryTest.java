@@ -1,6 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AuditableTypedCvTerm;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -13,7 +13,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 import org.junit.Before;
 
@@ -65,22 +65,22 @@ public class InstrumentRepositoryTest {
     public void testInstrumentCvTerms() {
         //type cv term
         Assert.assertNotNull(instrument.getType());
-        Assert.assertEquals(CvTermType.TYPE, instrument.getType().getcvTermType());
+        Assert.assertEquals(CvParamType.TYPE, instrument.getType().getCvParamType());
 
         //source cv term
         Assert.assertNotNull(instrument.getSource());
-        Assert.assertEquals(CvTermType.SOURCE, instrument.getSource().getcvTermType());
+        Assert.assertEquals(CvParamType.SOURCE, instrument.getSource().getCvParamType());
 
         //detector cv term
         Assert.assertNotNull(instrument.getDetector());
-        Assert.assertEquals(CvTermType.DETECTOR, instrument.getDetector().getcvTermType());
+        Assert.assertEquals(CvParamType.DETECTOR, instrument.getDetector().getCvParamType());
 
         //analyzer cv terms
         Assert.assertEquals(2, instrument.getAnalyzers().size());
-        AuditableTypedCvTerm analyzer = instrument.getAnalyzers().get(0);
-        Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());
+        AuditableTypedCvParam analyzer = instrument.getAnalyzers().get(0);
+        Assert.assertEquals(CvParamType.ANALYZER, analyzer.getCvParamType());
         analyzer = instrument.getAnalyzers().get(1);
-        Assert.assertEquals(CvTermType.ANALYZER, analyzer.getcvTermType());
+        Assert.assertEquals(CvParamType.ANALYZER, analyzer.getCvParamType());
     }
 
     @Test

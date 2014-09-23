@@ -6,7 +6,8 @@
 
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.cv.TypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -16,14 +17,14 @@ import javax.persistence.Table;
  */
 @Table(name = "search_param_cv_term")
 @Entity
-public class SearchParamCvTerm extends TypedCvTerm {
+public class SearchParamCvParam extends TypedCvParam {
 
     private static final long serialVersionUID = -2536095044338751914L;
 
-    public SearchParamCvTerm() {
+    public SearchParamCvParam() {
     }
 
-    public SearchParamCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
+    public SearchParamCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }
 

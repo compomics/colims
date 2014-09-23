@@ -38,19 +38,19 @@ public class Material extends AuditableDatabaseEntity {
     @NotNull(message = "A material must have a species")
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
-    private MaterialCvTerm species;
+    private MaterialCvParam species;
     @Basic(optional = true)
     @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
-    private MaterialCvTerm tissue;
+    private MaterialCvParam tissue;
     @Basic(optional = true)
     @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
-    private MaterialCvTerm cellType;
+    private MaterialCvParam cellType;
     @Basic(optional = true)
     @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
-    private MaterialCvTerm compartment;
+    private MaterialCvParam compartment;
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     @ManyToOne
     private Project project;
@@ -72,35 +72,35 @@ public class Material extends AuditableDatabaseEntity {
         this.name = name;
     }
 
-    public MaterialCvTerm getSpecies() {
+    public MaterialCvParam getSpecies() {
         return species;
     }
 
-    public void setSpecies(MaterialCvTerm species) {
+    public void setSpecies(MaterialCvParam species) {
         this.species = species;
     }
 
-    public MaterialCvTerm getTissue() {
+    public MaterialCvParam getTissue() {
         return tissue;
     }
 
-    public void setTissue(MaterialCvTerm tissue) {
+    public void setTissue(MaterialCvParam tissue) {
         this.tissue = tissue;
     }
 
-    public MaterialCvTerm getCellType() {
+    public MaterialCvParam getCellType() {
         return cellType;
     }
 
-    public void setCellType(MaterialCvTerm cellType) {
+    public void setCellType(MaterialCvParam cellType) {
         this.cellType = cellType;
     }
 
-    public MaterialCvTerm getCompartment() {
+    public MaterialCvParam getCompartment() {
         return compartment;
     }
 
-    public void setCompartment(MaterialCvTerm compartment) {
+    public void setCompartment(MaterialCvParam compartment) {
         this.compartment = compartment;
     }
 

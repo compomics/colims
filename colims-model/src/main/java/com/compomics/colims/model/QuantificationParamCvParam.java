@@ -6,7 +6,8 @@
 
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.enums.CvTermType;
+import com.compomics.colims.model.cv.TypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -16,14 +17,14 @@ import javax.persistence.Table;
  */
 @Table(name = "quant_param_cv_term")
 @Entity
-public class QuantificationParamCvTerm extends TypedCvTerm {
+public class QuantificationParamCvParam extends TypedCvParam {
 
     private static final long serialVersionUID = 6017965126255158010L;
 
-    public QuantificationParamCvTerm() {
+    public QuantificationParamCvParam() {
     }
 
-    public QuantificationParamCvTerm(final CvTermType cvTermType, final String ontology, final String label, final String accession, final String name) {
+    public QuantificationParamCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }
 

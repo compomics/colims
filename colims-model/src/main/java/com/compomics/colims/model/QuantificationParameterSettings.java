@@ -44,7 +44,7 @@ public class QuantificationParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_method_cv_id", referencedColumnName = "id", nullable = true)
-    private QuantificationParamCvTerm method;
+    private QuantificationParamCvParam method;
     @OneToMany(mappedBy = "quantificationParameterSettings")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
     @ManyToMany
@@ -54,7 +54,7 @@ public class QuantificationParameterSettings extends DatabaseEntity {
         @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")},
             inverseJoinColumns = {
         @JoinColumn(name = "l_quant_param_cv_term_id", referencedColumnName = "id")})
-    private List<QuantificationParamCvTerm> reagents = new ArrayList<>();
+    private List<QuantificationParamCvParam> reagents = new ArrayList<>();
 
     public Integer getLabelCount() {
         return labelCount;
@@ -96,19 +96,19 @@ public class QuantificationParameterSettings extends DatabaseEntity {
         this.quantificationSettingses = quantificationSettingses;
     }
 
-    public QuantificationParamCvTerm getMethod() {
+    public QuantificationParamCvParam getMethod() {
         return method;
     }
 
-    public void setMethod(QuantificationParamCvTerm method) {
+    public void setMethod(QuantificationParamCvParam method) {
         this.method = method;
     }
 
-    public List<QuantificationParamCvTerm> getReagents() {
+    public List<QuantificationParamCvParam> getReagents() {
         return reagents;
     }
 
-    public void setReagents(List<QuantificationParamCvTerm> reagents) {
+    public void setReagents(List<QuantificationParamCvParam> reagents) {
         this.reagents = reagents;
     }
 
