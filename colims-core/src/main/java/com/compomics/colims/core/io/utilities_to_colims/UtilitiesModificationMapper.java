@@ -39,13 +39,13 @@ public class UtilitiesModificationMapper {
     @Autowired
     private OlsService olsService;
     /**
-     * Wrapper around the utilities spectrum factory
+     * Wrapper around the utilities spectrum factory.
      */
     @Autowired
     private PtmFactoryWrapper ptmFactoryWrapper;
     /**
      * The map of cached modifications (key: modification name, value: the
-     * modification)
+     * modification).
      */
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
@@ -155,8 +155,8 @@ public class UtilitiesModificationMapper {
         modification = cachedModifications.get(modificationMatch.getTheoreticPtm());
 
         if (modification == null) {
-            //the modification was not found in the newModifications map    
-            //look for the modification in the database by name          
+            //the modification was not found in the newModifications map
+            //look for the modification in the database by name
             modification = modificationService.findByName(modificationMatch.getTheoreticPtm());
 
             if (modification == null) {
@@ -201,8 +201,8 @@ public class UtilitiesModificationMapper {
         modification = cachedModifications.get(cvTerm.getAccession());
 
         if (modification == null) {
-            //the modification was not found in the cachedModifications map    
-            //look for the modification in the database by accession          
+            //the modification was not found in the cachedModifications map
+            //look for the modification in the database by accession
             modification = modificationService.findByAccession(cvTerm.getAccession());
             //for UNIMOD mods, look for the alternative accession
             if (cvTerm.getOntology().equals("UNIMOD") && modification == null) {
@@ -213,7 +213,7 @@ public class UtilitiesModificationMapper {
             if (modification == null) {
                 //the modification was not found in the database
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
-                    //look for the modification in the PSI-MOD ontology by accession                
+                    //look for the modification in the PSI-MOD ontology by accession
                     modification = olsService.findModifiationByAccession(cvTerm.getAccession());
 
                     if (modification != null) {
@@ -221,7 +221,7 @@ public class UtilitiesModificationMapper {
                         cachedModifications.put(modification.getAccession(), modification);
                     }
                 } else if (cvTerm.getOntology().equals("UNIMOD")) {
-                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession                
+                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
                     modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
 
                     if (modification != null) {

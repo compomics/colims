@@ -108,7 +108,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         cvParamSummaryScrollPane.setViewportView(cvParamSummaryList);
 
         instrumentCvParamsCrudButton.setText("edit...");
-        instrumentCvParamsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
+        instrumentCvParamsCrudButton.setToolTipText("edit the available CV params of the selected CV param type");
         instrumentCvParamsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
         instrumentCvParamsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
         instrumentCvParamsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));

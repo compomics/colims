@@ -66,8 +66,8 @@ public class Protocol extends AuditableDatabaseEntity {
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_other_cv_term_id", referencedColumnName = "id")})
-    private List<ProtocolCvParam> otherCvTerms = new ArrayList<>();
+        @JoinColumn(name = "l_other_cv_param_id", referencedColumnName = "id")})
+    private List<ProtocolCvParam> otherCvParams = new ArrayList<>();
 
     public Protocol() {
     }
@@ -132,12 +132,12 @@ public class Protocol extends AuditableDatabaseEntity {
         this.chemicalLabels = chemicalLabels;
     }
 
-    public List<ProtocolCvParam> getOtherCvTerms() {
-        return otherCvTerms;
+    public List<ProtocolCvParam> getOtherCvParams() {
+        return otherCvParams;
     }
 
-    public void setOtherCvTerms(List<ProtocolCvParam> otherCvTerms) {
-        this.otherCvTerms = otherCvTerms;
+    public void setOtherCvParams(List<ProtocolCvParam> otherCvTerms) {
+        this.otherCvParams = otherCvTerms;
     }
 
     @Override
@@ -149,7 +149,7 @@ public class Protocol extends AuditableDatabaseEntity {
         hash = 37 * hash + Objects.hashCode(this.cellBased);
         hash = 37 * hash + Objects.hashCode(this.samples);
         hash = 37 * hash + Objects.hashCode(this.chemicalLabels);
-        hash = 37 * hash + Objects.hashCode(this.otherCvTerms);
+        hash = 37 * hash + Objects.hashCode(this.otherCvParams);
         return hash;
     }
 
@@ -180,7 +180,7 @@ public class Protocol extends AuditableDatabaseEntity {
         if (!Objects.equals(this.chemicalLabels, other.chemicalLabels)) {
             return false;
         }
-        if (!Objects.equals(this.otherCvTerms, other.otherCvTerms)) {
+        if (!Objects.equals(this.otherCvParams, other.otherCvParams)) {
             return false;
         }
         return true;

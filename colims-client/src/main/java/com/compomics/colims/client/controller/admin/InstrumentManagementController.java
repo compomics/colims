@@ -286,13 +286,13 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-                //get selected cvTermType
-                CvParamType selectedcvTermType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
+                //get selected cvParamType
+                CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
                 List<InstrumentCvParam> addedItems = (List<InstrumentCvParam>) evt.getNewValue();
 
                 //check for property
-                if (selectedcvTermType.equals(CvParamType.TYPE)) {
+                if (selectedcvParamType.equals(CvParamType.TYPE)) {
                     if (!addedItems.isEmpty()) {
                         InstrumentCvParam type = addedItems.get(0);
                         instrumentToEdit.setType(type);
@@ -301,7 +301,7 @@ public class InstrumentManagementController implements Controllable {
                         instrumentToEdit.setType(null);
                         typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
                     }
-                } else if (selectedcvTermType.equals(CvParamType.SOURCE)) {
+                } else if (selectedcvParamType.equals(CvParamType.SOURCE)) {
                     if (!addedItems.isEmpty()) {
                         InstrumentCvParam source = addedItems.get(0);
                         instrumentToEdit.setSource(source);
@@ -310,7 +310,7 @@ public class InstrumentManagementController implements Controllable {
                         instrumentToEdit.setSource(null);
                         typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
                     }
-                } else if (selectedcvTermType.equals(CvParamType.DETECTOR)) {
+                } else if (selectedcvParamType.equals(CvParamType.DETECTOR)) {
                     if (!addedItems.isEmpty()) {
                         InstrumentCvParam detector = addedItems.get(0);
                         instrumentToEdit.setDetector(detector);
@@ -319,9 +319,9 @@ public class InstrumentManagementController implements Controllable {
                         instrumentToEdit.setDetector(null);
                         typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
                     }
-                } else if (selectedcvTermType.equals(CvParamType.ANALYZER)) {
+                } else if (selectedcvParamType.equals(CvParamType.ANALYZER)) {
                     instrumentToEdit.setAnalyzers(addedItems);
-                    typedCvParamSummaryListModel.updateMultiCvTerm(CvParamType.ANALYZER, addedItems);
+                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.ANALYZER, addedItems);
                 }
 
             }
@@ -382,19 +382,19 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getInstrumentCvParamsCrudButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                //check if a CV term group is selected in the CV term summary list
+                //check if a CV param group is selected in the CV param summary list
                 if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
-                    //get selected cvTermType from summary list
-                    CvParamType selectedcvTermType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
+                    //get selected cvParamType from summary list
+                    CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvParam> cvTerms = cvParamService.findByCvTermByType(selectedcvTermType);
+                    List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
 
-                    //update the CV term list
-                    cvParamManagementController.updateDialog(selectedcvTermType, cvTerms);
+                    //update the CV param list
+                    cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
 
                     cvParamManagementController.showView();
                 } else {
-                    eventBus.post(new MessageEvent("Instrument CV term type selection", "Please select an instrument CV term type to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Instrument CV param type selection", "Please select an instrument CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -490,20 +490,20 @@ public class InstrumentManagementController implements Controllable {
 
         instrumentEditDialog.getNameTextField().setText(instrumentToEdit.getName());
 
-        //add the single CV terms
-        EnumMap<CvParamType, InstrumentCvParam> singleCvTerms = new EnumMap<>(CvParamType.class
+        //add the single CV params
+        EnumMap<CvParamType, InstrumentCvParam> singleCvParams = new EnumMap<>(CvParamType.class
         );
-        singleCvTerms.put(CvParamType.TYPE, instrumentToEdit.getType());
-        singleCvTerms.put(CvParamType.SOURCE, instrumentToEdit.getSource());
-        singleCvTerms.put(CvParamType.DETECTOR, instrumentToEdit.getDetector());
+        singleCvParams.put(CvParamType.TYPE, instrumentToEdit.getType());
+        singleCvParams.put(CvParamType.SOURCE, instrumentToEdit.getSource());
+        singleCvParams.put(CvParamType.DETECTOR, instrumentToEdit.getDetector());
 
-        //add the multiple CV terms
-        EnumMap<CvParamType, List<InstrumentCvParam>> multipleCvTerms = new EnumMap<>(CvParamType.class);
+        //add the multiple CV params
+        EnumMap<CvParamType, List<InstrumentCvParam>> multipleCvParams = new EnumMap<>(CvParamType.class);
 
-        multipleCvTerms.put(CvParamType.ANALYZER, instrumentToEdit.getAnalyzers());
-        typedCvParamSummaryListModel.update(singleCvTerms, multipleCvTerms);
+        multipleCvParams.put(CvParamType.ANALYZER, instrumentToEdit.getAnalyzers());
+        typedCvParamSummaryListModel.update(singleCvParams, multipleCvParams);
 
-        //clear selection in CV term summary list
+        //clear selection in CV param summary list
         instrumentEditDialog.getCvParamSummaryList()
                 .getSelectionModel().clearSelection();
     }

@@ -35,7 +35,7 @@ public class PtmCvTermMapper {
 //    private Map<String, Modification> newModifications = new HashMap<>();
     /**
      * The map of new modifications (key: modification name, value: the
-     * modification)
+     * modification).
      *
      * @throws java.io.FileNotFoundException
      * @throws java.lang.ClassNotFoundException
@@ -54,7 +54,7 @@ public class PtmCvTermMapper {
     }
 
     /**
-     * Init the PTM to CV term map
+     * Init the PTM to CV term map.
      *
      * @throws java.io.FileNotFoundException
      * @throws java.lang.ClassNotFoundException
@@ -66,7 +66,7 @@ public class PtmCvTermMapper {
 
     /**
      * Update the PtmToPrideMap with the PTMs found in the PeptideShaker
-     * SearchParameters
+     * SearchParameters.
      *
      * @param searchParameters the PeptideShaker SearchParameters
      * @throws java.io.FileNotFoundException
@@ -77,7 +77,7 @@ public class PtmCvTermMapper {
     }
 
     /**
-     * Get the CV term by the PTM name
+     * Get the CV term by the PTM name.
      *
      * @param ptmName the PTM name
      * @return the mapped CV term
@@ -102,7 +102,7 @@ public class PtmCvTermMapper {
     }
 
     /**
-     * Add a PTM name to PTM CV term mapping to the map
+     * Add a PTM name to PTM CV term mapping to the map.
      *
      * @param ptmName the PTM name
      * @param cvTerm the PTM CV term

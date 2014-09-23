@@ -98,7 +98,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         cvParamSummaryScrollPane.setViewportView(cvParamSummaryList);
 
         materialCvParamsCrudButton.setText("edit...");
-        materialCvParamsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
+        materialCvParamsCrudButton.setToolTipText("edit the available CV params of the selected CV param type");
         materialCvParamsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
         materialCvParamsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
         materialCvParamsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));

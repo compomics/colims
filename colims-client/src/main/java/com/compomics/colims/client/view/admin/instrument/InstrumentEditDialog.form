@@ -219,7 +219,7 @@
             <Component class="javax.swing.JButton" name="instrumentCvParamsCrudButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="edit..."/>
-                <Property name="toolTipText" type="java.lang.String" value="edit the available CV terms of the selected CV term type"/>
+                <Property name="toolTipText" type="java.lang.String" value="edit the available CV params of the selected CV param type"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>

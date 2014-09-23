@@ -363,7 +363,7 @@ public class UserManagementController implements Controllable {
     }
 
     /**
-     * Check if the CV term with the given user name exists in the database.
+     * Check if a user with the given user name exists in the database.
      *
      * @param user the selected user
      * @return the does exist boolean

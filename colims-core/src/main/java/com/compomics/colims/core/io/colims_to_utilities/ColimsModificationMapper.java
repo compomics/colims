@@ -20,7 +20,7 @@ public class ColimsModificationMapper {
 
     /**
      * Map the colims modification matches onto the utilities peptide. The
-     * utilities PTMs are matched first onto CV terms from PSI-MOD.
+     * utilities PTMs are matched first onto CV params from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
      * @param ptmScores the PeptideShaker PTM scores

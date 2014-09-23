@@ -32,15 +32,15 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         return cancelProtocolEditButton;
     }
 
-    public DualList<ProtocolCvParam> getCvTermDualList() {
+    public DualList<ProtocolCvParam> getCvParamDualList() {
         return cvParamDualList;
     }
 
-    public JList getCvTermSummaryList() {
+    public JList getCvParamSummaryList() {
         return cvParamSummaryList;
     }
 
-    public JButton getProtocolCvTermsCrudButton() {
+    public JButton getProtocolCvParamsCrudButton() {
         return protocolCvParamsCrudButton;
     }
 
@@ -99,7 +99,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         cvParamSummaryScrollPane.setViewportView(cvParamSummaryList);
 
         protocolCvParamsCrudButton.setText("edit...");
-        protocolCvParamsCrudButton.setToolTipText("edit the available CV terms of the selected CV term type");
+        protocolCvParamsCrudButton.setToolTipText("edit the available CV params of the selected CV param type");
         protocolCvParamsCrudButton.setMaximumSize(new java.awt.Dimension(80, 25));
         protocolCvParamsCrudButton.setMinimumSize(new java.awt.Dimension(80, 25));
         protocolCvParamsCrudButton.setPreferredSize(new java.awt.Dimension(80, 25));

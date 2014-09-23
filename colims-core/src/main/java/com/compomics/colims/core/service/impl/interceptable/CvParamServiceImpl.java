@@ -59,7 +59,7 @@ public class CvParamServiceImpl implements CvParamService {
     }
 
     @Override
-    public List<AuditableTypedCvParam> findByCvTermByType(CvParamType cvParamType) {
+    public List<AuditableTypedCvParam> findByCvParamByType(CvParamType cvParamType) {
         return cvParamRepository.findByCvTermType(cvParamType);
     }
 

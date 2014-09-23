@@ -109,7 +109,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("CV term management");
+        setTitle("CV param management");
 
         cvParamCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -118,7 +118,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         cvParamOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
         addCvParamButton.setText("add...");
-        addCvParamButton.setToolTipText("add a CV term with the OLS dialog");
+        addCvParamButton.setToolTipText("add a CV param with the OLS dialog");
         addCvParamButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addCvParamButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addCvParamButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -212,7 +212,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(definitionTextArea);
 
         editUsingOlsCvParamButton.setText("edit...");
-        editUsingOlsCvParamButton.setToolTipText("add a CV term with the OLS dialog");
+        editUsingOlsCvParamButton.setToolTipText("add a CV param with the OLS dialog");
         editUsingOlsCvParamButton.setMaximumSize(new java.awt.Dimension(80, 25));
         editUsingOlsCvParamButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editUsingOlsCvParamButton.setPreferredSize(new java.awt.Dimension(80, 25));

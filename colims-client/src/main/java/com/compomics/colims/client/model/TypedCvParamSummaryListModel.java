@@ -14,13 +14,13 @@ import javax.swing.AbstractListModel;
 public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> extends AbstractListModel {
 
     /**
-     * The EnumMap containing the single CV params (key: cvTermType; value: a
-     * single CV term or null).
+     * The EnumMap containing the single CV params (key: cvParamType; value: a
+     * single CV param or null).
      */
     private EnumMap<CvParamType, T> singleCvParams;
     /**
-     * The EnumMap containing the multiple CV params (key: cvTermType; value: a
-     * list of multiple CV terms, can be empty).
+     * The EnumMap containing the multiple CV params (key: cvParamType; value: a
+     * list of multiple CV params, can be empty).
      */
     private EnumMap<CvParamType, List<T>> multiCvParams;
     /**
@@ -47,7 +47,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
 
     /**
      * Update the model with EnumMaps for the given CV param type of a single CV
-     * term. The CV param instance can be null.
+     * param. The CV param instance can be null.
      *
      * @param cvParamType
      * @param t
@@ -64,7 +64,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * @param cvParamType the CvParamType
      * @param cvParams the list of CV params
      */
-    public void updateMultiCvTerm(CvParamType cvParamType, List<T> cvParams) {
+    public void updateMultiCvParam(CvParamType cvParamType, List<T> cvParams) {
         multiCvParams.put(cvParamType, cvParams);
         this.fireContentsChanged(this, 0, getSize());
     }
