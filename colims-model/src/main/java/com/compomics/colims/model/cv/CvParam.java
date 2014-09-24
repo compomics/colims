@@ -80,6 +80,18 @@ public abstract class CvParam extends DatabaseEntity {
         this.name = name;
     }
 
+    public CvParam(String ontology, String label, String accession, String name, String value, String unitOntology, String unitLabel, String unitAccession, String unitName) {
+        this.ontology = ontology;
+        this.label = label;
+        this.accession = accession;
+        this.name = name;
+        this.value = value;
+        this.unitOntology = unitOntology;
+        this.unitLabel = unitLabel;
+        this.unitAccession = unitAccession;
+        this.unitName = unitName;
+    }
+
     public String getOntology() {
         return ontology;
     }
@@ -112,18 +124,63 @@ public abstract class CvParam extends DatabaseEntity {
         this.name = name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getUnitOntology() {
+        return unitOntology;
+    }
+
+    public void setUnitOntology(String unitOntology) {
+        this.unitOntology = unitOntology;
+    }
+
+    public String getUnitLabel() {
+        return unitLabel;
+    }
+
+    public void setUnitLabel(String unitLabel) {
+        this.unitLabel = unitLabel;
+    }
+
+    public String getUnitAccession() {
+        return unitAccession;
+    }
+
+    public void setUnitAccession(String unitAccession) {
+        this.unitAccession = unitAccession;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.ontology);
-        hash = 79 * hash + Objects.hashCode(this.label);
-        hash = 79 * hash + Objects.hashCode(this.accession);
-        hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.ontology);
+        hash = 29 * hash + Objects.hashCode(this.label);
+        hash = 29 * hash + Objects.hashCode(this.accession);
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.value);
+        hash = 29 * hash + Objects.hashCode(this.unitOntology);
+        hash = 29 * hash + Objects.hashCode(this.unitLabel);
+        hash = 29 * hash + Objects.hashCode(this.unitAccession);
+        hash = 29 * hash + Objects.hashCode(this.unitName);
         return hash;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -141,6 +198,21 @@ public abstract class CvParam extends DatabaseEntity {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitOntology, other.unitOntology)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitLabel, other.unitLabel)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitAccession, other.unitAccession)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitName, other.unitName)) {
             return false;
         }
         return true;

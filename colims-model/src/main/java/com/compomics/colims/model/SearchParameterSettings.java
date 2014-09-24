@@ -12,6 +12,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -60,6 +62,13 @@ public class SearchParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "evalue_cutoff", nullable = true)
     private Double evalueCutoff;
+    /**
+     * The threshold(s) applied to determine that a result is significant.
+     */
+    @Basic(optional = true)
+    @ManyToOne
+    @JoinColumn(name = "l_threshold_cv_id", referencedColumnName = "id", nullable = true)
+    private SearchParamCvParam threshold;
     @OneToMany(mappedBy = "searchParameterSettings")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
@@ -157,6 +166,6 @@ public class SearchParameterSettings extends DatabaseEntity {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }    
+    }
 
 }

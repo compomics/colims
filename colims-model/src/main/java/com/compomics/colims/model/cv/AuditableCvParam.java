@@ -15,18 +15,60 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7434489250278743116L;
 
+    /**
+     * The full name of the CV.
+     */
     @Basic(optional = false)
     @Column(name = "ontology", nullable = false)
     protected String ontology;
+    /**
+     * The label of the CV.
+     */
     @Basic(optional = false)
     @Column(name = "label", nullable = false)
     protected String label;
+    /**
+     * The accession or ID number of this CV term in the source CV.
+     */
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     protected String accession;
+    /**
+     * The name of the parameter.
+     */
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;
+    /**
+     * The user-entered value of the parameter.
+     */
+    @Basic(optional = true)
+    @Column(name = "param_value", nullable = true)
+    protected String value;
+    /**
+     * The full name of the unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_ontology", nullable = true)
+    protected String unitOntology;
+    /**
+     * The label of the unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_label", nullable = true)
+    protected String unitLabel;
+    /**
+     * The accession or ID number of this unit CV term in the source unit CV.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_accession", nullable = true)
+    protected String unitAccession;
+    /**
+     * The name of the unit parameter.
+     */
+    @Basic(optional = true)
+    @Column(name = "unit_name", nullable = true)
+    protected String unitName;
 
     public AuditableCvParam() {
     }
@@ -36,6 +78,18 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
         this.label = label;
         this.accession = accession;
         this.name = name;
+    }
+
+    public AuditableCvParam(String ontology, String label, String accession, String name, String value, String unitOntology, String unitLabel, String unitAccession, String unitName) {
+        this.ontology = ontology;
+        this.label = label;
+        this.accession = accession;
+        this.name = name;
+        this.value = value;
+        this.unitOntology = unitOntology;
+        this.unitLabel = unitLabel;
+        this.unitAccession = unitAccession;
+        this.unitName = unitName;
     }
 
     public String getOntology() {
@@ -70,18 +124,63 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
         this.name = name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getUnitOntology() {
+        return unitOntology;
+    }
+
+    public void setUnitOntology(String unitOntology) {
+        this.unitOntology = unitOntology;
+    }
+
+    public String getUnitLabel() {
+        return unitLabel;
+    }
+
+    public void setUnitLabel(String unitLabel) {
+        this.unitLabel = unitLabel;
+    }
+
+    public String getUnitAccession() {
+        return unitAccession;
+    }
+
+    public void setUnitAccession(String unitAccession) {
+        this.unitAccession = unitAccession;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = 3;
         hash = 79 * hash + Objects.hashCode(this.ontology);
         hash = 79 * hash + Objects.hashCode(this.label);
         hash = 79 * hash + Objects.hashCode(this.accession);
         hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + Objects.hashCode(this.value);
+        hash = 79 * hash + Objects.hashCode(this.unitOntology);
+        hash = 79 * hash + Objects.hashCode(this.unitLabel);
+        hash = 79 * hash + Objects.hashCode(this.unitAccession);
+        hash = 79 * hash + Objects.hashCode(this.unitName);
         return hash;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -99,6 +198,21 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitOntology, other.unitOntology)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitLabel, other.unitLabel)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitAccession, other.unitAccession)) {
+            return false;
+        }
+        if (!Objects.equals(this.unitName, other.unitName)) {
             return false;
         }
         return true;
