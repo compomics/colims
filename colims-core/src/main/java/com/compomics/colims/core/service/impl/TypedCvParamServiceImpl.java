@@ -1,7 +1,7 @@
-package com.compomics.colims.core.service.impl.interceptable;
+package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.CvParamService;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
+import com.compomics.colims.core.service.TypedCvParamService;
+import com.compomics.colims.model.cv.TypedCvParam;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,65 +9,65 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.repository.CvParamRepository;
+import com.compomics.colims.repository.TypedCvParamRepository;
 import java.util.ArrayList;
 
 /**
  *
  * @author Niels Hulstaert
  */
-@Service("cvParamService")
+@Service("typedCvParamService")
 @Transactional
-public class CvParamServiceImpl implements CvParamService {
+public class TypedCvParamServiceImpl implements TypedCvParamService {
 
     @Autowired
-    private CvParamRepository cvParamRepository;
+    private TypedCvParamRepository cvParamRepository;
 
     @Override
-    public AuditableTypedCvParam findById(Long id) {
+    public TypedCvParam findById(Long id) {
         return cvParamRepository.findById(id);
     }
 
     @Override
-    public List<AuditableTypedCvParam> findAll() {
+    public List<TypedCvParam> findAll() {
         return cvParamRepository.findAll();
     }
 
     @Override
-    public void save(AuditableTypedCvParam entity) {
+    public void save(TypedCvParam entity) {
         cvParamRepository.save(entity);
     }
 
     @Override
-    public void update(AuditableTypedCvParam entity) {
+    public void update(TypedCvParam entity) {
         cvParamRepository.update(entity);
     }
 
     @Override
-    public void saveOrUpdate(AuditableTypedCvParam entity) {
+    public void saveOrUpdate(TypedCvParam entity) {
         cvParamRepository.saveOrUpdate(entity);
     }
 
     @Override
-    public void delete(AuditableTypedCvParam entity) {
+    public void delete(TypedCvParam entity) {
         cvParamRepository.delete(entity);
     }
 
     @Override
-    public AuditableTypedCvParam findByAccession(String accession, CvParamType cvParamType) {
+    public TypedCvParam findByAccession(String accession, CvParamType cvParamType) {
         return cvParamRepository.findByAccession(accession, cvParamType);
     }
 
     @Override
-    public List<AuditableTypedCvParam> findByCvParamByType(CvParamType cvParamType) {
-        return cvParamRepository.findByCvTermType(cvParamType);
+    public List<TypedCvParam> findByCvParamByType(CvParamType cvParamType) {
+        return cvParamRepository.findByCvParamType(cvParamType);
     }
 
     @Override
-    public <T extends AuditableTypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvTermType) {
+    public <T extends TypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvParamType) {
         List<T> cvTerms = new ArrayList<>();
 
-        for(AuditableTypedCvParam cvTerm : cvParamRepository.findByCvTermType(cvTermType)){
+        for(TypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvParamType)){
             if(clazz.isInstance(cvTerm)){
                 cvTerms.add((T) cvTerm);
             }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "instrument_cv_term")
+@Table(name = "instrument_cv_param")
 @Entity
 public class InstrumentCvParam extends AuditableTypedCvParam {
 

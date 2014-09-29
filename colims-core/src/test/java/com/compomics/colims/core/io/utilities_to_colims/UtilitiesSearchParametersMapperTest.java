@@ -56,10 +56,15 @@ public class UtilitiesSearchParametersMapperTest {
         utilitiesSearchParametersMapper.map(searchParameters, searchParameterSettings);
 
         Assert.assertNotNull(searchParameterSettings.getEnzyme());
-        Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameterSettings.getEnzyme()));
+        Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameterSettings.getEnzyme().getName()));
 
         Assert.assertNotNull(searchParameterSettings.getNumberOfMissedCleavages());
         Assert.assertEquals(Integer.valueOf(2), searchParameterSettings.getNumberOfMissedCleavages());
+
+        Assert.assertNotNull(searchParameterSettings.getFragMassToleranceUnit());
+        Assert.assertEquals(MassAccuracyType.DA, searchParameterSettings.getFragMassToleranceUnit());
+        Assert.assertNotNull(searchParameterSettings.getFragMassTolerance());
+        Assert.assertEquals(0.5, searchParameterSettings.getFragMassTolerance(), 0.01);
 
         Assert.assertNotNull(searchParameterSettings.getPrecMassToleranceUnit());
         Assert.assertEquals(MassAccuracyType.DA, searchParameterSettings.getPrecMassToleranceUnit());
@@ -71,11 +76,6 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertNotNull(searchParameterSettings.getUpperCharge());
         Assert.assertEquals(Integer.valueOf(charge.value), searchParameterSettings.getUpperCharge());
 
-        Assert.assertNotNull(searchParameterSettings.getFragMassToleranceUnit());
-        Assert.assertEquals(MassAccuracyType.DA, searchParameterSettings.getFragMassToleranceUnit());
-        Assert.assertNotNull(searchParameterSettings.getFragMassTolerance());
-        Assert.assertEquals(0.5, searchParameterSettings.getFragMassTolerance(), 0.01);
-        
         Assert.assertNotNull(searchParameterSettings.getFirstSearchedIonType());
         Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.A_ION), searchParameterSettings.getFirstSearchedIonType());
         Assert.assertNotNull(searchParameterSettings.getSecondSearchedIonType());

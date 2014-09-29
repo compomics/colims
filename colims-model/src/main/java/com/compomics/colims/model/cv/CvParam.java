@@ -45,30 +45,6 @@ public abstract class CvParam extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "param_value", nullable = true)
     protected String value;
-    /**
-     * The full name of the unit CV.
-     */
-    @Basic(optional = true)
-    @Column(name = "unit_ontology", nullable = true)
-    protected String unitOntology;
-    /**
-     * The label of the unit CV.
-     */
-    @Basic(optional = true)
-    @Column(name = "unit_label", nullable = true)
-    protected String unitLabel;
-    /**
-     * The accession or ID number of this unit CV term in the source unit CV.
-     */
-    @Basic(optional = true)
-    @Column(name = "unit_accession", nullable = true)
-    protected String unitAccession;
-    /**
-     * The name of the unit parameter.
-     */
-    @Basic(optional = true)
-    @Column(name = "unit_name", nullable = true)
-    protected String unitName;
 
     public CvParam() {
     }
@@ -80,16 +56,12 @@ public abstract class CvParam extends DatabaseEntity {
         this.name = name;
     }
 
-    public CvParam(String ontology, String label, String accession, String name, String value, String unitOntology, String unitLabel, String unitAccession, String unitName) {
+    public CvParam(String ontology, String label, String accession, String name, String value) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;
         this.name = name;
         this.value = value;
-        this.unitOntology = unitOntology;
-        this.unitLabel = unitLabel;
-        this.unitAccession = unitAccession;
-        this.unitName = unitName;
     }
 
     public String getOntology() {
@@ -132,38 +104,6 @@ public abstract class CvParam extends DatabaseEntity {
         this.value = value;
     }
 
-    public String getUnitOntology() {
-        return unitOntology;
-    }
-
-    public void setUnitOntology(String unitOntology) {
-        this.unitOntology = unitOntology;
-    }
-
-    public String getUnitLabel() {
-        return unitLabel;
-    }
-
-    public void setUnitLabel(String unitLabel) {
-        this.unitLabel = unitLabel;
-    }
-
-    public String getUnitAccession() {
-        return unitAccession;
-    }
-
-    public void setUnitAccession(String unitAccession) {
-        this.unitAccession = unitAccession;
-    }
-
-    public String getUnitName() {
-        return unitName;
-    }
-
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
@@ -172,10 +112,6 @@ public abstract class CvParam extends DatabaseEntity {
         hash = 29 * hash + Objects.hashCode(this.accession);
         hash = 29 * hash + Objects.hashCode(this.name);
         hash = 29 * hash + Objects.hashCode(this.value);
-        hash = 29 * hash + Objects.hashCode(this.unitOntology);
-        hash = 29 * hash + Objects.hashCode(this.unitLabel);
-        hash = 29 * hash + Objects.hashCode(this.unitAccession);
-        hash = 29 * hash + Objects.hashCode(this.unitName);
         return hash;
     }
 
@@ -201,18 +137,6 @@ public abstract class CvParam extends DatabaseEntity {
             return false;
         }
         if (!Objects.equals(this.value, other.value)) {
-            return false;
-        }
-        if (!Objects.equals(this.unitOntology, other.unitOntology)) {
-            return false;
-        }
-        if (!Objects.equals(this.unitLabel, other.unitLabel)) {
-            return false;
-        }
-        if (!Objects.equals(this.unitAccession, other.unitAccession)) {
-            return false;
-        }
-        if (!Objects.equals(this.unitName, other.unitName)) {
             return false;
         }
         return true;

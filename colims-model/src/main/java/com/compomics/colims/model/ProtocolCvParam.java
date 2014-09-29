@@ -9,17 +9,17 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "protocol_cv_term")
+@Table(name = "protocol_cv_param")
 @Entity
 public class ProtocolCvParam extends AuditableTypedCvParam {
 
     private static final long serialVersionUID = -3197049656512425516L;
-    
+
     public ProtocolCvParam() {
     }
 
     public ProtocolCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
-    }    
+    }
 
 }

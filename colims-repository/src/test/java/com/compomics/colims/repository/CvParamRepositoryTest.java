@@ -27,7 +27,7 @@ import java.util.List;
 public class CvParamRepositoryTest {
 
     @Autowired
-    private CvParamRepository cvParamRepository;
+    private AuditableTypedCvParamRepository cvParamRepository;
 
     @Test
     public void testFindByAccession() {
@@ -50,11 +50,11 @@ public class CvParamRepositoryTest {
 
     @Test
     public void testFindBycvTermType() {
-        List<AuditableTypedCvParam> cvTerms = cvParamRepository.findByCvTermType(CvParamType.ANALYZER);
+        List<AuditableTypedCvParam> cvTerms = cvParamRepository.findByCvParamType(CvParamType.ANALYZER);
         Assert.assertNotNull(cvTerms);
         Assert.assertEquals(2, cvTerms.size());
 
-        cvTerms = cvParamRepository.findByCvTermType(CvParamType.ENZYME);
+        cvTerms = cvParamRepository.findByCvParamType(CvParamType.ENZYME);
         Assert.assertNotNull(cvTerms);
         Assert.assertEquals(2, cvTerms.size());
     }

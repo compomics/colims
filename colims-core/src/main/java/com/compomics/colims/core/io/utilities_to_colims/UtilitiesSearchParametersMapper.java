@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.service.TypedCvParamService;
 
 import org.apache.log4j.Logger;
 
@@ -8,6 +9,7 @@ import com.compomics.colims.model.SearchParameterSettings;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.SearchParameters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,10 +17,13 @@ import org.springframework.stereotype.Component;
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
  */
-@Component("utilitiesSearchParameterSMapper")
+@Component("utilitiesSearchParametersMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters, SearchParameterSettings> {
 
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
+
+    @Autowired
+    private TypedCvParamService typedCvParamService;
 
     /**
      * Map the Utilities SearchParameters to the colims SearchParameterSettings.
@@ -26,7 +31,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
      * @param utilitiesSearchParameters
      * @param searchParameterSettings
      */
-    @Override
+    @Override;
     public void map(final SearchParameters utilitiesSearchParameters, final SearchParameterSettings searchParameterSettings) {
         //enzyme
         Enzyme enzyme = utilitiesSearchParameters.getEnzyme();

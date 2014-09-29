@@ -29,6 +29,11 @@ public abstract class TypedCvParam extends CvParam {
         this.cvParamType = cvParamType;
     }
 
+    public TypedCvParam(CvParamType cvParamType, String ontology, String label, String accession, String name, String value) {
+        super(ontology, label, accession, name, value);
+        this.cvParamType = cvParamType;
+    }
+
     public CvParamType getCvParamType() {
         return cvParamType;
     }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "material_cv_term")
+@Table(name = "material_cv_param")
 @Entity
 public class MaterialCvParam extends AuditableTypedCvParam {
 

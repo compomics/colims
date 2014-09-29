@@ -14,7 +14,7 @@ import com.compomics.colims.client.renderer.TypedCvParamSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.material.MaterialEditDialog;
 import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
-import com.compomics.colims.core.service.CvParamService;
+import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Material;
@@ -72,7 +72,7 @@ public class MaterialManagementController implements Controllable {
     @Autowired
     private MaterialService materialService;
     @Autowired
-    private CvParamService cvParamService;
+    private AuditableTypedCvParamService cvParamService;
     @Autowired
     private EventBus eventBus;
 

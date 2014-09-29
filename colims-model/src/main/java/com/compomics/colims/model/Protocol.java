@@ -58,11 +58,11 @@ public class Protocol extends AuditableDatabaseEntity {
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_chemical_labeling_cv_term_id", referencedColumnName = "id")})
+        @JoinColumn(name = "l_chemical_labeling_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> chemicalLabels = new ArrayList<>();
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "protocol_has_other_cv_term",
+    @JoinTable(name = "protocol_has_other_cv_param",
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {

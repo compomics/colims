@@ -15,7 +15,7 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quant_param_cv_term")
+@Table(name = "quant_param_cv_param")
 @Entity
 public class QuantificationParamCvParam extends TypedCvParam {
 

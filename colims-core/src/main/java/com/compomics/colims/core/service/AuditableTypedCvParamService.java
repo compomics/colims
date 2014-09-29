@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public interface CvParamService extends GenericService<AuditableTypedCvParam, Long> {
+public interface AuditableTypedCvParamService extends GenericService<AuditableTypedCvParam, Long> {
 
     /**
      * Find a CV param by accession and cvParamType. Returns null if nothing

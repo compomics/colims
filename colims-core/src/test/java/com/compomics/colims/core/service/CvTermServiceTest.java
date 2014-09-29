@@ -25,7 +25,7 @@ import java.util.List;
 public class CvTermServiceTest {
     
     @Autowired
-    private CvParamService cvTermService;
+    private AuditableTypedCvParamService cvTermService;
     
     @Test
     public void testFindByCvTermByType() {         

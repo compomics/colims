@@ -14,7 +14,7 @@ import com.compomics.colims.client.renderer.TypedCvParamSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.protocol.ProtocolEditDialog;
 import com.compomics.colims.client.view.admin.protocol.ProtocolManagementDialog;
-import com.compomics.colims.core.service.CvParamService;
+import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Protocol;
@@ -72,7 +72,7 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private ProtocolService protocolService;
     @Autowired
-    private CvParamService cvParamService;
+    private AuditableTypedCvParamService cvParamService;
     @Autowired
     private EventBus eventBus;
 

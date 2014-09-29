@@ -1,9 +1,10 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.SearchEngine;
+import com.compomics.colims.model.SearchParamCvParam;
 import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.cv.CvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
-import com.compomics.colims.model.enums.SearchEngineType;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,14 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class SearchParameterSettingsRepositoryTest {
 
     @Autowired
-    private SearchParameterSettingsRepository searchParameterSettingsRepository;    
+    private SearchParameterSettingsRepository searchParameterSettingsRepository;
 
     @Test
-    public void testFindByExample(){
+    public void testFindByExample() {
         SearchParameterSettings searchParameterSettings = new SearchParameterSettings();
-        
-        searchParameterSettings.setEnzyme("trypsin");
-        searchParameterSettings.setNumberOfMissedCleavages(2);        
+
+        SearchParamCvParam enzyme = new SearchParamCvParam(CvParamType.ENZYME, "PSI-MS", "PSI-MS", "MS:1001251", "Trypsin");
+        searchParameterSettings.setEnzyme(enzyme);
+        searchParameterSettings.setNumberOfMissedCleavages(2);
         searchParameterSettings.setLowerCharge(2);
         searchParameterSettings.setUpperCharge(4);
         searchParameterSettings.setPrecMassToleranceUnit(MassAccuracyType.PPM);
@@ -40,13 +42,13 @@ public class SearchParameterSettingsRepositoryTest {
         searchParameterSettings.setFragMassToleranceUnit(MassAccuracyType.DA);
         searchParameterSettings.setFragMassTolerance(0.02);
         searchParameterSettings.setFirstSearchedIonType(1);
-        searchParameterSettings.setSecondSearchedIonType(4);        
-        
+        searchParameterSettings.setSecondSearchedIonType(4);
+
         List<SearchParameterSettings> searchParameterSettingses = searchParameterSettingsRepository.findByExample(searchParameterSettings);
-                
+
         Assert.assertNotNull(searchParameterSettingses);
         Assert.assertFalse(searchParameterSettingses.isEmpty());
         Assert.assertEquals(1, searchParameterSettingses.size());
     }
-    
+
 }

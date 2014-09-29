@@ -8,7 +8,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
-import com.compomics.colims.core.service.CvParamService;
+import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
@@ -55,7 +55,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     private EventBus eventBus;
     //services
     @Autowired
-    private CvParamService cvParamService;
+    private AuditableTypedCvParamService cvParamService;
     @Autowired
     private Query olsClient;
 
