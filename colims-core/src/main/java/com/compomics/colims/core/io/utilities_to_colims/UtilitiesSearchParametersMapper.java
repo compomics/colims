@@ -31,11 +31,11 @@ public class UtilitiesSearchParametersMapper implements Mapper<SearchParameters,
      * @param utilitiesSearchParameters
      * @param searchParameterSettings
      */
-    @Override;
+    @Override
     public void map(final SearchParameters utilitiesSearchParameters, final SearchParameterSettings searchParameterSettings) {
         //enzyme
         Enzyme enzyme = utilitiesSearchParameters.getEnzyme();
-        searchParameterSettings.setEnzyme(enzyme.getName().toLowerCase());
+        //searchParameterSettings.setEnzyme(enzyme.getName().toLowerCase());
         //number of missed cleavages
         searchParameterSettings.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());
         //precursor mass tolerance unit

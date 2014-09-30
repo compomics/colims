@@ -38,7 +38,7 @@ public abstract class TypedCvParam extends CvParam {
         return cvParamType;
     }
 
-    public void setcvParamType(final CvParamType cvParamType) {
+    public void setCvParamType(final CvParamType cvParamType) {
         this.cvParamType = cvParamType;
     }
 

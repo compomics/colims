@@ -72,7 +72,7 @@ INSERT INTO search_engine (id, accession, label, name, ontology, type, version) 
 INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, taxonomy_accession, version) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', 'Homo sapiens (Human)', '9606', '1.2.3');
 
 -- insert test search parameter cv params
-INSERT INTO search_param_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, "MS:1001251", "PSI-MS", "Trypsin", "PSI-MS", "ENZYME");
+INSERT INTO search_param_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'ENZYME');
 
 -- insert test search parameters
 INSERT INTO search_parameter_settings (id, enzyme, evalue_cutoff, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 'trypsin', null, 1,0.02, 1, 2, 2, 10.0, 0, 4, 4);
