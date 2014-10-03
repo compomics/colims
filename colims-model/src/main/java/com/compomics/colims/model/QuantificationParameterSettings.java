@@ -53,7 +53,7 @@ public class QuantificationParameterSettings extends DatabaseEntity {
             joinColumns = {
         @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_quant_param_cv_term_id", referencedColumnName = "id")})
+        @JoinColumn(name = "l_quant_param_cv_param_id", referencedColumnName = "id")})
     private List<QuantificationParamCvParam> reagents = new ArrayList<>();
 
     public Integer getLabelCount() {

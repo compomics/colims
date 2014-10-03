@@ -114,7 +114,7 @@
         primary key (id)
     );
 
-    create table colims.instrument_cv_term (
+    create table colims.instrument_cv_param (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -123,13 +123,14 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
     );
 
     create table colims.instrument_has_analyzer (
         l_instrument_id bigint not null,
-        l_instrument_cv_term_id bigint not null
+        l_instrument_cv_param_id bigint not null
     );
 
     create table colims.material (
@@ -146,7 +147,7 @@
         primary key (id)
     );
 
-    create table colims.material_cv_term (
+    create table colims.material_cv_param (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -155,6 +156,7 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
     );
@@ -256,7 +258,7 @@
         primary key (id)
     );
 
-    create table colims.protocol_cv_term (
+    create table colims.protocol_cv_param (
         id bigint not null auto_increment,
         creation_date datetime not null,
         modification_date datetime not null,
@@ -265,30 +267,27 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
+        param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
     );
 
     create table colims.protocol_has_chemical_labeling (
         l_protocol_id bigint not null,
-        l_chemical_labeling_cv_term_id bigint not null
+        l_chemical_labeling_cv_param_id bigint not null
     );
 
-    create table colims.protocol_has_other_cv_term (
+    create table colims.protocol_has_other_cv_param (
         l_protocol_id bigint not null,
         l_other_cv_param_id bigint not null
     );
 
-    create table colims.quant_param_cv_term (
+    create table colims.quant_param_cv_param (
         id bigint not null auto_increment,
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
-        unit_accession varchar(255),
-        unit_label varchar(255),
-        unit_name varchar(255),
-        unit_ontology varchar(255),
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
@@ -296,7 +295,7 @@
 
     create table colims.quant_param_settings_has_reagent (
         l_quant_param_settings_id bigint not null,
-        l_quant_param_cv_term_id bigint not null
+        l_quant_param_cv_param_id bigint not null
     );
 
     create table colims.quant_parameter_settings (
@@ -323,10 +322,6 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
-        unit_accession varchar(255),
-        unit_label varchar(255),
-        unit_name varchar(255),
-        unit_ontology varchar(255),
         param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
@@ -414,35 +409,30 @@
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
-        unit_accession varchar(255),
-        unit_label varchar(255),
-        unit_name varchar(255),
-        unit_ontology varchar(255),
         param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
         primary key (id)
     );
 
-    create table colims.search_param_cv_term (
+    create table colims.search_param_cv_param (
         id bigint not null auto_increment,
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
         ontology varchar(255) not null,
-        unit_accession varchar(255),
-        unit_label varchar(255),
-        unit_name varchar(255),
-        unit_ontology varchar(255),
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
     );
 
+    create table colims.search_param_set_has_add_cv_param (
+        l_search_param_settings_id bigint not null,
+        l_additional_cv_param_id bigint not null
+    );
+
     create table colims.search_parameter_settings (
         id bigint not null auto_increment,
-        enzyme varchar(255),
-        evalue_cutoff double precision,
         search_ion_type_1 integer,
         fragment_mass_tolerance double precision,
         fragment_mass_tolerance_unit integer,
@@ -451,7 +441,10 @@
         precursor_mass_tolerance double precision,
         precursor_mass_tolerance_unit integer,
         search_ion_type_2 integer,
+        threshold double precision,
         upper_charge integer,
+        l_search_param_enzyme_cv_id bigint,
+        l_search_type_cv_id bigint,
         primary key (id)
     );
 
@@ -559,22 +552,22 @@
     alter table colims.instrument 
         add constraint FK_nv913lhryr1tf3jil03u2j699 
         foreign key (l_detector_cv_id) 
-        references colims.instrument_cv_term (id);
+        references colims.instrument_cv_param (id);
 
     alter table colims.instrument 
         add constraint FK_amxbo4ld6m7kbyr2w00mmamf4 
         foreign key (l_source_cv_id) 
-        references colims.instrument_cv_term (id);
+        references colims.instrument_cv_param (id);
 
     alter table colims.instrument 
         add constraint FK_doq0jgu8jf6ycvanskyox0iet 
         foreign key (l_type_cv_id) 
-        references colims.instrument_cv_term (id);
+        references colims.instrument_cv_param (id);
 
     alter table colims.instrument_has_analyzer 
-        add constraint FK_p0fc15jd6hhc75kw5cmq041pj 
-        foreign key (l_instrument_cv_term_id) 
-        references colims.instrument_cv_term (id);
+        add constraint FK_3rwpcqbak74mnqe69klnq0cq5 
+        foreign key (l_instrument_cv_param_id) 
+        references colims.instrument_cv_param (id);
 
     alter table colims.instrument_has_analyzer 
         add constraint FK_7xy0454upil50qvcv1ongxlcm 
@@ -584,12 +577,12 @@
     alter table colims.material 
         add constraint FK_2emr349t8q9hje4hjcd4jwuas 
         foreign key (l_cell_type_cv_id) 
-        references colims.material_cv_term (id);
+        references colims.material_cv_param (id);
 
     alter table colims.material 
         add constraint FK_sfmjhs53n62t8v7xstsb9ln2 
         foreign key (l_compartment_cv_id) 
-        references colims.material_cv_term (id);
+        references colims.material_cv_param (id);
 
     alter table colims.material 
         add constraint FK_1w1sodocqmm73kw7ll3uslwqi 
@@ -599,12 +592,12 @@
     alter table colims.material 
         add constraint FK_e8ustpafqp4yhgp0ycperpy6u 
         foreign key (l_species_cv_id) 
-        references colims.material_cv_term (id);
+        references colims.material_cv_param (id);
 
     alter table colims.material 
         add constraint FK_8yfpw6v3pfg5f8wrrkgboud1r 
         foreign key (l_tissue_cv_id) 
-        references colims.material_cv_term (id);
+        references colims.material_cv_param (id);
 
     alter table colims.peptide 
         add constraint FK_nouta5locpa5t9o6yl2smm0xe 
@@ -664,42 +657,42 @@
     alter table colims.protocol 
         add constraint FK_68woyi6fqi6j99t2511tiayb2 
         foreign key (l_cell_based_cv_id) 
-        references colims.protocol_cv_term (id);
+        references colims.protocol_cv_param (id);
 
     alter table colims.protocol 
         add constraint FK_r8omo1sbwto3f96hycuqgosxw 
         foreign key (l_enzyme_cv_id) 
-        references colims.protocol_cv_term (id);
+        references colims.protocol_cv_param (id);
 
     alter table colims.protocol 
         add constraint FK_ipxj4jmmfsh21ebk41sir499o 
         foreign key (l_reduction_cv_id) 
-        references colims.protocol_cv_term (id);
+        references colims.protocol_cv_param (id);
 
     alter table colims.protocol_has_chemical_labeling 
-        add constraint FK_hg4pc56r12d348ibd3q4mexk 
-        foreign key (l_chemical_labeling_cv_term_id) 
-        references colims.protocol_cv_term (id);
+        add constraint FK_ae7lq5vutry4hnjayfe6fr4d9 
+        foreign key (l_chemical_labeling_cv_param_id) 
+        references colims.protocol_cv_param (id);
 
     alter table colims.protocol_has_chemical_labeling 
         add constraint FK_lti01qugh58dw133ahsm7p7in 
         foreign key (l_protocol_id) 
         references colims.protocol (id);
 
-    alter table colims.protocol_has_other_cv_term 
-        add constraint FK_2t9nbodiaeaiu6b396hn5a3dh 
+    alter table colims.protocol_has_other_cv_param 
+        add constraint FK_t76o7gn4fnlw0lho7oap6nac2 
         foreign key (l_other_cv_param_id) 
-        references colims.protocol_cv_term (id);
+        references colims.protocol_cv_param (id);
 
-    alter table colims.protocol_has_other_cv_term 
-        add constraint FK_obdu1ny455r0vb44a86qapib 
+    alter table colims.protocol_has_other_cv_param 
+        add constraint FK_pji4i6m4pb9u15v2fmjoswpwl 
         foreign key (l_protocol_id) 
         references colims.protocol (id);
 
     alter table colims.quant_param_settings_has_reagent 
         add constraint FK_9vve0gg05i3c2luvabhk276ag 
-        foreign key (l_quant_param_cv_term_id) 
-        references colims.quant_param_cv_term (id);
+        foreign key (l_quant_param_cv_param_id) 
+        references colims.quant_param_cv_param (id);
 
     alter table colims.quant_param_settings_has_reagent 
         add constraint FK_ony26ium39mcr0apne3ak2iot 
@@ -709,7 +702,7 @@
     alter table colims.quant_parameter_settings 
         add constraint FK_8gkpneo17k47elt2faftn5dpw 
         foreign key (l_method_cv_id) 
-        references colims.quant_param_cv_term (id);
+        references colims.quant_param_cv_param (id);
 
     alter table colims.quantification 
         add constraint FK_o1pngv9c5nym7t3guesme7guy 
@@ -800,6 +793,26 @@
         add constraint FK_1c0io12fbf8qsoebhe6n9201r 
         foreign key (l_search_param_settings_id) 
         references colims.search_parameter_settings (id);
+
+    alter table colims.search_param_set_has_add_cv_param 
+        add constraint FK_oo4btla1bmak1lt5x64tgh91r 
+        foreign key (l_additional_cv_param_id) 
+        references colims.protocol_cv_param (id);
+
+    alter table colims.search_param_set_has_add_cv_param 
+        add constraint FK_19efr77kla6kyya9i9e0m2f7l 
+        foreign key (l_search_param_settings_id) 
+        references colims.search_parameter_settings (id);
+
+    alter table colims.search_parameter_settings 
+        add constraint FK_osereol4xy482l2hc8j24st8w 
+        foreign key (l_search_param_enzyme_cv_id) 
+        references colims.search_param_cv_param (id);
+
+    alter table colims.search_parameter_settings 
+        add constraint FK_amvm1xffaneak73q6e24typf0 
+        foreign key (l_search_type_cv_id) 
+        references colims.search_param_cv_param (id);
 
     alter table colims.spectrum 
         add constraint FK_mpjgedldeff5qugyrqangh6so 
