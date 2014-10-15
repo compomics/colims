@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -30,15 +26,15 @@ import org.hibernate.annotations.LazyCollectionOption;
 //@Indexed
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Protein extends DatabaseEntity {    
-    
+public class Protein extends DatabaseEntity {
+
     private static final long serialVersionUID = -8217759222711303528L;
-    
+
     @Lob
     @Basic(optional = false)
     @Column(name = "protein_sequence", nullable = false)
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
-    private String sequence;    
+    private String sequence;
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(mappedBy = "mainGroupProtein")
@@ -51,9 +47,9 @@ public class Protein extends DatabaseEntity {
     }
 
     public Protein(String sequence) {
-        this.sequence = sequence;       
+        this.sequence = sequence;
     }
-  
+
     public String getSequence() {
         return sequence;
     }
@@ -61,7 +57,7 @@ public class Protein extends DatabaseEntity {
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
-       
+
     public List<PeptideHasProtein> getPeptideHasProteins() {
         return peptideHasProteins;
     }
@@ -84,7 +80,7 @@ public class Protein extends DatabaseEntity {
 
     public void setProteinAccessions(List<ProteinAccession> proteinAccessions) {
         this.proteinAccessions = proteinAccessions;
-    }          
+    }
 
     @Override
     public int hashCode() {
@@ -104,13 +100,13 @@ public class Protein extends DatabaseEntity {
         final Protein other = (Protein) obj;
         if (!Objects.equals(this.sequence, other.sequence)) {
             return false;
-        }       
+        }
         return true;
     }
 
     @Override
     public String toString() {
         return sequence;
-    }    
+    }
 
 }

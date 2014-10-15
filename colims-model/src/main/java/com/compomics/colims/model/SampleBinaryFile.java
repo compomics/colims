@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.Objects;
@@ -17,9 +13,9 @@ import javax.persistence.Table;
 @Table(name = "sample_binary_file")
 @Entity
 public class SampleBinaryFile extends BinaryFile {
-    
+
     private static final long serialVersionUID = 1198531326938636719L;
-    
+
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne
     private Sample sample;
@@ -30,7 +26,7 @@ public class SampleBinaryFile extends BinaryFile {
 
     public void setSample(final Sample sample) {
         this.sample = sample;
-    }  
+    }
 
     @Override
     public int hashCode() {
@@ -52,6 +48,6 @@ public class SampleBinaryFile extends BinaryFile {
             return false;
         }
         return true;
-    }        
-    
+    }
+
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.Objects;
@@ -19,7 +15,7 @@ import javax.persistence.Table;
 public class ExperimentBinaryFile extends BinaryFile {
 
     private static final long serialVersionUID = -629806717593264864L;
-    
+
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
@@ -59,6 +55,6 @@ public class ExperimentBinaryFile extends BinaryFile {
             return false;
         }
         return true;
-    }            
-        
+    }
+
 }

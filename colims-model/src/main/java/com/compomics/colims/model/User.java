@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -32,7 +28,7 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 public class User extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -4086933454695081685L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
     @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
@@ -186,11 +182,11 @@ public class User extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }        
+    }
 
     @Override
     public String toString() {
         return name;
     }
-    
+
 }

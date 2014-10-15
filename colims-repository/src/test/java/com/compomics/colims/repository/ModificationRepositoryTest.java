@@ -18,12 +18,12 @@ public class ModificationRepositoryTest {
     @Autowired
     private ModificationRepository modificationRepository;
 
-    private String accession = "modificationAccession";
-    private String name = "modificationName";
+    private final String accession = "modificationAccession";
+    private final String name = "modificationName";
     private Long id;
 
     @Before
-    public void saveSpectrum() {
+    public void saveModification() {
         //Store an initial modification
         Modification modification = new Modification(name);
         modification.setAccession(accession);
@@ -38,19 +38,19 @@ public class ModificationRepositoryTest {
         //Find
         Modification modification = modificationRepository.findByName(name);
 
-        //Compare expected values 
+        //Compare expected values
         Assert.assertNotNull(modification);
         Assert.assertEquals(accession, modification.getAccession());
         Assert.assertEquals(name, modification.getName());
         Assert.assertEquals(id, modification.getId());
     }
-    
+
     @Test
     public void testFindByAccession() {
         //Find
         Modification modification = modificationRepository.findByAccession(accession);
 
-        //Compare expected values 
+        //Compare expected values
         Assert.assertNotNull(modification);
         Assert.assertEquals(accession, modification.getAccession());
         Assert.assertEquals(name, modification.getName());

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -31,7 +27,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 public class Peptide extends DatabaseEntity {
 
     private static final long serialVersionUID = -7678950773201086394L;
-    
+
     @Basic(optional = false)
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
@@ -90,7 +86,7 @@ public class Peptide extends DatabaseEntity {
 
     public void setCharge(Integer charge) {
         this.charge = charge;
-    }        
+    }
 
     public IdentificationFile getIdentificationFile() {
         return identificationFile;
@@ -146,7 +142,7 @@ public class Peptide extends DatabaseEntity {
 
     public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
         this.quantificationGroups = quantificationGroups;
-    }    
+    }
 
     public int getLength() {
         return sequence.length();
@@ -188,6 +184,6 @@ public class Peptide extends DatabaseEntity {
             return false;
         }
         return true;
-    }    
-    
+    }
+
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -26,9 +22,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "material")
 @Entity
 public class Material extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = -976001398433451179L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
@@ -160,11 +156,11 @@ public class Material extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name;
     }
-    
+
 }

@@ -41,9 +41,7 @@ public class OlsServiceTest {
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
         Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
-        Assert.assertEquals(83.037114, modification.getMonoIsotopicMass(), 0.001);
         Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
-        Assert.assertEquals(83.09, modification.getAverageMass(), 0.001);
         Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
     }
 
@@ -63,9 +61,7 @@ public class OlsServiceTest {
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
         Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
-        Assert.assertEquals(83.037114, modification.getMonoIsotopicMass(), 0.001);
         Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
-        Assert.assertEquals(83.09, modification.getAverageMass(), 0.001);
         Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
     }
 
@@ -82,25 +78,25 @@ public class OlsServiceTest {
         modifications = olsService.findModifiationByName("oxidation of m");
         Assert.assertEquals(3, modifications.size());
     }
-    
+
     /**
      * Test the find a modification by name and UNIMOD accession method from the OlsService.
      */
     @Test
-    public void testFindModificationByNameAndUnimodAccession_1() {        
+    public void testFindModificationByNameAndUnimodAccession_1() {
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }
-    
+
     /**
      * Test the find a modification by name and UNIMOD accession method from the OlsService.
      */
     @Test
-    public void testFindModificationByNameAndUnimodAccession_2() {        
+    public void testFindModificationByNameAndUnimodAccession_2() {
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }
-    
+
 }

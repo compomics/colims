@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -23,9 +19,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "fasta_db")
 @Entity
 public class FastaDb extends DatabaseEntity {
-    
+
     private static final long serialVersionUID = -7674593202998529863L;
-    
+
     /**
      * The official name of the fasta db
      */
@@ -75,7 +71,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = true)
     @Column(name = "md5_checksum", nullable = true)
-    private String md5CheckSum;    
+    private String md5CheckSum;
     @OneToMany(mappedBy = "fastaDb")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
@@ -101,7 +97,7 @@ public class FastaDb extends DatabaseEntity {
 
     public void setTaxonomyAccession(String taxonomyAccession) {
         this.taxonomyAccession = taxonomyAccession;
-    }      
+    }
 
     public String getFilePath() {
         return filePath;
@@ -117,7 +113,7 @@ public class FastaDb extends DatabaseEntity {
 
     public void setSpecies(String species) {
         this.species = species;
-    }       
+    }
 
     public String getVersion() {
         return version;
@@ -125,7 +121,7 @@ public class FastaDb extends DatabaseEntity {
 
     public void setVersion(String version) {
         this.version = version;
-    }        
+    }
 
     public String getMd5CheckSum() {
         return md5CheckSum;
@@ -141,7 +137,7 @@ public class FastaDb extends DatabaseEntity {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }  
+    }
 
     @Override
     public int hashCode() {
@@ -183,11 +179,11 @@ public class FastaDb extends DatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
-    }            
-    
+    }
+
 }

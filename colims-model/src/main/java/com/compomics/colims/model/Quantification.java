@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.QuantificationWeight;
@@ -28,7 +24,7 @@ import javax.persistence.Table;
 public class Quantification extends DatabaseEntity {
 
     private static final long serialVersionUID = -8721138574314561811L;
-    
+
     @Basic(optional = false)
     @Column(name = "intensity", nullable = false)
     private Double intensity;
@@ -40,7 +36,7 @@ public class Quantification extends DatabaseEntity {
     @ManyToOne
     private QuantificationFile quantificationFile;
     @OneToMany(mappedBy = "quantification")
-    private List<QuantificationGroup> quantificationGroups = new ArrayList<>();    
+    private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
     public Double getIntensity() {
         return intensity;
@@ -48,7 +44,7 @@ public class Quantification extends DatabaseEntity {
 
     public void setIntensity(Double intensity) {
         this.intensity = intensity;
-    }    
+    }
 
     public void setWeight(final QuantificationWeight weight) {
         this.weight = weight;
@@ -56,7 +52,7 @@ public class Quantification extends DatabaseEntity {
 
     public QuantificationWeight getWeight() {
         return weight;
-    }  
+    }
 
     public QuantificationFile getQuantificationFile() {
         return quantificationFile;
@@ -72,7 +68,7 @@ public class Quantification extends DatabaseEntity {
 
     public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
         this.quantificationGroups = quantificationGroups;
-    }        
+    }
 
     @Override
     public int hashCode() {
@@ -98,6 +94,6 @@ public class Quantification extends DatabaseEntity {
             return false;
         }
         return true;
-    }    
-        
+    }
+
 }

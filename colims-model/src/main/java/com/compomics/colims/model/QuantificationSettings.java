@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -21,20 +17,20 @@ import javax.persistence.Table;
 @Table(name = "quantification_settings")
 @Entity
 public class QuantificationSettings extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = 5371850641629946378L;
-        
+
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
     @JoinColumn(name = "l_quant_engine_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationEngine quantificationEngine;   
+    private QuantificationEngine quantificationEngine;
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationParameterSettings quantificationParameterSettings;    
+    private QuantificationParameterSettings quantificationParameterSettings;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
-    private List<QuantificationFile> quantificationFiles = new ArrayList<>();    
+    private List<QuantificationFile> quantificationFiles = new ArrayList<>();
 
     public List<QuantificationFile> getQuantificationFiles() {
         return quantificationFiles;
@@ -42,7 +38,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
 
     public void setQuantificationFiles(List<QuantificationFile> quantificationFiles) {
         this.quantificationFiles = quantificationFiles;
-    }    
+    }
 
     public Experiment getExperiment() {
         return experiment;
@@ -66,6 +62,6 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
 
     public void setQuantificationParameterSettings(QuantificationParameterSettings quantificationParameterSettings) {
         this.quantificationParameterSettings = quantificationParameterSettings;
-    }        
-    
+    }
+
 }

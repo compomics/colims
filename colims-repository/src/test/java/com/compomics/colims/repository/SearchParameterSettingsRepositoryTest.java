@@ -35,6 +35,7 @@ public class SearchParameterSettingsRepositoryTest {
         SearchParamCvParam enzyme = new SearchParamCvParam(CvParamType.ENZYME, "PSI-MS", "PSI-MS", "MS:1001251", "Trypsin");
         searchParameterSettings.setEnzyme(enzyme);
         searchParameterSettings.setNumberOfMissedCleavages(2);
+        searchParameterSettings.setThreshold(50.0);
         searchParameterSettings.setLowerCharge(2);
         searchParameterSettings.setUpperCharge(4);
         searchParameterSettings.setPrecMassToleranceUnit(MassAccuracyType.PPM);

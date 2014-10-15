@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -5,26 +9,21 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  *
  * @author Niels Hulstaert
  */
-@Table(name = "modification")
+@Table(name = "search_modification")
 @Entity
-@Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Modification extends DatabaseEntity {
+public class SearchModification extends DatabaseEntity {
 
-    private static final long serialVersionUID = 497141602900321901L;
+    private static final long serialVersionUID = -2832229647167375630L;
 
-    //@todo make mandatory?
     /**
      * The PSI-MOD accession.
      */
@@ -60,14 +59,14 @@ public class Modification extends DatabaseEntity {
     @OneToMany(mappedBy = "modification")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
-    public Modification() {
+    public SearchModification() {
     }
 
-    public Modification(String name) {
+    public SearchModification(String name) {
         this.name = name;
     }
 
-    public Modification(String accession, String name) {
+    public SearchModification(String accession, String name) {
         this.accession = accession;
         this.name = name;
     }
@@ -136,7 +135,7 @@ public class Modification extends DatabaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Modification other = (Modification) obj;
+        final SearchModification other = (SearchModification) obj;
         if (!Objects.equals(this.accession, other.accession)) {
             return false;
         }

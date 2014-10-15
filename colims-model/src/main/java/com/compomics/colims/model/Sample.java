@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.ArrayList;
@@ -32,7 +28,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class Sample extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7792823489878347845L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert a sample name")
     @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
@@ -170,11 +166,11 @@ public class Sample extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
     @Override
     public String toString() {
         return name;
     }
-    
+
 }

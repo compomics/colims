@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import javax.persistence.Basic;
@@ -19,9 +15,9 @@ import javax.persistence.Table;
 @Table(name = "spectrum_file")
 @Entity
 public class SpectrumFile extends DatabaseEntity {
-    
+
     private static final long serialVersionUID = -6234803421590111200L;
-    
+
     //the gzipped mgf file
     @Lob
     @Basic(optional = false)
@@ -29,7 +25,7 @@ public class SpectrumFile extends DatabaseEntity {
     private byte[] content;
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
     @ManyToOne
-    private Spectrum spectrum;    
+    private Spectrum spectrum;
 
     public Spectrum getSpectrum() {
         return spectrum;
@@ -46,5 +42,5 @@ public class SpectrumFile extends DatabaseEntity {
     public void setContent(final byte[] content) {
         this.content = content;
     }
-    
+
 }

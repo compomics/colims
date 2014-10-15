@@ -59,7 +59,7 @@ INSERT INTO material_cv_param (id, creation_date, modification_date, user_name, 
 INSERT INTO material (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_project_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '1', '2');
 
 -- insert test modifications
-INSERT INTO modification (id, name, accession, average_mass, average_mass_shift, monoisotopic_mass, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '83.09', '-64.1', '83.037114', '-63.998286');
+INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '-64.1', '-63.998286');
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
@@ -75,4 +75,4 @@ INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, tax
 INSERT INTO search_param_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'ENZYME');
 
 -- insert test search parameters
-INSERT INTO search_parameter_settings (id, enzyme, evalue_cutoff, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 'trypsin', null, 1,0.02, 1, 2, 2, 10.0, 0, 4, 4);
+INSERT INTO search_parameter_settings (id, l_search_param_enzyme_cv_id, threshold, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 1, 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4);

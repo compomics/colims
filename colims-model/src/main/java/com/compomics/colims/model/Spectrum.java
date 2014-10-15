@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.FragmentationType;
@@ -33,7 +29,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 public class Spectrum extends DatabaseEntity {
 
     private static final long serialVersionUID = -6581466869218920103L;
-    
+
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     private String accession;
@@ -53,7 +49,7 @@ public class Spectrum extends DatabaseEntity {
     @Column(name = "scan_time", nullable = true)
     private Double scanTime;
     @Basic(optional = true)
-    @Column(name = "intensity", nullable = true)    
+    @Column(name = "intensity", nullable = true)
     private Double intensity;
     @Basic(optional = true)
     @Column(name = "retention_time", nullable = true)
@@ -191,5 +187,5 @@ public class Spectrum extends DatabaseEntity {
         }
         return true;
     }
-    
+
 }

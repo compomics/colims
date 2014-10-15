@@ -25,7 +25,7 @@ public class OlsServiceImpl implements OlsService {
     public Modification findModifiationByExactName(final String name) {
         Modification modification = null;
 
-        //find the modification by exact name        
+        //find the modification by exact name
         //try {
         Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
         if (modificationTerms.getItem() != null) {
@@ -35,16 +35,16 @@ public class OlsServiceImpl implements OlsService {
             }
         }
         //} catch (Exception e) {
-        //    
+        //
         //}
         return modification;
     }
 
     @Override
-    public List<Modification> findModifiationByName(String name) {
+    public List<Modification> findModifiationByName(final String name) {
         List<Modification> modifications = new ArrayList<>();
 
-        //find the modifications by name        
+        //find the modifications by name
         Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
         if (modificationsTerms.getItem() != null) {
             //get the modificiations
@@ -75,12 +75,8 @@ public class OlsServiceImpl implements OlsService {
                 //get the modificiation properties
                 for (MapItem mapItem : modificationMetaData.getItem()) {
                     if (mapItem.getKey() != null && mapItem.getValue() != null) {
-                        if (mapItem.getKey().equals("MassMono")) {
-                            modification.setMonoIsotopicMass(Double.parseDouble(mapItem.getValue().toString()));
-                        } else if (mapItem.getKey().equals("DiffMono")) {
+                        if (mapItem.getKey().equals("DiffMono")) {
                             modification.setMonoIsotopicMassShift(Double.parseDouble(mapItem.getValue().toString()));
-                        } else if (mapItem.getKey().equals("MassAvg")) {
-                            modification.setAverageMass(Double.parseDouble(mapItem.getValue().toString()));
                         } else if (mapItem.getKey().equals("DiffAvg")) {
                             modification.setAverageMassShift(Double.parseDouble(mapItem.getValue().toString()));
                         }
@@ -93,10 +89,10 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public Modification findModifiationByNameAndUnimodAccession(String name, String unimodAccession) {
+    public Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession) {
         Modification modification = null;
 
-        //first, find the modifications by name        
+        //first, find the modifications by name
         Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
         if (modificationsTerms.getItem() != null) {
             String tempAccession = null;
@@ -135,11 +131,11 @@ public class OlsServiceImpl implements OlsService {
     }
 
 //    @Override
-//    public Modification findModifiationByNameAndUnimodAccession(String name, String unimodAccession) {
+//    public Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession) {
 //        Modification modification = null;
 //
-//        //first, find the modifications by name        
-//        Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);                   
+//        //first, find the modifications by name
+//        Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
 //        if (modificationsTerms.getItem() != null) {
 //            //iterate over the modificiations
 //            outerloop:

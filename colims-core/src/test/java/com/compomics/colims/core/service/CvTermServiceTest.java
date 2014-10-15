@@ -23,16 +23,16 @@ import java.util.List;
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
 public class CvTermServiceTest {
-    
+
     @Autowired
     private AuditableTypedCvParamService cvTermService;
-    
+
     @Test
-    public void testFindByCvTermByType() {         
+    public void testFindByCvTermByType() {
         List<InstrumentCvParam> sources = cvTermService.findByCvParamByType(InstrumentCvParam.class, CvParamType.DETECTOR);
-        
+
         Assert.assertNotNull(sources);
         Assert.assertEquals(2, sources.size());
     }
-    
+
 }

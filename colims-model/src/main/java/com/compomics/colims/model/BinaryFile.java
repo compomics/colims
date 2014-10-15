@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
@@ -21,7 +17,7 @@ import javax.persistence.MappedSuperclass;
 public class BinaryFile extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -5581612780987474005L;
-  
+
     @Basic(optional = false)
     @Column(name = "file_name", nullable = false)
     protected String fileName;
@@ -35,7 +31,7 @@ public class BinaryFile extends AuditableDatabaseEntity {
     protected byte[] content;
 
     public BinaryFile(){}
-    
+
     public BinaryFile(final byte[] content) {
         this.content = content;
     }
@@ -46,7 +42,7 @@ public class BinaryFile extends AuditableDatabaseEntity {
 
     public void setBinaryFileType(final BinaryFileType binaryFileType) {
         this.binaryFileType = binaryFileType;
-    }    
+    }
 
     public byte[] getContent() {
         return content;
@@ -67,7 +63,7 @@ public class BinaryFile extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return fileName + " (" + binaryFileType + ")";
-    }  
+    }
 
     @Override
     public int hashCode() {
@@ -93,6 +89,6 @@ public class BinaryFile extends AuditableDatabaseEntity {
             return false;
         }
         return true;
-    }        
-        
+    }
+
 }

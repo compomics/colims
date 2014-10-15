@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
@@ -29,9 +25,9 @@ import javax.persistence.Table;
 @Table(name = "quantification_file")
 @Entity
 public class QuantificationFile extends DatabaseEntity {
-    
+
     private static final long serialVersionUID = 5714905008883803369L;
-    
+
     /**
      * The quantification file name
      */
@@ -91,8 +87,8 @@ public class QuantificationFile extends DatabaseEntity {
 
     public void setContent(byte[] content) {
         this.content = content;
-    }    
-    
+    }
+
     public QuantificationSettings getQuantificationSettings() {
         return quantificationSettings;
     }
@@ -137,6 +133,6 @@ public class QuantificationFile extends DatabaseEntity {
             return false;
         }
         return true;
-    }            
-    
+    }
+
 }

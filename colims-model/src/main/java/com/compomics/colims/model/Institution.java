@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import java.util.Objects;
@@ -20,9 +16,9 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "institution")
 @Entity
 public class Institution extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = 2423413625675018198L;
-    
+
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name")
     @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters")
@@ -38,9 +34,9 @@ public class Institution extends AuditableDatabaseEntity {
     @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters")
     @Column(name = "street", nullable = false)
     private String street;
-    @Basic(optional = false)    
+    @Basic(optional = false)
     @Min(value = 1, message = "Number must be higher or equal to 1")
-    @Column(name = "number", nullable = false)    
+    @Column(name = "number", nullable = false)
     private Integer number;
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
@@ -158,6 +154,6 @@ public class Institution extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name + " (" + abbreviation + ")";
-    }    
+    }
 
 }

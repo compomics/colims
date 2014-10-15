@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
@@ -29,7 +25,7 @@ import javax.persistence.Table;
 public class IdentificationFile extends DatabaseEntity {
 
     private static final long serialVersionUID = -3405917820461550590L;
-    
+
     /**
      * The identification file name
      */
@@ -145,6 +141,6 @@ public class IdentificationFile extends DatabaseEntity {
             return false;
         }
         return true;
-    }    
+    }
 
 }
