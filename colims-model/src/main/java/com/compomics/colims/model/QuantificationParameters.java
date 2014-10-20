@@ -19,9 +19,9 @@ import org.hibernate.annotations.LazyCollectionOption;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quant_parameter_settings")
+@Table(name = "quantification_parameters")
 @Entity
-public class QuantificationParameterSettings extends DatabaseEntity {
+public class QuantificationParameters extends DatabaseEntity {
 
     private static final long serialVersionUID = -2166573588583909556L;
 
@@ -40,17 +40,17 @@ public class QuantificationParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_method_cv_id", referencedColumnName = "id", nullable = true)
-    private QuantificationParamCvParam method;
+    private QuantificationCvParam method;
     @OneToMany(mappedBy = "quantificationParameterSettings")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "quant_param_settings_has_reagent",
             joinColumns = {
-        @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")},
+        @JoinColumn(name = "l_quant_parameters_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_quant_param_cv_param_id", referencedColumnName = "id")})
-    private List<QuantificationParamCvParam> reagents = new ArrayList<>();
+        @JoinColumn(name = "l_quant_cv_param_id", referencedColumnName = "id")})
+    private List<QuantificationCvParam> reagents = new ArrayList<>();
 
     public Integer getLabelCount() {
         return labelCount;
@@ -92,19 +92,19 @@ public class QuantificationParameterSettings extends DatabaseEntity {
         this.quantificationSettingses = quantificationSettingses;
     }
 
-    public QuantificationParamCvParam getMethod() {
+    public QuantificationCvParam getMethod() {
         return method;
     }
 
-    public void setMethod(QuantificationParamCvParam method) {
+    public void setMethod(QuantificationCvParam method) {
         this.method = method;
     }
 
-    public List<QuantificationParamCvParam> getReagents() {
+    public List<QuantificationCvParam> getReagents() {
         return reagents;
     }
 
-    public void setReagents(List<QuantificationParamCvParam> reagents) {
+    public void setReagents(List<QuantificationCvParam> reagents) {
         this.reagents = reagents;
     }
 

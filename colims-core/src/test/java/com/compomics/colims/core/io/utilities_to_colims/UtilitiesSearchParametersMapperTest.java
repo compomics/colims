@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.Charge;
 
 /**
@@ -26,59 +25,59 @@ public class UtilitiesSearchParametersMapperTest {
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
 
     /**
-     * Test the mapping of Utilities SearchParameters to colims
-     * SearchParameterSettings.
+     * Test the mapping of Utilities SearchParameters to Colims
+     * SearchParameters.
      *
      */
     @Test
     public void testMapSearchParameters() {
         //create SearchParameters
-        SearchParameters searchParameters = new SearchParameters();
+        com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.SearchParameters();
         Enzyme enzyme = new Enzyme(1, "testEnzyme", "A", "A", "A", "A");
-        searchParameters.setEnzyme(enzyme);
+        utilitiesSearchParameters.setEnzyme(enzyme);
 
-        searchParameters.setnMissedCleavages(2);
+        utilitiesSearchParameters.setnMissedCleavages(2);
 
-        searchParameters.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.DA);
-        searchParameters.setPrecursorAccuracy(0.5);
+        utilitiesSearchParameters.setPrecursorAccuracyType(com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType.DA);
+        utilitiesSearchParameters.setPrecursorAccuracy(0.5);
         Charge charge = new Charge(Charge.PLUS, 1);
-        searchParameters.setMinChargeSearched(charge);
-        searchParameters.setMaxChargeSearched(charge);
+        utilitiesSearchParameters.setMinChargeSearched(charge);
+        utilitiesSearchParameters.setMaxChargeSearched(charge);
 
-        searchParameters.setFragmentAccuracyType(SearchParameters.MassAccuracyType.DA);
-        searchParameters.setFragmentIonAccuracy(0.5);
+        utilitiesSearchParameters.setFragmentAccuracyType(com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType.DA);
+        utilitiesSearchParameters.setFragmentIonAccuracy(0.5);
 
-        searchParameters.setIonSearched1("a");
-        searchParameters.setIonSearched2("b");
+        utilitiesSearchParameters.setIonSearched1("a");
+        utilitiesSearchParameters.setIonSearched2("b");
 
-        SearchParameterSettings searchParameterSettings = new SearchParameterSettings();
+        SearchParameters searchParameters = new SearchParameters();
 
-        utilitiesSearchParametersMapper.map(searchParameters, searchParameterSettings);
+        utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
 
-        Assert.assertNotNull(searchParameterSettings.getEnzyme());
-        Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameterSettings.getEnzyme().getName()));
+        Assert.assertNotNull(searchParameters.getEnzyme());
+        Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameters.getEnzyme().getName()));
 
-        Assert.assertNotNull(searchParameterSettings.getNumberOfMissedCleavages());
-        Assert.assertEquals(Integer.valueOf(2), searchParameterSettings.getNumberOfMissedCleavages());
+        Assert.assertNotNull(searchParameters.getNumberOfMissedCleavages());
+        Assert.assertEquals(Integer.valueOf(2), searchParameters.getNumberOfMissedCleavages());
 
-        Assert.assertNotNull(searchParameterSettings.getFragMassToleranceUnit());
-        Assert.assertEquals(MassAccuracyType.DA, searchParameterSettings.getFragMassToleranceUnit());
-        Assert.assertNotNull(searchParameterSettings.getFragMassTolerance());
-        Assert.assertEquals(0.5, searchParameterSettings.getFragMassTolerance(), 0.01);
+        Assert.assertNotNull(searchParameters.getFragMassToleranceUnit());
+        Assert.assertEquals(MassAccuracyType.DA, searchParameters.getFragMassToleranceUnit());
+        Assert.assertNotNull(searchParameters.getFragMassTolerance());
+        Assert.assertEquals(0.5, searchParameters.getFragMassTolerance(), 0.01);
 
-        Assert.assertNotNull(searchParameterSettings.getPrecMassToleranceUnit());
-        Assert.assertEquals(MassAccuracyType.DA, searchParameterSettings.getPrecMassToleranceUnit());
-        Assert.assertNotNull(searchParameterSettings.getPrecMassTolerance());
-        Assert.assertEquals(0.5, searchParameterSettings.getPrecMassTolerance(), 0.01);
+        Assert.assertNotNull(searchParameters.getPrecMassToleranceUnit());
+        Assert.assertEquals(MassAccuracyType.DA, searchParameters.getPrecMassToleranceUnit());
+        Assert.assertNotNull(searchParameters.getPrecMassTolerance());
+        Assert.assertEquals(0.5, searchParameters.getPrecMassTolerance(), 0.01);
 
-        Assert.assertNotNull(searchParameterSettings.getLowerCharge());
-        Assert.assertEquals(Integer.valueOf(charge.value), searchParameterSettings.getLowerCharge());
-        Assert.assertNotNull(searchParameterSettings.getUpperCharge());
-        Assert.assertEquals(Integer.valueOf(charge.value), searchParameterSettings.getUpperCharge());
+        Assert.assertNotNull(searchParameters.getLowerCharge());
+        Assert.assertEquals(Integer.valueOf(charge.value), searchParameters.getLowerCharge());
+        Assert.assertNotNull(searchParameters.getUpperCharge());
+        Assert.assertEquals(Integer.valueOf(charge.value), searchParameters.getUpperCharge());
 
-        Assert.assertNotNull(searchParameterSettings.getFirstSearchedIonType());
-        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.A_ION), searchParameterSettings.getFirstSearchedIonType());
-        Assert.assertNotNull(searchParameterSettings.getSecondSearchedIonType());
-        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.B_ION), searchParameterSettings.getSecondSearchedIonType());
+        Assert.assertNotNull(searchParameters.getFirstSearchedIonType());
+        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.A_ION), searchParameters.getFirstSearchedIonType());
+        Assert.assertNotNull(searchParameters.getSecondSearchedIonType());
+        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.B_ION), searchParameters.getSecondSearchedIonType());
     }
 }

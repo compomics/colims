@@ -4,12 +4,12 @@
  */
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.QuantificationParameters;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public interface SearchParameterSettingsRepository extends GenericRepository<SearchParameterSettings, Long> {
+public interface QuantificationParametersRepository extends GenericRepository<QuantificationParameters, Long> {
 
 }

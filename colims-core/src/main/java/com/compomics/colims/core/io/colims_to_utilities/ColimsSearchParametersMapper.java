@@ -4,8 +4,7 @@ import com.compomics.colims.core.io.Mapper;
 
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.model.SearchParameterSettings;
-import com.compomics.util.experiment.identification.SearchParameters;
+import com.compomics.colims.model.SearchParameters;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component("colimsSearchParametersMapper")
 @Transactional
-public class ColimsSearchParametersMapper implements Mapper<SearchParameterSettings, SearchParameters> {
+public class ColimsSearchParametersMapper implements Mapper<SearchParameters, com.compomics.util.experiment.identification.SearchParameters> {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
 
     /**
      * Map the ColimsSearchParametersSettings to the SearchParameters object.
      *
-     * @param colimsSearchParametersSettings
+     * @param colimsSearchSettings
      * @param searchParameters
      */
     @Override
-    public void map(final SearchParameterSettings colimsSearchParametersSettings, final SearchParameters searchParameters) {
+    public void map(final SearchParameters colimsSearchSettings, final com.compomics.util.experiment.identification.SearchParameters searchParameters) {
 //        LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
 ////        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
 //        //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?

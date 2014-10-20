@@ -28,7 +28,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
     private QuantificationEngine quantificationEngine;
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
     @ManyToOne
-    private QuantificationParameterSettings quantificationParameterSettings;
+    private QuantificationParameters quantificationParameterSettings;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
     private List<QuantificationFile> quantificationFiles = new ArrayList<>();
 
@@ -56,11 +56,11 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
         this.quantificationEngine = quantificationEngine;
     }
 
-    public QuantificationParameterSettings getQuantificationParameterSettings() {
+    public QuantificationParameters getQuantificationParameterSettings() {
         return quantificationParameterSettings;
     }
 
-    public void setQuantificationParameterSettings(QuantificationParameterSettings quantificationParameterSettings) {
+    public void setQuantificationParameterSettings(QuantificationParameters quantificationParameterSettings) {
         this.quantificationParameterSettings = quantificationParameterSettings;
     }
 

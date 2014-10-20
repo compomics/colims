@@ -3,11 +3,11 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
-import com.compomics.colims.repository.SearchParameterSettingsRepository;
+import com.compomics.colims.repository.SearchParametersRepository;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     @Autowired
     private SearchEngineRepository searchEngineRepository;
     @Autowired
-    private SearchParameterSettingsRepository searchParameterSettingsRepository;
+    private SearchParametersRepository searchParametersRepository;
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {
@@ -87,15 +87,15 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     }
 
     @Override
-    public SearchParameterSettings getSearchParamterSettings(SearchParameterSettings searchParameterSettings) {
-        //find SearchParameterSettings by example
-        List<SearchParameterSettings> searchParameterSettingses = searchParameterSettingsRepository.findByExample(searchParameterSettings);
-        if (!searchParameterSettingses.isEmpty()) {
-            return searchParameterSettingses.get(0);
+    public SearchParameters getSearchParameters(SearchParameters searchParameters) {
+        //find SearchParameters by example
+        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
+        if (!searchParameterses.isEmpty()) {
+            return searchParameterses.get(0);
         } else {
             //save the given instance
-            searchParameterSettingsRepository.save(searchParameterSettings);
-            return searchParameterSettings;
+            searchParametersRepository.save(searchParameters);
+            return searchParameters;
         }
     }
 

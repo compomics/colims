@@ -35,7 +35,7 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
     @JoinColumn(name = "l_search_param_settings_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private SearchParameterSettings searchParameterSettings;
+    private SearchParameters searchParameters;
 
     public List<IdentificationFile> getIdentificationFiles() {
         return identificationFiles;
@@ -69,12 +69,12 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
         this.fastaDb = fastaDb;
     }
 
-    public SearchParameterSettings getSearchParameterSettings() {
-        return searchParameterSettings;
+    public SearchParameters getSearchParameterSettings() {
+        return searchParameters;
     }
 
-    public void setSearchParameterSettings(SearchParameterSettings searchParameterSettings) {
-        this.searchParameterSettings = searchParameterSettings;
+    public void setSearchParameterSettings(SearchParameters searchParameterSettings) {
+        this.searchParameters = searchParameterSettings;
     }
 
 }

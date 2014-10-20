@@ -6,7 +6,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.SearchEngineType;
 
 /**
@@ -22,17 +22,17 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
      *
      * @param searchEngineType the search engine type
      * @param version the search engine version
-     * @return
+     * @return the found SearchEngine
      */
     SearchEngine getSearchEngine(SearchEngineType searchEngineType, String version);
 
     /**
-     * Get the SearchParamterSettings by example from the database. If nothing
-     * was found, store the given SearchParameterSettings and return them.
+     * Get the SearchParamater by example from the database. If nothing was
+     * found, store the given SearchParameterSettings and return them.
      *
-     * @param searchParameterSettings
-     * @return
+     * @param searchParameters the SearchParameters to look for
+     * @return the found SearchParameters
      */
-    SearchParameterSettings getSearchParamterSettings(SearchParameterSettings searchParameterSettings);
+    SearchParameters getSearchParameters(SearchParameters searchParameters);
 
 }

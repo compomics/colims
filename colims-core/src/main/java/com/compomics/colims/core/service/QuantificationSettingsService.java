@@ -5,7 +5,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.QuantificationEngine;
-import com.compomics.colims.model.QuantificationParameterSettings;
+import com.compomics.colims.model.QuantificationParameters;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 
@@ -33,6 +33,6 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      * @param quantificationParameterSettings
      * @return
      */
-    QuantificationParameterSettings getQuantificationParamterSettings(QuantificationParameterSettings quantificationParameterSettings);
+    QuantificationParameters getQuantificationParamterSettings(QuantificationParameters quantificationParameterSettings);
 
 }

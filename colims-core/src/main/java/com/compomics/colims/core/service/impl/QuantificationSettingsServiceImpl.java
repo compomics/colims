@@ -2,11 +2,11 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.QuantificationEngine;
-import com.compomics.colims.model.QuantificationParameterSettings;
+import com.compomics.colims.model.QuantificationParameters;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
-import com.compomics.colims.repository.QuantificationParameterSettingsRepository;
+import com.compomics.colims.repository.QuantificationParametersRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     @Autowired
     private QuantificationEngineRepository quantificationEngineRepository;
     @Autowired
-    private QuantificationParameterSettingsRepository quantificationParameterSettingsRepository;
+    private QuantificationParametersRepository quantificationParametersRepository;
 
     @Override
     public QuantificationSettings findById(final Long id) {
@@ -76,14 +76,14 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationParameterSettings getQuantificationParamterSettings(QuantificationParameterSettings quantificationParameterSettings) {
+    public QuantificationParameters getQuantificationParamterSettings(QuantificationParameters quantificationParameterSettings) {
         //find QuantificationParameterSettings by example
-        List<QuantificationParameterSettings> quantificationParameterSettingses = quantificationParameterSettingsRepository.findByExample(quantificationParameterSettings);
+        List<QuantificationParameters> quantificationParameterSettingses = quantificationParametersRepository.findByExample(quantificationParameterSettings);
         if (!quantificationParameterSettingses.isEmpty()) {
             return quantificationParameterSettingses.get(0);
         } else {
             //save the given instance
-            quantificationParameterSettingsRepository.save(quantificationParameterSettings);
+            quantificationParametersRepository.save(quantificationParameterSettings);
             return quantificationParameterSettings;
         }
     }

@@ -9,16 +9,16 @@ import javax.persistence.Table;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "quant_param_cv_param")
+@Table(name = "quantification_cv_param")
 @Entity
-public class QuantificationParamCvParam extends TypedCvParam {
+public class QuantificationCvParam extends TypedCvParam {
 
     private static final long serialVersionUID = 6017965126255158010L;
 
-    public QuantificationParamCvParam() {
+    public QuantificationCvParam() {
     }
 
-    public QuantificationParamCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
+    public QuantificationCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
         super(cvTermType, ontology, label, accession, name);
     }
 

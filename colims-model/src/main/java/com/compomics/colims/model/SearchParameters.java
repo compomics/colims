@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,9 +23,9 @@ import org.hibernate.annotations.LazyCollectionOption;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "search_parameter_settings")
+@Table(name = "search_parameters")
 @Entity
-public class SearchParameterSettings extends DatabaseEntity {
+public class SearchParameters extends DatabaseEntity {
 
     private static final long serialVersionUID = -1065576089263244645L;
 
@@ -34,14 +35,14 @@ public class SearchParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
-    private SearchParamCvParam searchType;
+    private SearchCvParam searchType;
     /**
      * The cleavage enzyme.
      */
     @Basic(optional = true)
     @ManyToOne
-    @JoinColumn(name = "l_search_param_enzyme_cv_id", referencedColumnName = "id", nullable = true)
-    private SearchParamCvParam enzyme;
+    @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
+    private SearchCvParam enzyme;
     /**
      * The number of missed cleavage sites allowed by the search.
      */
@@ -96,7 +97,7 @@ public class SearchParameterSettings extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "search_ion_type_2", nullable = true)
     private Integer secondSearchedIonType;
-    @OneToMany(mappedBy = "searchParameterSettings")
+    @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
     /**
      * The search parameters other than the modifications searched.
@@ -105,24 +106,26 @@ public class SearchParameterSettings extends DatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "search_param_set_has_add_cv_param",
             joinColumns = {
-                @JoinColumn(name = "l_search_param_settings_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                 @JoinColumn(name = "l_additional_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> additionalCvParams = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "searchParameters")
+    private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
 
-    public SearchParamCvParam getSearchType() {
+    public SearchCvParam getSearchType() {
         return searchType;
     }
 
-    public void setSearchType(SearchParamCvParam searchType) {
+    public void setSearchType(SearchCvParam searchType) {
         this.searchType = searchType;
     }
 
-    public SearchParamCvParam getEnzyme() {
+    public SearchCvParam getEnzyme() {
         return enzyme;
     }
 
-    public void setEnzyme(SearchParamCvParam enzyme) {
+    public void setEnzyme(SearchCvParam enzyme) {
         this.enzyme = enzyme;
     }
 
@@ -222,6 +225,14 @@ public class SearchParameterSettings extends DatabaseEntity {
         this.additionalCvParams = additionalCvParams;
     }
 
+    public List<SearchParametersHasModification> getSearchParametersHasModifications() {
+        return searchParametersHasModifications;
+    }
+
+    public void setSearchParametersHasModifications(List<SearchParametersHasModification> searchParametersHasModifications) {
+        this.searchParametersHasModifications = searchParametersHasModifications;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -249,7 +260,7 @@ public class SearchParameterSettings extends DatabaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SearchParameterSettings other = (SearchParameterSettings) obj;
+        final SearchParameters other = (SearchParameters) obj;
         if (!Objects.equals(this.searchType, other.searchType)) {
             return false;
         }

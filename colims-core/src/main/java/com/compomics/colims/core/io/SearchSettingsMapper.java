@@ -7,10 +7,9 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameterSettings;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.util.experiment.identification.SearchParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -35,26 +34,26 @@ public class SearchSettingsMapper {
      * @param searchEngineType
      * @param version
      * @param fastaDb
-     * @param searchParameters
+     * @param utilitiesSearchParameters
      * @param identificationFiles
      * @param storeIdentificationFile
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, SearchParameters searchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
          * SearchParamterSettings
          */
         //map the utitilities SearchParamaters onto the colims SearchParameterSettings
-        SearchParameterSettings searchParameterSettings = new SearchParameterSettings();
-        utilitiesSearchParametersMapper.map(searchParameters, searchParameterSettings);
+        SearchParameters searchParameters = new SearchParameters();
+        utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
 
         //look for the given search parameter settings in the database
-        searchParameterSettings = searchAndValidationSettingsService.getSearchParamterSettings(searchParameterSettings);
+        searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
         //set entity relations
-        searchAndValidationSettings.setSearchParameterSettings(searchParameterSettings);
+        searchAndValidationSettings.setSearchParameterSettings(searchParameters);
 //        searchParamterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
