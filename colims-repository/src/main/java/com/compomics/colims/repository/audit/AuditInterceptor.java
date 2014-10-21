@@ -19,7 +19,7 @@ import com.compomics.colims.repository.AuthenticationBean;
 public class AuditInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
     private AuthenticationBean authenticationBean;
 
     public AuthenticationBean getAuthenticationBean() {

@@ -1,7 +1,6 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.compoment.DualList;
-import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
@@ -30,14 +29,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The project edit view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("projectEditController")
 public class ProjectEditController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ProjectEditController.class);
-    //model   
+
+    //model
     private BindingGroup bindingGroup;
     private ObservableList<User> userBindingList;
     private List<User> users;
@@ -58,8 +62,9 @@ public class ProjectEditController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the ProjectEditDialog
      */
     public ProjectEditDialog getProjectEditDialog() {
         return projectEditDialog;
@@ -105,28 +110,28 @@ public class ProjectEditController implements Controllable {
 
                 //validate project
                 List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
-                //check for a new project if the project title already exists in the db                
+                //check for a new project if the project title already exists in the db
                 if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
                     validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
                             + System.lineSeparator() + "please choose another project title.");
-                }                
+                }
                 if (validationMessages.isEmpty()) {
                     int index;
-                    
+
                     if (projectToEdit.getId() != null) {
                         projectService.update(projectToEdit);
-                        
+
                         index = projectManagementController.getSelectedProjectIndex();
                     } else {
                         projectService.save(projectToEdit);
 
                         index = projectManagementController.getProjectsSize() - 1;
-                        
+
                         //add project to overview table
-                        projectManagementController.addProject(projectToEdit);                        
+                        projectManagementController.addProject(projectToEdit);
 
                         projectEditDialog.getSaveOrUpdateButton().setText("update");
-                    }                    
+                    }
                     MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
@@ -156,7 +161,7 @@ public class ProjectEditController implements Controllable {
     /**
      * Update the project edit dialog with the selected project in the project
      * overview table.
-     * 
+     *
      * @param project
      */
     public void updateView(final Project project) {
@@ -173,12 +178,12 @@ public class ProjectEditController implements Controllable {
         //set the selected item in the owner combobox
         projectEditDialog.getOwnerComboBox().setSelectedItem(projectToEdit.getOwner());
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
-        //populate user dual list        
+        //populate user dual list
         projectEditDialog.getUserDualList().populateLists(users, projectToEdit.getUsers());
 
         showView();
     }
-    
+
     /**
      * Listen to a UserChangeEvent and reload the users.
      *

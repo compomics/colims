@@ -20,7 +20,7 @@ import com.compomics.colims.repository.AuthenticationBean;
 public class CustomSaveEventListener extends DefaultSaveEventListener {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = Logger.getLogger(CustomSaveEventListener.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(CustomSaveEventListener.class);
     @Autowired
     private AuthenticationBean authenticationBean;
 

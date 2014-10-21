@@ -23,19 +23,46 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class SplashScreen implements ApplicationContextAware, BeanPostProcessor, InitializingBean {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
 
+    /**
+     * The splash screen window.
+     */
     private JWindow window;
+    /**
+     * The splash screen image.
+     */
     private Image image;
+    /**
+     * The image path.
+     */
     private final String imageResourcePath;
+    /**
+     * The application context.
+     */
     private ApplicationContext context;
+    /**
+     * The splash screen progress bar.
+     */
     private final JProgressBar progressBar;
+    /**
+     * The progress bar's progress.
+     */
     private int progress = 0;
+    /**
+     * The total number of beans.
+     */
     private int maximum;
+    /**
+     * Show the progress label boolean.
+     */
     private final boolean showProgressLabel;
 
     /**
-     * Constructor
+     * No-arg Constructor.
      */
     public SplashScreen() {
         progressBar = new JProgressBar();
@@ -44,8 +71,9 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     }
 
     /**
+     * Return the number of beans.
      *
-     * @return
+     * @return the number of beans
      */
     public int getMaximum() {
         return maximum;
@@ -88,26 +116,13 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         window = null;
     }
 
-    /**
-     * @param context
-     * @see
-     * org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
     @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void setApplicationContext(final ApplicationContext context) {
         this.context = context;
     }
 
-    /**
-     * @param bean
-     * @param name
-     * @return
-     * @see
-     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
-     * java.lang.String)
-     */
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
+    public Object postProcessBeforeInitialization(final Object bean, final String name) {
         progressBar.setValue(progress++);
         if (showProgressLabel) {
             progressBar.setString("Loading bean " + name + "...");
@@ -116,24 +131,11 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         return bean;
     }
 
-    /**
-     * @param bean
-     * @param name
-     * @return
-     * @see
-     * org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
-     * java.lang.String)
-     */
     @Override
-    public Object postProcessAfterInitialization(Object bean, String name) throws BeansException {
+    public Object postProcessAfterInitialization(final Object bean, final String name) {
         return bean;
     }
 
-    /**
-     * @throws java.lang.Exception
-     * @see
-     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         if (showProgressLabel) {
@@ -152,22 +154,33 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      * @param progressMessage the progress bar label message
      * @param value the progress bar value
      */
-    public void setProgressLabel(String progressMessage, int value) {
+    public void setProgressLabel(final String progressMessage, final int value) {
         if (showProgressLabel) {
             progressBar.setValue(progressBar.getMaximum() - 1);
             progressBar.setString(progressMessage);
         }
     }
 
-    private void center(JWindow window) {
+    /**
+     * Center the splash screen.
+     *
+     * @param window the splash screen window
+     */
+    private void center(final JWindow window) {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         Rectangle r = window.getBounds();
         window.setLocation((screen.width - r.width) / 2, (screen.height - r.height) / 2);
     }
 
-    private Image loadImage(String path) {
+    /**
+     * Load the image from the given path.
+     *
+     * @param path the image file path
+     * @return the Image instance
+     */
+    private Image loadImage(final String path) {
         URL url = this.getClass().getResource(path);
-        
+
         if (url == null) {
             LOGGER.warn("Unable to locate splash screen in classpath at: " + path);
             return null;

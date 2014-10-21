@@ -12,17 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class listens to the notification topic and handles incoming messages.
  *
  * @author Niels Hulstaert
  */
 @Component("notificationConsumer")
 public class NotificationConsumer implements MessageListener {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(NotificationConsumer.class);
-   
+
     @Autowired
-    private EventBus eventBus;       
-    
+    private EventBus eventBus;
+
     /**
      * Implementation of <code>MessageListener</code>.
      *
@@ -30,16 +34,15 @@ public class NotificationConsumer implements MessageListener {
      */
     @Override
     public void onMessage(Message message) {
-        try {            
+        try {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
-            Notification notification = (Notification) objectMessage.getObject();                                    
+            Notification notification = (Notification) objectMessage.getObject();
 
             LOGGER.info("received notification message");
-            
+
             //set JMS message ID
             //notification.getDbTask().setMessageId(objectMessage.getJMSMessageID());
-            
-            eventBus.post(new NotificationEvent(notification));            
+            eventBus.post(new NotificationEvent(notification));
         } catch (JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }

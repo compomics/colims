@@ -13,6 +13,7 @@ import com.compomics.util.preferences.GenePreferences;
 import com.compomics.util.preferences.IdFilter;
 import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.preferences.ProcessingPreferences;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
 import eu.isas.peptideshaker.myparameters.PSSettings;
 import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import java.io.File;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
+ * The DataImporter class for PeptideShaker projects.
+ *
  * @author Niels Hulstaert
  */
 @Component("peptideShakerImporter")
@@ -33,18 +36,26 @@ public class PeptideShakerImporter implements DataImporter {
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
 
+    /**
+     * The unarchived PeptideShaker import.
+     */
     private UnpackedPeptideShakerImport unpackedPeptideShakerImport;
+    /**
+     * The utilities to colims search settings mapper.
+     */
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
+    /**
+     * The PeptideShaker
+     */
     @Autowired
     private PSInputAndResultsMapper inputAndResultsMapper;
 
     @Override
     public void initImport(DataImport dataImport) {
-        if(dataImport instanceof UnpackedPeptideShakerImport){
+        if (dataImport instanceof UnpackedPeptideShakerImport) {
             unpackedPeptideShakerImport = (UnpackedPeptideShakerImport) dataImport;
-        }        
-        else {
+        } else {
             throw new IllegalArgumentException();
         }
     }
@@ -52,7 +63,7 @@ public class PeptideShakerImporter implements DataImporter {
     @Override
     public void clear() {
         try {
-            inputAndResultsMapper.clear();            
+            inputAndResultsMapper.clear();
         } catch (IOException | SQLException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
@@ -84,7 +95,7 @@ public class PeptideShakerImporter implements DataImporter {
     }
 
     @Override
-    public List<AnalyticalRun> importInputAndResults(SearchAndValidationSettings searchAndValidationSettings, QuantificationSettings quantificationSettings) throws MappingException {
+    public List<AnalyticalRun> importInputAndResults(final SearchAndValidationSettings searchAndValidationSettings, final QuantificationSettings quantificationSettings) throws MappingException {
         List<AnalyticalRun> runs = null;
 
         try {
@@ -98,11 +109,12 @@ public class PeptideShakerImporter implements DataImporter {
     }
 
     /**
-     * Load the PeptideShaker settings.
+     * Load the PeptideShaker settings from the given MsExperiment.
      *
-     * @param msExperiment
+     * @param msExperiment the MsExperiment
+     * @return the PeptideShakerSettings
      */
-    private PeptideShakerSettings loadExperimentSettings(MsExperiment msExperiment) {
+    private PeptideShakerSettings loadExperimentSettings(final MsExperiment msExperiment) {
         PeptideShakerSettings peptideShakerSettings = new PeptideShakerSettings();
 
         if (msExperiment.getUrParam(peptideShakerSettings) instanceof PSSettings) {
@@ -125,8 +137,7 @@ public class PeptideShakerImporter implements DataImporter {
                     tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
                     tempSettings.getDisplayPreferences(),
                     tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
-                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter());
-
+                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter(), new SequenceMatchingPreferences());
         } else {
             peptideShakerSettings = (PeptideShakerSettings) msExperiment.getUrParam(peptideShakerSettings);
         }

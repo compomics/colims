@@ -6,14 +6,15 @@ import com.compomics.colims.model.Sample;
 import java.util.Date;
 
 /**
+ * This interface provides service methods for storing an analytical run.
  *
  * @author Niels Hulstaert
  */
 public interface DataStorageService {
-    
+
     /**
      * Store the AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings.
-     * 
+     *
      * @param mappedDataImport AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings
      * @param sample the sample the runs will be added to
      * @param instrument the instrument the runs were executed on
@@ -21,5 +22,5 @@ public interface DataStorageService {
      * @param startDate the start date of the runs
      */
     void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate);
-    
+
 }

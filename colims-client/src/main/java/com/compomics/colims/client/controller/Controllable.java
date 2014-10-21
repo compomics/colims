@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller;
 
 /**
+ * Interface for view controller classes with init and show methods.
  *
  * @author Niels Hulstaert
  */

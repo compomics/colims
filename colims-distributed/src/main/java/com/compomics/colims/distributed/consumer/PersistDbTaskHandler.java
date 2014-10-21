@@ -28,34 +28,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class handles a PersistDbTask: map the DataImport en store it in the
+ * database.
  *
  * @author Niels Hulstaert
  */
 @Component("persistDbTaskHandler")
 public class PersistDbTaskHandler {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PersistDbTaskHandler.class);
 
+    /**
+     * The CompletedDbTask sender.
+     */
     @Autowired
     private CompletedTaskProducer completedTaskProducer;
+    /**
+     * The DbTaskError sender.
+     */
     @Autowired
     private DbTaskErrorProducer dbTaskErrorProducer;
+    /**
+     * The PeptideShaker IO handler.
+     */
     @Autowired
     private PeptideShakerIO peptideShakerIO;
+    /**
+     * The PeptideShaker data importer.
+     */
     @Autowired
     private PeptideShakerImporter peptideShakerImporter;
+    /**
+     * The MaxQuant data importer.
+     */
     @Autowired
     private MaxQuantImporter maxQuantImporter;
+    /**
+     * The user entity service.
+     */
     @Autowired
     private UserService userService;
+    /**
+     * The sample entity service.
+     */
     @Autowired
     private SampleService sampleService;
+
     @Autowired
     private DataStorageService dataStorageService;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
-        try {            
+        try {
             //check if the entity class is of the right type
             if (!persistDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
                 throw new IllegalArgumentException("The entity to persist should be of class " + AnalyticalRun.class.getName());
@@ -124,10 +151,10 @@ public class PersistDbTaskHandler {
             case MAX_QUANT:
                 //clear resources before mapping
                 maxQuantImporter.clear();
-                             
+
                 maxQuantImporter.initImport(persistDbTask.getDataImport());
                 analyticalRuns = maxQuantImporter.importInputAndResults(null, null);
-                
+
                 mappedDataImport = new MappedDataImport(null, null, analyticalRuns);
                 break;
             default:

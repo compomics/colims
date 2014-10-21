@@ -10,12 +10,19 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 /**
+ * The Colims help dialog.
  *
  * @author Niels Hulstaert
  */
 public class MainHelpDialog extends javax.swing.JDialog {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(MainHelpDialog.class);
+    /**
+     * The Colims google code page url.
+     */
     private URI uri;
 
     /**

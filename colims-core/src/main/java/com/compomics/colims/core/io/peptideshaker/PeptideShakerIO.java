@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.compress.archivers.ArchiveException;
 
 /**
+ * This interface defines PeptideShaker import methods.
  *
  * @author Niels Hulstaert
  */
@@ -17,9 +18,9 @@ public interface PeptideShakerIO {
      *
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
      * @return the PeptideShaker import object
-     * @throws java.io.IOException
-     * @throws org.apache.commons.compress.archivers.ArchiveException
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.io.IOException the IOException
+     * @throws org.apache.commons.compress.archivers.ArchiveException the ArchiveException
+     * @throws java.lang.ClassNotFoundException the ClassNotFoundException
      */
     UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException;
 
@@ -31,9 +32,9 @@ public interface PeptideShakerIO {
      * @param peptideShakerCpsArchive the PepitideShaker .cps file
      * @param destinationDirectory the destination directory
      * @return the PeptideShaker import object
-     * @throws java.io.IOException
-     * @throws org.apache.commons.compress.archivers.ArchiveException
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.io.IOException the IOException
+     * @throws org.apache.commons.compress.archivers.ArchiveException the ArchiveException
+     * @throws java.lang.ClassNotFoundException the ClassNotFoundException
      */
     UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException;
 
@@ -44,9 +45,9 @@ public interface PeptideShakerIO {
      *
      * @param peptideShakerDataImport the PepitideShakerDataImport
      * @return the PeptideShaker import object
-     * @throws java.io.IOException
-     * @throws org.apache.commons.compress.archivers.ArchiveException
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.io.IOException the IOException
+     * @throws org.apache.commons.compress.archivers.ArchiveException the ArchiveException
+     * @throws java.lang.ClassNotFoundException the ClassNotFoundException
      */
     UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException;
 }

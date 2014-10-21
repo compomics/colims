@@ -31,12 +31,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
+ * The institution management view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("institutionManagementController")
 public class InstitutionManagementController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(InstitutionManagementController.class);
 
     //model

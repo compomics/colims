@@ -25,12 +25,17 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class provides methods for monitoring and managing the distributed
+ * module queues and topics.
  *
  * @author Niels Hulstaert
  */
 @Component("queueManager")
 public class QueueManagerImpl implements QueueManager {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(QueueManagerImpl.class);
 
     @Value("${distributed.broker.name}")
@@ -50,7 +55,7 @@ public class QueueManagerImpl implements QueueManager {
     private MBeanServerConnection clientConnector;
 
     @Override
-    public <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException {
+    public <T extends QueueMessage> List<T> monitorQueue(final String queueName) throws JMSException {
         List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override

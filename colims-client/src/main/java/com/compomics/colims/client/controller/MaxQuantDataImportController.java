@@ -16,13 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The MaxQuant data import view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("maxQuantDataImportController")
 public class MaxQuantDataImportController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
+
     //model
     private File maxQuantDirectory;
     private FastaDb fastaDb;

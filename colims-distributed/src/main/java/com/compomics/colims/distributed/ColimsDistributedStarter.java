@@ -9,17 +9,36 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.CannotCreateTransactionException;
 
 /**
+ * The Colims distributed module starter class.
  *
  * @author Niels Hulstaert
  */
-public class ColimsDistributedStarter {
+public final class ColimsDistributedStarter {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsDistributedStarter.class);
 
+    /**
+     * private no-arg constructor.
+     */
+    private ColimsDistributedStarter() {
+    }
+
+    /**
+     * Public launcher method for the distributed module.
+     *
+     * @param args the String arg array
+     */
     public static void main(final String[] args) {
         launch();
     }
 
+    /**
+     * Init the application context and set the default distributed user in the
+     * AuthenticationBean .
+     */
     private static void launch() {
         try {
             ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");

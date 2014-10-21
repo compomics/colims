@@ -51,13 +51,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
+ * The user management view parent controller.
  *
  * @author Niels Hulstaert
  */
 @Component("userManagementParentController")
 public class UserManagementController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
+
     //model
     private ObservableList<User> userBindingList;
     private ObservableList<Institution> institutionBindingList;

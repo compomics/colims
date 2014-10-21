@@ -46,13 +46,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The project management view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("projectManagementController")
 public class ProjectManagementController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
+
     //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
@@ -95,8 +100,9 @@ public class ProjectManagementController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the ProjectManagementPanel
      */
     public ProjectManagementPanel getProjectManagementPanel() {
         return projectManagementPanel;

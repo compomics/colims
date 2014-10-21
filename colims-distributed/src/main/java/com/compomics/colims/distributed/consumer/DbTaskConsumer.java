@@ -21,8 +21,14 @@ import org.springframework.stereotype.Component;
 @Component("dbTaskConsumer")
 public class DbTaskConsumer implements MessageListener {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
 
+    /**
+     *
+     */
     @Autowired
     private PersistDbTaskHandler persistDbTaskHandler;
     @Autowired
@@ -36,7 +42,7 @@ public class DbTaskConsumer implements MessageListener {
      * @param message
      */
     @Override
-    public void onMessage(Message message) {
+    public void onMessage(final Message message) {
         try {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
             DbTask dbTask = (DbTask) objectMessage.getObject();

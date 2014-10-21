@@ -17,12 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps the Utilities search settings to a
+ * SearchAndValidationSettings instance.
  *
  * @author Niels Hulstaert
  */
 @Component("searchSettingsMapper")
 public class SearchSettingsMapper {
 
+    /**
+     *
+     */
     @Autowired
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
     @Autowired

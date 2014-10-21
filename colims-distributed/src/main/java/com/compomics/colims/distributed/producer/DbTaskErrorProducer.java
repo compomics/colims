@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component("dbTaskErrorProducer")
 public class DbTaskErrorProducer {
 
-    private static final Logger LOGGER = Logger.getLogger(DbTaskErrorProducer.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(DbTaskErrorProducer.class);
 
     @Autowired
     private JmsTemplate dbTaskErrorProducerTemplate;

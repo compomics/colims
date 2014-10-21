@@ -15,7 +15,7 @@ import org.hibernate.Criteria;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(ProteinHibernateRepository.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(ProteinHibernateRepository.class);
 
     @Override
     public Protein findBySequence(String sequence) {

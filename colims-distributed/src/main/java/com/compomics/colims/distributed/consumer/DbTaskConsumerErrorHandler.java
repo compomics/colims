@@ -11,10 +11,13 @@ import org.springframework.util.ErrorHandler;
 @Component("dbTaskConsumerErrorHandler")
 public class DbTaskConsumerErrorHandler implements ErrorHandler {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(DbTaskConsumerErrorHandler.class);
 
     @Override
-    public void handleError(Throwable thrwbl) {
+    public void handleError(final Throwable thrwbl) {
         LOGGER.error(thrwbl.getMessage(), thrwbl);
     }
 

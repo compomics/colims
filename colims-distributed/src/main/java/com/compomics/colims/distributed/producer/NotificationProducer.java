@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component("notificationProducer")
 public class NotificationProducer {
 
-    private static final Logger LOGGER = Logger.getLogger(NotificationProducer.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(NotificationProducer.class);
 
     @Autowired
     private JmsTemplate notificationProducerTemplate;

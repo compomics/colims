@@ -63,13 +63,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The sample edit view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("sampleEditController")
 public class SampleEditController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(SampleEditController.class);
+
     //model
     private BindingGroup bindingGroup;
     private ObservableList<Protocol> protocolBindingList;

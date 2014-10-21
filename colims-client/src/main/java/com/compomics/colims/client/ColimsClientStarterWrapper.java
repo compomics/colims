@@ -12,8 +12,10 @@ import org.apache.log4j.Logger;
  */
 public class ColimsClientStarterWrapper extends CompomicsWrapper {
 
-    // Class specific log4j logger for ParserStarter instances.
-    private static final Logger logger = Logger.getLogger(ColimsClientStarterWrapper.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarterWrapper.class);
 
     /**
      * Starts the launcher by calling the launch method. Use this as the main
@@ -33,7 +35,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
             argsAddedTo[argsAddedTo.length - 1] = fileLocations.toString();
             launchTool("Colims-client", jarFile, null, mainClass, argsAddedTo);
         } catch (URISyntaxException ex) {
-            logger.error(ex);
+            LOGGER.error(ex);
         }
     }
 
@@ -41,7 +43,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
      * Starts the launcher by calling the launch method. Use this as the main
      * class in the jar file.
      *
-     * @param args
+     * @param args the main method String argument Array
      */
     public static void main(final String[] args) {
         new ColimsClientStarterWrapper(args);

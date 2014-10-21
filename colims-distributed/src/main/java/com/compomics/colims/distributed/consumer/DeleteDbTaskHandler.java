@@ -16,12 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class handles a DeleteDbTask.
  *
  * @author Niels Hulstaert
  */
 @Component("deleteDbTaskHandler")
 public class DeleteDbTaskHandler {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(DeleteDbTaskHandler.class);
 
     @Autowired

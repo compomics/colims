@@ -42,12 +42,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 /**
+ * The FASTA db management view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("fastaDbManagementController")
 public class FastaDbManagementController implements Controllable, OLSInputable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
 
     //model

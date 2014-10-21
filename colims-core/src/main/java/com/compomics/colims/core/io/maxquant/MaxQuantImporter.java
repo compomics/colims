@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The DataImporter class for MaxQuant projects.
  *
  * @author Davy
  */
@@ -123,7 +124,7 @@ public class MaxQuantImporter implements DataImporter {
                     targetSpectrum.setAnalyticalRun(targetRun);
 
                     //for the spectra we can just use the standard utilities mapper
-                    //@TODO get the fragmentation type 
+                    //@TODO get the fragmentation type
                     utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
                     mappedSpectra.add(targetSpectrum);
 

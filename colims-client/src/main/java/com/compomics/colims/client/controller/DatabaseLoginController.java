@@ -21,11 +21,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 /**
+ * The database login view controller.
  *
  * @author Niels Hulstaert
  */
 public class DatabaseLoginController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(DatabaseLoginController.class);
 
     //model

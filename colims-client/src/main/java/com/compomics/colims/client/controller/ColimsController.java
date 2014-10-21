@@ -36,7 +36,6 @@ import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -55,7 +54,11 @@ import org.springframework.stereotype.Component;
 @Component("colimsController")
 public class ColimsController implements Controllable, ActionListener {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
+
     //model
     @Value("${colims-client.version}")
     private String version = "unknown";
@@ -98,24 +101,23 @@ public class ColimsController implements Controllable, ActionListener {
     private QueueManager queueManager;
 
     /**
+     * Get the main view of this controller.
      *
-     * @return
+     * @return the ColimsFrame
      */
     public ColimsFrame getColimsFrame() {
         return colimsFrame;
     }
 
     /**
+     * Get the list of loaded projects.
      *
-     * @return
+     * @return the projects EventList
      */
     public EventList<Project> getProjects() {
         return projects;
     }
 
-    /**
-     * Controller init method.
-     */
     @Override
     public void init() {
         //set uncaught exception handler

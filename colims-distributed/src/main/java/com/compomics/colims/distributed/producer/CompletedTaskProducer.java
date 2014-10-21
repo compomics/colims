@@ -7,20 +7,26 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class sends CompletedDbTask instances to the completed queue.
  *
  * @author Niels Hulstaert
  */
 @Component("completedTaskProducer")
 public class CompletedTaskProducer {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(CompletedTaskProducer.class);
 
+    /**
+     * The JmsTemplate.
+     */
     @Autowired
     private JmsTemplate completedDbTaskProducerTemplate;
 
@@ -28,9 +34,8 @@ public class CompletedTaskProducer {
      * Send the serialized CompletedDbTask to the completed queue.
      *
      * @param completedDbTask the CompletedDbTask
-     * @throws JmsException
      */
-    public void sendCompletedDbTask(final CompletedDbTask completedDbTask) throws JmsException {
+    public void sendCompletedDbTask(final CompletedDbTask completedDbTask) {
 
         completedDbTaskProducerTemplate.send(new MessageCreator() {
             @Override

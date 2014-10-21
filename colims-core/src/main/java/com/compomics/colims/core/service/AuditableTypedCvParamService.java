@@ -5,6 +5,7 @@ import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**
+ * This interface provides service methods for the AuditableTypedCvParam class.
  *
  * @author Niels Hulstaert
  */

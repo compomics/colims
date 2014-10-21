@@ -23,13 +23,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The PeptideShaker data import view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("peptideShakerDataImportController")
 public class PeptideShakerDataImportController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerDataImportController.class);
+    
     //model
     private File cpsArchive;
     private FastaDb fastaDb;

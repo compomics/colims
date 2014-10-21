@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 @Component("dbTaskProducer")
 public class DbTaskProducer {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(DbTaskProducer.class);
 
     @Autowired
@@ -36,7 +39,7 @@ public class DbTaskProducer {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 //set DbTask instance as message body
-                ObjectMessage dbTaskTaskMessage = session.createObjectMessage(dbTask); 
+                ObjectMessage dbTaskTaskMessage = session.createObjectMessage(dbTask);
 
                 LOGGER.info("Sending db task of class " + dbTaskTaskMessage.getClass().getSimpleName());
 

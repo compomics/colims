@@ -23,13 +23,18 @@ import org.jdesktop.swingbinding.SwingBindings;
 import org.jmol.export.dialog.FileChooser;
 
 /**
+ * The binary file management view.
  *
  * @author Niels Hulstaert
- * @param <T>
+ * @param <T> the BinaryFile subclass
  */
 public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing.JPanel {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(BinaryFileManagementPanel.class);
+
     public static final String ADD = "add";
     public static final String REMOVE = "remove";
     public static final String FILE_TYPE_CHANGE = "file type change";

@@ -22,7 +22,7 @@ public class CustomPersistEventListener implements PersistEventListener {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(CustomPersistEventListener.class);
+    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(CustomPersistEventListener.class);
     @Autowired
     private AuthenticationBean authenticationBean;
 

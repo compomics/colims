@@ -10,7 +10,6 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
-import static com.compomics.util.experiment.identification.Advocate.PeptideShaker;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.gui.error_handlers.HelpDialog;
@@ -1056,7 +1055,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
             adaptCheckBoxMenuItem.setSelected(true);
             try {
                 //@todo which matching type should be used here?
-                annotationPreferences.resetAutomaticAnnotation(AminoAcidPattern.MatchingType.string, searchParameters.getFragmentIonAccuracy());                
+//                annotationPreferences.resetAutomaticAnnotation(AminoAcidPattern.MatchingType.string, searchParameters.getFragmentIonAccuracy());
             } catch (Exception e) {
                 e.printStackTrace(); // @TODO: add better exception handling
             }

@@ -25,13 +25,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The experiment edit view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("experimentEditController")
 public class ExperimentEditController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
+
     //model
     private Experiment experimentToEdit;
     //view
@@ -51,7 +56,7 @@ public class ExperimentEditController implements Controllable {
     private EventBus eventBus;
 
     /**
-     * Get the main view of this controller.
+     * Get the view of this controller.
      *
      * @return the ExperimentEditDialog
      */

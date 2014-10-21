@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This class holds the logged in user and his/her credentials.
  *
  * @author Niels Hulstaert
  */
@@ -23,11 +24,14 @@ public class AuthenticationBean {
      */
     private User currentUser;
     /**
-     * The default permissions map (key: default permission enum; value: does
-     * the user has the default permission?)
+     * The default permissions map (key: default permission Enum; value: does
+     * the user has the default permission?).
      */
     private Map<DefaultPermission, Boolean> defaultPermissions = new HashMap<>();
 
+    /**
+     * No-arg constructor.
+     */
     public AuthenticationBean() {
         //set a default user
         currentUser = new User("N/A");
@@ -35,6 +39,11 @@ public class AuthenticationBean {
         resetDefaultPermissions();
     }
 
+    /**
+     * Get the currently logged in user.
+     *
+     * @return the logged in user.
+     */
     public User getCurrentUser() {
         return currentUser;
     }
@@ -42,9 +51,9 @@ public class AuthenticationBean {
     /**
      * Set the current user and update the default permissions.
      *
-     * @param currentUser
+     * @param currentUser the logged in in User instance
      */
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser(final User currentUser) {
         this.currentUser = currentUser;
 
         //iterate over the default permissions
@@ -64,6 +73,11 @@ public class AuthenticationBean {
         }
     }
 
+    /**
+     * Return the default permissions of the logged in user.
+     *
+     * @return the default permissions map
+     */
     public Map<DefaultPermission, Boolean> getDefaultPermissions() {
         return defaultPermissions;
     }
@@ -71,7 +85,7 @@ public class AuthenticationBean {
     /**
      * Check is the user belongs to the default admin group.
      *
-     * @return
+     * @return is the user an admin
      */
     public boolean isAdmin() {
         boolean isAdmin = false;

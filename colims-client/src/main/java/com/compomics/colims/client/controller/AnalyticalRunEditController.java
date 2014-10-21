@@ -33,9 +33,12 @@ import org.springframework.stereotype.Component;
 @Component("analyticalRunEditController")
 public class AnalyticalRunEditController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunEditController.class);
 
-    //model   
+    //model
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
     private AnalyticalRun analyticalRunToEdit;
@@ -53,8 +56,9 @@ public class AnalyticalRunEditController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the AnalyticalRunEditDialog
      */
     public AnalyticalRunEditDialog getAnalyticalRunEditDialog() {
         return analyticalRunEditDialog;
@@ -91,7 +95,7 @@ public class AnalyticalRunEditController implements Controllable {
                 //validate analytical run
                 List<String> validationMessages = GuiUtils.validateEntity(analyticalRunToEdit);
 
-                if (validationMessages.isEmpty()) {                    
+                if (validationMessages.isEmpty()) {
                     analyticalRunService.update(analyticalRunToEdit);
                     int index = sampleEditController.getSelectedAnalyticalRunIndex();
 
@@ -135,12 +139,12 @@ public class AnalyticalRunEditController implements Controllable {
             analyticalRunEditDialog.getDateTimePicker().setDate(analyticalRunToEdit.getStartDate());
         }
 
-        //set the selected item in the instrument combobox        
+        //set the selected item in the instrument combobox
         analyticalRunEditDialog.getInstrumentComboBox().setSelectedItem(analyticalRunToEdit.getInstrument());
 
         showView();
     }
-    
+
     /**
      * Listen to an InstrumentChangeEvent.
      *

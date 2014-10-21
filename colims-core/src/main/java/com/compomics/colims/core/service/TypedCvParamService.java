@@ -5,14 +5,15 @@ import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**
+ * This interface provides service methods for the TypedCvParam class.
  *
  * @author Niels Hulstaert
  */
 public interface TypedCvParamService extends GenericService<TypedCvParam, Long> {
 
     /**
-     * Find a CV param by accession and cvParamType. Returns null if nothing
-     * was found.
+     * Find a CV param by accession and cvParamType. Returns null if nothing was
+     * found.
      *
      * @param accession the CV param accession
      * @param cvParamType the CV param property

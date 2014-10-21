@@ -59,15 +59,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * The project overview view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("projectOverviewController")
 public class ProjectOverviewController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ProjectOverviewController.class);
+
     private static final double INTENSITY_LEVEL = 0.75;
-    //model    
+    //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private EventList<Experiment> experiments = new BasicEventList<>();
@@ -114,8 +119,9 @@ public class ProjectOverviewController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the ProjectOverviewPanel
      */
     public ProjectOverviewPanel getProjectOverviewPanel() {
         return projectOverviewPanel;
@@ -247,7 +253,7 @@ public class ProjectOverviewController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Project selectedProject = getSelectedProject();
                     if (selectedProject != null) {
-                        //fill experiments table                        
+                        //fill experiments table
                         GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
                     } else {
                         GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
@@ -262,7 +268,7 @@ public class ProjectOverviewController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Experiment selectedExperiment = getSelectedExperiment();
                     if (selectedExperiment != null) {
-                        //fill samples table                        
+                        //fill samples table
                         GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
                     } else {
                         GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
@@ -277,7 +283,7 @@ public class ProjectOverviewController implements Controllable {
                 if (!lse.getValueIsAdjusting()) {
                     Sample selectedSample = getSelectedSample();
                     if (selectedSample != null) {
-                        //fill runs table                        
+                        //fill runs table
                         GlazedLists.replaceAll(analyticalRuns, selectedSample.getAnalyticalRuns(), false);
                     } else {
                         GlazedLists.replaceAll(analyticalRuns, new ArrayList<AnalyticalRun>(), false);
@@ -297,7 +303,7 @@ public class ProjectOverviewController implements Controllable {
                         setPsmTableCellRenderers();
 
                         analyticalRunService.fetchSpectra(selectedAnalyticalRun);
-                        //fill psm table                        
+                        //fill psm table
                         GlazedLists.replaceAll(spectra, selectedAnalyticalRun.getSpectrums(), false);
 
                         colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -431,7 +437,7 @@ public class ProjectOverviewController implements Controllable {
 
                     //only do this for spectra that have a psm
                     if (!selectedSpectrum.getPeptides().isEmpty()) {
-                        SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match                   
+                        SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match
                         psmMapper.map(selectedSpectrum, spectrumMatch);
 
                         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
@@ -501,7 +507,7 @@ public class ProjectOverviewController implements Controllable {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(massErrorPlot);
                         //}
 
-                        //else only add the spectrum panel without annotations    
+                        //else only add the spectrum panel without annotations
                     } else {
                         // add the spectrum panel to the frame
                         projectOverviewPanel.getSpectrumJPanel().removeAll();

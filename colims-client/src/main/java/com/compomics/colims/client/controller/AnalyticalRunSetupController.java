@@ -49,7 +49,11 @@ import org.springframework.stereotype.Component;
 @Component("analyticalRunSetupController")
 public class AnalyticalRunSetupController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunSetupController.class);
+
     private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
@@ -87,7 +91,7 @@ public class AnalyticalRunSetupController implements Controllable {
     private QueueManager queueManager;
 
     /**
-     * Get view of this controller.
+     * Get the view of this controller.
      *
      * @return the AnalyticalRunSetupDialog
      */

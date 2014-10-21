@@ -7,6 +7,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.User;
 
 /**
+ * This interface provides service methods for the User class.
  *
  * @author Niels Hulstaert
  */

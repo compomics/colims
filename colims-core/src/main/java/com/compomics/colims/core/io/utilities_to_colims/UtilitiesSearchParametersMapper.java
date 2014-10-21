@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps the Utilities search parameters to the Colims search
+ * parameters.
  *
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
@@ -19,16 +21,22 @@ import org.springframework.stereotype.Component;
 @Component("utilitiesSearchParametersMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.SearchParameters, SearchParameters> {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
 
+    /**
+     * The TypedCvParam class service.
+     */
     @Autowired
     private TypedCvParamService typedCvParamService;
 
     /**
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
-     * @param utilitiesSearchParameters
-     * @param searchParameters
+     * @param utilitiesSearchParameters the Utilities search parameters
+     * @param searchParameters the Colims search parameters
      */
     @Override
     public void map(final com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {

@@ -31,13 +31,18 @@ import org.springframework.jms.UncategorizedJmsException;
 import org.springframework.stereotype.Component;
 
 /**
+ * The task management view controller.
  *
  * @author Niels Hulstaert
  */
 @Component("taskManagementController")
 public class TaskManagementController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(TaskManagementController.class);
+
     private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String STARTED_MESSAGE = "starting storage of task ";
