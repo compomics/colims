@@ -34,6 +34,9 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 @Component("peptideShakerImporter")
 public class PeptideShakerImporter implements DataImporter {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
 
     /**
@@ -46,13 +49,13 @@ public class PeptideShakerImporter implements DataImporter {
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
     /**
-     * The PeptideShaker
+     * Maps the PeptideShaker search input and results to Colims classes.
      */
     @Autowired
     private PSInputAndResultsMapper inputAndResultsMapper;
 
     @Override
-    public void initImport(DataImport dataImport) {
+    public void initImport(final DataImport dataImport) {
         if (dataImport instanceof UnpackedPeptideShakerImport) {
             unpackedPeptideShakerImport = (UnpackedPeptideShakerImport) dataImport;
         } else {

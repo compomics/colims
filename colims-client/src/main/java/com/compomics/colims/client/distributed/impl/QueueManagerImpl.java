@@ -38,19 +38,47 @@ public class QueueManagerImpl implements QueueManager {
      */
     private static final Logger LOGGER = Logger.getLogger(QueueManagerImpl.class);
 
+    /**
+     * The broker name.
+     */
     @Value("${distributed.broker.name}")
     private String brokerName;
+    /**
+     * The broker URL.
+     */
     @Value("${distributed.connectionfactory.broker.url}")
     private String brokerUrl;
+    /**
+     * The broker JMX URL.
+     */
     @Value("${distributed.jmx.service.url}")
     private String brokerJmxUrl;
+    /**
+     * The name of the error queue.
+     */
     @Value("${distributed.queue.error}")
     private String errorQueueName;
+    /**
+     * The DbTaskError to DbTask convertor.
+     */
     private final DbTaskErrorMessageConvertor storageErrorMessageConvertor = new DbTaskErrorMessageConvertor();
+    /**
+     * The queue object name with placeholders for the broker and destination
+     * names.
+     */
     private final String queueObjectName = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
+    /**
+     * the broker object name with a placeholder for the broker name.
+     */
     private final String brokerObjectName = "org.apache.activemq:type=Broker,brokerName=%s";
+    /**
+     * The JMS template instance.
+     */
     @Autowired
     private JmsTemplate queueManagerTemplate;
+    /**
+     * The MBean connector.
+     */
     @Autowired
     private MBeanServerConnection clientConnector;
 
@@ -59,7 +87,7 @@ public class QueueManagerImpl implements QueueManager {
         List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override
-            public List<T> doInJms(Session session, javax.jms.QueueBrowser browser) throws JMSException {
+            public List<T> doInJms(final Session session, final javax.jms.QueueBrowser browser) throws JMSException {
                 Enumeration enumeration = browser.getEnumeration();
                 List<T> queueMessages = new ArrayList<>();
 
@@ -79,21 +107,21 @@ public class QueueManagerImpl implements QueueManager {
     }
 
     @Override
-    public void deleteMessage(String queueName, String messageId) throws MalformedObjectNameException, Exception {
+    public void deleteMessage(final String queueName, final String messageId) throws Exception {
         ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.removeMessage(messageId);
     }
 
     @Override
-    public void purgeMessages(String queueName) throws MalformedObjectNameException, Exception {
+    public void purgeMessages(final String queueName) throws Exception {
         ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
         QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.purge();
     }
 
     @Override
-    public void redirectStorageError(String queueName, DbTaskError dbTaskError) throws JMSException, MalformedObjectNameException, Exception {
+    public void redirectStorageError(final String queueName, final DbTaskError dbTaskError) throws Exception {
         //set appropriate message convertor
         if (!(queueManagerTemplate.getMessageConverter() instanceof DbTaskErrorMessageConvertor)) {
             queueManagerTemplate.setMessageConverter(storageErrorMessageConvertor);

@@ -4,37 +4,39 @@ import com.compomics.colims.core.io.DataImport;
 import java.util.Objects;
 
 /**
+ * This class holds the information necessary for the distributed module for
+ * storing data.
  *
  * @author Niels Hulstaert
  */
 public class PersistDbTask extends DbTask {
 
     private static final long serialVersionUID = -3660025176317700432L;
-    
+
     /**
-     * The persist metadata
+     * The persist meta data.
      */
     private PersistMetadata persistMetadata;
     /**
-     * The resources necessary for storing
+     * The resources necessary for storing.
      */
     private DataImport dataImport;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public PersistDbTask() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param dbEntityClass
-     * @param enitityId
-     * @param userId
-     * @param persistMetadata
-     * @param dataImport
+     * @param dbEntityClass the database entity class
+     * @param enitityId the ID of the entity to persist
+     * @param userId the ID of the user
+     * @param persistMetadata the persist
+     * @param dataImport the DataImport
      */
     public PersistDbTask(Class dbEntityClass, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
         super(dbEntityClass, enitityId, userId);
@@ -82,6 +84,6 @@ public class PersistDbTask extends DbTask {
             return false;
         }
         return true;
-    }    
+    }
 
 }

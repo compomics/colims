@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ErrorHandler;
 
 /**
+ * This class handles the errors thrown in the dbTaskConsumer JMS listener.
  *
  * @author Niels Hulstaert
  */

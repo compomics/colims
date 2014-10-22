@@ -1,15 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.core.service;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
+ * This interface provides generic methods for finding, saving, updating and
+ * deleting entities in the db.
  *
  * @author Niels Hulstaert
+ * @param <T> the entity class
+ * @param <ID> the ID class
  */
 public interface GenericService<T, ID extends Serializable> {
 
@@ -31,14 +31,14 @@ public interface GenericService<T, ID extends Serializable> {
     /**
      * Save the entity.
      *
-     * @param entity
+     * @param entity the entity to save
      */
     void save(final T entity);
 
     /**
      * Save the entity.
      *
-     * @param entity
+     * @param entity the entity to update
      */
     void update(final T entity);
 
@@ -46,17 +46,17 @@ public interface GenericService<T, ID extends Serializable> {
      * Save or update the entity. If the entity already exists, update it else
      * save it.
      *
-     * @param entity
+     * @param entity the entity to save or update
      */
     void saveOrUpdate(final T entity);
 
     /**
      * Delete the entity.
      *
-     * @param entity
+     * @param entity the entity to delete
      */
     void delete(final T entity);
-    
+
     /**
      * Count all entities.
      *

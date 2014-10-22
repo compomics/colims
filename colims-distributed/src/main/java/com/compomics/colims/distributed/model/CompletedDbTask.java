@@ -3,32 +3,43 @@ package com.compomics.colims.distributed.model;
 import java.util.Objects;
 
 /**
+ * An instance of this class is sent after successfully completing a DbTask.
  *
  * @author Niels Hulstaert
  */
 public class CompletedDbTask extends QueueMessage {
 
     private static final long serialVersionUID = -2308086951810097990L;
-    
+
     /**
-     * The storage start timestamp
+     * The storage start timestamp.
      */
     protected Long startedTimestamp;
     /**
-     * The storage end timestamp
+     * The storage end timestamp.
      */
     protected Long endedTimestamp;
     /**
-     * The db task
+     * The db task.
      */
     protected DbTask dbTask;
 
+    /**
+     * Constructor.
+     */
     public CompletedDbTask() {
         startedTimestamp = System.currentTimeMillis();
         endedTimestamp = System.currentTimeMillis();
     }
 
-    public CompletedDbTask(Long startedTimestamp, Long endedTimestamp, DbTask dbTask) {
+    /**
+     * Constructor.
+     *
+     * @param startedTimestamp the start timestamp
+     * @param endedTimestamp the end timestamp
+     * @param dbTask the DbTask instance
+     */
+    public CompletedDbTask(final Long startedTimestamp, final Long endedTimestamp, final DbTask dbTask) {
         this.startedTimestamp = startedTimestamp;
         this.endedTimestamp = endedTimestamp;
         this.dbTask = dbTask;
@@ -86,6 +97,6 @@ public class CompletedDbTask extends QueueMessage {
             return false;
         }
         return true;
-    }    
-        
+    }
+
 }

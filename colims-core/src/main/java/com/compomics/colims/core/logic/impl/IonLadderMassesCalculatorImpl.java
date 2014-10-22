@@ -15,6 +15,9 @@ import com.compomics.colims.model.UnknownAAException;
  */
 public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(IonLadderMassesCalculatorImpl.class);
 
     @Override
@@ -50,7 +53,7 @@ public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator 
         //Y ion series N <- C
         //y1 = subSequence(length-1, length)
         //y2 = subSequence(length-2, length)
-        //...     
+        //...
         AminoAcidSequence aaSeq = new AminoAcidSequence(peptide.getSequence());
         int numberOfFragmentIons = peptide.getLength() - 1;
         double[] masses = new double[numberOfFragmentIons];
@@ -60,7 +63,7 @@ public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator 
                 AminoAcidSequence fragSeq = aaSeq.subSequence(numberOfFragmentIons - i, numberOfFragmentIons + 1);
                 //calculate the adjustment of the mass due to the charge state
                 double adjust = (double) charge * Constants.MASS_H;
-                //add up fragment mass (uncharged + charge adjustment + termini adjustment) and divide by charge                
+                //add up fragment mass (uncharged + charge adjustment + termini adjustment) and divide by charge
                 double chargeAdjustedMass = (fragSeq.getSequenceMass() + adjust + Constants.MASS_H2O) / (double) charge;
                 masses[i] = chargeAdjustedMass;
             } catch (AASequenceMassUnknownException e) {

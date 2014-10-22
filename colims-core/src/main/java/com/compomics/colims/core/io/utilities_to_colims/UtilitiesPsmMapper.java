@@ -21,32 +21,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps the Utilities PSM input to a Colims spectrum entity and
+ * related classes (Peptide, Protein, ...).
  *
  * @author Niels Hulstaert
  */
 @Component("utilitiesPsmMapper")
 public class UtilitiesPsmMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPsmMapper.class);
+    /**
+     * The Compomics Utilities to Colims peptide mapper.
+     */
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
+    /**
+     * The Compomics Utilities to Colims protein mapper.
+     */
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
     /**
+     * Map the Utilities psm input to a Colims spectrum and related classes.
      *
-     *
-     * @param ms2Identification
-     * @param identificationFile
-     * @param spectrumMatch
-     * @param targetSpectrum
-     * @throws SQLException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
-     * @throws MappingException
+     * @param ms2Identification the Ms2Identification
+     * @param identificationFile the identification file
+     * @param spectrumMatch the SpectrumMatch
+     * @param targetSpectrum the Colims spectrum entity
+     * @throws SQLException thrown in case of an SQL related problem
+     * @throws IOException thrown in case of an IO related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
+     * @throws InterruptedException thrown in case of an interrupted thread
+     * problem
+     * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(Ms2Identification ms2Identification, IdentificationFile identificationFile, SpectrumMatch spectrumMatch, Spectrum targetSpectrum) throws SQLException, IOException, ClassNotFoundException, InterruptedException, MappingException {
+    public void map(final Ms2Identification ms2Identification, final IdentificationFile identificationFile, final SpectrumMatch spectrumMatch, final Spectrum targetSpectrum) throws SQLException, IOException, ClassNotFoundException, InterruptedException, MappingException {
         if (spectrumMatch.getBestPeptideAssumption() != null) {
             //get best assumption
             PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
@@ -55,8 +68,8 @@ public class UtilitiesPsmMapper {
 
             PSParameter psmProbabilities = new PSParameter();
             PSParameter peptideProbabilities = new PSParameter();
-//                PSParameter proteinProbabilities = new PSParameter();                                
-            //get psm and peptide probabilities  
+//                PSParameter proteinProbabilities = new PSParameter();
+            //get psm and peptide probabilities
             psmProbabilities = (PSParameter) ms2Identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
             peptideProbabilities = (PSParameter) ms2Identification.getPeptideMatchParameter(sourcePeptide.getKey(), peptideProbabilities);
 
@@ -74,7 +87,7 @@ public class UtilitiesPsmMapper {
             targetPeptide.setSpectrum(targetSpectrum);
 
             List<ProteinMatch> proteinMatches = new ArrayList<>();
-            //iterate over protein keys        
+            //iterate over protein keys
             //get parent proteins without remapping them
             //@todo this is the way to go for maxquant, but what about peptideshaker?
             for (String proteinKey : sourcePeptide.getParentProteinsNoRemapping()) {

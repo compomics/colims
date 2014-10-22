@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Protocol;
 
 /**
+ * This interface provides service methods for the Protocol class.
  *
  * @author Niels Hulstaert
  */

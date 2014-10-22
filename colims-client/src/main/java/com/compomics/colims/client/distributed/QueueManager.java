@@ -18,8 +18,8 @@ public interface QueueManager {
      *
      * @param <T> a class the extends QueueMessage
      * @param queueName the queue name
-     * @return
-     * @throws JMSException
+     * @return the list of messages on the queue
+     * @throws JMSException thrown in case of a JMS related exception
      */
     <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException;
 
@@ -28,27 +28,29 @@ public interface QueueManager {
      *
      * @param queueName the queue name
      * @param storageError the StorageError
-     * @throws JMSException
-     * @throws javax.management.MalformedObjectNameException
+     * @throws Exception exception parent class, ugly way to catch all
+     * exceptions types
      */
-    void redirectStorageError(String queueName, DbTaskError storageError) throws JMSException, MalformedObjectNameException, Exception;
+    void redirectStorageError(String queueName, DbTaskError storageError) throws Exception;
 
     /**
      * Delete the given message from the given queue.
      *
      * @param queueName the queue name
      * @param messageId the message ID
-     * @throws javax.management.MalformedObjectNameException
+     * @throws Exception exception parent class, ugly way to catch all
+     * exceptions types
      */
-    void deleteMessage(String queueName, String messageId) throws MalformedObjectNameException, Exception;
+    void deleteMessage(String queueName, String messageId) throws Exception;
 
     /**
-     * Remove all messages from the given queue
+     * Remove all messages from the given queue.
      *
      * @param queueName the queue name
-     * @throws javax.management.MalformedObjectNameException
+     * @throws Exception exception parent class, ugly way to catch all
+     * exceptions types
      */
-    void purgeMessages(String queueName) throws MalformedObjectNameException, Exception;
+    void purgeMessages(String queueName) throws Exception;
 
     /**
      * Test the connection to the queues.
@@ -60,21 +62,21 @@ public interface QueueManager {
     /**
      * Get the broker name.
      *
-     * @return
+     * @return the broker name
      */
     String getBrokerName();
 
     /**
      * Get the broker URL.
      *
-     * @return
+     * @return the broker URL
      */
     String getBrokerUrl();
 
     /**
      * Get the broker JMX URL.
      *
-     * @return
+     * @return the broker JMX URL
      */
     String getBrokerJmxUrl();
 

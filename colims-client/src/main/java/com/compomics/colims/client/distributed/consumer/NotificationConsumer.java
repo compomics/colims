@@ -24,16 +24,19 @@ public class NotificationConsumer implements MessageListener {
      */
     private static final Logger LOGGER = Logger.getLogger(NotificationConsumer.class);
 
+    /**
+     * The guava EventBus instance.
+     */
     @Autowired
     private EventBus eventBus;
 
     /**
      * Implementation of <code>MessageListener</code>.
      *
-     * @param message
+     * @param message the incoming JMS message
      */
     @Override
-    public void onMessage(Message message) {
+    public void onMessage(final Message message) {
         try {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
             Notification notification = (Notification) objectMessage.getObject();

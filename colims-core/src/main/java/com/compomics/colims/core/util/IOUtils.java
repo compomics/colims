@@ -15,13 +15,14 @@ import org.apache.commons.io.FileUtils;
 import java.util.zip.GZIPOutputStream;
 
 /**
+ * This utility class provides input and output methods.
  *
  * @author Niels Hulstaert
  */
-public class IOUtils {
+public final class IOUtils {
 
     /**
-     * private constructor to prevent initialization
+     * private constructor to prevent initialization.
      */
     private IOUtils() {
     }
@@ -31,9 +32,9 @@ public class IOUtils {
      *
      * @param file the file
      * @return the byte array
-     * @throws java.io.IOException
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static byte[] read(File file) throws IOException {
+    public static byte[] read(final File file) throws IOException {
         return FileUtils.readFileToByteArray(file);
     }
 
@@ -42,9 +43,9 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @param file the file to be written to
-     * @throws java.io.IOException
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static void write(byte[] bytes, File file) throws IOException {
+    public static void write(final byte[] bytes, final File file) throws IOException {
         FileUtils.writeByteArrayToFile(file, bytes);
     }
 
@@ -52,10 +53,10 @@ public class IOUtils {
      * (G)zip the byte array.
      *
      * @param bytes the byte array
-     * @return
-     * @throws java.io.IOException
+     * @return the zipped byte array
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static byte[] zip(byte[] bytes) throws IOException {
+    public static byte[] zip(final byte[] bytes) throws IOException {
         byte[] zippedBytes;
 
         //gzip the byte array
@@ -77,9 +78,9 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @return the unzipped byte array
-     * @throws java.io.IOException
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static byte[] unzip(byte[] bytes) throws IOException {
+    public static byte[] unzip(final byte[] bytes) throws IOException {
         byte[] unzippedBytes;
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -100,9 +101,9 @@ public class IOUtils {
      *
      * @param file the file
      * @return the byte array
-     * @throws java.io.IOException
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static byte[] readAndZip(File file) throws IOException {
+    public static byte[] readAndZip(final File file) throws IOException {
         byte[] zippedBytes;
 
         //get file as byte array
@@ -118,9 +119,9 @@ public class IOUtils {
      *
      * @param bytes the byte array
      * @param file the file to be written to
-     * @throws java.io.IOException
+     * @throws java.io.IOException exception thrown in case of an IO problem
      */
-    public static void unzipAndWrite(byte[] bytes, File file) throws IOException {
+    public static void unzipAndWrite(final byte[] bytes, final File file) throws IOException {
         //first unzip byte array
         byte[] unzippedBytes = unzip(bytes);
 

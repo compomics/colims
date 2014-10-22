@@ -5,40 +5,25 @@ import com.compomics.colims.distributed.model.DbTaskError;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
-import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.MessageConverter;
 
 /**
+ * This class extracts the DbTask instance from the DbTaskError.
  *
  * @author Niels Hulstaert
  */
 public class DbTaskErrorMessageConvertor implements MessageConverter {
 
-    /**
-     *
-     * @param object
-     * @param session
-     * @return
-     * @throws JMSException
-     * @throws MessageConversionException
-     */
     @Override
-    public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
+    public Message toMessage(final Object object, final Session session) throws JMSException {
         DbTask dbTask = ((DbTaskError) object).getDbTask();
 
         return session.createObjectMessage(dbTask);
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     * @throws JMSException
-     * @throws MessageConversionException
-     */
     @Override
-    public Object fromMessage(Message message) throws JMSException, MessageConversionException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object fromMessage(final Message message) throws JMSException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -10,6 +10,7 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 
 /**
+ * This interface provides service methods for the Project class.
  *
  * @author Niels Hulstaert
  */
@@ -22,14 +23,14 @@ public interface ProjectService extends GenericService<Project, Long> {
      * @return the found project
      */
     Project findByTitle(String title);
-    
+
     /**
      * Find all projects and load the according experiments.
-     * 
+     *
      * @return the found projects
      */
     List<Project> findAllWithEagerFetching();
-    
+
     /**
      * Get the user that owns the most projects.
      *

@@ -7,41 +7,42 @@ import com.compomics.util.experiment.MsExperiment;
 import java.io.File;
 
 /**
+ * The class represents the unarchived PeptideShaker .cps file.
  *
  * @author Niels Hulstaert
  */
 public class UnpackedPeptideShakerImport extends DataImport {
 
     private static final long serialVersionUID = -1854524744176973963L;
-    
+
     /**
-     * The PeptideShaker .cps archive
+     * The PeptideShaker .cps archive.
      */
     private File peptideShakerCpsArchive;
     /**
-     * The root directory of the unpacked PeptideShaker .cps archive
+     * The root directory of the unpacked PeptideShaker .cps archive.
      */
     private File unpackedDirectory;
     /**
-     * The directory of the db contained in the PeptideShaker .cps archive
+     * The directory of the db contained in the PeptideShaker .cps archive.
      */
     private File dbDirectory;
     /**
-     * The list of mgf files
+     * The list of MGF files.
      */
     private List<File> mgfFiles;
     /**
-     * The Utilities MsExperiment
+     * The Compomics Utilities MsExperiment instance.
      */
     private MsExperiment msExperiment;
 
     /**
      * Constructor.
      *
-     * @param peptideShakerCpsArchive
-     * @param unpackedDirectory
-     * @param dbDirectory
-     * @param msExperiment
+     * @param peptideShakerCpsArchive the PeptideShaker .cps file
+     * @param unpackedDirectory the directory where the .cps file is unzipped
+     * @param dbDirectory the database directory
+     * @param msExperiment the MsExperiment instance
      */
     public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final MsExperiment msExperiment) {
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
@@ -111,5 +112,5 @@ public class UnpackedPeptideShakerImport extends DataImport {
 
         return foundMgfFile;
     }
-    
+
 }

@@ -3,26 +3,30 @@ package com.compomics.colims.distributed.model;
 import java.util.Objects;
 
 /**
+ * This abstract class holds all common fields for the different DbTask
+ * subclasses.
  *
  * @author Niels Hulstaert
  */
 public abstract class DbTask extends QueueMessage {
 
+    private static final long serialVersionUID = -3571758804390850866L;
+
     /**
-     * The datatase entity class of the task
+     * The datatase entity class of the task.
      */
     protected Class dbEntityClass;
     /**
      * The ID of the database entity. In case of a PersistDbTask, this is the ID
      * of the parent entity.
      */
-    private Long enitityId;
+    protected Long enitityId;
     /**
-     * The submission timestamp of the database task
+     * The submission timestamp of the database task.
      */
     protected Long submissionTimestamp;
     /**
-     * The ID of the user that submitted the task
+     * The ID of the user that submitted the task.
      */
     protected Long userId;
 

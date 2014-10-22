@@ -12,27 +12,27 @@ import java.util.List;
 public class PeptideShakerImport extends DataImport {
 
     private static final long serialVersionUID = 6181185980673938925L;
-    
+
     /**
-     * The PeptideShaker .cps file
+     * The PeptideShaker .cps file.
      */
     private File peptideShakerCpsArchive;
     /**
-     * The list of mgf files
+     * The list of mgf files.
      */
     private List<File> mgfFiles;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param peptideShakerCpsArchive
-     * @param fastaDb
-     * @param mgfResources
+     * @param peptideShakerCpsArchive the PeptideShaker .cps file
+     * @param fastaDb the FastabDb entity
+     * @param mgfFiles the list of MGF files
      */
-    public PeptideShakerImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfResources) {
+    public PeptideShakerImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfFiles) {
         super(fastaDb);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
-        this.mgfFiles = mgfResources;
+        this.mgfFiles = mgfFiles;
     }
 
     public File getPeptideShakerCpsArchive() {
@@ -49,6 +49,6 @@ public class PeptideShakerImport extends DataImport {
 
     public void setMgfFiles(List<File> mgfFiles) {
         this.mgfFiles = mgfFiles;
-    }    
-    
+    }
+
 }

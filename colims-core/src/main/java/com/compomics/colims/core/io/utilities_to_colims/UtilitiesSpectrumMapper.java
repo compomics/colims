@@ -18,23 +18,27 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps a Compomics Utilities spectrum to a Colims spectrum.
  *
  * @author Niels Hulstaert
  */
 @Component("utilitiesSpectrumMapper")
 public class UtilitiesSpectrumMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSpectrumMapper.class);
 
     /**
-     * Map the utilities spectrum onto the colims spectrum.
+     * Map the utilities spectrum onto the Colims spectrum.
      *
-     * @param sourceSpectrum the utilities spectrum
+     * @param sourceSpectrum the Utilities spectrum
      * @param fragmentationType the fragmentation type of the spectrum
-     * @param targetSpectrum the colims spectrum
-     * @throws MappingException
+     * @param targetSpectrum the Colims spectrum
+     * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(MSnSpectrum sourceSpectrum, FragmentationType fragmentationType, Spectrum targetSpectrum) throws MappingException {
+    public void map(final MSnSpectrum sourceSpectrum, final FragmentationType fragmentationType, final Spectrum targetSpectrum) throws MappingException {
         if (sourceSpectrum == null || targetSpectrum == null) {
             throw new IllegalArgumentException("The source and/or target of the mapping are null");
         }
@@ -44,7 +48,7 @@ public class UtilitiesSpectrumMapper {
         //get precursor from source
         Precursor precursor = sourceSpectrum.getPrecursor();
 
-        //set target spectrum properties        
+        //set target spectrum properties
         //@todo is spectrum key the correct accession property?
         targetSpectrum.setAccession(sourceSpectrum.getSpectrumKey());
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());

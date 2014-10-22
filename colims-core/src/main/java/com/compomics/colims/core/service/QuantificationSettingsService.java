@@ -10,6 +10,7 @@ import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 
 /**
+ * This interface provides service methods for the QuantificationSettings class.
  *
  * @author Niels Hulstaert
  */

@@ -9,13 +9,19 @@ import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.commons.codec.digest.DigestUtils;
 
 /**
+ * This utility class provides methods for digesting files and streams.
  *
  * @author Davy
  */
-public class SecurityUtils {
+public final class SecurityUtils {
+
+    /**
+     * Private no-arg constructor.
+     */
+    private SecurityUtils() {
+    }
 
     public static byte[] md5DigestFasta(File fastaFile) throws NoSuchAlgorithmException, IOException {
         MessageDigest digest = MessageDigest.getInstance("MD5");

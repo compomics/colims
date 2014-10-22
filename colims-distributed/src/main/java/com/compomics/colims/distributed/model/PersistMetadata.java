@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
+ * This class represents the persist meta data of a PersistDbTask.
  *
  * @author Niels Hulstaert
  */
@@ -15,19 +16,19 @@ public class PersistMetadata implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The persist type of the task
+     * The persist type of the task.
      */
     private PersistType persistType;
     /**
-     * The storage task description
+     * The storage task description.
      */
     private String description;
     /**
-     * The start date of the run(s)
+     * The start date of the run(s).
      */
     private Date startDate;
     /**
-     * The instrument the run is executed on
+     * The instrument the run is executed on.
      */
     private Instrument instrument;
 
@@ -40,12 +41,12 @@ public class PersistMetadata implements Serializable {
     /**
      * Constructor.
      *
-     * @param persistType
-     * @param description
-     * @param startDate
-     * @param instrument
+     * @param persistType the PersistType
+     * @param description the description string
+     * @param startDate the start date
+     * @param instrument the instrument
      */
-    public PersistMetadata(PersistType persistType, String description, Date startDate, Instrument instrument) {
+    public PersistMetadata(final PersistType persistType, final String description, final Date startDate, final Instrument instrument) {
         this.persistType = persistType;
         this.description = description;
         this.startDate = startDate != null ? new Date(startDate.getTime()) : null;

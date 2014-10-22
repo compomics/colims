@@ -17,15 +17,8 @@ import com.compomics.util.experiment.identification.identifications.Ms2Identific
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
-import com.compomics.util.preferences.GenePreferences;
-import com.compomics.util.preferences.IdFilter;
-import com.compomics.util.preferences.PTMScoringPreferences;
-import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.peptideshaker.myparameters.PSParameter;
-import eu.isas.peptideshaker.myparameters.PSSettings;
-import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,23 +29,34 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
+ * This class maps the search input and identification results of a
+ * PeptideShaker project to a list of analytical runs.
  *
  * @author Niels Hulstaert
  */
 @Component("psInputAndResultMapper")
 public class PSInputAndResultsMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PSInputAndResultsMapper.class);
+    /**
+     * The Compomics Utilities to Colims spectrum mapper.
+     */
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
+    /**
+     * The Compomics Utilities to Colims PSM mapper.
+     */
     @Autowired
     private UtilitiesPsmMapper utilitiesPsmMapper;
     /**
-     * Compomics utilities spectrum factory.
+     * Compomics Utilities spectrum factory.
      */
     private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
-     * Compomics utilities sequence factory.
+     * Compomics Utilities sequence factory.
      */
     private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
@@ -61,19 +65,22 @@ public class PSInputAndResultsMapper {
     private ObjectsCache objectsCache;
 
     /**
-     * Map the identification results onto a list of analytical runs.
+     * Map the identification results to a list of analytical runs.
      *
-     * @param searchAndValidationSettings
-     * @param unpackedPsDataImport
-     * @return
-     * @throws java.io.IOException
-     * @throws java.sql.SQLException
-     * @throws java.lang.ClassNotFoundException
-     * @throws java.lang.InterruptedException
-     * @throws MappingException
-     * @throws uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException
+     * @param searchAndValidationSettings the SearchAndValidationSettings
+     * @param unpackedPsDataImport the UnpackedPeptideShakerImport
+     * @return the list of mapped analytical runs
+     * @throws IOException thrown in case of an IO related problem
+     * @throws SQLException thrown in case of an SQL related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
+     * @throws InterruptedException thrown in case of an interrupted thread
+     * problem
+     * @throws MappingException thrown in case of a mapping related problem
+     * @throws MzMLUnmarshallerException thrown in case of a MzMl parsing
+     * problem
      */
-    public List<AnalyticalRun> map(SearchAndValidationSettings searchAndValidationSettings, UnpackedPeptideShakerImport unpackedPsDataImport) throws IOException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, MappingException {
+    public List<AnalyticalRun> map(final SearchAndValidationSettings searchAndValidationSettings, final UnpackedPeptideShakerImport unpackedPsDataImport) throws IOException, SQLException, ClassNotFoundException, InterruptedException, MzMLUnmarshallerException, MappingException {
         //the analytical runs onto the utilities replicates will be mapped
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
@@ -81,10 +88,10 @@ public class PSInputAndResultsMapper {
 
         //get the MsExperiment object
         MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
-        
+
         IdentificationFile identificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
 
-        //load fasta resource in sequence factory        
+        //load fasta resource in sequence factory
         loadFastaFile(unpackedPsDataImport.getFastaDb().getFilePath());
 
         //iterate over samples
@@ -100,18 +107,18 @@ public class PSInputAndResultsMapper {
                 analyticalRun.setName(replicateNumber.toString());
 
                 //get (Ms2)Identification
-                //@todo find out what the identification number is                 
+                //@todo find out what the identification number is
                 Ms2Identification ms2Identification = (Ms2Identification) proteomicAnalysis.getIdentification(IdentificationMethod.MS2_IDENTIFICATION);
 
                 if (ms2Identification.isDB()) {
-                    //connect to the db                            
+                    //connect to the db
                     ms2Identification.establishConnection(unpackedPsDataImport.getDbDirectory().getAbsolutePath(), false, objectsCache);
                 } else {
                     throw new IllegalStateException("The Ms2Identification should have a db backend.");
                 }
 
                 //@todo is this necessary?
-                //load spectrum, peptide and protein matches                   
+                //load spectrum, peptide and protein matches
                 loadSpectrumMatches(ms2Identification, unpackedPsDataImport);
                 loadPeptideMatches(ms2Identification);
                 loadProteinMatches(ms2Identification);
@@ -165,8 +172,8 @@ public class PSInputAndResultsMapper {
      * Clear the mapAnalyticalRunsping resources: reset the SpectrumFactory,
      * SequenceFactory, ...
      *
-     * @throws java.io.IOException
-     * @throws java.sql.SQLException
+     * @throws java.io.IOException thrown in case of an IO related problem
+     * @throws java.sql.SQLException thrown in case of an SQL related problem
      */
     public void clear() throws IOException, SQLException {
         spectrumFactory.clearFactory();
@@ -180,8 +187,11 @@ public class PSInputAndResultsMapper {
      * Load the fasta file in the SequenceFactory.
      *
      * @param fastaFilePath the fasta file path
+     * @throws IOException thrown in case of an IO related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
      */
-    private void loadFastaFile(String fastaFilePath) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadFastaFile(final String fastaFilePath) throws IOException, ClassNotFoundException {
         LOGGER.debug("Start loading FASTA file.");
         sequenceFactory.loadFastaFile(new File(fastaFilePath), null);
         LOGGER.debug("Finish loading FASTA file.");
@@ -191,14 +201,15 @@ public class PSInputAndResultsMapper {
      * Load the spectrum matches from the Ms2Identification.
      *
      * @param ms2Identification the Ms2Identification
-     * @param source
-     * @param psmProbabilities
-     * @throws SQLException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
+     * @param source the unarchived PeptideShaker project
+     * @throws SQLException thrown in case of an SQL related problem
+     * @throws IOException thrown in case of an IO related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
+     * @throws InterruptedException thrown in case of an interrupted thread
+     * problem
      */
-    private void loadSpectrumMatches(Ms2Identification ms2Identification, UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadSpectrumMatches(final Ms2Identification ms2Identification, final UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
             ms2Identification.loadSpectrumMatches(spectrumFileName, null);
@@ -210,11 +221,11 @@ public class PSInputAndResultsMapper {
      * Load spectra from a given mfg file in the Utilities SpectrumFactory.
      *
      * @param mgfFile the mgf file
-     * @throws SQLException
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException thrown in case of an SQL related problem
+     * @throws ClassNotFoundException thrown in case of an class not found
+     * problem
      */
-    private void loadSpectraFromMgfFile(File mgfFile) throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void loadSpectraFromMgfFile(final File mgfFile) throws IOException, ClassNotFoundException {
         LOGGER.debug("Start importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
         spectrumFactory.addSpectra(mgfFile, null);
         LOGGER.debug("Finish importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
@@ -224,12 +235,14 @@ public class PSInputAndResultsMapper {
      * Load the peptide matches from the Ms2Identification.
      *
      * @param ms2Identification the Ms2Identification
-     * @throws SQLException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
+     * @throws SQLException thrown in case of an IO related problem
+     * @throws IOException thrown in case of an SQL related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
+     * @throws InterruptedException thrown in case of an interrupted thread
+     * problem
      */
-    private void loadPeptideMatches(Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadPeptideMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadPeptideMatches(null);
         ms2Identification.loadPeptideMatchParameters(new PSParameter(), null);
     }
@@ -238,12 +251,14 @@ public class PSInputAndResultsMapper {
      * Load the protein matches from the Ms2Identification.
      *
      * @param ms2Identification the Ms2Identification
-     * @throws SQLException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
+     * @throws SQLException thrown in case of an IO related problem
+     * @throws IOException thrown in case of an SQL related problem
+     * @throws ClassNotFoundException thrown in case of a class not found
+     * problem
+     * @throws InterruptedException thrown in case of an interrupted thread
+     * problem
      */
-    private void loadProteinMatches(Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    private void loadProteinMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         ms2Identification.loadProteinMatches(null);
         ms2Identification.loadProteinMatchParameters(new PSParameter(), null);
     }
@@ -284,5 +299,4 @@ public class PSInputAndResultsMapper {
 //
 //        return peptideShakerSettings;
 //    }
-
 }

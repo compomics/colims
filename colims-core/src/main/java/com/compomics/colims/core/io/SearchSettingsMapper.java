@@ -26,10 +26,13 @@ import org.springframework.stereotype.Component;
 public class SearchSettingsMapper {
 
     /**
-     *
+     * The Utilities to Search parameters mapper.
      */
     @Autowired
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
+    /**
+     * 
+     */
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
 

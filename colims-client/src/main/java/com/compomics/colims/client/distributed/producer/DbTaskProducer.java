@@ -7,12 +7,12 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class sends DbTask instances to the dbtask queue.
  *
  * @author Niels Hulstaert
  */
@@ -24,6 +24,9 @@ public class DbTaskProducer {
      */
     private static final Logger LOGGER = Logger.getLogger(DbTaskProducer.class);
 
+    /**
+     * The JMS template instance.
+     */
     @Autowired
     private JmsTemplate dbTaskProducerTemplate;
 
@@ -31,13 +34,12 @@ public class DbTaskProducer {
      * Send the serialized DbTask to the db task queue.
      *
      * @param dbTask the DbTask
-     * @throws JmsException
      */
-    public void sendDbTask(final DbTask dbTask) throws JmsException {
+    public void sendDbTask(final DbTask dbTask) {
 
         dbTaskProducerTemplate.send(new MessageCreator() {
             @Override
-            public Message createMessage(Session session) throws JMSException {
+            public Message createMessage(final Session session) throws JMSException {
                 //set DbTask instance as message body
                 ObjectMessage dbTaskTaskMessage = session.createObjectMessage(dbTask);
 

@@ -39,7 +39,7 @@ public class CompletedTaskProducer {
 
         completedDbTaskProducerTemplate.send(new MessageCreator() {
             @Override
-            public Message createMessage(Session session) throws JMSException {
+            public Message createMessage(final Session session) throws JMSException {
                 //set CompletedDbTask instance as message body
                 ObjectMessage completedDbTaskMessage = session.createObjectMessage(completedDbTask);
 

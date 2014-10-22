@@ -8,6 +8,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Experiment;
 
 /**
+ * This interface provides service methods for the Experiment class.
  *
  * @author Niels Hulstaert
  */
@@ -20,12 +21,12 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @return the found experiment
      */
     Experiment findByTitle(String title);
-    
+
     /**
      * Find the experiment by title and project ID.
      *
      * @param projectId the project ID
-     * @param title the experiment title 
+     * @param title the experiment title
      * @return the found experiment
      */
     Experiment findByProjectIdAndTitle(Long projectId, String title);

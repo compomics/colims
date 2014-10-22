@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Instrument;
 
 /**
+ * This interface provides service methods for the Instrument class.
  *
  * @author Niels Hulstaert
  */
@@ -14,6 +15,6 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @param name the instrument by name
      * @return the found instrument
      */
-    Instrument findByName(String name);        
-    
+    Instrument findByName(String name);
+
 }

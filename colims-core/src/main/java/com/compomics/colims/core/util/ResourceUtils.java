@@ -10,12 +10,22 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 /**
+ * This utility class provides methods for accessing resources.
  *
  * @author Niels Hulstaert
  */
-public class ResourceUtils {
+public final class ResourceUtils {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ResourceUtils.class);
+
+    /**
+     * Private no-arg constructor.
+     */
+    private ResourceUtils() {
+    }
 
     /**
      * Get a resource by its relative path. If the resource is not found on the
@@ -25,7 +35,7 @@ public class ResourceUtils {
      * @param relativePath the relative path of the resource
      * @return the found resource
      */
-    public static Resource getResourceByRelativePath(final String relativePath) {       
+    public static Resource getResourceByRelativePath(final String relativePath) {
         Resource resource = new FileSystemResource(relativePath);
 
         if (!resource.exists()) {

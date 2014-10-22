@@ -15,9 +15,9 @@ import java.util.Objects;
  * @author Niels Hulstaert
  */
 public class Notification extends QueueMessage {
-    
+
     private static final long serialVersionUID = 2770398844385424822L;
-    
+
     /**
      * The notification type.
      */
@@ -27,6 +27,12 @@ public class Notification extends QueueMessage {
      */
     private String dbTaskMessageId;
 
+    /**
+     * Constructor.
+     *
+     * @param type the notification type
+     * @param dbTaskMessageId the message ID string
+     */
     public Notification(NotificationType type, String dbTaskMessageId) {
         this.type = type;
         this.dbTaskMessageId = dbTaskMessageId;
@@ -72,6 +78,6 @@ public class Notification extends QueueMessage {
             return false;
         }
         return true;
-    }        
+    }
 
 }

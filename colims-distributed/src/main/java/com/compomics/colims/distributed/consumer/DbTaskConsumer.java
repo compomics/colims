@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class listens to the dbtask queue and handles incoming messages.
  *
  * @author Niels Hulstaert
  */
@@ -27,19 +28,25 @@ public class DbTaskConsumer implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
 
     /**
-     *
+     * The PersistDbTask handler.
      */
     @Autowired
     private PersistDbTaskHandler persistDbTaskHandler;
+    /**
+     * The DeleteDbTask handler.
+     */
     @Autowired
     private DeleteDbTaskHandler deleteDbTaskHandler;
+    /**
+     * The Notification message sender.
+     */
     @Autowired
     private NotificationProducer notificationProducer;
 
     /**
      * Implementation of <code>MessageListener</code>.
      *
-     * @param message
+     * @param message the incoming message
      */
     @Override
     public void onMessage(final Message message) {

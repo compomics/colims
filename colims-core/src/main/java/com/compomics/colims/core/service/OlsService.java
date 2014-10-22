@@ -4,13 +4,14 @@ import com.compomics.colims.model.Modification;
 import java.util.List;
 
 /**
+ * This interface provides methods for accessing the Ontoloy lookup service.
  *
  * @author Niels Hulstaert
  */
 public interface OlsService {
 
     /**
-     * Find a modification by exact name in the PSI-MOD ontology
+     * Find a modification by exact name in the PSI-MOD ontology.
      *
      * @param name the modification name
      * @return the found modification, null if nothing was found
@@ -28,7 +29,7 @@ public interface OlsService {
     List<Modification> findModifiationByName(final String name);
 
     /**
-     * Find a modification by accession in the ontology
+     * Find a modification by accession in the ontology.
      *
      * @param accession the modification accession
      * @return the found modification, null if nothing was found
@@ -40,8 +41,8 @@ public interface OlsService {
      * This method tries to find the modification by name and checks wether the
      * UNIMOD accession could be found in the Xref section.
      *
-     * @param name
-     * @param unimodAccession
+     * @param name the modification name
+     * @param unimodAccession the modification UNIMOD accession
      * @return the found modification, null if nothing was found
      */
     Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession);

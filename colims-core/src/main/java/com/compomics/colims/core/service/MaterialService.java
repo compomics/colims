@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Material;
 
 /**
+ * This interface provides service methods for the Material class.
  *
  * @author Niels Hulstaert
  */
