@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * This interface provides generic methods for finding, saving, updating and
- * deleting entities in the db.
+ * This interface provides generic service methods for finding, saving, updating
+ * and deleting entities in the db. The service methods are transactional
+ * (defined in the implementation), not the repository methods called in the
+ * services.
  *
  * @author Niels Hulstaert
  * @param <T> the entity class

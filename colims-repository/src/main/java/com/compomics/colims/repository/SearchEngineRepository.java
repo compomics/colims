@@ -4,6 +4,7 @@ import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.enums.SearchEngineType;
 
 /**
+ * This interface provides repository methods for the SearchEngine class.
  *
  * @author Niels Hulstaert
  */

@@ -13,30 +13,30 @@ import org.springframework.stereotype.Component;
  */
 @Component("consoleMonitor")
 public class ProgressConsoleMonitor {
-    
+
     private static final double STEP_VALUE = 5.0;
-    
+
     private double previousProgressValue;
-    
+
     @Autowired
     private EventBus eventBus;
-    
-    public ProgressConsoleMonitor(){        
+
+    public ProgressConsoleMonitor(){
     }
-    
+
     @PostConstruct
     public void init(){
        //register to event bus
        eventBus.register(this);
     }
-    
+
     @Subscribe
     public void onProgressEvent(final ProgressEvent progressEvent){
         if(progressEvent.getProgress() - previousProgressValue > STEP_VALUE){
             //print the progress to the console
             //System.out.println("------------------ " + progressEvent.getDescription() + " : " + progressEvent.getProgress());
             previousProgressValue = progressEvent.getProgress();
-        }         
+        }
     }
 
 }

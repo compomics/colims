@@ -4,11 +4,12 @@ import com.compomics.colims.model.Group;
 import java.util.List;
 
 /**
+ * This interface provides repository methods for the Group class.
  *
  * @author Niels Hulstaert
  */
-public interface GroupRepository extends GenericRepository<Group, Long> {   
-    
+public interface GroupRepository extends GenericRepository<Group, Long> {
+
     /**
      * Find the group by the group name.
      *
@@ -16,12 +17,12 @@ public interface GroupRepository extends GenericRepository<Group, Long> {
      * @return the found group
      */
     Group findByName(String name);
-    
+
     /**
      * Find all groups ordered by name.
-     * 
+     *
      * @return the ordered list of groups
      */
     List<Group> findAllOrderedByName();
-    
+
 }

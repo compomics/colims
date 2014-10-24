@@ -7,8 +7,9 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.QuantificationGroup;
 
 /**
+ * This interface provides repository methods for the QuantificationGroup class.
  *
- * @author Kenneth Verheggen
+ * @author Niels Hulstaert
  */
 public interface QuantificationGroupRepository extends GenericRepository<QuantificationGroup, Long> {
 

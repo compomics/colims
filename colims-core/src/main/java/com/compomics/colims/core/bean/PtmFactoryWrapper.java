@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 public class PtmFactoryWrapper {
 
     /**
-     * The PtmFactory instance
+     * The PtmFactory instance.
      */
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     public PTMFactory getPtmFactory() {
         return ptmFactory;
-    }            
-    
+    }
+
 }

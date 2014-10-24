@@ -4,6 +4,7 @@ import com.compomics.colims.model.QuantificationEngine;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 
 /**
+ * This interface provides repository methods for the QuantificationEngine class.
  *
  * @author Niels Hulstaert
  */

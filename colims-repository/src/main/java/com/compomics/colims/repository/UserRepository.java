@@ -8,6 +8,7 @@ import com.compomics.colims.model.User;
 import java.util.List;
 
 /**
+ * This interface provides repository methods for the User class.
  *
  * @author Niels Hulstaert
  */
@@ -27,5 +28,5 @@ public interface UserRepository extends GenericRepository<User, Long> {
      * @return the ordered list of users
      */
     List<User> findAllOrderedByUserName();
-    
+
 }

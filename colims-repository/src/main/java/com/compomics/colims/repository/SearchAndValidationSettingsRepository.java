@@ -7,6 +7,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.SearchAndValidationSettings;
 
 /**
+ * This interface provides repository methods for the SearchAndValidationSettings class.
  *
  * @author Niels Hulstaert
  */

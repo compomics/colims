@@ -10,21 +10,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class registers the different custom event listeners to the hibernate
+ * EventListenerRegistry.
  *
  * @author Niels Hulstaert
  */
 @Component("eventRegistrator")
 public class EventRegistrator {
 
+    /**
+     * The hibernate session factory.
+     */
     @Autowired
     private SessionFactory sessionFactory;
+    /**
+     * The persist event listener.
+     */
     @Autowired
     private CustomPersistEventListener persistEventListener;
+    /**
+     * The save event listener.
+     */
     @Autowired
     private CustomSaveEventListener saveEventListener;
+    /**
+     * The update event listener.
+     */
     @Autowired
     private CustomUpdateEventListener updateEventListener;
 
+    /**
+     * Register the custom event listeners.
+     */
     @PostConstruct
     public void registerListeners() {
         final EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory)
@@ -35,10 +52,9 @@ public class EventRegistrator {
         registry.prependListeners(EventType.SAVE, saveEventListener);
         registry.prependListeners(EventType.UPDATE, updateEventListener);
 
-        //Adding a listener for a SaveOrUpdateEvent results in unwanted behaviour; 
+        //Adding a listener for a SaveOrUpdateEvent results in unwanted behaviour;
         //when fetching children of one-to-many relations, the SaveOrUpdateEvent is triggered.
         //So for now, no listener will be registered for this event.
         //registry.prependListeners(EventType.SAVE_UPDATE, testListener);
-
     }
 }

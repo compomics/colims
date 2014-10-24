@@ -8,6 +8,7 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 
 /**
+ * This interface provides repository methods for the Project class.
  *
  * @author Niels Hulstaert
  */
@@ -20,11 +21,11 @@ public interface ProjectRepository extends GenericRepository<Project, Long> {
      * @return the found project
      */
     Project findByTitle(String title);
-    
+
     /**
      * Get the user that owns the most projects.
      *
-     * @return
+     * @return the User instance
      */
     User getUserWithMostProjectOwns();
 }

@@ -5,14 +5,14 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Experiment;
-import java.util.List;
 
 /**
+ * This interface provides repository methods for the Experiment class.
  *
  * @author Niels Hulstaert
  */
 public interface ExperimentRepository extends GenericRepository<Experiment, Long> {
-    
+
     /**
      * Find the experiment by title.
      *
@@ -20,7 +20,7 @@ public interface ExperimentRepository extends GenericRepository<Experiment, Long
      * @return the found experiment
      */
     Experiment findByTitle(String title);
-    
+
      /**
      * Find the experiment by title and project ID.
      *

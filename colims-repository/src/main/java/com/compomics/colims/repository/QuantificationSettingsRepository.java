@@ -7,6 +7,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.QuantificationSettings;
 
 /**
+ * This interface provides repository methods for the QuantificationSettings class.
  *
  * @author Niels Hulstaert
  */

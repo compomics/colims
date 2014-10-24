@@ -3,6 +3,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.Protein;
 
 /**
+ * This interface provides repository methods for the Protein class.
  *
  * @author Niels Hulstaert
  */

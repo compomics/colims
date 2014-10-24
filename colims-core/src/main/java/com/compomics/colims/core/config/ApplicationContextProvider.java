@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.colims.core.config;
 
 import org.springframework.context.ApplicationContext;
@@ -13,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Niels Hulstaert
  */
-public class ApplicationContextProvider {
+public final class ApplicationContextProvider {
 
     /**
      * The Spring application context.
@@ -35,7 +31,7 @@ public class ApplicationContextProvider {
      *
      * @return the singleton instance
      */
-    public synchronized static ApplicationContextProvider getInstance() {
+    public static synchronized ApplicationContextProvider getInstance() {
         return APPLICATION_CONTEXT_PROVIDER;
     }
 
@@ -70,7 +66,7 @@ public class ApplicationContextProvider {
      * @param beanName the bean name
      * @return the found bean
      */
-    public <T> T getBean(String beanName) {
+    public <T> T getBean(final String beanName) {
         if (applicationContext == null) {
             throw new IllegalStateException("The application context is not set yet.");
         }

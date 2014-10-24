@@ -3,6 +3,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.Modification;
 
 /**
+ * This interface provides repository methods for the Modification class.
  *
  * @author Niels Hulstaert
  */

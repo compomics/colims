@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import com.compomics.colims.repository.AuthenticationBean;
 
 /**
+ * This custom event listener listens to update events. For all entities that
+ * subclass AuditableDatabaseEntity, the user name, creation and modification
+ * date columns in the database are updated.
  *
  * @author Niels Hulstaert
  */
@@ -19,7 +22,13 @@ import com.compomics.colims.repository.AuthenticationBean;
 public class CustomUpdateEventListener extends DefaultUpdateEventListener {
 
     private static final long serialVersionUID = 1L;
-    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(CustomUpdateEventListener.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(CustomUpdateEventListener.class);
+    /**
+     * The authentication bean with the logged in user and his/her permissions.
+     */
     @Autowired
     private AuthenticationBean authenticationBean;
 
@@ -32,18 +41,24 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
         super.onSaveOrUpdate(event);
     }
 
+    /**
+     * This method updates the user name, creation and modification date fields
+     * if the entity class is a subclass of AuditableDatabaseEntity.
+     *
+     * @param object the entity that triggered the event.
+     */
     private void onListen(final Object object) {
         if (object instanceof AuditableDatabaseEntity) {
-            AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;            
+            AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;
 
-            //set the user name            
+            //set the user name
             entity.setUserName(authenticationBean.getCurrentUser().getName());
-            
-            if(entity.getCreationDate() == null){
+
+            if (entity.getCreationDate() == null) {
                 entity.setCreationDate(new Date());
             }
             //set the modification date
-            entity.setModificationDate(new Date());                        
+            entity.setModificationDate(new Date());
         }
     }
 }

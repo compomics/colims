@@ -7,8 +7,9 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.SearchParameters;
 
 /**
+ * This interface provides repository methods for the SearchParameters class.
  *
- * @author Kenneth Verheggen
+ * @author Niels Hulstaert
  */
 public interface SearchParametersRepository extends GenericRepository<SearchParameters, Long> {
 

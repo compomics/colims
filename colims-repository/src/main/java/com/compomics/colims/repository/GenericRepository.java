@@ -11,8 +11,14 @@ import java.util.Map;
 import org.hibernate.LockOptions;
 
 /**
+ * This interface provides generic repository methods for finding, saving,
+ * updating and deleting entities in the db. The transactions are defined on the
+ * service layer level to avoid multiple transactions if a service method calls
+ * more than one repository method.
  *
  * @author Niels Hulstaert
+ * @param <T> the entity class
+ * @param <ID> the ID class
  */
 public interface GenericRepository<T, ID extends Serializable> {
 
@@ -24,7 +30,7 @@ public interface GenericRepository<T, ID extends Serializable> {
     Class<T> getEntityClass();
 
     /**
-     * Find an entity by its primary key
+     * Find an entity by its primary key.
      *
      * @param id the primary key
      * @return the entity
@@ -84,17 +90,17 @@ public interface GenericRepository<T, ID extends Serializable> {
     long countByExample(final T exampleInstance);
 
     /**
-     * save an entity. That means insert an entry if the identifier doesn’t
+     * save an entity. That means insert an entry if the identifier doesn't
      * exist, else throw an exception. If the primary key is already present in
      * the table, it cannot be inserted.
      *
-     * @param entity the entity to save     
+     * @param entity the entity to save
      */
     void save(final T entity);
 
     /**
      * update an entity. Update method in the hibernate is used for updating the
-     * entity using an identifier. If the identifier is missing or doesn’t
+     * entity using an identifier. If the identifier is missing or doesn't
      * exist, throw an exception.
      *
      * @param entity the entity to update
@@ -118,10 +124,10 @@ public interface GenericRepository<T, ID extends Serializable> {
     void delete(final T entity);
 
     /**
-     * reassociate the entity with the current session.
-     * 
-     * @param entity
-     * @param lockOptions
+     * Re-associate the entity with the current session.
+     *
+     * @param entity the entity to re-attach to the session
+     * @param lockOptions the locking details
      */
     void lock(final T entity, final LockOptions lockOptions);
 }

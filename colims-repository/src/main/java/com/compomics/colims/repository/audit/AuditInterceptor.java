@@ -19,7 +19,10 @@ import com.compomics.colims.repository.AuthenticationBean;
 public class AuditInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 1L;
-    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(AuditInterceptor.class);
     private AuthenticationBean authenticationBean;
 
     public AuthenticationBean getAuthenticationBean() {
@@ -28,10 +31,10 @@ public class AuditInterceptor extends EmptyInterceptor {
 
     public void setAuthenticationBean(final AuthenticationBean authenticationBean) {
         this.authenticationBean = authenticationBean;
-    }            
+    }
 
     @Override
-    public boolean onFlushDirty(final Object entity, final Serializable id, final Object[] currentState, final Object[] previousState, final String[] propertyNames, final Type[] types) {       
+    public boolean onFlushDirty(final Object entity, final Serializable id, final Object[] currentState, final Object[] previousState, final String[] propertyNames, final Type[] types) {
         return audit(currentState, propertyNames);
     }
 

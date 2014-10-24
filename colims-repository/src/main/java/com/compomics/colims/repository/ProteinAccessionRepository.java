@@ -4,11 +4,12 @@ import com.compomics.colims.model.ProteinAccession;
 import java.util.List;
 
 /**
+ * This interface provides repository methods for the ProteinAccession class.
  *
  * @author Niels Hulstaert
  */
-public interface ProteinAccessionRepository extends GenericRepository<ProteinAccession, Long> {    
-    
+public interface ProteinAccessionRepository extends GenericRepository<ProteinAccession, Long> {
+
     /**
      * Find protein accessions by the accession string.
      *

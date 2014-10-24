@@ -4,11 +4,12 @@ import com.compomics.colims.model.Permission;
 import java.util.List;
 
 /**
+ * This interface provides repository methods for the Permission class.
  *
  * @author Niels Hulstaert
  */
 public interface PermissionRepository extends GenericRepository<Permission, Long> {
-    
+
     /**
      * Find the permission by the permission name.
      *
@@ -16,12 +17,12 @@ public interface PermissionRepository extends GenericRepository<Permission, Long
      * @return the found permission
      */
     Permission findByName(String name);
-    
+
     /**
      * Find all permissions ordered by name.
-     * 
+     *
      * @return the ordered list of permissions
      */
     List<Permission> findAllOrderedByName();
-    
+
 }
