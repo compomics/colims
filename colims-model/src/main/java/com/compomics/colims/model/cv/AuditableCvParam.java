@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * Parent class for auditable CV parameter entities.
  *
  * @author Niels Hulstaert
  */
@@ -46,9 +47,20 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
     @Column(name = "param_value", nullable = true)
     protected String value;
 
+    /**
+     * No-arg constructor.
+     */
     public AuditableCvParam() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param ontology the ontology name
+     * @param label the ontology label
+     * @param accession the CV term accession
+     * @param name the CV term name
+     */
     public AuditableCvParam(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
         this.label = label;
@@ -56,7 +68,16 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
         this.name = name;
     }
 
-    public AuditableCvParam(String ontology, String label, String accession, String name, String value) {
+    /**
+     * Constructor.
+     *
+     * @param ontology the ontology name
+     * @param label the ontology label
+     * @param accession the CV term accession
+     * @param name the CV term name
+     * @param value the CV term value
+     */
+    public AuditableCvParam(final String ontology, final String label, final String accession, final String name, final String value) {
         this.ontology = ontology;
         this.label = label;
         this.accession = accession;

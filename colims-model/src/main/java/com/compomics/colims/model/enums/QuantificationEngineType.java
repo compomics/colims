@@ -6,11 +6,12 @@
 package com.compomics.colims.model.enums;
 
 /**
+ * This enum contains the different quantification engine types.
  *
  * @author Niels Hulstaert
  */
 public enum QuantificationEngineType {
 
     MAX_QUANT
-    
+
 }

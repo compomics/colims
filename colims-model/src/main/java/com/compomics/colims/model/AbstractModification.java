@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * Abstract parent class for modification entities.
  *
  * @author Niels Hulstaert
  */

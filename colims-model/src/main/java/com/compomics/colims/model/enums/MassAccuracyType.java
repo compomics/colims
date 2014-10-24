@@ -3,6 +3,7 @@ package com.compomics.colims.model.enums;
 import com.compomics.util.experiment.identification.SearchParameters;
 
 /**
+ * This enum contains the different mass accuracy types.
  *
  * @author Niels Hulstaert
  */
@@ -13,10 +14,10 @@ public enum MassAccuracyType {
     /**
      * Get the MassAccuracyType by the Utilities MassAccuracyType.
      *
-     * @param utilitiesMassAccuracyType
-     * @return
+     * @param utilitiesMassAccuracyType the Compomics Utilities mass accuracy type
+     * @return the mapped MassAccuracyType instance
      */
-    public static MassAccuracyType getByUtilitiesMassAccuracyType(SearchParameters.MassAccuracyType utilitiesMassAccuracyType) {
+    public static MassAccuracyType getByUtilitiesMassAccuracyType(final SearchParameters.MassAccuracyType utilitiesMassAccuracyType) {
         MassAccuracyType massAccuracyType = null;
 
         if (utilitiesMassAccuracyType.name().equals(PPM.name())) {

@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * This class represents a binary file in the database.
  *
  * @author Niels Hulstaert
  */
@@ -18,13 +19,22 @@ public class BinaryFile extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -5581612780987474005L;
 
+    /**
+     * The file name.
+     */
     @Basic(optional = false)
     @Column(name = "file_name", nullable = false)
     protected String fileName;
+    /**
+     * The binary file type.
+     */
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "file_type", nullable = false)
     protected BinaryFileType binaryFileType;
+    /**
+     * The content as binary array.
+     */
     @Basic(optional = false)
     @Lob
     @Column(name = "content", nullable = false)

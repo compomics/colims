@@ -7,13 +7,14 @@ import java.util.Comparator;
 
 
 /**
+ * This comparator compares name fields of Material entity instances.
  *
  * @author Niels Hulstaert
  */
 public class MaterialNameComparator implements Comparator<Material>, Serializable{
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int compare(final Material material1, final Material material2) {
         return material1.getName().compareToIgnoreCase(material2.getName());

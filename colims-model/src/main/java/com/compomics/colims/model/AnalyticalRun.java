@@ -19,6 +19,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents an analytical run entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -27,21 +28,36 @@ import org.hibernate.validator.constraints.NotBlank;
 public class AnalyticalRun extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 8278042140876711715L;
+    /**
+     * The run name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an analytical run name")
     @Length(min = 1, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
+    /**
+     * The start date and time.
+     */
     @Basic(optional = true)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date", nullable = true)
-    protected Date startDate;
+    private Date startDate;
+    /**
+     * The sample the run belongs to.
+     */
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne
     private Sample sample;
+    /**
+     * The instrument the run was executed on.
+     */
     @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")
     @ManyToOne
     private Instrument instrument;
+    /**
+     * The spectra of this AnalyticalRun instance.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
     private List<Spectrum> spectrums = new ArrayList<>();
 

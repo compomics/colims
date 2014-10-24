@@ -6,11 +6,12 @@
 package com.compomics.colims.model.enums;
 
 /**
+ * This enum contains the different search engine types.
  *
  * @author Niels Hulstaert
  */
 public enum SearchEngineType {
 
     PEPTIDESHAKER, MAX_QUANT
-    
+
 }

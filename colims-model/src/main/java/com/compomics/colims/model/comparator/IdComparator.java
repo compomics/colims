@@ -7,13 +7,14 @@ import java.util.Comparator;
 
 
 /**
+ * This comparator compares ID fields of DatabaseEntity instances.
  *
  * @author Niels Hulstaert
  */
 public class IdComparator implements Comparator<DatabaseEntity>, Serializable{
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int compare(final DatabaseEntity ade1, final DatabaseEntity ade2) {
         return Long.compare(ade1.getId(), ade2.getId());

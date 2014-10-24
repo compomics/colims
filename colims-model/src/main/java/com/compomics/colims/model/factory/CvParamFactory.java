@@ -7,15 +7,29 @@ import com.compomics.colims.model.ProtocolCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 
 /**
+ * Factory class for creating CV term types.
  *
  * @author Niels Hulstaert
  */
 public final class CvParamFactory {
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private CvParamFactory() {
     }
 
-    public static AuditableTypedCvParam newInstance(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
+    /**
+     * Create a new AuditableTypedCvParam instance.
+     *
+     * @param cvParamType the CV term type
+     * @param ontology the ontology name
+     * @param label the ontology label
+     * @param accession CV term accession
+     * @param name the CV term name
+     * @return the AuditableTypedCvParam instance
+     */
+    public static AuditableTypedCvParam newAuditableTypeCvInstance(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
         AuditableTypedCvParam cvParam;
 
         CvParamType parent = cvParamType.getParent();
@@ -31,4 +45,5 @@ public final class CvParamFactory {
 
         return cvParam;
     }
+
 }

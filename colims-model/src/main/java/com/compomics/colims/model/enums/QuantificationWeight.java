@@ -6,8 +6,9 @@
 package com.compomics.colims.model.enums;
 
 /**
+ * This enum contains the different quantification weights.
  *
- * @author Kenneth
+ * @author Niels Hulstaert
  */
 public enum QuantificationWeight {
 

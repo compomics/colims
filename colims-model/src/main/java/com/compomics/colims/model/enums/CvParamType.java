@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This enum contains the different CV term types, organized by parent CV term.
  *
  * @author Niels Hulstaert
  */
@@ -35,23 +36,28 @@ public enum CvParamType {
         SEARCH_PARAM_CV_PARAM(CV_PARAM_TYPE, null),
             SEARCH_TYPE(SEARCH_PARAM_CV_PARAM, false),
             SEARCH_PARAM_ENZYME(SEARCH_PARAM_CV_PARAM, false),
-            THRESHOLD(SEARCH_PARAM_CV_PARAM, false)
-            ;
+            THRESHOLD(SEARCH_PARAM_CV_PARAM, false);
 
     /**
-     * The parent CV param.
+     * The parent CV parameter type.
      */
     private CvParamType parent = null;
     /**
-     * Is the CV param mandatory.
+     * Is the CV parameter type mandatory for it's parent entity.
      */
     private Boolean mandatory = false;
     /**
-     * The child CV params.
+     * The child CV parameter types.
      */
-    private List<CvParamType> children = new ArrayList<>();
+    private final List<CvParamType> children = new ArrayList<>();
 
-    private CvParamType(CvParamType parent, Boolean mandatory) {
+    /**
+     * Private constructor.
+     *
+     * @param parent the parent CV term type
+     * @param mandatory whether or not the CV term type is mandatory
+     */
+    private CvParamType(final CvParamType parent, final Boolean mandatory) {
         this.parent = parent;
         this.mandatory = mandatory;
         if (this.parent != null) {
@@ -71,12 +77,23 @@ public enum CvParamType {
         return mandatory;
     }
 
+    /**
+     * Return all child CV term types of this CV term type as an array.
+     *
+     * @return the array of CV term type children
+     */
     public CvParamType[] allChildren() {
         List<CvParamType> list = new ArrayList<>();
         addChildren(this, list);
         return list.toArray(new CvParamType[list.size()]);
     }
 
+    /**
+     * Return the child CV term types of this CV term type (not the sub types)
+     * as an array.
+     *
+     * @return the array of CV term type children
+     */
     public CvParamType[] getChildrenAsArray() {
         return children.toArray(new CvParamType[children.size()]);
     }
@@ -90,13 +107,24 @@ public enum CvParamType {
         }
     }
 
-    private void addChild(CvParamType child) {
+    /**
+     * Add a child CV term type to this (parent) CV term type.
+     *
+     * @param child the child CV term type
+     */
+    private void addChild(final CvParamType child) {
         this.children.add(child);
     }
 
-    private static void addChildren(CvParamType root, List<CvParamType> list) {
-        list.addAll(root.children);
-        for (CvParamType child : root.children) {
+    /**
+     * Add child CV term types to this (parent) CV term type in a recursive way.
+     *
+     * @param parent the parent CV term type
+     * @param list the list of child CV term types
+     */
+    private static void addChildren(final CvParamType parent, final List<CvParamType> list) {
+        list.addAll(parent.children);
+        for (CvParamType child : parent.children) {
             addChildren(child, list);
         }
     }

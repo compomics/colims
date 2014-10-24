@@ -251,7 +251,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
         //check wether a CV param has to be added or updated
         if (field.equals(ADD_CV_PARAM)) {
-            AuditableTypedCvParam cvParam = CvParamFactory.newInstance(cvParamType, ontologyLong, ontologyShort, accession, selectedValue);
+            AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypeCvInstance(cvParamType, ontologyLong, ontologyShort, accession, selectedValue);
 
             //add CV param to the table model
             typeCvParamTableModel2.addCvParam(cvParam);

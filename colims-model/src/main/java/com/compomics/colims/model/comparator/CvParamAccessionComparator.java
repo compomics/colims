@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
+ * This comparator compares accession fields of AuditableTypedCvParam entity
+ * instances.
  *
  * @author Niels Hulstaert
  */
