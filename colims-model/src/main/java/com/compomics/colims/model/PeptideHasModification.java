@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * This class represents the join table between the peptide and modification
+ * tables.
  *
  * @author Niels Hulstaert
  */

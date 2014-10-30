@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
+ * This class represents an instrument entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -30,42 +31,69 @@ public class Instrument extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7111402094194930375L;
 
+    /**
+     * The instrument in-house name. This field is used to make a distinction
+     * between instruments of the same type within on lab.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    /**
+     * The mandatory type CV term that represents the instrument type.
+     */
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a type")
     @ManyToOne
     @JoinColumn(name = "l_type_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam type;
+    /**
+     * The mandatory instrument source CV term.
+     */
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a source")
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam source;
+    /**
+     * The mandatory detector CV term.
+     */
     @Basic(optional = false)
     @NotNull(message = "An instrument must have a detector")
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam detector;
+    /**
+     * The list of runs executed on this instrument.
+     */
     @OneToMany(mappedBy = "instrument")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+    /**
+     * The list of analyzer CV terms. There has to be at least one analyzer.
+     */
     @NotEmpty(message = "An instrument must have at least one analyzer")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "instrument_has_analyzer",
             joinColumns = {
-        @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_instrument_cv_param_id", referencedColumnName = "id")})
+                @JoinColumn(name = "l_instrument_cv_param_id", referencedColumnName = "id")})
     private List<InstrumentCvParam> analyzers = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Instrument() {
     }
 
-    public Instrument(String name) {
+    /**
+     * Constructor.
+     *
+     * @param name the instrument name
+     */
+    public Instrument(final String name) {
         this.name = name;
     }
 

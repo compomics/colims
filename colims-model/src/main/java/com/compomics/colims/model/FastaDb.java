@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents a FASTA database in the database.
  *
  * @author Niels Hulstaert
  */
@@ -23,7 +24,7 @@ public class FastaDb extends DatabaseEntity {
     private static final long serialVersionUID = -7674593202998529863L;
 
     /**
-     * The official name of the fasta db
+     * The official name of the FASTA db.
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB name")
@@ -31,7 +32,7 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
     /**
-     * The name of the fasta db file
+     * The name of the FASTA db file.
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB file name")
@@ -39,7 +40,7 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "file_name", nullable = false)
     private String fileName;
     /**
-     * The fasta db file path
+     * The FASTA db file path.
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB file path")
@@ -47,19 +48,19 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "file_path", nullable = false)
     private String filePath;
     /**
-     * The taxonomy ID
+     * The taxonomy ID.
      */
     @Basic(optional = true)
     @Column(name = "taxonomy_accession", nullable = true)
     private String taxonomyAccession = "N/A";
     /**
-     * The species name
+     * The species name.
      */
     @Basic(optional = true)
     @Column(name = "species", nullable = true)
     private String species = "N/A";
     /**
-     * The version of the fasta db
+     * The version of the FASTA db.
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB version")
@@ -67,11 +68,15 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "version", nullable = false)
     private String version = "N/A";
     /**
-     * The MD5 checksum of the fasta db
+     * The MD5 checksum of the FASTA db.
      */
     @Basic(optional = true)
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
+    /**
+     * The list of search and validation settings that used this FASTA instance
+     * for the search.
+     */
     @OneToMany(mappedBy = "fastaDb")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 

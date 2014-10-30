@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * This class represents a material CV term entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -15,11 +16,23 @@ public class MaterialCvParam extends AuditableTypedCvParam {
 
     private static final long serialVersionUID = -8458299630247265494L;
 
+    /**
+     * No-arg constructor.
+     */
     public MaterialCvParam() {
     }
 
-    public MaterialCvParam(final CvParamType cvTermType, final String ontology, final String label, final String accession, final String name) {
-        super(cvTermType, ontology, label, accession, name);
+    /**
+     * Constructor.
+     *
+     * @param cvParamType the CV parameter type
+     * @param ontology the ontology name
+     * @param label the ontology label
+     * @param accession the CV term accession
+     * @param name the CV term name
+     */
+    public MaterialCvParam(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
+        super(cvParamType, ontology, label, accession, name);
     }
 
 }

@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * This class represents a sample attachment in the database.
  *
  * @author Niels Hulstaert
  */
@@ -16,6 +17,9 @@ public class SampleBinaryFile extends BinaryFile {
 
     private static final long serialVersionUID = 1198531326938636719L;
 
+    /**
+     * The sample of the attachment.
+     */
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
     @ManyToOne
     private Sample sample;

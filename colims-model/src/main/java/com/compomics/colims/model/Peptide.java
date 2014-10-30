@@ -17,6 +17,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 /**
+ * This class represents a peptide entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -28,9 +29,15 @@ public class Peptide extends DatabaseEntity {
 
     private static final long serialVersionUID = -7678950773201086394L;
 
+    /**
+     * The peptide sequence string.
+     */
     @Basic(optional = false)
     @Column(name = "peptide_sequence", nullable = false)
     private String sequence;
+    /**
+     * The theoretical mass value.
+     */
     @Basic(optional = true)
     @Column(name = "theoretical_mass", nullable = true)
     private Double theoreticalMass;
@@ -40,27 +47,50 @@ public class Peptide extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "charge", nullable = true)
     private Integer charge;
+    /**
+     * The peptide-to-spectrum probability score.
+     */
     @Basic(optional = true)
     @Column(name = "psm_prob", nullable = true)
     private Double psmProbability;
+    /**
+     * The peptide-to-spectrum posterior error probability score.
+     */
     @Basic(optional = true)
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
+    /**
+     * The IdentificationFile instance that identified this peptide-to-spectrum match.
+     */
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private IdentificationFile identificationFile;
+    /**
+     * The spectrum identified by this peptide.
+     */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
     @ManyToOne
     private Spectrum spectrum;
+    /**
+     * The PeptideHasModification instances from the join table between the
+     * peptide and modification tables.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
+    /**
+     * The PeptideHasProtein instances from the join table between the
+     * peptide and protein tables.
+     */
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Peptide() {
     }
 

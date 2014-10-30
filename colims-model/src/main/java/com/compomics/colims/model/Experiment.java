@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents an analytical run entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -27,29 +28,53 @@ public class Experiment extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -5312211553958551386L;
 
+    /**
+     * The title of the experiment.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an experiment title")
     @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
     @Column(name = "title", nullable = false, unique = true)
     private String title;
+    /**
+     * The experiment identifier number.
+     */
     @Basic(optional = true)
     @Column(name = "number", nullable = true)
     private Long number;
+    /**
+     * The description of the experiment. This is a free text field.
+     */
     @Basic(optional = true)
     @Length(max = 500, message = "Description must be less than {max} characters")
     @Column(name = "description", nullable = true)
     private String description;
+    /**
+     * The storage location of the experiment. This is a free text field.
+     */
     @Basic(optional = true)
     @Column(name = "storage_location", nullable = true)
     private String storageLocation;
+    /**
+     * The project the experiment belongs to.
+     */
     @ManyToOne
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     private Project project;
+    /**
+     * The experiment samples.
+     */
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
+    /**
+     * The experiment attachments. These are stored as lob's in the database.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
+    /**
+     * The search and validation settings for this experiment.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 

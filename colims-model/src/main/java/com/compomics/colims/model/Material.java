@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents a material entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -25,38 +26,67 @@ public class Material extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -976001398433451179L;
 
+    /**
+     * The material name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = false)
     private String name;
+    /**
+     * The mandatory species CV term.
+     */
     @Basic(optional = false)
     @NotNull(message = "A material must have a species")
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvParam species;
+    /**
+     * The optional tissue CV term.
+     */
     @Basic(optional = true)
     @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam tissue;
+    /**
+     * The optional cell type CV term.
+     */
     @Basic(optional = true)
     @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam cellType;
+    /**
+     * The optional compartment CV term.
+     */
     @Basic(optional = true)
     @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam compartment;
+    /**
+     * The project in which the material was analyzed.
+     */
     @JoinColumn(name = "l_project_id", referencedColumnName = "id")
     @ManyToOne
     private Project project;
+    /**
+     * The samples that originate from this material.
+     */
     @ManyToMany(mappedBy = "materials")
     private List<Sample> samples = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Material() {
     }
 
-    public Material(String name) {
+    /**
+     * Constructor.
+     *
+     * @param name the material name
+     */
+    public Material(final String name) {
         this.name = name;
     }
 

@@ -18,40 +18,61 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents an group entity in the database. The table name is
+ * "user_group" because "group" is a reserved keyword.
  *
  * @author Niels Hulstaert
  */
-// group is a reserved SQL keyword
 @Table(name = "user_group")
 @Entity
 public class Group extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = 3684555329343238970L;
-    
+
+    /**
+     * The group name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a name")
     @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    /**
+     * The group description.
+     */
     @Basic(optional = true)
     @Length(max = 500, message = "Group description length must be less than {max} characters")
     @Column(name = "description", nullable = true)
     private String description;
+    /**
+     * The users of the group.
+     */
     @ManyToMany(mappedBy = "groups")
     private List<User> users = new ArrayList<>();
+    /**
+     * The roles of the group.
+     */
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "group_has_role",
             joinColumns = {
-        @JoinColumn(name = "l_group_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_group_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_role_id", referencedColumnName = "id")})
+                @JoinColumn(name = "l_role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Group() {
     }
 
-    public Group(String name) {
+    /**
+     * Constructor.
+     *
+     * @param name the group name
+     */
+    public Group(final String name) {
         this.name = name;
     }
 
@@ -116,5 +137,5 @@ public class Group extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name;
-    }    
+    }
 }

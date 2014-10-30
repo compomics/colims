@@ -10,7 +10,9 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 
 /**
- * This class represents a binary file in the database.
+ * This parent class of all entity attachments (project, experiment, ...). The
+ * attachment is stored as a binary lob in the database and has a file name and
+ * a type.
  *
  * @author Niels Hulstaert
  */
@@ -33,15 +35,24 @@ public class BinaryFile extends AuditableDatabaseEntity {
     @Column(name = "file_type", nullable = false)
     protected BinaryFileType binaryFileType;
     /**
-     * The content as binary array.
+     * The content as a binary array. The is stored in the database as a LOB.
      */
     @Basic(optional = false)
     @Lob
     @Column(name = "content", nullable = false)
     protected byte[] content;
 
-    public BinaryFile(){}
+    /**
+     * No-arg constructor.
+     */
+    public BinaryFile() {
+    }
 
+    /**
+     * Constructor.
+     *
+     * @param content the content as a byte array
+     */
     public BinaryFile(final byte[] content) {
         this.content = content;
     }

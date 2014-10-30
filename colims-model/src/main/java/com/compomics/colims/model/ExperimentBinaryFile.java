@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * This class represents an experiment attachment in the database.
  *
  * @author Niels Hulstaert
  */
@@ -16,6 +17,9 @@ public class ExperimentBinaryFile extends BinaryFile {
 
     private static final long serialVersionUID = -629806717593264864L;
 
+    /**
+     * The experiment of the attachment.
+     */
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;

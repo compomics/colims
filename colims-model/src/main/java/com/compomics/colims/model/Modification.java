@@ -9,6 +9,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
+ * This class represents a modification entity in the database. This
+ * modification table is part of the identification results. There is another
+ * modification table (search_modification), part of the search settings.
  *
  * @author Niels Hulstaert
  */
@@ -20,9 +23,18 @@ public class Modification extends AbstractModification {
 
     private static final long serialVersionUID = 497141602900321901L;
 
+    /**
+     * The PeptideHasModification instances from the join table between the
+     * peptide and modification tables.
+     */
     @OneToMany(mappedBy = "modification")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
+    /**
+     * Constructor.
+     *
+     * @param name the modification name.
+     */
     public Modification(String name) {
         super(name);
     }
