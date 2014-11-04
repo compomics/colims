@@ -9,25 +9,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps a Compomics Utilities peptide objects to Colims Peptide
+ * instance.
  *
  * @author Niels Hulstaert
  */
 @Component("utilitiesPeptideMapper")
 public class UtilitiesPeptideMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
+    /**
+     * The Utilities to Colims modification mapper instance.
+     */
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
-    
+
     /**
      * Map the utilities objects onto the colims Peptide.
      *
-     * @param sourcePeptide
-     * @param psmMatchScore
-     * @param ptmScores
-     * @param identificationCharge
-     * @param targetPeptide
-     * @throws com.compomics.colims.core.io.ModificationMappingException
+     * @param sourcePeptide the Utilities peptide
+     * @param psmMatchScore the PSM score
+     * @param ptmScores the PSPtmScores instance
+     * @param identificationCharge the charge
+     * @param targetPeptide the Colims peptide
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
     public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
         //set sequence
@@ -46,11 +55,11 @@ public class UtilitiesPeptideMapper {
             utilitiesModificationMapper.map(sourcePeptide.getModificationMatches(), ptmScores, targetPeptide);
         }
     }
-    
+
     /**
      * Clear resources.
      */
-    public void clear(){
+    public void clear() {
         utilitiesModificationMapper.clear();
     }
 }

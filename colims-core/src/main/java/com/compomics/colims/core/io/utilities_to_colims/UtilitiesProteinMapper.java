@@ -14,24 +14,31 @@ import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinAccession;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps a Compomics Utilities protein objects to Colims Protein
+ * instances.
  *
  * @author Niels Hulstaert
  */
 @Component("utilitiesProteinMapper")
 public class UtilitiesProteinMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesProteinMapper.class);
+    /**
+     * The protein service instance.
+     */
     @Autowired
     private ProteinService proteinService;
     /**
-     * The map of chached proteins (key: sequence, value: the protein)
+     * The map of cached proteins (key: sequence, value: the protein).
      */
     protected Map<String, Protein> cachedProteins = new HashMap<>();
 
@@ -40,20 +47,20 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Map the utilities protein related objects to colims proteins and add them
+     * Map the Utilities protein related objects to Colims proteins and add them
      * to the peptide.
      *
      * @param proteinMatches the utilities list of protein matches
-     * @param peptideMatchScore
-     * @param targetPeptide the colims peptide
-     * @throws MappingException
+     * @param peptideMatchScore the PSM score
+     * @param targetPeptide the Colims peptide
+     * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(List<ProteinMatch> proteinMatches, MatchScore peptideMatchScore, Peptide targetPeptide) throws MappingException {
+    public void map(final List<ProteinMatch> proteinMatches, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
         try {
             List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
             //iterate over protein matches
             for (ProteinMatch proteinMatch : proteinMatches) {
-                //iterate over all possible matches                
+                //iterate over all possible matches
                 if (proteinMatch != null) {
                     //get utilities Protein from SequenceFactory
                     com.compomics.util.experiment.biology.Protein mainSourceProtein = SequenceFactory.getInstance().getProtein(proteinMatch.getMainMatch());
@@ -105,20 +112,20 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Get the colims Protein by protein accession or sequence digest. This
+     * Get the Colims Protein by protein accession or sequence digest. This
      * method looks for the protein in the newly added proteins and the
      * database. If it was not found, look in the utilities SequenceFactory and
      * it to newly added proteins.
      *
      * @param sourceProtein the utilities protein
-     * @return
-     * @throws IOException
-     * @throws IllegalArgumentException
-     * @throws InterruptedException
-     * @throws FileNotFoundException
-     * @throws ClassNotFoundException
+     * @return the found Protein instance
+     * @throws IOException thrown in case of a I/O related exception
+     * @throws InterruptedException thrown when a thread is waiting, sleeping,
+     * or otherwise occupied, and the thread is interrupted
+     * @throws ClassNotFoundException thrown in case of a failure to load a
+     * class by it's string name.
      */
-    private Protein getProtein(com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, IllegalArgumentException, InterruptedException, FileNotFoundException, ClassNotFoundException {
+    private Protein getProtein(final com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, InterruptedException, ClassNotFoundException {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
@@ -155,10 +162,10 @@ public class UtilitiesProteinMapper {
     /**
      * Update the ProteinAccessions linked to a Protein.
      *
-     * @param protein
-     * @param accession
+     * @param protein the Protein instance
+     * @param accession the protein accession
      */
-    private void updateAccessions(Protein protein, String accession) {
+    private void updateAccessions(final Protein protein, final String accession) {
         //check if the protein accession is already linked to the protein
         boolean proteinAccessionPresent = false;
 

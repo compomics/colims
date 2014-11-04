@@ -24,18 +24,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class maps the Compomics Utilities modification related classes to
+ * Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
 @Component("utilitiesModificationMapper")
 public class UtilitiesModificationMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
+    /**
+     * The Utilities PTM to CV term mapper.
+     */
     @Autowired
     private PtmCvTermMapper ptmCvTermMapper;
+    /**
+     * The modification service instance.
+     */
     @Autowired
     private ModificationService modificationService;
+    /**
+     * The Ontoloy Lookup Service service.
+     */
     @Autowired
     private OlsService olsService;
     /**
@@ -54,15 +68,16 @@ public class UtilitiesModificationMapper {
     }
 
     /**
-     * Map the utilities modification matches onto the colims peptide. The
+     * Map the utilities modification matches to the Colims peptide. The
      * utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
      * @param ptmScores the PeptideShaker PTM scores
-     * @param targetPeptide the colims target peptide
-     * @throws com.compomics.colims.core.io.ModificationMappingException
+     * @param targetPeptide the Colims target peptide
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
-    public void map(ArrayList<ModificationMatch> modificationMatches, PSPtmScores ptmScores, Peptide targetPeptide) throws ModificationMappingException {
+    public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //iterate over modification matches
@@ -146,9 +161,9 @@ public class UtilitiesModificationMapper {
      * null if no mapping was possible.
      *
      * @param modificationMatch the utilities ModificationMatch
-     * @return the colims Modification
+     * @return the Colims Modification instance
      */
-    private Modification mapModificationMatch(ModificationMatch modificationMatch) {
+    private Modification mapModificationMatch(final ModificationMatch modificationMatch) {
         Modification modification;
 
         //look for the modification in the newModifications map
@@ -192,9 +207,9 @@ public class UtilitiesModificationMapper {
      * null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
-     * @return the colims Modification entity
+     * @return the Colims Modification entity
      */
-    private Modification mapModificationMatch(CvTerm cvTerm) {
+    private Modification mapModificationMatch(final CvTerm cvTerm) {
         Modification modification;
 
         //look for the modification in the newModifications map

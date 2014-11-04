@@ -53,8 +53,8 @@ public class UtilitiesPsmMapper {
      * @param targetSpectrum the Colims spectrum entity
      * @throws SQLException thrown in case of an SQL related problem
      * @throws IOException thrown in case of an IO related problem
-     * @throws ClassNotFoundException thrown in case of a class not found
-     * problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a
+     * class by it's string name.
      * @throws InterruptedException thrown in case of an interrupted thread
      * problem
      * @throws MappingException thrown in case of a mapping related problem

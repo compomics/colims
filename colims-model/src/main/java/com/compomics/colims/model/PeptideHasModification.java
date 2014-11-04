@@ -22,9 +22,15 @@ public class PeptideHasModification extends DatabaseEntity {
 
     private static final long serialVersionUID = 3283350956279991057L;
 
+    /**
+     * The location of the modification on the peptide sequence.
+     */
     @Basic(optional = true)
     @Column(name = "location")
     private Integer location;
+    /**
+     *
+     */
     @Basic(optional = true)
     @Column(name = "alpha_score")
     private Double alphaScore;
