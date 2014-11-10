@@ -113,7 +113,7 @@ public class UtilitiesModificationMapper {
                             List<Integer> orderedProbablisticSites = ptmScoring.getOrderedProbabilisticSites();
                             if (!orderedProbablisticSites.isEmpty()) {
                                 Double probabilisticScore = ptmScoring.getProbabilisticScore(orderedProbablisticSites.get(0));
-                                peptideHasModification.setAlphaScore(probabilisticScore);
+                                peptideHasModification.setProbabilityScore(probabilisticScore);
                                 Set<Integer> locations = ptmScoring.getProbabilisticSites();
                                 if (!locations.contains(modificationMatch.getModificationSite())) {
                                     LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedProbablisticSites.toArray()) + ")");

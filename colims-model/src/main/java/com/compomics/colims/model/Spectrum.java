@@ -19,6 +19,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 /**
+ * This class represents a spectrum entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -30,43 +31,82 @@ public class Spectrum extends DatabaseEntity {
 
     private static final long serialVersionUID = -6581466869218920103L;
 
+    /**
+     * The spectrum accession.
+     */
     @Basic(optional = false)
     @Column(name = "accession", nullable = false)
     private String accession;
+    /**
+     * The spectrum title.
+     */
     @Basic(optional = true)
     @Column(name = "title", nullable = true)
     private String title;
+    /**
+     * The scan number.
+     */
     @Basic(optional = false)
     @Column(name = "scan_number", nullable = false)
     private String scanNumber;
+    /**
+     * The precursor m/z value.
+     */
     @Basic(optional = true)
     @Column(name = "mz_ratio", nullable = true)
     private Double mzRatio;
+    /**
+     * The precursor charge.
+     */
     @Basic(optional = true)
     @Column(name = "charge", nullable = true)
     private Integer charge;
+    /**
+     * The scan time.
+     */
     @Basic(optional = true)
     @Column(name = "scan_time", nullable = true)
     private Double scanTime;
+    /**
+     * The intensity value.
+     */
     @Basic(optional = true)
     @Column(name = "intensity", nullable = true)
     private Double intensity;
+    /**
+     * The retention time value.
+     */
     @Basic(optional = true)
     @Column(name = "retention_time", nullable = true)
     private Double retentionTime;
+    /**
+     * The fragmentation type.
+     */
     @Basic(optional = true)
     @Column(name = "fragmentation_type", nullable = true)
     @Enumerated(EnumType.STRING)
     private FragmentationType fragmentationType;
+    /**
+     * The analytical run that produced this spectrum.
+     */
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne
     private AnalyticalRun analyticalRun;
+    /**
+     * The peptides that identify this spectrum.
+     */
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<Peptide> peptides = new ArrayList<>();
+    /**
+     * The SpectrumFile instances linked to this spectrum.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Spectrum() {
     }
 

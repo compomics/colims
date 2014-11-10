@@ -42,7 +42,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     public void map(final com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
         //enzyme
         Enzyme enzyme = utilitiesSearchParameters.getEnzyme();
-        //searchParameterSettings.setEnzyme(enzyme.getName().toLowerCase());
+        //utilitiesSearchParameters.setEnzyme(enzyme.getName().toLowerCase());
         //number of missed cleavages
         searchParameters.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());
         //precursor mass tolerance unit

@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
+ * This class represents a search engine entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -47,13 +48,29 @@ public class SearchEngine extends CvParam {
     public SearchEngine() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param searchEngineType the search engine type enum
+     * @param version the search engine version
+     */
     public SearchEngine(final SearchEngineType searchEngineType, final String version) {
         super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.searchEngineType = searchEngineType;
         this.version = version;
     }
 
-    public SearchEngine(SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
+    /**
+     * Constructor.
+     *
+     * @param searchEngineType the search engine type enum
+     * @param version the search engine version
+     * @param ontology the CV term ontology
+     * @param label the CV term label
+     * @param accession The CV term accession
+     * @param name The CV term name
+     */
+    public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
         this.searchEngineType = searchEngineType;
         this.version = version;

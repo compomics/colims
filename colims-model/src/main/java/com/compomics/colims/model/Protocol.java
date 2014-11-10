@@ -20,6 +20,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents a protocol entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -29,25 +30,43 @@ public class Protocol extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 4800989001609802377L;
 
+    /**
+     * The protocol name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a protocol name")
     @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    /**
+     * The reduction CV term.
+     */
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam reduction;
+    /**
+     * The enzyme CV term.
+     */
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam enzyme;
+    /**
+     * The cell based CV term.
+     */
     @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam cellBased;
+    /**
+     * The list of samples processed with this protocol.
+     */
     @OneToMany(mappedBy = "protocol")
     private List<Sample> samples = new ArrayList<>();
+    /**
+     * The list of chemical labels.
+     */
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_chemical_labeling",
@@ -56,6 +75,9 @@ public class Protocol extends AuditableDatabaseEntity {
             inverseJoinColumns = {
         @JoinColumn(name = "l_chemical_labeling_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> chemicalLabels = new ArrayList<>();
+    /**
+     * The list of other, user chosen CV terms that define this protocol.
+     */
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_other_cv_param",
@@ -65,10 +87,18 @@ public class Protocol extends AuditableDatabaseEntity {
         @JoinColumn(name = "l_other_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> otherCvParams = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Protocol() {
     }
 
-    public Protocol(String name) {
+    /**
+     * Constructor.
+     *
+     * @param name the protocol name.
+     */
+    public Protocol(final String name) {
         this.name = name;
     }
 

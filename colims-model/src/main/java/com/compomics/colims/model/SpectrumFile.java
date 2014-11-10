@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * This class represents a spectrum file entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -18,11 +19,16 @@ public class SpectrumFile extends DatabaseEntity {
 
     private static final long serialVersionUID = -6234803421590111200L;
 
-    //the gzipped mgf file
+    /**
+     * The gzipped MGF file as a byte array.
+     */
     @Lob
     @Basic(optional = false)
     @Column(name = "content", nullable = false)
     private byte[] content;
+    /**
+     * The Spectrum instance of this spectrum file.
+     */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
     @ManyToOne
     private Spectrum spectrum;

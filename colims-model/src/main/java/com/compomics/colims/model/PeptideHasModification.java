@@ -23,32 +23,47 @@ public class PeptideHasModification extends DatabaseEntity {
     private static final long serialVersionUID = 3283350956279991057L;
 
     /**
-     * The location of the modification on the peptide sequence.
+     * The location of the modification on the peptide sequence. 1 is the first amino acid.
      */
     @Basic(optional = true)
     @Column(name = "location")
     private Integer location;
     /**
-     *
+     * The probabilistic score value.
      */
     @Basic(optional = true)
-    @Column(name = "alpha_score")
-    private Double alphaScore;
+    @Column(name = "prob_score")
+    private Double probabilityScore;
+    /**
+     * The delta score value.
+     */
     @Basic(optional = true)
     @Column(name = "delta_score")
     private Double deltaScore;
+    /**
+     * The modification type (fixed or variable).
+     */
     @Basic(optional = true)
     @Column(name = "modification_type", nullable = true)
     @Enumerated(EnumType.ORDINAL)
     private ModificationType modificationType;
+    /**
+     * The Peptide instance where the modification has been identified on.
+     */
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
+    /**
+     * The Modification instance.
+     */
     @JoinColumn(name = "l_modification_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Modification modification;
 
+    /**
+     * No-arg constructor.
+     */
     public PeptideHasModification() {
     }
 
@@ -68,12 +83,12 @@ public class PeptideHasModification extends DatabaseEntity {
         this.peptide = peptide;
     }
 
-    public Double getAlphaScore() {
-        return alphaScore;
+    public Double getProbabilityScore() {
+        return probabilityScore;
     }
 
-    public void setAlphaScore(final Double alphaScore) {
-        this.alphaScore = alphaScore;
+    public void setProbabilityScore(final Double probabilityScore) {
+        this.probabilityScore = probabilityScore;
     }
 
     public Double getDeltaScore() {

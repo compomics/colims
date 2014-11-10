@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * This class represents an group entity in the database. The table name is
+ * This class represents a group entity in the database. The table name is
  * "user_group" because "group" is a reserved keyword.
  *
  * @author Niels Hulstaert

@@ -18,6 +18,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 /**
+ * This class represents a protein entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -30,23 +31,46 @@ public class Protein extends DatabaseEntity {
 
     private static final long serialVersionUID = -8217759222711303528L;
 
+    /**
+     * The protein sequence.
+     */
     @Lob
     @Basic(optional = false)
     @Column(name = "protein_sequence", nullable = false)
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;
+    /**
+     * The PeptideHasProtein instances from the join table between the peptide
+     * and protein tables.
+     */
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
+    /**
+     * The PeptideHasProtein instances from the join table between the peptide
+     * and protein tables. This list contains all join table entries where this
+     * protein is the main group protein.
+     */
     @OneToMany(mappedBy = "mainGroupProtein")
     private List<PeptideHasProtein> peptideHasMainGroupProteins = new ArrayList<>();
+    /**
+     * The list of protein accessions linked to this protein.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "protein")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinAccession> proteinAccessions = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Protein() {
     }
 
-    public Protein(String sequence) {
+    /**
+     * Constructor.
+     *
+     * @param sequence the peptide sequence.
+     */
+    public Protein(final String sequence) {
         this.sequence = sequence;
     }
 

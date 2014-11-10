@@ -20,6 +20,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents a sample entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -29,23 +30,41 @@ public class Sample extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7792823489878347845L;
 
+    /**
+     * The sample name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a sample name")
     @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
+    /**
+     * The sample condition. This is a free text field.
+     */
     @Basic(optional = true)
     @Column(name = "sample_condition", nullable = true)
     private String condition;
+    /**
+     * The sample storage location. This is a free text field.
+     */
     @Basic(optional = true)
     @Column(name = "storage_location", nullable = true)
     private String storageLocation;
+    /**
+     * The experiment the sample belongs to.
+     */
     @ManyToOne
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     private Experiment experiment;
+    /**
+     * The protocol linked to this sample.
+     */
     @ManyToOne
     @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")
     private Protocol protocol;
+    /**
+     * The materials of this sample.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     List<SampleBinaryFile> binaryFiles = new ArrayList<>();
     @ManyToMany
@@ -55,13 +74,24 @@ public class Sample extends AuditableDatabaseEntity {
             inverseJoinColumns = {
                 @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
+    /**
+     * The analytical runs that were performed using this sample.
+     */
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Sample() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name the sample name.
+     */
     public Sample(String name) {
         this.name = name;
     }

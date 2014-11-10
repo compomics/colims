@@ -13,30 +13,48 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
+ * This class represents a permission entity in the database.
  *
  * @author Niels Hulstaert
  */
 @Table(name = "permission")
 @Entity
 public class Permission extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = 8437203328116083889L;
-    
+
+    /**
+     * The permission name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a permission accession")
     @Length(min = 3, max = 20, message = "Permission name length must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    /**
+     * The permission description.
+     */
     @Basic(optional = true)
     @Length(max = 500, message = "Permission description length must be less than {max} characters")
     @Column(name = "description", nullable = true)
     private String description;
+    /**
+     * The roles this permission belongs to.
+     */
     @ManyToMany(mappedBy = "permissions")
     private List<Role> roles = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public Permission() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name the permission name
+     */
     public Permission(String name) {
         this.name = name;
     }
@@ -94,5 +112,5 @@ public class Permission extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return name;
-    }    
+    }
 }

@@ -147,7 +147,7 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
             Assert.assertNotNull(peptideHasModification.getPeptide());
-            Assert.assertNotNull(peptideHasModification.getAlphaScore());
+            Assert.assertNotNull(peptideHasModification.getProbabilityScore());
             Assert.assertNotNull(peptideHasModification.getDeltaScore());
 
             Modification modification = peptideHasModification.getModification();
@@ -164,14 +164,14 @@ public class UtilitiesModificationMapperTest {
                 Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
-                Assert.assertEquals(phosphorylationScore, peptideHasModification.getAlphaScore(), 0.001);
+                Assert.assertEquals(phosphorylationScore, peptideHasModification.getProbabilityScore(), 0.001);
                 Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
             } else if (modification.getName().equals("L-proline removal")) {
                 Assert.assertEquals("L-proline removal", modification.getName());
                 Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
                 Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                 Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
-                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getAlphaScore(), 0.001);
+                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getProbabilityScore(), 0.001);
                 Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
             } else {
                 Assert.fail();
@@ -221,7 +221,7 @@ public class UtilitiesModificationMapperTest {
 
             //since the modification is fixed, there should be no score
             Assert.assertNull(peptideHasModification.getDeltaScore());
-            Assert.assertNull(peptideHasModification.getAlphaScore());
+            Assert.assertNull(peptideHasModification.getProbabilityScore());
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNotNull(modification.getId());

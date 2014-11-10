@@ -20,6 +20,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 
 /**
+ * This class represents an user entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -29,37 +30,61 @@ public class User extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -4086933454695081685L;
 
+    /**
+     * The user name. This is be used during the application log in.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an user name")
     @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    /**
+     * The first name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a first name")
     @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters")
     @Column(name = "first_name", nullable = false)
     private String firstName;
+    /**
+     * The last name.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a last name")
     @Length(min = 3, max = 30, message = "Last name must be between {min} and {max} characters")
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    /**
+     * The email address.
+     */
     @Basic(optional = false)
     @Email(message = "Please insert a valid email address")
     @NotBlank(message = "Please insert an email address")
     @Column(name = "email", nullable = false)
     private String email;
+    /**
+     * The user password. This is stored encrypted in the database.
+     */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a password")
     @Column(name = "password", nullable = false)
     private String password;
+    /**
+     * The institution the user belongs to.
+     */
     @ManyToOne
     @JoinColumn(name = "l_institution_id", referencedColumnName = "id")
     private Institution institution;
+    /**
+     * The projects owned by this user.
+     */
     @OneToMany(mappedBy = "owner")
     private List<Project> ownedProjects = new ArrayList<>();
     @ManyToMany(mappedBy = "users")
     private List<Project> projects = new ArrayList<>();
+    /**
+     * The groups the user belongs to.
+     */
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
@@ -68,10 +93,18 @@ public class User extends AuditableDatabaseEntity {
                 @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
     private List<Group> groups = new ArrayList<>();
 
+    /**
+     * No-arg constructor.
+     */
     public User() {
     }
 
-    public User(String name) {
+    /**
+     * Constructor.
+     *
+     * @param name the user name
+     */
+    public User(final String name) {
         this();
         this.name = name;
     }

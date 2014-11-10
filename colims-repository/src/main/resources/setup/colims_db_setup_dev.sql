@@ -165,9 +165,7 @@
         id bigint not null auto_increment,
         accession varchar(255),
         alternative_accession varchar(255),
-        average_mass double precision,
         average_mass_shift double precision,
-        monoisotopic_mass double precision,
         monoisotopic_mass_shift double precision,
         name varchar(255) not null,
         primary key (id)
@@ -187,10 +185,10 @@
 
     create table colims.peptide_has_modification (
         id bigint not null auto_increment,
-        alpha_score double precision,
         delta_score double precision,
         location integer,
         modification_type integer,
+        prob_score double precision,
         l_modification_id bigint,
         l_peptide_id bigint,
         primary key (id)
@@ -282,30 +280,9 @@
         l_other_cv_param_id bigint not null
     );
 
-    create table colims.quant_param_cv_param (
-        id bigint not null auto_increment,
-        accession varchar(255) not null,
-        label varchar(255) not null,
-        name varchar(255) not null,
-        ontology varchar(255) not null,
-        param_value varchar(255),
-        cv_property varchar(255) not null,
-        primary key (id)
-    );
-
     create table colims.quant_param_settings_has_reagent (
-        l_quant_param_settings_id bigint not null,
-        l_quant_param_cv_param_id bigint not null
-    );
-
-    create table colims.quant_parameter_settings (
-        id bigint not null auto_increment,
-        error double precision,
-        include_modifications bit,
-        label_count integer,
-        minimum_ratio_count integer,
-        l_method_cv_id bigint,
-        primary key (id)
+        l_quant_parameters_id bigint not null,
+        l_quant_cv_param_id bigint not null
     );
 
     create table colims.quantification (
@@ -313,6 +290,17 @@
         intensity double precision not null,
         weight integer not null,
         l_quantification_file_id bigint,
+        primary key (id)
+    );
+
+    create table colims.quantification_cv_param (
+        id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
+        param_value varchar(255),
+        cv_property varchar(255) not null,
         primary key (id)
     );
 
@@ -342,6 +330,16 @@
         id bigint not null auto_increment,
         l_peptide_id bigint,
         l_quantification_id bigint,
+        primary key (id)
+    );
+
+    create table colims.quantification_parameters (
+        id bigint not null auto_increment,
+        error double precision,
+        include_modifications bit,
+        label_count integer,
+        minimum_ratio_count integer,
+        l_method_cv_id bigint,
         primary key (id)
     );
 
@@ -403,6 +401,17 @@
         primary key (id)
     );
 
+    create table colims.search_cv_param (
+        id bigint not null auto_increment,
+        accession varchar(255) not null,
+        label varchar(255) not null,
+        name varchar(255) not null,
+        ontology varchar(255) not null,
+        param_value varchar(255),
+        cv_property varchar(255) not null,
+        primary key (id)
+    );
+
     create table colims.search_engine (
         id bigint not null auto_increment,
         accession varchar(255) not null,
@@ -415,23 +424,22 @@
         primary key (id)
     );
 
-    create table colims.search_param_cv_param (
+    create table colims.search_modification (
         id bigint not null auto_increment,
-        accession varchar(255) not null,
-        label varchar(255) not null,
+        accession varchar(255),
+        alternative_accession varchar(255),
+        average_mass_shift double precision,
+        monoisotopic_mass_shift double precision,
         name varchar(255) not null,
-        ontology varchar(255) not null,
-        param_value varchar(255),
-        cv_property varchar(255) not null,
         primary key (id)
     );
 
     create table colims.search_param_set_has_add_cv_param (
-        l_search_param_settings_id bigint not null,
+        l_search_parameters_id bigint not null,
         l_additional_cv_param_id bigint not null
     );
 
-    create table colims.search_parameter_settings (
+    create table colims.search_parameters (
         id bigint not null auto_increment,
         search_ion_type_1 integer,
         fragment_mass_tolerance double precision,
@@ -443,8 +451,16 @@
         search_ion_type_2 integer,
         threshold double precision,
         upper_charge integer,
-        l_search_param_enzyme_cv_id bigint,
+        l_search_enzyme_cv_id bigint,
         l_search_type_cv_id bigint,
+        primary key (id)
+    );
+
+    create table colims.search_params_has_modification (
+        id bigint not null auto_increment,
+        modification_type integer,
+        l_search_modification_id bigint,
+        l_search_parameters_id bigint,
         primary key (id)
     );
 
@@ -690,19 +706,14 @@
         references colims.protocol (id);
 
     alter table colims.quant_param_settings_has_reagent 
-        add constraint FK_9vve0gg05i3c2luvabhk276ag 
-        foreign key (l_quant_param_cv_param_id) 
-        references colims.quant_param_cv_param (id);
+        add constraint FK_e1eistno7ee0yyj3xh1il6icj 
+        foreign key (l_quant_cv_param_id) 
+        references colims.quantification_cv_param (id);
 
     alter table colims.quant_param_settings_has_reagent 
-        add constraint FK_ony26ium39mcr0apne3ak2iot 
-        foreign key (l_quant_param_settings_id) 
-        references colims.quant_parameter_settings (id);
-
-    alter table colims.quant_parameter_settings 
-        add constraint FK_8gkpneo17k47elt2faftn5dpw 
-        foreign key (l_method_cv_id) 
-        references colims.quant_param_cv_param (id);
+        add constraint FK_rkd4el7re84mngd9pmccwmcyy 
+        foreign key (l_quant_parameters_id) 
+        references colims.quantification_parameters (id);
 
     alter table colims.quantification 
         add constraint FK_o1pngv9c5nym7t3guesme7guy 
@@ -724,6 +735,11 @@
         foreign key (l_quantification_id) 
         references colims.quantification (id);
 
+    alter table colims.quantification_parameters 
+        add constraint FK_g99ajdjvoliyurlibrotbuwqr 
+        foreign key (l_method_cv_id) 
+        references colims.quantification_cv_param (id);
+
     alter table colims.quantification_settings 
         add constraint FK_7yyahob7fruseylo348enfa7d 
         foreign key (l_experiment_id) 
@@ -737,7 +753,7 @@
     alter table colims.quantification_settings 
         add constraint FK_cjhxlyajclvflr45jxcw09oet 
         foreign key (l_quant_param_settings_id) 
-        references colims.quant_parameter_settings (id);
+        references colims.quantification_parameters (id);
 
     alter table colims.role_has_permission 
         add constraint FK_sp2yl1puui1jbdknkehlvhxq4 
@@ -792,7 +808,7 @@
     alter table colims.search_and_validation_settings 
         add constraint FK_1c0io12fbf8qsoebhe6n9201r 
         foreign key (l_search_param_settings_id) 
-        references colims.search_parameter_settings (id);
+        references colims.search_parameters (id);
 
     alter table colims.search_param_set_has_add_cv_param 
         add constraint FK_oo4btla1bmak1lt5x64tgh91r 
@@ -800,19 +816,29 @@
         references colims.protocol_cv_param (id);
 
     alter table colims.search_param_set_has_add_cv_param 
-        add constraint FK_19efr77kla6kyya9i9e0m2f7l 
-        foreign key (l_search_param_settings_id) 
-        references colims.search_parameter_settings (id);
+        add constraint FK_ea6rbjy8x6figprox9hsf76ie 
+        foreign key (l_search_parameters_id) 
+        references colims.search_parameters (id);
 
-    alter table colims.search_parameter_settings 
-        add constraint FK_osereol4xy482l2hc8j24st8w 
-        foreign key (l_search_param_enzyme_cv_id) 
-        references colims.search_param_cv_param (id);
+    alter table colims.search_parameters 
+        add constraint FK_6vjw0vbuohtoiqh2ogsoexwee 
+        foreign key (l_search_enzyme_cv_id) 
+        references colims.search_cv_param (id);
 
-    alter table colims.search_parameter_settings 
-        add constraint FK_amvm1xffaneak73q6e24typf0 
+    alter table colims.search_parameters 
+        add constraint FK_c4887nijg14eonajt08kjd7y2 
         foreign key (l_search_type_cv_id) 
-        references colims.search_param_cv_param (id);
+        references colims.search_cv_param (id);
+
+    alter table colims.search_params_has_modification 
+        add constraint FK_md8klk0kk7o4nxw0yl3jycjcf 
+        foreign key (l_search_modification_id) 
+        references colims.search_modification (id);
+
+    alter table colims.search_params_has_modification 
+        add constraint FK_bja38bxhwtbll4loolmjdfvdy 
+        foreign key (l_search_parameters_id) 
+        references colims.search_parameters (id);
 
     alter table colims.spectrum 
         add constraint FK_mpjgedldeff5qugyrqangh6so 

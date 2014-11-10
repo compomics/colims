@@ -1,7 +1,6 @@
 package com.compomics.colims.model;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -9,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * This class represents the join table between the peptide and protein tables.
  *
  * @author Niels Hulstaert
  */
@@ -74,6 +74,6 @@ public class PeptideHasProtein extends DatabaseEntity {
 
     public void setMainGroupProtein(final Protein mainGroupProtein) {
         this.mainGroupProtein = mainGroupProtein;
-    }        
-    
+    }
+
 }
