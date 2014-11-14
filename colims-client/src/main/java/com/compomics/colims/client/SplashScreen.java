@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JWindow;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -152,7 +153,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      * Set the progress message of the progress bar.
      *
      * @param progressMessage the progress bar label message
-     * @param value the progress bar value
+     * @param value           the progress bar value
      */
     public void setProgressLabel(final String progressMessage, final int value) {
         if (showProgressLabel) {
