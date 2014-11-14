@@ -28,7 +28,7 @@ public class FastaDb extends DatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a fasta DB name")
-    @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
+    @Length(min = 4, max = 100, message = "Name must be between {min} and {max} characters")
     @Column(name = "name", nullable = false)
     private String name;
     /**
