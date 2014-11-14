@@ -4,7 +4,6 @@ import com.compomics.colims.distributed.model.QueueMessage;
 import com.compomics.colims.distributed.model.DbTaskError;
 import java.util.List;
 import javax.jms.JMSException;
-import javax.management.MalformedObjectNameException;
 
 /**
  *

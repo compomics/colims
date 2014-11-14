@@ -10,7 +10,7 @@ import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import java.util.Date;
 import java.util.List;
-import javax.jms.JMSException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class DbTaskProducerTest {
     private QueueManager queueManager;
     
     @Test
-    public void testSendDbTaskMessage() throws JMSException, Exception {
+    public void testSendDbTaskMessage() throws Exception {
         final PersistDbTask persistDbTask = new PersistDbTask();        
         persistDbTask.setEnitityId(1L);
         persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);

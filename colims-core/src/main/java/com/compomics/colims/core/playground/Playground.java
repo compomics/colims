@@ -19,7 +19,7 @@ import uk.ac.ebi.ook.web.model.DataHolder;
  */
 public class Playground {    
     
-    public static void main(final String[] args) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+    public static void main(final String[] args) throws IOException, ClassNotFoundException, SQLException {
         ApplicationContextProvider.getInstance().setDefaultApplicationContext();
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();                        
         

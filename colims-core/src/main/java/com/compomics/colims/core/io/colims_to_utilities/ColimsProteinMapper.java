@@ -3,9 +3,7 @@ package com.compomics.colims.core.io.colims_to_utilities;
 import java.util.List;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

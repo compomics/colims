@@ -5,7 +5,7 @@ import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
 import java.util.List;
-import org.jasypt.util.password.BasicPasswordEncryptor;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

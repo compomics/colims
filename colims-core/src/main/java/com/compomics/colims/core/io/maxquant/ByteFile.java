@@ -37,7 +37,7 @@ public class ByteFile extends File {
         super(uri);
     }
 
-    public ByteFile(final File readInFile) throws IOException, FileNotFoundException {
+    public ByteFile(final File readInFile) throws IOException {
         super(readInFile.getAbsolutePath());
         slurpFile(readInFile);
     }
@@ -47,7 +47,7 @@ public class ByteFile extends File {
         slurpedFile = fileByteArray.clone();
     }
 
-    private void slurpFile(final File readInFile) throws IOException, FileNotFoundException {
+    private void slurpFile(final File readInFile) throws IOException {
         if (readInFile.isFile()) {
             ByteArrayOutputStream bais = new ByteArrayOutputStream(1024);
             IOUtils.copy(new FileInputStream(readInFile), bais);

@@ -7,7 +7,7 @@ import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PrideObjectsFactory;
 import com.compomics.util.pride.PtmToPrideMap;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import org.springframework.stereotype.Component;
 
@@ -49,7 +49,7 @@ public class PtmCvTermMapper {
         return ptmToPrideMap;
     }
 
-    public void setPtmToPrideMap(PtmToPrideMap ptmToPrideMap) throws ClassNotFoundException, FileNotFoundException, IOException {
+    public void setPtmToPrideMap(PtmToPrideMap ptmToPrideMap) throws ClassNotFoundException, IOException {
         PrideObjectsFactory.getInstance().setPtmToPrideMap(ptmToPrideMap);
         this.ptmToPrideMap = ptmToPrideMap;
     }

@@ -9,7 +9,6 @@ import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.enums.QuantificationWeight;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class MaxQuantQuantificationParser {
      * @param aQuantificationFile the file to parse
      * @return a Map key: the spectrum ID, value: the list of quantifications
      */
-    public static Map<Integer, List<Quantification>> parseMaxQuantQuantification(File aQuantificationFile) throws IOException, FileNotFoundException {
+    public static Map<Integer, List<Quantification>> parseMaxQuantQuantification(File aQuantificationFile) throws IOException {
         Map<Integer, List<Quantification>> processedSpectrumMap = new HashMap<>(1000);
 
         TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aQuantificationFile);

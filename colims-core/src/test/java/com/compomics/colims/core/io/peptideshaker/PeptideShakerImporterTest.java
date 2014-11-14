@@ -26,7 +26,6 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +66,7 @@ public class PeptideShakerImporterTest {
     private InstrumentService instrumentService;
 
     @Before
-    public void setup() throws FileNotFoundException, IOException, XmlPullParserException {
+    public void setup() throws IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();

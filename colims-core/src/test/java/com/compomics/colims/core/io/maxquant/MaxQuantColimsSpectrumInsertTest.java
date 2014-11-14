@@ -26,7 +26,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.springframework.core.io.ClassPathResource;
 
 /**

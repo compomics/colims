@@ -7,6 +7,6 @@ package com.compomics.colims.distributed.model.enums;
  */
 public enum NotificationType {
 
-    STARTED, FINISHED;
+    STARTED, FINISHED
 
 }

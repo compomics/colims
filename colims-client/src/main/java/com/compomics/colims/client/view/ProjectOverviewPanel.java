@@ -2,7 +2,6 @@ package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.controller.ProjectOverviewController;
 import com.compomics.util.Util;
-import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.IonFactory;
 import com.compomics.util.experiment.biology.NeutralLoss;
@@ -1074,15 +1073,15 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     }//GEN-LAST:event_errorPlotTypeCheckBoxMenuItemActionPerformed
 
     private void exportSpectrumGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, (Component) getSpectrum());
+        new ExportGraphicsDialog(colimsFrame, this, true, getSpectrum());
     }//GEN-LAST:event_exportSpectrumGraphicsJMenuItemActionPerformed
 
     private void exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, (Component) getSpectrumAndPlots());
+        new ExportGraphicsDialog(colimsFrame, this, true, getSpectrumAndPlots());
     }//GEN-LAST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
 
     private void exportSequenceFragmentationGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, (Component) getSequenceFragmentationPlot());
+        new ExportGraphicsDialog(colimsFrame, this, true, getSequenceFragmentationPlot());
     }//GEN-LAST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
 
     private void exportIntensityHistogramGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportIntensityHistogramGraphicsJMenuItemActionPerformed
@@ -1222,7 +1221,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
      * @return the spectrum panel, or null if the spectrum tab is not enabled
      */
     public Component getSpectrum() {
-        return (Component) spectrumJPanel.getComponent(0);
+        return spectrumJPanel.getComponent(0);
     }
 
     /**
@@ -1242,7 +1241,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
      * tab is not enabled
      */
     public Component getSequenceFragmentationPlot() {
-        return (Component) secondarySpectrumPlotsJPanel.getComponent(0);
+        return secondarySpectrumPlotsJPanel.getComponent(0);
     }
 
     /**

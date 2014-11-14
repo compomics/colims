@@ -72,7 +72,7 @@ public class UtilitiesSpectrumMapperTest {
      * @throws MzMLUnmarshallerException
      */
     @Test
-    public void testMapSpectrum() throws MappingException, IOException, FileNotFoundException, ClassNotFoundException, MzMLUnmarshallerException {
+    public void testMapSpectrum() throws MappingException, IOException, ClassNotFoundException, MzMLUnmarshallerException {
         Spectrum spectrum = new Spectrum();
 
         utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.CID, spectrum);

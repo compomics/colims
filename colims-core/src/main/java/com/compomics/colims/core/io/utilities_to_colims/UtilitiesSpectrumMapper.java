@@ -72,7 +72,7 @@ public class UtilitiesSpectrumMapper {
                 OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
                 BufferedWriter bw = new BufferedWriter(osw);
                 ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos);) {
+                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
 
             //write MSnSpectum to a byte array output stream
             sourceSpectrum.writeMgf(bw);

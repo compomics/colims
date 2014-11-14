@@ -6,26 +6,7 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.core.io.colims_to_utilities.ColimsPsmMapper;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.SpectrumFile;
-import com.compomics.colims.model.enums.FragmentationType;
-import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import com.compomics.util.experiment.massspectrometry.Charge;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *

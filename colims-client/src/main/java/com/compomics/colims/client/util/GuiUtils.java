@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -72,7 +71,7 @@ public class GuiUtils {
 
         for (Component component : parentContainer.getComponents()) {
             if (component.isVisible()) {
-                visibleComponentName = ((JPanel) component).getName();
+                visibleComponentName = component.getName();
             }
         }
 

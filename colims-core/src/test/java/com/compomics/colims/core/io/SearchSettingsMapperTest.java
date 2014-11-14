@@ -1,8 +1,6 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.FastaDbService;
-import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;

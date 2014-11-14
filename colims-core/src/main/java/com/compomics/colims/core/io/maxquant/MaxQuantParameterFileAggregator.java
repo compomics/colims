@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -28,16 +27,16 @@ public class MaxQuantParameterFileAggregator {
      * @param aSummaryFile
      * @param aParametersFile
      */
-    public MaxQuantParameterFileAggregator(final File aSummaryFile, final File aParametersFile) throws IOException, FileNotFoundException {
+    public MaxQuantParameterFileAggregator(final File aSummaryFile, final File aParametersFile) throws IOException {
         this.summaryFile = new ByteFile(aSummaryFile);
         this.parametersFile = new ByteFile(aParametersFile);
     }
 
-    public void setParametersFile(final File aParametersFile) throws FileNotFoundException, IOException {
+    public void setParametersFile(final File aParametersFile) throws IOException {
         this.parametersFile = new ByteFile(aParametersFile);
     }
 
-    public void setSummaryFile(final File aSummaryFile) throws FileNotFoundException, IOException {
+    public void setSummaryFile(final File aSummaryFile) throws IOException {
         this.summaryFile = new ByteFile(aSummaryFile);
     }
 

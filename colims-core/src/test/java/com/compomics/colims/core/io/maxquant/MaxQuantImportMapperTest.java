@@ -1,7 +1,7 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -55,7 +55,7 @@ public class MaxQuantImportMapperTest {
      * @throws java.lang.ClassNotFoundException
      */
     @Test
-    public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
+    public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, ClassNotFoundException {
         System.out.println("map");
         MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         maxQuantImporter.initImport(maxQuantImport);

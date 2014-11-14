@@ -34,7 +34,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvParam;
-import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.CvParamType;
@@ -340,9 +339,9 @@ public class MzMLParserImpl implements MzMLParser {
         Precursor precursor = new Precursor(0.0, mzRatio, possibleCharges);        
 
         //get mz ratios and intensities and put them in a map (key: mz ratio, value: intensity)
-        BinaryDataArray mzBinaryDataArray = (BinaryDataArray) mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(0);
+        BinaryDataArray mzBinaryDataArray = mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(0);
         Number[] mzNumbers = mzBinaryDataArray.getBinaryDataAsNumberArray();
-        BinaryDataArray intBinaryDataArray = (BinaryDataArray) mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(1);
+        BinaryDataArray intBinaryDataArray = mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(1);
         Number[] intNumbers = intBinaryDataArray.getBinaryDataAsNumberArray();
         HashMap<Double, Peak> peaks = new HashMap<>();
         for (int i = 0; i < mzNumbers.length; i++) {

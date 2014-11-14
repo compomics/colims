@@ -45,7 +45,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
  */
 public class Playground2 {
 
-    public static void main(String[] args) throws XmlPullParserException, IOException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, ArchiveException {
+    public static void main(String[] args) throws XmlPullParserException, IOException, MappingException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, ArchiveException {
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
 
         PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);

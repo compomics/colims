@@ -18,7 +18,6 @@ import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
 import org.junit.BeforeClass;
@@ -36,7 +35,7 @@ public class UtilitiesProteinMapperTest {
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
     @BeforeClass
-    public static void setupOnce() throws IOException, FileNotFoundException, ClassNotFoundException {
+    public static void setupOnce() throws IOException, ClassNotFoundException {
         //load SequenceFactory for testing
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
         SequenceFactory.getInstance().loadFastaFile(fastaFile, null);

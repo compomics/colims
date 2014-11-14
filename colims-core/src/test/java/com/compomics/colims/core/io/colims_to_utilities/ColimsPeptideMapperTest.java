@@ -5,22 +5,7 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *

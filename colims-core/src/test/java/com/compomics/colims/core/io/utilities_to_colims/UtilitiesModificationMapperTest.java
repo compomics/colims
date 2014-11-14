@@ -61,7 +61,7 @@ public class UtilitiesModificationMapperTest {
      * @throws XmlPullParserException
      */
     @Before
-    public void loadSearchParameters() throws FileNotFoundException, IOException, XmlPullParserException {
+    public void loadSearchParameters() throws IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         ptmFactoryWrapper.getPtmFactory().clearFactory();

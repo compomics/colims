@@ -25,7 +25,7 @@ public abstract class EntityChangeEvent {
         /**
          * Updated entity event.
          */
-        UPDATED;                
+        UPDATED
     }
     
     /**

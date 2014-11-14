@@ -2,11 +2,10 @@ package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import com.compomics.util.experiment.identification.matches.ProteinMatch;
+
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,7 +9,6 @@ import org.apache.xml.xml_soap.Map;
 import org.apache.xml.xml_soap.MapItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 /**
  *

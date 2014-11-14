@@ -5,7 +5,6 @@ import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -104,7 +103,7 @@ public class MaxQuantParameterParser {
         return runParams;
     }
 
-    public Map<String, String> parseParameters(File parameterFile) throws FileNotFoundException, IOException {
+    public Map<String, String> parseParameters(File parameterFile) throws IOException {
         Map<String, String> parameters = new HashMap<>();
         try (FileInputStream fis = new FileInputStream(parameterFile);
                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());

@@ -29,7 +29,6 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 /**
  *

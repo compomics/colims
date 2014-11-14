@@ -109,14 +109,14 @@ public class QueueManagerImpl implements QueueManager {
     @Override
     public void deleteMessage(final String queueName, final String messageId) throws Exception {
         ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
-        QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
+        QueueViewMBean queueViewMBean = MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.removeMessage(messageId);
     }
 
     @Override
     public void purgeMessages(final String queueName) throws Exception {
         ObjectName objectName = new ObjectName(String.format(queueObjectName, brokerName, queueName));
-        QueueViewMBean queueViewMBean = (QueueViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
+        QueueViewMBean queueViewMBean = MBeanServerInvocationHandler.newProxyInstance(clientConnector, objectName, QueueViewMBean.class, true);
         queueViewMBean.purge();
     }
 
@@ -140,7 +140,7 @@ public class QueueManagerImpl implements QueueManager {
 
         try {
             ObjectName activeMQ = new ObjectName(String.format(brokerObjectName, brokerName));
-            BrokerViewMBean brokerViewMBean = (BrokerViewMBean) MBeanServerInvocationHandler.newProxyInstance(clientConnector, activeMQ, BrokerViewMBean.class, true);
+            BrokerViewMBean brokerViewMBean = MBeanServerInvocationHandler.newProxyInstance(clientConnector, activeMQ, BrokerViewMBean.class, true);
             //get broker ID to test the connection
             String brokerId = brokerViewMBean.getBrokerId();
 
