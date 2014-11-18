@@ -75,30 +75,30 @@ public class ProjectOverviewController implements Controllable {
     //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
-    private EventList<Experiment> experiments = new BasicEventList<>();
+    private final EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private EventList<Sample> samples = new BasicEventList<>();
+    private final EventList<Sample> samples = new BasicEventList<>();
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
-    private EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
+    private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
-    private EventList<Spectrum> spectra = new BasicEventList<>();
+    private final EventList<Spectrum> spectra = new BasicEventList<>();
     private AdvancedTableModel<Spectrum> psmsTableModel;
     private DefaultEventSelectionModel<Spectrum> psmsSelectionModel;
     /**
      * The spectrum annotator.
      */
-    private PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
+    private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
     /**
      * The utilities user preferences.
      */
-    private UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+    private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     /**
      * The label with for the numbers in the jsparklines columns.
      */
-    private int labelWidth = 50;
+    private final int labelWidth = 50;
     //view
     private ProjectOverviewPanel projectOverviewPanel;
     //parent controller

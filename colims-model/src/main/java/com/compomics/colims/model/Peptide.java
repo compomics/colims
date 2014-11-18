@@ -210,10 +210,7 @@ public class Peptide extends DatabaseEntity {
         if (!Objects.equals(this.psmProbability, other.psmProbability)) {
             return false;
         }
-        if (!Objects.equals(this.psmPostErrorProbability, other.psmPostErrorProbability)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.psmPostErrorProbability, other.psmPostErrorProbability);
     }
 
 }

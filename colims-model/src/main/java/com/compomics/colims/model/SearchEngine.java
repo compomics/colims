@@ -131,10 +131,7 @@ public class SearchEngine extends CvParam {
         if (this.searchEngineType != other.searchEngineType) {
             return false;
         }
-        if (!Objects.equals(this.version, other.version)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.version, other.version);
     }
 
 }

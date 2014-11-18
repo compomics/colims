@@ -177,10 +177,7 @@ public class Instrument extends AuditableDatabaseEntity {
         if (!Objects.equals(this.detector, other.detector)) {
             return false;
         }
-        if (!Objects.equals(this.analyzers, other.analyzers)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.analyzers, other.analyzers);
     }
 
     @Override

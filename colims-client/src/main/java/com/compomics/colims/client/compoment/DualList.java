@@ -201,9 +201,9 @@ public class DualList<T> extends javax.swing.JPanel {
     }
 
     /**
-     * Sort the list using the comparator
+     * Sort the list using the comparator.
      *
-     * @param listToSort
+     * @param listToSort the list to sort
      */
     private void sort(ObservableList<T> listToSort) {
         Collections.sort(listToSort, comparator);

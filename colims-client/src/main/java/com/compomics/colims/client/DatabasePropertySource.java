@@ -12,8 +12,9 @@ public class DatabasePropertySource extends PropertySource<String> {
     private final Map<String, String> databaseProperties;
 
     /**
+     * Constructor.
      *
-     * @param databaseProperties
+     * @param databaseProperties the map containing the database properties
      */
     public DatabasePropertySource(Map<String, String> databaseProperties) {
         super("custom");
@@ -22,9 +23,10 @@ public class DatabasePropertySource extends PropertySource<String> {
     }
 
     /**
+     * Get the property value by name.
      *
-     * @param name
-     * @return
+     * @param name the property name
+     * @return the property value
      */
     @Override
     public String getProperty(String name) {

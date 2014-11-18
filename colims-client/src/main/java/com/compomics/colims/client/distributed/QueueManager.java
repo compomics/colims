@@ -3,7 +3,6 @@ package com.compomics.colims.client.distributed;
 import com.compomics.colims.distributed.model.QueueMessage;
 import com.compomics.colims.distributed.model.DbTaskError;
 import java.util.List;
-import javax.jms.JMSException;
 
 /**
  *
@@ -18,9 +17,8 @@ public interface QueueManager {
      * @param <T> a class the extends QueueMessage
      * @param queueName the queue name
      * @return the list of messages on the queue
-     * @throws JMSException thrown in case of a JMS related exception
      */
-    <T extends QueueMessage> List<T> monitorQueue(String queueName) throws JMSException;
+    <T extends QueueMessage> List<T> monitorQueue(String queueName);
 
     /**
      * Redirect the given StorageError to the given queue.

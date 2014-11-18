@@ -29,22 +29,19 @@ public abstract class EntityChangeEvent {
     }
     
     /**
-     * The type of change event
+     * The type of change event.
      */
-    protected Type type;
+    protected final Type type;
 
     /**
+     * Constructor.
      *
-     * @param type
+     * @param type the change type
      */
     public EntityChangeEvent(final Type type) {
         this.type = type;
     }
 
-    /**
-     *
-     * @return
-     */
     public Type getType() {
         return type;
     }             

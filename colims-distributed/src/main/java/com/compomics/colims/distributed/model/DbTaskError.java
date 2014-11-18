@@ -61,10 +61,7 @@ public class DbTaskError extends CompletedDbTask {
             return false;
         }
         final DbTaskError other = (DbTaskError) obj;
-        if (!Objects.equals(this.cause, other.cause)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.cause, other.cause);
     }
 
 }

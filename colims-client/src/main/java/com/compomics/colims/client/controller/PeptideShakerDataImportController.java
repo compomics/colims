@@ -96,7 +96,7 @@ public class PeptideShakerDataImportController implements Controllable {
         //init mgf file(s) selection
         peptideShakerDataImportPanel.getMgfFileList().setModel(mgfFileListModel);
         peptideShakerDataImportPanel.getMgfFileList().setCellRenderer(new ListCellRenderer() {
-            protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+            protected final DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
             @Override
             public java.awt.Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {

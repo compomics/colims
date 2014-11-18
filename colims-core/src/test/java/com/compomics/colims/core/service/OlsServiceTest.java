@@ -51,12 +51,12 @@ public class OlsServiceTest {
     @Test
     public void testFindModificationByExactName() {
         //try to find a non existing modification
-        Modification modification = olsService.findModifiationByExactName("non existing modification");
+        Modification modification = olsService.findModificationByExactName("non existing modification");
 
         Assert.assertNull(modification);
 
         //try to find an existing modification
-        modification = olsService.findModifiationByExactName("methionine oxidation with neutral loss of 64 Da");
+        modification = olsService.findModificationByExactName("methionine oxidation with neutral loss of 64 Da");
 
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
@@ -71,11 +71,11 @@ public class OlsServiceTest {
     @Test
     public void testFindModificationByName() {
         //try to find a non existing modification
-        List<Modification> modifications = olsService.findModifiationByName("non existing modification");
+        List<Modification> modifications = olsService.findModificationByName("non existing modification");
         Assert.assertTrue(modifications.isEmpty());
 
         //try to find an existing modification, the ols web service should return 3 mods
-        modifications = olsService.findModifiationByName("oxidation of m");
+        modifications = olsService.findModificationByName("oxidation of m");
         Assert.assertEquals(3, modifications.size());
     }
 

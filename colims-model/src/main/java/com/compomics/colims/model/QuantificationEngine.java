@@ -114,10 +114,7 @@ public class QuantificationEngine extends CvParam {
         if (this.quantificationEngineType != other.quantificationEngineType) {
             return false;
         }
-        if (!Objects.equals(this.version, other.version)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.version, other.version);
     }
 
 }

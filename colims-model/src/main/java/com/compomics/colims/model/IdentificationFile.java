@@ -166,10 +166,7 @@ public class IdentificationFile extends DatabaseEntity {
         if (!Objects.equals(this.filePath, other.filePath)) {
             return false;
         }
-        if (this.binaryFileType != other.binaryFileType) {
-            return false;
-        }
-        return true;
+        return this.binaryFileType == other.binaryFileType;
     }
 
 }

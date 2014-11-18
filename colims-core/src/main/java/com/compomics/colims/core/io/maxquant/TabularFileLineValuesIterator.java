@@ -46,7 +46,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         advanceLine();
     }
 
-    public TabularFileLineValuesIterator(final File evidenceFile, HeaderEnum[] headerEnumeration) throws IOException,UnparseableException {
+    public TabularFileLineValuesIterator(final File evidenceFile, HeaderEnum[] headerEnumeration) throws IOException {
         // Extract headers	
         fileReader = new FileReader(evidenceFile);
         lineReader = new LineReader(fileReader);

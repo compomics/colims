@@ -55,10 +55,7 @@ public class ExperimentBinaryFile extends BinaryFile {
             return false;
         }
         final ExperimentBinaryFile other = (ExperimentBinaryFile) obj;
-        if (!Objects.equals(this.experiment, other.experiment)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.experiment, other.experiment);
     }
 
 }

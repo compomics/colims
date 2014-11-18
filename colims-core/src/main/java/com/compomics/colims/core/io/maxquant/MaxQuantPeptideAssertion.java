@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class MaxQuantPeptideAssertion {
 
-    private List<String> peptideAssumptionKeysOfBackingEvidenceForGuess = new ArrayList<>();
+    private final List<String> peptideAssumptionKeysOfBackingEvidenceForGuess = new ArrayList<>();
 
     public void addEvidence(String peptideAssumptionKey) {
         peptideAssumptionKeysOfBackingEvidenceForGuess.add(peptideAssumptionKey);

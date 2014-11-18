@@ -203,7 +203,7 @@ public class MaxQuantParameterParser {
         //mods
         MOD_SITE_HEADERS(new String[]{"Site tables"});
         public String column;
-        private String[] columnNames;
+        private final String[] columnNames;
         private int columnReference = -1;
 
         private ParametersHeaders(final String[] fieldnames) {
@@ -285,7 +285,7 @@ public class MaxQuantParameterParser {
         AVERAGE_ABSOLUTE_MASS_DEVIATION("Av. Absolute Mass Deviation"),
         MASS_STANDARD_DEVEVIATION("Mass Standard Deviation"),
         LABELFREE_INTENSITY_NORMALISATION_FACTOR("Label free norm param");
-        public String column;
+        public final String column;
 
         private SummaryHeaders(String column) {
             this.column = column;

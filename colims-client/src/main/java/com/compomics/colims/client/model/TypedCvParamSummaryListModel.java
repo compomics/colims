@@ -49,8 +49,8 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * Update the model with EnumMaps for the given CV param type of a single CV
      * param. The CV param instance can be null.
      *
-     * @param cvParamType
-     * @param t
+     * @param cvParamType the CV param type
+     * @param t the T instance
      */
     public void updateSingleCvParam(CvParamType cvParamType, T t) {
         singleCvParams.put(cvParamType, t);
@@ -72,8 +72,8 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
     /**
      * Update the model with EnumMaps for the single and multiple CV params.
      *
-     * @param singleCvParams
-     * @param multiCvParams
+     * @param singleCvParams the map of single CV params
+     * @param multiCvParams the map of multi CV params
      */
     public void update(EnumMap<CvParamType, T> singleCvParams, EnumMap<CvParamType, List<T>> multiCvParams) {
         this.singleCvParams = singleCvParams;

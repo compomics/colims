@@ -39,14 +39,14 @@ public class SearchSettingsMapper {
     /**
      * Map the SearchAndValidationSettings.
      *
-     * @param searchEngineType
-     * @param version
-     * @param fastaDb
-     * @param utilitiesSearchParameters
-     * @param identificationFiles
-     * @param storeIdentificationFile
+     * @param searchEngineType the search engine type
+     * @param version the search engine version
+     * @param fastaDb the FastaDb instance
+     * @param utilitiesSearchParameters the Utilities search parameters
+     * @param identificationFiles the list of identification files
+     * @param storeIdentificationFile store the identification or not
      * @return the mapped SearchAndValidationSettings
-     * @throws java.io.IOException
+     * @throws java.io.IOException thrown in case of an I/O related exception
      */
     public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();

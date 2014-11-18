@@ -122,10 +122,7 @@ public class Protein extends DatabaseEntity {
             return false;
         }
         final Protein other = (Protein) obj;
-        if (!Objects.equals(this.sequence, other.sequence)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sequence, other.sequence);
     }
 
     @Override

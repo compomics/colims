@@ -12,8 +12,8 @@ public class DefaultDbEntryMessageEvent extends MessageEvent {
 
     /**
      *
-     * @param className
-     * @param entityName
+     * @param className the entity class name
+     * @param entityName the entity name
      */
     public DefaultDbEntryMessageEvent(final String className, final String entityName) {
         super("default database entry", String.format(DEFAULT_DB_ENTRY_MESSAGE, entityName, className), JOptionPane.WARNING_MESSAGE);

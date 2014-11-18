@@ -57,7 +57,7 @@ public class MzMLParserImpl implements MzMLParser {
 
     private static final Logger LOGGER = Logger.getLogger(MzMLParserImpl.class);
     private static final String DEFAULT_SAMPLE_ACCESSION = "default_sample";
-    private Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
+    private final Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
 
@@ -314,7 +314,7 @@ public class MzMLParserImpl implements MzMLParser {
         }
         PrecursorList precursorList = mzMLSpectrum.getPrecursorList();
         if (precursorList != null) {
-            if (precursorList.getCount().intValue() == 1) {
+            if (precursorList.getCount() == 1) {
                 SelectedIonList sIonList = precursorList.getPrecursor().get(0).getSelectedIonList();
                 if (sIonList != null) {
                     for (CVParam cvParam : sIonList.getSelectedIon().get(0).getCvParam()) {

@@ -93,10 +93,7 @@ public class CompletedDbTask extends QueueMessage {
         if (!Objects.equals(this.endedTimestamp, other.endedTimestamp)) {
             return false;
         }
-        if (!Objects.equals(this.dbTask, other.dbTask)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.dbTask, other.dbTask);
     }
 
 }

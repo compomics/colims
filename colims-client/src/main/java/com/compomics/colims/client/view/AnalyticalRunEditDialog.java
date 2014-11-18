@@ -15,8 +15,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
     /**
      * Dialog constructor
      * 
-     * @param parent
-     * @param modal
+     * @param parent the parent dialog
+     * @param modal is the dialog modal
      */
     public AnalyticalRunEditDialog(final Dialog parent, final boolean modal) {
         super(parent, modal);        

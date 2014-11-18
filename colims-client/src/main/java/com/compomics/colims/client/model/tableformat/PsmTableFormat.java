@@ -102,8 +102,8 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     /**
      * Get the protein accessions as a concatenated String.
      *
-     * @param peptide
-     * @return
+     * @param peptide the Peptide instance
+     * @return the concatenated protein accessions
      */
     private String getProteinAccessions(Peptide peptide) {
         String proteinAccessionsString;

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class MaxQuantAnalyticalRun {
 
     private String analyticalRunName;
-    private List<MSnSpectrum> spectraFoundInAnalyticalRun = new ArrayList<>();
+    private final List<MSnSpectrum> spectraFoundInAnalyticalRun = new ArrayList<>();
     private SearchParameters runParameters;
 
     public void addASpectrum(MSnSpectrum aSpectrum) {

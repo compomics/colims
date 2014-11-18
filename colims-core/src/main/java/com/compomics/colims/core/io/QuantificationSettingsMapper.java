@@ -30,9 +30,9 @@ public class QuantificationSettingsMapper {
     /**
      * Map the SearchAndValidationSettings.
      *
-     * @param searchEngineType
-     * @param version
-     * @param fastaDb
+     * @param searchEngineType the search engine type
+     * @param version the search engine version
+     * @param fastaDb the FastaDb instance
      * @param utilitiesSearchParameters
      * @param identificationFiles
      * @param storeIdentificationFile

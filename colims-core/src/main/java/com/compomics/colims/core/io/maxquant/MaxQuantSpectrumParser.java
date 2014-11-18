@@ -239,7 +239,7 @@ public class MaxQuantSpectrumParser {
         Peak_coverage(new String[]{"Peak coverage"}),
         Neutral_loss_level(new String[]{"Neutral loss level"}),
         Reverse(new String[]{"Reverse"});
-        protected String[] columnNames;
+        protected final String[] columnNames;
         protected int columnReference = -1;
 
         private MsmsHeaders(final String[] fieldnames) {

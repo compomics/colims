@@ -173,10 +173,7 @@ public class Project extends AuditableDatabaseEntity {
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
-        if (!Objects.equals(this.owner, other.owner)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.owner, other.owner);
     }
 
     @Override

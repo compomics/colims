@@ -10,19 +10,16 @@ public class AnalyticalRunChangeEvent extends EntityChangeEvent {
     private final AnalyticalRun analyticalRun;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param analyticalRun
+     * @param type the change event type
+     * @param analyticalRun the AnalyticalRun instance
      */
     public AnalyticalRunChangeEvent(final Type type, final AnalyticalRun analyticalRun) {
         super(type);
         this.analyticalRun = analyticalRun;
     }
 
-    /**
-     *
-     * @return
-     */
     public AnalyticalRun getAnalyticalRun() {
         return analyticalRun;
     }

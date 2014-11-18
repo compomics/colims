@@ -78,7 +78,7 @@ public class SampleEditController implements Controllable {
     //model
     private BindingGroup bindingGroup;
     private ObservableList<Protocol> protocolBindingList;
-    private EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
+    private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private Sample sampleToEdit;
@@ -116,8 +116,9 @@ public class SampleEditController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the SampleEditDialog
      */
     public SampleEditDialog getSampleEditDialog() {
         return sampleEditDialog;
@@ -464,8 +465,8 @@ public class SampleEditController implements Controllable {
      * the database. Shows a confirmation dialog first. When confirmed, a
      * DeleteDbTask message is sent to the DB task queue.
      *
-     * @param entity
-     * @param dbEntityClass
+     * @param entity the entity to delete
+     * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
     private boolean deleteEntity(final DatabaseEntity entity, final Class dbEntityClass) {

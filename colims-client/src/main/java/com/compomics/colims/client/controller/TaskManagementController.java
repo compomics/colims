@@ -146,9 +146,6 @@ public class TaskManagementController implements Controllable {
                             queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
 
                             updateMonitoringTables();
-                        } catch (JMSException ex) {
-                            LOGGER.error(ex.getMessage(), ex);
-                            postConnectionErrorMessage(ex.getMessage());
                         } catch (Exception ex) {
                             LOGGER.error(ex.getMessage(), ex);
                             postConnectionErrorMessage(ex.getMessage());
@@ -192,9 +189,6 @@ public class TaskManagementController implements Controllable {
                         queueManager.redirectStorageError(storageQueueName, storageError);
 
                         updateMonitoringTables();
-                    } catch (JMSException ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        postConnectionErrorMessage(ex.getMessage());
                     } catch (Exception ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());
@@ -217,9 +211,6 @@ public class TaskManagementController implements Controllable {
                         queueManager.deleteMessage(errorQueueName, storageError.getMessageId());
 
                         dbTaskErrorQueueTableModel.remove(selectedRowIndex);
-                    } catch (JMSException ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        postConnectionErrorMessage(ex.getMessage());
                     } catch (Exception ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());
@@ -256,9 +247,6 @@ public class TaskManagementController implements Controllable {
                         queueManager.deleteMessage(storedQueueName, storedTask.getMessageId());
 
                         completedDbTaskQueueTableModel.remove(selectedRowIndex);
-                    } catch (JMSException ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        postConnectionErrorMessage(ex.getMessage());
                     } catch (Exception ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         postConnectionErrorMessage(ex.getMessage());

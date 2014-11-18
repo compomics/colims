@@ -48,7 +48,7 @@ public class AuditInterceptor extends EmptyInterceptor {
      * for the entity that will be saved or updated.
      *
      * @param currentState the current state of the entity
-     * @param propertyNames
+     * @param propertyNames the property names array
      * @return true if the state is modified in anyway
      */
     private boolean audit(final Object[] currentState, final String[] propertyNames) {

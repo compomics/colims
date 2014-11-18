@@ -106,7 +106,7 @@ public class MaxQuantProteinGroupParser {
         DECOY(new String[]{"Reverse"}),
         CONTAMINANT(new String[]{"Contaminant"}),
         ID(new String[]{"id"});
-        protected String[] columnNames;
+        protected final String[] columnNames;
         protected int columnReference = -1;
 
         private ProteinGroupHeaders(final String[] fieldnames) {

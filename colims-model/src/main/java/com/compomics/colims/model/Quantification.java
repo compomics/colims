@@ -90,10 +90,7 @@ public class Quantification extends DatabaseEntity {
         if (Double.doubleToLongBits(this.intensity) != Double.doubleToLongBits(other.intensity)) {
             return false;
         }
-        if (this.weight != other.weight) {
-            return false;
-        }
-        return true;
+        return this.weight == other.weight;
     }
 
 }

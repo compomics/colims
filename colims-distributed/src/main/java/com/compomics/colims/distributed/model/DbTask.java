@@ -39,9 +39,9 @@ public abstract class DbTask extends QueueMessage {
     /**
      * Constructor.
      *
-     * @param dbEntityClass
-     * @param enitityId
-     * @param userId
+     * @param dbEntityClass the entity class
+     * @param enitityId the entity ID
+     * @param userId the user ID
      */
     public DbTask(Class dbEntityClass, Long enitityId, Long userId) {
         this.dbEntityClass = dbEntityClass;
@@ -110,10 +110,7 @@ public abstract class DbTask extends QueueMessage {
         if (!Objects.equals(this.submissionTimestamp, other.submissionTimestamp)) {
             return false;
         }
-        if (!Objects.equals(this.userId, other.userId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.userId, other.userId);
     }
 
 }

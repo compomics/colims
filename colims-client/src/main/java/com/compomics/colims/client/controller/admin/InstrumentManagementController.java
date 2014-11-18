@@ -73,14 +73,15 @@ public class InstrumentManagementController implements Controllable {
     private EventBus eventBus;
 
     /**
-     *
+     * No-arg constructor.
      */
     public InstrumentManagementController() {
     }
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the InstrumentManagementDialog
      */
     public InstrumentManagementDialog getInstrumentManagementOverviewDialog() {
         return instrumentManagementDialog;

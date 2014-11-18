@@ -61,10 +61,10 @@ public class ProjectManagementController implements Controllable {
     //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
-    private EventList<Experiment> experiments = new BasicEventList<>();
+    private final EventList<Experiment> experiments = new BasicEventList<>();
     private AdvancedTableModel<Experiment> experimentsTableModel;
     private DefaultEventSelectionModel<Experiment> experimentsSelectionModel;
-    private EventList<Sample> samples = new BasicEventList<>();
+    private final EventList<Sample> samples = new BasicEventList<>();
     private AdvancedTableModel<Sample> samplesTableModel;
     private DefaultEventSelectionModel<Sample> samplesSelectionModel;
     @Autowired
@@ -388,7 +388,7 @@ public class ProjectManagementController implements Controllable {
     /**
      * Get the row index of the selected project in the projects table.
      *
-     * @return
+     * @return the row index
      */
     public int getSelectedProjectIndex() {
         return projectsSelectionModel.getLeadSelectionIndex();
@@ -397,7 +397,7 @@ public class ProjectManagementController implements Controllable {
     /**
      * Set the selected project in the projects table.
      *
-     * @param index
+     * @param index the row index
      */
     public void setSelectedProject(final int index) {
         projectsSelectionModel.clearSelection();
@@ -407,7 +407,7 @@ public class ProjectManagementController implements Controllable {
     /**
      * Add a project to the projects table.
      *
-     * @param project
+     * @param project the Project instance
      */
     public void addProject(final Project project) {
         colimsController.getProjects().add(project);
@@ -557,8 +557,8 @@ public class ProjectManagementController implements Controllable {
      * the database. Shows a confirmation dialog first. When confirmed, a
      * DeleteDbTask message is sent to the DB task queue.
      *
-     * @param entity
-     * @param dbEntityClass
+     * @param entity the database entity to delete
+     * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
     private boolean deleteEntity(final DatabaseEntity entity, final Class dbEntityClass) {

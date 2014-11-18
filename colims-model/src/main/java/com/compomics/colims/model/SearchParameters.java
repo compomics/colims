@@ -297,10 +297,7 @@ public class SearchParameters extends DatabaseEntity {
         if (!Objects.equals(this.secondSearchedIonType, other.secondSearchedIonType)) {
             return false;
         }
-        if (!Objects.equals(this.additionalCvParams, other.additionalCvParams)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.additionalCvParams, other.additionalCvParams);
     }
 
 }

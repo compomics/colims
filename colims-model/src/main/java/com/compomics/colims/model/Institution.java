@@ -167,10 +167,7 @@ public class Institution extends AuditableDatabaseEntity {
         if (!Objects.equals(this.city, other.city)) {
             return false;
         }
-        if (!Objects.equals(this.country, other.country)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.country, other.country);
     }
 
     @Override

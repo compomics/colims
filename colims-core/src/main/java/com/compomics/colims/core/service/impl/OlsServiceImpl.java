@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 public class OlsServiceImpl implements OlsService {
 
     @Autowired
-    private Query olsClient;
+    private uk.ac.ebi.ontology_lookup.ontologyquery.Query olsClient;
 
     @Override
-    public Modification findModifiationByExactName(final String name) {
+    public Modification findModificationByExactName(final String name) {
         Modification modification = null;
 
         //find the modification by exact name
@@ -29,7 +29,7 @@ public class OlsServiceImpl implements OlsService {
         Map modificationTerms = olsClient.getTermsByExactName(name, "MOD");
         if (modificationTerms.getItem() != null) {
             //get the modificiation accession
-            for (MapItem mapItem : modificationTerms.getItem()) {
+            for (org.apache.xml.xml_soap.MapItem mapItem : modificationTerms.getItem()) {
                 modification = findModifiationByAccession(mapItem.getKey().toString());
             }
         }
@@ -40,14 +40,14 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<Modification> findModifiationByName(final String name) {
+    public List<Modification> findModificationByName(final String name) {
         List<Modification> modifications = new ArrayList<>();
 
         //find the modifications by name
         Map modificationsTerms = olsClient.getTermsByName(name, "MOD", false);
         if (modificationsTerms.getItem() != null) {
             //get the modificiations
-            for (MapItem mapItem : modificationsTerms.getItem()) {
+            for (org.apache.xml.xml_soap.MapItem mapItem : modificationsTerms.getItem()) {
                 Modification modification = findModifiationByAccession(mapItem.getKey().toString());
                 if (modification != null) {
                     modifications.add(modification);

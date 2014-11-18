@@ -80,10 +80,7 @@ public class PersistDbTask extends DbTask {
         if (!Objects.equals(this.persistMetadata, other.persistMetadata)) {
             return false;
         }
-        if (!Objects.equals(this.dataImport, other.dataImport)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.dataImport, other.dataImport);
     }
 
 }

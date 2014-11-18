@@ -8,14 +8,15 @@ package com.compomics.colims.client.event;
 public abstract class EntityWithChildrenChangeEvent extends EntityChangeEvent {
        
     /**
-     * Are children collections affected by the change event?
+     * Are child collections affected by the change event.
      */
-    protected boolean childrenAffected;
+    protected final boolean childrenAffected;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param childrenAffected
+     * @param type the change type
+     * @param childrenAffected are the entity child collections affected
      */
     public EntityWithChildrenChangeEvent(final Type type, final boolean childrenAffected) {
         super(type);        
@@ -23,9 +24,9 @@ public abstract class EntityWithChildrenChangeEvent extends EntityChangeEvent {
     }                  
 
     /**
-     * Are children collection affected by the change event?
+     * Are child collections affected by the change event.
      * 
-     * @return
+     * @return whether the entity child collections are affected
      */
     public boolean areChildrenAffected() {
         return childrenAffected;

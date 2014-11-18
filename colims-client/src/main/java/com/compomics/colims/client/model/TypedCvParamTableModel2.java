@@ -92,7 +92,7 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
     /**
      * Remove the CV param with the given row index from the model.
      *
-     * @param rowIndex
+     * @param rowIndex the row index
      */
     public void removeCvParam(int rowIndex){
         cvParams.remove(rowIndex);

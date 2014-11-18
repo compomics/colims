@@ -227,7 +227,7 @@ public class ExperimentEditController implements Controllable {
      *
      * experiment overview table.
      *
-     * @param experiment
+     * @param experiment the Experiment instance
      */
     public void updateView(final Experiment experiment) {
         experimentToEdit = experiment;

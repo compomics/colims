@@ -13,10 +13,11 @@ public class StorageQueuesConnectionErrorMessageEvent extends MessageEvent {
             + System.lineSeparator() + System.lineSeparator() + "Please check if the storage queueing module is up and running and try again.";
 
     /**
+     * Constructor.
      *
-     * @param brokerName
-     * @param brokerUrl
-     * @param brokerJmxUrl
+     * @param brokerName the broker name
+     * @param brokerUrl the broker URL
+     * @param brokerJmxUrl the broker JMX URL
      */
     public StorageQueuesConnectionErrorMessageEvent(final String brokerName, final String brokerUrl, final String brokerJmxUrl) {
         super("Storage queueing connection error", String.format(CONNECTION_ERROR_MESSAGE, brokerName, brokerUrl, brokerJmxUrl), JOptionPane.ERROR_MESSAGE);

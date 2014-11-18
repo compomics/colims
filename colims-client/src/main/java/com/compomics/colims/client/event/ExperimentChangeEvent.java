@@ -7,22 +7,22 @@ import com.compomics.colims.model.Experiment;
  */
 public class ExperimentChangeEvent extends EntityChangeEvent {
 
+    /**
+     * The Experiment instance.
+     */
     private final Experiment experiment;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param experiment
+     * @param type the change type
+     * @param experiment the Experiment instance
      */
     public ExperimentChangeEvent(final Type type, final Experiment experiment) {
         super(type);
         this.experiment = experiment;
     }
 
-    /**
-     *
-     * @return
-     */
     public Experiment getExperiment() {
         return experiment;
     }

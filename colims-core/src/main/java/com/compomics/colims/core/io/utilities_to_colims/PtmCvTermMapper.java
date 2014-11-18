@@ -22,7 +22,7 @@ public class PtmCvTermMapper {
     /**
      * The map that holds a the mapping between the PTM name and a CV term PTM.
      */
-    private Map<String, CvTerm> ptmToCvTerms = new HashMap<>();
+    private final Map<String, CvTerm> ptmToCvTerms = new HashMap<>();
     /**
      * The utilities PtmToPrideMap that holds mappings between utilities PTM.
      * names and CV term PTMs.

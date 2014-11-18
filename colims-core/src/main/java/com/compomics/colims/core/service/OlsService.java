@@ -16,7 +16,7 @@ public interface OlsService {
      * @param name the modification name
      * @return the found modification, null if nothing was found
      */
-    Modification findModifiationByExactName(final String name);
+    Modification findModificationByExactName(final String name);
 
     /**
      * Find modifications by name in the PSI-MOD ontology. Multiple
@@ -26,7 +26,7 @@ public interface OlsService {
      * @return the list of found modification, an empty list if nothing was
      * found
      */
-    List<Modification> findModifiationByName(final String name);
+    List<Modification> findModificationByName(final String name);
 
     /**
      * Find a modification by accession in the ontology.

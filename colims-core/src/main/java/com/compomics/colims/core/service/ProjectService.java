@@ -34,7 +34,7 @@ public interface ProjectService extends GenericService<Project, Long> {
     /**
      * Get the user that owns the most projects.
      *
-     * @return
+     * @return the User instance
      */
     User getUserWithMostProjectOwns();
 }

@@ -25,7 +25,6 @@ public class ColimsModificationMapper {
      * @param modificationMatches the list of modification matches
      * @param ptmScores the PeptideShaker PTM scores
      * @param targetPeptide the colims target peptide
-     * @throws MappingException
      */
     public void map(final Peptide targetPeptide, final ArrayList<ModificationMatch> modificationMatches) {
         LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");

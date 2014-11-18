@@ -77,8 +77,9 @@ public class ProtocolManagementController implements Controllable {
     private EventBus eventBus;
 
     /**
+     * Get the view of this controller.
      *
-     * @return
+     * @return the ProtocolManagementDialog
      */
     public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
         return protocolManagementDialog;

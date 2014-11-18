@@ -8,23 +8,23 @@ import com.compomics.colims.model.Group;
  */
 public class GroupChangeEvent extends EntityWithChildrenChangeEvent {
 
+    /**
+     * The Group instance.
+     */
     private final Group group;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param childrenAffected
-     * @param group
+     * @param type the change type
+     * @param childrenAffected are the child collections affected
+     * @param group the Group instance
      */
     public GroupChangeEvent(final Type type, final boolean childrenAffected, final Group group) {
         super(type, childrenAffected);
         this.group = group;
     }
 
-    /**
-     *
-     * @return
-     */
     public Group getGroup() {
         return group;
     }

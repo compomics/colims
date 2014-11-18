@@ -32,9 +32,9 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
     Experiment findByProjectIdAndTitle(Long projectId, String title);
 
     /**
-     * Fetch the experiment binary files
+     * Fetch the experiment binary files.
      *
-     * @param experiment
+     * @param experiment the Experiment instance
      */
     void fetchBinaryFiles(Experiment experiment);
 }

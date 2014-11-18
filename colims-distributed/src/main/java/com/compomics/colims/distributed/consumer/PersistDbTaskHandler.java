@@ -19,7 +19,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
@@ -118,10 +117,10 @@ public class PersistDbTaskHandler {
      * Map the persist db task.
      *
      * @param persistDbTask the persist task containing the DataImport object
-     * @return
-     * @throws MappingException
+     * @return the MappedDataImport instance
+     * @throws MappingException thrown in case of a mapping exception
      */
-    private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
+    private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
         MappedDataImport mappedDataImport = null;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {

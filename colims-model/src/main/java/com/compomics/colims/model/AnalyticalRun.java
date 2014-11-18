@@ -129,10 +129,7 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
         if (!Objects.equals(this.sample, other.sample)) {
             return false;
         }
-        if (!Objects.equals(this.instrument, other.instrument)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.instrument, other.instrument);
     }
 
     @Override

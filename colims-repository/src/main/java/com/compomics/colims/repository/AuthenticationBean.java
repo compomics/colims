@@ -57,7 +57,6 @@ public class AuthenticationBean {
         this.currentUser = currentUser;
 
         //iterate over the default permissions
-        defaultpermissionloop:
         for (DefaultPermission defaultPermission : defaultPermissions.keySet()) {
             grouploop:
             for (Group group : currentUser.getGroups()) {

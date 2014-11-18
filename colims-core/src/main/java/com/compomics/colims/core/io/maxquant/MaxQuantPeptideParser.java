@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component("maxQuantPeptideParser")
 public class MaxQuantPeptideParser {    
     
-    private Map<Integer, MaxQuantPeptideAssertion> parsedPeptideAssertions = new HashMap<>();
+    private final Map<Integer, MaxQuantPeptideAssertion> parsedPeptideAssertions = new HashMap<>();
 
     public Map<Integer, MaxQuantPeptideAssertion> parse(File aPeptidesFile) throws IOException, UnparseableException {
         TabularFileLineValuesIterator peptidesIter = new TabularFileLineValuesIterator(aPeptidesFile, PeptidesHeaders.values());
@@ -33,7 +33,7 @@ public class MaxQuantPeptideParser {
 
         ;
 
-        protected String[] columnNames;
+        protected final String[] columnNames;
         protected int columnReference = -1;
 
         private PeptidesHeaders(final String[] fieldnames) {

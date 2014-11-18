@@ -40,7 +40,7 @@ public class UtilitiesProteinMapper {
     /**
      * The map of cached proteins (key: sequence, value: the protein).
      */
-    protected Map<String, Protein> cachedProteins = new HashMap<>();
+    protected final Map<String, Protein> cachedProteins = new HashMap<>();
 
     public Map<String, Protein> getCachedProteins() {
         return cachedProteins;
@@ -119,13 +119,8 @@ public class UtilitiesProteinMapper {
      *
      * @param sourceProtein the utilities protein
      * @return the found Protein instance
-     * @throws IOException thrown in case of a I/O related exception
-     * @throws InterruptedException thrown when a thread is waiting, sleeping,
-     * or otherwise occupied, and the thread is interrupted
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
      */
-    private Protein getProtein(final com.compomics.util.experiment.biology.Protein sourceProtein) throws IOException, InterruptedException, ClassNotFoundException {
+    private Protein getProtein(final com.compomics.util.experiment.biology.Protein sourceProtein) {
         Protein targetProtein;
 
         //first, look in the newly added proteins map

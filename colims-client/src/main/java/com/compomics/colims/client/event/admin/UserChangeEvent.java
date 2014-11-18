@@ -7,24 +7,24 @@ import com.compomics.colims.model.User;
  * @author Niels Hulstaert
  */
 public class UserChangeEvent extends EntityWithChildrenChangeEvent {
-    
+
+    /**
+     * The User instance.
+     */
     private final User user;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param childrenAffected
-     * @param user
+     * @param type the change type
+     * @param childrenAffected are the child collections affected
+     * @param user the User instance
      */
     public UserChangeEvent(final Type type, final boolean childrenAffected, final User user) {
         super(type, childrenAffected);
         this.user = user;
     }
-    
-    /**
-     *
-     * @return
-     */
+
     public User getUser() {
         return user;
     }

@@ -182,10 +182,7 @@ public class Material extends AuditableDatabaseEntity {
         if (!Objects.equals(this.compartment, other.compartment)) {
             return false;
         }
-        if (!Objects.equals(this.project, other.project)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.project, other.project);
     }
 
     @Override

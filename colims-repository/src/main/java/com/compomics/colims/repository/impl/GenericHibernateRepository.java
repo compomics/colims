@@ -43,9 +43,9 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Internal method to quickly create a {@link Criteria} for the
-     * {@link EntityClass} with optional {@link Criterion}s.
+     * {@link com.compomics.colims.model.DatabaseEntity} with optional {@link Criterion}s.
      *
-     * @return
+     * @return the created criteria
      */
     protected Criteria createCriteria(final Criterion... criterions) {
         Criteria createCriteria = getCurrentSession().createCriteria(entityClass);
@@ -137,8 +137,8 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      * 
-     * @param criterion
-     * @return 
+     * @param criterion the Criterion instance
+     * @return the found entity
      */
     protected T findUniqueByCriteria(final Criterion... criterion) {
         return (T) createCriteria(criterion).uniqueResult();
@@ -147,8 +147,8 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      * 
-     * @param criterion
-     * @return 
+     * @param criterion the Criterion instance
+     * @return the list of found entities
      */
     protected List<T> findByCriteria(final Criterion... criterion) {
         return findByCriteria(-1, -1, criterion);
@@ -157,8 +157,10 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      * 
-     * @param firstResult
-     * @return 
+     * @param firstResult the first result
+     * @param maxResults the maximum number of results
+     * @param criterion the Criterion instances
+     * @return the list of found entities
      */
     protected List<T> findByCriteria(final int firstResult,
             final int maxResults, final Criterion... criterion) {
@@ -179,7 +181,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * Convenience method.
      * 
-     * @param criterion
+     * @param criterion the Criterion instance
      */
     protected long countByCriteria(final Criterion... criterion) {
         Criteria crit = createCriteria(criterion);

@@ -130,7 +130,7 @@ public class MaxQuantPSMParser {
      * @throws UnparseableException if something went wrong while parsing the
      * evidence row
      */
-    public final PeptideAssumption createPeptide(final Map<String, String> values) throws UnparseableException, HeaderEnumNotInitialisedException {
+    public final PeptideAssumption createPeptide(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
         String sequence = values.get(EvidenceHeaders.Sequence.getColumnName());
 
         // The charge corrected mass of the precursor ion.
@@ -396,7 +396,7 @@ enum EvidenceHeaders implements HeaderEnum {
     /**
      * The name of the field in the evidence.txt MaxQuant output file
      */
-    private String[] columnNames;
+    private final String[] columnNames;
     private int columnReference = -1;
 
     private EvidenceHeaders(final String[] fieldnames) {

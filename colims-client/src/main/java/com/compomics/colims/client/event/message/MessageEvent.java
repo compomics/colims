@@ -23,10 +23,11 @@ public class MessageEvent {
     private final int messageType;
 
     /**
+     * Constructor.
      *
-     * @param messageTitle
-     * @param message
-     * @param messageType
+     * @param messageTitle the message title
+     * @param message the message
+     * @param messageType the message type
      */
     public MessageEvent(final String messageTitle, final String message, final int messageType) {
         this.messageTitle = messageTitle;
@@ -35,10 +36,11 @@ public class MessageEvent {
     }
 
     /**
+     * Constructor.
      *
-     * @param messageTitle
-     * @param messages
-     * @param messageType
+     * @param messageTitle the message title
+     * @param messages the list of messages
+     * @param messageType the message type
      */
     public MessageEvent(final String messageTitle, final List<String> messages, final int messageType) {
         this.messageTitle = messageTitle;
@@ -48,26 +50,14 @@ public class MessageEvent {
         this.messageType = messageType;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getMessageTitle() {
         return messageTitle;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getMessage() {
         return message;
     }
 
-    /**
-     *
-     * @return
-     */
     public int getMessageType() {
         return messageType;
     }

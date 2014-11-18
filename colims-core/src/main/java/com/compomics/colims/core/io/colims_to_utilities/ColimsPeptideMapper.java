@@ -44,7 +44,7 @@ public class ColimsPeptideMapper {
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 
-    public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch, final ProteinMatch parentProteinMatch) throws MappingException {
+    public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch, final ProteinMatch parentProteinMatch) {
         LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
         ArrayList<String> parentProteinAccessions = new ArrayList<>();

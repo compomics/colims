@@ -46,7 +46,7 @@ public class MaxQuantParser {
     private Map<Integer, PeptideAssumption> peptideAssumptions = new HashMap<>();
     private Map<Integer, MSnSpectrum> msms = new HashMap<>();
     private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
-    private Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
+    private final Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
     private boolean initialized = false;
     private Map<String, SearchParameters> analysisSearchParameters = new HashMap<>();
 

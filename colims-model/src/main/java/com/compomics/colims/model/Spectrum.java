@@ -222,10 +222,7 @@ public class Spectrum extends DatabaseEntity {
             return false;
         }
         final Spectrum other = (Spectrum) obj;
-        if ((this.accession == null) ? (other.accession != null) : !this.accession.equals(other.accession)) {
-            return false;
-        }
-        return true;
+        return !((this.accession == null) ? (other.accession != null) : !this.accession.equals(other.accession));
     }
 
 }

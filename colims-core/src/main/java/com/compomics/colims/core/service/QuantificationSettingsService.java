@@ -23,7 +23,7 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      *
      * @param quantificationEngineType the quantification engine type
      * @param version the quantification engine version
-     * @return
+     * @return the found QuantificationEngine instance
      */
     QuantificationEngine getQuantificationEngine(QuantificationEngineType quantificationEngineType, String version);
 
@@ -31,9 +31,9 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      * Get the QuantificationParameterSettings by example from the database. If nothing
      * was found, store the given QuantificationParameterSettings and return them.
      *
-     * @param quantificationParameterSettings
-     * @return
+     * @param quantificationParameterSettings the QuantificationParameterSettings instance
+     * @return the found QuantificationParameters
      */
-    QuantificationParameters getQuantificationParamterSettings(QuantificationParameters quantificationParameterSettings);
+    QuantificationParameters getQuantificationParameterSettings(QuantificationParameters quantificationParameterSettings);
 
 }

@@ -8,8 +8,9 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 public class InstrumentChangeEvent extends EntityChangeEvent {    
 
     /**
+     * Constructor.
      *
-     * @param type
+     * @param type the change type
      */
     public InstrumentChangeEvent(final Type type) {
         super(type);        

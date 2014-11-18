@@ -8,23 +8,23 @@ import com.compomics.colims.model.Permission;
  */
 public class PermissionChangeEvent extends EntityWithChildrenChangeEvent {
 
+    /**
+     * The Permission instance.
+     */
     private final Permission permission;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param childrenAffected
-     * @param permission
+     * @param type the change type
+     * @param childrenAffected are the child collections affected
+     * @param permission the Permission instance
      */
     public PermissionChangeEvent(final Type type, final boolean childrenAffected, final Permission permission) {
         super(type, childrenAffected);
         this.permission = permission;
     }
 
-    /**
-     *
-     * @return
-     */
     public Permission getPermission() {
         return permission;
     }

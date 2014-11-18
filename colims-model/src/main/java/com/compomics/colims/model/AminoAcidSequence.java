@@ -79,7 +79,7 @@ public class AminoAcidSequence {
      * @return the amino acid sequence string
      */
     public static String aaSequenceAsString(List<AminoAcid> aaSequence) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (AminoAcid aa : aaSequence) {
             sb.append(aa.letter());
         }
@@ -94,7 +94,7 @@ public class AminoAcidSequence {
      * @throws UnknownAAException
      */
     public static List<AminoAcid> toAASequence(String sequence) throws UnknownAAException {
-        List<AminoAcid> aaSequence = new ArrayList<AminoAcid>();
+        List<AminoAcid> aaSequence = new ArrayList<>();
         for (char c : sequence.toCharArray()) {
             if (AminoAcid.containsAA(c)) {
                 aaSequence.add(AminoAcid.getAA(c));
@@ -225,10 +225,7 @@ public class AminoAcidSequence {
             return false;
         }
         final AminoAcidSequence other = (AminoAcidSequence) obj;
-        if ((this.sequenceString == null) ? (other.sequenceString != null) : !this.sequenceString.equals(other.sequenceString)) {
-            return false;
-        }
-        return true;
+        return !((this.sequenceString == null) ? (other.sequenceString != null) : !this.sequenceString.equals(other.sequenceString));
     }
 
     @Override

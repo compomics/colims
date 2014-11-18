@@ -83,7 +83,7 @@ public class QueueManagerImpl implements QueueManager {
     private MBeanServerConnection clientConnector;
 
     @Override
-    public <T extends QueueMessage> List<T> monitorQueue(final String queueName) throws JMSException {
+    public <T extends QueueMessage> List<T> monitorQueue(final String queueName) {
         List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override

@@ -83,10 +83,7 @@ public class ProteinAccession extends DatabaseEntity {
             return false;
         }
         final ProteinAccession other = (ProteinAccession) obj;
-        if (!Objects.equals(this.accession, other.accession)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.accession, other.accession);
     }
 
     @Override

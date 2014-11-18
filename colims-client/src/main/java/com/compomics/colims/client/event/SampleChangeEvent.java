@@ -7,22 +7,22 @@ import com.compomics.colims.model.Sample;
  */
 public class SampleChangeEvent extends EntityChangeEvent {
 
+    /**
+     * The Sample instance.
+     */
     private final Sample sample;
 
     /**
+     * Constructor.
      *
-     * @param type
-     * @param sample
+     * @param type the change type
+     * @param sample the Sample instance
      */
     public SampleChangeEvent(final Type type, final Sample sample) {
         super(type);
         this.sample = sample;
     }
 
-    /**
-     *
-     * @return
-     */
     public Sample getSample() {
         return sample;
     }

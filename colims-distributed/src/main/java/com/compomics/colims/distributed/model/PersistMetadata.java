@@ -113,10 +113,7 @@ public class PersistMetadata implements Serializable {
         if (!Objects.equals(this.startDate, other.startDate)) {
             return false;
         }
-        if (!Objects.equals(this.instrument, other.instrument)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.instrument, other.instrument);
     }
 
 }

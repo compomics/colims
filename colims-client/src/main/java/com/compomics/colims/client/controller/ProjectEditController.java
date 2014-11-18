@@ -162,7 +162,7 @@ public class ProjectEditController implements Controllable {
      * Update the project edit dialog with the selected project in the project
      * overview table.
      *
-     * @param project
+     * @param project the Project instance
      */
     public void updateView(final Project project) {
         projectToEdit = project;

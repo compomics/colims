@@ -103,7 +103,7 @@ public class SpectrumServiceImpl implements SpectrumService {
                     inSpectrum = true;
                 } else if (line.startsWith(IONS_END)) {
                     break;
-                } else if (inSpectrum && (line.indexOf("=") < 0)) {
+                } else if (inSpectrum && (!line.contains("="))) {
                     // We're inside the spectrum, with no '=' in the line, so it should be
                     // a peak line.
                     // A peak line should be either of the following two:

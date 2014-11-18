@@ -216,7 +216,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     /**
      * Make a new T instance from the file input.
      *
-     * @param file
+     * @param file the file
      */
     private T getBinaryFile(File file) throws IOException, InstantiationException, IllegalAccessException {
         T binaryFile = type.newInstance();
@@ -231,8 +231,8 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     /**
      * Export the binary file to file
      *
-     * @param exportDirectory
-     * @param binaryFile
+     * @param exportDirectory the export directory
+     * @param binaryFile the BinaryFile instance
      */
     private void exportBinaryFile(File exportDirectory, T binaryFile) throws IOException {
         IOUtils.unzipAndWrite(binaryFile.getContent(), new File(exportDirectory, binaryFile.getFileName()));

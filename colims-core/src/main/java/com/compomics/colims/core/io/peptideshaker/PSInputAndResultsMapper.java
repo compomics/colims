@@ -222,10 +222,9 @@ public class PSInputAndResultsMapper {
      *
      * @param mgfFile the mgf file
      * @throws IOException thrown in case of an SQL related problem
-     * @throws ClassNotFoundException thrown in case of an class not found
      * problem
      */
-    private void loadSpectraFromMgfFile(final File mgfFile) throws IOException, ClassNotFoundException {
+    private void loadSpectraFromMgfFile(final File mgfFile) throws IOException {
         LOGGER.debug("Start importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
         spectrumFactory.addSpectra(mgfFile, null);
         LOGGER.debug("Finish importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");

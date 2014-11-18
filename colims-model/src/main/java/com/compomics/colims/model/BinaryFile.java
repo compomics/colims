@@ -106,10 +106,7 @@ public class BinaryFile extends AuditableDatabaseEntity {
         if (!Objects.equals(this.fileName, other.fileName)) {
             return false;
         }
-        if (this.binaryFileType != other.binaryFileType) {
-            return false;
-        }
-        return true;
+        return this.binaryFileType == other.binaryFileType;
     }
 
 }

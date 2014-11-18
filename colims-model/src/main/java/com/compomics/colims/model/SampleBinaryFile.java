@@ -48,10 +48,7 @@ public class SampleBinaryFile extends BinaryFile {
             return false;
         }
         final SampleBinaryFile other = (SampleBinaryFile) obj;
-        if (!Objects.equals(this.sample, other.sample)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sample, other.sample);
     }
 
 }

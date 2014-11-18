@@ -18,10 +18,10 @@ public class MaxQuantImport extends DataImport {
     private File maxQuantDirectory;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param maxQuantDirectory
-     * @param fastaDb
+     * @param maxQuantDirectory the MaxQuant files directory
+     * @param fastaDb the FastaDb instance
      */
     public MaxQuantImport(final File maxQuantDirectory, final FastaDb fastaDb) {
         super(fastaDb);

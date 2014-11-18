@@ -13,9 +13,10 @@ public class DbConstraintMessageEvent extends MessageEvent {
             + System.lineSeparator() + "Remove any existing relations between this entry and other entries and try again.";
 
     /**
+     * Constructor.
      *
-     * @param className
-     * @param entityName
+     * @param className the entity class name
+     * @param entityName the entity name
      */
     public DbConstraintMessageEvent(final String className, final String entityName) {
         super("database constraint violation", String.format(CONSTRAINT_MESSAGE, entityName, className), JOptionPane.WARNING_MESSAGE);

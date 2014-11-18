@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
@@ -23,7 +22,7 @@ public class PsmMapper {
     @Autowired
     private PeptideMapper peptideMapper;
 
-    public void map(final Spectrum spectrum, final SpectrumMatch spectrumMatch) throws MappingException {
+    public void map(final Spectrum spectrum, final SpectrumMatch spectrumMatch) {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         
         //for the moment, get the first peptide and set it as the best assumption

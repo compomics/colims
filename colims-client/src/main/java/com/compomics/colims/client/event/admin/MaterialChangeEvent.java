@@ -8,8 +8,9 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 public class MaterialChangeEvent extends EntityChangeEvent {
 
     /**
+     * Constructor.
      *
-     * @param type
+     * @param type the change type
      */
     public MaterialChangeEvent(final Type type) {
         super(type);

@@ -9,8 +9,9 @@ import javax.swing.JOptionPane;
 public class UnexpectedErrorMessageEvent extends MessageEvent {
 
     /**
+     * Constructor.
      *
-     * @param message
+     * @param message the error message
      */
     public UnexpectedErrorMessageEvent(final String message) {
         super("Unexpected Error", "An unexpected error occured: "

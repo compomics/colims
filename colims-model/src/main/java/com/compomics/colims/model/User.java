@@ -188,7 +188,7 @@ public class User extends AuditableDatabaseEntity {
      * Returns true if the check was successful.
      *
      * @param plainPassword
-     * @return
+     * @return did the password check pass
      */
     public boolean checkPassword(String plainPassword) {
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
@@ -211,10 +211,7 @@ public class User extends AuditableDatabaseEntity {
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.name, other.name);
     }
 
     @Override

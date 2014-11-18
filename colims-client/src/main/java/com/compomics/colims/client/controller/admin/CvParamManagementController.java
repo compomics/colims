@@ -56,7 +56,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     @Autowired
     private AuditableTypedCvParamService cvParamService;
     @Autowired
-    private Query olsClient;
+    private uk.ac.ebi.ontology_lookup.ontologyquery.Query olsClient;
 
     /**
      * Get the view of this controller.

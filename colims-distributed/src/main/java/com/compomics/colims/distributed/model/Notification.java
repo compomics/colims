@@ -74,10 +74,7 @@ public class Notification extends QueueMessage {
         if (this.type != other.type) {
             return false;
         }
-        if (!Objects.equals(this.dbTaskMessageId, other.dbTaskMessageId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.dbTaskMessageId, other.dbTaskMessageId);
     }
 
 }

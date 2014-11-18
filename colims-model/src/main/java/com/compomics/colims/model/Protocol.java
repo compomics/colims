@@ -206,10 +206,7 @@ public class Protocol extends AuditableDatabaseEntity {
         if (!Objects.equals(this.chemicalLabels, other.chemicalLabels)) {
             return false;
         }
-        if (!Objects.equals(this.otherCvParams, other.otherCvParams)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.otherCvParams, other.otherCvParams);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class PtmFactoryWrapper {
     /**
      * The PtmFactory instance.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private final PTMFactory ptmFactory = PTMFactory.getInstance();
 
     public PTMFactory getPtmFactory() {
         return ptmFactory;

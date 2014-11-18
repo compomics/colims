@@ -54,15 +54,11 @@ public class MaxQuantImporter implements DataImporter {
     private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
-    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
-     * Compomics utilities sequence factory
+     * Compomics utilities sequence factory.
      */
-    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-    /**
-     * The map of new proteins (key: protein accession, value: the protein)
-     */
-    private Map<String, Protein> newProteins = new HashMap<>();
+    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
 
     @Override
     public void initImport(DataImport dataImport) {
@@ -78,7 +74,6 @@ public class MaxQuantImporter implements DataImporter {
         try {
             spectrumFactory.clearFactory();
             sequenceFactory.clearFactory();
-            newProteins.clear();
         } catch (IOException | SQLException ex) {
             LOGGER.error(ex);
         }

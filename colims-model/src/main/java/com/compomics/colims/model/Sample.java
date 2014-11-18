@@ -192,10 +192,7 @@ public class Sample extends AuditableDatabaseEntity {
         if (!Objects.equals(this.experiment, other.experiment)) {
             return false;
         }
-        if (!Objects.equals(this.protocol, other.protocol)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.protocol, other.protocol);
     }
 
     @Override

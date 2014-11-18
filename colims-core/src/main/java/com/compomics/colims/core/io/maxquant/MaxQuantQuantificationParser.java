@@ -60,7 +60,7 @@ public class MaxQuantQuantificationParser {
             //int quantificationGroupID = Integer.parseInt(quantificationLine.get(MaxQuantQuantificationParser.QuantificationGroupHeaders.ID.headerName));
             QuantificationGroup quantGroup = new QuantificationGroup();
 
-            List<Quantification> quantificationsList = new ArrayList<Quantification>();
+            List<Quantification> quantificationsList = new ArrayList<>();
 
             for (String aSpectrumID : spectrumIDsString) {
 
@@ -115,7 +115,7 @@ public class MaxQuantQuantificationParser {
         PEPTIDEID("Peptide ID"),
         SPECTRUMIDS("MS/MS IDs"),
         BESTSPECTRUMID("Best MS/MS");
-        public String headerName;
+        public final String headerName;
 
         private QuantificationGroupHeaders(String aHeaderName) {
             headerName = aHeaderName;

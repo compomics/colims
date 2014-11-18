@@ -174,10 +174,7 @@ public class Experiment extends AuditableDatabaseEntity {
         if (!Objects.equals(this.storageLocation, other.storageLocation)) {
             return false;
         }
-        if (!Objects.equals(this.project, other.project)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.project, other.project);
     }
 
     @Override

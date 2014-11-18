@@ -180,10 +180,7 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.species, other.species)) {
             return false;
         }
-        if (!Objects.equals(this.version, other.version)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.version, other.version);
     }
 
     @Override

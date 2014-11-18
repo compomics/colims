@@ -76,7 +76,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationParameters getQuantificationParamterSettings(QuantificationParameters quantificationParameterSettings) {
+    public QuantificationParameters getQuantificationParameterSettings(QuantificationParameters quantificationParameterSettings) {
         //find QuantificationParameterSettings by example
         List<QuantificationParameters> quantificationParameterSettingses = quantificationParametersRepository.findByExample(quantificationParameterSettings);
         if (!quantificationParameterSettingses.isEmpty()) {
