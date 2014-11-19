@@ -18,7 +18,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
     private final JFileChooser exportDirectoryChooser = new FileChooser();
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent dialog
      * @param modal is the dialog modal
