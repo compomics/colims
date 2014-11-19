@@ -259,8 +259,7 @@ public class InstitutionManagementController implements Controllable {
      */
     private Institution getSelectedInstitution() {
         int selectedIndex = institutionManagementDialog.getInstitutionList().getSelectedIndex();
-        Institution selectedInstitution = (selectedIndex != -1) ? institutionBindingList.get(selectedIndex) : null;
-        return selectedInstitution;
+        return (selectedIndex != -1) ? institutionBindingList.get(selectedIndex) : null;
     }
 
     /**

@@ -115,9 +115,8 @@ public class MaxQuantDataImportController implements Controllable {
      * @return the MaxQuantImport
      */
     public MaxQuantImport getDataImport() {
-        MaxQuantImport maxQuantDataImport = new MaxQuantImport(maxQuantDirectory, fastaDb);
 
-        return maxQuantDataImport;
+        return new MaxQuantImport(maxQuantDirectory, fastaDb);
     }
 
 }

@@ -341,8 +341,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
      */
     private FastaDb getSelectedFastaDb() {
         int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
-        FastaDb selectedFastaDb = (selectedIndex != -1) ? fastaDbBindingList.get(selectedIndex) : null;
-        return selectedFastaDb;
+        return (selectedIndex != -1) ? fastaDbBindingList.get(selectedIndex) : null;
     }
 
     /**

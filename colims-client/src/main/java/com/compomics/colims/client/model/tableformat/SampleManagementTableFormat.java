@@ -65,11 +65,9 @@ public class SampleManagementTableFormat implements AdvancedTableFormat<Sample> 
             case NAME:
                 return sample.getName();
             case CONDITION:
-                String condition = (sample.getCondition() != null) ? sample.getCondition() : NOT_APPLICABLE;
-                return condition;
+                return (sample.getCondition() != null) ? sample.getCondition() : NOT_APPLICABLE;
             case PROTOCOL:
-                String protocol = (sample.getProtocol() != null) ? sample.getProtocol().toString() : NOT_APPLICABLE;
-                return protocol;    
+                return (sample.getProtocol() != null) ? sample.getProtocol().toString() : NOT_APPLICABLE;
             case CREATED:
                 return DATE_FORMAT.format(sample.getCreationDate());        
             case NUMBER_OF_RUNS:

@@ -390,8 +390,7 @@ public class UserManagementController implements Controllable {
      */
     private User getSelectedUser() {
         int selectedUserIndex = userManagementDialog.getUserList().getSelectedIndex();
-        User selectedUser = (selectedUserIndex != -1) ? userBindingList.get(selectedUserIndex) : null;
-        return selectedUser;
+        return (selectedUserIndex != -1) ? userBindingList.get(selectedUserIndex) : null;
     }
 
     /**

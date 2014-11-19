@@ -57,7 +57,6 @@ public class Project extends AuditableDatabaseEntity {
     /**
      * The project owner. A project can have only one owner.
      */
-    @Basic(optional = false)
     @ManyToOne
     @JoinColumn(name = "l_owner_user_id", referencedColumnName = "id", nullable = false)
     private User owner;

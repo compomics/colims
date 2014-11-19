@@ -425,8 +425,7 @@ public class InstrumentManagementController implements Controllable {
      */
     private Instrument getSelectedInstrument() {
         int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
-        Instrument selectedInstrument = (selectedIndex != -1) ? instrumentBindingList.get(selectedIndex) : null;
-        return selectedInstrument;
+        return (selectedIndex != -1) ? instrumentBindingList.get(selectedIndex) : null;
     }
 
     /**

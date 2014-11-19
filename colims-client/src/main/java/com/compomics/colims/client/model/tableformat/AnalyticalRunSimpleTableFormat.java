@@ -65,8 +65,7 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
             case NAME:
                 return analyticalRun.getName();
             case START_DATE:
-                 String startDateString = (analyticalRun.getStartDate() != null) ? DATE_FORMAT.format(analyticalRun.getStartDate()) : "N/A";   
-                 return startDateString;
+                return (analyticalRun.getStartDate() != null) ? DATE_FORMAT.format(analyticalRun.getStartDate()) : "N/A";
             case NUMBER_OF_SPECTRA:
                 return spectrumService.countSpectraByAnalyticalRun(analyticalRun);
             default:

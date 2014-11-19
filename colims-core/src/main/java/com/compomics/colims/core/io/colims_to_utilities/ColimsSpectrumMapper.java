@@ -46,7 +46,7 @@ public class ColimsSpectrumMapper {
         //Build the precursor
         double retentionTime = sourceSpectrum.getRetentionTime();
         double moverz = sourceSpectrum.getMzRatio();
-        ArrayList<Charge> chargeList = new ArrayList<Charge>();
+        ArrayList<Charge> chargeList = new ArrayList<>();
         chargeList.add(new Charge(1, sourceSpectrum.getCharge()));
         Precursor precursor = new Precursor(retentionTime, moverz, sourceSpectrum.getIntensity(), chargeList);
         targetSpectrum.setPrecursor(precursor);

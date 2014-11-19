@@ -435,8 +435,7 @@ public class ProtocolManagementController implements Controllable {
      */
     private Protocol getSelectedProtocol() {
         int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
-        Protocol selectedProtocol = (selectedIndex != -1) ? protocolBindingList.get(selectedIndex) : null;
-        return selectedProtocol;
+        return (selectedIndex != -1) ? protocolBindingList.get(selectedIndex) : null;
     }
 
     /**
@@ -445,9 +444,8 @@ public class ProtocolManagementController implements Controllable {
      * @return the default protocol
      */
     private Protocol createDefaultProtocol() {
-        Protocol defaultProtocol = new Protocol("default protocol name");
 
-        return defaultProtocol;
+        return new Protocol("default protocol name");
     }
 
     /**

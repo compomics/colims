@@ -354,9 +354,8 @@ public class CvParamManagementController implements Controllable, OLSInputable {
      */
     private AuditableTypedCvParam getSelectedCvParam() {
         int selectedCvParamIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
-        AuditableTypedCvParam selectedCvParam = (selectedCvParamIndex != -1) ? typeCvParamTableModel2.getCvParams().get(selectedCvParamIndex) : null;
 
-        return selectedCvParam;
+        return (selectedCvParamIndex != -1) ? typeCvParamTableModel2.getCvParams().get(selectedCvParamIndex) : null;
     }
 
     /**

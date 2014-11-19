@@ -32,14 +32,12 @@ public class SearchParameters extends DatabaseEntity {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam searchType;
     /**
      * The cleavage enzyme.
      */
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam enzyme;

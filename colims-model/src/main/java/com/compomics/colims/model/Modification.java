@@ -6,6 +6,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
@@ -31,6 +32,12 @@ public class Modification extends AbstractModification {
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
     /**
+     * No-arg constructor.
+     */
+    public Modification() {
+    }
+
+    /**
      * Constructor.
      *
      * @param name the modification name.
@@ -39,6 +46,12 @@ public class Modification extends AbstractModification {
         super(name);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param accession the modification accession
+     * @param name      the modification name
+     */
     public Modification(String accession, String name) {
         super(accession, name);
     }

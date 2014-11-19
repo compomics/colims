@@ -132,8 +132,8 @@ public class PeptideShakerDataImportController implements Controllable {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 int[] selectedIndices = peptideShakerDataImportPanel.getMgfFileList().getSelectedIndices();
-                for (int i = 0; i < selectedIndices.length; i++) {
-                    mgfFileListModel.remove(selectedIndices[i]);
+                for (int selectedIndex : selectedIndices) {
+                    mgfFileListModel.remove(selectedIndex);
                 }
             }
         });
@@ -180,9 +180,7 @@ public class PeptideShakerDataImportController implements Controllable {
             mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(cpsArchive, fastaDb, mgfFiles);
-
-        return peptideShakerImport;
+        return new PeptideShakerImport(cpsArchive, fastaDb, mgfFiles);
     }
 
 }

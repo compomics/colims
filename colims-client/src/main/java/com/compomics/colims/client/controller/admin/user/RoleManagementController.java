@@ -318,8 +318,7 @@ public class RoleManagementController implements Controllable {
      */
     private Role getSelectedRole() {
         int selectedRoleIndex = userManagementDialog.getRoleList().getSelectedIndex();
-        Role selectedRole = (selectedRoleIndex != -1) ? roleBindingList.get(selectedRoleIndex) : null;
-        return selectedRole;
+        return (selectedRoleIndex != -1) ? roleBindingList.get(selectedRoleIndex) : null;
     }
 
     /**

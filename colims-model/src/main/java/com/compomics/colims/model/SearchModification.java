@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "search_modification")
@@ -17,10 +16,27 @@ public class SearchModification extends AbstractModification {
 
     private static final long serialVersionUID = -2832229647167375630L;
 
+    /**
+     * No-arg constructor.
+     */
+    public SearchModification() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name the modification name.
+     */
     public SearchModification(String name) {
         super(name);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param accession the modification accession
+     * @param name      the modification name
+     */
     public SearchModification(String accession, String name) {
         super(accession, name);
     }

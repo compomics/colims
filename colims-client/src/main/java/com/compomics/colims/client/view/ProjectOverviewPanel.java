@@ -1424,8 +1424,6 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
         ArrayList<String> names = new ArrayList<String>(neutralLosses.keySet());
         Collections.sort(names);
 
-        ArrayList<String> finalSelectedLosses = selectedLosses;
-
         if (names.isEmpty()) {
             lossMenu.setVisible(false);
             lossSplitter.setVisible(false);
@@ -1441,7 +1439,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
                         }
                     }
                 } else {
-                    selected = finalSelectedLosses.contains(names.get(i));
+                    selected = selectedLosses.contains(names.get(i));
                 }
 
                 JCheckBoxMenuItem lossMenuItem = new JCheckBoxMenuItem(names.get(i));
@@ -1475,8 +1473,6 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
             precursorCharge = 2;
         }
 
-        final ArrayList<String> finalSelectedCharges = selectedCharges;
-
         for (int charge = 1; charge < precursorCharge; charge++) {
 
             JCheckBoxMenuItem chargeMenuItem = new JCheckBoxMenuItem(charge + "+");
@@ -1484,7 +1480,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
             if (annotationPreferences.useAutomaticAnnotation()) {
                 chargeMenuItem.setSelected(annotationPreferences.getValidatedCharges().contains(charge));
             } else {
-                if (finalSelectedCharges.contains(charge + "+")) {
+                if (selectedCharges.contains(charge + "+")) {
                     chargeMenuItem.setSelected(true);
                 } else {
                     chargeMenuItem.setSelected(false);

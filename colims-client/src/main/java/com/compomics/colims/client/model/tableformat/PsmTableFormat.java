@@ -83,8 +83,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
             case RETENTION_TIME:
                 return spectrum.getRetentionTime();
             case PEPTIDE_SEQUENCE:
-                String sequence = (peptide != null) ? peptide.getSequence() : NOT_APPLICABLE;
-                return sequence;
+                return (peptide != null) ? peptide.getSequence() : NOT_APPLICABLE;
             case PSM_CONFIDENCE:                
                 double confidence = (peptide != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
                 if (confidence <= 0) {
@@ -92,8 +91,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
                 }
                 return confidence;
             case PROTEIN_ACCESSIONS:
-                String proteinAccessions = (peptide != null) ? getProteinAccessions(peptide) : NOT_APPLICABLE;
-                return proteinAccessions;
+                return (peptide != null) ? getProteinAccessions(peptide) : NOT_APPLICABLE;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

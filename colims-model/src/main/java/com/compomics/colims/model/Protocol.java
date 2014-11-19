@@ -41,21 +41,18 @@ public class Protocol extends AuditableDatabaseEntity {
     /**
      * The reduction CV term.
      */
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_reduction_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam reduction;
     /**
      * The enzyme CV term.
      */
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam enzyme;
     /**
      * The cell based CV term.
      */
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_cell_based_cv_id", referencedColumnName = "id", nullable = true)
     private ProtocolCvParam cellBased;

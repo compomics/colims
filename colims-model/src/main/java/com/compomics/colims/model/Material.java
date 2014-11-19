@@ -37,7 +37,6 @@ public class Material extends AuditableDatabaseEntity {
     /**
      * The mandatory species CV term.
      */
-    @Basic(optional = false)
     @NotNull(message = "A material must have a species")
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
@@ -45,21 +44,18 @@ public class Material extends AuditableDatabaseEntity {
     /**
      * The optional tissue CV term.
      */
-    @Basic(optional = true)
     @JoinColumn(name = "l_tissue_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam tissue;
     /**
      * The optional cell type CV term.
      */
-    @Basic(optional = true)
     @JoinColumn(name = "l_cell_type_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam cellType;
     /**
      * The optional compartment CV term.
      */
-    @Basic(optional = true)
     @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam compartment;

@@ -435,8 +435,7 @@ public class MaterialManagementController implements Controllable {
      */
     private Material getSelectedMaterial() {
         int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
-        Material selectedMaterial = (selectedIndex != -1) ? materialBindingList.get(selectedIndex) : null;
-        return selectedMaterial;
+        return (selectedIndex != -1) ? materialBindingList.get(selectedIndex) : null;
     }
 
     /**

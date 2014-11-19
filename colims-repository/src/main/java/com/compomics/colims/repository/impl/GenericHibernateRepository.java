@@ -67,8 +67,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public List<T> findByExample(final T exampleInstance) {
-        List<T> result = createCriteria(Example.create(exampleInstance)).list();
-        return result;
+        return createCriteria(Example.create(exampleInstance)).list();
     }
 
     @Override
@@ -79,8 +78,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
             namedQuey.setParameter(i + 1, params[i]);
         }
 
-        final List<T> result = namedQuey.list();
-        return result;
+        return namedQuey.list();
     }
 
     @Override
@@ -91,8 +89,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
             namedQuey.setParameter(param.getKey(), param.getValue());
         }
 
-        final List<T> result = namedQuey.list();
-        return result;
+        return namedQuey.list();
     }
 
     @Override
@@ -174,8 +171,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
             crit.setMaxResults(maxResults);
         }
 
-        final List<T> result = crit.list();
-        return result;
+        return crit.list();
     }
 
     /**

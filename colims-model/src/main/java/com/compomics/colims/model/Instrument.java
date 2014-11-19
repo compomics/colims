@@ -43,7 +43,6 @@ public class Instrument extends AuditableDatabaseEntity {
     /**
      * The mandatory type CV term that represents the instrument type.
      */
-    @Basic(optional = false)
     @NotNull(message = "An instrument must have a type")
     @ManyToOne
     @JoinColumn(name = "l_type_cv_id", referencedColumnName = "id", nullable = false)
@@ -51,7 +50,6 @@ public class Instrument extends AuditableDatabaseEntity {
     /**
      * The mandatory instrument source CV term.
      */
-    @Basic(optional = false)
     @NotNull(message = "An instrument must have a source")
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
@@ -59,7 +57,6 @@ public class Instrument extends AuditableDatabaseEntity {
     /**
      * The mandatory detector CV term.
      */
-    @Basic(optional = false)
     @NotNull(message = "An instrument must have a detector")
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)

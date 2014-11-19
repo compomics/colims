@@ -147,8 +147,7 @@ public class User extends AuditableDatabaseEntity {
 
     public void setPassword(String password) {
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
-        String encryptedPassword = passwordEncryptor.encryptPassword(password);
-        this.password = encryptedPassword;
+        this.password = passwordEncryptor.encryptPassword(password);
     }
 
     public List<Group> getGroups() {

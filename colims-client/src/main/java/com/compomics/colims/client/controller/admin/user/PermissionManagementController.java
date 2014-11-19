@@ -253,8 +253,7 @@ public class PermissionManagementController implements Controllable {
      */
     private Permission getSelectedPermission() {
         int seletedPermissionIndex = userManagementDialog.getPermissionList().getSelectedIndex();
-        Permission selectedPermission = (seletedPermissionIndex != -1) ? permissionBindingList.get(seletedPermissionIndex) : null;
-        return selectedPermission;
+        return (seletedPermissionIndex != -1) ? permissionBindingList.get(seletedPermissionIndex) : null;
     }
 
     /**

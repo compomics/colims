@@ -84,7 +84,8 @@ public class QueueManagerImpl implements QueueManager {
 
     @Override
     public <T extends QueueMessage> List<T> monitorQueue(final String queueName) {
-        List<T> messages = queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
+
+        return queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
             @Override
             public List<T> doInJms(final Session session, final javax.jms.QueueBrowser browser) throws JMSException {
@@ -102,8 +103,6 @@ public class QueueManagerImpl implements QueueManager {
                 return queueMessages;
             }
         });
-
-        return messages;
     }
 
     @Override

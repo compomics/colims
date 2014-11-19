@@ -37,7 +37,6 @@ public class QuantificationParameters extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "include_modifications", nullable = true)
     private Boolean includeModifications;
-    @Basic(optional = true)
     @ManyToOne
     @JoinColumn(name = "l_method_cv_id", referencedColumnName = "id", nullable = true)
     private QuantificationCvParam method;

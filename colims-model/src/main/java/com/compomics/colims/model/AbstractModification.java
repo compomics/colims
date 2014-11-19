@@ -49,16 +49,33 @@ public abstract class AbstractModification extends DatabaseEntity {
     protected Double monoIsotopicMassShift;
     /**
      * Atomic mass delta considering the natural distribution of isotopes in
-     * Daltons.
+     * Dalton.
      */
     @Basic(optional = true)
     @Column(name = "average_mass_shift")
     protected Double averageMassShift;
 
+    /**
+     * No-arg constructor.
+     */
+    public AbstractModification() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name the modification name
+     */
     public AbstractModification(String name) {
         this.name = name;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param accession the modification accession
+     * @param name      the modification name
+     */
     public AbstractModification(String accession, String name) {
         this.accession = accession;
         this.name = name;
@@ -124,10 +141,7 @@ public abstract class AbstractModification extends DatabaseEntity {
         if (!Objects.equals(this.accession, other.accession)) {
             return false;
         }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.name, other.name);
     }
 
 }
