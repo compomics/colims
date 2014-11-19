@@ -187,7 +187,7 @@ public class User extends AuditableDatabaseEntity {
      * Check the user input against the digested password in the database.
      * Returns true if the check was successful.
      *
-     * @param plainPassword
+     * @param plainPassword the plain password String
      * @return did the password check pass
      */
     public boolean checkPassword(String plainPassword) {

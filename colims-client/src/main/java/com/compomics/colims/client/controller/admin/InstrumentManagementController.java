@@ -116,7 +116,7 @@ public class InstrumentManagementController implements Controllable {
      * CvParamManagementController. If the InstrumentManagementDialog is visible,
      * clear the selection in the CV param summary list.
      *
-     * @param cvParamChangeEvent
+     * @param cvParamChangeEvent the CvParamChangeEvent instance
      */
     @Subscribe
     public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
