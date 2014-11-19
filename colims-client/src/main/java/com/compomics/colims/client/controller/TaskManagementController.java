@@ -307,7 +307,7 @@ public class TaskManagementController implements Controllable {
 //            storageMonitoringDialog.getStorageQueueTable().updateUI();
 //            storageMonitoringDialog.getStoredQueueTable().updateUI();
 //            storageMonitoringDialog.getErrorQueueTable().updateUI();
-        } catch (UncategorizedJmsException | JMSException ex) {
+        } catch (UncategorizedJmsException ex) {
             LOGGER.error(ex.getMessage(), ex);
             postConnectionErrorMessage(ex.getMessage());
         }
