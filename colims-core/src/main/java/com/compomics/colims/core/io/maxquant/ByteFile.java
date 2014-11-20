@@ -11,12 +11,12 @@ import java.net.URI;
 import org.apache.commons.io.IOUtils;
 
 /**
- * a wrapper for the File class that handles in memory files
+ * a wrapper for the File class that handles in memory files.
  *
  * @author Davy
  */
 public class ByteFile extends File {
-    
+
     private static final long serialVersionUID = -6109188320677916128L;
 
     private byte[] slurpedFile;
@@ -61,6 +61,6 @@ public class ByteFile extends File {
         } else {
             return new FileInputStream(this);
         }
-    }    
-       
+    }
+
 }

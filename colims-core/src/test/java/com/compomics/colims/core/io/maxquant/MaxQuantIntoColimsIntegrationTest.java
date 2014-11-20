@@ -69,7 +69,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     @Autowired
     UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
-    MaxQuantUtilitiesPeptideMapper MaxQuantUtilitiesPeptideMapper;
+    MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
     @Autowired
     UtilitiesProteinMapper maxQuantProteinMapperStub;
     private File testFolder;
@@ -120,7 +120,7 @@ public class MaxQuantIntoColimsIntegrationTest {
                 //only get best hit
                 PeptideAssumption identification = maxQuantParser.getIdentificationForSpectrum(aSpectrum);
                 final Peptide targetPeptide = new Peptide();
-                MaxQuantUtilitiesPeptideMapper.map(identification, targetPeptide);
+                maxQuantUtilitiesPeptideMapper.map(identification, targetPeptide);
                 targetSpectrum.setPeptides(new ArrayList<Peptide>() {
                     {
                         this.add(targetPeptide);

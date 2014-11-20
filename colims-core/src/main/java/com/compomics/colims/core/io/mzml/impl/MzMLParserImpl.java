@@ -150,7 +150,7 @@ public class MzMLParserImpl implements MzMLParser {
             analyticalRun.setStartDate(run.getStartTimeStamp().getTime());
         }
 
-        //find sample associated with this run.        
+        //find sample associated with this run.
         Sample foundSample = null;
         if (run.getSampleRef() != null) {
             for (Sample sample : samples) {
@@ -294,7 +294,7 @@ public class MzMLParserImpl implements MzMLParser {
 
         for (CVParam cvParam : mzMLSpectrum.getCvParam()) {
             if (cvParam.getAccession().equals("MS:1000511")) {
-                level = new Integer(cvParam.getValue());
+                level = Integer.parseInt(cvParam.getValue());
                 break;
             }
         }
@@ -307,7 +307,7 @@ public class MzMLParserImpl implements MzMLParser {
         if (scanList != null) {
             for (CVParam cvParam : scanList.getScan().get(scanList.getScan().size() - 1).getCvParam()) {
                 if (cvParam.getAccession().equals("MS:1000016")) {
-                    scanTime = new Double(cvParam.getValue());
+                    scanTime = Double.parseDouble(cvParam.getValue());
                     break;
                 }
             }
@@ -336,7 +336,7 @@ public class MzMLParserImpl implements MzMLParser {
         //create new MSnSpectrum
         ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, charge));
-        Precursor precursor = new Precursor(0.0, mzRatio, possibleCharges);        
+        Precursor precursor = new Precursor(0.0, mzRatio, possibleCharges);
 
         //get mz ratios and intensities and put them in a map (key: mz ratio, value: intensity)
         BinaryDataArray mzBinaryDataArray = mzMLSpectrum.getBinaryDataArrayList().getBinaryDataArray().get(0);
