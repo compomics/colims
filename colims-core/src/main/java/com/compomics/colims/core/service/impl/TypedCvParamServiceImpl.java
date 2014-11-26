@@ -59,7 +59,12 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
     }
 
     @Override
-    public List<TypedCvParam> findByCvParamByType(CvParamType cvParamType) {
+    public TypedCvParam findByName(final String name, final CvParamType cvParamType, final boolean ignoreCase) {
+        return cvParamRepository.findByName(name, cvParamType, ignoreCase);
+    }
+
+    @Override
+    public List<TypedCvParam> findByCvParamByType(final CvParamType cvParamType) {
         return cvParamRepository.findByCvParamType(cvParamType);
     }
 

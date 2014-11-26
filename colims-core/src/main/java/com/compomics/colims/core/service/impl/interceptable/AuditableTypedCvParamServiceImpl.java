@@ -54,8 +54,13 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
     }
 
     @Override
-    public AuditableTypedCvParam findByAccession(String accession, CvParamType cvParamType) {
+    public AuditableTypedCvParam findByAccession(final String accession, final CvParamType cvParamType) {
         return cvParamRepository.findByAccession(accession, cvParamType);
+    }
+
+    @Override
+    public AuditableTypedCvParam findByName(final String name, final CvParamType cvParamType, final boolean ignoreCase) {
+        return cvParamRepository.findByName(name, cvParamType, ignoreCase);
     }
 
     @Override

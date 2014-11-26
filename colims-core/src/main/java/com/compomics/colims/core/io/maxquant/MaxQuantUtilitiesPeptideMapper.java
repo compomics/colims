@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * maps a peptide assumption fetched from a parsed max quant file on a colims
- * peptide object
+ * maps a peptide assumption fetched from a parsed max quant file on a colims peptide object
  *
  * @author Davy
  */
@@ -25,15 +24,13 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
 
     /**
-     * maps the source max quant peptide assumption to the target colims peptide
-     * disclaimer: needs to be from the parser because we retrieve an
-     * {@code UrParameter} since there is momentarily no way to add a matchscore
-     * to the peptide assumption another disclaimer: since it is at the moment
-     * also impossible to add scores to a modification match we retrieve another
-     * {@code UrParameter}
+     * maps the source max quant peptide assumption to the target Colims peptide disclaimer: needs to be from the parser
+     * because we retrieve an {@code UrParameter} since there is momentarily no way to add a matchscore to the peptide
+     * assumption another disclaimer: since it is at the moment also impossible to add scores to a modification match we
+     * retrieve another {@code UrParameter}
      *
      * @param source the peptide assumption from the max quant parser
-     * @param target the colims peptide that needs to be filled up
+     * @param target the Colims peptide that needs to be filled up
      * @throws MappingException should any mapping problems arise
      */
     @Override
@@ -45,7 +42,7 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
             PtmScoring ptmScoring = new PtmScoring(match.getTheoreticPtm());
             ptmScoring.setProbabilisticScore(match.getModificationSite(), aPtmScore.getScore());
             ptmScoring.setDeltaScore(match.getModificationSite(), aPtmScore.getDeltaScore());
-            ptmScores.addMainModificationSite(match.getTheoreticPtm(), match.getModificationSite());
+            ptmScores.addConfidentModificationSite(match.getTheoreticPtm(), match.getModificationSite());
             ptmScores.addPtmScoring(match.getTheoreticPtm(), ptmScoring);
         }
         utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);

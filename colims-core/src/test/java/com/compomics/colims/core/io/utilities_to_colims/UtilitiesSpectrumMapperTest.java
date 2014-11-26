@@ -19,13 +19,14 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+
 import java.io.FileNotFoundException;
 import java.util.Map;
+
 import org.junit.Before;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,7 +69,7 @@ public class UtilitiesSpectrumMapperTest {
      * @throws MappingException
      * @throws IOException
      * @throws FileNotFoundException
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException    thrown in case of a failure to load a class by it's string name.
      * @throws MzMLUnmarshallerException
      */
     @Test

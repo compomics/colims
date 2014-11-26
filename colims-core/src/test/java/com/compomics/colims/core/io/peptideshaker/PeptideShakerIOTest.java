@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.model.FastaDb;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -13,13 +14,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.util.experiment.MsExperiment;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,16 +34,16 @@ public class PeptideShakerIOTest {
     /**
      * Test the unpacking of a PS .cps file.
      *
-     * @throws IOException
+     * @throws IOException               thrown in case of an IO related problem
      * @throws ArchiveException
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
-        
+
         File directory = unpackedPsDataImport.getUnpackedDirectory();
         Assert.assertNotNull(directory);
         Assert.assertTrue(directory.exists());
@@ -52,7 +54,7 @@ public class PeptideShakerIOTest {
 
         MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
         Assert.assertNotNull(msExperiment);
-        
+
         //delete directory
         FileUtils.deleteDirectory(directory);
         Assert.assertFalse(directory.exists());
@@ -61,9 +63,9 @@ public class PeptideShakerIOTest {
     /**
      * Test the unpacking of a PeptideShakerImport instance.
      *
-     * @throws IOException
+     * @throws IOException            thrown in case of an IO related problem
      * @throws ArchiveException
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      */
     @Test
     public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {

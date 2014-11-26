@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
@@ -8,6 +9,7 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
 import com.compomics.colims.repository.SearchParametersRepository;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("searchAndValidationSettingsService")
@@ -28,6 +29,8 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     private SearchEngineRepository searchEngineRepository;
     @Autowired
     private SearchParametersRepository searchParametersRepository;
+    @Autowired
+    private OlsService olsService;
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {

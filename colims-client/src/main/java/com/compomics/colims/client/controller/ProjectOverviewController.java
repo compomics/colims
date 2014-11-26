@@ -44,6 +44,7 @@ import com.compomics.util.preferences.AnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
@@ -331,8 +333,7 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Listen to a ExperimentChangeEvent and update the experiments table if
-     * necessary.
+     * Listen to a ExperimentChangeEvent and update the experiments table if necessary.
      *
      * @param experimentChangeEvent the experimentChangeEvent
      */
@@ -373,8 +374,7 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table
-     * if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table if necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent
      */
@@ -476,7 +476,7 @@ public class ProjectOverviewController implements Controllable {
                         spectrumPanel.addAutomaticDeNovoSequencing(peptideAssumption.getPeptide(), annotations,
                                 forwardIon, rewindIon, annotationPreferences.getDeNovoCharge(),
                                 annotationPreferences.showForwardIonDeNovoTags(),
-                                annotationPreferences.showRewindIonDeNovoTags());
+                                annotationPreferences.showRewindIonDeNovoTags(), false);
 
                         // add the spectrum panel to the frame
                         projectOverviewPanel.getSpectrumJPanel().removeAll();
@@ -634,8 +634,7 @@ public class ProjectOverviewController implements Controllable {
     /**
      * Get the selected analytical run from the analytical run table.
      *
-     * @return the selected analytical run, null if no analytical run is
-     * selected
+     * @return the selected analytical run, null if no analytical run is selected
      */
     private AnalyticalRun getSelectedAnalyticalRun() {
         AnalyticalRun selectedAnalyticalRun = null;
@@ -688,7 +687,7 @@ public class ProjectOverviewController implements Controllable {
 
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME).
                 setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL, spectrumService.getMinimumRetentionTime(analyticalRun),
-                                spectrumService.getMaximumRetentionTime(analyticalRun), 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
+                        spectrumService.getMaximumRetentionTime(analyticalRun), 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()
                 .getColumn(PsmTableFormat.RETENTION_TIME).getCellRenderer()).showNumberAndChart(true, labelWidth + 5);
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()

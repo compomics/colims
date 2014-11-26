@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.cv.TypedCvParam;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,10 +11,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Modification;
+
 import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -97,6 +98,31 @@ public class OlsServiceTest {
         Modification modification = olsService.findModifiationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
+    }
+
+    /**
+     * Test the find enzyme CV param by name method from the OlsService.
+     */
+    @Test
+    public void testFindEnzymeByName() {
+        //try to find a non existing enzyme
+        TypedCvParam enzyme = olsService.findEnzymeByName("Non existing enzyme");
+
+        Assert.assertNull(enzyme);
+
+        //try to find an existing enzyme (lower case)
+        enzyme = olsService.findEnzymeByName("trypsin");
+
+        Assert.assertNotNull(enzyme);
+        Assert.assertEquals("MS:1001251", enzyme.getAccession());
+        Assert.assertEquals("Trypsin", enzyme.getName());
+
+        //try to find an existing enzyme (upper case)
+        enzyme = olsService.findEnzymeByName("TRYPSIN");
+
+        Assert.assertNotNull(enzyme);
+        Assert.assertEquals("MS:1001251", enzyme.getAccession());
+        Assert.assertEquals("Trypsin", enzyme.getName());
     }
 
 }

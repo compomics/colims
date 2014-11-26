@@ -69,7 +69,7 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
         this.fastaDb = fastaDb;
     }
 
-    public SearchParameters getSearchParameterSettings() {
+    public SearchParameters getSearchParameters() {
         return searchParameters;
     }
 

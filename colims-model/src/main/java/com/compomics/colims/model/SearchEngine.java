@@ -2,6 +2,7 @@ package com.compomics.colims.model;
 
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.SearchEngineType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +53,7 @@ public class SearchEngine extends CvParam {
      * Constructor.
      *
      * @param searchEngineType the search engine type enum
-     * @param version the search engine version
+     * @param version          the search engine version
      */
     public SearchEngine(final SearchEngineType searchEngineType, final String version) {
         super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
@@ -64,11 +65,11 @@ public class SearchEngine extends CvParam {
      * Constructor.
      *
      * @param searchEngineType the search engine type enum
-     * @param version the search engine version
-     * @param ontology the CV term ontology
-     * @param label the CV term label
-     * @param accession The CV term accession
-     * @param name The CV term name
+     * @param version          the search engine version
+     * @param ontology         the CV term ontology
+     * @param label            the CV term label
+     * @param accession        The CV term accession
+     * @param name             The CV term name
      */
     public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
@@ -77,11 +78,10 @@ public class SearchEngine extends CvParam {
     }
 
     /**
-     * Constructor that creates a new instance with all fields of the given
-     * SearchEngine and the given version.
+     * Constructor that creates a new instance with all fields of the given SearchEngine and the given version.
      *
      * @param searchEngine the SearchEngine to copy
-     * @param version the search engine version
+     * @param version      the search engine version
      */
     public SearchEngine(final SearchEngine searchEngine, final String version) {
         this(searchEngine.getSearchEngineType(), version, searchEngine.getOntology(), searchEngine.getLabel(), searchEngine.getAccession(), searchEngine.getName());

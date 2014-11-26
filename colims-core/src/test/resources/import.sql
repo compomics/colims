@@ -65,8 +65,11 @@ INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'Q8IWA5'), (2, 'Q13233');
 
 -- insert test search engine
-INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.0.0');
+INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.35.0-beta');
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (2,'MS:1001583','MS','MaxQuant','PSI Mass Spectrometry Ontology [MS]','MAXQUANT','0.0.0');
 
 -- insert test fasta db
 INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, taxonomy_accession, version) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', 'Homo sapiens (Human)', '9606', '1.2.3');
+
+-- insert test search parameter cv params
+INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'ENZYME');

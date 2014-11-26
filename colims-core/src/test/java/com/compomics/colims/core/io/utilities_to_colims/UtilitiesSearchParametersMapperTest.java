@@ -33,7 +33,7 @@ public class UtilitiesSearchParametersMapperTest {
     public void testMapSearchParameters() {
         //create SearchParameters
         com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.SearchParameters();
-        Enzyme enzyme = new Enzyme(1, "testEnzyme", "A", "A", "A", "A");
+        Enzyme enzyme = new Enzyme(1, "trypsin", "A", "A", "A", "A");
         utilitiesSearchParameters.setEnzyme(enzyme);
 
         utilitiesSearchParameters.setnMissedCleavages(2);

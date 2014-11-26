@@ -15,7 +15,7 @@ public interface SearchEngineRepository extends GenericRepository<SearchEngine, 
      * versions), a random one is returned. Returns null if nothing was found.
      *
      * @param searchEngineType the search engine type
-     * @return the found SearchEngine
+     * @return the found SearchEngine instance
      */
     SearchEngine findByType(SearchEngineType searchEngineType);
 
@@ -25,7 +25,7 @@ public interface SearchEngineRepository extends GenericRepository<SearchEngine, 
      *
      * @param searchEngineType the search engine type
      * @param version the search engine version
-     * @return the found SearchEngine
+     * @return the found SearchEngine instance
      */
     SearchEngine findByTypeAndVersion(SearchEngineType searchEngineType, String version);
 

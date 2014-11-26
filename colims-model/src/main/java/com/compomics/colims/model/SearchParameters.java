@@ -20,6 +20,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 /**
+ * This class represents a search parameters entity in the database.
  *
  * @author Niels Hulstaert
  */
@@ -32,13 +33,13 @@ public class SearchParameters extends DatabaseEntity {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam searchType;
     /**
      * The cleavage enzyme.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam enzyme;
     /**

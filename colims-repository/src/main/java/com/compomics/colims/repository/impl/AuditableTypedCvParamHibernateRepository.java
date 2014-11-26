@@ -16,12 +16,21 @@ import java.util.List;
 public class AuditableTypedCvParamHibernateRepository extends GenericHibernateRepository<AuditableTypedCvParam, Long> implements AuditableTypedCvParamRepository {
 
     @Override
-    public AuditableTypedCvParam findByAccession(final String accession, final CvParamType cvTermType) {
-        return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvParamType", cvTermType));
+    public AuditableTypedCvParam findByAccession(final String accession, final CvParamType cvParamType) {
+        return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvParamType", cvParamType));
     }
 
     @Override
-    public List<AuditableTypedCvParam> findByCvParamType(final CvParamType cvTermType) {
-        return findByCriteria(Restrictions.eq("cvParamType", cvTermType));
+    public AuditableTypedCvParam findByName(final String name, final CvParamType cvParamType, final boolean ignoreCase) {
+        if (ignoreCase) {
+            return findUniqueByCriteria(Restrictions.eq("name", name).ignoreCase(), Restrictions.eq("cvParamType", cvParamType));
+        } else {
+            return findUniqueByCriteria(Restrictions.eq("name", name), Restrictions.eq("cvParamType", cvParamType));
+        }
+    }
+
+    @Override
+    public List<AuditableTypedCvParam> findByCvParamType(final CvParamType cvParamType) {
+        return findByCriteria(Restrictions.eq("cvParamType", cvParamType));
     }
 }

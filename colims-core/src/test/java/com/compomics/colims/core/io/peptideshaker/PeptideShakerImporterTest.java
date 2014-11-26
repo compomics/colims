@@ -86,7 +86,7 @@ public class PeptideShakerImporterTest {
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
         
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-october-2014_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
@@ -108,7 +108,7 @@ public class PeptideShakerImporterTest {
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
-        Assert.assertEquals(6538, testAnalyticalRun.getSpectrums().size());
+        Assert.assertEquals(6561, testAnalyticalRun.getSpectrums().size());
 
         //spectra
         for (Spectrum spectrum : testAnalyticalRun.getSpectrums()) {

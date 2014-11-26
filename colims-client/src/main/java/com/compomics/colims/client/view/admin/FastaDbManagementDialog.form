@@ -269,10 +269,10 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="fastaDbStateInfoLabel" max="32767" attributes="0"/>
+                                      <Component id="fastaDbStateInfoLabel" pref="416" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -301,27 +301,29 @@
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="fileNameLabel" max="32767" attributes="0"/>
-                                              <Component id="nameLabel" max="32767" attributes="0"/>
-                                          </Group>
-                                          <Component id="filePathLabel" pref="70" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="fileNameLabel" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="filePathLabel" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="filePathTextField" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="fileNameTextField" min="-2" pref="337" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <EmptySpace max="32767" attributes="0"/>
                                               <Component id="browseFastaButton" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="3" max="32767" attributes="0"/>
+                                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                                           </Group>
-                                          <Component id="nameTextField" max="32767" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="nameTextField" alignment="1" max="32767" attributes="0"/>
+                                                  <Component id="fileNameTextField" alignment="1" max="32767" attributes="0"/>
+                                                  <Component id="filePathTextField" max="32767" attributes="0"/>
+                                              </Group>
+                                          </Group>
                                       </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>

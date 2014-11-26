@@ -10,15 +10,17 @@ import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.SearchEngineType;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This class maps the Utilities search settings to a
- * SearchAndValidationSettings instance.
+ * This class maps the Utilities search settings to a SearchAndValidationSettings instance.
  *
  * @author Niels Hulstaert
  */
@@ -31,7 +33,7 @@ public class SearchSettingsMapper {
     @Autowired
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
     /**
-     * 
+     *
      */
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
@@ -39,12 +41,12 @@ public class SearchSettingsMapper {
     /**
      * Map the SearchAndValidationSettings.
      *
-     * @param searchEngineType the search engine type
-     * @param version the search engine version
-     * @param fastaDb the FastaDb instance
+     * @param searchEngineType          the search engine type
+     * @param version                   the search engine version
+     * @param fastaDb                   the FastaDb instance
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param identificationFiles the list of identification files
-     * @param storeIdentificationFile store the identification or not
+     * @param identificationFiles       the list of identification files
+     * @param storeIdentificationFile   store the identification or not
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException thrown in case of an I/O related exception
      */
@@ -52,7 +54,7 @@ public class SearchSettingsMapper {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
-         * SearchParamterSettings
+         * SearchParameterSettings
          */
         //map the utitilities SearchParamaters onto the colims SearchParameterSettings
         SearchParameters searchParameters = new SearchParameters();
