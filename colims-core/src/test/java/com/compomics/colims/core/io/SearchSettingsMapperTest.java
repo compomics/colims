@@ -94,17 +94,14 @@ public class SearchSettingsMapperTest {
 
         //search parameters
         Assert.assertNotNull(searchAndValidationSettings.getSearchParameters());
-//        Assert.assertTrue(searchAndValidationSettings.getSearchParameters().getSearchAndValidationSettingses().contains(searchAndValidationSettings));
 
         //search engine
         Assert.assertNotNull(searchAndValidationSettings.getSearchEngine());
         SearchEngine searchEngine = searchAndValidationSettings.getSearchEngine();
         Assert.assertEquals(SearchEngineType.PEPTIDESHAKER, searchEngine.getSearchEngineType());
         Assert.assertEquals("0.28.0", searchEngine.getVersion());
-//        Assert.assertTrue(searchEngine.getSearchAndValidationSettingses().contains(searchAndValidationSettings));
 
         //fasta db
         Assert.assertNotNull(searchAndValidationSettings.getFastaDb());
-//        Assert.assertTrue(searchAndValidationSettings.getFastaDb().getSearchAndValidationSettingses().contains(searchAndValidationSettings));
     }
 }

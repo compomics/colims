@@ -1,9 +1,11 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImport;
+
 import java.util.List;
 
 import com.compomics.util.experiment.MsExperiment;
+
 import java.io.File;
 
 /**
@@ -40,9 +42,9 @@ public class UnpackedPeptideShakerImport extends DataImport {
      * Constructor.
      *
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
-     * @param unpackedDirectory the directory where the .cps file is unzipped
-     * @param dbDirectory the database directory
-     * @param msExperiment the MsExperiment instance
+     * @param unpackedDirectory       the directory where the .cps file is unzipped
+     * @param dbDirectory             the database directory
+     * @param msExperiment            the MsExperiment instance
      */
     public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final MsExperiment msExperiment) {
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
@@ -92,9 +94,8 @@ public class UnpackedPeptideShakerImport extends DataImport {
     }
 
     /**
-     * Browse through the mgf resources and return the (first) found mgf
-     * resource with the given name. Return null if no file with the given name
-     * was found.
+     * Browse through the mgf resources and return the (first) found mgf resource with the given name. Return null if no
+     * file with the given name was found.
      *
      * @param mgfResourceName the mgf resource name
      * @return the found mgf resource

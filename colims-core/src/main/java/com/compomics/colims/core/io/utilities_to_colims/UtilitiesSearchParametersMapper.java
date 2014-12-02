@@ -18,6 +18,8 @@ import com.compomics.util.experiment.biology.Enzyme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * This class maps the Utilities search parameters to the Colims search parameters.
  *
@@ -34,12 +36,20 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
+    private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
+    /**
+     * The default search type, for the moment this is fixed to "ms-ms search".
+     */
+    private SearchCvParam defaultSearchType = null;
     /**
      * The TypedCvParam class service.
      */
     @Autowired
     private TypedCvParamService typedCvParamService;
+    /**
+     * The Ontoloy Lookup Service service.
+     */
     @Autowired
     private OlsService olsService;
 
@@ -51,6 +61,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      */
     @Override
     public void map(final com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
+        //set the default search type
+        searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
         TypedCvParam enzyme = mapEnzyme(utilitiesSearchParameters.getEnzyme());
         searchParameters.setEnzyme((SearchCvParam) enzyme);
@@ -101,6 +113,20 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         }
 
         return enzyme;
+    }
+
+    /**
+     * Get the default search type from the database and assign it to the class field.
+     */
+    @PostConstruct
+    private void getDefaultSearchType() {
+        //look for the default search type in the database
+        TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
+        if (searchType != null) {
+            defaultSearchType = (SearchCvParam) searchType;
+        } else {
+            throw new IllegalStateException("The default search type CV term was not found in the database.");
+        }
     }
 
 }

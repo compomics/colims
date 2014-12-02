@@ -14,7 +14,6 @@ import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.massspectrometry.Charge;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,9 +24,7 @@ public class UtilitiesSearchParametersMapperTest {
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
 
     /**
-     * Test the mapping of Utilities SearchParameters to Colims
-     * SearchParameters.
-     *
+     * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
      */
     @Test
     public void testMapSearchParameters() {
@@ -54,21 +51,24 @@ public class UtilitiesSearchParametersMapperTest {
 
         utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
 
+        Assert.assertNotNull(searchParameters.getSearchType());
+        Assert.assertTrue("MS:1001083".equals(searchParameters.getSearchType().getAccession()));
+
         Assert.assertNotNull(searchParameters.getEnzyme());
         Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameters.getEnzyme().getName()));
 
         Assert.assertNotNull(searchParameters.getNumberOfMissedCleavages());
         Assert.assertEquals(Integer.valueOf(2), searchParameters.getNumberOfMissedCleavages());
 
-        Assert.assertNotNull(searchParameters.getFragMassToleranceUnit());
-        Assert.assertEquals(MassAccuracyType.DA, searchParameters.getFragMassToleranceUnit());
-        Assert.assertNotNull(searchParameters.getFragMassTolerance());
-        Assert.assertEquals(0.5, searchParameters.getFragMassTolerance(), 0.01);
-
         Assert.assertNotNull(searchParameters.getPrecMassToleranceUnit());
         Assert.assertEquals(MassAccuracyType.DA, searchParameters.getPrecMassToleranceUnit());
         Assert.assertNotNull(searchParameters.getPrecMassTolerance());
         Assert.assertEquals(0.5, searchParameters.getPrecMassTolerance(), 0.01);
+
+        Assert.assertNotNull(searchParameters.getFragMassToleranceUnit());
+        Assert.assertEquals(MassAccuracyType.DA, searchParameters.getFragMassToleranceUnit());
+        Assert.assertNotNull(searchParameters.getFragMassTolerance());
+        Assert.assertEquals(0.5, searchParameters.getFragMassTolerance(), 0.01);
 
         Assert.assertNotNull(searchParameters.getLowerCharge());
         Assert.assertEquals(Integer.valueOf(charge.value), searchParameters.getLowerCharge());
