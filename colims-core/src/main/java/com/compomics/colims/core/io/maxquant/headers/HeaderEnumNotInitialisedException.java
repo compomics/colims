@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.maxquant;
+package com.compomics.colims.core.io.maxquant.headers;
 
 /**
  *
