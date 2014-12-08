@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.SearchSettingsMapper;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.AnalyticalRun;
@@ -18,8 +19,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -108,7 +107,7 @@ public class MaxQuantImporter implements DataImporter {
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(preparedFastaFile, null);
             LOGGER.debug("Finish loading FASTA file.");
-            maxQuantParser.parseMaxQuantTextFolder(maxQuantImport.getMaxQuantDirectory());
+            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory());
 
             for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
                 AnalyticalRun targetRun = new AnalyticalRun();
@@ -117,19 +116,17 @@ public class MaxQuantImporter implements DataImporter {
 
                 List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
 
-                for (MSnSpectrum aParsedSpectrum : aParsedRun.getListOfSpectra()) {
+                for (Map.Entry<Integer, MSnSpectrum> aParsedSpectrum : aParsedRun.getListOfSpectra().entrySet()) {
                     Spectrum targetSpectrum = new Spectrum();
 
                     //set entity relation
                     targetSpectrum.setAnalyticalRun(targetRun);
 
                     //for the spectra we can just use the standard utilities mapper
-                    //@TODO get the fragmentation type
-                    utilitiesSpectrumMapper.map(aParsedSpectrum, null, targetSpectrum);
+                    utilitiesSpectrumMapper.map(aParsedSpectrum.getValue(), maxQuantParser.getFragmentationType(aParsedSpectrum.getKey()), targetSpectrum);
                     mappedSpectra.add(targetSpectrum);
 
-                    //
-                    maxQuantUtilitiesPsmMapper.map(aParsedSpectrum, maxQuantParser, targetSpectrum);
+                    maxQuantUtilitiesPsmMapper.map(aParsedSpectrum.getValue(), maxQuantParser, targetSpectrum);
                 }
                 targetRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(targetRun);

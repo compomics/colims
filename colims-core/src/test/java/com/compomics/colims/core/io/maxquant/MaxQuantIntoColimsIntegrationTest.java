@@ -2,8 +2,7 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.io.maxquant.MaxQuantUtilitiesAnalyticalRunMapper;
-import com.compomics.colims.core.io.maxquant.MaxQuantUtilitiesPeptideMapper;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
@@ -113,7 +112,7 @@ public class MaxQuantIntoColimsIntegrationTest {
             AnalyticalRun targetRun = new AnalyticalRun();
             maxQuantUtilitiesAnalyticalRunMapper.map(aRun, targetRun);
             List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getListOfSpectra().size());
-            for (MSnSpectrum aSpectrum : aRun.getListOfSpectra()) {
+            for (MSnSpectrum aSpectrum : aRun.getListOfSpectra().values()) {
                 Spectrum targetSpectrum = new Spectrum();
                 utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
                 mappedSpectra.add(targetSpectrum);

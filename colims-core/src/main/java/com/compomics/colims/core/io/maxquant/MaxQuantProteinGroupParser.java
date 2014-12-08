@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.maxquant;
 
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.FileNotFoundException;

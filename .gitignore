@@ -10,6 +10,10 @@
 .project
 .classpath
 
+# intellij
+.idea
+*.iml
+
 colims-client/nb-configuration.xml
 colims-core/nb-configuration.xml
 colims-core/resources/matches/wt course test dataset_wt course test dataset_0_id/db.lck

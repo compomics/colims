@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MaxQuantImportMapperTest {
      * Test of map method, of class MaxQuantImporter.
      * @throws java.io.IOException
      * @throws com.compomics.colims.core.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.maxquant.HeaderEnumNotInitialisedException
+     * @throws com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException
      * @throws com.compomics.colims.core.io.MappingException
      * @throws java.sql.SQLException
      * @throws java.io.FileNotFoundException

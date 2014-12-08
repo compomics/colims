@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import org.springframework.stereotype.Component;
 
 /**

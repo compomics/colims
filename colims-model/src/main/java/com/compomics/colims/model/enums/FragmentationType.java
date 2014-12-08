@@ -7,6 +7,6 @@ package com.compomics.colims.model.enums;
  */
 public enum FragmentationType {
 
-    EDT, CID
+    CID, EDT, HCD
 
 }
