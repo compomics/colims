@@ -73,7 +73,7 @@ public class MaxQuantPsmParserTest {
         assertThat(proteinGroupMap.get(9999), is(nullValue()));
         //assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
 
-        maxQuantEvidenceParser.parse(evidenceFile, parameters);
+        maxQuantEvidenceParser.parse(evidenceFile, parameters.get("multiplicity"));
 
         //then test if the peptides were properly parsed
         assertThat(maxQuantEvidenceParser.peptideAssumptions.size(), is(2408));
@@ -108,7 +108,7 @@ public class MaxQuantPsmParserTest {
         assertThat(Integer.parseInt(maxQuantEvidenceParser.peptideAssumptions.get(2).getPeptide().getParentProteinsNoRemapping().get(1)), is(1100));
 
         maxQuantEvidenceParser.clear();
-        maxQuantEvidenceParser.parse(quantFile, parameters);
+        maxQuantEvidenceParser.parse(quantFile, parameters.get("multiplicity"));
 
         //first test if the quantifications are parsed correctly
         assertThat(maxQuantEvidenceParser.quantifications.keySet().size(), is(15));

@@ -2,9 +2,7 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
-import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
-import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
+import com.compomics.colims.core.io.maxquant.headers.*;
 import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.enums.QuantificationWeight;
@@ -56,13 +54,13 @@ public class MaxQuantEvidenceParser {
      * @param evidenceFile Evidence text file from MQ output
      * @throws IOException
      */
-    public void parse(final File evidenceFile, Map<String, String> parameters) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
+    public void parse(final File evidenceFile, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(evidenceFile);
 
         Map<String, String> values;
+        int intensityCount;
 
-        // TODO: what if 0 or not present
-        int intensityCount = Integer.parseInt(parameters.get("multiplicity"));
+        intensityCount = Integer.parseInt(multiplicity);
 
         QuantificationWeight[] weights = weightOptions.get(intensityCount);
         String[] intensityColumns = intensityHeaders.get(intensityCount);

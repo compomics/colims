@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
@@ -36,7 +37,7 @@ public class MaxQuantImportMapperTest {
     private FastaDb maxQuantTestFastaDb;
 
     public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
+        maxQuantTextDirectory = new ClassPathResource("data/maxquant_1512").getFile();
         
         File fastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
         maxQuantTestFastaDb = new FastaDb();
@@ -60,7 +61,8 @@ public class MaxQuantImportMapperTest {
         System.out.println("map");
         MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         maxQuantImporter.initImport(maxQuantImport);
-        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(null, null);
+        SearchAndValidationSettings searchAndValidationSettings = maxQuantImporter.importSearchSettings();
+        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(searchAndValidationSettings, null);
         assertThat(result.size(), is(not(0)));
     }
 }

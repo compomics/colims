@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.maxquant;
 
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
@@ -32,8 +33,9 @@ public class MaxQuantParameterParserTest {
     public void testParse() throws Exception {
         System.out.println("parse");
         MaxQuantParameterParser instance = new MaxQuantParameterParser();
-        Map<String, SearchParameters> result = instance.parse(maxQuantTextFolder);
-        assertThat(result.keySet(), hasItem("V13967_PolyASN_test_gennaro_12h_fr10_2253_445_2_5ul"));
+        instance.parseExperiment(maxQuantTextFolder);
+        Map<String, SearchParameters> result = instance.getRunParameters();
+            assertThat(result.keySet(), hasItem("V13967_PolyASN_test_gennaro_12h_fr10_2253_445_2_5ul"));
         assertThat(result.get("V13967_PolyASN_test_gennaro_12h_fr10_2253_445_2_5ul").getDiscardLowQualitySpectra(), is(false));
         assertThat(result.get("V13967_PolyASN_test_gennaro_12h_fr10_2253_445_2_5ul").getFastaFile(), notNullValue());
         assertThat(result.get("V13967_PolyASN_test_gennaro_12h_fr10_2253_445_2_5ul").getFastaFile().getName(), is("SP_hum_2013_04.fasta"));
@@ -47,4 +49,12 @@ public class MaxQuantParameterParserTest {
         assertThat(testProfile.getVariableModifications().size(), is(2));
     }
 
+    @Test
+    public void testNewParse() throws IOException, HeaderEnumNotInitialisedException {
+        MaxQuantParameterParser instance = new MaxQuantParameterParser();
+
+        instance.parseExperiment(maxQuantTextFolder);
+
+        System.out.println("hi");
+    }
 }

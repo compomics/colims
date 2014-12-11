@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.util.experiment.identification.SearchParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.io.File;
@@ -34,18 +35,39 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
-    private MaxQuantParameterParser maxQuantParameterParser;
-    @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
     private Map<Integer, MSnSpectrum> msms = new HashMap<>();
     private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
     private Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
-    private Map<String, SearchParameters> analysisSearchParameters = new HashMap<>();
-    private Map<String, String> parameters = new HashMap<>();
     private Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
     private boolean initialised = false;
+
+    /**
+     * An extra constructor for fun testing times
+     * @param quantFolder
+     * @throws IOException
+     * @throws HeaderEnumNotInitialisedException
+     * @throws MappingException
+     * @throws UnparseableException
+     */
+    public void parseFolder(final File quantFolder) throws IOException, HeaderEnumNotInitialisedException, MappingException, UnparseableException {
+        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
+        Map<String, String> row;
+        String multiplicity = null;
+
+        while (summaryIter.hasNext()) {
+            row = summaryIter.next();
+
+            if (row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getColumnName())) {
+                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getColumnName());
+                break;
+            }
+        }
+
+        parseFolder(quantFolder, multiplicity);
+    }
 
     /**
      * Parse the output folder and populate the parser with various datasets
@@ -55,10 +77,7 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException
      */
-    public void parseFolder(final File quantFolder) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
-        LOGGER.debug("parsing parameters");
-        parameters = maxQuantParameterParser.parseExperimentParams(quantFolder);
-
+    public void parseFolder(final File quantFolder, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
         msms = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT), true);
 
@@ -85,7 +104,7 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(new File(quantFolder, EVIDENCETXT), parameters);
+        maxQuantEvidenceParser.parse(new File(quantFolder, EVIDENCETXT), multiplicity);
 
         LOGGER.debug("parsing protein groups");
         proteinMap = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPS));
@@ -96,12 +115,6 @@ public class MaxQuantParser {
             initialised = true;
         }
     }
-
-    /**
-     * @deprecated
-     * @param folder
-     */
-    public void parseMaxQuantTextFolder(File folder) throws HeaderEnumNotInitialisedException, UnparseableException {}
 
     /**
      * get all the {@code PeptideAssumption}s that were parsed from the max
@@ -165,10 +178,6 @@ public class MaxQuantParser {
         return Collections.unmodifiableCollection(spectraPerRunMap.values());
     }
 
-    public SearchParameters getParametersForRun(MaxQuantAnalyticalRun aParsedRun) {
-        return analysisSearchParameters.get(aParsedRun.getAnalyticalRunName());
-    }
-
     public FragmentationType getFragmentationType(Integer id) {
         return fragmentations.get(id);
     }
@@ -178,7 +187,6 @@ public class MaxQuantParser {
         maxQuantEvidenceParser.clear();
         proteinMap.clear();
         spectraPerRunMap.clear();
-        analysisSearchParameters.clear();
         initialised = false;
     }
 }

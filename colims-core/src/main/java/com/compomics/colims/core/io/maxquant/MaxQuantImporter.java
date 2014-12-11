@@ -1,9 +1,6 @@
 package com.compomics.colims.core.io.maxquant;
 
-import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.core.io.DataImporter;
-import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.SearchSettingsMapper;
+import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
@@ -12,6 +9,7 @@ import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
@@ -50,11 +48,16 @@ public class MaxQuantImporter implements DataImporter {
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
+    private MaxQuantParameterParser parameterParser;
+    @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
     private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
+    @Autowired
+    private QuantificationSettingsMapper quantificationSettingsMapper;
+
     private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
      * Compomics utilities sequence factory
@@ -80,6 +83,7 @@ public class MaxQuantImporter implements DataImporter {
             spectrumFactory.clearFactory();
             sequenceFactory.clearFactory();
             newProteins.clear();
+            parameterParser.clear();
         } catch (IOException | SQLException ex) {
             LOGGER.error(ex);
         }
@@ -87,12 +91,33 @@ public class MaxQuantImporter implements DataImporter {
 
     @Override
     public SearchAndValidationSettings importSearchSettings() throws MappingException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SearchAndValidationSettings searchAndValidationSettings = null;
+
+        try {
+            parameterParser.parse(maxQuantImport.getMaxQuantDirectory());
+
+            List<File> identificationFiles = new ArrayList<>();
+            identificationFiles.add(maxQuantImport.getMaxQuantDirectory());
+
+            // but this is only for one set of settings...
+            // how to make it for a bunch of them
+            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (HeaderEnumNotInitialisedException e) {
+            e.printStackTrace();
+        }
+
+        return searchAndValidationSettings;
     }
 
     @Override
     public QuantificationSettings importQuantSettings() throws MappingException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        QuantificationSettings quantificationSettings = null;
+
+        quantificationSettings = quantificationSettingsMapper.map(SearchEngineType.MAX_QUANT, );
+
+        return quantificationSettings;
     }
 
     @Override
@@ -100,6 +125,7 @@ public class MaxQuantImporter implements DataImporter {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
         File preparedFastaFile = null;
+
         try {
             //just in case
             maxQuantParser.clearParsedProject();
@@ -107,7 +133,8 @@ public class MaxQuantImporter implements DataImporter {
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(preparedFastaFile, null);
             LOGGER.debug("Finish loading FASTA file.");
-            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory());
+
+            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
 
             for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
                 AnalyticalRun targetRun = new AnalyticalRun();
@@ -131,6 +158,7 @@ public class MaxQuantImporter implements DataImporter {
                 targetRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(targetRun);
             }
+
         } catch (IOException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);

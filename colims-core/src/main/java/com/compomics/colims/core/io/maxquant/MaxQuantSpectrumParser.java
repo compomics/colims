@@ -68,8 +68,6 @@ public class MaxQuantSpectrumParser {
         return peakMap;
     }
 
-    // TODO: this can probably be done with just the one constructor
-
     /**
      * parses a max quant msms text file without adding a peaklist to each
      * spectrum

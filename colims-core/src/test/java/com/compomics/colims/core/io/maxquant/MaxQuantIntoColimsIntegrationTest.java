@@ -80,7 +80,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     @Test
     public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("Max Quant storage integration test");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         User user = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);

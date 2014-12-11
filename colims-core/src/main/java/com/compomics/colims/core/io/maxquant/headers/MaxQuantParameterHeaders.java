@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.maxquant.headers;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -83,5 +85,9 @@ public enum MaxQuantParameterHeaders implements HeaderEnum {
     @Override
     public String getColumnName() throws HeaderEnumNotInitialisedException {
         return columnNames[0].toLowerCase(Locale.US);
+    }
+
+    public List<String> getColumn() {
+        return Arrays.asList(this.columnNames);
     }
 }
