@@ -3,13 +3,14 @@ package com.compomics.colims.core.io;
 import com.compomics.util.experiment.personalization.UrParameter;
 
 /**
+ * This convenience class holds the score of a given match and implements UrParameter.
  *
  * @author Niels Hulstaert
  */
 public class MatchScore implements UrParameter {
 
     private static final long serialVersionUID = -7176580468851820089L;
-    
+
     private Double probability;
     private Double postErrorProbability;
 
@@ -34,7 +35,6 @@ public class MatchScore implements UrParameter {
         this.postErrorProbability = postErrorProbability;
     }
 
-    //
     @Override
     public String getFamilyName() {
         return "colims";
@@ -44,5 +44,5 @@ public class MatchScore implements UrParameter {
     public int getIndex() {
         return 99;
     }
-    
+
 }

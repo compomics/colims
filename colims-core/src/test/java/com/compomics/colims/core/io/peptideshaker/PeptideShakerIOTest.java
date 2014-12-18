@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.compomics.util.experiment.MsExperiment;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +35,13 @@ public class PeptideShakerIOTest {
     /**
      * Test the unpacking of a PS .cps file.
      *
-     * @throws IOException               thrown in case of an IO related problem
-     * @throws ArchiveException
+     * @throws IOException            thrown in case of an IO related problem
+     * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
+     * @throws java.sql.SQLException  thrown in case of a database access error
      */
     @Test
-    public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException {
+    public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException {
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
@@ -52,7 +54,7 @@ public class PeptideShakerIOTest {
         Assert.assertNotNull(dbDirectory);
         Assert.assertTrue(dbDirectory.exists());
 
-        MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
+        MsExperiment msExperiment = unpackedPsDataImport.getCpsParent().getExperiment();
         Assert.assertNotNull(msExperiment);
 
         //delete directory
@@ -64,11 +66,12 @@ public class PeptideShakerIOTest {
      * Test the unpacking of a PeptideShakerImport instance.
      *
      * @throws IOException            thrown in case of an IO related problem
-     * @throws ArchiveException
+     * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
+     * @throws java.sql.SQLException  thrown in case of a database access error
      */
     @Test
-    public void testUnpackPeptideShakerDataIdmport() throws IOException, ArchiveException, ClassNotFoundException {
+    public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException {
         File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
@@ -92,7 +95,7 @@ public class PeptideShakerIOTest {
         Assert.assertNotNull(dbDirectory);
         Assert.assertTrue(dbDirectory.exists());
 
-        MsExperiment msExperiment = unpackedPsDataImport.getMsExperiment();
+        MsExperiment msExperiment = unpackedPsDataImport.getCpsParent().getExperiment();
         Assert.assertNotNull(msExperiment);
 
         Assert.assertEquals(fastaDb, unpackedPsDataImport.getFastaDb());

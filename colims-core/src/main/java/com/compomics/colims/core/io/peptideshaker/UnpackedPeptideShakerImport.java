@@ -5,11 +5,13 @@ import com.compomics.colims.core.io.DataImport;
 import java.util.List;
 
 import com.compomics.util.experiment.MsExperiment;
+import eu.isas.peptideshaker.utils.CpsParent;
 
 import java.io.File;
 
 /**
- * The class represents the unarchived PeptideShaker .cps file.
+ * The class represents the unarchived PeptideShaker .cps file and all other objects necessary for importing the PS
+ * experiment.
  *
  * @author Niels Hulstaert
  */
@@ -34,9 +36,9 @@ public class UnpackedPeptideShakerImport extends DataImport {
      */
     private List<File> mgfFiles;
     /**
-     * The Compomics Utilities MsExperiment instance.
+     * The CpsParent instance for interacting with the .cps file.
      */
-    private MsExperiment msExperiment;
+    private CpsParent cpsParent;
 
     /**
      * Constructor.
@@ -44,13 +46,13 @@ public class UnpackedPeptideShakerImport extends DataImport {
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
      * @param unpackedDirectory       the directory where the .cps file is unzipped
      * @param dbDirectory             the database directory
-     * @param msExperiment            the MsExperiment instance
+     * @param cpsParent               the CpsParent instance
      */
-    public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final MsExperiment msExperiment) {
+    public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final CpsParent cpsParent) {
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.unpackedDirectory = unpackedDirectory;
         this.dbDirectory = dbDirectory;
-        this.msExperiment = msExperiment;
+        this.cpsParent = cpsParent;
     }
 
     public File getPeptideShakerCpsArchive() {
@@ -85,12 +87,12 @@ public class UnpackedPeptideShakerImport extends DataImport {
         this.mgfFiles = mgfFiles;
     }
 
-    public MsExperiment getMsExperiment() {
-        return msExperiment;
+    public CpsParent getCpsParent() {
+        return cpsParent;
     }
 
-    public void setMsExperiment(MsExperiment msExperiment) {
-        this.msExperiment = msExperiment;
+    public void setCpsParent(CpsParent cpsParent) {
+        this.cpsParent = cpsParent;
     }
 
     /**

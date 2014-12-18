@@ -53,9 +53,11 @@ public class UtilitiesSearchParametersMapperTest {
 
         Assert.assertNotNull(searchParameters.getSearchType());
         Assert.assertTrue("MS:1001083".equals(searchParameters.getSearchType().getAccession()));
+        Assert.assertEquals(2L, searchParameters.getSearchType().getId().longValue());
 
         Assert.assertNotNull(searchParameters.getEnzyme());
         Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameters.getEnzyme().getName()));
+        Assert.assertEquals(1L, searchParameters.getEnzyme().getId().longValue());
 
         Assert.assertNotNull(searchParameters.getNumberOfMissedCleavages());
         Assert.assertEquals(Integer.valueOf(2), searchParameters.getNumberOfMissedCleavages());

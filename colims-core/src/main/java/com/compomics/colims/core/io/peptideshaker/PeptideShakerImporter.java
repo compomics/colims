@@ -8,25 +8,17 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.util.experiment.MsExperiment;
-import com.compomics.util.preferences.GenePreferences;
-import com.compomics.util.preferences.IdFilter;
-import com.compomics.util.preferences.PTMScoringPreferences;
-import com.compomics.util.preferences.ProcessingPreferences;
-import com.compomics.util.preferences.SequenceMatchingPreferences;
-import eu.isas.peptideshaker.myparameters.PSSettings;
-import eu.isas.peptideshaker.myparameters.PeptideShakerSettings;
+import eu.isas.peptideshaker.utils.CpsParent;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
  * The DataImporter class for PeptideShaker projects.
@@ -46,7 +38,7 @@ public class PeptideShakerImporter implements DataImporter {
      */
     private UnpackedPeptideShakerImport unpackedPeptideShakerImport;
     /**
-     * The utilities to colims search settings mapper.
+     * The utilities to Colims search settings mapper.
      */
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
@@ -79,13 +71,12 @@ public class PeptideShakerImporter implements DataImporter {
         SearchAndValidationSettings searchAndValidationSettings = null;
 
         try {
-            //load experiment settings
-            PeptideShakerSettings peptideShakerSettings = loadExperimentSettings(unpackedPeptideShakerImport.getMsExperiment());
-            String version = peptideShakerSettings.getProjectDetails().getPeptideShakerVersion();
+            CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();
+            String version = cpsParent.getProjectDetails().getPeptideShakerVersion();
 
             List<File> identificationFiles = new ArrayList<>();
             identificationFiles.add(unpackedPeptideShakerImport.getPeptideShakerCpsArchive());
-            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, unpackedPeptideShakerImport.getFastaDb(), peptideShakerSettings.getSearchParameters(), identificationFiles, false);
+            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, unpackedPeptideShakerImport.getFastaDb(), cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex.getMessage(), ex);
@@ -111,43 +102,6 @@ public class PeptideShakerImporter implements DataImporter {
         }
 
         return runs;
-    }
-
-    /**
-     * Load the PeptideShaker settings from the given MsExperiment.
-     *
-     * @param msExperiment the MsExperiment
-     * @return the PeptideShakerSettings
-     */
-    private PeptideShakerSettings loadExperimentSettings(final MsExperiment msExperiment) {
-        PeptideShakerSettings peptideShakerSettings = new PeptideShakerSettings();
-
-        if (msExperiment.getUrParam(peptideShakerSettings) instanceof PSSettings) {
-
-            // convert old settings files using utilities version 3.10.68 or older
-            // convert the old ProcessingPreferences object
-            PSSettings tempSettings = (PSSettings) msExperiment.getUrParam(peptideShakerSettings);
-            ProcessingPreferences tempProcessingPreferences = new ProcessingPreferences();
-            tempProcessingPreferences.setProteinFDR(tempSettings.getProcessingPreferences().getProteinFDR());
-            tempProcessingPreferences.setPeptideFDR(tempSettings.getProcessingPreferences().getPeptideFDR());
-            tempProcessingPreferences.setPsmFDR(tempSettings.getProcessingPreferences().getPsmFDR());
-
-            // convert the old PTMScoringPreferences object
-            PTMScoringPreferences tempPTMScoringPreferences = new PTMScoringPreferences();
-            tempPTMScoringPreferences.setaScoreCalculation(tempSettings.getPTMScoringPreferences().aScoreCalculation());
-            tempPTMScoringPreferences.setaScoreNeutralLosses(tempSettings.getPTMScoringPreferences().isaScoreNeutralLosses());
-            tempPTMScoringPreferences.setFlrThreshold(tempSettings.getPTMScoringPreferences().getFlrThreshold());
-
-            peptideShakerSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
-                    tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
-                    tempSettings.getDisplayPreferences(),
-                    tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
-                    tempPTMScoringPreferences, new GenePreferences(), new IdFilter(), new SequenceMatchingPreferences());
-        } else {
-            peptideShakerSettings = (PeptideShakerSettings) msExperiment.getUrParam(peptideShakerSettings);
-        }
-
-        return peptideShakerSettings;
     }
 
 }

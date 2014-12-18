@@ -3,14 +3,14 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.Peptide;
+import com.compomics.util.preferences.PTMScoringPreferences;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * This class maps a Compomics Utilities peptide objects to Colims Peptide
- * instance.
+ * This class maps a Compomics Utilities peptide objects to Colims Peptide instance.
  *
  * @author Niels Hulstaert
  */
@@ -30,13 +30,12 @@ public class UtilitiesPeptideMapper {
     /**
      * Map the utilities objects onto the colims Peptide.
      *
-     * @param sourcePeptide the Utilities peptide
-     * @param psmMatchScore the PSM score
-     * @param ptmScores the PSPtmScores instance
+     * @param sourcePeptide        the Utilities peptide
+     * @param psmMatchScore        the PSM score
+     * @param ptmScores            the PSPtmScores instance
      * @param identificationCharge the charge
-     * @param targetPeptide the Colims peptide
-     * @throws ModificationMappingException thrown in case of a modification
-     * mapping problem
+     * @param targetPeptide        the Colims peptide
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
         //set sequence

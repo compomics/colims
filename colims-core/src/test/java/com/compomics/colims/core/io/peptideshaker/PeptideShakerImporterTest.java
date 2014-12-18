@@ -1,45 +1,35 @@
 package com.compomics.colims.core.io.peptideshaker;
 
-import com.compomics.colims.core.bean.PtmFactoryWrapper;
-import java.io.IOException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.User;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
-import java.io.File;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.compomics.util.experiment.biology.PTMFactory;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,8 +47,6 @@ public class PeptideShakerImporterTest {
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired
-    private PtmFactoryWrapper ptmFactoryWrapper;
-    @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
     private UserService userService;
@@ -69,8 +57,8 @@ public class PeptideShakerImporterTest {
     public void setup() throws IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        ptmFactoryWrapper.getPtmFactory().clearFactory();
-        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
+        PTMFactory.getInstance().clearFactory();
+        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
 
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin1");
@@ -85,7 +73,7 @@ public class PeptideShakerImporterTest {
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
-        
+
         File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-october-2014_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
@@ -95,14 +83,14 @@ public class PeptideShakerImporterTest {
 
         //clear resources
         peptideShakerImporter.clear();
-        
+
         peptideShakerImporter.initImport(unpackedPsDataImport);
         SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
         List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
 
         //search and validation settings
         Assert.assertNotNull(searchAndValidationSettings);
-        
+
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
         Assert.assertNotNull(testAnalyticalRun);
@@ -140,25 +128,30 @@ public class PeptideShakerImporterTest {
             }
         }
 
-//        //get sample from db
-//        Sample sample = sampleService.findAll().get(0);
-//        
-//        for (AnalyticalRun analyticalRun : analyticalRuns) {
-//            analyticalRun.setCreationDate(new Date());
-//            analyticalRun.setModificationDate(new Date());
-//            analyticalRun.setUserName("testing");
-//            analyticalRun.setStartDate(new Date());
-//            analyticalRun.setSample(sample);
-//            analyticalRun.setInstrument(instrumentService.findAll().get(0));
-//            analyticalRunService.saveOrUpdate(analyticalRun);
-//        }
-//        
-//        //do it again
-//        analyticalRuns = peptideShakerImportMapper.mapAnalyticalRuns(peptideShakerImport);
-//        
-//        for(AnalyticalRun analyticalRun : analyticalRuns){
-//            analyticalRun.setSample(sample);
-//            analyticalRunService.saveOrUpdate(analyticalRun);
-//        }
+        //get sample from db
+        Sample sample = sampleService.findAll().get(0);
+
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            analyticalRun.setCreationDate(new Date());
+            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setUserName("testing");
+            analyticalRun.setStartDate(new Date());
+            analyticalRun.setSample(sample);
+            analyticalRun.setInstrument(instrumentService.findAll().get(0));
+            analyticalRunService.saveOrUpdate(analyticalRun);
+        }
+
+        //do it again
+        analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
+
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            analyticalRun.setCreationDate(new Date());
+            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setUserName("testing");
+            analyticalRun.setStartDate(new Date());
+            analyticalRun.setSample(sample);
+            analyticalRun.setInstrument(instrumentService.findAll().get(0));
+            analyticalRunService.saveOrUpdate(analyticalRun);
+        }
     }
 }

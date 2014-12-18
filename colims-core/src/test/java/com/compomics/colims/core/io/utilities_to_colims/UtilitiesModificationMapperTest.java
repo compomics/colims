@@ -1,9 +1,9 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
-import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.compomics.util.experiment.biology.PTMFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,14 +25,15 @@ import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PtmToPrideMap;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
+
 import java.io.FileNotFoundException;
+
 import org.junit.Before;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,13 +41,13 @@ import org.xmlpull.v1.XmlPullParserException;
 public class UtilitiesModificationMapperTest {
 
     @Autowired
+    private UtilitiesPsmMapper utilitiesPsmMapper;
+    @Autowired
     private PtmCvTermMapper ptmCvTermMapper;
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
     private ModificationService modificationService;
-    @Autowired
-    private PtmFactoryWrapper ptmFactoryWrapper;
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
@@ -64,12 +65,12 @@ public class UtilitiesModificationMapperTest {
     public void loadSearchParameters() throws IOException, XmlPullParserException {
         //load mods from test resources instead of user folder
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        ptmFactoryWrapper.getPtmFactory().clearFactory();
-        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
+        PTMFactory.getInstance().clearFactory();
+        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
 
         //get PTMs from PTMFactory
-        oxidation = ptmFactoryWrapper.getPtmFactory().getPTM("oxidation of m");
-        phosphorylation = ptmFactoryWrapper.getPtmFactory().getPTM("phosphorylation of y");
+        oxidation = PTMFactory.getInstance().getPTM("oxidation of m");
+        phosphorylation = PTMFactory.getInstance().getPTM("phosphorylation of y");
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 
@@ -95,8 +96,7 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 3 modifications, none of them are
-     * present in the db.
+     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
      *
      * @throws MappingException
      */
@@ -181,8 +181,7 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 modification, which is present in
-     * the db.
+     * Test the mapping for a peptide with 1 modification, which is present in the db.
      *
      * @throws MappingException
      * @throws IOException
@@ -232,9 +231,8 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The
-     * modification is not found in the db, the PtmToPrideMap or the ols
-     * service.
+     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
+     * PtmToPrideMap or the ols service.
      *
      * @throws MappingException
      * @throws IOException
@@ -250,7 +248,7 @@ public class UtilitiesModificationMapperTest {
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
         utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
-        
+
         //check modification mapping
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
@@ -261,9 +259,9 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNotNull(peptideHasModification.getModificationType());
             Assert.assertNotNull(peptideHasModification.getLocation());
             Assert.assertNotNull(peptideHasModification.getPeptide());
-            
+
             Modification modification = peptideHasModification.getModification();
-            Assert.assertNull(modification.getId());            
+            Assert.assertNull(modification.getId());
         }
     }
 }

@@ -18,8 +18,11 @@ import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
+
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
+
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -27,8 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * This class handles a PersistDbTask: map the DataImport en store it in the
- * database.
+ * This class handles a PersistDbTask: map the DataImport en store it in the database.
  *
  * @author Niels Hulstaert
  */
@@ -118,9 +120,14 @@ public class PersistDbTaskHandler {
      *
      * @param persistDbTask the persist task containing the DataImport object
      * @return the MappedDataImport instance
-     * @throws MappingException thrown in case of a mapping exception
+     * @throws MappingException                                       thrown in case of a mapping exception
+     * @throws java.io.IOException                                    thrown in case of an IO related problem
+     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in case of an Archiver exception
+     * @throws java.lang.ClassNotFoundException                       thrown in case of a failure to load a class by
+     *                                                                it's string name
+     * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
      */
-    private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException {
+    private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
         MappedDataImport mappedDataImport = null;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {

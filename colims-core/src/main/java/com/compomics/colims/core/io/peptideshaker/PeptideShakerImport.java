@@ -2,10 +2,13 @@ package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.model.FastaDb;
+
 import java.io.File;
 import java.util.List;
 
 /**
+ * The class represents the archived PeptideShaker .cps file and all other objects necessary for importing the PS
+ * experiment.
  *
  * @author Niels Hulstaert
  */
@@ -26,8 +29,8 @@ public class PeptideShakerImport extends DataImport {
      * Constructor.
      *
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
-     * @param fastaDb the FastabDb entity
-     * @param mgfFiles the list of MGF files
+     * @param fastaDb                 the FastabDb entity
+     * @param mgfFiles                the list of MGF files
      */
     public PeptideShakerImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfFiles) {
         super(fastaDb);

@@ -1,12 +1,12 @@
 package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.FastaDb;
+
 import java.io.Serializable;
 
 /**
- * This abstract class is the parent class for all data import types. It has the
- * FastaDb entity as class member, which is common regardless of the import type
- * (PeptideShaker, MaxQuant).
+ * This abstract class is the parent class for all data import types. It has the FastaDb entity as class member, which
+ * is common regardless of the import type (PeptideShaker, MaxQuant).
  *
  * @author Niels Hulstaert
  */

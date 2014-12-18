@@ -97,7 +97,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
             return searchParameterses.get(0);
         } else {
             //save the given instance
-            searchParametersRepository.save(searchParameters);
+            searchParametersRepository.saveOrUpdate(searchParameters);
             return searchParameters;
         }
     }
