@@ -13,7 +13,6 @@ import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.export.graphics.ExportGraphicsDialog;
-import com.compomics.util.gui.export.graphics.ExportGraphicsDialogParent;
 import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
 import com.compomics.util.preferences.AnnotationPreferences;
@@ -45,7 +44,7 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 /**
  * @author Niels Hulstaert
  */
-public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGraphicsDialogParent {
+public class ProjectOverviewPanel extends javax.swing.JPanel {
 
     /**
      * Turns of the gradient painting for the bar charts.
@@ -1073,22 +1072,22 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
     }//GEN-LAST:event_errorPlotTypeCheckBoxMenuItemActionPerformed
 
     private void exportSpectrumGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, getSpectrum());
+        new ExportGraphicsDialog(colimsFrame, null, null, true, getSpectrum(), null);
     }//GEN-LAST:event_exportSpectrumGraphicsJMenuItemActionPerformed
 
     private void exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, getSpectrumAndPlots());
+        new ExportGraphicsDialog(colimsFrame, null, null, true, getSpectrumAndPlots(), null);
     }//GEN-LAST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
 
     private void exportSequenceFragmentationGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, this, true, getSequenceFragmentationPlot());
+        new ExportGraphicsDialog(colimsFrame, null, null, true, getSequenceFragmentationPlot(), null);
     }//GEN-LAST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
 
     private void exportIntensityHistogramGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportIntensityHistogramGraphicsJMenuItemActionPerformed
         ChartPanel chartPanel = getIntensityHistogramPlot().getChartPanel();
         ChartPanel tempChartPanel = new ChartPanel(chartPanel.getChart());
         tempChartPanel.setBounds(new Rectangle(chartPanel.getBounds().width * 5, chartPanel.getBounds().height * 5));
-        new ExportGraphicsDialog(colimsFrame, this, true, tempChartPanel);
+        new ExportGraphicsDialog(colimsFrame, null, null, true, tempChartPanel, null);
     }//GEN-LAST:event_exportIntensityHistogramGraphicsJMenuItemActionPerformed
 
     private void exportMassErrorPlotGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMassErrorPlotGraphicsJMenuItemActionPerformed
@@ -1096,7 +1095,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
             ChartPanel chartPanel = getMassErrorPlot().getChartPanel();
             ChartPanel tempChartPanel = new ChartPanel(chartPanel.getChart());
             tempChartPanel.setBounds(new Rectangle(chartPanel.getBounds().width * 5, chartPanel.getBounds().height * 5));
-            new ExportGraphicsDialog(colimsFrame, this, true, tempChartPanel);
+            new ExportGraphicsDialog(colimsFrame, null, null, true, tempChartPanel, null);
         } else {
             JOptionPane.showMessageDialog(this, "No mass error plot to export!", "Export Error", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1287,22 +1286,22 @@ public class ProjectOverviewPanel extends javax.swing.JPanel implements ExportGr
         return null;
     }
 
-    @Override
+//    @Override
     public void setSelectedExportFolder(String selectedFolder) {
         // @TODO: implement me!
     }
 
-    @Override
+//    @Override
     public String getDefaultExportFolder() {
         return new File("user.home").getAbsolutePath(); // @TODO: implement me!
     }
 
-    @Override
+//    @Override
     public Image getNormalIcon() {
         return Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/compomics-utilities.png")); // @TODO: replace by colims icon
     }
 
-    @Override
+//    @Override
     public Image getWaitingIcon() {
         return Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/compomics-utilities.png")); // @TODO: replace by colims icon
     }

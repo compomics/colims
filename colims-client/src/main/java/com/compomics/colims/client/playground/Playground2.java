@@ -2,7 +2,6 @@ package com.compomics.colims.client.playground;
 
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.impl.QueueManagerImpl;
-import com.compomics.colims.core.bean.PtmFactoryWrapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
@@ -23,6 +22,7 @@ import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.util.List;
 import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
 import javax.management.openmbean.OpenDataException;
+
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -41,11 +42,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class Playground2 {
-    
+
     public static void main(String[] args) throws IOException, MappingException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, OpenDataException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
@@ -53,19 +53,19 @@ public class Playground2 {
         InstrumentService instrumentService = applicationContext.getBean("instrumentService", InstrumentService.class);
         Instrument instrument = instrumentService.findAll().get(0);
         DbTaskProducer storageTaskProducer = applicationContext.getBean("storageTaskProducer", DbTaskProducer.class);
-        
+
         PersistDbTask persistDbTask = new PersistDbTask();
         persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
         persistDbTask.setUserId(1L);
         persistDbTask.setDbEntityClass(AnalyticalRun.class);
         PersistMetadata storageMetadata = new PersistMetadata();
         storageMetadata.setStorageType(PersistType.PEPTIDESHAKER);
-        storageMetadata.setDescription("test description2");        
+        storageMetadata.setDescription("test description2");
         storageMetadata.setInstrument(instrument);
-        
+
         persistDbTask.setPersistMetadata(storageMetadata);
         persistDbTask.setDataImport(new PeptideShakerImport(null, null, null));
-        
+
         storageTaskProducer.sendDbTask(persistDbTask);
 
 //        QueueMonitor queueMonitor = applicationContext.getBean("queueMonitor", QueueMonitor.class);

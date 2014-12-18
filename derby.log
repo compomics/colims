@@ -1,0 +1,26 @@
+----------------------------------------------------------------
+Thu Dec 18 14:21:12 CET 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-014a-5d8f-3024-00001014c1f8 
+on database directory /tmp/1418908871435-0/resources/matches/Tutorial_Tutorial_0_id with class loader sun.misc.Launcher$AppClassLoader@3479404a 
+Loaded from file:/home/niels/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_67-b01
+user.dir=/home/niels/Documents/Development/Projects/colims
+os.name=Linux
+os.arch=amd64
+os.version=3.16.0-28-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Dec 18 14:31:39 CET 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance fcbd7858-014a-5d8f-3024-00001014c1f8 
+on database directory /tmp/1418909499135-0/resources/matches/Tutorial_Tutorial_0_id with class loader sun.misc.Launcher$AppClassLoader@3479404a 
+Loaded from file:/home/niels/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_67-b01
+user.dir=/home/niels/Documents/Development/Projects/colims
+os.name=Linux
+os.arch=amd64
+os.version=3.16.0-28-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

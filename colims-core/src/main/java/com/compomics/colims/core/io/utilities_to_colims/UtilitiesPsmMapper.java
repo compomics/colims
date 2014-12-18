@@ -97,18 +97,10 @@ public class UtilitiesPsmMapper {
             com.compomics.util.experiment.biology.Peptide bestMatchingPeptide = peptideAssumption.getPeptide();
             String bestMatchingPeptideKey = bestMatchingPeptide.getMatchingKey(identificationParameters.getSequenceMatchingPreferences());
 
-//            if(bestMatchingPeptideKey.equals("EFEPIINWMK_-18.010565")){
-//                System.out.println("-----------------");
-//            }
-
-            if (bestMatchingPeptide.getSequence().equals("EFEPLLNWMK")) {
-                System.out.println("tst------------------------------" + bestMatchingPeptide.getKey());
-            }
-
             //instantiate the Colims Peptide instance
             Peptide targetPeptide = new Peptide();
 
-            //get psm and peptide probabilities
+            //get psm and peptide parameters
             PSParameter psmParameter = (PSParameter) identification.getSpectrumMatchParameter(spectrumMatch.getKey(), new PSParameter());
             PSParameter peptideParameter = (PSParameter) identification.getPeptideMatchParameter(bestMatchingPeptideKey, new PSParameter());
 
@@ -118,6 +110,12 @@ public class UtilitiesPsmMapper {
             if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
                 ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
             }
+
+            //get peptide match
+            PeptideMatch peptideMatch = identification.getPeptideMatch(bestMatchingPeptideKey);
+//            if (pe.getUrParam(new PSPtmScores()) != null) {
+//                ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
+//            }
 
             utilitiesPeptideMapper.map(bestMatchingPeptide, psmMatchScore, ptmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
             //set the relation between the IdentificationFile and Peptide entities
