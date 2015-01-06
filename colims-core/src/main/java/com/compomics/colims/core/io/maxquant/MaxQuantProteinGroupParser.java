@@ -68,10 +68,10 @@ public class MaxQuantProteinGroupParser {
             if (evidenceids.contains(";")) {
                 String[] splitEvidenceIds = evidenceids.split(";");
                 for (String anEvidenceId : splitEvidenceIds) {
-                    proteinMatch.addPeptideMatch(anEvidenceId);
+                    proteinMatch.addPeptideMatchKey(anEvidenceId);
                 }
             } else {
-                proteinMatch.addPeptideMatch(evidenceids);
+                proteinMatch.addPeptideMatchKey(evidenceids);
             }
         }
         return proteinMatch;

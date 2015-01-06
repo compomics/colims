@@ -108,7 +108,7 @@ public enum AminoAcid {
     /**
      * Get the AA by the 1 letter code as a string.
      * 
-     * @param c the 1 letter AA code string
+     * @param letter the 1 letter AA code string
      * @return the AA
      */
     public static AminoAcid getAA(String letter) {
@@ -129,7 +129,7 @@ public enum AminoAcid {
     /**
      * Check if an AA with the given code is found.
      * 
-     * @param c the AA code String
+     * @param letter the AA code String
      * @return true if the AA is found
      */
     public static boolean containsAA(String letter) {

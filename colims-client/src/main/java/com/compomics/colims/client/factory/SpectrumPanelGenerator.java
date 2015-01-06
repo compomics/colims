@@ -26,6 +26,7 @@ public class SpectrumPanelGenerator {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
+
     /**
      * The ion ladder masses calculator.
      */

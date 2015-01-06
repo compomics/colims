@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.io.mzml;
 
-import com.compomics.colims.core.io.mzml.MzMLParser;
 import com.compomics.colims.core.io.MappingException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -57,7 +56,7 @@ public class MzMLParserTest {
         mzMLParser.importMzMLFiles(mzMLFiles);
 
         //try to parse unknown mzML file, should throw IllegalArgumentArgumentException
-        Experiment experiment = mzMLParser.parseMzmlFile("unknown_MzML_file");
+        Experiment experiment = mzMLParser.parseMzMlFile("unknown_MzML_file");
     }
 
     @Test
@@ -70,7 +69,7 @@ public class MzMLParserTest {
         mzMLParser.importMzMLFiles(mzMLFiles);
 
         //import mzML file
-        Experiment experiment = mzMLParser.parseMzmlFile(mzMLFile.getName());
+        Experiment experiment = mzMLParser.parseMzMlFile(mzMLFile.getName());
 
         //get experiment
         assertNotNull(experiment);

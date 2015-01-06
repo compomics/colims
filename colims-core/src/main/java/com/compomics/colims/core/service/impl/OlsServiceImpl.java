@@ -39,7 +39,7 @@ public class OlsServiceImpl implements OlsService {
         if (modificationTerms.getItem() != null) {
             //get the modificiation accession
             for (org.apache.xml.xml_soap.MapItem mapItem : modificationTerms.getItem()) {
-                modification = findModifiationByAccession(mapItem.getKey().toString());
+                modification = findModificationByAccession(mapItem.getKey().toString());
             }
         }
         //} catch (Exception e) {
@@ -57,7 +57,7 @@ public class OlsServiceImpl implements OlsService {
         if (modificationsTerms.getItem() != null) {
             //get the modificiations
             for (org.apache.xml.xml_soap.MapItem mapItem : modificationsTerms.getItem()) {
-                Modification modification = findModifiationByAccession(mapItem.getKey().toString());
+                Modification modification = findModificationByAccession(mapItem.getKey().toString());
                 if (modification != null) {
                     modifications.add(modification);
                 }
@@ -67,7 +67,7 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public Modification findModifiationByAccession(final String accession) {
+    public Modification findModificationByAccession(final String accession) {
         Modification modification = null;
 
         //get the modification name
@@ -97,7 +97,7 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession) {
+    public Modification findModificationByNameAndUnimodAccession(final String name, final String unimodAccession) {
         Modification modification = null;
 
         //first, find the modifications by name
@@ -113,7 +113,7 @@ public class OlsServiceImpl implements OlsService {
                 for (MapItem xref : termXrefs.getItem()) {
                     if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
                         if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
-                            Modification foundModification = findModifiationByAccession(accession);
+                            Modification foundModification = findModificationByAccession(accession);
                             if (foundModification != null) {
                                 modification = foundModification;
                                 modification.setAlternativeAccession(unimodAccession);
@@ -127,7 +127,7 @@ public class OlsServiceImpl implements OlsService {
                 }
             }
             if (modification == null && tempAccession != null) {
-                Modification foundModification = findModifiationByAccession(tempAccession);
+                Modification foundModification = findModificationByAccession(tempAccession);
                 if (foundModification != null) {
                     modification = foundModification;
                     modification.setAlternativeAccession(unimodAccession);
@@ -147,7 +147,7 @@ public class OlsServiceImpl implements OlsService {
         if (enzymeTerms.getItem() != null) {
             for (MapItem mapItem : enzymeTerms.getItem()){
                 String enzymeName = mapItem.getValue().toString();
-                if(enzymeName.toString().equalsIgnoreCase(name)){
+                if(enzymeName.equalsIgnoreCase(name)){
                     enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, mapItem.getKey().toString(), enzymeName);
                     break;
                 }

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Kenneth Verheggen
  */
 @Component("colimsModificationMapper")
@@ -19,12 +18,11 @@ public class ColimsModificationMapper {
     private static final Logger LOGGER = Logger.getLogger(ColimsModificationMapper.class);
 
     /**
-     * Map the colims modification matches onto the utilities peptide. The
-     * utilities PTMs are matched first onto CV params from PSI-MOD.
+     * Map the Colims modification matches onto the Utilities peptide. The Utilities PTMs are matched first onto CV
+     * params from PSI-MOD.
      *
+     * @param targetPeptide       the Colims target peptide
      * @param modificationMatches the list of modification matches
-     * @param ptmScores the PeptideShaker PTM scores
-     * @param targetPeptide the colims target peptide
      */
     public void map(final Peptide targetPeptide, final ArrayList<ModificationMatch> modificationMatches) {
         LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");

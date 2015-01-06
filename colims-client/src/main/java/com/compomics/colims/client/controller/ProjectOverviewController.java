@@ -156,7 +156,7 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setMinWidth(65);
 
         //set sorting
-        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
+        @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
 
         //init projects experiment table

@@ -14,23 +14,21 @@ import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
+@SuppressWarnings("ConstantConditions")
 @Component("utilitiesModificationMapper")
 public class UtilitiesModificationMapper {
 
@@ -182,7 +180,7 @@ public class UtilitiesModificationMapper {
             if (modification == null) {
                 //the modification was not found in the database
                 //look for the modification in the PSI-MOD ontology by exact name
-//                modification = olsService.findModificationByExactName(modificationMatch.getTheoreticPtm());
+                modification = olsService.findModificationByExactName(modificationMatch.getTheoreticPtm());
 
                 if (modification == null) {
                     //the modification was not found by name in the PSI-MOD ontology
@@ -233,7 +231,7 @@ public class UtilitiesModificationMapper {
                 //the modification was not found in the database
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
                     //look for the modification in the PSI-MOD ontology by accession
-//                    modification = olsService.findModifiationByAccession(cvTerm.getAccession());
+                    modification = olsService.findModificationByAccession(cvTerm.getAccession());
 
                     if (modification != null) {
                         //add to cached modifications
@@ -241,7 +239,7 @@ public class UtilitiesModificationMapper {
                     }
                 } else if (cvTerm.getOntology().equals("UNIMOD")) {
                     //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
-//                    modification = olsService.findModifiationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
+                    modification = olsService.findModificationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
 
                     if (modification != null) {
                         //add to cached modifications

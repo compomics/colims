@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.Peptide;
-import com.compomics.util.preferences.PTMScoringPreferences;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

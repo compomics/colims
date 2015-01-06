@@ -24,9 +24,17 @@ public class ExperimentBinaryFile extends BinaryFile {
     @ManyToOne
     private Experiment experiment;
 
+    /**
+     * No-arg constructor.
+     */
     public ExperimentBinaryFile() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param content the content as a byte array
+     */
     public ExperimentBinaryFile(final byte[] content) {
         super(content);
     }

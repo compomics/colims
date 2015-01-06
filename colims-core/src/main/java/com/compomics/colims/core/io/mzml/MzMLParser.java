@@ -17,9 +17,9 @@ public interface MzMLParser {
 
     /**
      * Imports the mzML files and stores them in a Map (key: file name, value:
-     * mzMLUnmarshaller). This method does't parse the files.
+     * mzMLUnmarshaller). This method doesn't parse the files.
      *
-     * @param mzMLfiles the mzML files
+     * @param mzMLFiles the mzML files
      */
     void importMzMLFiles(List<File> mzMLFiles);
 
@@ -29,6 +29,6 @@ public interface MzMLParser {
      * @param mzMLFileName the mzML file name
      * @return the experiment
      */
-    Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException;
+    Experiment parseMzMlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException;
         
 }

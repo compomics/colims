@@ -330,8 +330,7 @@ public class GroupManagementController implements Controllable {
      */
     private Group getSelectedGroup() {
         int selectedGroupIndex = userManagementDialog.getGroupList().getSelectedIndex();
-        Group selectedGroup = (selectedGroupIndex != -1) ? groupBindingList.get(selectedGroupIndex) : null;
-        return selectedGroup;
+        return (selectedGroupIndex != -1) ? groupBindingList.get(selectedGroupIndex) : null;
     }
 
     /**

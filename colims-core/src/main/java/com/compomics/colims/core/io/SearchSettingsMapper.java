@@ -3,21 +3,15 @@ package com.compomics.colims.core.io;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.IdentificationFile;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.SearchEngineType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This class maps the Utilities search settings to a SearchAndValidationSettings instance.

@@ -14,7 +14,12 @@ public enum DefaultPermission {
      */
     private final String dbEntry;
 
-    private DefaultPermission(final String dbEntry){
+    /**
+     * Constructor.
+     *
+     * @param dbEntry the entry in the database
+     */
+    private DefaultPermission(final String dbEntry) {
         this.dbEntry = dbEntry;
     }
 

@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SampleServiceImpl implements SampleService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(SampleServiceImpl.class);
 
     @Autowired

@@ -22,8 +22,7 @@ public class ProteinMapper {
      *
      * @param peptideHasProteins
      * @param proteinMatches
-     * @param peptideMatch
-     * @throws MappingException
+     * @param peptideMatchKey
      */
     public void map(final List<PeptideHasProtein> peptideHasProteins, final List<ProteinMatch> proteinMatches, final String peptideMatchKey) {
 //        for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {

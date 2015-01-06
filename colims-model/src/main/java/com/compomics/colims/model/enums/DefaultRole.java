@@ -14,6 +14,11 @@ public enum DefaultRole {
      */
     private final String dbEntry;
 
+    /**
+     * Constructor.
+     *
+     * @param dbEntry the entry in the database
+     */
     private DefaultRole(final String dbEntry) {
         this.dbEntry = dbEntry;
     }

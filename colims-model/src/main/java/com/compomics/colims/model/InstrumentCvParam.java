@@ -35,9 +35,4 @@ public class InstrumentCvParam extends AuditableTypedCvParam {
         super(cvParamType, ontology, label, accession, name);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
 }

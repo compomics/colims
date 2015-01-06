@@ -29,7 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SpectrumServiceImpl implements SpectrumService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(SpectrumServiceImpl.class);
+
     /**
      * This constant defines the start tag for the ions.
      */

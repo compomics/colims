@@ -198,7 +198,7 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setMinWidth(120);
 
         //set sorting
-        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
+        @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);

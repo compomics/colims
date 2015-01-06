@@ -18,14 +18,17 @@ import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.PermissionRepository;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("permissionService")
 @Transactional
 public class PermissionServiceImpl implements PermissionService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PermissionServiceImpl.class);
+
     @Autowired
     private PermissionRepository permissionRepository;
 
@@ -49,18 +52,18 @@ public class PermissionServiceImpl implements PermissionService {
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
         //remove entity relations
-        for(Role role : entity.getRoles()){
+        for (Role role : entity.getRoles()) {
             role.getPermissions().remove(entity);
         }
-        
+
         permissionRepository.delete(entity);
     }
 
     @Override
-    public void update(final Permission entity) {        
+    public void update(final Permission entity) {
         //attach the permission to the new session
         permissionRepository.saveOrUpdate(entity);
-        permissionRepository.update(entity);        
+        permissionRepository.update(entity);
     }
 
     @Override
@@ -76,14 +79,14 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public boolean isDefaultPermission(final Permission permission) {
         boolean isDefaultPermission = false;
-        
-        for(DefaultPermission defaultPermission : DefaultPermission.values()){
-            if(permission.getName().equals(defaultPermission.dbEntry())){
+
+        for (DefaultPermission defaultPermission : DefaultPermission.values()) {
+            if (permission.getName().equals(defaultPermission.dbEntry())) {
                 isDefaultPermission = true;
                 break;
             }
         }
-        
+
         return isDefaultPermission;
     }
 
@@ -91,5 +94,5 @@ public class PermissionServiceImpl implements PermissionService {
     public long countAll() {
         return permissionRepository.countAll();
     }
-        
+
 }

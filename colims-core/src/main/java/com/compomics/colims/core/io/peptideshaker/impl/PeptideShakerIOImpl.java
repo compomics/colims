@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author Niels Hulstaert
  */
+@SuppressWarnings("ConstantConditions")
 @Component("peptideShakerIO")
 public class PeptideShakerIOImpl implements PeptideShakerIO {
 
@@ -54,7 +55,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException, SQLException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         CpsParent cpsParent = new CpsParent();

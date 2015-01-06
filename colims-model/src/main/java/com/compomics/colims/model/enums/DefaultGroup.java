@@ -14,6 +14,11 @@ public enum DefaultGroup {
      */
     private final String dbEntry;
 
+    /**
+     * Constructor.
+     *
+     * @param dbEntry the entry in the database
+     */
     private DefaultGroup(final String dbEntry) {
         this.dbEntry = dbEntry;
     }

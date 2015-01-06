@@ -3,6 +3,7 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,24 +16,23 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Davy
  */
 @Component("maxQuantParameterParser")
 public class MaxQuantParameterParser {
 
     //pretty ductapey atm, needs to be cleaned up 
+
     /**
      * parses the settings for the search per run searched
      *
-     * @param maxQuantTextFolder the folder containing the textual max quant
-     * output files
-     * @return a {@code Map} that, for each raw file, contains the settings for
-     * that search
+     * @param maxQuantTextFolder the folder containing the textual max quant output files
+     * @return a {@code Map} that, for each raw file, contains the settings for that search
      * @throws IOException
      */
     public Map<String, SearchParameters> parse(File maxQuantTextFolder) throws IOException {
@@ -106,8 +106,8 @@ public class MaxQuantParameterParser {
     public Map<String, String> parseParameters(File parameterFile) throws IOException {
         Map<String, String> parameters = new HashMap<>();
         try (FileInputStream fis = new FileInputStream(parameterFile);
-                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                LineNumberReader reader = new LineNumberReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+             LineNumberReader reader = new LineNumberReader(isr)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split("\t");

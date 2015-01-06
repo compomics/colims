@@ -16,7 +16,7 @@ public class MaxQuantPeptideParser {
     
     private final Map<Integer, MaxQuantPeptideAssertion> parsedPeptideAssertions = new HashMap<>();
 
-    public Map<Integer, MaxQuantPeptideAssertion> parse(File aPeptidesFile) throws IOException, UnparseableException {
+    public Map<Integer, MaxQuantPeptideAssertion> parse(File aPeptidesFile) throws IOException {
         TabularFileLineValuesIterator peptidesIter = new TabularFileLineValuesIterator(aPeptidesFile, PeptidesHeaders.values());
         while (peptidesIter.hasNext()) {
             Map<String, String> values = peptidesIter.next();

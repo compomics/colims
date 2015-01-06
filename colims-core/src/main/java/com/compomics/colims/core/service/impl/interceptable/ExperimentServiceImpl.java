@@ -19,14 +19,17 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("experimentService")
 @Transactional
 public class ExperimentServiceImpl implements ExperimentService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ExperimentServiceImpl.class);
+    
     @Autowired
     private ExperimentRepository experimentRepository;
 
@@ -69,7 +72,7 @@ public class ExperimentServiceImpl implements ExperimentService {
     public Experiment findByTitle(final String title) {
         return experimentRepository.findByTitle(title);
     }
-    
+
     @Override
     public Experiment findByProjectIdAndTitle(final Long projectId, final String title) {
         return experimentRepository.findByTitle(title);

@@ -34,11 +34,10 @@ public interface PeptideShakerIO {
      * @param destinationDirectory    the destination directory
      * @return the PeptideShaker import object
      * @throws IOException            thrown in case of an IO related problem
-     * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ArchiveException, ClassNotFoundException, SQLException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException;
 
     /**
      * Unpack the given PeptideShakerImport instance: unpack the PeptideShaker .cps file and return an

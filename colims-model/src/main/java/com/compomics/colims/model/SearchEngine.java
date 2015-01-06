@@ -40,6 +40,9 @@ public class SearchEngine extends CvParam {
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
     private String version;
+    /**
+     * The search and validation settings of the runs searched by this search engine.
+     */
     @OneToMany(mappedBy = "searchEngine")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 

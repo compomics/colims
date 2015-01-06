@@ -14,6 +14,11 @@ public enum DefaultUser {
      */
     private final String dbEntry;
 
+    /**
+     * Constructor.
+     *
+     * @param dbEntry the entry in the database
+     */
     private DefaultUser(final String dbEntry) {
         this.dbEntry = dbEntry;
     }

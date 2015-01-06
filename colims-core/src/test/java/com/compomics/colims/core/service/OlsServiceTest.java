@@ -32,12 +32,12 @@ public class OlsServiceTest {
     @Test
     public void testFindModificationByAccession() {
         //try to find a non existing modification
-        Modification modification = olsService.findModifiationByAccession("MOD:00935999");
+        Modification modification = olsService.findModificationByAccession("MOD:00935999");
 
         Assert.assertNull(modification);
 
         //try to find an existing modification
-        modification = olsService.findModifiationByAccession("MOD:00935");
+        modification = olsService.findModificationByAccession("MOD:00935");
 
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
@@ -85,7 +85,7 @@ public class OlsServiceTest {
      */
     @Test
     public void testFindModificationByNameAndUnimodAccession_1() {
-        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
+        Modification modification = olsService.findModificationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }
@@ -95,7 +95,7 @@ public class OlsServiceTest {
      */
     @Test
     public void testFindModificationByNameAndUnimodAccession_2() {
-        Modification modification = olsService.findModifiationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
+        Modification modification = olsService.findModificationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }

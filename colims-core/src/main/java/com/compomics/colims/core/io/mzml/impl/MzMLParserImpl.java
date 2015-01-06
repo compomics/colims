@@ -76,7 +76,7 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     @Override
-    public Experiment parseMzmlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException {
+    public Experiment parseMzMlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.info("Start parsing experiment from file " + mzMLFileName);
         Experiment experiment = new Experiment();
 

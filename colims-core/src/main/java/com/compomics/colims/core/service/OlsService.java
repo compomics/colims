@@ -34,7 +34,7 @@ public interface OlsService {
      * @param accession the modification accession
      * @return the found modification, null if nothing was found
      */
-    Modification findModifiationByAccession(final String accession);
+    Modification findModificationByAccession(final String accession);
 
     /**
      * Find a modification by name and UNIMOD accession in the PSI-MOD ontology. This method tries to find the
@@ -45,7 +45,7 @@ public interface OlsService {
      * @param unimodAccession the modification UNIMOD accession
      * @return the found modification, null if nothing was found
      */
-    Modification findModifiationByNameAndUnimodAccession(final String name, final String unimodAccession);
+    Modification findModificationByNameAndUnimodAccession(final String name, final String unimodAccession);
 
     /**
      * Find an enzyme by name in the PSI-MOD ontology. This method uses {@link java.lang.String#equalsIgnoreCase(String)}

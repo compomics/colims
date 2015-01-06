@@ -80,6 +80,9 @@ public class User extends AuditableDatabaseEntity {
      */
     @OneToMany(mappedBy = "owner")
     private List<Project> ownedProjects = new ArrayList<>();
+    /**
+     * The list of projects associated with this user.
+     */
     @ManyToMany(mappedBy = "users")
     private List<Project> projects = new ArrayList<>();
     /**

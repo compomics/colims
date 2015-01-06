@@ -512,7 +512,7 @@ public class SampleEditController implements Controllable {
      * @return the concatenated String
      */
     private String getAttachmentsAsString() {
-        String concatenatedString = "";
+        String concatenatedString;
 
         Joiner joiner = Joiner.on(", ");
         concatenatedString = joiner.join(sampleToEdit.getBinaryFiles());

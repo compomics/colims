@@ -22,9 +22,4 @@ public class QuantificationCvParam extends TypedCvParam {
         super(cvTermType, ontology, label, accession, name);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
 }

@@ -68,7 +68,7 @@ public class PeptideShakerImporter implements DataImporter {
 
     @Override
     public SearchAndValidationSettings importSearchSettings() throws MappingException {
-        SearchAndValidationSettings searchAndValidationSettings = null;
+        SearchAndValidationSettings searchAndValidationSettings;
 
         try {
             CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();
@@ -92,7 +92,7 @@ public class PeptideShakerImporter implements DataImporter {
 
     @Override
     public List<AnalyticalRun> importInputAndResults(final SearchAndValidationSettings searchAndValidationSettings, final QuantificationSettings quantificationSettings) throws MappingException {
-        List<AnalyticalRun> runs = null;
+        List<AnalyticalRun> runs;
 
         try {
             runs = inputAndResultsMapper.map(searchAndValidationSettings, unpackedPeptideShakerImport);

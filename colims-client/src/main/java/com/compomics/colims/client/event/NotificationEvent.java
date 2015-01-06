@@ -17,6 +17,11 @@ public class NotificationEvent {
     
     private final Notification notification;
 
+    /**
+     * Constructor.
+     *
+     * @param notification the Notification instance
+     */
     public NotificationEvent(Notification notification) {
         this.notification = notification;
     }

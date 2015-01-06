@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class BinaryFileServiceImpl implements BinaryFileService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(BinaryFileServiceImpl.class);
 
     @Autowired

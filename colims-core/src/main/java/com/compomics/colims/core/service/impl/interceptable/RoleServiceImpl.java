@@ -25,7 +25,11 @@ import com.compomics.colims.repository.RoleRepository;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(RoleServiceImpl.class);
+
     @Autowired
     private RoleRepository roleRepository;
 

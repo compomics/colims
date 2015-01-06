@@ -1,15 +1,10 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.experiment.biology.Protein;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
@@ -18,13 +13,14 @@ import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.preferences.IdentificationParameters;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class maps the Utilities PSM input to a Colims spectrum entity and related classes (Peptide, Protein, ...).
@@ -105,19 +101,24 @@ public class UtilitiesPsmMapper {
             PSParameter peptideParameter = (PSParameter) identification.getPeptideMatchParameter(bestMatchingPeptideKey, new PSParameter());
 
             MatchScore psmMatchScore = new MatchScore(psmParameter.getPsmProbabilityScore(), psmParameter.getPsmProbability());
-            PSPtmScores ptmScores = null;
+            PSPtmScores psmPtmScores = null;
+            PSPtmScores peptidePtmScores = null;
 
             if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
-                ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
+                psmPtmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
             }
 
-            //get peptide match
             PeptideMatch peptideMatch = identification.getPeptideMatch(bestMatchingPeptideKey);
-//            if (pe.getUrParam(new PSPtmScores()) != null) {
-//                ptmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
-//            }
+            if (peptideMatch != null) {
+                if (peptideMatch.getUrParam(new PSPtmScores()) != null) {
+                    peptidePtmScores = (PSPtmScores) peptideMatch.getUrParam(new PSPtmScores());
+                    if (peptidePtmScores != null) {
+                        System.out.printf("test");
+                    }
+                }
+            }
 
-            utilitiesPeptideMapper.map(bestMatchingPeptide, psmMatchScore, ptmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
+            utilitiesPeptideMapper.map(bestMatchingPeptide, psmMatchScore, psmPtmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
             //set the relation between the IdentificationFile and Peptide entities
             targetPeptide.setIdentificationFile(identificationFile);
 
@@ -228,7 +229,7 @@ public class UtilitiesPsmMapper {
             }
 
             //map proteins
-            MatchScore peptideMatchScore = null;
+            MatchScore peptideMatchScore;
             if (peptideProbabilities != null) {
                 peptideMatchScore = new MatchScore(peptideProbabilities.getPeptideProbabilityScore(), peptideProbabilities.getPeptideProbability());
             } else {

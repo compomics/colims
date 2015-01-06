@@ -20,18 +20,30 @@ public class SearchParametersHasModification extends DatabaseEntity {
 
     private static final long serialVersionUID = -4450629780383189785L;
 
+    /**
+     * The modification type (fixed, variable).
+     */
     @Basic(optional = true)
     @Column(name = "modification_type", nullable = true)
     @Enumerated(EnumType.ORDINAL)
     private ModificationType modificationType;
+    /**
+     * The SearchParameters instance of this join entity.
+     */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
     @ManyToOne
     private SearchParameters searchParameters;
+    /**
+     * The SearchModification instance of this join entity.
+     */
     @JoinColumn(name = "l_search_modification_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchModification searchModification;
 
+    /**
+     * No-arg constructor.
+     */
     public SearchParametersHasModification() {
     }
 

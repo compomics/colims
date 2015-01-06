@@ -1,17 +1,17 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
-import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
@@ -21,16 +21,6 @@ import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.CardLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import javax.swing.AbstractButton;
-import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -39,12 +29,20 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("analyticalRunSetupController")
@@ -290,8 +288,7 @@ public class AnalyticalRunSetupController implements Controllable {
     }
 
     /**
-     * Show the correct info and disable/enable the right buttons when switching
-     * between cards.
+     * Show the correct info and disable/enable the right buttons when switching between cards.
      */
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
@@ -346,7 +343,7 @@ public class AnalyticalRunSetupController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {

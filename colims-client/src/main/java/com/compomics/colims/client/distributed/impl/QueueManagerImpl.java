@@ -141,7 +141,7 @@ public class QueueManagerImpl implements QueueManager {
             ObjectName activeMQ = new ObjectName(String.format(brokerObjectName, brokerName));
             BrokerViewMBean brokerViewMBean = MBeanServerInvocationHandler.newProxyInstance(clientConnector, activeMQ, BrokerViewMBean.class, true);
             //get broker ID to test the connection
-            String brokerId = brokerViewMBean.getBrokerId();
+            @SuppressWarnings("UnusedAssignment") String brokerId = brokerViewMBean.getBrokerId();
 
             connectionAchieved = true;
         } catch (MalformedObjectNameException | UndeclaredThrowableException ex) {

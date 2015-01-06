@@ -26,7 +26,11 @@ import org.hibernate.HibernateException;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserRepository userRepository;
 

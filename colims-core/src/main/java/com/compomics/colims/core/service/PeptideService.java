@@ -9,10 +9,10 @@ import com.compomics.colims.model.Peptide;
  */
 public interface PeptideService extends GenericService<Peptide, Long> {
 
-    /*
+    /**
      * Fetch the peptide peptideHasModifications.
      *
      * @param peptide the peptide entity
      */
-    void fetchPeptideHasModificiations(Peptide peptide);
+    void fetchPeptideHasModifications(Peptide peptide);
 }

@@ -13,11 +13,11 @@ public class DeleteDbTask extends DbTask {
      * Constructor.
      *
      * @param dbEntityClass the class of the entity to delete
-     * @param enitityId the ID of the entity in the database
+     * @param entityId the ID of the entity in the database
      * @param userId the ID of the user in the database
      */
-    public DeleteDbTask(Class dbEntityClass, Long enitityId, Long userId) {
-        super(dbEntityClass, enitityId, userId);
+    public DeleteDbTask(Class dbEntityClass, Long entityId, Long userId) {
+        super(dbEntityClass, entityId, userId);
     }
 
 }

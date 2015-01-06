@@ -7,7 +7,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.db.ObjectsCache;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
@@ -15,18 +14,17 @@ import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import eu.isas.peptideshaker.myparameters.PSParameter;
+import eu.isas.peptideshaker.utils.CpsParent;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import eu.isas.peptideshaker.utils.CpsParent;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
  * This class maps the search input and identification results of a PeptideShaker project to a list of analytical runs.

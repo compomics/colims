@@ -31,7 +31,7 @@ public class PeptideMapper {
         //map PTMs
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         //fetch PeptideHasModifications
-        peptideService.fetchPeptideHasModificiations(sourcePeptide);
+        peptideService.fetchPeptideHasModifications(sourcePeptide);
         colimsModMapper.map(sourcePeptide, modificationMatches);
 
         ArrayList<String> parentProteinAccessions = new ArrayList<>();

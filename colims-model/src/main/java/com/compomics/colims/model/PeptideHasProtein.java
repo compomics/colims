@@ -18,19 +18,34 @@ public class PeptideHasProtein extends DatabaseEntity {
 
     private static final long serialVersionUID = -7522445376198555037L;
 
+    /**
+     * The peptide probability score.
+     */
     @Basic(optional = true)
     @Column(name = "peptide_prob", nullable = true)
     private Double peptideProbability;
+    /**
+     * The peptide posterior error probability score.
+     */
     @Basic(optional = true)
     @Column(name = "peptide_post_error_prob", nullable = true)
     private Double peptidePostErrorProbability;
+    /**
+     * The Peptide instance of this join entity.
+     */
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
     @ManyToOne
     private Peptide peptide;
+    /**
+     * The Protein instance of this join entity.
+     */
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Protein protein;
+    /**
+     * The main protein of the protein group this join entity belongs to.
+     */
     @JoinColumn(name = "l_main_group_protein_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)

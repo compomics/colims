@@ -21,7 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Transactional
 public class PeptideServiceImpl implements PeptideService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(PeptideServiceImpl.class);
+
     @Autowired
     private PeptideRepository peptideRepository;
 
@@ -61,7 +65,7 @@ public class PeptideServiceImpl implements PeptideService {
     }    
 
     @Override
-    public void fetchPeptideHasModificiations(final Peptide peptide) {
+    public void fetchPeptideHasModifications(final Peptide peptide) {
         try {
             //attach the peptide to the new session
             peptideRepository.saveOrUpdate(peptide);

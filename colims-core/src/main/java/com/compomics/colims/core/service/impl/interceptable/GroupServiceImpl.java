@@ -18,14 +18,17 @@ import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.repository.GroupRepository;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("groupService")
 @Transactional
 public class GroupServiceImpl implements GroupService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(GroupServiceImpl.class);
+
     @Autowired
     private GroupRepository groupRepository;
 
@@ -74,14 +77,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public boolean isDefaultGroup(final Group group) {
         boolean isDefaultGroup = false;
-        
-        for(DefaultGroup defaultGroup : DefaultGroup.values()){
-            if(group.getName().equals(defaultGroup.dbEntry())){
+
+        for (DefaultGroup defaultGroup : DefaultGroup.values()) {
+            if (group.getName().equals(defaultGroup.dbEntry())) {
                 isDefaultGroup = true;
                 break;
             }
         }
-        
+
         return isDefaultGroup;
     }
 
@@ -89,5 +92,5 @@ public class GroupServiceImpl implements GroupService {
     public long countAll() {
         return groupRepository.countAll();
     }
-   
+
 }

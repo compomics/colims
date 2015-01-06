@@ -63,10 +63,13 @@ public class Sample extends AuditableDatabaseEntity {
     @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")
     private Protocol protocol;
     /**
-     * The materials of this sample.
+     * The list of binary files linked to this sample.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
     List<SampleBinaryFile> binaryFiles = new ArrayList<>();
+    /**
+     * The materials of this sample.
+     */
     @ManyToMany
     @JoinTable(name = "sample_has_material",
             joinColumns = {

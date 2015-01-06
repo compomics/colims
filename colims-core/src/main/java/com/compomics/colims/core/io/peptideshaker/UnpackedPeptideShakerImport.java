@@ -1,13 +1,10 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImport;
-
-import java.util.List;
-
-import com.compomics.util.experiment.MsExperiment;
 import eu.isas.peptideshaker.utils.CpsParent;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * The class represents the unarchived PeptideShaker .cps file and all other objects necessary for importing the PS

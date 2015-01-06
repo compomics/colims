@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AnalyticalRunServiceImpl implements AnalyticalRunService {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(AnalyticalRunServiceImpl.class);
 
     @Autowired
