@@ -30,6 +30,8 @@ public class Modification extends AbstractModification {
     @OneToMany(mappedBy = "modification")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
+    public Modification() {}
+
     /**
      * Constructor.
      *

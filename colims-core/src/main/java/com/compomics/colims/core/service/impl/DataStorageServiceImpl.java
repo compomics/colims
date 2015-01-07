@@ -7,12 +7,9 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.io.MappedDataImport;
 import com.compomics.colims.core.service.DataStorageService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
+import com.compomics.colims.repository.QuantificationSettingsRepository;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,8 @@ public class DataStorageServiceImpl implements DataStorageService {
     @Autowired
     private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
     @Autowired
+    private QuantificationSettingsRepository quantificationSettingsRepository;
+    @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
 
     @Override
@@ -46,6 +45,16 @@ public class DataStorageServiceImpl implements DataStorageService {
             searchAndValidationSettings.setUserName(userName);
             searchAndValidationSettings.setExperiment(experiment);
             searchAndValidationSettingsRepository.saveOrUpdate(searchAndValidationSettings);
+        }
+
+        QuantificationSettings quantificationSettings = mappedDataImport.getQuantificationSettings();
+
+        if (quantificationSettings != null) {
+            quantificationSettings.setCreationDate(new Date());
+            quantificationSettings.setModificationDate(new Date());
+            quantificationSettings.setUserName(userName);
+            quantificationSettings.setExperiment(experiment);
+            quantificationSettingsRepository.saveOrUpdate(quantificationSettings);
         }
 
         for (AnalyticalRun analyticalRun : mappedDataImport.getAnalyticalRuns()) {

@@ -22,9 +22,11 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -78,8 +80,13 @@ public class MaxQuantIntoColimsIntegrationTest {
     }
 
     @Test
-    public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
+    public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
         System.out.println("Max Quant storage integration test");
+
+        SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+        sequenceFactory.clearFactory();
+        sequenceFactory.loadFastaFile(new File(testFolder, "testfasta.fasta"), null);
+
         maxQuantParser.parseFolder(testFolder);
         User user = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(user);
@@ -99,7 +106,7 @@ public class MaxQuantIntoColimsIntegrationTest {
         });
         experiment.setTitle("MaxQuant insertion experiment");
 
-        final Sample maxQuantSample = new Sample();
+        final Sample maxQuantSample = new Sample("BREADBREADBREADBREAD");
         maxQuantSample.setExperiment(experiment);
         experiment.setSamples(new ArrayList<Sample>() {
             {
@@ -131,6 +138,6 @@ public class MaxQuantIntoColimsIntegrationTest {
             colimsRuns.add(targetRun);
         }
         maxQuantSample.setAnalyticalRuns(colimsRuns);
-        //experimentService.save(experiment);
+        experimentService.save(experiment);
     }
 }

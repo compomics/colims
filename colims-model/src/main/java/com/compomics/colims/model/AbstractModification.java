@@ -55,6 +55,8 @@ public abstract class AbstractModification extends DatabaseEntity {
     @Column(name = "average_mass_shift")
     protected Double averageMassShift;
 
+    public AbstractModification() {}
+
     public AbstractModification(String name) {
         this.name = name;
     }

@@ -4,11 +4,8 @@ import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.QuantificationSettings;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
@@ -99,8 +96,7 @@ public class MaxQuantImporter implements DataImporter {
             List<File> identificationFiles = new ArrayList<>();
             identificationFiles.add(maxQuantImport.getMaxQuantDirectory());
 
-            // but this is only for one set of settings...
-            // how to make it for a bunch of them
+            // TODO: settings for multiple runs
             searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,7 +111,15 @@ public class MaxQuantImporter implements DataImporter {
     public QuantificationSettings importQuantSettings() throws MappingException {
         QuantificationSettings quantificationSettings = null;
 
-        quantificationSettings = quantificationSettingsMapper.map(SearchEngineType.MAX_QUANT, );
+        List<File> quantFiles = new ArrayList<>();
+        quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?
+        QuantificationParameters params = new QuantificationParameters();
+
+        try {
+            quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return quantificationSettings;
     }

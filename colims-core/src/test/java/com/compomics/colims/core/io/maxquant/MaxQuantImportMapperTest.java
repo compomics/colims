@@ -1,11 +1,11 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,7 +37,7 @@ public class MaxQuantImportMapperTest {
     private FastaDb maxQuantTestFastaDb;
 
     public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextDirectory = new ClassPathResource("data/maxquant_1512").getFile();
+        maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
         
         File fastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
         maxQuantTestFastaDb = new FastaDb();
@@ -57,12 +57,13 @@ public class MaxQuantImportMapperTest {
      * @throws java.lang.ClassNotFoundException
      */
     @Test
-    public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, FileNotFoundException, ClassNotFoundException {
+    public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, ClassNotFoundException {
         System.out.println("map");
         MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         maxQuantImporter.initImport(maxQuantImport);
         SearchAndValidationSettings searchAndValidationSettings = maxQuantImporter.importSearchSettings();
-        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(searchAndValidationSettings, null);
+        QuantificationSettings quantificationSettings = maxQuantImporter.importQuantSettings();
+        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(searchAndValidationSettings, quantificationSettings);
         assertThat(result.size(), is(not(0)));
     }
 }
