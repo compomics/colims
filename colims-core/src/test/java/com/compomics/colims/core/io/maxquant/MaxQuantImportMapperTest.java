@@ -1,10 +1,12 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-
 import java.io.IOException;
 import java.sql.SQLException;
 
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.model.QuantificationSettings;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
@@ -48,7 +50,7 @@ public class MaxQuantImportMapperTest {
      * Test of map method, of class MaxQuantImporter.
      * @throws java.io.IOException
      * @throws com.compomics.colims.core.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.maxquant.HeaderEnumNotInitialisedException
+     * @throws com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException
      * @throws com.compomics.colims.core.io.MappingException
      * @throws java.sql.SQLException
      * @throws java.io.FileNotFoundException
@@ -59,7 +61,9 @@ public class MaxQuantImportMapperTest {
         System.out.println("map");
         MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
         maxQuantImporter.initImport(maxQuantImport);
-        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(null, null);
+        SearchAndValidationSettings searchAndValidationSettings = maxQuantImporter.importSearchSettings();
+        QuantificationSettings quantificationSettings = maxQuantImporter.importQuantSettings();
+        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(searchAndValidationSettings, quantificationSettings);
         assertThat(result.size(), is(not(0)));
     }
 }

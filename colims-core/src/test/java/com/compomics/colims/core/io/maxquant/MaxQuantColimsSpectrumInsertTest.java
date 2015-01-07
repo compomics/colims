@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;

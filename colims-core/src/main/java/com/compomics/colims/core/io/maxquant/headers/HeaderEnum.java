@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.maxquant;
+package com.compomics.colims.core.io.maxquant.headers;
 
 /**
  *
@@ -21,7 +21,7 @@ public interface HeaderEnum {
     /**
      * returns the selected header name for the given enumeration
      * @return the header name
-     * @throws HeaderEnumNotInitialisedException if the array of possible names is not filled 
+     * @throws HeaderEnumNotInitialisedException if the array of possible names is not filled
      */
     String getColumnName() throws HeaderEnumNotInitialisedException;
 }

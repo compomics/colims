@@ -16,6 +16,7 @@ import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SearchAndValidationSettings;
 
@@ -129,6 +130,8 @@ public class PersistDbTaskHandler {
      */
     private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
         MappedDataImport mappedDataImport = null;
+        SearchAndValidationSettings searchAndValidationSettings;
+        QuantificationSettings quantificationSettings;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
@@ -139,7 +142,7 @@ public class PersistDbTaskHandler {
                 peptideShakerImporter.clear();
 
                 peptideShakerImporter.initImport(unpackedPeptideShakerImport);
-                SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
+                searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
                 List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
 
                 mappedDataImport = new MappedDataImport(searchAndValidationSettings, null, analyticalRuns);
@@ -159,9 +162,13 @@ public class PersistDbTaskHandler {
                 maxQuantImporter.clear();
 
                 maxQuantImporter.initImport(persistDbTask.getDataImport());
-                analyticalRuns = maxQuantImporter.importInputAndResults(null, null);
 
-                mappedDataImport = new MappedDataImport(null, null, analyticalRuns);
+                searchAndValidationSettings = maxQuantImporter.importSearchSettings();
+                quantificationSettings = maxQuantImporter.importQuantSettings();
+
+                analyticalRuns = maxQuantImporter.importInputAndResults(searchAndValidationSettings, quantificationSettings);
+
+                mappedDataImport = new MappedDataImport(searchAndValidationSettings, quantificationSettings, analyticalRuns);
                 break;
             default:
                 break;

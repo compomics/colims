@@ -1,14 +1,10 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSearchParametersMapper;
-import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.IdentificationFile;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.core.service.QuantificationSettingsService;
+import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.BinaryFileType;
-import com.compomics.colims.model.enums.SearchEngineType;
+import com.compomics.colims.model.enums.QuantificationEngineType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -23,74 +19,26 @@ import org.springframework.stereotype.Component;
 public class QuantificationSettingsMapper {
 
     @Autowired
-    private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
-    @Autowired
-    private SearchAndValidationSettingsService searchAndValidationSettingsService;
+    private QuantificationSettingsService quantificationSettingsService;
 
-    /**
-     * Map the SearchAndValidationSettings.
-     *
-     * @param searchEngineType the search engine type
-     * @param version the search engine version
-     * @param fastaDb the FastaDb instance
-     * @param utilitiesSearchParameters
-     * @param identificationFiles
-     * @param storeIdentificationFile
-     * @return the mapped SearchAndValidationSettings
-     * @throws java.io.IOException
-     */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
-        SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
+    public QuantificationSettings map(QuantificationEngineType quantEngineType, String version, List<File> quantFiles, QuantificationParameters quantParams) throws IOException {
+        QuantificationSettings quantSettings = new QuantificationSettings();
 
-        /**
-         * SearchParamaters
-         */
-        //map the utitilities SearchParamaters onto the colims SearchParameters
-        SearchParameters searchParameters = new SearchParameters();
-        utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
+        quantSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(quantEngineType, version));
 
-        //look for the given search parameter settings in the database
-        searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
-        searchAndValidationSettings.setSearchParameterSettings(searchParameters);
+        quantSettings.setQuantificationParameterSettings(quantParams);
 
-        /**
-         * SearchEngine
-         */
-        SearchEngine searchEngine = searchAndValidationSettingsService.getSearchEngine(searchEngineType, version);
-        searchAndValidationSettings.setSearchEngine(searchEngine);
+        for (File file : quantFiles) {
+            QuantificationFile quantFile = new QuantificationFile();
 
-        /**
-         * FastaDb
-         */
-        searchAndValidationSettings.setFastaDb(fastaDb);
+            quantFile.setFileName(file.getName());
+            quantFile.setFilePath(file.getCanonicalPath());
+            quantFile.setContent(IOUtils.readAndZip(file)); // do we always want to store the file? idk
+            quantFile.setBinaryFileType(BinaryFileType.TEXT);
 
-        /**
-         * IdentificationFile(s)
-         */
-        BinaryFileType binaryFileType = null;
-        if (storeIdentificationFile) {
-            switch (searchEngineType) {
-                case PEPTIDESHAKER:
-                    binaryFileType = BinaryFileType.TEXT;
-                    break;
-                case MAX_QUANT:
-                    binaryFileType = BinaryFileType.ZIP;
-                    break;
-                default:
-                    break;
-            }
+            quantSettings.getQuantificationFiles().add(quantFile);
         }
 
-        for (File identificationFile : identificationFiles) {
-            IdentificationFile identificationFileEntity = new IdentificationFile(identificationFile.getName(), identificationFile.getCanonicalPath());
-            if (binaryFileType != null) {
-                identificationFileEntity.setBinaryFileType(binaryFileType);
-            }
-            identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
-            searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
-        }
-
-        return searchAndValidationSettings;
+        return quantSettings;
     }
-
 }

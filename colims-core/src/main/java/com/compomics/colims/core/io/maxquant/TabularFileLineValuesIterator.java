@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.google.common.io.LineReader;
 import java.util.Locale;
 
@@ -37,7 +38,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         // Extract headers
         fileReader = new FileReader(evidenceFile);
         lineReader = new LineReader(fileReader);
-        String readLine = lineReader.readLine();
+        String readLine = lineReader.readLine().toLowerCase(Locale.US);
 
         // Determine the headers for this particular file, so we can assign values to the right key in our map
         headers = readLine.split("" + delimiter);

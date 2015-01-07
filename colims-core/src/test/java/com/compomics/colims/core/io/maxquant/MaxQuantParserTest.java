@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.maxquant;
 
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
@@ -8,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -48,7 +52,7 @@ public class MaxQuantParserTest {
     @Test
     public void testParseMaxQuantTextFolder() throws Exception {
         System.out.println("parseMaxQuantTextFolder");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         assertThat(maxQuantParser.hasParsedAFile(), is(true));
     }
 
@@ -60,11 +64,11 @@ public class MaxQuantParserTest {
      * @throws com.compomics.colims.core.io.parser.impl.UnparseableException
      */
     @Test
-    public void testHasParsedAFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testHasParsedAFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("hasParsedAFile");
         maxQuantParser.clearParsedProject();
         assertThat(maxQuantParser.hasParsedAFile(), is(false));
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         assertThat(maxQuantParser.hasParsedAFile(), is(true));
         maxQuantParser.clearParsedProject();
         assertThat(maxQuantParser.hasParsedAFile(), is(false));
@@ -74,11 +78,11 @@ public class MaxQuantParserTest {
      * Test of getIdentificationsFromParsedFile method, of class MaxQuantParser.
      */
     @Test
-    public void testGetIdentificationsFromParsedFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testGetIdentificationsFromParsedFile() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("getIdentificationsFromParsedFile");
         Collection result = maxQuantParser.getIdentificationsFromParsedFile();
         assertThat(result.iterator().hasNext(), is(false));
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         result = maxQuantParser.getIdentificationsFromParsedFile();
         assertThat(result.iterator().hasNext(), is(true));
         assertThat(result.size(), both(is(774)).and(is(maxQuantParser.getSpectraFromParsedFile().size())));
@@ -88,15 +92,15 @@ public class MaxQuantParserTest {
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
      */
     @Test
-    public void testGetIdentificationForSpectrum() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testGetIdentificationForSpectrum() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("getIdentificationForSpectrum");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         assertThat(maxQuantParser.getIdentificationsFromParsedFile().size(), is(774));
-        ArrayList<MSnSpectrum> spectra = new ArrayList<>(maxQuantParser.getSpectraFromParsedFile());
+        Map<Integer, MSnSpectrum> spectra = maxQuantParser.getSpectraFromParsedFile();
         PeptideAssumption testAssumption = maxQuantParser.getIdentificationForSpectrum(spectra.get(4));
         assertThat(testAssumption.getPeptide().getSequence(), is(not(nullValue())));
         assertThat(testAssumption.getPeptide().getSequence(), is("AADIIDGLRK"));
-        assertThat(testAssumption.getPeptide().getParentProteinsNoRemapping().size(), is(1));
+        assertThat(testAssumption.getPeptide().getParentProteinsNoRemapping().size(), is(1)); //NOTE: returns null if has no parents
         assertThat(testAssumption.getPeptide().getMass(), closeTo(1070.6084, 0.0001));
 
         //is unmodified
@@ -160,14 +164,14 @@ public class MaxQuantParserTest {
      * Test of getSpectraFromParsedFile method, of class MaxQuantParser.
      */
     @Test
-    public void testGetSpectra() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testGetSpectra() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("getSpectra");
         maxQuantParser.clearParsedProject();
-        Collection result = maxQuantParser.getSpectraFromParsedFile();
-        assertThat(result.iterator().hasNext(), is(false));
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        Map<Integer, MSnSpectrum> result = maxQuantParser.getSpectraFromParsedFile();
+        assertThat(result.size(), is(0));
+        maxQuantParser.parseFolder(testFolder);
         result = maxQuantParser.getSpectraFromParsedFile();
-        assertThat(result.iterator().hasNext(), is(true));
+        assertThat(result.size(), not(0));
         assertThat(result.size(), is(774));
     }
 
@@ -176,9 +180,9 @@ public class MaxQuantParserTest {
      * MaxQuantParser.
      */
     @Test
-    public void testGetBestProteinHitForIdentification() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testGetBestProteinHitForIdentification() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         System.out.println("getBestProteinHitForIdentification");
-        maxQuantParser.parseMaxQuantTextFolder(testFolder);
+        maxQuantParser.parseFolder(testFolder);
         com.compomics.util.experiment.biology.Peptide testPeptide = new com.compomics.util.experiment.biology.Peptide();
         testPeptide.setParentProteins(new ArrayList<String>() {
             {
@@ -187,5 +191,10 @@ public class MaxQuantParserTest {
         });
         ProteinMatch result = maxQuantParser.getBestProteinHitForIdentification(new PeptideAssumption(testPeptide, 1, 1, null, -1.0));
         assertThat(result, is(notNullValue()));
+    }
+
+    @Test
+    public void testNewParse() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
+        maxQuantParser.parseFolder(testFolder);
     }
 }
