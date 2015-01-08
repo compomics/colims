@@ -6,7 +6,7 @@
 /colims-core/derby.log
 /colims-distributed/target/
 /colims-distributed/derby.log
-derby.log
+/derby.log
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
