@@ -8,13 +8,14 @@ import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
 import com.compomics.colims.repository.QuantificationParametersRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("quantificationSettingsService")

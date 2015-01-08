@@ -7,6 +7,7 @@
 /colims-distributed/target/
 /colims-distributed/derby.log
 /derby.log
+pom.xml~
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
@@ -55,3 +56,6 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
+
+# netbeans
+nb-configuration.xml

@@ -141,17 +141,17 @@ public class PeptideShakerImporterTest {
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
 
-        //do it again
-        analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
-
-        for (AnalyticalRun analyticalRun : analyticalRuns) {
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
-            analyticalRun.setUserName("testing");
-            analyticalRun.setStartDate(new Date());
-            analyticalRun.setSample(sample);
-            analyticalRun.setInstrument(instrumentService.findAll().get(0));
-            analyticalRunService.saveOrUpdate(analyticalRun);
-        }
+//        //do it again
+//        analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
+//
+//        for (AnalyticalRun analyticalRun : analyticalRuns) {
+//            analyticalRun.setCreationDate(new Date());
+//            analyticalRun.setModificationDate(new Date());
+//            analyticalRun.setUserName("testing");
+//            analyticalRun.setStartDate(new Date());
+//            analyticalRun.setSample(sample);
+//            analyticalRun.setInstrument(instrumentService.findAll().get(0));
+//            analyticalRunService.saveOrUpdate(analyticalRun);
+//        }
     }
 }

@@ -11,7 +11,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "quantification_settings")
@@ -20,6 +19,8 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 5371850641629946378L;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
+    private List<QuantificationFile> quantificationFiles = new ArrayList<>();
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     @ManyToOne
     private Experiment experiment;
@@ -28,9 +29,8 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
     private QuantificationEngine quantificationEngine;
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
     @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private QuantificationParameters quantificationParameterSettings;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
-    private List<QuantificationFile> quantificationFiles = new ArrayList<>();
 
     public List<QuantificationFile> getQuantificationFiles() {
         return quantificationFiles;

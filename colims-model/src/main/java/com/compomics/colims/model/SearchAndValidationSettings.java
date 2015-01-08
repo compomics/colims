@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "search_and_validation_settings")
@@ -32,7 +31,7 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
-    @JoinColumn(name = "l_search_param_settings_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchParameters searchParameters;
