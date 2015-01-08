@@ -6,6 +6,7 @@ import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,11 +15,11 @@ import java.io.LineNumberReader;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Davy
  */
 @Component
@@ -118,6 +119,7 @@ public class MaxQuantParameterParser {
 
     /**
      * Get the version of MaxQuant used for the experiment
+     *
      * @return Version number
      */
     public String getMaxQuantVersion() {
@@ -141,8 +143,8 @@ public class MaxQuantParameterParser {
     private Map<String, String> parseParameters(File parameterFile) throws IOException {
         Map<String, String> parameters = new HashMap<>();
         try (FileInputStream fis = new FileInputStream(parameterFile);
-                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                LineNumberReader reader = new LineNumberReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+             LineNumberReader reader = new LineNumberReader(isr)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split("\t");

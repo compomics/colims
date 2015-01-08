@@ -108,15 +108,15 @@ public class UtilitiesPsmMapper {
                 psmPtmScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
             }
 
-            PeptideMatch peptideMatch = identification.getPeptideMatch(bestMatchingPeptideKey);
-            if (peptideMatch != null) {
-                if (peptideMatch.getUrParam(new PSPtmScores()) != null) {
-                    peptidePtmScores = (PSPtmScores) peptideMatch.getUrParam(new PSPtmScores());
-                    if (peptidePtmScores != null) {
-                        System.out.printf("test");
-                    }
-                }
-            }
+//            PeptideMatch peptideMatch = identification.getPeptideMatch(bestMatchingPeptideKey);
+//            if (peptideMatch != null) {
+//                if (peptideMatch.getUrParam(new PSPtmScores()) != null) {
+//                    peptidePtmScores = (PSPtmScores) peptideMatch.getUrParam(new PSPtmScores());
+//                    if (peptidePtmScores != null) {
+//                        System.out.printf("test");
+//                    }
+//                }
+//            }
 
             utilitiesPeptideMapper.map(bestMatchingPeptide, psmMatchScore, psmPtmScores, peptideAssumption.getIdentificationCharge().value, targetPeptide);
             //set the relation between the IdentificationFile and Peptide entities

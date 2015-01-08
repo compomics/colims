@@ -27,7 +27,7 @@ public class UtilitiesPeptideMapper {
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     /**
-     * Map the utilities objects onto the colims Peptide.
+     * Map the utilities objects onto the Colims Peptide.
      *
      * @param sourcePeptide        the Utilities peptide
      * @param psmMatchScore        the PSM score

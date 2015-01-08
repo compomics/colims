@@ -132,7 +132,7 @@ public class UtilitiesModificationMapperTest {
         ptmScoring.setDeltaScore(nonUtilitiesModificationMatch.getModificationSite(), nonUtilitiesPtmScore);
         ptmScores.addPtmScoring(nonUtilitiesPtmName, ptmScoring);
 
-        //create new colims entity peptide
+        //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
         utilitiesModificationMapper.map(modificationMatches, ptmScores, targetPeptide);

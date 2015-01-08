@@ -38,11 +38,6 @@ public class UtilitiesModificationMapper {
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
     /**
-     * A reference to the parent psm mapper for the PTMScoringPreferences.
-     */
-    @Autowired
-    private UtilitiesPsmMapper utilitiesPsmMapper;
-    /**
      * The Utilities PTM to CV term mapper.
      */
     @Autowired
@@ -53,7 +48,7 @@ public class UtilitiesModificationMapper {
     @Autowired
     private ModificationService modificationService;
     /**
-     * The Ontoloy Lookup Service service.
+     * The Ontology Lookup Service service.
      */
     @Autowired
     private OlsService olsService;
@@ -63,7 +58,7 @@ public class UtilitiesModificationMapper {
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification matches to the Colims peptide. The utilities PTMs are matched first onto CV terms
+     * Map the utilities modification matches to the Colims peptide. The Utilities PTMs are matched first onto CV terms
      * from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
@@ -73,8 +68,6 @@ public class UtilitiesModificationMapper {
      */
     public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
-
-        PTMScoringPreferences ptmScoringPreferences = utilitiesPsmMapper.getIdentificationParameters().getPtmScoringPreferences();
 
         //iterate over modification matches
         for (ModificationMatch modificationMatch : modificationMatches) {
@@ -104,12 +97,11 @@ public class UtilitiesModificationMapper {
                     if (ptmScores != null) {
                         PtmScoring ptmScoring = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm());
                         if (ptmScoring != null) {
-                            if (ptmScoringPreferences.isProbabilitsticScoreCalculation()) {
-                                double score = ptmScoring.getProbabilisticScore(modificationIndex);
-                                peptideHasModification.setProbabilityScore(score);
-                            } else {
-                                double score = ptmScoring.getDeltaScore(modificationIndex);
-                                peptideHasModification.setDeltaScore(score);
+                            if (ptmScoring.getDSites().contains(modificationIndex)) {
+                                peptideHasModification.setProbabilityScore(ptmScoring.getProbabilisticScore(modificationIndex));
+                            }
+                            if (ptmScoring.getProbabilisticSites().contains(modificationIndex)) {
+                                peptideHasModification.setDeltaScore(ptmScoring.getDeltaScore(modificationIndex));
                             }
 
 //                            //@todo ask mark if taking the site with the highest prob is the way to go

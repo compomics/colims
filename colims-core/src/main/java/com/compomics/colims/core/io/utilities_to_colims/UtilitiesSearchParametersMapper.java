@@ -48,7 +48,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     @Autowired
     private TypedCvParamService typedCvParamService;
     /**
-     * The Ontoloy Lookup Service service.
+     * The Ontology Lookup Service service.
      */
     @Autowired
     private OlsService olsService;
@@ -64,7 +64,12 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
-        TypedCvParam enzyme = mapEnzyme(utilitiesSearchParameters.getEnzyme());
+        TypedCvParam enzyme;
+        if (utilitiesSearchParameters.getEnzyme() != null) {
+            enzyme = mapEnzyme(utilitiesSearchParameters.getEnzyme());
+        } else {
+            enzyme = null;
+        }
         searchParameters.setEnzyme((SearchCvParam) enzyme);
         //number of missed cleavages
         searchParameters.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());

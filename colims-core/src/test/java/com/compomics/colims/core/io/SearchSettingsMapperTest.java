@@ -101,7 +101,7 @@ public class SearchSettingsMapperTest {
         Assert.assertEquals(SearchEngineType.PEPTIDESHAKER, searchEngine.getSearchEngineType());
         Assert.assertEquals("0.28.0", searchEngine.getVersion());
 
-        //fasta db
+        //Fasta db
         Assert.assertNotNull(searchAndValidationSettings.getFastaDb());
     }
 }
