@@ -81,7 +81,7 @@ public class Protocol extends AuditableDatabaseEntity {
             joinColumns = {
         @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_other_cv_param_id", referencedColumnName = "id")})
+        @JoinColumn(name = "l_other_protocol_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> otherCvParams = new ArrayList<>();
 
     /**

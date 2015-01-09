@@ -64,11 +64,9 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
-        TypedCvParam enzyme;
+        TypedCvParam enzyme = null;
         if (utilitiesSearchParameters.getEnzyme() != null) {
             enzyme = mapEnzyme(utilitiesSearchParameters.getEnzyme());
-        } else {
-            enzyme = null;
         }
         searchParameters.setEnzyme((SearchCvParam) enzyme);
         //number of missed cleavages
@@ -115,6 +113,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
                 enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, utilitiesEnzyme.getName());
             }
 
+            //save the newly created enzyme
+            typedCvParamService.save(enzyme);
         }
 
         return enzyme;

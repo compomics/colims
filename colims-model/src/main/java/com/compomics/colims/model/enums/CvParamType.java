@@ -36,7 +36,9 @@ public enum CvParamType {
         SEARCH_PARAM_CV_PARAM(CV_PARAM_TYPE, null),
             SEARCH_TYPE(SEARCH_PARAM_CV_PARAM, false),
             SEARCH_PARAM_ENZYME(SEARCH_PARAM_CV_PARAM, false),
-            THRESHOLD(SEARCH_PARAM_CV_PARAM, false);
+            THRESHOLD(SEARCH_PARAM_CV_PARAM, false),
+            SEARCH_MODIFICATION(SEARCH_PARAM_CV_PARAM, false),
+            SEARCH_PARAM_OTHER(SEARCH_PARAM_CV_PARAM, false);
 
     /**
      * The parent CV parameter type.

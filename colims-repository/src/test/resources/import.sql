@@ -73,6 +73,7 @@ INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, tax
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'SEARCH_PARAM_ENZYME');
+INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'PSI-MS', 'SEARCH_TYPE');
 
 -- insert test search parameters
 INSERT INTO search_parameters (id, l_search_enzyme_cv_id, threshold, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 1, 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4);
