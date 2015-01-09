@@ -3,6 +3,7 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
@@ -37,7 +38,7 @@ public class MaxQuantParameterParser {
         parseRuns(quantFolder, experimentParams);
     }
 
-    public SearchParameters parseExperiment(File quantFolder) throws IOException {
+    public SearchParameters parseExperiment(File quantFolder) throws IOException, HeaderEnumNotInitialisedException {
         SearchParameters experimentParams = new SearchParameters();
         File parameterFile = new File(quantFolder, PARAMETERS);
 
@@ -47,9 +48,9 @@ public class MaxQuantParameterParser {
         while (parameterIter.hasNext()) {
             row = parameterIter.next();
 
-            if (MaxQuantParameterHeaders.FASTA_FILE.getColumn().contains(row.getKey())) {
+            if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FASTA_FILE.getColumnName())) {
                 experimentParams.setFastaFile(new File(FilenameUtils.separatorsToSystem(row.getValue())));
-            } else if (MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getColumn().contains(row.getKey())) {
+            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getColumnName())) {
                 experimentParams.setFragmentIonAccuracy(Double.parseDouble(row.getValue().split(" ")[0]));
 
                 if (row.getValue().split(" ")[1].equalsIgnoreCase("da")) {
@@ -58,7 +59,7 @@ public class MaxQuantParameterParser {
                     experimentParams.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.PPM);
                 }
 
-            } else if (MaxQuantParameterHeaders.VERSION.getColumn().contains(row.getKey())) {
+            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.VERSION.getColumnName())) {
                 version = row.getValue();
             }
         }
@@ -102,7 +103,11 @@ public class MaxQuantParameterParser {
                 }
 
                 run.setModificationProfile(runModifications);
-                //runParameters.setEnzyme(valuesIter.get(MaxQuantSummaryHeaders.PROTEASE.getColumnName()));
+
+                // dummy enzyme (only name required)
+                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getColumnName()).isEmpty()) {
+                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getColumnName()), "a", "a", "a", "a"));
+                }
 
                 if (row.containsKey(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName()) && !row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName()).isEmpty()) {
                     run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName())));
