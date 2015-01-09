@@ -1,5 +1,4 @@
 
-
 create table colims.analytical_run (
     id bigint not null auto_increment,
     creation_date datetime not null,
@@ -278,7 +277,7 @@ create table colims.protocol_has_chemical_labeling (
 
 create table colims.protocol_has_other_cv_param (
     l_protocol_id bigint not null,
-    l_other_cv_param_id bigint not null
+    l_other_protocol_cv_param_id bigint not null
 );
 
 create table colims.quant_param_settings_has_reagent (
@@ -435,11 +434,6 @@ create table colims.search_modification (
     primary key (id)
 );
 
-create table colims.search_param_set_has_add_cv_param (
-    l_search_parameters_id bigint not null,
-    l_additional_cv_param_id bigint not null
-);
-
 create table colims.search_parameters (
     id bigint not null auto_increment,
     search_ion_type_1 integer,
@@ -455,6 +449,11 @@ create table colims.search_parameters (
     l_search_enzyme_cv_id bigint,
     l_search_type_cv_id bigint,
     primary key (id)
+);
+
+create table colims.search_parameters_has_other_cv_param (
+    l_search_parameters_id bigint not null,
+    l_other_search_cv_param_id bigint not null
 );
 
 create table colims.search_params_has_modification (
@@ -697,8 +696,8 @@ foreign key (l_protocol_id)
 references colims.protocol (id);
 
 alter table colims.protocol_has_other_cv_param
-add constraint FK_t76o7gn4fnlw0lho7oap6nac2
-foreign key (l_other_cv_param_id)
+add constraint FK_7nwavlxqhp0vtr6q9l4mq44y3
+foreign key (l_other_protocol_cv_param_id)
 references colims.protocol_cv_param (id);
 
 alter table colims.protocol_has_other_cv_param
@@ -811,16 +810,6 @@ add constraint FK_jynujosbdk8itph3yh7vybao9
 foreign key (l_search_parameters_id)
 references colims.search_parameters (id);
 
-alter table colims.search_param_set_has_add_cv_param
-add constraint FK_oo4btla1bmak1lt5x64tgh91r
-foreign key (l_additional_cv_param_id)
-references colims.protocol_cv_param (id);
-
-alter table colims.search_param_set_has_add_cv_param
-add constraint FK_ea6rbjy8x6figprox9hsf76ie
-foreign key (l_search_parameters_id)
-references colims.search_parameters (id);
-
 alter table colims.search_parameters
 add constraint FK_6vjw0vbuohtoiqh2ogsoexwee
 foreign key (l_search_enzyme_cv_id)
@@ -830,6 +819,16 @@ alter table colims.search_parameters
 add constraint FK_c4887nijg14eonajt08kjd7y2
 foreign key (l_search_type_cv_id)
 references colims.search_cv_param (id);
+
+alter table colims.search_parameters_has_other_cv_param
+add constraint FK_sn1i0py7kln7t4t93s7vhlnu3
+foreign key (l_other_search_cv_param_id)
+references colims.protocol_cv_param (id);
+
+alter table colims.search_parameters_has_other_cv_param
+add constraint FK_gajty60g05dpw7uoxlie2jrgo
+foreign key (l_search_parameters_id)
+references colims.search_parameters (id);
 
 alter table colims.search_params_has_modification
 add constraint FK_md8klk0kk7o4nxw0yl3jycjcf

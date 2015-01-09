@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -103,12 +105,16 @@ public class SearchParameters extends DatabaseEntity {
      */
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "search_param_set_has_add_cv_param",
+    @JoinTable(name = "search_parameters_has_other_cv_param",
             joinColumns = {
-                @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_additional_cv_param_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_other_search_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> additionalCvParams = new ArrayList<>();
+    /**
+     * The SearchParametersHasModification instances from the join table between the search parameters and search
+     * modifications.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "searchParameters")
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
 

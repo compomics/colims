@@ -50,7 +50,7 @@ public class SearchSettingsMapper {
         /**
          * SearchParameterSettings
          */
-        //map the utitilities SearchParamaters onto the colims SearchParameterSettings
+        //map the Utilities SearchParameters onto the Colims SearchParameterSettings
         SearchParameters searchParameters = new SearchParameters();
         utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
 
@@ -58,7 +58,7 @@ public class SearchSettingsMapper {
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
         //set entity relations
         searchAndValidationSettings.setSearchParameterSettings(searchParameters);
-//        searchParamterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
+//        searchParameterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * SearchEngine
