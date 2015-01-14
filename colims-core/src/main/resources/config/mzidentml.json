@@ -1,0 +1,5 @@
+{
+  "cvList": [
+    {"id": "PSI-MS", "uri": "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo", "version": "2.25.0", "fullName": "PSI-MS"}
+  ]
+}
