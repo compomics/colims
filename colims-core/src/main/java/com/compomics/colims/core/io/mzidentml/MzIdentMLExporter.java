@@ -1,19 +1,22 @@
 package com.compomics.colims.core.io.mzidentml;
 
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
+import com.compomics.colims.repository.ExperimentRepository;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
-import com.compomics.colims.model.Peptide;
+import uk.ac.ebi.jmzidml.model.mzidml.Modification;
+import uk.ac.ebi.jmzidml.model.mzidml.Role;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
+ *
  * Created by Iain on 13/01/2015.
  */
 @Component
@@ -23,17 +26,35 @@ public class MzIdentMLExporter {
     private MzIdentMLMarshaller marshaller;
     private ObjectMapper mapper;
     private JsonNode mzIdentMLParamList;
-    private AnalyticalRun analyticalRun;        // TODO: just pass it through if only in the one method
+    private AnalyticalRun analyticalRun;
+    private Experiment experiment;
+
+    @Autowired
+    private ExperimentRepository experimentRepository;
+
+    public void init() {
+        if (mzIdentMLParamList == null || mapper == null) {
+            mapper = new ObjectMapper();
+
+            try {
+                mzIdentMLParamList = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * Export a run in MzIdentML format
      */
-    public void export(/*AnalyticalRun run*/) throws IOException {
-        marshaller = new MzIdentMLMarshaller();
-        mapper = new ObjectMapper();
-        mzIdentMLParamList = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
+    public String export(AnalyticalRun run) throws IOException {
+        init();
 
-        System.out.println(marshaller.marshal(base()));
+        marshaller = new MzIdentMLMarshaller();
+        analyticalRun = run;
+        experiment = experimentRepository.findById(run.getId());
+
+        return marshaller.marshal(base());
     }
 
     /**
@@ -43,18 +64,18 @@ public class MzIdentMLExporter {
     private MzIdentML base() throws IOException {
         MzIdentML mzIdentML = new MzIdentML();
 
-        mzIdentML.setId("colims_1.3.2-SNAPSHOT");                        // TODO: from where
+        mzIdentML.setId("colims_1.3.2");                                    // TODO: from where
         mzIdentML.setVersion(MZIDENTML_VERSION);
         mzIdentML.setCreationDate(new GregorianCalendar());
 
-        mzIdentML.setCvList(cvList());
-        mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
-        mzIdentML.setProvider(provider());
+        mzIdentML.setCvList(cvList());                                      // done
         mzIdentML.setAuditCollection(auditCollection());
+        mzIdentML.setProvider(provider());                                  // done
+        mzIdentML.setDataCollection(dataCollection());
+        mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
         mzIdentML.setSequenceCollection(sequenceCollection());
         mzIdentML.setAnalysisCollection(analysisCollection());
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection());
-        mzIdentML.setDataCollection(dataCollection());
 
         return mzIdentML;
     }
@@ -63,52 +84,18 @@ public class MzIdentMLExporter {
      * Construct a list of CV sources used in the file
      * @return CvList List of CV sources
      */
-    private CvList cvList() throws IOException {
+    private CvList cvList() {
         CvList cvList = new CvList();
 
-        for (JsonNode node : mzIdentMLParamList.get("cvList")) {
-            cvList.getCv().add(mapper.readValue(node, Cv.class));
-        }
+        cvList.getCv().addAll(getDataList("CvList", Cv.class));
 
         return cvList;
     }
 
-    private AnalysisSoftwareList analysisSoftwareList() {
-        AnalysisSoftwareList list = new AnalysisSoftwareList();
-
-        AnalysisSoftware software = new AnalysisSoftware();
-        software.setId("1");                                // TODO
-        software.setName("Colims");
-        software.setVersion("1.0");                         // TODO
-        software.setUri("http://colims.googlecode.com");    // TODO: confirm
-
-        CvParam softwareName = new CvParam();               // TODO
-
-        list.getAnalysisSoftware().add(software);
-
-        // optional customisations
-        // optional contact role
-
-        return list;
-    }
-
     /**
-     * Create the contact and software provider element
-     * @return Provider element
+     * Where any people or orgs referenced elsewhere in the file must go
+     * @return A collection of the above entities
      */
-    private Provider provider() {
-        Provider provider = new Provider();
-        provider.setId("PROVIDER");                 // TODO: ?
-        provider.setContactRole(new ContactRole()); // TODO: does this set contact_ref automatically
-
-        Role role = new Role();
-        role.setCvParam(new CvParam());             // TODO (need method to create/return CV params)
-
-        provider.getContactRole().setRole(role);
-
-        return provider;
-    }
-
     private AuditCollection auditCollection() {
         AuditCollection auditCollection = new AuditCollection();
 
@@ -132,37 +119,42 @@ public class MzIdentMLExporter {
         return auditCollection;
     }
 
-    private SequenceCollection sequenceCollection() {
-        SequenceCollection collection = new SequenceCollection();
+    /**
+     * Create the contact and software provider element
+     * @return Provider element
+     */
+    private Provider provider() {
+        Provider provider = new Provider();
+        provider.setId("PROVIDER");
+        provider.setContactRole(new ContactRole());     // no method to set contact_ref on ContactRole
 
-        // split into proteins (DBSequences), peptides and peptideevidences
-        // the evidence object joins the two
+        Role role = new Role();
+        role.setCvParam(getDataItem("Role.researcher", CvParam.class));
 
-        // TODO: how to do this without a horrible nest of loops
+        provider.getContactRole().setRole(role);
 
-//        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-//            for (Peptide peptide : spectrum.getPeptides()) {
-//                peptide.getPeptideHasProteins();
-//            }
-//        }
-
-        return collection;
+        return provider;
     }
 
-    private AnalysisCollection analysisCollection() {
-        AnalysisCollection collection = new AnalysisCollection();
+    private AnalysisSoftwareList analysisSoftwareList() {
+        AnalysisSoftwareList list = new AnalysisSoftwareList();
 
-        // TODO: todo todo
+        // Search engine(s)
+        // TODO: expecting search engine to be on a run basis, correct to get all for experiment?
+        for (SearchAndValidationSettings settings : experiment.getSearchAndValidationSettingses()) {
+            AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
 
-        return collection;
-    }
+            ContactRole contactRole = new ContactRole();
+            //TODO: contactRole.setContact(); (from audit collection)
+            contactRole.setRole(new Role());
+            contactRole.getRole().setCvParam(getDataItem("Role.software vendor", CvParam.class));
 
-    private AnalysisProtocolCollection analysisProtocolCollection() {
-        AnalysisProtocolCollection collection = new AnalysisProtocolCollection();
+            software.setContactRole(contactRole);
 
-        // TODO: this one has a whole lotta settings
+            list.getAnalysisSoftware().add(software);
+        }
 
-        return  collection;
+        return list;
     }
 
     private DataCollection dataCollection() {
@@ -177,29 +169,141 @@ public class MzIdentMLExporter {
         return dataCollection;
     }
 
-    // get CVDataSet
-    // get CVParamDataSet
-    // get CVParam
-    // ... etc
+    /**
+     * Assemble protein and peptide data into a sequence collection
+     * @return A sequence collection
+     */
+    private SequenceCollection sequenceCollection() {
+        SequenceCollection collection = new SequenceCollection();
 
-    private ArrayList<Object> getDataSet(String name) {
+        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+            for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
+                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide(); // urgh
+
+                mzPeptide.setId(colimsPeptide.getId().toString());
+                mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
+
+                for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
+                    Modification modification = new Modification();
+                    modification.setMonoisotopicMassDelta(peptideHasMod.getModification().getMonoIsotopicMassShift());
+                    modification.setAvgMassDelta(peptideHasMod.getDeltaScore());    // TODO: correct value?
+                    modification.setLocation(peptideHasMod.getLocation());
+                    // TODO: residues?
+                    // TODO: cv param for modification?
+                    //modification.getCvParam().add(getDataItem(peptideHasMod.getModification().getAccession(), CvParam.class));
+
+                    mzPeptide.getModification().add(modification);
+                }
+
+                collection.getPeptide().add(mzPeptide);
+
+                for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
+                    Protein protein = peptideHasProtein.getProtein();
+
+                    DBSequence dbSequence = new DBSequence();
+                    dbSequence.setId(protein.getId().toString());
+                    // TODO: accession requires single value
+                    dbSequence.setLength(protein.getSequence().length());
+                    dbSequence.setSeq(protein.getSequence());
+                    // TODO: dbSequence.setSearchDatabase();
+
+                    collection.getDBSequence().add(dbSequence);
+
+                    PeptideEvidence evidence = new PeptideEvidence();
+                    evidence.setDBSequence(dbSequence);
+                    evidence.setPeptide(mzPeptide);
+                    evidence.setId(peptideHasProtein.getId().toString());
+                    // TODO: a lot of missing fields here
+
+                    collection.getPeptideEvidence().add(evidence);
+                }
+            }
+        }
+
+        return collection;
+    }
+
+    private AnalysisCollection analysisCollection() {
+        AnalysisCollection collection = new AnalysisCollection();
+
+        SpectrumIdentification identification = new SpectrumIdentification();
+
+        // TODO: todo todo
+
+        return collection;
+    }
+
+    private AnalysisProtocolCollection analysisProtocolCollection() {
+        AnalysisProtocolCollection collection = new AnalysisProtocolCollection();
+
+        // TODO: this one has a whole lotta settings
+
+        return  collection;
+    }
+
+    /**
+     * This needs a better name ASAP
+     * @param name
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) {
+        // TODO: WHAT IF IT IS A MAP ARGH
+
         JsonNode listNode = mzIdentMLParamList.get(name);
-
+        List<T> data = new ArrayList<>();
 
         if (!listNode.isArray()) {
             // TODO: some kind of exception
         }
 
-        ArrayList<Object> paramList = new ArrayList<>();
-
         try {
             for (JsonNode node : listNode) {
-                paramList.add(mapper.readValue(node, Object.class));
+                data.add(mapper.readValue(node, type));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return paramList;
+        return data;
+    }
+
+    /**
+     * Get a single data item in the specified object type
+     * @param name Name of key or dot notation path to key
+     * @param type Type of object to be returned
+     * @param <T> It's a T.
+     * @return Object of type T
+     */
+    public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) {
+        JsonNode node;
+
+        if (name.contains(".")) {
+            String[] path = name.split("\\.");
+
+            node = mzIdentMLParamList.get(path[0]);
+
+            for (int i = 1; i < path.length; ++i) {
+                node = node.get(path[i]);
+            }
+        } else {
+            node = mzIdentMLParamList.get(name);
+        }
+
+        if (node.isArray()) { // or a map?
+            // TODO: some kind of exception
+        }
+
+        // suspicious list wrapping
+        List<T> item = new ArrayList<>();
+
+        try {
+            item.add(mapper.readValue(node, type));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return item.get(0);
     }
 }
