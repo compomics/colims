@@ -9,6 +9,7 @@ import com.compomics.util.pride.PrideObjectsFactory;
 import com.compomics.util.pride.PtmToPrideMap;
 
 import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,22 +25,15 @@ public class PtmCvTermMapper {
      */
     private final Map<String, CvTerm> ptmToCvTerms = new HashMap<>();
     /**
-     * The utilities PtmToPrideMap that holds mappings between utilities PTM.
-     * names and CV term PTMs.
+     * The utilities PtmToPrideMap that holds mappings between utilities PTM. names and CV term PTMs.
      */
     private PtmToPrideMap ptmToPrideMap;
 
     /**
-     * The map of new modifications (key: modification name, value: the
-     * modification).
-     */
-//    private Map<String, Modification> newModifications = new HashMap<>();
-    /**
      * No-arg constructor.
      *
-     * @throws IOException thrown in case of a I/O related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
+     * @throws IOException            thrown in case of a I/O related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      */
     public PtmCvTermMapper() throws IOException, ClassNotFoundException {
         ptmToPrideMap = PrideObjectsFactory.getInstance().getPtmToPrideMap();
@@ -57,9 +51,8 @@ public class PtmCvTermMapper {
     /**
      * Initialize the PTM to CV term map.
      *
-     * @throws IOException thrown in case of a I/O related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
+     * @throws IOException            thrown in case of a I/O related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      */
     public void init() throws IOException, ClassNotFoundException {
         //load the PtmToPrideMap from het PrideObjectsFactory
@@ -67,13 +60,11 @@ public class PtmCvTermMapper {
     }
 
     /**
-     * Update the PtmToPrideMap with the PTMs found in the PeptideShaker
-     * SearchParameters.
+     * Update the PtmToPrideMap with the PTMs found in the PeptideShaker SearchParameters.
      *
      * @param searchParameters the PeptideShaker SearchParameters
-     * @throws IOException thrown in case of a I/O related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
+     * @throws IOException            thrown in case of a I/O related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      */
     public void updatePtmToPrideMap(final SearchParameters searchParameters) throws IOException, ClassNotFoundException {
         ptmToPrideMap = PtmToPrideMap.loadPtmToPrideMap(searchParameters);
@@ -108,7 +99,7 @@ public class PtmCvTermMapper {
      * Add a PTM name to PTM CV term mapping to the map.
      *
      * @param ptmName the PTM name
-     * @param cvTerm the PTM CV term
+     * @param cvTerm  the PTM CV term
      */
     public void addCvTerm(final String ptmName, final CvTerm cvTerm) {
         if (!ptmToCvTerms.containsKey(ptmName)) {

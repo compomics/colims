@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Modification;
 
 /**
+ * This interface provides service methods for the Modification class.
  *
  * @author Niels Hulstaert
  */

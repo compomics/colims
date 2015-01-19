@@ -41,8 +41,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class UtilitiesModificationMapperTest {
 
     @Autowired
-    private UtilitiesPsmMapper utilitiesPsmMapper;
-    @Autowired
     private PtmCvTermMapper ptmCvTermMapper;
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
@@ -92,7 +90,7 @@ public class UtilitiesModificationMapperTest {
         }
 
         //add the non utilities PTM to the ptmCvTermMapper
-        ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
+//        ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
     }
 
     /**
@@ -202,7 +200,7 @@ public class UtilitiesModificationMapperTest {
         ptmScoring.setDeltaScore(oxidationMatch.getModificationSite(), oxidationScore);
         ptmScores.addPtmScoring(oxidationMatch.getTheoreticPtm(), ptmScoring);
 
-        //create new colims entity peptide
+        //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
         utilitiesModificationMapper.map(modificationMatches, ptmScores, targetPeptide);

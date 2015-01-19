@@ -98,6 +98,12 @@ public class SearchParameters extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "search_ion_type_2", nullable = true)
     private Integer secondSearchedIonType;
+    /**
+     * The SearchParametersHasModification instances from the join table between the search parameters and search
+     * modifications.
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "searchParameters")
+    private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
     /**
@@ -111,12 +117,6 @@ public class SearchParameters extends DatabaseEntity {
             inverseJoinColumns = {
                     @JoinColumn(name = "l_other_search_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> additionalCvParams = new ArrayList<>();
-    /**
-     * The SearchParametersHasModification instances from the join table between the search parameters and search
-     * modifications.
-     */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "searchParameters")
-    private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
 
     public SearchCvParam getSearchType() {
         return searchType;

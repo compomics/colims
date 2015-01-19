@@ -1,26 +1,19 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
-import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.OlsService;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.core.service.SearchModificationService;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.gui.protein.ModificationProfile;
+import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.pride.CvTerm;
-import eu.isas.peptideshaker.myparameters.PSPtmScores;
-import eu.isas.peptideshaker.scoring.PtmScoring;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,217 +39,173 @@ public class UtilitiesModificationProfileMapper {
      * The modification service instance.
      */
     @Autowired
-    private ModificationService modificationService;
+    private SearchModificationService searchModificationService;
     /**
      * The Ontology Lookup Service service.
      */
     @Autowired
     private OlsService olsService;
     /**
-     * The map of cached modifications (key: modification name, value: the modification).
+     * The map of cached modifications (key: modification name, value: the search modification).
      */
-    private final Map<String, Modification> cachedModifications = new HashMap<>();
-
-//    public void map(final ModificationProfile modificationProfile, )
+    private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification matches to the Colims peptide. The Utilities PTMs are matched first onto CV terms
-     * from PSI-MOD.
+     * Map the utilities modification profile to the Colims search parameters. The Utilities PTMs are matched first onto
+     * CV terms from PSI-MOD.
      *
-     * @param modificationMatches the list of modification matches
-     * @param ptmScores           the PeptideShaker PTM scores
-     * @param targetPeptide       the Colims target peptide
-     * @throws com.compomics.colims.core.io.ModificationMappingException thrown in case of a modification mapping
-     *                                                                   problem
+     * @param modificationProfile the Utilities modification profile with the modifications used for the searches.
+     * @param searchParameters    the Colims search parameters
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
-    public void map2(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
-        List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
-
-        //iterate over modification matches
-        for (ModificationMatch modificationMatch : modificationMatches) {
+    public void map(final ModificationProfile modificationProfile, final SearchParameters searchParameters) throws ModificationMappingException {
+        //iterate over fixed modifications
+        for (String modificationName : modificationProfile.getAllModifications()) {
             //try to find a mapped CV term
-            CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationMatch.getTheoreticPtm());
+            CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationName);
 
-            Modification modification;
+            SearchModification searchModification = null;
             if (cvTerm != null) {
-                modification = mapModificationMatch(cvTerm);
+                searchModification = mapCvTerm(cvTerm);
             } else {
-                modification = mapModificationMatch(modificationMatch);
+                //make use of the PTM in the backed up PTMs map because it contains the mass of the modification
+                searchModification = mapPtm(modificationProfile.getBackedUpPtmsMap().get(modificationName));
             }
 
-            //set entity relations if modification could be mapped
-            if (modification != null) {
-                PeptideHasModification peptideHasModification = new PeptideHasModification();
-
-                //set location in the PeptideHasModification join entity
-                //subtract one because the modification site in the ModificationMatch class starts from 1
-                int modificationIndex = modificationMatch.getModificationSite();
-                peptideHasModification.setLocation(modificationIndex - 1);
+            //set entity relations if the search modification could be mapped
+            if (searchModification != null) {
+                SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
                 //set modification type
-                if (modificationMatch.isVariable()) {
-                    peptideHasModification.setModificationType(ModificationType.VARIABLE);
-
-                    if (ptmScores != null) {
-                        PtmScoring ptmScoring = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm());
-                        if (ptmScoring != null) {
-                            if (ptmScoring.getDSites().contains(modificationIndex)) {
-                                peptideHasModification.setProbabilityScore(ptmScoring.getProbabilisticScore(modificationIndex));
-                            }
-                            if (ptmScoring.getProbabilisticSites().contains(modificationIndex)) {
-                                peptideHasModification.setDeltaScore(ptmScoring.getDeltaScore(modificationIndex));
-                            }
-
-//                            //@todo ask mark if taking the site with the highest prob is the way to go
-//                            //@todo ask mark if we should use the modificationMatch.getModificationSite
-//                            List<Integer> orderedProbablisticSites = ptmScoring.getOrderedProbabilisticSites();
-//                            if (!orderedProbablisticSites.isEmpty()) {
-//                                Double probabilisticScore = ptmScoring.getProbabilisticScore(orderedProbablisticSites.get(0));
-//                                peptideHasModification.setProbabilityScore(probabilisticScore);
-//                                Set<Integer> locations = ptmScoring.getProbabilisticSites();
-//                                if (!locations.contains(modificationMatch.getModificationSite())) {
-//                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedProbablisticSites.toArray()) + ")");
-//                                }
-//                            }
-//                            List<Integer> orderedDeltaSites = ptmScoring.getOrderedDSites();
-//                            if (!orderedDeltaSites.isEmpty()) {
-//                                Double deltaScore = ptmScoring.getDeltaScore(orderedDeltaSites.get(0));
-//                                peptideHasModification.setDeltaScore(deltaScore);
-//                                Set<Integer> locations = ptmScoring.getDSites();
-//                                if (!locations.contains(modificationMatch.getModificationSite())) {
-//                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedDeltaSites.toArray()) + ")");
-//                                }
-//                            }
-                        }
-                    }
+                if (modificationProfile.getAllNotFixedModifications().contains(modificationName)) {
+                    searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 } else {
-                    peptideHasModification.setModificationType(ModificationType.FIXED);
+                    searchParametersHasModification.setModificationType(ModificationType.FIXED);
                 }
 
-                peptideHasModifications.add(peptideHasModification);
                 //set entity relations
-                peptideHasModification.setModification(modification);
-                peptideHasModification.setPeptide(targetPeptide);
+                searchParametersHasModification.setSearchModification(searchModification);
+                searchParametersHasModification.setSearchParameters(searchParameters);
+
+                searchParameters.getSearchParametersHasModifications().add(searchParametersHasModification);
             } else {
-                LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
-                throw new ModificationMappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
+                LOGGER.error("The search modification" + modificationName + " could not be mapped.");
+                throw new ModificationMappingException("The search modification match " + modificationName + " could not be mapped.");
             }
         }
 
-        if (!peptideHasModifications.isEmpty()) {
-            targetPeptide.setPeptideHasModifications(peptideHasModifications);
-        }
     }
 
     /**
      * Clear resources after usage.
      */
     public void clear() {
-        cachedModifications.clear();
+        cachedSearchModifications.clear();
     }
 
     /**
-     * Map the given ModificationMatch object to a Modification instance. Return null if no mapping was possible.
-     *
-     * @param modificationMatch the utilities ModificationMatch
-     * @return the Colims Modification instance
-     */
-    private Modification mapModificationMatch(final ModificationMatch modificationMatch) {
-        Modification modification;
-
-        //look for the modification in the newModifications map
-        modification = cachedModifications.get(modificationMatch.getTheoreticPtm());
-
-        if (modification == null) {
-            //the modification was not found in the newModifications map
-            //look for the modification in the database by name
-            modification = modificationService.findByName(modificationMatch.getTheoreticPtm());
-
-            if (modification == null) {
-                //the modification was not found in the database
-                //look for the modification in the PSI-MOD ontology by exact name
-                modification = olsService.findModificationByExactName(modificationMatch.getTheoreticPtm());
-
-                if (modification == null) {
-                    //the modification was not found by name in the PSI-MOD ontology
-                    //@todo maybe search by mass or not by 'exact' name?
-                    //get modification from modification factory
-                    PTM ptM = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
-
-                    //check if the PTM is not unknown in the PTMFactory
-                    if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
-                        LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be found in the PtmFactory.");
-                    }
-
-                    modification = new Modification(modificationMatch.getTheoreticPtm());
-                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
-                    modification.setMonoIsotopicMassShift(ptM.getMass());
-                }
-            }
-            //add to cached modifications
-            cachedModifications.put(modification.getName(), modification);
-        }
-
-        return modification;
-    }
-
-    /**
-     * Map the given CvTerm utilities object to a Modification instance. Return null if no mapping was possible.
+     * Map the given CvTerm utilities object to a SearchModification instance. Return null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
-     * @return the Colims Modification entity
+     * @return the Colims SearchModification entity
      */
-    private Modification mapModificationMatch(final CvTerm cvTerm) {
-        Modification modification;
+    private SearchModification mapCvTerm(final CvTerm cvTerm) {
+        SearchModification searchModification;
 
-        //look for the modification in the newModifications map
-        modification = cachedModifications.get(cvTerm.getAccession());
+        //look for the search modification in the newModifications map
+        searchModification = cachedSearchModifications.get(cvTerm.getAccession());
 
-        if (modification == null) {
-            //the modification was not found in the cachedModifications map
-            //look for the modification in the database by accession
-            modification = modificationService.findByAccession(cvTerm.getAccession());
+        if (searchModification == null) {
+            //the search modification was not found in the cachedSearchModifications map
+            //look for the search modification in the database by accession
+            searchModification = searchModificationService.findByAccession(cvTerm.getAccession());
             //for UNIMOD mods, look for the alternative accession
-            if (cvTerm.getOntology().equals("UNIMOD") && modification == null) {
-                //look for the modification in the database by alternative accession
-                modification = modificationService.findByAlternativeAccession(cvTerm.getAccession());
+            if (cvTerm.getOntology().equals("UNIMOD") && searchModification == null) {
+                //look for the search modification in the database by alternative accession
+                searchModification = searchModificationService.findByAlternativeAccession(cvTerm.getAccession());
             }
 
-            if (modification == null) {
-                //the modification was not found in the database
+            if (searchModification == null) {
+                //the search modification was not found in the database
                 if (cvTerm.getOntology().equals("PSI-MOD")) {
-                    //look for the modification in the PSI-MOD ontology by accession
-                    modification = olsService.findModificationByAccession(cvTerm.getAccession());
+                    //look for the search modification in the PSI-MOD ontology by accession
+                    searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
 
-                    if (modification != null) {
-                        //add to cached modifications
-                        cachedModifications.put(modification.getAccession(), modification);
+                    if (searchModification != null) {
+                        //add to cached search modifications with the PSI-MOD accession as key
+                        cachedSearchModifications.put(searchModification.getAccession(), searchModification);
                     }
                 } else if (cvTerm.getOntology().equals("UNIMOD")) {
-                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
-                    modification = olsService.findModificationByNameAndUnimodAccession(cvTerm.getName(), cvTerm.getAccession());
+                    //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
+                    searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
 
-                    if (modification != null) {
-                        //add to cached modifications
-                        cachedModifications.put(cvTerm.getAccession(), modification);
+                    if (searchModification != null) {
+                        //add to cached search modifications with the UNIMOD accession as key
+                        cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
                     }
                 }
 
-                if (modification == null) {
-                    modification = new Modification(cvTerm.getAccession(), cvTerm.getName());
+                if (searchModification == null) {
+                    searchModification = new SearchModification(cvTerm.getAccession(), cvTerm.getName());
 
                     //@todo check if the PTM mass is the average or the monoisotopic mass shift
-                    modification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
+                    searchModification.setMonoIsotopicMassShift(Double.valueOf(cvTerm.getValue()));
 
-                    //add to cached modifications
-                    cachedModifications.put(modification.getAccession(), modification);
+                    //add to cached search modifications
+                    cachedSearchModifications.put(searchModification.getAccession(), searchModification);
                 }
             } else {
-                cachedModifications.put(cvTerm.getAccession(), modification);
+                cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
             }
         }
 
-        return modification;
+        return searchModification;
+    }
+
+    /**
+     * Map the given PTM to a SearchModification instance. Return null if no mapping was possible.
+     *
+     * @param ptm the PTM instance
+     * @return the Colims SearchModification instance
+     */
+    private SearchModification mapPtm(final PTM ptm) {
+        SearchModification searchModification;
+
+        //look for the search modification in the newModifications map
+        searchModification = cachedSearchModifications.get(ptm.getName());
+
+        if (searchModification == null) {
+            //the search modification was not found in the newModifications map
+            //look for the search modification in the database by name
+            searchModification = searchModificationService.findByName(ptm.getName());
+
+            if (searchModification == null) {
+                //the search modification was not found in the database
+                //look for the search modification in the PSI-MOD ontology by exact name
+                searchModification = olsService.findModificationByExactName(SearchModification.class, ptm.getName());
+
+                if (searchModification == null) {
+                    //the search modification was not found by name in the PSI-MOD ontology
+                    //@todo maybe search by mass or not by 'exact' name?
+                    //get the search modification from modification factory
+                    PTM foundPtm = PTMFactory.getInstance().getPTM(ptm.getName());
+
+                    //check if the PTM is not unknown in the PTMFactory
+                    if (!foundPtm.getName().equals(UNKNOWN_UTILITIES_PTM)) {
+                        LOGGER.warn("The modification match " + ptm.getName() + " could not be found in the PtmFactory.");
+                    }
+
+                    searchModification = new SearchModification(ptm.getName());
+                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                    searchModification.setMonoIsotopicMassShift(ptm.getMass());
+                    searchModification.setAverageMassShift(ptm.getMass());
+                }
+            }
+            //add to cached search modifications
+            cachedSearchModifications.put(searchModification.getName(), searchModification);
+        }
+
+        return searchModification;
     }
 
 }

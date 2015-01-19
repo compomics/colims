@@ -59,7 +59,7 @@ INSERT INTO material_cv_param (id, creation_date, modification_date, user_name, 
 INSERT INTO material (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_project_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '1', '2');
 
 -- insert test modifications
-INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '-64.1', '-63.998286');
+INSERT INTO modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', 'UNIMOD:35', '-64.1', '-63.998286');
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
@@ -77,3 +77,6 @@ INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) 
 
 -- insert test search parameters
 INSERT INTO search_parameters (id, l_search_enzyme_cv_id, threshold, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 1, 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4);
+
+-- insert test search modifications
+INSERT INTO search_modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'UNIMOD:21', '79.98', '79.966331');

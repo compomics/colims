@@ -12,48 +12,55 @@ import org.springframework.transaction.annotation.Transactional;
 import com.compomics.colims.model.Modification;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml" })
+@ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 public class ModificationRepositoryTest {
+
     @Autowired
     private ModificationRepository modificationRepository;
 
-    private final String accession = "modificationAccession";
-    private final String name = "modificationName";
-    private Long id;
-
-    @Before
-    public void saveModification() {
-        //Store an initial modification
-        Modification modification = new Modification(name);
-        modification.setAccession(accession);
-        modificationRepository.save(modification);
-
-        //Ensure it's stored
-        Assert.assertNotNull("Identifier should be assigned now", id = modification.getId());
-    }
-
     @Test
     public void testFindByName() {
-        //Find
-        Modification modification = modificationRepository.findByName(name);
+        //try to find a non existing modification
+        Modification modification = modificationRepository.findByName("nonexisting");
 
-        //Compare expected values
+        Assert.assertNull(modification);
+
+        //find an existing modification
+        modification = modificationRepository.findByName("methionine oxidation with neutral loss of 64 Da");
+
         Assert.assertNotNull(modification);
-        Assert.assertEquals(accession, modification.getAccession());
-        Assert.assertEquals(name, modification.getName());
-        Assert.assertEquals(id, modification.getId());
+        //check the ID
+        Assert.assertNotNull(modification.getId());
     }
 
     @Test
     public void testFindByAccession() {
-        //Find
-        Modification modification = modificationRepository.findByAccession(accession);
+        //try to find a non existing modification
+        Modification modification = modificationRepository.findByAccession("nonexisting");
 
-        //Compare expected values
+        Assert.assertNull(modification);
+
+        //find an existing modification
+        modification = modificationRepository.findByAccession("MOD:00935");
+
         Assert.assertNotNull(modification);
-        Assert.assertEquals(accession, modification.getAccession());
-        Assert.assertEquals(name, modification.getName());
-        Assert.assertEquals(id, modification.getId());
+        //check the ID
+        Assert.assertNotNull(modification.getId());
+    }
+
+    @Test
+    public void testFindByAlternativeAccession() {
+        //try to find a non existing modification
+        Modification modification = modificationRepository.findByAlternativeAccession("nonexisting");
+
+        Assert.assertNull(modification);
+
+        //find an existing modification
+        modification = modificationRepository.findByAlternativeAccession("UNIMOD:35");
+
+        Assert.assertNotNull(modification);
+        //check the ID
+        Assert.assertNotNull(modification.getId());
     }
 }

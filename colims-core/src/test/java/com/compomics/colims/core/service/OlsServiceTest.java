@@ -32,12 +32,12 @@ public class OlsServiceTest {
     @Test
     public void testFindModificationByAccession() {
         //try to find a non existing modification
-        Modification modification = olsService.findModificationByAccession("MOD:00935999");
+        Modification modification = olsService.findModificationByAccession(Modification.class, "MOD:00935999");
 
         Assert.assertNull(modification);
 
         //try to find an existing modification
-        modification = olsService.findModificationByAccession("MOD:00935");
+        modification = olsService.findModificationByAccession(Modification.class, "MOD:00935");
 
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
@@ -52,12 +52,12 @@ public class OlsServiceTest {
     @Test
     public void testFindModificationByExactName() {
         //try to find a non existing modification
-        Modification modification = olsService.findModificationByExactName("non existing modification");
+        Modification modification = olsService.findModificationByExactName(Modification.class, "non existing modification");
 
         Assert.assertNull(modification);
 
         //try to find an existing modification
-        modification = olsService.findModificationByExactName("methionine oxidation with neutral loss of 64 Da");
+        modification = olsService.findModificationByExactName(Modification.class, "methionine oxidation with neutral loss of 64 Da");
 
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
@@ -85,7 +85,7 @@ public class OlsServiceTest {
      */
     @Test
     public void testFindModificationByNameAndUnimodAccession_1() {
-        Modification modification = olsService.findModificationByNameAndUnimodAccession("Phospho", "UNIMOD:21");
+        Modification modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, "Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }
@@ -95,7 +95,7 @@ public class OlsServiceTest {
      */
     @Test
     public void testFindModificationByNameAndUnimodAccession_2() {
-        Modification modification = olsService.findModificationByNameAndUnimodAccession("Ammonia-loss", "UNIMOD:385");
+        Modification modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, "Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
     }
