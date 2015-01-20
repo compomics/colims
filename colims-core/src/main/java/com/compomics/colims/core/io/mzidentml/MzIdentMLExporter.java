@@ -2,6 +2,7 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.ExperimentRepository;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +17,29 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- *
- * Created by Iain on 13/01/2015.
+ * mzIdentML exporter, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them
+ * into valid XML
+ * @author Iain
  */
 @Component
 public class MzIdentMLExporter {
     private static final String MZIDENTML_VERSION = "1.1.0"; // TODO: version switch
 
-    private MzIdentMLMarshaller marshaller;
+    private Logger logger = Logger.getLogger(MzIdentMLExporter.class);
+
     private ObjectMapper mapper;
     private JsonNode mzIdentMLParamList;
     private AnalyticalRun analyticalRun;
     private Experiment experiment;
+    private MzIdentML mzIdentML;
+    private SearchDatabase searchDatabase;
 
     @Autowired
     private ExperimentRepository experimentRepository;
 
+    /**
+     * Set up the JSON mapper and map the data file
+     */
     public void init() {
         if (mzIdentMLParamList == null || mapper == null) {
             mapper = new ObjectMapper();
@@ -39,7 +47,7 @@ public class MzIdentMLExporter {
             try {
                 mzIdentMLParamList = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Unable to parse mzidentml.json, please ensure file is valid JSON.");
             }
         }
     }
@@ -47,10 +55,10 @@ public class MzIdentMLExporter {
     /**
      * Export a run in MzIdentML format
      */
-    public String export(AnalyticalRun run) throws IOException {
+    public String export(AnalyticalRun run) {
         init();
 
-        marshaller = new MzIdentMLMarshaller();
+        MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
         analyticalRun = run;
         experiment = experimentRepository.findById(run.getId());
 
@@ -61,8 +69,8 @@ public class MzIdentMLExporter {
      * Assemble necessary data into an MZIdentML object and it's many properties
      * @return MZIdentML A fully furnished (hopefully) object
      */
-    private MzIdentML base() throws IOException {
-        MzIdentML mzIdentML = new MzIdentML();
+    private MzIdentML base() {
+        mzIdentML = new MzIdentML();
 
         mzIdentML.setId("colims_1.3.2");                                    // TODO: from where
         mzIdentML.setVersion(MZIDENTML_VERSION);
@@ -140,7 +148,7 @@ public class MzIdentMLExporter {
         AnalysisSoftwareList list = new AnalysisSoftwareList();
 
         // Search engine(s)
-        // TODO: expecting search engine to be on a run basis, correct to get all for experiment?
+        // TODO: change to run basis, then it is not a foreach
         for (SearchAndValidationSettings settings : experiment.getSearchAndValidationSettingses()) {
             AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
 
@@ -162,9 +170,68 @@ public class MzIdentMLExporter {
 
         Inputs inputs = new Inputs();
 
-        // TODO: search result files
-        // TODO: search database(s)
-        // TODO: spectrum files
+        // TODO: source file (in which table?)
+        SourceFile sourceFile = new SourceFile();
+
+        inputs.getSourceFile().add(sourceFile);
+
+        FastaDb fasta = new FastaDb();  // TODO: replace
+
+        searchDatabase = new SearchDatabase();
+        searchDatabase.setId(fasta.getId().toString());
+        searchDatabase.setLocation(fasta.getFilePath());
+        searchDatabase.setName(fasta.getName());
+        searchDatabase.setVersion(fasta.getVersion());
+        searchDatabase.setFileFormat(new FileFormat());
+        searchDatabase.setDatabaseName(new Param());
+
+        searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
+
+        UserParam databaseName = new UserParam();
+        databaseName.setName(fasta.getName());
+
+        searchDatabase.getDatabaseName().setParam(databaseName);
+
+        inputs.getSearchDatabase().add(searchDatabase);
+
+        // TODO: split method here, move rest after sequence collection?
+
+        AnalysisData analysisData = new AnalysisData();
+
+        SpectrumIdentificationList spectrumList = new SpectrumIdentificationList();
+
+        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+
+
+            for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+                SpectraData spectraData = new SpectraData();
+                spectraData.setId(spectrumFile.getId().toString());
+
+                // TODO: need spectrum file location
+                // TODO: need format of spectrum ids within file (CV term)
+
+                inputs.getSpectraData().add(spectraData);
+            }
+
+            SpectrumIdentificationResult result = new SpectrumIdentificationResult();
+            result.setId(spectrum.getId().toString());
+            result.setSpectraData(inputs.getSpectraData().get(0));  // hmm
+            result.setSpectrumID(spectrum.getId().toString());
+
+            SpectrumIdentificationItem item = new SpectrumIdentificationItem();
+            item.setId(spectrum.getId().toString());    // this id is being used a lot!
+            item.setChargeState(spectrum.getCharge());
+            item.setExperimentalMassToCharge(spectrum.getMzRatio());
+            item.setPassThreshold(true);    // TODO: confirm
+            item.setRank(0);                // TODO: confirm
+
+            // TODO: supposed to reference peptideevidence here... but it does not exist yet
+            // and peptide if possible, which would be fine if we were just using ids
+
+            // TODO: fragmentation?
+        }
+
+        dataCollection.setInputs(inputs);
 
         return dataCollection;
     }
@@ -205,7 +272,7 @@ public class MzIdentMLExporter {
                     // TODO: accession requires single value
                     dbSequence.setLength(protein.getSequence().length());
                     dbSequence.setSeq(protein.getSequence());
-                    // TODO: dbSequence.setSearchDatabase();
+                    dbSequence.setSearchDatabase(searchDatabase);
 
                     collection.getDBSequence().add(dbSequence);
 
@@ -228,17 +295,116 @@ public class MzIdentMLExporter {
 
         SpectrumIdentification identification = new SpectrumIdentification();
 
+
+
         // TODO: todo todo
 
         return collection;
     }
 
+    /**
+     * Gather all data relating to search and protein protocol settings
+     * @return Analysis Protocol object
+     */
     private AnalysisProtocolCollection analysisProtocolCollection() {
         AnalysisProtocolCollection collection = new AnalysisProtocolCollection();
 
-        // TODO: this one has a whole lotta settings
+        SearchAndValidationSettings settings = new SearchAndValidationSettings(); // TODO: get this from run
+        SearchParameters searchParameters = settings.getSearchParameters();
 
-        return  collection;
+        // Spectrum Identification Protocol
+        SpectrumIdentificationProtocol spectrumProtocol = new SpectrumIdentificationProtocol();
+        // TODO: confirm one search engine per run
+        spectrumProtocol.setId("1");
+        spectrumProtocol.setAnalysisSoftware(mzIdentML.getAnalysisSoftwareList().getAnalysisSoftware().get(0));
+        spectrumProtocol.setSearchType(new Param());
+        spectrumProtocol.getSearchType().setParam(getDataItem("SearchType.ms-ms", CvParam.class));
+
+        // Threshold
+        spectrumProtocol.setThreshold(new ParamList());
+
+        if (searchParameters.getThreshold() == null) {
+            spectrumProtocol.getThreshold().getCvParam().add(getDataItem("Threshold.no", CvParam.class));
+        } else {
+            // TODO: need threshold type
+        }
+
+        // Additional Params
+        spectrumProtocol.setAdditionalSearchParams(new ParamList());
+        // TODO (optional)
+
+        if (searchParameters.getSearchParametersHasModifications() != null) {   // TODO: is this valid?
+            spectrumProtocol.setModificationParams(new ModificationParams());
+
+            for (SearchParametersHasModification searchHasMod : searchParameters.getSearchParametersHasModifications()) {
+                // TODO: from db to cv params
+            }
+        }
+
+        // Enzyme
+        spectrumProtocol.setEnzymes(new Enzymes());
+
+        Enzyme mzEnzyme = new Enzyme();
+        SearchCvParam colimsEnzyme = searchParameters.getEnzyme();
+        CvParam cvEnzyme = new CvParam();
+
+        cvEnzyme.setName(colimsEnzyme.getName());
+        cvEnzyme.setAccession(colimsEnzyme.getAccession());
+        // TODO: how to set cvref?
+
+        mzEnzyme.setId(colimsEnzyme.getId().toString());
+        mzEnzyme.setEnzymeName(new ParamList());
+        mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+
+        spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);    // so messy
+
+        // Fragment Tolerance
+        spectrumProtocol.setFragmentTolerance(new Tolerance());
+
+        CvParam fragmentMinus = getDataItem("Tolerance.minus", CvParam.class);
+        fragmentMinus.setValue(searchParameters.getFragMassTolerance().toString());
+        fragmentMinus.setUnitName(searchParameters.getFragMassToleranceUnit().toString()); // TODO: is this "dalton" or w/e?
+
+        CvParam fragmentPlus = getDataItem("Tolerance.plus", CvParam.class);
+        fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString()); // TODO: are these values the same
+        fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
+        // TODO: where to get other cv terms (unitCvRef, unitAccession)?
+
+        spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentMinus);
+        spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentPlus);
+
+        // Parent Tolerance
+        spectrumProtocol.setParentTolerance(new Tolerance());
+
+        // can we reuse objects? seems unlikely
+        CvParam parentMinus = getDataItem("Tolerance.minus", CvParam.class);
+        parentMinus.setValue(searchParameters.getPrecMassTolerance().toString());
+        parentMinus.setUnitName(searchParameters.getPrecMassToleranceUnit().toString()); // TODO: as above
+
+        CvParam parentPlus = getDataItem("Tolerance.plus", CvParam.class);
+        parentPlus.setValue(searchParameters.getPrecMassTolerance().toString());
+        parentPlus.setUnitName(searchParameters.getPrecMassToleranceUnit().toString()); // TODO: as above
+
+        spectrumProtocol.getParentTolerance().getCvParam().add(parentMinus);
+        spectrumProtocol.getParentTolerance().getCvParam().add(parentPlus);
+
+        collection.getSpectrumIdentificationProtocol().add(spectrumProtocol);
+
+        // Protein Detection Protocol
+        ProteinDetectionProtocol proteinProtocol = new ProteinDetectionProtocol();
+        proteinProtocol.setId("1");
+        proteinProtocol.setAnalysisSoftware(mzIdentML.getAnalysisSoftwareList().getAnalysisSoftware().get(0));
+
+        // Threshold #2
+        proteinProtocol.setThreshold(new ParamList());
+        // TODO: where is this stored?
+
+        // Analysis Params
+        // TODO
+
+        collection.setProteinDetectionProtocol(proteinProtocol);
+
+        return collection;
     }
 
     /**

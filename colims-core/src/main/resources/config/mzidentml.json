@@ -27,5 +27,15 @@
   "Role": {
     "researcher":       {"cvRef": "PSI-MS", "accession": "MS:1001271", "name": "researcher"},
     "software vendor":  {"cvRef": "PSI-MS", "accession": "MS:1001267", "name": "CompOmics"}
+  },
+  "SearchType": {
+    "ms-ms": {"cvRef": "PSI-MS", "accession": "MS:1001083", "name": "ms-ms search"}
+  },
+  "Threshold": {
+    "no": {"cvRef": "PSI-MS", "accession": "MS:1001494", "name": "no threshold"}
+  },
+  "Tolerance": {
+    "minus":  {"cvRef": "PSI-MS", "accession": "MS:1001413", "name": "search tolerance minus value"},
+    "plus":   {"cvRef": "PSI-MS", "accession": "MS:1001412", "name": "search tolerance plus value"}
   }
 }
