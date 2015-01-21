@@ -81,9 +81,10 @@ public class MzIdentMLExporter {
         mzIdentML.setProvider(provider());                                  // done
         mzIdentML.setDataCollection(dataCollection());
         mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
-        mzIdentML.setSequenceCollection(sequenceCollection());
-        mzIdentML.setAnalysisCollection(analysisCollection());
+        //mzIdentML.setSequenceCollection(sequenceCollection());
+        //mzIdentML.setAnalysisCollection(analysisCollection());
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection());
+        assembleSpectrumData();
 
         return mzIdentML;
     }
@@ -187,7 +188,6 @@ public class MzIdentMLExporter {
         searchDatabase.setVersion(fasta.getVersion());
         searchDatabase.setFileFormat(new FileFormat());
         searchDatabase.setDatabaseName(new Param());
-
         searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
 
         UserParam databaseName = new UserParam();
@@ -197,100 +197,11 @@ public class MzIdentMLExporter {
 
         inputs.getSearchDatabase().add(searchDatabase);
 
-        // TODO: split method here, move rest after sequence collection?
-
         AnalysisData analysisData = new AnalysisData();
-
-        SpectrumIdentificationList spectrumList = new SpectrumIdentificationList();
-
-        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-
-
-            for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
-                SpectraData spectraData = new SpectraData();
-                spectraData.setId(spectrumFile.getId().toString());
-
-                // TODO: need spectrum file location
-                // TODO: need format of spectrum ids within file (CV term)
-
-                inputs.getSpectraData().add(spectraData);
-            }
-
-            SpectrumIdentificationResult result = new SpectrumIdentificationResult();
-            result.setId(spectrum.getId().toString());
-            result.setSpectraData(inputs.getSpectraData().get(0));  // hmm
-            result.setSpectrumID(spectrum.getId().toString());
-
-            SpectrumIdentificationItem item = new SpectrumIdentificationItem();
-            item.setId(spectrum.getId().toString());    // this id is being used a lot!
-            item.setChargeState(spectrum.getCharge());
-            item.setExperimentalMassToCharge(spectrum.getMzRatio());
-            item.setPassThreshold(true);    // TODO: confirm
-            item.setRank(0);                // TODO: confirm
-
-            // TODO: supposed to reference peptideevidence here... but it does not exist yet
-            // and peptide if possible, which would be fine if we were just using ids
-
-            // TODO: fragmentation?
-        }
 
         dataCollection.setInputs(inputs);
 
         return dataCollection;
-    }
-
-    /**
-     * Assemble protein and peptide data into a sequence collection
-     * @return A sequence collection
-     */
-    private SequenceCollection sequenceCollection() {
-        SequenceCollection collection = new SequenceCollection();
-
-        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-            for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
-                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide(); // urgh
-
-                mzPeptide.setId(colimsPeptide.getId().toString());
-                mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
-
-                for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
-                    Modification modification = new Modification();
-                    modification.setMonoisotopicMassDelta(peptideHasMod.getModification().getMonoIsotopicMassShift());
-                    modification.setAvgMassDelta(peptideHasMod.getDeltaScore());    // TODO: correct value?
-                    modification.setLocation(peptideHasMod.getLocation());
-                    // TODO: residues?
-                    // TODO: cv param for modification?
-                    //modification.getCvParam().add(getDataItem(peptideHasMod.getModification().getAccession(), CvParam.class));
-
-                    mzPeptide.getModification().add(modification);
-                }
-
-                collection.getPeptide().add(mzPeptide);
-
-                for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
-                    Protein protein = peptideHasProtein.getProtein();
-
-                    DBSequence dbSequence = new DBSequence();
-                    dbSequence.setId(protein.getId().toString());
-                    // TODO: accession requires single value
-                    dbSequence.setLength(protein.getSequence().length());
-                    dbSequence.setSeq(protein.getSequence());
-                    dbSequence.setSearchDatabase(searchDatabase);
-
-                    collection.getDBSequence().add(dbSequence);
-
-                    PeptideEvidence evidence = new PeptideEvidence();
-                    evidence.setDBSequence(dbSequence);
-                    evidence.setPeptide(mzPeptide);
-                    evidence.setId(peptideHasProtein.getId().toString());
-                    // TODO: a lot of missing fields here
-
-                    collection.getPeptideEvidence().add(evidence);
-                }
-            }
-        }
-
-        return collection;
     }
 
     /**
@@ -398,27 +309,6 @@ public class MzIdentMLExporter {
         return collection;
     }
 
-    private AnalysisCollection analysisCollection() {
-        AnalysisCollection collection = new AnalysisCollection();
-
-        SpectrumIdentification identification = new SpectrumIdentification();
-        identification.setId("1");
-        // TODO: spectrum identification list
-        // TODO: spectrum identification protocol
-
-        // TODO: spectradata
-        // TODO: searchdatabase
-
-        ProteinDetection proteinDetection = new ProteinDetection();
-        proteinDetection.setId("1");
-        // TODO: protein detection list
-        // TODO: protein detection protocol
-
-        // TODO: spectradata (again)
-
-        return collection;
-    }
-
     /**
      * Get a list of data items mapped to the specified object type
      * @param name Name of key or dot notation path to key
@@ -450,7 +340,7 @@ public class MzIdentMLExporter {
      * Get a single data item in the specified object type
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T> It's a T.
+     * @param <T> Cup of
      * @return Object of type T
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) {
@@ -472,6 +362,11 @@ public class MzIdentMLExporter {
         return item.get(0);
     }
 
+    /**
+     * Find a node by name or dot notation path
+     * @param name Name or path
+     * @return The node
+     */
     private JsonNode getTargetNode(String name) {
         JsonNode node;
 
@@ -488,5 +383,135 @@ public class MzIdentMLExporter {
         }
 
         return node;
+    }
+
+    private void assembleSpectrumData() {
+        SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
+        ProteinDetectionList proteinDetectionList = new ProteinDetectionList(); // TODO: this is a collection of literal garbage
+        SequenceCollection sequenceCollection = new SequenceCollection();
+        AnalysisCollection analysisCollection = new AnalysisCollection();
+
+        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+            SpectrumIdentificationResult spectrumIdentificationResult = createSpectrumIdentificationResult(spectrum);
+            SpectrumIdentificationItem spectrumIdentificationItem = createSpectrumIdentificationItem(spectrum);
+
+            for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
+                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide(); // urgh
+
+                mzPeptide.setId(colimsPeptide.getId().toString());
+                mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
+
+                for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
+                    mzPeptide.getModification().add(createModification(peptideHasMod));
+                }
+
+                sequenceCollection.getPeptide().add(mzPeptide);
+                spectrumIdentificationItem.setPeptide(mzPeptide);
+
+                for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
+                    DBSequence dbSequence = createDBSequence(peptideHasProtein);
+
+                    sequenceCollection.getDBSequence().add(dbSequence);
+
+                    PeptideEvidence evidence = new PeptideEvidence();
+                    evidence.setDBSequence(dbSequence);
+                    evidence.setPeptide(mzPeptide);
+                    evidence.setId(peptideHasProtein.getId().toString());
+                    // TODO: a lot of missing fields here
+
+                    sequenceCollection.getPeptideEvidence().add(evidence);
+
+                    PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                    evidenceRef.setPeptideEvidence(evidence);
+                    spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                }
+            }
+
+            spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+            spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+
+            SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
+            spectrumIdentification.setId(spectrum.getId().toString());
+            spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
+            spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0)); // hmm 3
+
+            // TODO: make this once
+            SearchDatabaseRef dbRef = new SearchDatabaseRef();
+            dbRef.setSearchDatabase(mzIdentML.getDataCollection().getInputs().getSearchDatabase().get(0)); // hmm 4
+
+            spectrumIdentification.getSearchDatabaseRef().add(dbRef);
+
+            for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+                SpectraData spectraData = new SpectraData();
+                spectraData.setId(spectrumFile.getId().toString());
+
+                // TODO: need spectrum file location
+                // TODO: need format of spectrum ids within file (CV term)
+
+                mzIdentML.getDataCollection().getInputs().getSpectraData().add(spectraData);
+
+                InputSpectra inputSpectra = new InputSpectra();
+                inputSpectra.setSpectraData(spectraData);
+
+                spectrumIdentification.getInputSpectra().add(inputSpectra);
+            }
+
+            analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
+        }
+
+        mzIdentML.getDataCollection().getAnalysisData().getSpectrumIdentificationList().add(spectrumIdentificationList);
+        mzIdentML.getDataCollection().getAnalysisData().setProteinDetectionList(proteinDetectionList);
+        mzIdentML.setSequenceCollection(sequenceCollection);
+        mzIdentML.setAnalysisCollection(analysisCollection);
+    }
+
+    private SpectrumIdentificationResult createSpectrumIdentificationResult(Spectrum spectrum) {
+        SpectrumIdentificationResult spectrumIdentificationResult = new SpectrumIdentificationResult();
+
+        spectrumIdentificationResult.setId(spectrum.getId().toString());
+        spectrumIdentificationResult.setSpectraData(mzIdentML.getDataCollection().getInputs().getSpectraData().get(0));  // TODO: ??
+        spectrumIdentificationResult.setSpectrumID(spectrum.getId().toString());
+
+        return spectrumIdentificationResult;
+    }
+
+    private SpectrumIdentificationItem createSpectrumIdentificationItem(Spectrum spectrum) {
+        SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
+
+        spectrumIdentificationItem.setId(spectrum.getId().toString());    // this id is being used a lot!
+        spectrumIdentificationItem.setChargeState(spectrum.getCharge());
+        spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
+        spectrumIdentificationItem.setPassThreshold(true);    // TODO: confirm
+        spectrumIdentificationItem.setRank(0);                // TODO: confirm
+
+        // TODO: fragmentation
+
+        return spectrumIdentificationItem;
+    }
+
+    private Modification createModification(PeptideHasModification peptideHasMod) {
+        Modification modification = new Modification();
+
+        modification.setMonoisotopicMassDelta(peptideHasMod.getModification().getMonoIsotopicMassShift());
+        modification.setAvgMassDelta(peptideHasMod.getDeltaScore());    // TODO: correct value?
+        modification.setLocation(peptideHasMod.getLocation());
+        // TODO: residues?
+        // TODO: cv param for modification?
+        //modification.getCvParam().add(getDataItem(peptideHasMod.getModification().getAccession(), CvParam.class));
+
+        return modification;
+    }
+
+    private DBSequence createDBSequence(PeptideHasProtein peptideHasProtein) {
+        Protein protein = peptideHasProtein.getProtein();
+
+        DBSequence dbSequence = new DBSequence();
+        dbSequence.setId(protein.getId().toString());
+        // TODO: accession requires single value
+        dbSequence.setLength(protein.getSequence().length());
+        dbSequence.setSeq(protein.getSequence());
+        dbSequence.setSearchDatabase(mzIdentML.getDataCollection().getInputs().getSearchDatabase().get(0)); // hmm 2
+
+        return dbSequence;
     }
 }
