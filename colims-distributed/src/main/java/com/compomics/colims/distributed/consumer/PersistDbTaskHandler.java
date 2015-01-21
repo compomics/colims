@@ -1,34 +1,31 @@
 package com.compomics.colims.distributed.consumer;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.maxquant.MaxQuantImport;
 import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
+import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
-import com.compomics.colims.core.io.MappedDataImport;
-import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.SearchAndValidationSettings;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * This class handles a PersistDbTask: map the DataImport en store it in the database.
@@ -103,9 +100,9 @@ public class PersistDbTaskHandler {
             }
 
             //map the task
-            MappedDataImport mappedDataImport = mapDataImport(persistDbTask);
+            List<AnalyticalRun> analyticalRuns = mapDataImport(persistDbTask);
 
-            store(mappedDataImport, persistDbTask, sample, userName);
+            store(analyticalRuns, persistDbTask, sample, userName);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -128,10 +125,8 @@ public class PersistDbTaskHandler {
      *                                                                it's string name
      * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
      */
-    private MappedDataImport mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
-        MappedDataImport mappedDataImport = null;
-        SearchAndValidationSettings searchAndValidationSettings;
-        QuantificationSettings quantificationSettings;
+    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
+        List<AnalyticalRun> analyticalRuns = null;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {
             case PEPTIDESHAKER:
@@ -141,11 +136,7 @@ public class PersistDbTaskHandler {
                 //clear resources before mapping
                 peptideShakerImporter.clear();
 
-                peptideShakerImporter.initImport(unpackedPeptideShakerImport);
-                searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
-                List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
-
-                mappedDataImport = new MappedDataImport(searchAndValidationSettings, null, analyticalRuns);
+                analyticalRuns = peptideShakerImporter.importData(unpackedPeptideShakerImport);
 
                 //try to delete the temporary directory with the unpacked .cps file
                 try {
@@ -161,24 +152,18 @@ public class PersistDbTaskHandler {
                 //clear resources before mapping
                 maxQuantImporter.clear();
 
-                maxQuantImporter.initImport(persistDbTask.getDataImport());
+                analyticalRuns = maxQuantImporter.importData((MaxQuantImport) (persistDbTask.getDataImport()));
 
-                searchAndValidationSettings = maxQuantImporter.importSearchSettings();
-                quantificationSettings = maxQuantImporter.importQuantSettings();
-
-                analyticalRuns = maxQuantImporter.importInputAndResults(searchAndValidationSettings, quantificationSettings);
-
-                mappedDataImport = new MappedDataImport(searchAndValidationSettings, quantificationSettings, analyticalRuns);
                 break;
             default:
                 break;
         }
 
-        return mappedDataImport;
+        return analyticalRuns;
     }
 
-    private void store(MappedDataImport mappedDataImport, PersistDbTask persistDbTask, Sample sample, String userName) {
-        dataStorageService.store(mappedDataImport, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
+    private void store(List<AnalyticalRun> analyticalRuns, PersistDbTask persistDbTask, Sample sample, String userName) {
+        dataStorageService.store(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }

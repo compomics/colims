@@ -10,6 +10,7 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,10 +38,9 @@ import org.springframework.stereotype.Component;
  * @author Davy
  */
 @Component("maxQuantImporter")
-public class MaxQuantImporter implements DataImporter {
+public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
-    private MaxQuantImport maxQuantImport;
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
     @Autowired
@@ -57,29 +58,15 @@ public class MaxQuantImporter implements DataImporter {
 
     private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
-     * Compomics utilities sequence factory
+     * Compomics utilities sequence factory.
      */
     private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-    /**
-     * The map of new proteins (key: protein accession, value: the protein)
-     */
-    private Map<String, Protein> newProteins = new HashMap<>();
-
-    @Override
-    public void initImport(DataImport dataImport) {
-        if (dataImport instanceof MaxQuantImport) {
-            this.maxQuantImport = (MaxQuantImport) dataImport;
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
 
     @Override
     public void clear() {
         try {
             spectrumFactory.clearFactory();
             sequenceFactory.clearFactory();
-            newProteins.clear();
             parameterParser.clear();
         } catch (IOException | SQLException ex) {
             LOGGER.error(ex);
@@ -87,45 +74,7 @@ public class MaxQuantImporter implements DataImporter {
     }
 
     @Override
-    public SearchAndValidationSettings importSearchSettings() throws MappingException {
-        SearchAndValidationSettings searchAndValidationSettings = null;
-
-        try {
-            parameterParser.parse(maxQuantImport.getMaxQuantDirectory());
-
-            List<File> identificationFiles = new ArrayList<>();
-            identificationFiles.add(maxQuantImport.getMaxQuantDirectory());
-
-            // TODO: settings for multiple runs
-            searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (HeaderEnumNotInitialisedException e) {
-            e.printStackTrace();
-        }
-
-        return searchAndValidationSettings;
-    }
-
-    @Override
-    public QuantificationSettings importQuantSettings() throws MappingException {
-        QuantificationSettings quantificationSettings = null;
-
-        List<File> quantFiles = new ArrayList<>();
-        quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?
-        QuantificationParameters params = new QuantificationParameters();
-
-        try {
-            quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return quantificationSettings;
-    }
-
-    @Override
-    public List<AnalyticalRun> importInputAndResults(SearchAndValidationSettings searchAndValidationSettings, QuantificationSettings quantificationSettings) throws MappingException {
+    public List<AnalyticalRun> importData(MaxQuantImport maxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
         File preparedFastaFile = null;
@@ -138,10 +87,14 @@ public class MaxQuantImporter implements DataImporter {
             sequenceFactory.loadFastaFile(preparedFastaFile, null);
             LOGGER.debug("Finish loading FASTA file.");
 
+            parameterParser.parse(maxQuantImport.getMaxQuantDirectory());
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
 
             for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
                 AnalyticalRun targetRun = new AnalyticalRun();
+
+                //first, map the search settings
+                SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(maxQuantImport, targetRun);
 
                 maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
 
@@ -174,6 +127,55 @@ public class MaxQuantImporter implements DataImporter {
         return mappedRuns;
     }
 
+    /**
+     * Map the search settings.
+     *
+     * @param maxQuantImport The MaxQuantImport instance
+     * @param analyticalRun  the AnalyticalRun instance onto the search settings will be mapped
+     * @return
+     * @throws IOException                       thrown in case of an I/O related problem
+     * @throws HeaderEnumNotInitialisedException thrown in case of an non initialised header exception
+     */
+    private SearchAndValidationSettings mapSearchSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException, HeaderEnumNotInitialisedException {
+        SearchAndValidationSettings searchAndValidationSettings;
+
+        List<File> identificationFiles = new ArrayList<>();
+        identificationFiles.add(maxQuantImport.getMaxQuantDirectory());
+
+        // TODO: settings for multiple runs
+        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
+
+        //set entity relations
+        analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
+        searchAndValidationSettings.setAnalyticalRun(analyticalRun);
+
+        return searchAndValidationSettings;
+    }
+
+    /**
+     * Map the quantification settings.
+     *
+     * @param maxQuantImport The MaxQuantImport instance
+     * @param analyticalRun  the AnalyticalRun instance onto the quantification settings will be mapped
+     * @return
+     * @throws IOException thrown in case of an I/O related problem
+     */
+    private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
+        QuantificationSettings quantificationSettings = null;
+
+        List<File> quantFiles = new ArrayList<>();
+        quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?
+        QuantificationParameters params = new QuantificationParameters();
+
+        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
+
+        //set entity relations
+        analyticalRun.setQuantificationSettings(quantificationSettings);
+        quantificationSettings.setAnalyticalRun(analyticalRun);
+
+        return quantificationSettings;
+    }
+
     private File prepareFasta(String filePath) throws IOException {
         File originalFile = new File(filePath);
         File preparedFile = new File(System.getProperty("java.io.tmpdir") + "/maxquantspikedfastas", originalFile.getName());
@@ -185,19 +187,19 @@ public class MaxQuantImporter implements DataImporter {
         }
         String line;
         try (FileOutputStream fos = new FileOutputStream(preparedFile);
-                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter bw = new BufferedWriter(osw);
-                PrintWriter pw = new PrintWriter(bw)) {
+             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter bw = new BufferedWriter(osw);
+             PrintWriter pw = new PrintWriter(bw)) {
             try (FileInputStream fis = new FileInputStream((originalFile));
-                    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                    LineNumberReader originalReader = new LineNumberReader(isr)) {
+                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                 LineNumberReader originalReader = new LineNumberReader(isr)) {
                 while ((line = originalReader.readLine()) != null) {
                     pw.println(line);
                 }
             }
             try (InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/maxquant/contaminants.fasta").getInputStream();
-                    InputStreamReader isr = new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder());
-                    LineNumberReader contaminantsReader = new LineNumberReader(isr)) {
+                 InputStreamReader isr = new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder());
+                 LineNumberReader contaminantsReader = new LineNumberReader(isr)) {
                 while ((line = contaminantsReader.readLine()) != null) {
                     pw.println(line);
                 }
@@ -209,13 +211,13 @@ public class MaxQuantImporter implements DataImporter {
             finalFile.delete();
         }
         try (FileOutputStream fos = new FileOutputStream(finalFile);
-                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter finalWriter = new BufferedWriter(osw)) {
+             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter finalWriter = new BufferedWriter(osw)) {
             StringBuilder normalBuffer = new StringBuilder();
             StringBuilder reverseBuffer = new StringBuilder();
             try (FileInputStream fis = new FileInputStream(preparedFile);
-                    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                    LineNumberReader preparedFileReader = new LineNumberReader(isr)) {
+                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                 LineNumberReader preparedFileReader = new LineNumberReader(isr)) {
                 while ((line = preparedFileReader.readLine()) != null) {
                     if (line.contains(">")) {
                         finalWriter.write(normalBuffer.toString());

@@ -5,16 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -60,6 +52,16 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
     private List<Spectrum> spectrums = new ArrayList<>();
+    /**
+     * The search and validation settings for this run.
+     */
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
+    SearchAndValidationSettings searchAndValidationSettings;
+    /**
+     * The quantification settings for this run.
+     */
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
+    QuantificationSettings quantificationSettings;
 
     public String getName() {
         return name;
@@ -99,6 +101,22 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     public void setSample(Sample sample) {
         this.sample = sample;
+    }
+
+    public SearchAndValidationSettings getSearchAndValidationSettings() {
+        return searchAndValidationSettings;
+    }
+
+    public void setSearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings) {
+        this.searchAndValidationSettings = searchAndValidationSettings;
+    }
+
+    public QuantificationSettings getQuantificationSettings() {
+        return quantificationSettings;
+    }
+
+    public void setQuantificationSettings(QuantificationSettings quantificationSettings) {
+        this.quantificationSettings = quantificationSettings;
     }
 
     @Override

@@ -84,12 +84,7 @@ public class PeptideShakerImporterTest {
         //clear resources
         peptideShakerImporter.clear();
 
-        peptideShakerImporter.initImport(unpackedPsDataImport);
-        SearchAndValidationSettings searchAndValidationSettings = peptideShakerImporter.importSearchSettings();
-        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
-
-        //search and validation settings
-        Assert.assertNotNull(searchAndValidationSettings);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importData(unpackedPsDataImport);
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
@@ -97,6 +92,9 @@ public class PeptideShakerImporterTest {
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
         Assert.assertEquals(6561, testAnalyticalRun.getSpectrums().size());
+
+        //search and validation settings
+        Assert.assertNotNull(testAnalyticalRun.getSearchAndValidationSettings());
 
         //spectra
         for (Spectrum spectrum : testAnalyticalRun.getSpectrums()) {
@@ -132,12 +130,20 @@ public class PeptideShakerImporterTest {
         Sample sample = sampleService.findAll().get(0);
 
         for (AnalyticalRun analyticalRun : analyticalRuns) {
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
+            Date auditDate = new Date();
+
+            SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
+            searchAndValidationSettings.setCreationDate(auditDate);
+            searchAndValidationSettings.setModificationDate(auditDate);
+            searchAndValidationSettings.setUserName("test");
+
+            analyticalRun.setCreationDate(auditDate);
+            analyticalRun.setModificationDate(auditDate);
             analyticalRun.setUserName("testing");
-            analyticalRun.setStartDate(new Date());
+            analyticalRun.setStartDate(auditDate);
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrumentService.findAll().get(0));
+
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
 

@@ -85,7 +85,7 @@ INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_r
 INSERT INTO search_parameters (id) VALUES (1);
 
 -- insert a search and val settings set of settings
-INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_experiment_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1);
+INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1);
 
 -- insert a test identification file
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- *
  * Created by Iain on 13/01/2015.
  */
 @Component
@@ -59,6 +58,7 @@ public class MzIdentMLExporter {
 
     /**
      * Assemble necessary data into an MZIdentML object and it's many properties
+     *
      * @return MZIdentML A fully furnished (hopefully) object
      */
     private MzIdentML base() throws IOException {
@@ -82,6 +82,7 @@ public class MzIdentMLExporter {
 
     /**
      * Construct a list of CV sources used in the file
+     *
      * @return CvList List of CV sources
      */
     private CvList cvList() {
@@ -94,6 +95,7 @@ public class MzIdentMLExporter {
 
     /**
      * Where any people or orgs referenced elsewhere in the file must go
+     *
      * @return A collection of the above entities
      */
     private AuditCollection auditCollection() {
@@ -121,6 +123,7 @@ public class MzIdentMLExporter {
 
     /**
      * Create the contact and software provider element
+     *
      * @return Provider element
      */
     private Provider provider() {
@@ -141,18 +144,17 @@ public class MzIdentMLExporter {
 
         // Search engine(s)
         // TODO: expecting search engine to be on a run basis, correct to get all for experiment?
-        for (SearchAndValidationSettings settings : experiment.getSearchAndValidationSettingses()) {
-            AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
+        SearchAndValidationSettings settings = analyticalRun.getSearchAndValidationSettings();
+        AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
 
-            ContactRole contactRole = new ContactRole();
-            //TODO: contactRole.setContact(); (from audit collection)
-            contactRole.setRole(new Role());
-            contactRole.getRole().setCvParam(getDataItem("Role.software vendor", CvParam.class));
+        ContactRole contactRole = new ContactRole();
+        //TODO: contactRole.setContact(); (from audit collection)
+        contactRole.setRole(new Role());
+        contactRole.getRole().setCvParam(getDataItem("Role.software vendor", CvParam.class));
 
-            software.setContactRole(contactRole);
+        software.setContactRole(contactRole);
 
-            list.getAnalysisSoftware().add(software);
-        }
+        list.getAnalysisSoftware().add(software);
 
         return list;
     }
@@ -171,6 +173,7 @@ public class MzIdentMLExporter {
 
     /**
      * Assemble protein and peptide data into a sequence collection
+     *
      * @return A sequence collection
      */
     private SequenceCollection sequenceCollection() {
@@ -238,11 +241,12 @@ public class MzIdentMLExporter {
 
         // TODO: this one has a whole lotta settings
 
-        return  collection;
+        return collection;
     }
 
     /**
      * This needs a better name ASAP
+     *
      * @param name
      * @param type
      * @param <T>
@@ -271,9 +275,10 @@ public class MzIdentMLExporter {
 
     /**
      * Get a single data item in the specified object type
+     *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T> It's a T.
+     * @param <T>  It's a T.
      * @return Object of type T
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) {

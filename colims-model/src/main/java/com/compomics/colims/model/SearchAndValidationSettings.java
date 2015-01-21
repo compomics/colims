@@ -18,19 +18,35 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 3229983473906664007L;
 
+    /**
+     * The identification files provided by the search engine. Multiple files can be linked to one
+     * SearchAndValidationSettings instance.
+     */
     @OneToMany(mappedBy = "searchAndValidationSettings")
     private List<IdentificationFile> identificationFiles = new ArrayList<>();
-    @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
+    /**
+     * The analytical run onto which the searches were performed.
+     */
+    @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne
-    private Experiment experiment;
+    private AnalyticalRun analyticalRun;
+    /**
+     * The search engine used for the searches.
+     */
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchEngine searchEngine;
+    /**
+     * The FASTA file used for the searches.
+     */
     @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
+    /**
+     * The search parameters.
+     */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -44,12 +60,12 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
         this.identificationFiles = identificationFiles;
     }
 
-    public Experiment getExperiment() {
-        return experiment;
+    public AnalyticalRun getAnalyticalRun() {
+        return analyticalRun;
     }
 
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
+    public void setAnalyticalRun(AnalyticalRun analyticalRun) {
+        this.analyticalRun = analyticalRun;
     }
 
     public SearchEngine getSearchEngine() {
