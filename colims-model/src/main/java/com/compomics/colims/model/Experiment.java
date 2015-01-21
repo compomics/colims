@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
@@ -72,11 +73,6 @@ public class Experiment extends AuditableDatabaseEntity {
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
-    /**
-     * The search and validation settings for this experiment.
-     */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
-    List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public Project getProject() {
         return project;
@@ -132,14 +128,6 @@ public class Experiment extends AuditableDatabaseEntity {
 
     public void setBinaryFiles(List<ExperimentBinaryFile> binaryFiles) {
         this.binaryFiles = binaryFiles;
-    }
-
-    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
-        return searchAndValidationSettingses;
-    }
-
-    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
-        this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
     @Override

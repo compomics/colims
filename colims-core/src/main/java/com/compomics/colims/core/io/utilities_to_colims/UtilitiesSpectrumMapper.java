@@ -6,6 +6,7 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -33,9 +35,9 @@ public class UtilitiesSpectrumMapper {
     /**
      * Map the utilities spectrum onto the Colims spectrum.
      *
-     * @param sourceSpectrum the Utilities spectrum
+     * @param sourceSpectrum    the Utilities spectrum
      * @param fragmentationType the fragmentation type of the spectrum
-     * @param targetSpectrum the Colims spectrum
+     * @param targetSpectrum    the Colims spectrum
      * @throws MappingException thrown in case of a mapping related problem
      */
     public void map(final MSnSpectrum sourceSpectrum, final FragmentationType fragmentationType, final Spectrum targetSpectrum) throws MappingException {
@@ -69,10 +71,10 @@ public class UtilitiesSpectrumMapper {
         spectrumFile.setSpectrum(targetSpectrum);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter bw = new BufferedWriter(osw);
-                ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
+             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter bw = new BufferedWriter(osw);
+             ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
+             GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
 
             //write MSnSpectum to a byte array output stream
             sourceSpectrum.writeMgf(bw);

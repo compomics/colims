@@ -348,7 +348,7 @@ create table colims.quantification_settings (
     creation_date datetime not null,
     modification_date datetime not null,
     user_name varchar(255) not null,
-    l_experiment_id bigint,
+    l_analytical_run_id bigint,
     l_quant_engine_id bigint,
     l_quant_param_settings_id bigint,
     primary key (id)
@@ -394,7 +394,7 @@ create table colims.search_and_validation_settings (
     creation_date datetime not null,
     modification_date datetime not null,
     user_name varchar(255) not null,
-    l_experiment_id bigint,
+    l_analytical_run_id bigint,
     l_fasta_db_id bigint,
     l_search_engine_id bigint,
     l_search_parameters_id bigint,
@@ -741,9 +741,9 @@ foreign key (l_method_cv_id)
 references colims.quantification_cv_param (id);
 
 alter table colims.quantification_settings
-add constraint FK_7yyahob7fruseylo348enfa7d
-foreign key (l_experiment_id)
-references colims.experiment (id);
+add constraint FK_p10olwv5hrwxudnc1eo2vfdud
+foreign key (l_analytical_run_id)
+references colims.analytical_run (id);
 
 alter table colims.quantification_settings
 add constraint FK_opawj8lyblvsk6bifd8g898id
@@ -791,9 +791,9 @@ foreign key (l_sample_id)
 references colims.sample (id);
 
 alter table colims.search_and_validation_settings
-add constraint FK_ris4310042dlrxtaocuejb2x7
-foreign key (l_experiment_id)
-references colims.experiment (id);
+add constraint FK_8y8hbgpqg5ow16lud9gg45799
+foreign key (l_analytical_run_id)
+references colims.analytical_run (id);
 
 alter table colims.search_and_validation_settings
 add constraint FK_4o2jjp2a6a1vaff68fl6kj4ck

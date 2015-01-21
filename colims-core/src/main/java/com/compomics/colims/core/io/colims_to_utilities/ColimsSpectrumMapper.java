@@ -12,6 +12,7 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("colimsSpectrumMapper")
@@ -45,10 +45,12 @@ public class ColimsSpectrumMapper {
 
         //Build the precursor
         double retentionTime = sourceSpectrum.getRetentionTime();
-        double moverz = sourceSpectrum.getMzRatio();
+        double mzRatio = sourceSpectrum.getMzRatio();
         ArrayList<Charge> chargeList = new ArrayList<>();
-        chargeList.add(new Charge(1, sourceSpectrum.getCharge()));
-        Precursor precursor = new Precursor(retentionTime, moverz, sourceSpectrum.getIntensity(), chargeList);
+        if (sourceSpectrum.getCharge() != null) {
+            chargeList.add(new Charge(1, sourceSpectrum.getCharge()));
+        }
+        Precursor precursor = new Precursor(retentionTime, mzRatio, sourceSpectrum.getIntensity(), chargeList);
         targetSpectrum.setPrecursor(precursor);
         //Add other parameters
         targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber());
