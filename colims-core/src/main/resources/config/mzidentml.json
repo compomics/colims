@@ -24,6 +24,34 @@
     "Tab delimited":      {"cvRef": "PSI-MS", "accession": "MS:1000914", "name": "Tab delimited text format"},
     "XTandem":            {"cvRef": "PSI-MS", "accession": "MS:1001401", "name": "XTandem XML file"}
   },
+  "Organization": {
+    "PeptideShaker": {
+      "address": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000587",
+        "name": "contact address",
+        "value": "Proteomics Unit, Building for Basic Biology, University of Bergen, Jonas Liesvei 91, N-5009 Bergen, Norway"
+      },
+      "email": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000589",
+        "name": "contact email",
+        "value": "peptide-shaker@googlegroups.com"
+      },
+      "name": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000586",
+        "name": "contact name",
+        "value": "PeptideShaker developers"
+      },
+      "url": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000588",
+        "name": "contact url",
+        "value": "http://peptide-shaker.googlecode.com"
+      }
+    }
+  },
   "Role": {
     "researcher":       {"cvRef": "PSI-MS", "accession": "MS:1001271", "name": "researcher"},
     "software vendor":  {"cvRef": "PSI-MS", "accession": "MS:1001267", "name": "CompOmics"}

@@ -116,10 +116,13 @@ public class MzIdentMLExporter {
         // optional cv, user params
         // optional affiliation
 
+        // TODO: either we iterate here or it gets created when the search engine is chosen
         Organization organization = new Organization();
-        organization.setId("1");            // TODO
-        organization.setName("VIB");
-        // optional parent
+        organization.setId("1");
+
+        for (CvParam orgCv : getDataList("Organisation.PeptideShaker", CvParam.class)) {
+            organization.getCvParam().add(orgCv);
+        }
 
         auditCollection.getPerson().add(person);
         auditCollection.getOrganization().add(organization);
@@ -290,18 +293,6 @@ public class MzIdentMLExporter {
         return collection;
     }
 
-    private AnalysisCollection analysisCollection() {
-        AnalysisCollection collection = new AnalysisCollection();
-
-        SpectrumIdentification identification = new SpectrumIdentification();
-
-
-
-        // TODO: todo todo
-
-        return collection;
-    }
-
     /**
      * Gather all data relating to search and protein protocol settings
      * @return Analysis Protocol object
@@ -407,17 +398,37 @@ public class MzIdentMLExporter {
         return collection;
     }
 
+    private AnalysisCollection analysisCollection() {
+        AnalysisCollection collection = new AnalysisCollection();
+
+        SpectrumIdentification identification = new SpectrumIdentification();
+        identification.setId("1");
+        // TODO: spectrum identification list
+        // TODO: spectrum identification protocol
+
+        // TODO: spectradata
+        // TODO: searchdatabase
+
+        ProteinDetection proteinDetection = new ProteinDetection();
+        proteinDetection.setId("1");
+        // TODO: protein detection list
+        // TODO: protein detection protocol
+
+        // TODO: spectradata (again)
+
+        return collection;
+    }
+
     /**
-     * This needs a better name ASAP
-     * @param name
-     * @param type
-     * @param <T>
-     * @return
+     * Get a list of data items mapped to the specified object type
+     * @param name Name of key or dot notation path to key
+     * @param type Type of objects to return
+     * @param <T> Mister
+     * @return List of objects of type T
      */
     public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) {
-        // TODO: WHAT IF IT IS A MAP ARGH
+        JsonNode listNode = getTargetNode(name);
 
-        JsonNode listNode = mzIdentMLParamList.get(name);
         List<T> data = new ArrayList<>();
 
         if (!listNode.isArray()) {
@@ -443,19 +454,7 @@ public class MzIdentMLExporter {
      * @return Object of type T
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) {
-        JsonNode node;
-
-        if (name.contains(".")) {
-            String[] path = name.split("\\.");
-
-            node = mzIdentMLParamList.get(path[0]);
-
-            for (int i = 1; i < path.length; ++i) {
-                node = node.get(path[i]);
-            }
-        } else {
-            node = mzIdentMLParamList.get(name);
-        }
+        JsonNode node = getTargetNode(name);
 
         if (node.isArray()) { // or a map?
             // TODO: some kind of exception
@@ -471,5 +470,23 @@ public class MzIdentMLExporter {
         }
 
         return item.get(0);
+    }
+
+    private JsonNode getTargetNode(String name) {
+        JsonNode node;
+
+        if (name.contains(".")) {
+            String[] path = name.split("\\.");
+
+            node = mzIdentMLParamList.get(path[0]);
+
+            for (int i = 1; i < path.length; ++i) {
+                node = node.get(path[i]);
+            }
+        } else {
+            node = mzIdentMLParamList.get(name);
+        }
+
+        return node;
     }
 }
