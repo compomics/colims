@@ -19,14 +19,27 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 5371850641629946378L;
 
+    /**
+     * The quantification files provided by the quantification engine. Multiple files can be linked to one
+     * SearchAndValidationSettings instance.
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
     private List<QuantificationFile> quantificationFiles = new ArrayList<>();
-    @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
+    /**
+     * The analytical run onto which the quantifications were performed.
+     */
+    @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne
-    private Experiment experiment;
+    private AnalyticalRun analyticalRun;
+    /**
+     * The quantification engine used for the searches.
+     */
     @JoinColumn(name = "l_quant_engine_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationEngine quantificationEngine;
+    /**
+     * The quantification parameters.
+     */
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
     @ManyToOne
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -40,12 +53,12 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
         this.quantificationFiles = quantificationFiles;
     }
 
-    public Experiment getExperiment() {
-        return experiment;
+    public AnalyticalRun getAnalyticalRun() {
+        return analyticalRun;
     }
 
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
+    public void setAnalyticalRun(AnalyticalRun analyticalRun) {
+        this.analyticalRun = analyticalRun;
     }
 
     public QuantificationEngine getQuantificationEngine() {

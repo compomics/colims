@@ -60,10 +60,7 @@ public class MaxQuantImportMapperTest {
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, ClassNotFoundException {
         System.out.println("map");
         MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
-        maxQuantImporter.initImport(maxQuantImport);
-        SearchAndValidationSettings searchAndValidationSettings = maxQuantImporter.importSearchSettings();
-        QuantificationSettings quantificationSettings = maxQuantImporter.importQuantSettings();
-        List<AnalyticalRun> result = maxQuantImporter.importInputAndResults(searchAndValidationSettings, quantificationSettings);
+        List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);
         assertThat(result.size(), is(not(0)));
     }
 }

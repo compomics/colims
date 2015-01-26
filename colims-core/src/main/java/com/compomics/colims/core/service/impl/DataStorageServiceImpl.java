@@ -5,19 +5,20 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.io.MappedDataImport;
 import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
-import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 /**
- * Implementation of the DataStorageService.
+ * Implementation of the DataStorageService interface.
  *
  * @author Niels Hulstaert
  */
@@ -26,40 +27,32 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataStorageServiceImpl implements DataStorageService {
 
     @Autowired
-    private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
-    @Autowired
-    private QuantificationSettingsRepository quantificationSettingsRepository;
-    @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
 
     @Override
-    public void store(MappedDataImport mappedDataImport, Sample sample, Instrument instrument, String userName, Date startDate) {
-        //get experiment for sample
-        Experiment experiment = sample.getExperiment();
+    public void store(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate) {
 
-        //first store the SearchAndValidationSettings
-        SearchAndValidationSettings searchAndValidationSettings = mappedDataImport.getSearchAndValidationSettings();
-        if (searchAndValidationSettings != null) {
-            searchAndValidationSettings.setCreationDate(new Date());
-            searchAndValidationSettings.setModificationDate(new Date());
-            searchAndValidationSettings.setUserName(userName);
-            searchAndValidationSettings.setExperiment(experiment);
-            searchAndValidationSettingsRepository.saveOrUpdate(searchAndValidationSettings);
-        }
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            Date auditDate = new Date();
 
-        QuantificationSettings quantificationSettings = mappedDataImport.getQuantificationSettings();
+            SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
+            if(searchAndValidationSettings != null) {
+                //set the audit fields for the SearchAndValidationSettings
+                searchAndValidationSettings.setCreationDate(auditDate);
+                searchAndValidationSettings.setModificationDate(auditDate);
+                searchAndValidationSettings.setUserName(userName);
+            }
 
-        if (quantificationSettings != null) {
-            quantificationSettings.setCreationDate(new Date());
-            quantificationSettings.setModificationDate(new Date());
-            quantificationSettings.setUserName(userName);
-            quantificationSettings.setExperiment(experiment);
-            quantificationSettingsRepository.saveOrUpdate(quantificationSettings);
-        }
+            QuantificationSettings quantificationSettings = analyticalRun.getQuantificationSettings();
+            if(quantificationSettings != null) {
+                //set the audit fields for the QuantificationSettings
+                quantificationSettings.setCreationDate(auditDate);
+                quantificationSettings.setModificationDate(auditDate);
+                quantificationSettings.setUserName(userName);
+            }
 
-        for (AnalyticalRun analyticalRun : mappedDataImport.getAnalyticalRuns()) {
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
+            analyticalRun.setCreationDate(auditDate);
+            analyticalRun.setModificationDate(auditDate);
             analyticalRun.setUserName(userName);
             analyticalRun.setStartDate(startDate);
             analyticalRun.setSample(sample);

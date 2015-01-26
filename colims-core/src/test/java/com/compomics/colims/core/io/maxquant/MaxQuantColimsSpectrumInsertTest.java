@@ -7,10 +7,12 @@ import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,17 @@ import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+
 import org.junit.Assert;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- *
  * @author Davy
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -146,13 +150,13 @@ public class MaxQuantColimsSpectrumInsertTest {
             utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
             spectrumHolder.add(colimsSpectrum);
         }
-        for (Spectrum spectrum : spectrumHolder){
+        for (Spectrum spectrum : spectrumHolder) {
             spectrumService.save(spectrum);
         }
         List<Spectrum> storedSpectra = spectrumService.findAll();
         int endAmountOfSpectra = storedSpectra.size();
         System.out.println("end amount of spectra is " + endAmountOfSpectra);
-        assertThat(endAmountOfSpectra, is(both(not(startSpectraCount)).and(is(999))));
-        assertThat(storedSpectra.get(138).getTitle(),is (spectrumHolder.get(138).getTitle()));
+        assertThat(endAmountOfSpectra, is(both(not(startSpectraCount)).and(is(startSpectraCount + spectrumMap.size()))));
+        assertThat(storedSpectra.get(startSpectraCount + 138).getTitle(), is(spectrumHolder.get(138).getTitle()));
     }
 }

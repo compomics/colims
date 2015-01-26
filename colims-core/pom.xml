@@ -18,6 +18,26 @@
     </properties>
 
     <build>
+        <!-- Copy the resources required during building -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- Filter properties file for the version placeholder -->
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/colims-core.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- Copy the other files without filtering -->
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/colims-core.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.cxf</groupId>

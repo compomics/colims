@@ -64,7 +64,6 @@ public class MzIdentMLExporterTest {
 
     @Test
     public void testClassListMapping() throws IOException {
-        exporter.init();
         CvList cvList = new CvList();
         cvList.getCv().addAll(exporter.getDataList("CvList", Cv.class));
         Assert.assertEquals(cvList.getCv().size(), 4);
@@ -72,7 +71,6 @@ public class MzIdentMLExporterTest {
 
     @Test
     public void testClassItemMapping() {
-        exporter.init();
         AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker",  AnalysisSoftware.class);
         Assert.assertEquals(as.getName(), "PeptideShaker");
     }

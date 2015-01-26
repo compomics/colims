@@ -25,6 +25,32 @@
     "XTandem":            {"cvRef": "PSI-MS", "accession": "MS:1001401", "name": "XTandem XML file"}
   },
   "Organization": {
+    "MaxQuant": {
+      "address": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000587",
+        "name": "contact address",
+        "value": "MaxQuant Team, Max-Planck Institute for Biochemistry, Am Klopferspitz 18, D-82152 Martinsried, Germany"
+      },
+      "email": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000589",
+        "name": "contact email",
+        "value": "info@maxquant.org"
+      },
+      "name": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000586",
+        "name": "contact name",
+        "value": "MaxQuant developers"
+      },
+      "url": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000588",
+        "name": "contact url",
+        "value": "http://www.maxquant.org"
+      }
+    },
     "PeptideShaker": {
       "address": {
         "cvRef": "PSI-MS",
@@ -52,12 +78,21 @@
       }
     }
   },
+  "Person": {
+    "email": {"cvRef": "PSI-MS", "accession": "MS:1000589", "name": "contact email"}
+  },
   "Role": {
     "researcher":       {"cvRef": "PSI-MS", "accession": "MS:1001271", "name": "researcher"},
     "software vendor":  {"cvRef": "PSI-MS", "accession": "MS:1001267", "name": "CompOmics"}
   },
+  "SearchDatabase": {
+    "type": {"cvRef": "PSI-MS", "accession": "MS:1001073", "name": "database type amino acid"}
+  },
   "SearchType": {
     "ms-ms": {"cvRef": "PSI-MS", "accession": "MS:1001083", "name": "ms-ms search"}
+  },
+  "SpectrumIDFormat": {
+    "mascot query number": {"cvRef": "PSI-MS", "accession": "MS:1001528", "name": "Mascot query number"}
   },
   "Threshold": {
     "no": {"cvRef": "PSI-MS", "accession": "MS:1001494", "name": "no threshold"}
