@@ -24,6 +24,10 @@
     "Tab delimited":      {"cvRef": "PSI-MS", "accession": "MS:1000914", "name": "Tab delimited text format"},
     "XTandem":            {"cvRef": "PSI-MS", "accession": "MS:1001401", "name": "XTandem XML file"}
   },
+  "GenericCV": {
+    "PSI-MS": {"cvRef": "PSI-MS"},
+    "UNIMOD": {"cvRef": "UNIMOD"}
+  },
   "Organization": {
     "MaxQuant": {
       "address": {

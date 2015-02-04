@@ -28,6 +28,12 @@ public class SearchParametersHasModification extends DatabaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private ModificationType modificationType;
     /**
+     * The modification residue(s)
+     */
+    @Basic(optional = true)
+    @Column(name = "residues", nullable = true)
+    private String residues;
+    /**
      * The SearchParameters instance of this join entity.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
@@ -71,4 +77,7 @@ public class SearchParametersHasModification extends DatabaseEntity {
         this.modificationType = modificationType;
     }
 
+    public String getResidues() { return residues; }
+
+    public void setResidues(String residues) { this.residues = residues; }
 }
