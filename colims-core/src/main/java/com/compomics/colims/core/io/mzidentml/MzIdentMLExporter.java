@@ -42,7 +42,6 @@ public class MzIdentMLExporter {
     private JsonNode mzIdentMLParamList;
     private AnalyticalRun analyticalRun;
     private MzIdentML mzIdentML;
-    private SearchDatabase searchDatabase;
     private Inputs inputs;
 
     @Autowired
@@ -162,14 +161,9 @@ public class MzIdentMLExporter {
 
         inputs = dataCollection.getInputs();
 
-        // TODO: source file (in which table?)
-        SourceFile sourceFile = new SourceFile();
-
-        inputs.getSourceFile().add(sourceFile);
-
         FastaDb fasta = analyticalRun.getSearchAndValidationSettings().getFastaDb();
 
-        searchDatabase = new SearchDatabase();
+        SearchDatabase searchDatabase = new SearchDatabase();
         searchDatabase.setId(fasta.getId().toString());
         searchDatabase.setLocation(fasta.getFilePath());
         searchDatabase.setName(fasta.getName());
@@ -228,20 +222,7 @@ public class MzIdentMLExporter {
                     mzSearchMod.getResidues().add(residue);
                 }
 
-                CvParam searchModParam;
-
-                // set CV term source depending if it is primary or alternative
-                if (colimsSearchMod.getAccession() != null) {
-                    searchModParam = getDataItem("GenericCV.PSI-MS", CvParam.class);
-                    searchModParam.setName(colimsSearchMod.getName());
-                    searchModParam.setAccession(colimsSearchMod.getAccession());
-                } else {
-                    searchModParam = getDataItem("GenericCV.UNIMOD", CvParam.class);
-                    searchModParam.setName(colimsSearchMod.getName());
-                    searchModParam.setAccession(colimsSearchMod.getAlternativeAccession());
-                }
-
-                mzSearchMod.getCvParam().add(searchModParam);
+                mzSearchMod.getCvParam().add(modificationToCvParam(colimsSearchMod));
 
                 // TODO: searchMod.setMassDelta
 
@@ -417,10 +398,9 @@ public class MzIdentMLExporter {
         spectrumIdentificationItem.setId("SII-" + spectrum.getId().toString());
         spectrumIdentificationItem.setChargeState(spectrum.getCharge());
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
-        spectrumIdentificationItem.setPassThreshold(true);    // TODO: confirm
-        spectrumIdentificationItem.setRank(0);                // TODO: confirm
-
-        // TODO: fragmentation
+        spectrumIdentificationItem.setPassThreshold(true);
+        spectrumIdentificationItem.setRank(0);
+        // TODO: confirm all of the above
 
         return spectrumIdentificationItem;
     }
@@ -430,14 +410,12 @@ public class MzIdentMLExporter {
      * @param peptideHasMod Peptide to modification representation
      * @return Equivalent modification
      */
-    private Modification createModification(PeptideHasModification peptideHasMod) {
+    private Modification createModification(PeptideHasModification peptideHasMod) throws IOException {
         Modification modification = new Modification();
 
         modification.setMonoisotopicMassDelta(peptideHasMod.getModification().getMonoIsotopicMassShift());
-        modification.setAvgMassDelta(peptideHasMod.getDeltaScore());    // TODO: correct value?
         modification.setLocation(peptideHasMod.getLocation());
-        // TODO: cv param for modification
-        //modification.getCvParam().add(getDataItem(peptideHasMod.getModification().getAccession(), CvParam.class));
+        modification.getCvParam().add(modificationToCvParam(peptideHasMod.getModification()));
 
         return modification;
     }
@@ -461,10 +439,33 @@ public class MzIdentMLExporter {
     }
 
     /**
+     * Get the CV representation of a colims modification
+     * @param modification A colims modification
+     * @param <T> Subclass of AbstractModification
+     * @return Modification in CvParam form
+     * @throws IOException
+     */
+    private <T extends AbstractModification> CvParam modificationToCvParam(T modification) throws IOException {
+        CvParam modParam;
+
+        if (modification.getAccession() != null) {
+            modParam = getDataItem("GenericCV.PSI-MS", CvParam.class);
+            modParam.setName(modification.getName());
+            modParam.setAccession(modification.getAccession());
+        } else {
+            modParam = getDataItem("GenericCV.UNIMOD", CvParam.class);
+            modParam.setName(modification.getName());
+            modParam.setAccession(modification.getAlternativeAccession());
+        }
+
+        return modParam;
+    }
+
+    /**
      * Create a new contact detail object
      * @param name Contact name
      * @param type Desired return type
-     * @param <T> errific
+     * @param <T> Subclass of AbstractContact
      * @return Contact as subclass of AbstractContact
      */
     private <T extends AbstractContact> T getContact(String name, Class<T> type) throws IOException {
@@ -477,10 +478,12 @@ public class MzIdentMLExporter {
             logger.error("Unable to instantiate contact object of type " + type.getName(), e);
         }
 
-        contact.setId(name);
-        contact.getCvParam().addAll(getDataList(type.getSimpleName() + "." + name, CvParam.class));
+        if (contact != null) {
+            contact.setId(name);
+            contact.getCvParam().addAll(getDataList(type.getSimpleName() + "." + name, CvParam.class));
 
-        mzIdentML.getAuditCollection().getPersonOrOrganization().add(contact);
+            mzIdentML.getAuditCollection().getPersonOrOrganization().add(contact);
+        }
 
         return contact;
     }
@@ -489,7 +492,7 @@ public class MzIdentMLExporter {
      * Get a list of data items mapped to the specified object type
      * @param name Name of key or dot notation path to key
      * @param type Type of objects to return
-     * @param <T> Mister
+     * @param <T> Subclass of MzIdentMLObject
      * @return List of objects of type T
      */
     public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) throws IOException {
@@ -515,7 +518,7 @@ public class MzIdentMLExporter {
      * Get a single data item in the specified object type
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T> Cup of
+     * @param <T> Subclass of MzIdentMLObject
      * @return Object of type T
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) throws IOException {
