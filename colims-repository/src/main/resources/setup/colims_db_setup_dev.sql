@@ -178,6 +178,10 @@
         psm_prob double precision,
         peptide_sequence varchar(255) not null,
         theoretical_mass double precision,
+        start integer,
+        end integer,
+        pre varchar(255),
+        post varchar(255),
         l_identification_file_id bigint,
         l_spectrum_id bigint,
         primary key (id)

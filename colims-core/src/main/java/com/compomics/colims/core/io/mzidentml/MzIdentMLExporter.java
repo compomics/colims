@@ -71,13 +71,13 @@ public class MzIdentMLExporter {
         mzIdentML.setId("colims-" + COLIMS_VERSION);
         mzIdentML.setVersion(MZIDENTML_VERSION);
         mzIdentML.setCreationDate(new GregorianCalendar());
-
         mzIdentML.setCvList(cvList());
         mzIdentML.setAuditCollection(auditCollection());
         mzIdentML.setProvider(provider());
         mzIdentML.setDataCollection(dataCollection());
         mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection());
+
         assembleSpectrumData();
 
         return mzIdentML;
@@ -126,7 +126,7 @@ public class MzIdentMLExporter {
     private Provider provider() throws IOException {
         Provider provider = new Provider();
         provider.setId("PROVIDER");
-        provider.setContactRole(new ContactRole());     // no method to set contact_ref on ContactRole
+        provider.setContactRole(new ContactRole());
 
         Role role = new Role();
         role.setCvParam(getDataItem("Role.researcher", CvParam.class));
@@ -136,12 +136,18 @@ public class MzIdentMLExporter {
         return provider;
     }
 
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
     private AnalysisSoftwareList analysisSoftwareList() throws IOException {
         AnalysisSoftwareList list = new AnalysisSoftwareList();
 
         SearchAndValidationSettings settings = analyticalRun.getSearchAndValidationSettings();
 
         AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
+        software.setVersion(settings.getSearchEngine().getVersion());
 
         ContactRole contactRole = new ContactRole();
         contactRole.setContact(getContact(settings.getSearchEngine().getName(), Organization.class));
@@ -217,14 +223,13 @@ public class MzIdentMLExporter {
 
                 uk.ac.ebi.jmzidml.model.mzidml.SearchModification mzSearchMod = new uk.ac.ebi.jmzidml.model.mzidml.SearchModification();
                 mzSearchMod.setFixedMod(searchHasMod.getModificationType() == ModificationType.FIXED);
+                mzSearchMod.setMassDelta(colimsSearchMod.getAverageMassShift().floatValue());
 
                 for (String residue : searchHasMod.getResidues().split("")) {
                     mzSearchMod.getResidues().add(residue);
                 }
 
                 mzSearchMod.getCvParam().add(modificationToCvParam(colimsSearchMod));
-
-                // TODO: searchMod.setMassDelta
 
                 spectrumProtocol.getModificationParams().getSearchModification().add(mzSearchMod);
             }
@@ -322,7 +327,7 @@ public class MzIdentMLExporter {
             SpectrumIdentificationItem spectrumIdentificationItem = createSpectrumIdentificationItem(spectrum);
 
             for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
-                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide(); // urgh
+                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
 
                 mzPeptide.setId("PEPTIDE-" + colimsPeptide.getId().toString());
                 mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
@@ -343,7 +348,10 @@ public class MzIdentMLExporter {
                     evidence.setDBSequence(dbSequence);
                     evidence.setPeptide(mzPeptide);
                     evidence.setId("PE-" + peptideHasProtein.getId().toString());
-                    // TODO: a lot of missing fields here
+                    evidence.setStart(colimsPeptide.getStart());
+                    evidence.setEnd(colimsPeptide.getEnd());
+                    evidence.setPre(colimsPeptide.getPre());
+                    evidence.setPost(colimsPeptide.getPost());
 
                     sequenceCollection.getPeptideEvidence().add(evidence);
 
@@ -400,7 +408,6 @@ public class MzIdentMLExporter {
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(0);
-        // TODO: confirm all of the above
 
         return spectrumIdentificationItem;
     }

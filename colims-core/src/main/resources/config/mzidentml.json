@@ -6,11 +6,12 @@
     "MaxQuant":       {"id": "ID_software", "name": "MaxQuant", "version": "???", "uri": "???"},
     "PeptideShaker":  {"id": "ID_software", "name": "PeptideShaker", "version": "???", "uri": "http://peptide-shaker.googlecode.com"}
   },
+  "AnalysisSoftwareCV": {
+    "MaxQuant":       {"cvRef": "PSI-MS", "accession": "MS:1001583", "name": "MaxQuant"}
+  },
   "CvList": [
-    {"id": "PRIDE", "uri": "http://code.google.com/p/ebi-pride/source/browse/trunk/pride-core/schema/pride_cv.obo", "fullName": "PRIDE"},
     {"id": "PSI-MS", "uri": "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo", "version": "2.25.0", "fullName": "PSI-MS"},
-    {"id": "UNIMOD", "uri": "http://www.unimod.org/obo/unimod.obo", "fullName": "UNIMOD"},
-    {"id": "UO", "uri": "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo", "fullName": "UNIT-ONTOLOGY"}
+    {"id": "UNIMOD", "uri": "http://www.unimod.org/obo/unimod.obo", "fullName": "UNIMOD"}
   ],
   "FileFormat": {
     "FASTA":              {"cvRef": "PSI-MS", "accession": "MS:1001348", "name": "FASTA format"},
