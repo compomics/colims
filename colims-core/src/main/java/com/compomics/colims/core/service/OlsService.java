@@ -6,6 +6,7 @@ import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides methods for accessing the Ontoloy lookup service.
@@ -60,4 +61,11 @@ public interface OlsService {
      * @return the found enzyme as TypedCvParam, null if nothing was found
      */
     TypedCvParam findEnzymeByName(final String name);
+
+    /**
+     * Get the modifications cache. This cache is used to avoid redundant lookups with the OLS.
+     *
+     * @return the map of cached modifications (key: modification accession; value: modification).
+     */
+    Map<String, AbstractModification> getModificationsCache();
 }

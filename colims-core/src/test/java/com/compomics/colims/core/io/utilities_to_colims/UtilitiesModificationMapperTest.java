@@ -229,6 +229,43 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
+     * Test the mapping for a peptide with 1 UNIMOD modification. The modification is not found in the db, the
+     * PtmToPrideMap or the ols service. It should be found in the UNIMOD modifications.
+     *
+     * @throws MappingException
+     * @throws IOException
+     */
+    @Test
+    public void testMapModification_3() throws MappingException, IOException {
+        //create ModificationMatches
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+        ModificationMatch modificationMatch = new ModificationMatch("IMEHex(2)NeuAc(1)", true, 7);
+        modificationMatches.add(modificationMatch);
+
+        //create new colims entity peptide
+        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+
+        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+
+        //check modification mapping
+        Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
+        //the modifications are not present in the db, so the IDs should be null
+        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+            //check for null values
+            Assert.assertNotNull(peptideHasModification.getModification());
+            Assert.assertNotNull(peptideHasModification.getModificationType());
+            Assert.assertNotNull(peptideHasModification.getLocation());
+            Assert.assertNotNull(peptideHasModification.getPeptide());
+
+            Modification modification = peptideHasModification.getModification();
+            Assert.assertNull(modification.getId());
+            Assert.assertNotNull(modification.getAlternativeAccession());
+            Assert.assertNull(modification.getAccession());
+        }
+    }
+
+    /**
      * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
      * PtmToPrideMap or the ols service.
      *
@@ -236,11 +273,11 @@ public class UtilitiesModificationMapperTest {
      * @throws IOException
      */
     @Test
-    public void testMapModification_3() throws MappingException, IOException {
+    public void testMapModification_4() throws MappingException, IOException {
         //create ModificationMatches       
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        ModificationMatch oxidationMatch = new ModificationMatch("nonsense modification", true, 7);
-        modificationMatches.add(oxidationMatch);
+        ModificationMatch modificationMatch = new ModificationMatch("nonsense modification", true, 7);
+        modificationMatches.add(modificationMatch);
 
         //create new colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();

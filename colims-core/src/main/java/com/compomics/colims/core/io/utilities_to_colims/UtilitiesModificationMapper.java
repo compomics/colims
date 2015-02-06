@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
+import com.compomics.colims.core.io.unimod.UnimodMarshaller;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
@@ -51,6 +52,11 @@ public class UtilitiesModificationMapper {
      */
     @Autowired
     private OlsService olsService;
+    /**
+     * Contains the UNIMOD modifications.
+     */
+    @Autowired
+    private UnimodMarshaller unimodMarshaller;
     /**
      * The map of cached modifications (key: modification name, value: the modification).
      */
@@ -185,6 +191,14 @@ public class UtilitiesModificationMapper {
                     if (modification != null) {
                         //add to cached modifications with the UNIMOD accession as key
                         cachedModifications.put(cvTerm.getAccession(), modification);
+                    } else {
+                        //find the modification in the UNIMOD modifications
+                        unimodMarshaller.getModificationByName(Modification.class, cvTerm.getName());
+
+                        if (modification != null) {
+                            //add to cached modifications with the UNIMOD accession as key
+                            cachedModifications.put(cvTerm.getAccession(), modification);
+                        }
                     }
                 }
 
@@ -230,19 +244,24 @@ public class UtilitiesModificationMapper {
 
                 if (modification == null) {
                     //the modification was not found by name in the PSI-MOD ontology
-                    //@todo maybe search by mass or not by 'exact' name?
-                    //get the modification from modification factory
-                    PTM ptM = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
+                    //try to find it in the UNIMOD modifications
+                    modification = unimodMarshaller.getModificationByName(Modification.class, modificationMatch.getTheoreticPtm());
 
-                    modification = new Modification(modificationMatch.getTheoreticPtm());
+                    if (modification == null) {
+                        //@todo maybe search by mass or not by 'exact' name?
+                        //get the modification from modification factory
+                        PTM ptM = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
 
-                    //check if the PTM is not unknown in the PTMFactory
-                    if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
-                        LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be found in the PtmFactory.");
-                    } else {
-                        //@todo check if the PTM mass is the average or the monoisotopic mass shift
-                        modification.setMonoIsotopicMassShift(ptM.getMass());
-                        modification.setAverageMassShift(ptM.getMass());
+                        modification = new Modification(modificationMatch.getTheoreticPtm());
+
+                        //check if the PTM is not unknown in the PTMFactory
+                        if (!ptM.getName().equals(UNKNOWN_UTILITIES_PTM)) {
+                            LOGGER.warn("The modification match " + modificationMatch.getTheoreticPtm() + " could not be found in the PtmFactory.");
+                        } else {
+                            //@todo check if the PTM mass is the average or the monoisotopic mass shift
+                            modification.setMonoIsotopicMassShift(ptM.getMass());
+                            modification.setAverageMassShift(ptM.getMass());
+                        }
                     }
 
                 }

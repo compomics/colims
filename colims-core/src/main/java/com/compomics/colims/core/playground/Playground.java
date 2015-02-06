@@ -4,25 +4,26 @@ import org.springframework.context.ApplicationContext;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Project;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+
 import org.apache.xml.xml_soap.Map;
 import org.apache.xml.xml_soap.MapItem;
 import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 import uk.ac.ebi.ook.web.model.DataHolder;
 
 /**
- *
  * @author Niels Hulstaert
  */
-public class Playground {    
-    
+public class Playground {
+
     public static void main(final String[] args) throws IOException, ClassNotFoundException, SQLException {
         ApplicationContextProvider.getInstance().setDefaultApplicationContext();
-        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();                        
-        
+        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+
         //
         //        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
         //        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
@@ -34,7 +35,7 @@ public class Playground {
         //        cpsParentImpl.loadCpsFile(null);
         //        cpsParentImpl.loadSpectrumFiles(null);
         //        System.out.println("test");
-        
+
 //        Query olsClient = (Query) applicationContext.getBean("olsClient");
 //        Map ontologyNames = olsClient.getOntologyNames();
 //        for (MapItem mapItem : ontologyNames.getItem()) {
@@ -49,10 +50,10 @@ public class Playground {
 //        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
 //        
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
-        
+
         ProjectService projectService = (ProjectService) applicationContext.getBean("projectService");
         List<Project> findAll = projectService.findAll();
-        
+
         System.out.println("test");
     }
 }

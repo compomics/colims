@@ -1,6 +1,8 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
+import org.apache.xml.xml_soap.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Modification;
+import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 import java.util.List;
 
@@ -91,13 +94,28 @@ public class OlsServiceTest {
     }
 
     /**
-     * Test the find a modification by name and UNIMOD accession method from the OlsService.
+     * Test the modifications cache from the OlsService.
      */
     @Test
-    public void testFindModificationByNameAndUnimodAccession_2() {
+    public void testModificationsCache() {
+        int cacheSize = olsService.getModificationsCache().size();
+        Assert.assertFalse(olsService.getModificationsCache().containsKey("UNIMOD:385"));
+
+        //first, try to find a SearchModification instance
+        SearchModification searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, "Ammonia-loss", "UNIMOD:385");
+        Assert.assertNotNull(searchModification);
+        Assert.assertNotNull(searchModification.getAlternativeAccession());
+
+        //the modification should have been added twice to the cache,
+        //one time with the PSI-MOD accession as key and one time with the UNIMOD accession as key.
+        Assert.assertEquals(cacheSize + 2, olsService.getModificationsCache().size());
+
         Modification modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, "Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
         Assert.assertNotNull(modification.getAlternativeAccession());
+
+        //the modification should not have been added to the cache
+        Assert.assertEquals(cacheSize + 2, olsService.getModificationsCache().size());
     }
 
     /**
