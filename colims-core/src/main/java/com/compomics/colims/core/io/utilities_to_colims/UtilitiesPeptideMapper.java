@@ -2,6 +2,7 @@ package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.ModificationMappingException;
+import com.compomics.colims.core.io.maxquant.PeptidePosition;
 import com.compomics.colims.model.Peptide;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;
@@ -26,6 +27,10 @@ public class UtilitiesPeptideMapper {
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
+    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
+        this.map(sourcePeptide, psmMatchScore, ptmScores, identificationCharge, targetPeptide, null);
+    }
+
     /**
      * Map the utilities objects onto the Colims Peptide.
      *
@@ -36,7 +41,7 @@ public class UtilitiesPeptideMapper {
      * @param targetPeptide        the Colims peptide
      * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
-    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
+    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide, final PeptidePosition peptidePosition) throws ModificationMappingException {
         //set sequence
         targetPeptide.setSequence(sourcePeptide.getSequence());
         //set theoretical mass
@@ -47,6 +52,13 @@ public class UtilitiesPeptideMapper {
         targetPeptide.setPsmProbability(psmMatchScore.getProbability());
         //set psm posterior error probability
         targetPeptide.setPsmPostErrorProbability(psmMatchScore.getPostErrorProbability());
+
+        if (peptidePosition != null) {
+            targetPeptide.setPre(peptidePosition.getPre());
+            targetPeptide.setPost(peptidePosition.getPost());
+            targetPeptide.setStart(peptidePosition.getStart());
+            targetPeptide.setEnd(peptidePosition.getEnd());
+        }
 
         //check for modifications and modification scores
         if (!sourcePeptide.getModificationMatches().isEmpty()) {

@@ -28,7 +28,6 @@ public class MaxQuantParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
-    private static final String EVIDENCETXT = "evidence.txt";
     private static final String PROTEINGROUPS = "proteinGroups.txt";
 
     @Autowired
@@ -105,7 +104,7 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(new File(quantFolder, EVIDENCETXT), multiplicity);
+        maxQuantEvidenceParser.parse(quantFolder, multiplicity);
 
         LOGGER.debug("parsing protein groups");
         proteinMap = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPS));

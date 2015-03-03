@@ -22,6 +22,8 @@ import java.util.*;
  */
 @Component
 public class MaxQuantEvidenceParser {
+    private static final String EVIDENCETXT = "evidence.txt";
+    private static final String PEPTIDETXT = "peptides.txt";
 
     @Autowired
     private MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
@@ -54,8 +56,9 @@ public class MaxQuantEvidenceParser {
      * @param evidenceFile Evidence text file from MQ output
      * @throws IOException
      */
-    public void parse(final File evidenceFile, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(evidenceFile);
+    public void parse(final File quantFolder, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
+        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT));
+        Map<String, PeptidePosition> peptidePositions = getPeptidePositions(new File(quantFolder, PEPTIDETXT));
 
         Map<String, String> values;
         int intensityCount;
@@ -65,8 +68,8 @@ public class MaxQuantEvidenceParser {
         QuantificationWeight[] weights = weightOptions.get(intensityCount);
         String[] intensityColumns = intensityHeaders.get(intensityCount);
 
-        while (iterator.hasNext()) {
-            values = iterator.next();
+        while (evidenceIterator.hasNext()) {
+            values = evidenceIterator.next();
 
             double[] intensities = new double[intensityCount];
 
@@ -88,6 +91,7 @@ public class MaxQuantEvidenceParser {
 
                         int spectrumID = Integer.parseInt(msmsId);
                         PeptideAssumption assumption = createPeptideAssumption(values);
+                        assumption.addUrParam(peptidePositions.get(msmsId));
 
                         peptideAssumptions.put(spectrumID, assumption);
 
@@ -169,6 +173,9 @@ public class MaxQuantEvidenceParser {
         //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
         PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
         assumption.addUrParam(new MatchScore(score, pep));
+
+
+
         return assumption;
     }
 
@@ -263,6 +270,41 @@ public class MaxQuantEvidenceParser {
         }
 
         return modificationsForPeptide;
+    }
+
+    public Map<String, PeptidePosition> getPeptidePositions(File peptideFile) throws IOException {
+        Map<String, PeptidePosition> positions = new HashMap<>();
+
+        TabularFileLineValuesIterator peptideIterator = new TabularFileLineValuesIterator(peptideFile);
+
+        Map<String, String> values;
+
+        while (peptideIterator.hasNext()) {
+            values = peptideIterator.next();
+
+            PeptidePosition position = new PeptidePosition();
+            position.setPre(values.get("amino acid before"));
+            position.setPost(values.get("amino acid after"));
+
+            if (values.get("start position").isEmpty() || values.get("start position") == null) {
+                position.setStart(0);
+            } else {
+                position.setStart(Integer.parseInt(values.get("start position")));
+            }
+
+            if (values.get("end position").isEmpty() || values.get("end position") == null) {
+                position.setEnd(0);
+            } else {
+                position.setEnd(Integer.parseInt(values.get("end position")));
+            }
+
+            // split msms ids
+            for (String msmsId : values.get("ms/ms ids").split(";")) {
+                positions.put(msmsId, position);
+            }
+        }
+
+        return positions;
     }
 
     /**

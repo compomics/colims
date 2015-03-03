@@ -76,7 +76,7 @@ public class MaxQuantIntoColimsIntegrationTest {
     private File testFolder;
 
     public MaxQuantIntoColimsIntegrationTest() throws IOException {
-        this.testFolder = new ClassPathResource("data/maxquant").getFile();
+        this.testFolder = new ClassPathResource("data/maxquant_1512").getFile();
     }
 
     @Test
@@ -85,10 +85,10 @@ public class MaxQuantIntoColimsIntegrationTest {
 
         SequenceFactory sequenceFactory = SequenceFactory.getInstance();
         sequenceFactory.clearFactory();
-        sequenceFactory.loadFastaFile(new File(testFolder, "testfasta.fasta"), null);
+        sequenceFactory.loadFastaFile(new File(testFolder, "mouse.fasta"), null);
 
         maxQuantParser.parseFolder(testFolder);
-        User user = userService.findByName("admin1");
+        User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
         Project project = projectService.findById(1L);
@@ -139,5 +139,9 @@ public class MaxQuantIntoColimsIntegrationTest {
         }
         maxQuantSample.setAnalyticalRuns(colimsRuns);
         experimentService.save(experiment);
+
+        Experiment experiment2 = experimentService.findById(1L);
+        List<Spectrum> spectrums = experiment.getSamples().get(0).getAnalyticalRuns().get(0).getSpectrums();
+        System.out.println("2");
     }
 }

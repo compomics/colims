@@ -30,9 +30,9 @@ public class MzIdentMLExporter {
     // TODO: are these only filled in on production build?
 
     @Value("${mzidentml.version}")
-    private static final String MZIDENTML_VERSION = "1.1.0";
+    private final String MZIDENTML_VERSION = "1.1.0";
     @Value("${colims-core.version}")
-    private static final String COLIMS_VERSION = "latest";
+    private final String COLIMS_VERSION = "latest";
 
     private static final String DATA_FILE = "/config/mzidentml.json";   // TODO: a better name
 

@@ -1,13 +1,12 @@
 package com.compomics.colims.core.io.maxquant;
 
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.headers.MaxQuantProteinGroupHeaders;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -28,34 +27,45 @@ public class MaxQuantProteinGroupParser {
      */
     public Map<Integer, ProteinMatch> parse(File aProteinGroupsFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         Map<Integer, ProteinMatch> proteinGroupMap = new HashMap<>(1000);
-        TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile, ProteinGroupHeaders.values());
+        TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile, MaxQuantProteinGroupHeaders.values());
         Map<String, String> values;
+
         while (iter.hasNext()) {
             values = iter.next();
-            if (values.containsKey(ProteinGroupHeaders.ID.getColumnName())) {
-                ProteinMatch proteinMatch = parseProteinMatch(values);
-                proteinGroupMap.put(Integer.parseInt(values.get(ProteinGroupHeaders.ID.getColumnName())), proteinMatch);
+
+            if (values.containsKey(MaxQuantProteinGroupHeaders.ID.getColumnName())) {
+                if ((!values.containsKey(MaxQuantProteinGroupHeaders.REVERSE.getColumnName()) || values.get(MaxQuantProteinGroupHeaders.REVERSE.getColumnName()).trim().length() == 0)
+                    && (!values.containsKey(MaxQuantProteinGroupHeaders.CONTAMINANT.getColumnName()) || values.get(MaxQuantProteinGroupHeaders.CONTAMINANT.getColumnName()).trim().length() == 0)) {
+                    ProteinMatch proteinMatch = parseProteinMatch(values);
+                    proteinGroupMap.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getColumnName())), proteinMatch);
+                }
             } else {
                 throw new UnparseableException("could not find id");
             }
         }
-        return proteinGroupMap;
 
+        return proteinGroupMap;
     }
 
     private ProteinMatch parseProteinMatch(Map<String, String> values) throws UnparseableException, HeaderEnumNotInitialisedException {
         ProteinMatch proteinMatch = new ProteinMatch();
-        if (values.containsKey(ProteinGroupHeaders.DECOY.getColumnName())) {
-            String decoyString = values.get(ProteinGroupHeaders.DECOY.getColumnName());
-            boolean isDecoy = decoyString.equals("+");
-        }
-//Header header = Header.parseFromFASTA(values.get(ProteinGroupHeaders.FASTAHEADER.headerName));
-        if (values.containsKey(ProteinGroupHeaders.ACCESSION.getColumnName())) {
-            String parsedAccession = values.get(ProteinGroupHeaders.ACCESSION.getColumnName());
+
+        if (values.containsKey(MaxQuantProteinGroupHeaders.ACCESSION.getColumnName())) {
+            String parsedAccession = values.get(MaxQuantProteinGroupHeaders.ACCESSION.getColumnName());
+
             if (parsedAccession.contains(";")) {
                 String[] accessions = parsedAccession.split(";");
-                proteinMatch.setMainMatch(accessions[0]);
-                for (String anAccession : accessions) {
+                List<String> filteredAccessions = new ArrayList<>();
+
+                for (String accession : accessions) {
+                    if (!accession.contains("REV") && !accession.contains("CON")) {
+                        filteredAccessions.add(accession);
+                    }
+                }
+
+                proteinMatch.setMainMatch(filteredAccessions.get(0));
+
+                for (String anAccession : filteredAccessions) {
                     proteinMatch.addTheoreticProtein(anAccession);
                 }
             } else {
@@ -65,10 +75,13 @@ public class MaxQuantProteinGroupParser {
         } else {
             throw new UnparseableException("no accessions");
         }
-        if (values.containsKey(ProteinGroupHeaders.EVIDENCEIDS.getColumnName())) {
-            String evidenceids = values.get(ProteinGroupHeaders.EVIDENCEIDS.getColumnName());
+
+        if (values.containsKey(MaxQuantProteinGroupHeaders.EVIDENCEIDS.getColumnName())) {
+            String evidenceids = values.get(MaxQuantProteinGroupHeaders.EVIDENCEIDS.getColumnName());
+
             if (evidenceids.contains(";")) {
                 String[] splitEvidenceIds = evidenceids.split(";");
+
                 for (String anEvidenceId : splitEvidenceIds) {
                     proteinMatch.addPeptideMatchKey(anEvidenceId);
                 }
@@ -77,67 +90,5 @@ public class MaxQuantProteinGroupParser {
             }
         }
         return proteinMatch;
-    }
-
-    /**
-     * parses a max quant protein group file into a random access file
-     *
-     * @param aProteinGroupsFile the protein groups file to turn into a raf file
-     * @return a Map key: the protein group id, value the line number of the
-     * protein group
-     */
-    public static Map<Integer, Integer> createProteinGroupsRAFMAP(File aProteinGroupsFile) throws IOException {
-        Map<Integer, Integer> proteinGroupMap = new HashMap<>(1000);
-        TabularFileLineValuesIterator iter = new TabularFileLineValuesIterator(aProteinGroupsFile);
-        Map<String, String> proteinGroupLine;
-        while (iter.hasNext()) {
-            proteinGroupLine = iter.next();
-
-        }
-        return proteinGroupMap;
-    }
-
-    private enum ProteinGroupHeaders implements HeaderEnum {
-
-        ACCESSION(new String[]{"Protein IDs"}),
-        FASTAHEADER(new String[]{"Fasta headers"}),
-        PEPTIDEIDS(new String[]{"Peptide IDs"}),
-        EVIDENCEIDS(new String[]{"Evidence IDs"}),
-        MSMSIDS(new String[]{"MS/MS IDs"}),
-        BESTMSMS(new String[]{"Best MS/MS"}),
-        DECOY(new String[]{"Reverse"}),
-        CONTAMINANT(new String[]{"Contaminant"}),
-        ID(new String[]{"id"});
-        protected final String[] columnNames;
-        protected int columnReference = -1;
-
-        private ProteinGroupHeaders(final String[] fieldnames) {
-            columnNames = fieldnames;
-        }
-
-        @Override
-        public final String[] allPossibleColumnNames() {
-            return columnNames;
-        }
-
-        @Override
-        public final void setColumnReference(int columnReference) {
-            this.columnReference = columnReference;
-        }
-
-        @Override
-        public final String getColumnName() throws HeaderEnumNotInitialisedException {
-            if (columnNames != null) {
-                if (columnReference < 0 || columnReference > (columnNames.length - 1) && columnNames.length > 0) {
-                    return columnNames[0].toLowerCase(Locale.US);
-                } else if (columnNames.length < 0) {
-                    throw new HeaderEnumNotInitialisedException("header enum not initialised");
-                } else {
-                    return columnNames[columnReference].toLowerCase(Locale.US);
-                }
-            } else {
-                throw new HeaderEnumNotInitialisedException("array was null");
-            }
-        }
     }
 }

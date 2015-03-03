@@ -26,7 +26,7 @@ public class MaxQuantProteinGroupParserTest {
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
 
     public MaxQuantProteinGroupParserTest() throws IOException {        
-        shortTestFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
+        shortTestFile = new ClassPathResource("data/maxquant_1512/proteinGroups.txt").getFile();
     }
 
     /**
@@ -38,14 +38,9 @@ public class MaxQuantProteinGroupParserTest {
         System.out.println("parseMaxQuantProteinGroups");
         File aProteinGroupsFile = shortTestFile;
         Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(aProteinGroupsFile);
-        assertThat(result.keySet().size(), is(1760));
-        assertThat(result.get(1722).getMainMatch(), is("Q9Y105"));
-        assertThat(result.get(1722).getNProteins(), both(is(result.get(1722).getTheoreticProteinsAccessions().size())).and(is(1)));
-        //assertThat(result.get(1726).isDecoy(), is(false));
-        assertThat(result.get(1729).getNProteins(), is(15));
-        assertThat(result.get(1729).getMainMatch(), is("REV__A1Z9J3"));
-        assertThat(result.get(1724).getMainMatch(), is("Q9Y112"));
-        //assertThat(result.get(1730).isDecoy(), is(true));
-
+        assertThat(result.keySet().size(), is(131));
+        assertThat(result.get(130).getMainMatch(), is("Q9JJ28"));
+        assertThat(result.get(130).getNProteins(), both(is(result.get(128).getTheoreticProteinsAccessions().size())).and(is(1)));
+        assertThat(result.get(130).getNProteins(), is(1));
     }
 }
