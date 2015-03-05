@@ -242,7 +242,7 @@ public class UtilitiesModificationMapperTest {
         ModificationMatch modificationMatch = new ModificationMatch("IMEHex(2)NeuAc(1)", true, 7);
         modificationMatches.add(modificationMatch);
 
-        //create new colims entity peptide
+        //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
 
         utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
