@@ -62,10 +62,10 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'methionine', '-64.1', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, protein_sequence) VALUES (1, 'Q8IWA5'), (2, 'Q13233');
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'BREAD'), (2, 'REDBREAD');
 
 -- insert test protein accession
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'N/A', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'EPICBREAD', 1);
 
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.35.0-beta');
@@ -91,7 +91,7 @@ INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
 INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, l_search_enzyme_cv_id) VALUES (1, 4, 1, 5, 1, 1);
 
 -- insert a search modification
-INSERT INTO search_modification (id, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift, name) VALUES (1, 'MS:12345678', null, 1.0, 2.5, 'searchmodin');
+INSERT INTO search_modification (id, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift, name) VALUES (1, 'MS:1001524', null, 1.0, 2.5, 'fragment neutral loss');
 
 -- insert a search params has mod
 INSERT INTO search_params_has_modification (id, modification_type, residues, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 'CK', 1, 1);

@@ -4,6 +4,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.repository.UserRepository;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -67,12 +68,13 @@ public class MzIdentMLExporter {
      */
     private MzIdentML base() throws IOException {
         mzIdentML = new MzIdentML();
+        mzIdentML.setAuditCollection(new AuditCollection());
 
         mzIdentML.setId("colims-" + COLIMS_VERSION);
         mzIdentML.setVersion(MZIDENTML_VERSION);
         mzIdentML.setCreationDate(new GregorianCalendar());
         mzIdentML.setCvList(cvList());
-        mzIdentML.setAuditCollection(auditCollection());
+        auditCollection();
         mzIdentML.setProvider(provider());
         mzIdentML.setDataCollection(dataCollection());
         mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
@@ -99,8 +101,12 @@ public class MzIdentMLExporter {
      * Create collection for associated entities, add the owner of this run
      * @return An audit collection
      */
-    private AuditCollection auditCollection() throws IOException {
-        AuditCollection auditCollection = new AuditCollection();
+    private void auditCollection() throws IOException {
+        // TODO: currently all users are associated with a placeholder org
+        // but surely this needs to be the place they do the science
+        // which they would have to input manually, somewhere
+
+        AuditCollection auditCollection = mzIdentML.getAuditCollection();
 
         User user = userRepository.findByName(analyticalRun.getUserName());
 
@@ -114,9 +120,32 @@ public class MzIdentMLExporter {
 
         person.getCvParam().add(email);
 
-        auditCollection.getPerson().add(person);
+        Institution institution = user.getInstitution();
 
-        return auditCollection;
+        // TODO: if instiution does not have at least name or address then throw error (will be invalid)
+
+        Organization org = new Organization(); //getContact("LAB_PLACEHOLDER", Organization.class);
+        org.setId(institution.getName());
+
+        CvParam cvParam = getDataItem("Organization.TEMPLATE.address", CvParam.class);
+        // TODO: replace with stream
+        cvParam.setValue(StringUtils.join(institution.getAddress(), ", "));
+        org.getCvParam().add(cvParam);
+
+        cvParam = getDataItem("Organization.TEMPLATE.name", CvParam.class);
+        cvParam.setValue(institution.getName());
+        org.getCvParam().add(cvParam);
+
+        org.getCvParam().add(getDataItem("Organization.TEMPLATE.affiliation", CvParam.class));
+
+        auditCollection.getOrganization().add(org);
+
+        Affiliation affiliation = new Affiliation();
+        affiliation.setOrganization(org);
+
+        person.getAffiliation().add(affiliation);
+
+        auditCollection.getPerson().add(person);
     }
 
     /**
@@ -132,13 +161,14 @@ public class MzIdentMLExporter {
         role.setCvParam(getDataItem("Role.researcher", CvParam.class));
 
         provider.getContactRole().setRole(role);
+        provider.getContactRole().setContact(mzIdentML.getAuditCollection().getPerson().get(0));
 
         return provider;
     }
 
     /**
-     *
-     * @return
+     * Construct the list of analysis software
+     * @return AnalysisSoftwareList the list
      * @throws IOException
      */
     private AnalysisSoftwareList analysisSoftwareList() throws IOException {
@@ -148,6 +178,8 @@ public class MzIdentMLExporter {
 
         AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
         software.setVersion(settings.getSearchEngine().getVersion());
+        software.setSoftwareName(new Param());
+        software.getSoftwareName().setParam(getDataItem("AnalysisSoftwareCV." + settings.getSearchEngine().getName(), CvParam.class));
 
         ContactRole contactRole = new ContactRole();
         contactRole.setContact(getContact(settings.getSearchEngine().getName(), Organization.class));
@@ -161,6 +193,11 @@ public class MzIdentMLExporter {
         return list;
     }
 
+    /**
+     * Details of the data source for the experiment
+     * @return Populated DataCollection object
+     * @throws IOException if something is missing from the JSON
+     */
     private DataCollection dataCollection() throws IOException {
         DataCollection dataCollection = new DataCollection();
         dataCollection.setInputs(new Inputs());
@@ -178,6 +215,8 @@ public class MzIdentMLExporter {
         searchDatabase.setDatabaseName(new Param());
         searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
         searchDatabase.getCvParam().add(getDataItem("SearchDatabase.type", CvParam.class));
+
+        // NOTE: if decoy database used then cv param should be child of MS:1001450 here
 
         UserParam databaseName = new UserParam();
         databaseName.setName(fasta.getName());
@@ -241,19 +280,29 @@ public class MzIdentMLExporter {
         Enzyme mzEnzyme = new Enzyme();
         SearchCvParam colimsEnzyme = searchParameters.getEnzyme();
 
-        CvParam cvEnzyme = getDataItem("GenericCV." + colimsEnzyme.getOntology(), CvParam.class);
-        cvEnzyme.setName(colimsEnzyme.getName());
-        cvEnzyme.setAccession(colimsEnzyme.getAccession());
+        CvParam cvEnzyme;
 
-        mzEnzyme.setId("ENZYME-" + colimsEnzyme.getId().toString());
-        mzEnzyme.setEnzymeName(new ParamList());
-        mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+        if (colimsEnzyme == null) {
+            cvEnzyme = getDataItem("GenericCV.PSI-MS", CvParam.class);
+            cvEnzyme.setName("no enzyme");
+            cvEnzyme.setAccession("MS:1001091");
+
+            mzEnzyme.setId("ENZYME-1");
+            mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+        } else {
+            cvEnzyme = getDataItem("GenericCV." + colimsEnzyme.getOntology(), CvParam.class);
+            cvEnzyme.setName(colimsEnzyme.getName());
+            cvEnzyme.setAccession(colimsEnzyme.getAccession());
+
+            mzEnzyme.setId("ENZYME-" + colimsEnzyme.getId().toString());
+            mzEnzyme.setEnzymeName(new ParamList());
+            mzEnzyme.setMissedCleavages(searchParameters.getNumberOfMissedCleavages() == null ? 0 : searchParameters.getNumberOfMissedCleavages());
+            mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+        }
 
         spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
 
         // Fragment Tolerance
-        spectrumProtocol.setFragmentTolerance(new Tolerance());
-
         CvParam fragmentMinus = getDataItem("Tolerance.minus", CvParam.class);
         fragmentMinus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentMinus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
@@ -261,10 +310,28 @@ public class MzIdentMLExporter {
         CvParam fragmentPlus = getDataItem("Tolerance.plus", CvParam.class);
         fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
-        // TODO: where to get other cv terms (unitCvRef, unitAccession)?
+
+        if (searchParameters.getFragMassToleranceUnit().toString() == "DA") {
+            fragmentMinus.setUnitName("dalton");
+            fragmentMinus.setUnitAccession("UO:0000221");
+            fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+
+            fragmentPlus.setUnitName("dalton");
+            fragmentPlus.setUnitAccession("UO:0000221");
+            fragmentPlus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+        } else {
+            // TODO: what other mass tolerance units are possible?
+        }
+
+        spectrumProtocol.setFragmentTolerance(new Tolerance());
 
         spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentMinus);
         spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentPlus);
+
+        spectrumProtocol.setParentTolerance(new Tolerance());
+
+        spectrumProtocol.getParentTolerance().getCvParam().add(fragmentMinus);
+        spectrumProtocol.getParentTolerance().getCvParam().add(fragmentPlus);
 
         collection.getSpectrumIdentificationProtocol().add(spectrumProtocol);
 
@@ -303,7 +370,7 @@ public class MzIdentMLExporter {
         spectrumIDFormat.setCvParam(getDataItem("SpectrumIDFormat.mascot query number", CvParam.class));
 
         SearchDatabaseRef dbRef = new SearchDatabaseRef();
-        dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0)); // hmm 4
+        dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
         for (Spectrum spectrum : analyticalRun.getSpectrums()) {
             SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
@@ -312,6 +379,7 @@ public class MzIdentMLExporter {
             for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
                 SpectraData spectraData = new SpectraData();
                 spectraData.setId("SD-" + spectrumFile.getId().toString());
+                spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
                 spectraData.setFileFormat(spectrumFileFormat);
                 spectraData.setSpectrumIDFormat(spectrumIDFormat);
 
@@ -390,6 +458,11 @@ public class MzIdentMLExporter {
         mzIdentML.setAnalysisCollection(analysisCollection);
     }
 
+    /**
+     * Create a spectrum identification result from a colims spectrum
+     * @param spectrum Spectrum object
+     * @return Spectrum identification result
+     */
     private SpectrumIdentificationResult createSpectrumIdentificationResult(Spectrum spectrum) {
         SpectrumIdentificationResult spectrumIdentificationResult = new SpectrumIdentificationResult();
 
@@ -400,6 +473,11 @@ public class MzIdentMLExporter {
         return spectrumIdentificationResult;
     }
 
+    /**
+     * Create a spectrum identification item from a colims spectrum
+     * @param spectrum Spectrum object
+     * @return Spectrum identification item
+     */
     private SpectrumIdentificationItem createSpectrumIdentificationItem(Spectrum spectrum) {
         SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
 
@@ -432,7 +510,7 @@ public class MzIdentMLExporter {
      * @param peptideHasProtein Peptide to protein object representation
      * @return Representative DBSequence
      */
-    private DBSequence createDBSequence(PeptideHasProtein peptideHasProtein) {
+    private DBSequence createDBSequence(PeptideHasProtein peptideHasProtein) throws IOException {
         Protein protein = peptideHasProtein.getProtein();
 
         DBSequence dbSequence = new DBSequence();
@@ -441,6 +519,11 @@ public class MzIdentMLExporter {
         dbSequence.setLength(protein.getSequence().length());
         dbSequence.setSeq(protein.getSequence());
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));
+
+        CvParam cvParam = getDataItem("DBSequence.description", CvParam.class);
+        cvParam.setValue(protein.getProteinAccessions().get(0).toString());
+
+        dbSequence.getCvParam().add(cvParam);
 
         return dbSequence;
     }

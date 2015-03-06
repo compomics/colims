@@ -1,18 +1,19 @@
 {
-  "Modification": {
-    "methionine": {}
-  },
   "AnalysisSoftware": {
     "MaxQuant":       {"id": "ID_software", "name": "MaxQuant", "version": "???", "uri": "???"},
     "PeptideShaker":  {"id": "ID_software", "name": "PeptideShaker", "version": "???", "uri": "http://peptide-shaker.googlecode.com"}
   },
   "AnalysisSoftwareCV": {
-    "MaxQuant":       {"cvRef": "PSI-MS", "accession": "MS:1001583", "name": "MaxQuant"}
+    "MaxQuant":       {"cvRef": "PSI-MS", "accession": "MS:1001583", "name": "MaxQuant"},
+    "PeptideShaker":  {"cvRef": "PSI-MS", "accession": "MS:1002458", "name": "PeptideShaker"}
   },
-  "CvList": [
-    {"id": "PSI-MS", "uri": "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo", "version": "2.25.0", "fullName": "PSI-MS"},
-    {"id": "UNIMOD", "uri": "http://www.unimod.org/obo/unimod.obo", "fullName": "UNIMOD"}
-  ],
+  "CvList": {
+    "PSI-MS": {"id": "PSI-MS", "uri": "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo", "version": "2.25.0", "fullName": "PSI-MS"},
+    "UO":     {"id": "UNIMOD", "uri": "http://www.unimod.org/obo/unimod.obo", "fullName": "UNIMOD"}
+  },
+  "DBSequence": {
+    "description":  {"cvRef": "PSI-MS", "accession": "MS:1001088", "name": "protein description"}
+  },
   "FileFormat": {
     "FASTA":              {"cvRef": "PSI-MS", "accession": "MS:1001348", "name": "FASTA format"},
     "Mascot DAT":         {"cvRef": "PSI-MS", "accession": "MS:1001199", "name": "Mascot DAT format"},
@@ -30,6 +31,34 @@
     "UNIMOD": {"cvRef": "UNIMOD"}
   },
   "Organization": {
+    "TEMPLATE": {
+      "address": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000587",
+        "name": "contact address"
+      },
+      "email": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000589",
+        "name": "contact email"
+      },
+      "name": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000586",
+        "name": "contact name"
+      },
+      "url": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000588",
+        "name": "contact url"
+      },
+      "affiliation": {
+        "cvRef": "PSI-MS",
+        "accession": "MS:1000590",
+        "name": "contact affiliation",
+        "value": "Member of institution"
+      }
+    },
     "MaxQuant": {
       "address": {
         "cvRef": "PSI-MS",
