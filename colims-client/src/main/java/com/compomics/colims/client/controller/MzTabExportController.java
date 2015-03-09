@@ -8,6 +8,7 @@ import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
+import com.compomics.colims.client.view.MzTabExportDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
@@ -66,7 +67,7 @@ public class MzTabExportController implements Controllable {
     private PersistType storageType;
     private Instrument instrument;
     //view
-    private AnalyticalRunSetupDialog analyticalRunSetupDialog;
+    private MzTabExportDialog mzTabExportDialog;
     //parent controller
     @Autowired
     private ColimsController colimsController;
@@ -94,16 +95,16 @@ public class MzTabExportController implements Controllable {
     /**
      * Get the view of this controller.
      *
-     * @return the AnalyticalRunSetupDialog
+     * @return the MzTabExportDialog
      */
-    public AnalyticalRunSetupDialog getAnalyticalRunSetupDialog() {
-        return analyticalRunSetupDialog;
+    public MzTabExportDialog getMzTabExportDialog() {
+        return mzTabExportDialog;
     }
 
     @Override
     public void init() {
         //init view
-        analyticalRunSetupDialog = new AnalyticalRunSetupDialog(colimsController.getColimsFrame(), true);
+        mzTabExportDialog = new MzTabExportDialog(colimsController.getColimsFrame(), true);
 
         //register to event bus
         eventBus.register(this);
@@ -113,49 +114,27 @@ public class MzTabExportController implements Controllable {
         peptideShakerDataImportController.init();
         maxQuantDataImportController.init();
 
-        //select peptideShaker radio button
-        analyticalRunSetupDialog.getPeptideShakerRadioButton().setSelected(true);
-
-        //set DateTimePicker format
-        analyticalRunSetupDialog.getDateTimePicker().setFormats(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
-        analyticalRunSetupDialog.getDateTimePicker().setTimeFormat(DateFormat.getTimeInstance(DateFormat.MEDIUM));
+        //select the identification type radio button
+        mzTabExportDialog.getIdentificationRadioButton().setSelected(true);
+        //select the summary mode radio button
+        mzTabExportDialog.getSummaryRadioButton().setSelected(true);
 
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
 
         //add binding
         bindingGroup = new BindingGroup();
 
-        JComboBoxBinding instrumentComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, analyticalRunSetupDialog.getInstrumentComboBox());
-        bindingGroup.addBinding(instrumentComboBoxBinding);
+        //bindings go here
 
         bindingGroup.bind();
 
         //add action listeners
-        analyticalRunSetupDialog.getProceedButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getProceedButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+                String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
                     case METADATA_SELECTION_CARD:
-                        instrument = getSelectedInstrument();
-                        Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
-                        if (instrument != null && startDate != null) {
-                            storageType = getSelectedStorageType();
-                            switch (storageType) {
-                                case PEPTIDESHAKER:
-                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
-                                    break;
-                                case MAX_QUANT:
-                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
                         break;
                     default:
                         break;
@@ -163,33 +142,32 @@ public class MzTabExportController implements Controllable {
             }
         });
 
-        analyticalRunSetupDialog.getBackButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getBackButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+                String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
                     case MAX_QUANT_DATA_IMPORT_CARD:
-                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), METADATA_SELECTION_CARD);
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), METADATA_SELECTION_CARD);
                         break;
                     default:
-                        getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
+                        getCardLayout().previous(mzTabExportDialog.getTopPanel());
                         break;
                 }
                 onCardSwitch();
             }
         });
 
-        analyticalRunSetupDialog.getFinishButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getFinishButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+                String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
                         List<String> psValidationMessages = peptideShakerDataImportController.validate();
                         if (psValidationMessages.isEmpty()) {
-                            sendStorageTask(peptideShakerDataImportController.getDataImport());
-                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
                             MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
@@ -199,8 +177,7 @@ public class MzTabExportController implements Controllable {
                     case MAX_QUANT_DATA_IMPORT_CARD:
                         List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
                         if (maxQuantValidationMessages.isEmpty()) {
-                            sendStorageTask(maxQuantDataImportController.getDataImport());
-                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
                         } else {
                             MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
@@ -213,71 +190,17 @@ public class MzTabExportController implements Controllable {
             }
         });
 
-        analyticalRunSetupDialog.getCancelButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                analyticalRunSetupDialog.dispose();
+                mzTabExportDialog.dispose();
             }
         });
     }
 
     @Override
     public void showView() {
-        //check if the user has the rights to add a run
-        if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
-            //check connection to distributed queues
-            if (queueManager.testConnection()) {
-                //reset instrument selection
-                if (!instrumentBindingList.isEmpty()) {
-                    analyticalRunSetupDialog.getInstrumentComboBox().setSelectedIndex(0);
-                }
 
-                //reset input fields
-                analyticalRunSetupDialog.getStorageDescriptionTextField().setText("");
-                analyticalRunSetupDialog.getDateTimePicker().setDate(new Date());
-                peptideShakerDataImportController.showView();
-                maxQuantDataImportController.showView();
-
-                //show first card
-                getCardLayout().first(analyticalRunSetupDialog.getTopPanel());
-                onCardSwitch();
-
-                GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), analyticalRunSetupDialog);
-                analyticalRunSetupDialog.setVisible(true);
-            } else {
-                eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
-            }
-        } else {
-            eventBus.post(new MessageEvent("Authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
-        }
-    }
-
-    /**
-     * Listen to an InstrumentChangeEvent.
-     *
-     * @param instrumentChangeEvent the instrument change event
-     */
-    @Subscribe
-    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
-        instrumentBindingList.clear();
-        instrumentBindingList.addAll(instrumentService.findAll());
-    }
-
-    private void sendStorageTask(DataImport dataImport) {
-        String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
-        User currentUser = authenticationBean.getCurrentUser();
-        Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
-        Sample sample = projectManagementController.getSelectedSample();
-
-        PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
-        PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
-
-        try {
-            storageTaskProducer.sendDbTask(persistDbTask);
-        } catch (JmsException jmsException) {
-            LOGGER.error(jmsException.getMessage(), jmsException);
-            eventBus.post(new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE));
-        }
     }
 
     /**
@@ -286,7 +209,7 @@ public class MzTabExportController implements Controllable {
      * @return the CardLayout
      */
     private CardLayout getCardLayout() {
-        return (CardLayout) analyticalRunSetupDialog.getTopPanel().getLayout();
+        return (CardLayout) mzTabExportDialog.getTopPanel().getLayout();
     }
 
     /**
@@ -294,33 +217,33 @@ public class MzTabExportController implements Controllable {
      * between cards.
      */
     private void onCardSwitch() {
-        String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+        String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
         switch (currentCardName) {
             case METADATA_SELECTION_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(false);
-                analyticalRunSetupDialog.getProceedButton().setEnabled(true);
-                analyticalRunSetupDialog.getFinishButton().setEnabled(false);
+                mzTabExportDialog.getBackButton().setEnabled(false);
+                mzTabExportDialog.getProceedButton().setEnabled(true);
+                mzTabExportDialog.getFinishButton().setEnabled(false);
                 //show info
                 updateInfo("Click on \"proceed\" to select the necessary input files/directories.");
                 break;
             case PS_DATA_IMPORT_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(true);
-                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
-                analyticalRunSetupDialog.getFinishButton().setEnabled(true);
+                mzTabExportDialog.getBackButton().setEnabled(true);
+                mzTabExportDialog.getProceedButton().setEnabled(false);
+                mzTabExportDialog.getFinishButton().setEnabled(true);
                 //show info
                 updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
             case MAX_QUANT_DATA_IMPORT_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(true);
-                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
-                analyticalRunSetupDialog.getFinishButton().setEnabled(true);
+                mzTabExportDialog.getBackButton().setEnabled(true);
+                mzTabExportDialog.getProceedButton().setEnabled(false);
+                mzTabExportDialog.getFinishButton().setEnabled(true);
                 //show info
                 updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
             case CONFIRMATION_CARD:
-                analyticalRunSetupDialog.getBackButton().setEnabled(false);
-                analyticalRunSetupDialog.getProceedButton().setEnabled(false);
-                analyticalRunSetupDialog.getFinishButton().setEnabled(false);
+                mzTabExportDialog.getBackButton().setEnabled(false);
+                mzTabExportDialog.getProceedButton().setEnabled(false);
+                mzTabExportDialog.getFinishButton().setEnabled(false);
                 updateInfo("");
                 break;
             default:
@@ -334,7 +257,7 @@ public class MzTabExportController implements Controllable {
      * @param message the info message
      */
     private void updateInfo(String message) {
-        analyticalRunSetupDialog.getInfoLabel().setText(message);
+        mzTabExportDialog.getInfoLabel().setText(message);
     }
 
     /**
@@ -346,7 +269,7 @@ public class MzTabExportController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunSetupDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -355,21 +278,6 @@ public class MzTabExportController implements Controllable {
         }
 
         return selectedStorageType;
-    }
-
-    /**
-     * Get the selected instrument. Returns null if no instrument was selected.
-     *
-     * @return the selected Instrument
-     */
-    private Instrument getSelectedInstrument() {
-        Instrument selectedInstrument = null;
-
-        if (analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex() != -1) {
-            selectedInstrument = instrumentBindingList.get(analyticalRunSetupDialog.getInstrumentComboBox().getSelectedIndex());
-        }
-
-        return selectedInstrument;
     }
 
 }

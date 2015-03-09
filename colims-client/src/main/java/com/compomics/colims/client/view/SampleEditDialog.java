@@ -1,12 +1,9 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DualList;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+
+import javax.swing.*;
+
 import org.jmol.export.dialog.FileChooser;
 
 /**
@@ -34,7 +31,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
         exportDirectoryChooser.setMultiSelectionEnabled(Boolean.FALSE);
 
         analyticalRunsTableScrollPane.getViewport().setOpaque(false);
-        analyticalRunsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        analyticalRunsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     public JButton getDeleteAnalyticalRunButton() {

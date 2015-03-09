@@ -14,7 +14,7 @@ import javax.swing.JTextField;
  *
  * @author Niels Hulstaert
  */
-public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
+public class MzTabExportDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form AnalyticalRunSetupDialog
@@ -22,7 +22,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
      * @param parent the dialog parent
      * @param modal the modal boolean
      */
-    public AnalyticalRunSetupDialog(java.awt.Frame parent, boolean modal) {
+    public MzTabExportDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
         initComponents();
@@ -54,16 +54,28 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         return cancelButton;
     }
 
-    public ButtonGroup getDataTypeButtonGroup() {
-        return dataTypeButtonGroup;
+    public ButtonGroup getTypeButtonGroup() {
+        return typeButtonGroup;
     }
 
-    public JRadioButton getMaxQuantRadioButton() {
-        return maxQuantRadioButton;
+    public ButtonGroup getModeButtonGroup() {
+        return modeButtonGroup;
     }
 
-    public JRadioButton getPeptideShakerRadioButton() {
-        return peptideShakerRadioButton;
+    public JRadioButton getCompleteRadioButton() {
+        return completeRadioButton;
+    }
+
+    public JRadioButton getIdentificationRadioButton() {
+        return identificationRadioButton;
+    }
+
+    public JRadioButton getQuantificationRadioButton() {
+        return quantificationRadioButton;
+    }
+
+    public JRadioButton getSummaryRadioButton() {
+        return summaryRadioButton;
     }
 
     public PeptideShakerDataImportPanel getPeptideShakerDataImportPanel() {
@@ -74,20 +86,8 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         return maxQuantDataImportPanel;
     }
 
-    public JTextField getStorageDescriptionTextField() {
-        return storageDescriptionTextField;
-    }
-
     public JPanel getConfirmationPanel() {
         return confirmationPanel;
-    }
-
-    public JComboBox getInstrumentComboBox() {
-        return instrumentComboBox;
-    }
-
-    public DateTimePicker getDateTimePicker() {
-        return dateTimePicker;
     }
 
     /**
@@ -100,21 +100,19 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        dataTypeButtonGroup = new javax.swing.ButtonGroup();
+        typeButtonGroup = new javax.swing.ButtonGroup();
+        modeButtonGroup = new javax.swing.ButtonGroup();
         parentPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
         metadataSelectionPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
-        dataTypeSelectionLabel = new javax.swing.JLabel();
-        peptideShakerRadioButton = new javax.swing.JRadioButton();
-        maxQuantRadioButton = new javax.swing.JRadioButton();
-        instrumentSelectionLabel = new javax.swing.JLabel();
-        instrumentComboBox = new javax.swing.JComboBox();
+        typeSelectionLabel = new javax.swing.JLabel();
+        identificationRadioButton = new javax.swing.JRadioButton();
+        quantificationRadioButton = new javax.swing.JRadioButton();
         rightPanel = new javax.swing.JPanel();
-        storageDescriptionLabel = new javax.swing.JLabel();
-        storageDescriptionTextField = new javax.swing.JTextField();
-        startDateLabel = new javax.swing.JLabel();
-        dateTimePicker = new com.compomics.colims.client.compoment.DateTimePicker();
+        modeSelectionLabel = new javax.swing.JLabel();
+        summaryRadioButton = new javax.swing.JRadioButton();
+        completeRadioButton = new javax.swing.JRadioButton();
         separator = new javax.swing.JSeparator();
         peptideShakerDataImportPanel = new com.compomics.colims.client.view.PeptideShakerDataImportPanel();
         maxQuantDataImportPanel = new com.compomics.colims.client.view.MaxQuantDataImportPanel();
@@ -144,15 +142,13 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        dataTypeSelectionLabel.setText("Select the analytical run data type:");
+        typeSelectionLabel.setText("Select the mzTab type:");
 
-        dataTypeButtonGroup.add(peptideShakerRadioButton);
-        peptideShakerRadioButton.setText("PeptideShaker");
+        typeButtonGroup.add(identificationRadioButton);
+        identificationRadioButton.setText("Identification");
 
-        dataTypeButtonGroup.add(maxQuantRadioButton);
-        maxQuantRadioButton.setText("MaxQuant");
-
-        instrumentSelectionLabel.setText("Select the instrument:");
+        typeButtonGroup.add(quantificationRadioButton);
+        quantificationRadioButton.setText("Quantification");
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
@@ -160,28 +156,22 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(maxQuantRadioButton)
-                    .addComponent(peptideShakerRadioButton)
-                    .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(instrumentSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dataTypeSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(quantificationRadioButton)
+                    .addComponent(identificationRadioButton)
+                    .addComponent(typeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(dataTypeSelectionLabel)
+                .addComponent(typeSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(peptideShakerRadioButton)
+                .addComponent(identificationRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(maxQuantRadioButton)
-                .addGap(18, 18, 18)
-                .addComponent(instrumentSelectionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(quantificationRadioButton)
+                .addGap(152, 152, 152))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -195,13 +185,13 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        storageDescriptionLabel.setText("Provide an optional description for monitoring purposes:");
+        modeSelectionLabel.setText("Select the mzTab mode:");
 
-        startDateLabel.setText("Select the start date of the run(s):");
+        modeButtonGroup.add(summaryRadioButton);
+        summaryRadioButton.setText("Summary");
 
-        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 27));
-        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 27));
-        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 27));
+        modeButtonGroup.add(completeRadioButton);
+        completeRadioButton.setText("Complete");
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
@@ -209,24 +199,21 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(dateTimePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(startDateLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(storageDescriptionTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(storageDescriptionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(summaryRadioButton)
+                    .addComponent(completeRadioButton)
+                    .addComponent(modeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(startDateLabel)
+                .addComponent(modeSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dateTimePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(storageDescriptionLabel)
+                .addComponent(summaryRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(storageDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(completeRadioButton)
                 .addContainerGap())
         );
 
@@ -273,7 +260,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             .addGroup(confirmationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(confirmationLabel)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
 
         topPanel.add(confirmationPanel, "confirmationPanel");
@@ -351,7 +338,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -376,28 +363,26 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JRadioButton completeRadioButton;
     private javax.swing.JLabel confirmationLabel;
     private javax.swing.JPanel confirmationPanel;
-    private javax.swing.ButtonGroup dataTypeButtonGroup;
-    private javax.swing.JLabel dataTypeSelectionLabel;
-    private com.compomics.colims.client.compoment.DateTimePicker dateTimePicker;
     private javax.swing.JButton finishButton;
+    private javax.swing.JRadioButton identificationRadioButton;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JComboBox instrumentComboBox;
-    private javax.swing.JLabel instrumentSelectionLabel;
     private javax.swing.JPanel leftPanel;
     private com.compomics.colims.client.view.MaxQuantDataImportPanel maxQuantDataImportPanel;
-    private javax.swing.JRadioButton maxQuantRadioButton;
     private javax.swing.JPanel metadataSelectionPanel;
+    private javax.swing.ButtonGroup modeButtonGroup;
+    private javax.swing.JLabel modeSelectionLabel;
     private javax.swing.JPanel parentPanel;
     private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
-    private javax.swing.JRadioButton peptideShakerRadioButton;
     private javax.swing.JButton proceedButton;
+    private javax.swing.JRadioButton quantificationRadioButton;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JSeparator separator;
-    private javax.swing.JLabel startDateLabel;
-    private javax.swing.JLabel storageDescriptionLabel;
-    private javax.swing.JTextField storageDescriptionTextField;
+    private javax.swing.JRadioButton summaryRadioButton;
     private javax.swing.JPanel topPanel;
+    private javax.swing.ButtonGroup typeButtonGroup;
+    private javax.swing.JLabel typeSelectionLabel;
     // End of variables declaration//GEN-END:variables
 }

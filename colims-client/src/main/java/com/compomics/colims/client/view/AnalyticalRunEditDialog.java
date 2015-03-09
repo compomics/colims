@@ -14,14 +14,14 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor
-     * 
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
     public AnalyticalRunEditDialog(final Dialog parent, final boolean modal) {
-        super(parent, modal);        
+        super(parent, modal);
         initComponents();
-    } 
+    }
 
     public JButton getCancelButton() {
         return cancelButton;
@@ -29,7 +29,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
     public DateTimePicker getDateTimePicker() {
         return dateTimePicker;
-    }        
+    }
 
     public JComboBox getInstrumentComboBox() {
         return instrumentComboBox;
@@ -41,8 +41,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
     public JTextField getNameTextField() {
         return nameTextField;
-    }        
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,9 +85,10 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
         cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 20));
-        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 20));
-        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 20));
+        dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 27));
+        dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 27));
+        dateTimePicker.setName(""); // NOI18N
+        dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 27));
 
         javax.swing.GroupLayout analyticalRunEditPanelLayout = new javax.swing.GroupLayout(analyticalRunEditPanel);
         analyticalRunEditPanel.setLayout(analyticalRunEditPanelLayout);

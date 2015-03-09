@@ -147,7 +147,7 @@ public class SampleEditController implements Controllable {
         analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
         sampleEditDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
         analyticalRunsSelectionModel = new DefaultEventSelectionModel<>(sortedAnalyticalRuns);
-        analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sampleEditDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
 
         //set column widths
@@ -307,11 +307,12 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getEditAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
-                if (selectedAnalyticalRun != null) {
-                    analyticalRunEditController.updateView(selectedAnalyticalRun);
+                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+
+                if (selectedAnalyticalRuns.size() == 1) {
+                    analyticalRunEditController.updateView(selectedAnalyticalRuns.get(0));
                 } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -319,22 +320,22 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                AnalyticalRun analyticalRunToDelete = getSelectedAnalyticalRun();
+                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
 
-                if (analyticalRunToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(analyticalRunToDelete, AnalyticalRun.class);
+                if (selectedAnalyticalRuns.size() == 1) {
+                    boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
-                        analyticalRuns.remove(analyticalRunToDelete);
+                        analyticalRuns.remove(selectedAnalyticalRuns.get(0));
                         analyticalRunsSelectionModel.clearSelection();
-                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, analyticalRunToDelete));
+                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRuns.get(0)));
 
                         //remove analytical run from the selected sample and update the table
-                        sampleToEdit.getAnalyticalRuns().remove(analyticalRunToDelete);
+                        sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRuns.get(0));
                         sampleEditDialog.getAnalyticalRunsTable().updateUI();
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -342,8 +343,9 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getExportAnalyticalRunButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
-                if (selectedAnalyticalRun != null) {
+                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+
+                if (selectedAnalyticalRuns.size() >= 1) {
                     int returnVal = sampleEditDialog.getExportDirectoryChooser().showOpenDialog(sampleEditDialog);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File exportDirectory = sampleEditDialog.getExportDirectoryChooser().getSelectedFile();
@@ -353,7 +355,7 @@ public class SampleEditController implements Controllable {
                         }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an analytical run to export.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an or more analytical runs to export.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -410,23 +412,6 @@ public class SampleEditController implements Controllable {
      */
     public int getSelectedAnalyticalRunIndex() {
         return analyticalRunsSelectionModel.getLeadSelectionIndex();
-    }
-
-    /**
-     * Get the selected analytical run from the analytical run overview table.
-     *
-     * @return the selected analytical run, null if no analytical run is
-     * selected
-     */
-    public AnalyticalRun getSelectedAnalyticalRun() {
-        AnalyticalRun selectedAnalyticalRun = null;
-
-        EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
-        if (!selectedAnalyticalRuns.isEmpty()) {
-            selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
-        }
-
-        return selectedAnalyticalRun;
     }
 
     /**
@@ -521,7 +506,8 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the state (enables/disabled) of the analytical run related buttons.
+     * Update the state (enables/disabled) of the analytical run related
+     * buttons.
      *
      * @param enable the enable the buttons boolean
      */
@@ -533,7 +519,7 @@ public class SampleEditController implements Controllable {
     /**
      * Swingworker that exports the given AnalyticalRun in mzTab format.
      */
-    private class AnalyticalRunExportWorker extends SwingWorker<Void, Void>{
+    private class AnalyticalRunExportWorker extends SwingWorker<Void, Void> {
 
         private final File exportDirectory;
 
@@ -543,7 +529,7 @@ public class SampleEditController implements Controllable {
 
         @Override
         protected Void doInBackground() throws Exception {
-            mzTabExporter.exportAnalyticalRun(exportDirectory, getSelectedAnalyticalRun());
+            mzTabExporter.exportAnalyticalRun(exportDirectory, analyticalRunsSelectionModel.getSelected().get(0));
 
             return null;
         }
