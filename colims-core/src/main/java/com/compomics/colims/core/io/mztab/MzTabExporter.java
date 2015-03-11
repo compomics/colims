@@ -31,7 +31,7 @@ public class MzTabExporter {
     private static final String COMMENT_PREFIX = "COM";
     private static final String METADATA_PREFIX = "MTD";
     /**
-     * Metadata section
+     * Metadata section.
      */
     private static final String MZTAB_VERSION = "mzTab_version";
     private static final String VERSION = "1.0.0";
@@ -42,16 +42,30 @@ public class MzTabExporter {
     private static final String MZTAB_ID = "mzTab_ID";
     private static final String DESCRIPTION = "description";
     private static final String RUN_LOCATION = "ms_run[%d]-location";
+    private static final String FIXED_MOD = "fixed_mod[%d]";
+    private static final String VARIABLE_MOD = "variable_mod[%d]";
+    private static final String STUDY_VARIABLE_ASSAY_REFS = "study_variable[%d]-assay_refs";
+    private static final String STUDY_VARIABLE_DESCRIPTION = "study_variable[%d]-description";
+    private static final String SOFTWARE = "software[%d]";
+    private static final String ASSAY_RUN_REF = "assay[%d]-ms_run_ref";
+    private static final String ASSAY_QUANTIFICATION_REAGENT = "assay[%d]-quantification_reagent";
+    /**
+     * Search engine metadata.
+     */
     private static final String PROTEIN_SEARCH_ENGINE_SCORE = "protein_search_engine_score[%d]";
     private static final String PEPTIDE_SEARCH_ENGINE_SCORE = "peptide_search_engine_score[%d]";
     private static final String PSM_SEARCH_ENGINE_SCORE = "psm_search_engine_score[%d]";
-    private static final String FIXED_MOD = "fixed_mod[%d]";
-    private static final String VARIABLE_MOD = "variable_mod[%d]";
-    private static final String STUDY_VARIABLE_DESCRIPTION = "study_variable[%d]-description";
-    private static final String SOFTWARE = "software[%d]";
+    private static final String SMALL_MOLECULE_SEARCH_ENGINE_SCORE = "smallmolecule_search_engine_score[%d]";
+    /**
+     * Quantification metadata.
+     */
     private static final String QUANTIFICATION_METHOD = "quantification_method";
-    private static final String ASSAY_RUN_REF = "assay[%d]-ms_run_ref";
-    private static final String ASSAY_QUANTIFICATION_REAGENT = "assay[%d]-quantification_reagent";
+    private static final String PROTEIN_QUANTIFICATION_UNIT = "protein-quantification-unit";
+    private static final String PEPTIDE_QUANTIFICATION_UNIT = "peptide-quantification-unit";
+    private static final String SMALL_MOLECULE_QUANTIFICATION_UNIT = "smallmolecule-quantification-unit";
+    /**
+     * Instrument metadata.
+     */
     private static final String INSTRUMENT_NAME = "instrument[%d]-name";
     private static final String INSTRUMENT_SOURCE = "instrument[%d]-source";
     private static final String INSTRUMENT_ANALYZER = "instrument[%d]-analyzer[%d]";

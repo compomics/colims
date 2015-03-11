@@ -32,7 +32,7 @@ public enum PersistType {
      * enum value could be matched.
      *
      * @param userFriendlyName the user friendly name
-     * @return the PersistType enum
+     * @return the PersistType enum value
      */
     public static PersistType getByUserFriendlyName(final String userFriendlyName) {
         PersistType foundPersistType = null;

@@ -34,4 +34,24 @@ public enum MzTabType {
     public String mzTabName() {
         return mzTabName;
     }
+
+    /**
+     * Get the MzTabType enum by its mzTab name. Return null if no
+     * enum value could be matched.
+     *
+     * @param mzTabName the mzTab name value
+     * @return the MzTabType enum value
+     */
+    public static MzTabType getByMzTabName(final String mzTabName) {
+        MzTabType foundMzTabType = null;
+
+        //iterate over enum values
+        for (MzTabType mzTabType : values()) {
+            if (mzTabType.mzTabName().equals(mzTabName)) {
+                foundMzTabType = mzTabType;
+            }
+        }
+
+        return foundMzTabType;
+    }
 }

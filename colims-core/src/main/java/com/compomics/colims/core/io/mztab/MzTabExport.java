@@ -10,9 +10,6 @@ import com.compomics.colims.core.io.mztab.enums.MzTabType;
  */
 public class MzTabExport {
 
-    private static final String STUDY_VARIABLE_ASSAY_REFS = "study_variable[%d]-assay_refs";
-    private static final String STUDY_VARIABLE_DESCRIPTION = "study_variable[%d]-description";
-
     /**
      * The mzTab mode.
      */
@@ -21,7 +18,6 @@ public class MzTabExport {
      * The mzTab type.
      */
     private MzTabType mzTabType;
-
 
 
 }

@@ -1,14 +1,11 @@
 package com.compomics.colims.client.view;
 
-import com.compomics.colims.client.compoment.DateTimePicker;
 import java.awt.Color;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 /**
  *
@@ -17,7 +14,7 @@ import javax.swing.JTextField;
 public class MzTabExportDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form AnalyticalRunSetupDialog
+     * Creates new form AnalyticalRunSetupDialog.
      *
      * @param parent the dialog parent
      * @param modal the modal boolean
@@ -66,12 +63,12 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return completeRadioButton;
     }
 
-    public JRadioButton getIdentificationRadioButton() {
-        return identificationRadioButton;
-    }
-
     public JRadioButton getQuantificationRadioButton() {
         return quantificationRadioButton;
+    }
+
+    public JRadioButton getIdentificationRadioButton() {
+        return identificationRadioButton;
     }
 
     public JRadioButton getSummaryRadioButton() {
@@ -104,11 +101,11 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         modeButtonGroup = new javax.swing.ButtonGroup();
         parentPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
-        metadataSelectionPanel = new javax.swing.JPanel();
+        typeAndModeSelectionPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         typeSelectionLabel = new javax.swing.JLabel();
-        identificationRadioButton = new javax.swing.JRadioButton();
         quantificationRadioButton = new javax.swing.JRadioButton();
+        identificationRadioButton = new javax.swing.JRadioButton();
         rightPanel = new javax.swing.JPanel();
         modeSelectionLabel = new javax.swing.JLabel();
         summaryRadioButton = new javax.swing.JRadioButton();
@@ -135,20 +132,20 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         topPanel.setPreferredSize(new java.awt.Dimension(400, 285));
         topPanel.setLayout(new java.awt.CardLayout());
 
-        metadataSelectionPanel.setName("metadataSelectionPanel"); // NOI18N
-        metadataSelectionPanel.setOpaque(false);
-        metadataSelectionPanel.setLayout(new java.awt.GridBagLayout());
+        typeAndModeSelectionPanel.setName("typeAndModeSelectionPanel"); // NOI18N
+        typeAndModeSelectionPanel.setOpaque(false);
+        typeAndModeSelectionPanel.setLayout(new java.awt.GridBagLayout());
 
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         typeSelectionLabel.setText("Select the mzTab type:");
 
-        typeButtonGroup.add(identificationRadioButton);
-        identificationRadioButton.setText("Identification");
-
         typeButtonGroup.add(quantificationRadioButton);
         quantificationRadioButton.setText("Quantification");
+
+        typeButtonGroup.add(identificationRadioButton);
+        identificationRadioButton.setText("Identification");
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
@@ -157,8 +154,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(quantificationRadioButton)
                     .addComponent(identificationRadioButton)
+                    .addComponent(quantificationRadioButton)
                     .addComponent(typeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(171, Short.MAX_VALUE))
         );
@@ -168,9 +165,9 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(typeSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(identificationRadioButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(quantificationRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(identificationRadioButton)
                 .addGap(152, 152, 152))
         );
 
@@ -180,7 +177,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        metadataSelectionPanel.add(leftPanel, gridBagConstraints);
+        typeAndModeSelectionPanel.add(leftPanel, gridBagConstraints);
 
         rightPanel.setOpaque(false);
         rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
@@ -223,7 +220,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        metadataSelectionPanel.add(rightPanel, gridBagConstraints);
+        typeAndModeSelectionPanel.add(rightPanel, gridBagConstraints);
 
         separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -231,9 +228,9 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
-        metadataSelectionPanel.add(separator, gridBagConstraints);
+        typeAndModeSelectionPanel.add(separator, gridBagConstraints);
 
-        topPanel.add(metadataSelectionPanel, "metadataSelectionPanel");
+        topPanel.add(typeAndModeSelectionPanel, "typeAndModeSelectionPanel");
 
         peptideShakerDataImportPanel.setName("peptideShakerDataImportPanel"); // NOI18N
         topPanel.add(peptideShakerDataImportPanel, "peptideShakerDataImportPanel");
@@ -371,7 +368,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JLabel infoLabel;
     private javax.swing.JPanel leftPanel;
     private com.compomics.colims.client.view.MaxQuantDataImportPanel maxQuantDataImportPanel;
-    private javax.swing.JPanel metadataSelectionPanel;
     private javax.swing.ButtonGroup modeButtonGroup;
     private javax.swing.JLabel modeSelectionLabel;
     private javax.swing.JPanel parentPanel;
@@ -382,6 +378,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JSeparator separator;
     private javax.swing.JRadioButton summaryRadioButton;
     private javax.swing.JPanel topPanel;
+    private javax.swing.JPanel typeAndModeSelectionPanel;
     private javax.swing.ButtonGroup typeButtonGroup;
     private javax.swing.JLabel typeSelectionLabel;
     // End of variables declaration//GEN-END:variables

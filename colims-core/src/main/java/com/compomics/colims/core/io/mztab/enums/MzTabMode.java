@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.mztab.enums;
 
+import static com.compomics.colims.core.io.mztab.enums.MzTabType.values;
+
 /**
  * The mzTab mode enum.
  * <p/>
@@ -33,5 +35,25 @@ public enum MzTabMode {
 
     public String mzTabName() {
         return mzTabName;
+    }
+
+    /**
+     * Get the MzTabMode enum by its mzTab name. Return null if no
+     * enum value could be matched.
+     *
+     * @param mzTabName the mzTab name value
+     * @return the MzTabType enum value
+     */
+    public static MzTabMode getByMzTabName(final String mzTabName) {
+        MzTabMode foundMzTabMode = null;
+
+        //iterate over enum values
+        for (MzTabMode mzTabMode : values()) {
+            if (mzTabMode.mzTabName().equals(mzTabName)) {
+                foundMzTabMode = mzTabMode;
+            }
+        }
+
+        return foundMzTabMode;
     }
 }

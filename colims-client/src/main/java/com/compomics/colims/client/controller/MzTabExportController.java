@@ -1,46 +1,26 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
-import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.client.view.MzTabExportDialog;
-import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.core.io.mztab.enums.MzTabMode;
+import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.PersistMetadata;
-import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.enums.PersistType;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
-import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -56,16 +36,15 @@ public class MzTabExportController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(MzTabExportController.class);
 
-    private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
+    private static final String TYPE_AND_MODE_SELECTION_CARD = "typeAndModeSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
     //model
     private BindingGroup bindingGroup;
-    private ObservableList<Instrument> instrumentBindingList;
-    private PersistType storageType;
-    private Instrument instrument;
+    private MzTabType mzTabType;
+    private MzTabMode mzTabMode;
     //view
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
@@ -119,8 +98,6 @@ public class MzTabExportController implements Controllable {
         //select the summary mode radio button
         mzTabExportDialog.getSummaryRadioButton().setSelected(true);
 
-        instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
-
         //add binding
         bindingGroup = new BindingGroup();
 
@@ -134,7 +111,9 @@ public class MzTabExportController implements Controllable {
             public void actionPerformed(final ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
-                    case METADATA_SELECTION_CARD:
+                    case TYPE_AND_MODE_SELECTION_CARD:
+                        mzTabType = getSelectedMzTabType();
+                        mzTabMode = getSelectedMzTabMode();
                         break;
                     default:
                         break;
@@ -149,7 +128,7 @@ public class MzTabExportController implements Controllable {
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
                     case MAX_QUANT_DATA_IMPORT_CARD:
-                        getCardLayout().show(mzTabExportDialog.getTopPanel(), METADATA_SELECTION_CARD);
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), TYPE_AND_MODE_SELECTION_CARD);
                         break;
                     default:
                         getCardLayout().previous(mzTabExportDialog.getTopPanel());
@@ -219,7 +198,7 @@ public class MzTabExportController implements Controllable {
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
         switch (currentCardName) {
-            case METADATA_SELECTION_CARD:
+            case TYPE_AND_MODE_SELECTION_CARD:
                 mzTabExportDialog.getBackButton().setEnabled(false);
                 mzTabExportDialog.getProceedButton().setEnabled(true);
                 mzTabExportDialog.getFinishButton().setEnabled(false);
@@ -261,23 +240,43 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Get the selected storage type.
+     * Get the selected mzTab type.
      *
-     * @return the selected StorageType
+     * @return the selected MzTabType
      */
-    private PersistType getSelectedStorageType() {
-        PersistType selectedStorageType = null;
+    private MzTabType getSelectedMzTabType() {
+        MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
         for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-                selectedStorageType = PersistType.getByUserFriendlyName(button.getText());
+                selectedMzTabType = MzTabType.getByMzTabName(button.getText());
             }
         }
 
-        return selectedStorageType;
+        return selectedMzTabType;
+    }
+
+    /**
+     * Get the selected mzTab mode.
+     *
+     * @return the selected MzTabMode
+     */
+    private MzTabMode getSelectedMzTabMode() {
+        MzTabMode selectedMzTabMode = null;
+
+        //iterate over the radio buttons in the group
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                selectedMzTabMode = MzTabMode.getByMzTabName(button.getText());
+            }
+        }
+
+        return selectedMzTabMode;
     }
 
 }
