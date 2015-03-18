@@ -14,10 +14,20 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Niels Hulstaert
@@ -25,7 +35,12 @@ import org.springframework.stereotype.Component;
 @Component("mzTabExporter")
 public class MzTabExporter {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(MzTabExporter.class);
+    private static final String JSON_VALUES = "values";
+    private static final String JSON_NAME = "user_friendly_name";
     private static final String MZTAB_EXTENSION = ".mzTab";
     private static final String COLUMN_DELIMETER = "/t";
     private static final String COMMENT_PREFIX = "COM";
@@ -74,6 +89,23 @@ public class MzTabExporter {
     private static final String CONTACT_AFFILIATION = "contact[%d]-affiliation";
     private static final String CONTACT_EMAIL = "contact[%d]-email";
 
+    private ObjectMapper mapper = new ObjectMapper();
+    private List<MzTabParam> mzTabParams = new ArrayList<>();
+
+    /**
+     * Inits the exporter; parses the mzTab json file into java objects.
+     *
+     * @throws IOException IOException thrown in case of an I/O related problem
+     */
+    @PostConstruct
+    public void init() throws IOException {
+        Resource mzIdentMlJson = new ClassPathResource("/config/mzTab.json");
+        JsonNode mzTabParamsNode = mapper.readTree(mzIdentMlJson.getFile());
+
+        //parse Json node to a list of MzTabParam instances
+        mzTabParams = parseJsonNode(mzTabParamsNode);
+    }
+
     public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
         try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION));
              OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
@@ -87,32 +119,42 @@ public class MzTabExporter {
         }
     }
 
-    public void exportAnalyticalRun(File exportDirectory, String title, AnalyticalRun analyticalRun) {
-        try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, title + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+    public void exportAnalyticalRun(File exportDirectory, MzTabExport mzTabExport) {
 
-            pw.println("under development");
 
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        System.out.println("test");
+
     }
 
-    public void exportAnalyticalRun(File exportDirectory, String title, List<AnalyticalRun> analyticalRuns) {
-        try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, title + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+    /**
+     * This method parses the json root node and returns a list of MzTabParam instances.
+     *
+     * @param jsonNode the root JsonNode
+     * @return the list of MzTabParam instances
+     * @throws IOException thrown in case of an I/O related problem
+     */
+    private List<MzTabParam> parseJsonNode(JsonNode jsonNode) throws IOException {
+        List<MzTabParam> mzTabParams = new ArrayList<>();
 
-            pw.println("under development");
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
 
+            MzTabParam mzTabParam = new MzTabParam(entry.getKey());
 
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            JsonNode nameNode = entry.getValue().get("name");
+            mzTabParam.setUserFriendlyName(nameNode.get(JSON_NAME).asText());
+
+            Iterator<JsonNode> optionElements = entry.getValue().get("values").getElements();
+            while (optionElements.hasNext()) {
+                MzTabParamOption mzTabParamOption = mapper.readValue(optionElements.next(), MzTabParamOption.class);
+                mzTabParam.addOption(mzTabParamOption);
+            }
+
+            mzTabParams.add(mzTabParam);
         }
-    }
 
+        return mzTabParams;
+    }
 
 }

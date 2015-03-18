@@ -31,17 +31,8 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = { "classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml" })
 public class MzTabExporterTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MzTabExporterTest.class);
     @Autowired
     private MzTabExporter mzTabExporter;
-
-    /**
-     * Tests if an IllegalArgumentException is thrown if no mapping could be
-     * found for the given MzML file name.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException, MappingException {
-    }
 
     /**
      * Test the export of a single run.
@@ -52,6 +43,8 @@ public class MzTabExporterTest {
      */
     @Test
     public void testExportSingleRun_1() throws IOException, MzMLUnmarshallerException, MappingException {
+        mzTabExporter.exportAnalyticalRun(new File("testFile"), new MzTabExport());
 
+        System.out.println("test");
     }
 }

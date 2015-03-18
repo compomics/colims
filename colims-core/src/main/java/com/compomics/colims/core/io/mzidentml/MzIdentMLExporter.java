@@ -2,9 +2,12 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.ExperimentRepository;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
@@ -12,6 +15,7 @@ import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 import uk.ac.ebi.jmzidml.model.mzidml.Role;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
 
@@ -20,10 +24,15 @@ import java.util.*;
  */
 @Component
 public class MzIdentMLExporter {
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MzIdentMLExporter.class);
+
     private static final String MZIDENTML_VERSION = "1.1.0"; // TODO: version switch
 
     private MzIdentMLMarshaller marshaller;
-    private ObjectMapper mapper;
+    private ObjectMapper mapper = new ObjectMapper();
     private JsonNode mzIdentMLParamList;
     private AnalyticalRun analyticalRun;
     private Experiment experiment;
@@ -31,20 +40,19 @@ public class MzIdentMLExporter {
     @Autowired
     private ExperimentRepository experimentRepository;
 
+    @PostConstruct
     public void init() {
-        if (mzIdentMLParamList == null || mapper == null) {
-            mapper = new ObjectMapper();
+        Resource mzIdentMlJson = new ClassPathResource("/config/mzidentml.json");
 
-            try {
-                mzIdentMLParamList = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            mzIdentMLParamList = mapper.readTree(mzIdentMlJson.getFile());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
     /**
-     * Export a run in MzIdentML format
+     * Export a run in MzIdentML format.
      */
     public String export(AnalyticalRun run) throws IOException {
         init();
@@ -57,7 +65,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Assemble necessary data into an MZIdentML object and it's many properties
+     * Assemble necessary data into an MZIdentML object and it's many properties.
      *
      * @return MZIdentML A fully furnished (hopefully) object
      */
@@ -81,7 +89,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Construct a list of CV sources used in the file
+     * Construct a list of CV sources used in the file.
      *
      * @return CvList List of CV sources
      */
@@ -94,7 +102,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Where any people or orgs referenced elsewhere in the file must go
+     * Where any people or orgs referenced elsewhere in the file must go.
      *
      * @return A collection of the above entities
      */
@@ -122,7 +130,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create the contact and software provider element
+     * Create the contact and software provider element.
      *
      * @return Provider element
      */
@@ -172,7 +180,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Assemble protein and peptide data into a sequence collection
+     * Assemble protein and peptide data into a sequence collection.
      *
      * @return A sequence collection
      */
@@ -245,7 +253,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * This needs a better name ASAP
+     * This needs a better name ASAP.
      *
      * @param name
      * @param type
@@ -274,7 +282,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Get a single data item in the specified object type
+     * Get a single data item in the specified object type.
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
@@ -311,4 +319,5 @@ public class MzIdentMLExporter {
 
         return item.get(0);
     }
+    
 }
