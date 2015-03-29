@@ -45,7 +45,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     private int buffer;
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
         File tempDirectory = Files.createTempDir();
         if (tempDirectory.exists()) {
             return this.unpackPeptideShakerCpsArchive(peptideShakerCpsArchive, tempDirectory);
@@ -55,7 +55,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         CpsParent cpsParent = new CpsParent();
@@ -72,7 +72,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     }
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException, SQLException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
         //unpacked PeptideShakerImport .cps archive
         UnpackedPeptideShakerImport unpackedPeptideShakerImport = unpackPeptideShakerCpsArchive(peptideShakerDataImport.getPeptideShakerCpsArchive());
 

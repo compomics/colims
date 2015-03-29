@@ -98,7 +98,7 @@ public class UtilitiesProteinMapper {
                 }
             }
             targetPeptide.setPeptideHasProteins(peptideHasProteins);
-        } catch (IOException | IllegalArgumentException | InterruptedException | ClassNotFoundException ex) {
+        } catch (IOException | IllegalArgumentException | InterruptedException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
         }

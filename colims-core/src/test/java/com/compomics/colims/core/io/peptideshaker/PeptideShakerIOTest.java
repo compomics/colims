@@ -39,10 +39,11 @@ public class PeptideShakerIOTest {
      * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
     @Test
-    public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException {
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
+    public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -69,18 +70,19 @@ public class PeptideShakerIOTest {
      * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
     @Test
-    public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException {
-        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
+    public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
+        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
 
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
 
         PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDb, mgfFiles);
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport);

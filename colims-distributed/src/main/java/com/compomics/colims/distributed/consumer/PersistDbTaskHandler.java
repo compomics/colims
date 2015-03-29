@@ -124,8 +124,9 @@ public class PersistDbTaskHandler {
      * @throws java.lang.ClassNotFoundException                       thrown in case of a failure to load a class by
      *                                                                it's string name
      * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
+     * @throws InterruptedException                                   thrown in case a thread is interrupted
      */
-    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException {
+    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
         List<AnalyticalRun> analyticalRuns = null;
 
         switch (persistDbTask.getPersistMetadata().getStorageType()) {

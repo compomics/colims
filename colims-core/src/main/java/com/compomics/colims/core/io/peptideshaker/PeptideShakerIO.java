@@ -23,8 +23,9 @@ public interface PeptideShakerIO {
      * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException;
 
     /**
      * Unpack a PeptideShaker .cps file and return an UnpackedPeptideShakerImport instance. The .cps archive is unzipped
@@ -36,8 +37,9 @@ public interface PeptideShakerIO {
      * @throws IOException            thrown in case of an IO related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException;
 
     /**
      * Unpack the given PeptideShakerImport instance: unpack the PeptideShaker .cps file and return an
@@ -49,6 +51,7 @@ public interface PeptideShakerIO {
      * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException, SQLException;
+    UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException;
 }

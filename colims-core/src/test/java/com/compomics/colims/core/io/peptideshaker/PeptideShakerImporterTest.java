@@ -66,7 +66,7 @@ public class PeptideShakerImporterTest {
     }
 
     @Test
-    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException {
+    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile());
         //set mgf files and fasta file

@@ -117,7 +117,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         annotationPreferences.addIonType(Ion.IonType.PEPTIDE_FRAGMENT_ION, PeptideFragmentIon.B_ION);
         annotationPreferences.addIonType(Ion.IonType.PEPTIDE_FRAGMENT_ION, PeptideFragmentIon.Y_ION);
         annotationPreferences.addIonType(Ion.IonType.IMMONIUM_ION);
-        annotationPreferences.addSelectedCharge(1);
+        // @todo update to latest utilities version
+//        annotationPreferences.addSelectedCharge(1);
 
         setUpGui();
     }
@@ -1059,7 +1060,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             }
 
             for (int availableCharge : chargeMenus.keySet()) {
-                chargeMenus.get(availableCharge).setSelected(annotationPreferences.getValidatedCharges().contains(availableCharge));
+                // @todo update to latest utilities version
+//                chargeMenus.get(availableCharge).setSelected(annotationPreferences.getValidatedCharges().contains(availableCharge));
             }
         }
 
@@ -1181,16 +1183,16 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             }
         }
 
-        annotationPreferences.clearCharges();
-
         for (int charge : chargeMenus.keySet()) {
             if (chargeMenus.get(charge).isSelected()) {
-                annotationPreferences.addSelectedCharge(charge);
+                // @todo update to latest utilities version
+//                annotationPreferences.addSelectedCharge(charge);
             }
         }
 
         annotationPreferences.useAutomaticAnnotation(automaticAnnotationCheckBoxMenuItem.isSelected());
-        annotationPreferences.setNeutralLossesSequenceDependant(adaptCheckBoxMenuItem.isSelected());
+        // @todo update to lastest utilities version
+//        annotationPreferences.setNeutralLossesSequenceDependant(adaptCheckBoxMenuItem.isSelected());
 
         annotationPreferences.setShowAllPeaks(allCheckBoxMenuItem.isSelected());
 
@@ -1286,22 +1288,22 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         return null;
     }
 
-//    @Override
+    //    @Override
     public void setSelectedExportFolder(String selectedFolder) {
         // @TODO: implement me!
     }
 
-//    @Override
+    //    @Override
     public String getDefaultExportFolder() {
         return new File("user.home").getAbsolutePath(); // @TODO: implement me!
     }
 
-//    @Override
+    //    @Override
     public Image getNormalIcon() {
         return Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/compomics-utilities.png")); // @TODO: replace by colims icon
     }
 
-//    @Override
+    //    @Override
     public Image getWaitingIcon() {
         return Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/compomics-utilities.png")); // @TODO: replace by colims icon
     }
@@ -1422,9 +1424,9 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         } else {
             for (int i = 0; i < names.size(); i++) {
 
-                if (annotationPreferences.areNeutralLossesSequenceDependant()) {
+                if (annotationPreferences.areNeutralLossesSequenceAuto()) {
                     selected = false;
-                    for (NeutralLoss neutralLoss : annotationPreferences.getNeutralLosses().getAccountedNeutralLosses()) {
+                    for (NeutralLoss neutralLoss : annotationPreferences.getNeutralLosses()) {
                         if (neutralLoss.isSameAs(neutralLoss)) {
                             selected = true;
                             break;
@@ -1439,7 +1441,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                 lossMenuItem.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         annotationPreferences.useAutomaticAnnotation(false);
-                        annotationPreferences.setNeutralLossesSequenceDependant(false);
+                        // @todo update to latest utilities version
+//                        annotationPreferences.setNeutralLossesSequenceDependant(false);
                         updateAnnotationPreferences();
                     }
                 });
@@ -1470,7 +1473,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             JCheckBoxMenuItem chargeMenuItem = new JCheckBoxMenuItem(charge + "+");
 
             if (annotationPreferences.useAutomaticAnnotation()) {
-                chargeMenuItem.setSelected(annotationPreferences.getValidatedCharges().contains(charge));
+                // @todo update to lastest utilities version
+//                chargeMenuItem.setSelected(annotationPreferences.getValidatedCharges().contains(charge));
             } else {
                 if (selectedCharges.contains(charge + "+")) {
                     chargeMenuItem.setSelected(true);
@@ -1491,11 +1495,11 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         }
 
         automaticAnnotationCheckBoxMenuItem.setSelected(annotationPreferences.useAutomaticAnnotation());
-        adaptCheckBoxMenuItem.setSelected(annotationPreferences.areNeutralLossesSequenceDependant());
+        adaptCheckBoxMenuItem.setSelected(annotationPreferences.areNeutralLossesSequenceAuto());
 
         // disable/enable the neutral loss options
         for (JCheckBoxMenuItem lossMenuItem : lossMenus.values()) {
-            lossMenuItem.setEnabled(!annotationPreferences.areNeutralLossesSequenceDependant());
+            lossMenuItem.setEnabled(!annotationPreferences.areNeutralLossesSequenceAuto());
         }
 
         allCheckBoxMenuItem.setSelected(annotationPreferences.showAllPeaks());

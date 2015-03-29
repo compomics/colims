@@ -41,6 +41,8 @@ import com.compomics.util.gui.spectrum.MassErrorPlot;
 import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.preferences.AnnotationPreferences;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
+import com.compomics.util.preferences.SpecificAnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -445,15 +447,16 @@ public class ProjectOverviewController implements Controllable {
 
                         // @TODO: re-add the line below
                         //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
-                        ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(annotationPreferences.getIonTypes(),
-                                annotationPreferences.getNeutralLosses(),
-                                annotationPreferences.getValidatedCharges(),
-                                identificationCharge,
-                                spectrum, peptideAssumption.getPeptide(),
-                                spectrum.getIntensityLimit(annotationPreferences.getAnnotationIntensityLimit()),
-                                annotationPreferences.getFragmentIonAccuracy(),
-                                false,
-                                false);
+
+                        SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
+                                spectrum.getSpectrumKey(),
+                                peptideAssumption,
+                                new SequenceMatchingPreferences());
+                        ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(
+                                annotationPreferences,
+                                specificAnnotationPreferences,
+                                (MSnSpectrum) spectrum,
+                                peptideAssumption.getPeptide());
                         spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
                         //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
 
