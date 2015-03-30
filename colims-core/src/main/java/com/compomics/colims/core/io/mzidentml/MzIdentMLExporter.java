@@ -22,22 +22,25 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
- * mzIdentML exporter, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them
- * into valid XML
+ * mzIdentML exporter, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them into
+ * valid XML
+ *
  * @author Iain
  */
 @Component
 public class MzIdentMLExporter {
-    // TODO: are these only filled in on production build?
+    /**
+     * Logger instance.
+     */
+    private static final Logger logger = Logger.getLogger(MzIdentMLExporter.class);
 
+    // TODO: are these only filled in on production build?
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
     @Value("${colims-core.version}")
     private final String COLIMS_VERSION = "latest";
 
     private static final String DATA_FILE = "/config/mzidentml.json";   // TODO: a better name
-
-    private Logger logger = Logger.getLogger(MzIdentMLExporter.class);
 
     private ObjectMapper mapper;
     private JsonNode mzIdentMLParamList;
@@ -49,7 +52,7 @@ public class MzIdentMLExporter {
     private UserRepository userRepository;
 
     /**
-     * Set up JSON mapper and export a run in MzIdentML format
+     * Set up JSON mapper and export a run in MzIdentML format.
      */
     public String export(AnalyticalRun run) throws IOException {
         mapper = new ObjectMapper();
@@ -63,7 +66,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Assemble necessary data into an MZIdentML object and it's many properties
+     * Assemble necessary data into an MZIdentML object and it's many properties.
+     *
      * @return MZIdentML A fully furnished (hopefully) object
      */
     private MzIdentML base() throws IOException {
@@ -86,7 +90,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Construct a list of CV sources used in the file
+     * Construct a list of CV sources used in the file.
+     *
      * @return CvList List of CV sources
      */
     private CvList cvList() throws IOException {
@@ -98,7 +103,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create collection for associated entities, add the owner of this run
+     * Create collection for associated entities, add the owner of this run.
+     *
      * @return An audit collection
      */
     private void auditCollection() throws IOException {
@@ -149,7 +155,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create the contact and software provider element
+     * Create the contact and software provider element.
+     *
      * @return Provider element
      */
     private Provider provider() throws IOException {
@@ -167,7 +174,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Construct the list of analysis software
+     * Construct the list of analysis software.
+     *
      * @return AnalysisSoftwareList the list
      * @throws IOException
      */
@@ -194,7 +202,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Details of the data source for the experiment
+     * Details of the data source for the experiment.
+     *
      * @return Populated DataCollection object
      * @throws IOException if something is missing from the JSON
      */
@@ -231,7 +240,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Gather all data relating to search and protein protocol settings
+     * Gather all data relating to search and protein protocol settings.
+     *
      * @return Analysis Protocol object
      */
     private AnalysisProtocolCollection analysisProtocolCollection() throws IOException {
@@ -351,7 +361,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Iterate the spectrum data for this run and populate the necessary objects with it
+     * Iterate the spectrum data for this run and populate the necessary objects with it.
      */
     private void assembleSpectrumData() throws IOException {
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
@@ -459,7 +469,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create a spectrum identification result from a colims spectrum
+     * Create a spectrum identification result from a colims spectrum.
+     *
      * @param spectrum Spectrum object
      * @return Spectrum identification result
      */
@@ -474,7 +485,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create a spectrum identification item from a colims spectrum
+     * Create a spectrum identification item from a colims spectrum.
+     *
      * @param spectrum Spectrum object
      * @return Spectrum identification item
      */
@@ -491,7 +503,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create an mzIdentML modification from a colims equivalent
+     * Create an mzIdentML modification from a colims equivalent.
+     *
      * @param peptideHasMod Peptide to modification representation
      * @return Equivalent modification
      */
@@ -506,7 +519,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create a new DBSequence from a protein
+     * Create a new DBSequence from a protein.
+     *
      * @param peptideHasProtein Peptide to protein object representation
      * @return Representative DBSequence
      */
@@ -529,9 +543,10 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Get the CV representation of a colims modification
+     * Get the CV representation of a colims modification.
+     *
      * @param modification A colims modification
-     * @param <T> Subclass of AbstractModification
+     * @param <T>          Subclass of AbstractModification
      * @return Modification in CvParam form
      * @throws IOException
      */
@@ -552,10 +567,11 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create a new contact detail object
+     * Create a new contact detail object.
+     *
      * @param name Contact name
      * @param type Desired return type
-     * @param <T> Subclass of AbstractContact
+     * @param <T>  Subclass of AbstractContact
      * @return Contact as subclass of AbstractContact
      */
     private <T extends AbstractContact> T getContact(String name, Class<T> type) throws IOException {
@@ -579,10 +595,11 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Get a list of data items mapped to the specified object type
+     * Get a list of data items mapped to the specified object type.
+     *
      * @param name Name of key or dot notation path to key
      * @param type Type of objects to return
-     * @param <T> Subclass of MzIdentMLObject
+     * @param <T>  Subclass of MzIdentMLObject
      * @return List of objects of type T
      */
     public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) throws IOException {
@@ -605,10 +622,11 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Get a single data item in the specified object type
+     * Get a single data item in the specified object type.
+     *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T> Subclass of MzIdentMLObject
+     * @param <T>  Subclass of MzIdentMLObject
      * @return Object of type T
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) throws IOException {
@@ -626,7 +644,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Find a node by name or dot notation path
+     * Find a node by name or dot notation path.
+     *
      * @param name Name or path
      * @return The node
      */
