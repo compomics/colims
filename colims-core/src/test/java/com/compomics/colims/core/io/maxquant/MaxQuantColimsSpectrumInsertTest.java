@@ -138,7 +138,7 @@ public class MaxQuantColimsSpectrumInsertTest {
 
     @Test
     public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
-        User user = userService.findByName("admin1");
+        User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
         int startSpectraCount = spectrumService.findAll().size();

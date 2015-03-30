@@ -31,7 +31,7 @@ public class MaxQuantPsmParserTest {
     private Map<String, String> parameters = new HashMap<>();
     @Autowired
     private MaxQuantParameterParser maxQuantParameterParser;
-    private File evidenceFile;
+    private File folder;
     private File proteinGroupFile;
     private File quantFile;
     @Autowired
@@ -45,9 +45,9 @@ public class MaxQuantPsmParserTest {
      * @throws java.io.IOException
      */
     public MaxQuantPsmParserTest() throws IOException, HeaderEnumNotInitialisedException {
-        evidenceFile = new ClassPathResource("data/maxquant/evidence_subset_1000.tsv").getFile();
-        proteinGroupFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
-        quantFile = new ClassPathResource("data/maxquant/evidence_subset_quant10.tsv").getFile();
+        folder = new ClassPathResource("data/maxquant_1512").getFile();
+        proteinGroupFile = new ClassPathResource("data/maxquant_1512/proteinGroups.txt").getFile();
+        quantFile = new ClassPathResource("data/maxquant_1512/evidence.txt").getFile();
         //  proteinGroupFileNoMatches = new File(getClass().getClassLoader().getResource("data/maxquant/proteinGroups.txt").getPath());
         //parameters = maxQuantParameterParser.parseExperimentParams(new ClassPathResource("data/maxquant").getFile());
         parameters.put("multiplicity", "2");
@@ -65,56 +65,56 @@ public class MaxQuantPsmParserTest {
         Map<Integer, ProteinMatch> proteinGroupMap = maxQuantProteinGroupParser.parse(proteinGroupFile);
 
         //first test if the proteingroups are parsed correctly
-        assertThat(proteinGroupMap.keySet().size(), is(1760));
-        assertThat(proteinGroupMap.get(1438), is(notNullValue()));
+        assertThat(proteinGroupMap.keySet().size(), is(131));
+        assertThat(proteinGroupMap.get(128), is(notNullValue()));
         //assertThat(proteinGroupMap.get(1438).getPeptideCount(),is(7));
         //assertThat(Integer.parseInt(proteinGroupMap.get(1438).getPeptideMatches().get(3)),is(7150));
         //assertThat(proteinGroupMap.get(1438).isDecoy(), is(false));
         assertThat(proteinGroupMap.get(9999), is(nullValue()));
         //assertThat(proteinGroupMap.get(1759).isDecoy(), is(true));
 
-        maxQuantEvidenceParser.parse(evidenceFile, parameters.get("multiplicity"));
+        maxQuantEvidenceParser.parse(folder, parameters.get("multiplicity"));
 
         //then test if the peptides were properly parsed
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.size(), is(2408));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.size(), is(580));
         assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getSequence(),is(not(nullValue())));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getSequence(), is("AAAAGENEEWTTDYPHFADVADQEGFPAIATMYR"));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getParentProteinsNoRemapping().size(), is(2));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getMass(), closeTo(3743.6475, 0.0001));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getSequence(), is("AAATPESQEPQAK"));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getParentProteinsNoRemapping().size(), is(1));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getMass(), closeTo(1326.6415, 0.0001));
 
         //is unmodified
         assertThat(maxQuantEvidenceParser.peptideAssumptions.get(4).getPeptide().getModificationMatches().isEmpty(), is(true));
 
         //test modifications
         //acetyl only
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(175),is(not(nullValue())));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(175).getPeptide().getModificationMatches().size(), is(1));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(175).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("acetyl (protein n-term)"));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(51),is(not(nullValue())));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(51).getPeptide().getModificationMatches().size(), is(1));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(51).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("acetyl (protein n-term)"));
         //is N-term
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(175).getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
+        //assertThat(maxQuantEvidenceParser.peptideAssumptions.get(175).getPeptide().getModificationMatches().get(0).getModificationSite(), is(0));
         //oxidation only
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().size(), is(1));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(11));
+        //assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().size(), is(1));
+        //assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().get(0).getTheoreticPtm(), is("oxidation (m)"));
+        //assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2249).getPeptide().getModificationMatches().get(0).getModificationSite(), is(11));
         //both (don't have an entry for this yet)
 
         //and test if the assumptions were parsed correctly
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2319).getScore(), is(109.6));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2407).getScore(), is(107.17));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(231).getScore(), is(136.7));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(240).getScore(), is(125.72));
 
         //test link between protein groups and peptides
-        assertThat(proteinGroupMap.get(Integer.parseInt(maxQuantEvidenceParser.peptideAssumptions.get(2246).getPeptide().getParentProteinsNoRemapping().get(0))).getMainMatch(), is("Q9VPR3"));
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2).getPeptide().getParentProteinsNoRemapping().size(), is(2));
-        assertThat(Integer.parseInt(maxQuantEvidenceParser.peptideAssumptions.get(2).getPeptide().getParentProteinsNoRemapping().get(1)), is(1100));
+        assertThat(proteinGroupMap.get(Integer.parseInt(maxQuantEvidenceParser.peptideAssumptions.get(246).getPeptide().getParentProteinsNoRemapping().get(0))).getMainMatch(), is("P29351-3"));
+        assertThat(maxQuantEvidenceParser.peptideAssumptions.get(2).getPeptide().getParentProteinsNoRemapping().size(), is(1));
+        assertThat(Integer.parseInt(maxQuantEvidenceParser.peptideAssumptions.get(1).getPeptide().getParentProteinsNoRemapping().get(0)), is(72));
 
         maxQuantEvidenceParser.clear();
-        maxQuantEvidenceParser.parse(quantFile, parameters.get("multiplicity"));
+        maxQuantEvidenceParser.parse(folder, parameters.get("multiplicity"));
 
         //first test if the quantifications are parsed correctly
-        assertThat(maxQuantEvidenceParser.quantifications.keySet().size(), is(15));
+        assertThat(maxQuantEvidenceParser.quantifications.keySet().size(), is(580));
 
-        assertThat(maxQuantEvidenceParser.quantifications.get(11).get(0).getIntensity(), is(2169200.0));
-        assertThat(maxQuantEvidenceParser.quantifications.get(11).get(1).getIntensity(), is(2294200.0));
+        assertThat(maxQuantEvidenceParser.quantifications.get(11).get(0).getIntensity(), is(153270.0));
+        assertThat(maxQuantEvidenceParser.quantifications.get(11).get(1).getIntensity(), is(27554.0));
 
         assertThat(maxQuantEvidenceParser.quantifications.get(11).get(1).getWeight(), is(QuantificationWeight.HEAVY));
         assertThat(maxQuantEvidenceParser.quantifications.get(11).get(0).getWeight(), is(QuantificationWeight.LIGHT));

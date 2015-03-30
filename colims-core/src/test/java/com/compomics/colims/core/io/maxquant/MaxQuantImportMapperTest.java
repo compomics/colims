@@ -37,9 +37,9 @@ public class MaxQuantImportMapperTest {
     private FastaDb maxQuantTestFastaDb;
 
     public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
+        maxQuantTextDirectory = new ClassPathResource("data/maxquant_1512").getFile();
         
-        File fastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/maxquant_1512/mouse.fasta").getFile();
         maxQuantTestFastaDb = new FastaDb();
         maxQuantTestFastaDb.setName(fastaFile.getName());
         maxQuantTestFastaDb.setFileName(fastaFile.getName());

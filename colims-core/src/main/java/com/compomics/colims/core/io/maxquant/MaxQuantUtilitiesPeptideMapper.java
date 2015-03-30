@@ -45,7 +45,7 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
             ptmScores.addConfidentModificationSite(match.getTheoreticPtm(), match.getModificationSite());
             ptmScores.addPtmScoring(match.getTheoreticPtm(), ptmScoring);
         }
-        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);
+        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target, (PeptidePosition) source.getUrParam(new PeptidePosition()));
     }
 
     /**

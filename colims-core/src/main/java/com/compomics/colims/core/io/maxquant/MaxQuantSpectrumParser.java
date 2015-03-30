@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component("maxQuantSpectrumParser")
 public class MaxQuantSpectrumParser {
 
-    public Map<Integer, FragmentationType> parseFragmenations(final File msmsFile) throws IOException, UnparseableException, HeaderEnumNotInitialisedException {
+    public Map<Integer, FragmentationType> parseFragmentations(final File msmsFile) throws IOException, UnparseableException, HeaderEnumNotInitialisedException {
         Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, MaxQuantMSMSHeaders.values());
