@@ -34,12 +34,12 @@ See the [http://code.google.com/p/colims/wiki wiki] for additional information o
 
 Colims has been developed as part of the [ProteomeXchange](http://www.proteomexchange.org) Infrastructure project of the [7th Framework Programme](http://cordis.europa.eu/fp7/home_en.html) of the [http://ec.europa.eu/index_en.htm European Commission], funded under contract number 260558.
 
-[http://www.proteomexchange.org/ http://genesis.ugent.be/public_data/image/proteomeXChangeLogo.PNG] 
-[http://cordis.europa.eu/fp7/home_en.html http://cordis.europa.eu/icons/fp7_en.gif]
-[http://ec.europa.eu/index_en.htm http://ec.europa.eu/wel/template-2009/images/banner/european-commission-flag.jpg]
+[http://www.proteomexchange.org/](http://genesis.ugent.be/public_data/image/proteomeXChangeLogo.PNG)
+[](http://cordis.europa.eu/fp7/home_en.html http://cordis.europa.eu/icons/fp7_en.gif)
+[http://ec.europa.eu/index_en.htm](http://ec.europa.eu/wel/template-2009/images/banner/european-commission-flag.jpg)
 
 ----
 
-[https://www.jetbrains.com/idea/ https://www.jetbrains.com/idea/docs/logo_intellij_idea.png]
+[https://www.jetbrains.com/idea/]( https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)
 
 [Go to top of page](#colims)
