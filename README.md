@@ -32,10 +32,10 @@ See the [http://code.google.com/p/colims/wiki wiki] for additional information o
 
 ## Project Funding
 
-Colims has been developed as part of the [ProteomeXchange](http://www.proteomexchange.org) Infrastructure project of the [7th Framework Programme](http://cordis.europa.eu/fp7/home_en.html) of the [http://ec.europa.eu/index_en.htm European Commission], funded under contract number 260558.
+Colims has been developed as part of the [ProteomeXchange](http://www.proteomexchange.org) Infrastructure project of the [7th Framework Programme](http://cordis.europa.eu/fp7/home_en.html) of the [European Commission](http://ec.europa.eu/index_en.htm European Commission), funded under contract number 260558.
 
 ![http://www.proteomexchange.org/](http://genesis.ugent.be/public_data/image/proteomeXChangeLogo.PNG)
-![](http://cordis.europa.eu/fp7/home_en.html http://cordis.europa.eu/icons/fp7_en.gif)
+![http://cordis.europa.eu/fp7/home_en.html](http://cordis.europa.eu/icons/fp7_en.gif)
 ![http://ec.europa.eu/index_en.htm](http://ec.europa.eu/wel/template-2009/images/banner/european-commission-flag.jpg)
 
 ----
