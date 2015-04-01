@@ -24,7 +24,7 @@ Download Colims 1.3.2-SNAPSHOT [here](http://genesis.ugent.be/colims/colims-1.3.
 ----
 
 ## Usage
-See the [http://code.google.com/p/colims/wiki wiki] for additional information on how to setup, run and configure colims.
+See the [wiki](https://github.com/compomics/colims/wiki) for additional information on how to setup, run and configure colims.
 
 [Go to top of page](#colims)
 
