@@ -1,6 +1,6 @@
 # colims
 
- * [Project_Description](#project-description)
+ * [Project Description](#project-description)
  * [Downloads](#downloads)
  * [Usage](#usage)
  * [Project Funding](#project-funding)
