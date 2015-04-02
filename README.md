@@ -40,6 +40,6 @@ Colims has been developed as part of the [ProteomeXchange](http://www.proteomexc
 
 ----
 
-![https://www.jetbrains.com/idea/]( https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)
+![https://www.jetbrains.com/idea/ blabla]( https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)
 
 [Go to top of page](#colims)
