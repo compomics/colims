@@ -3,18 +3,54 @@ package com.compomics.colims.repository.impl;
 import com.compomics.colims.model.AnalyticalRun;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.hibernate.criterion.Projections;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
  */
 @Repository("spectrumRepository")
+@Transactional
 public class SpectrumHibernateRepository extends GenericHibernateRepository<Spectrum, Long> implements SpectrumRepository {
+
+    @Override
+    public List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+        Criteria criteria = createCriteria()
+            .add(Restrictions.eq("analyticalRun", analyticalRun))
+            .setFirstResult(start)
+            .setMaxResults(length);
+
+        if (direction.equals("asc")) {
+            criteria.addOrder(Order.asc(orderBy));
+        } else {
+            criteria.addOrder(Order.desc(orderBy));
+        }
+
+        if (filter != null) {
+            String searchTerm = "%" + filter + "%";
+
+            criteria.createAlias("peptides", "peptide")
+                .createAlias("peptide.peptideHasProteins", "peptideHasProtein")
+                .createAlias("peptideHasProtein.protein", "protein")
+                .createAlias("protein.proteinAccessions", "accession")
+                .add(Restrictions.disjunction()
+                    .add(Restrictions.like("accession", searchTerm))
+                    .add(Restrictions.like("title", searchTerm))
+                    .add(Restrictions.like("peptide.sequence", searchTerm))
+                    .add(Restrictions.like("accession.accession", searchTerm))
+                );
+        }
+
+        return criteria.list();
+    }
 
     @Override
     public Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun) {

@@ -52,6 +52,29 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
         }
     }
 
+    public static String getColumnDbName(int column) {
+        switch (column) {
+            case SPECTRUM_ID:
+                return "id";
+            case PRECURSOR_CHARGE:
+                return "charge";
+            case PRECURSOR_MZRATIO:
+                return "mz_ratio";
+            case PRECURSOR_INTENSITY:
+                return "intensity";
+            case RETENTION_TIME:
+                return "retentionTime";
+            case PEPTIDE_SEQUENCE:
+                return "peptide.sequence";
+            case PSM_CONFIDENCE:
+                return "peptide.confidence";
+            case PROTEIN_ACCESSIONS:
+                return "accession.accession";
+            default:
+                throw new IllegalArgumentException("Unexpected column number " + column);
+        }
+    }
+
     @Override
     public Comparator getColumnComparator(int column) {
         return GlazedLists.comparableComparator();

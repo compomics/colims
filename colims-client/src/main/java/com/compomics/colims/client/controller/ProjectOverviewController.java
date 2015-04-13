@@ -28,6 +28,7 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.comparator.IdComparator;
+import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
@@ -49,15 +50,19 @@ import com.google.common.eventbus.Subscribe;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.JTableHeader;
 
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -103,6 +108,13 @@ public class ProjectOverviewController implements Controllable {
      * The label with for the numbers in the jsparklines columns.
      */
     private final int labelWidth = 50;
+
+    private int currentPagePsm;
+    private int perPagePsm;
+    private String sortColumnPsm;
+    private String sortDirectionPsm;
+    private String filterPsm;
+
     //view
     private ProjectOverviewPanel projectOverviewPanel;
     //parent controller
@@ -121,6 +133,8 @@ public class ProjectOverviewController implements Controllable {
     private PsmMapper psmMapper;
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private SpectrumRepository spectrumRepository;
 
     /**
      * Get the view of this controller.
@@ -133,6 +147,8 @@ public class ProjectOverviewController implements Controllable {
 
     @Override
     public void init() {
+        resetPsmTable();
+
         //register to event bus
         eventBus.register(this);
 
@@ -226,7 +242,7 @@ public class ProjectOverviewController implements Controllable {
         TableComparatorChooser analyticalRunsTableSorter = TableComparatorChooser.install(
                 projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
 
-        //init sample analyticalruns table
+        //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, new IdComparator());
         psmsTableModel = GlazedListsSwing.eventTableModel(sortedPsms, new PsmTableFormat());
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
@@ -247,8 +263,8 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PROTEIN_ACCESSIONS).setPreferredWidth(300);
 
         //set sorting
-        TableComparatorChooser psmTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getPsmTable(), sortedPsms, TableComparatorChooser.SINGLE_COLUMN);
+//        TableComparatorChooser psmTableSorter = TableComparatorChooser.install(
+//                projectOverviewPanel.getPsmTable(), sortedPsms, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -300,20 +316,8 @@ public class ProjectOverviewController implements Controllable {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
-                    AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
-                    if (selectedAnalyticalRun != null) {
-                        colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
-                        setPsmTableCellRenderers();
-
-                        analyticalRunService.fetchSpectra(selectedAnalyticalRun);
-                        //fill psm table
-                        GlazedLists.replaceAll(spectra, selectedAnalyticalRun.getSpectrums(), false);
-
-                        colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-                    } else {
-                        GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
-                    }
+                    resetPsmTable();
+                    updatePsmTable();
                 }
             }
         });
@@ -327,11 +331,69 @@ public class ProjectOverviewController implements Controllable {
                 }
             }
         });
+
+        projectOverviewPanel.getPsmTable().getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String sortColumn = PsmTableFormat.getColumnDbName(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
+
+                if (sortColumn.equals(sortColumnPsm)) {
+                    sortDirectionPsm = sortDirectionPsm == "asc" ? "desc" : "asc";
+                } else {
+                    sortColumnPsm = sortColumn;
+                    sortDirectionPsm = "asc";
+                }
+
+                updatePsmTable();
+            }
+        });
+
+        projectOverviewPanel.getNextPageSpectra().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO: disable button if max
+                ++currentPagePsm;
+                updatePsmTable();
+            }
+        });
+
+        projectOverviewPanel.getPrevPageSpectra().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO: disable button if min
+                --currentPagePsm;
+                updatePsmTable();
+            }
+        });
     }
 
     @Override
     public void showView() {
         //do nothing
+    }
+
+    private void updatePsmTable() {
+        AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+        if (selectedAnalyticalRun != null) {
+            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+
+            setPsmTableCellRenderers();
+
+            //fill psm table
+            GlazedLists.replaceAll(spectra, spectrumRepository.getPagedSpectra(selectedAnalyticalRun, currentPagePsm * perPagePsm, perPagePsm, sortColumnPsm, sortDirectionPsm, filterPsm), false);
+
+            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        } else {
+            GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
+        }
+    }
+
+    private void resetPsmTable() {
+        currentPagePsm = 0;
+        perPagePsm = 20;
+        sortColumnPsm = "id";
+        sortDirectionPsm = "asc";
+        filterPsm = null;
     }
 
     /**

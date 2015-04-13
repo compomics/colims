@@ -403,16 +403,16 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="psmPanel" max="32767" attributes="0"/>
-                  <Component id="projectsPanel" max="32767" attributes="0"/>
+                  <Component id="projectsPanel" pref="197" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="experimentsPanel" max="32767" attributes="0"/>
+                      <Component id="experimentsPanel" pref="179" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="samplesPanel" max="32767" attributes="0"/>
+                      <Component id="samplesPanel" pref="181" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="analyticalRunsPanel" max="32767" attributes="0"/>
+                      <Component id="analyticalRunsPanel" pref="181" max="32767" attributes="0"/>
                   </Group>
                   <Component id="spectrumMainPanel" max="32767" attributes="0"/>
               </Group>
@@ -440,7 +440,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="projectsScrollPane" pref="274" max="32767" attributes="0"/>
+                  <Component id="projectsScrollPane" pref="264" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -517,7 +517,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="experimentsScrollPane" pref="274" max="32767" attributes="0"/>
+                  <Component id="experimentsScrollPane" pref="264" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -526,7 +526,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="experimentsScrollPane" pref="131" max="32767" attributes="0"/>
+                  <Component id="experimentsScrollPane" pref="117" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -585,7 +585,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="samplesScrollPane" pref="274" max="32767" attributes="0"/>
+                  <Component id="samplesScrollPane" pref="264" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -594,7 +594,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="samplesScrollPane" pref="131" max="32767" attributes="0"/>
+                  <Component id="samplesScrollPane" pref="117" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -653,7 +653,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="analyticalRunsScrollPane" pref="274" max="32767" attributes="0"/>
+                  <Component id="analyticalRunsScrollPane" pref="264" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -662,7 +662,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="analyticalRunsScrollPane" pref="131" max="32767" attributes="0"/>
+                  <Component id="analyticalRunsScrollPane" pref="119" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -716,10 +716,20 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="psmScrollPane" pref="1011" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="psmScrollPane" pref="1011" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="prevPageSpectra" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="pageSelectPsm" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="nextPageSpectra" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -727,8 +737,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="psmScrollPane" pref="131" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="psmScrollPane" pref="107" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="nextPageSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="prevPageSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="pageSelectPsm" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
         </DimensionLayout>
@@ -805,6 +820,28 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="nextPageSpectra">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Next"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="prevPageSpectra">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Prev"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="pageSelectPsm">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="4">
+                <StringItem index="0" value="Item 1"/>
+                <StringItem index="1" value="Item 2"/>
+                <StringItem index="2" value="Item 3"/>
+                <StringItem index="3" value="Item 4"/>
+              </StringArray>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="spectrumMainPanel">
@@ -945,7 +982,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="spectrumPaddingPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="spectrumJPanel" pref="386" max="32767" attributes="0"/>
+                              <Component id="spectrumJPanel" pref="378" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>

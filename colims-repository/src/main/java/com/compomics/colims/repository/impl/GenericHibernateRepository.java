@@ -72,13 +72,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public List<T> findByNamedQuery(final String queryName, final Object... params) {
-        Query namedQuey = getCurrentSession().getNamedQuery(queryName);
+        Query namedQuery = getCurrentSession().getNamedQuery(queryName);
 
         for (int i = 0; i < params.length; i++) {
-            namedQuey.setParameter(i + 1, params[i]);
+            namedQuery.setParameter(i + 1, params[i]);
         }
 
-        return namedQuey.list();
+        return namedQuery.list();
     }
 
     @Override
