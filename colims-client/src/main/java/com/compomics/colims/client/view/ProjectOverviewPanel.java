@@ -159,8 +159,9 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     }
 
     public JButton getNextPageSpectra() { return nextPageSpectra; }
-
     public JButton getPrevPageSpectra() { return prevPageSpectra; }
+    public JButton getFirstPageSpectra() { return firstPageSpectra; }
+    public JButton getLastPageSpectra() { return lastPageSpectra; }
 
     /**
      * Set up the GUI.
@@ -282,7 +283,9 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         psmTable = new javax.swing.JTable();
         nextPageSpectra = new javax.swing.JButton();
         prevPageSpectra = new javax.swing.JButton();
-        pageSelectPsm = new javax.swing.JComboBox();
+        firstPageSpectra = new javax.swing.JButton();
+        lastPageSpectra = new javax.swing.JButton();
+        filterSpectra = new javax.swing.JTextField();
         spectrumMainPanel = new javax.swing.JPanel();
         spectrumContainerJPanel = new javax.swing.JPanel();
         spectrumJToolBar = new javax.swing.JToolBar();
@@ -682,7 +685,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(experimentsPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                    .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                     .addContainerGap())
         );
 
@@ -733,7 +736,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(samplesPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                    .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                     .addContainerGap())
         );
 
@@ -826,11 +829,21 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         });
         psmScrollPane.setViewportView(psmTable);
 
-        nextPageSpectra.setText("Next");
+        nextPageSpectra.setText(">");
 
-        prevPageSpectra.setText("Prev");
+        prevPageSpectra.setText("<");
+        prevPageSpectra.setEnabled(false);
 
-        pageSelectPsm.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+        firstPageSpectra.setText("<<");
+        firstPageSpectra.setEnabled(false);
+
+        lastPageSpectra.setText(">>");
+
+        filterSpectra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSpectraActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout psmPanelLayout = new javax.swing.GroupLayout(psmPanel);
         psmPanel.setLayout(psmPanelLayout);
@@ -842,23 +855,30 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                     .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, psmPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(prevPageSpectra)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pageSelectPsm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nextPageSpectra)))
+                        .addGroup(psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, psmPanelLayout.createSequentialGroup()
+                                .addComponent(firstPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(prevPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(nextPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lastPageSpectra))
+                            .addComponent(filterSpectra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         psmPanelLayout.setVerticalGroup(
             psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(psmPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                .addComponent(filterSpectra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                 .addGap(16, 16, 16)
                 .addGroup(psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nextPageSpectra)
                     .addComponent(prevPageSpectra)
-                    .addComponent(pageSelectPsm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(firstPageSpectra)
+                    .addComponent(lastPageSpectra)))
         );
 
         spectrumMainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("spectrum"));
@@ -915,7 +935,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             .addGroup(spectrumOuterJPanelLayout.createSequentialGroup()
                 .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
+                .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
         );
 
         spectrumSplitPane.setRightComponent(spectrumOuterJPanel);
@@ -942,7 +962,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         spectrumMainPanel.setLayout(spectrumMainPanelLayout);
         spectrumMainPanelLayout.setHorizontalGroup(
             spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1031, Short.MAX_VALUE)
+            .addGap(0, 1041, Short.MAX_VALUE)
             .addGroup(spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(spectrumMainPanelLayout.createSequentialGroup()
                     .addContainerGap()
@@ -985,15 +1005,15 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(psmPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
+                        .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                     .addComponent(spectrumMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1158,6 +1178,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                 "PeptideShaker - Help");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_helpMenuItemActionPerformed
+
+    private void filterSpectraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSpectraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filterSpectraActionPerformed
 
     /**
      * Save the current annotation preferences selected in the annotation menus.
@@ -1606,6 +1630,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JPopupMenu.Separator exportSpectrumGraphicsSeparator;
     private javax.swing.JMenu exportSpectrumMenu;
     private javax.swing.JMenuItem exportSpectrumValuesJMenuItem;
+    private javax.swing.JTextField filterSpectra;
+    private javax.swing.JButton firstPageSpectra;
     private javax.swing.JCheckBoxMenuItem forwardIonsDeNovoCheckBoxMenuItem;
     private javax.swing.JMenu helpJMenu;
     private javax.swing.JMenuItem helpMenuItem;
@@ -1615,11 +1641,11 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JButton lastPageSpectra;
     private javax.swing.JMenu lossMenu;
     private javax.swing.JMenu lossSplitter;
     private javax.swing.JButton nextPageSpectra;
     private javax.swing.JMenu otherMenu;
-    private javax.swing.JComboBox pageSelectPsm;
     private javax.swing.JCheckBoxMenuItem precursorCheckMenu;
     private javax.swing.JButton prevPageSpectra;
     private javax.swing.JPanel projectsPanel;

@@ -15,6 +15,8 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
 
     List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter);
 
+    int getSpectraCount(AnalyticalRun analyticalRun);
+
     /**
      * Count the spectra associated to the given analytical run.
      *

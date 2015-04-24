@@ -12,6 +12,7 @@ import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
+import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
@@ -48,8 +49,7 @@ import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -58,11 +58,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.JTableHeader;
 
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -94,7 +92,7 @@ public class ProjectOverviewController implements Controllable {
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private final EventList<Spectrum> spectra = new BasicEventList<>();
-    private AdvancedTableModel<Spectrum> psmsTableModel;
+    private PsmTableModel psmsTableModel;
     private DefaultEventSelectionModel<Spectrum> psmsSelectionModel;
     /**
      * The spectrum annotator.
@@ -108,12 +106,6 @@ public class ProjectOverviewController implements Controllable {
      * The label with for the numbers in the jsparklines columns.
      */
     private final int labelWidth = 50;
-
-    private int currentPagePsm;
-    private int perPagePsm;
-    private String sortColumnPsm;
-    private String sortDirectionPsm;
-    private String filterPsm;
 
     //view
     private ProjectOverviewPanel projectOverviewPanel;
@@ -147,8 +139,6 @@ public class ProjectOverviewController implements Controllable {
 
     @Override
     public void init() {
-        resetPsmTable();
-
         //register to event bus
         eventBus.register(this);
 
@@ -175,7 +165,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
+            projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
@@ -197,7 +187,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
+            projectOverviewPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
 
         //init experiment samples table
         SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
@@ -218,7 +208,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser samplesTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
+            projectOverviewPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample analyticalruns table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
@@ -240,11 +230,11 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser analyticalRunsTableSorter = TableComparatorChooser.install(
-                projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
+            projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample spectra table
-        SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, new IdComparator());
-        psmsTableModel = GlazedListsSwing.eventTableModel(sortedPsms, new PsmTableFormat());
+        SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
+        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
         psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -261,10 +251,6 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PEPTIDE_SEQUENCE).setPreferredWidth(300);
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PROTEIN_ACCESSIONS).setPreferredWidth(300);
-
-        //set sorting
-//        TableComparatorChooser psmTableSorter = TableComparatorChooser.install(
-//                projectOverviewPanel.getPsmTable(), sortedPsms, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -315,10 +301,16 @@ public class ProjectOverviewController implements Controllable {
         analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    resetPsmTable();
+                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+
+                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+
+                if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
+                    psmsTableModel.reset(spectrumRepository.getSpectraCount(selectedAnalyticalRun));
                     updatePsmTable();
                 }
+
+                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
@@ -335,14 +327,10 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String sortColumn = PsmTableFormat.getColumnDbName(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
+                String sortColumn = psmsTableModel.getColumnDbName(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
 
-                if (sortColumn.equals(sortColumnPsm)) {
-                    sortDirectionPsm = sortDirectionPsm == "asc" ? "desc" : "asc";
-                } else {
-                    sortColumnPsm = sortColumn;
-                    sortDirectionPsm = "asc";
-                }
+                psmsTableModel.updateSort(sortColumn);
+                psmsTableModel.setPage(0);
 
                 updatePsmTable();
             }
@@ -351,18 +339,70 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getNextPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO: disable button if max
-                ++currentPagePsm;
-                updatePsmTable();
+                if (!psmsTableModel.isMaxPage()) {
+                    psmsTableModel.setPage(psmsTableModel.getPage() + 1);
+
+                    projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
+                    projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
+
+                    if (psmsTableModel.isMaxPage()) {
+                        projectOverviewPanel.getNextPageSpectra().setEnabled(false);
+                        projectOverviewPanel.getLastPageSpectra().setEnabled(false);
+                    }
+
+                    updatePsmTable();
+                }
             }
         });
 
         projectOverviewPanel.getPrevPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO: disable button if min
-                --currentPagePsm;
-                updatePsmTable();
+                if (psmsTableModel.getPage() != 0) {
+                    psmsTableModel.setPage(psmsTableModel.getPage() - 1);
+
+                    projectOverviewPanel.getNextPageSpectra().setEnabled(true);
+                    projectOverviewPanel.getLastPageSpectra().setEnabled(true);
+
+                    if (psmsTableModel.getPage() == 0) {
+                        projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
+                        projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
+                    }
+
+                    updatePsmTable();
+                }
+            }
+        });
+
+        projectOverviewPanel.getFirstPageSpectra().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (psmsTableModel.getPage() != 0) {
+                    psmsTableModel.setPage(0);
+
+                    projectOverviewPanel.getNextPageSpectra().setEnabled(true);
+                    projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
+                    projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
+                    projectOverviewPanel.getLastPageSpectra().setEnabled(true);
+
+                    updatePsmTable();
+                }
+            }
+        });
+
+        projectOverviewPanel.getLastPageSpectra().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!psmsTableModel.isMaxPage()) {
+                    psmsTableModel.setPage(psmsTableModel.getMaxPage());
+
+                    projectOverviewPanel.getNextPageSpectra().setEnabled(false);
+                    projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
+                    projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
+                    projectOverviewPanel.getLastPageSpectra().setEnabled(false);
+
+                    updatePsmTable();
+                }
             }
         });
     }
@@ -375,25 +415,12 @@ public class ProjectOverviewController implements Controllable {
     private void updatePsmTable() {
         AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
         if (selectedAnalyticalRun != null) {
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
             setPsmTableCellRenderers();
-
-            //fill psm table
-            GlazedLists.replaceAll(spectra, spectrumRepository.getPagedSpectra(selectedAnalyticalRun, currentPagePsm * perPagePsm, perPagePsm, sortColumnPsm, sortDirectionPsm, filterPsm), false);
-
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            // TODO: something with this
+            GlazedLists.replaceAll(spectra, spectrumRepository.getPagedSpectra(selectedAnalyticalRun, psmsTableModel.getPage() * psmsTableModel.getPerPage(), psmsTableModel.getPerPage(), psmsTableModel.sortColumn, psmsTableModel.sortDirection, psmsTableModel.filter), false);
         } else {
             GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
         }
-    }
-
-    private void resetPsmTable() {
-        currentPagePsm = 0;
-        perPagePsm = 20;
-        sortColumnPsm = "id";
-        sortDirectionPsm = "asc";
-        filterPsm = null;
     }
 
     /**

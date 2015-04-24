@@ -34,7 +34,7 @@ public class SpectrumRepositoryTest extends TestCase {
     public void testFiltering() throws Exception {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "id", "asc", "ABCDEFGH");
+        List spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "spectrum.id", "asc", "ABCDEFGH");
 
         assertTrue(spectrumList.size() < analyticalRun.getSpectrums().size());
     }
@@ -43,7 +43,8 @@ public class SpectrumRepositoryTest extends TestCase {
     public void testSorting() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List<Spectrum> spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "retentionTime", "asc", null);
+        //List<Spectrum> spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "peptide.sequence", "desc", null);
+        List<Spectrum> spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "retention_time", "desc", "");
 
         assertTrue(spectrumList.get(0).getRetentionTime() <= analyticalRun.getSpectrums().get(0).getRetentionTime());
     }
