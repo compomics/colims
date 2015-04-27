@@ -4,11 +4,16 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.repository.SpectrumRepository;
+
+import java.util.List;
 
 /**
  * Created by Iain on 24/04/2015.
  */
 public class PsmTableModel extends DefaultEventTableModel {
+    private SpectrumRepository spectrumRepository;
+
     public static final int SPECTRUM_ID = 0;
     public static final int PRECURSOR_CHARGE = 1;
     public static final int PRECURSOR_MZRATIO = 2;
@@ -25,21 +30,40 @@ public class PsmTableModel extends DefaultEventTableModel {
     public String sortDirection;
     public String filter;
 
-    public PsmTableModel(EventList source, TableFormat tableFormat) {
+    public PsmTableModel(EventList source, TableFormat tableFormat, SpectrumRepository spectrumRepository) {
         super(source, tableFormat);
-        reset(0);
+        reset(null);
+
+        this.spectrumRepository = spectrumRepository;
     }
 
-    public void reset(int rows) {
+    public List getRows(AnalyticalRun analyticalRun) {
+        rowCount = spectrumRepository.getSpectraCountForRun(analyticalRun, sortColumn, filter);
+
+        if (rowCount < page * perPage) {
+            page = getMaxPage();
+        }
+
+        return spectrumRepository.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+    }
+
+    public String getStatusText() {
+        return String.format("Page %d of %d", page + 1, getMaxPage() + 1);
+    }
+
+    public void reset(AnalyticalRun analyticalRun) {
         page = 0;
         perPage = 20;
         sortColumn = getColumnDbName(0);
         sortDirection = "asc";
         filter = "";
-        rowCount = rows;
+        rowCount = analyticalRun == null ? 0 : spectrumRepository.getSpectraCountForRun(analyticalRun, sortColumn, filter);
     }
 
-    public void updateSort(String column) {
+    public void updateSort(int index) {
+        // TODO: further reduce this
+        String column = getColumnDbName(index);
+
         if (column.equals(sortColumn)) {
             sortDirection = sortDirection.equals("asc") ? "desc" : "asc";
         } else {
@@ -91,5 +115,13 @@ public class PsmTableModel extends DefaultEventTableModel {
 
     public int getMaxPage() {
         return (int) Math.floor(rowCount / perPage);
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public void setRowCount(int rowCount) {
+        this.rowCount = rowCount;
     }
 }

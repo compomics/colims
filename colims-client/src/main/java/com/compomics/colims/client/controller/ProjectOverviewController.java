@@ -50,8 +50,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.ListSelectionModel;
@@ -234,7 +233,7 @@ public class ProjectOverviewController implements Controllable {
 
         //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
-        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
+        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat(), spectrumRepository);
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
         psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -306,7 +305,7 @@ public class ProjectOverviewController implements Controllable {
                 AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
                 if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
-                    psmsTableModel.reset(spectrumRepository.getSpectraCount(selectedAnalyticalRun));
+                    psmsTableModel.reset(selectedAnalyticalRun);
                     updatePsmTable();
                 }
 
@@ -327,9 +326,7 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String sortColumn = psmsTableModel.getColumnDbName(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
-
-                psmsTableModel.updateSort(sortColumn);
+                psmsTableModel.updateSort(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
                 psmsTableModel.setPage(0);
 
                 updatePsmTable();
@@ -405,6 +402,21 @@ public class ProjectOverviewController implements Controllable {
                 }
             }
         });
+
+        projectOverviewPanel.getFilterSpectra().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+
+                String filterText = projectOverviewPanel.getFilterSpectra().getText();
+
+                if (filterText.matches("^[a-zA-Z0-9]*$")) {
+                    psmsTableModel.setFilter(projectOverviewPanel.getFilterSpectra().getText());
+
+                    updatePsmTable();
+                }
+            }
+        });
     }
 
     @Override
@@ -414,12 +426,14 @@ public class ProjectOverviewController implements Controllable {
 
     private void updatePsmTable() {
         AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+
         if (selectedAnalyticalRun != null) {
             setPsmTableCellRenderers();
-            // TODO: something with this
-            GlazedLists.replaceAll(spectra, spectrumRepository.getPagedSpectra(selectedAnalyticalRun, psmsTableModel.getPage() * psmsTableModel.getPerPage(), psmsTableModel.getPerPage(), psmsTableModel.sortColumn, psmsTableModel.sortDirection, psmsTableModel.filter), false);
+            GlazedLists.replaceAll(spectra, psmsTableModel.getRows(selectedAnalyticalRun), false);
+            projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getStatusText());
         } else {
             GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
+            projectOverviewPanel.getPageLabelSpectra().setText("");
         }
     }
 

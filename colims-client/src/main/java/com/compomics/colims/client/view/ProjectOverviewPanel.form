@@ -408,11 +408,11 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="experimentsPanel" pref="179" max="32767" attributes="0"/>
+                      <Component id="experimentsPanel" pref="180" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="samplesPanel" pref="179" max="32767" attributes="0"/>
+                      <Component id="samplesPanel" pref="180" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="analyticalRunsPanel" pref="180" max="32767" attributes="0"/>
+                      <Component id="analyticalRunsPanel" pref="181" max="32767" attributes="0"/>
                   </Group>
                   <Component id="spectrumMainPanel" max="32767" attributes="0"/>
               </Group>
@@ -723,7 +723,10 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="filterSpectra" alignment="1" min="-2" pref="162" max="-2" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
+                                  <Component id="pageLabelSpectra" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="firstPageSpectra" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="prevPageSpectra" min="-2" max="-2" attributes="0"/>
@@ -732,7 +735,6 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="lastPageSpectra" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="filterSpectra" alignment="1" min="-2" pref="162" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -752,6 +754,7 @@
                       <Component id="prevPageSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="firstPageSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lastPageSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="pageLabelSpectra" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -855,6 +858,8 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="filterSpectraActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="pageLabelSpectra">
         </Component>
       </SubComponents>
     </Container>

@@ -27,43 +27,49 @@ import java.util.List;
 @Transactional
 public class SpectrumHibernateRepository extends GenericHibernateRepository<Spectrum, Long> implements SpectrumRepository {
 
+    String baseQuery = "SELECT DISTINCT spectrum.id, MAX(%2$s) FROM spectrum " +
+        "LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id " +
+        "LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id " +
+        "LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id " +
+        "LEFT JOIN protein_accession ON protein_accession.l_protein_id = protein.id " +
+        "WHERE (spectrum.id LIKE '%1$s' " +
+        "OR peptide.peptide_sequence LIKE '%1$s' " +
+        "OR protein_accession.accession LIKE '%1$s') " +
+        "GROUP BY spectrum.id ";
+
     @Override
     public List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
-        String sql = "SELECT DISTINCT spectrum.id, MAX(%2$s) FROM spectrum " +
-            "LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id " +
-            "LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id " +
-            "LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id " +
-            "LEFT JOIN protein_accession ON protein_accession.l_protein_id = protein.id " +
-            "WHERE (spectrum.id LIKE '%1$s' " +
-            "OR spectrum.title LIKE '%1$s' " +
-            "OR protein_accession.accession LIKE '%1$s') " +
-            "GROUP BY spectrum.id " +
-            "ORDER BY MAX(%2$s) %3$s, spectrum.id " +
+        String extraParams = "ORDER BY MAX(%2$s) %3$s, spectrum.id " +
             "LIMIT %4$d " +
             "OFFSET %5$d";
 
         // does this guarantee ordering?
-        SQLQuery query = getCurrentSession().createSQLQuery(String.format(sql, "%" + filter + "%", orderBy, direction, length, start))
+        SQLQuery query = getCurrentSession().createSQLQuery(String.format(baseQuery + extraParams, "%" + filter + "%", orderBy, direction, length, start))
             .addScalar("spectrum.id", LongType.INSTANCE);
 
         final List idList = query.list();
+        List<Spectrum> returnList = new ArrayList<>();
 
-        List<Spectrum> returnList = createCriteria()
-            .add(Restrictions.in("id", idList))
-            .list();
+        if (idList.size() > 0) {
+            returnList = createCriteria()
+                .add(Restrictions.in("id", idList))
+                .list();
 
-        // sorting here because unable to pass order by list through criteria
-        Collections.sort(returnList, new Comparator<Spectrum>() {
-            public int compare(Spectrum s1, Spectrum s2) {
-                return Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId()));
-            }
-        });
+            // sorting here because unable to pass order by list through criteria
+            Collections.sort(returnList, new Comparator<Spectrum>() {
+                public int compare(Spectrum s1, Spectrum s2) {
+                    return Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId()));
+                }
+            });
+        }
 
         return returnList;
     }
 
-    public int getSpectraCount(AnalyticalRun analyticalRun) {
-        return createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun)).list().size();
+    @Override
+    public int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter) {
+        return getCurrentSession().createSQLQuery(String.format(baseQuery, "%" + filter + "%", orderBy))
+            .list().size();
     }
 
     @Override
