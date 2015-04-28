@@ -27,7 +27,10 @@ import java.util.List;
 @Transactional
 public class SpectrumHibernateRepository extends GenericHibernateRepository<Spectrum, Long> implements SpectrumRepository {
 
-    String baseQuery = "SELECT DISTINCT spectrum.id, MAX(%2$s) FROM spectrum " +
+    /**
+     * Query string for paging method, alter at your peril
+     */
+    private final String baseQuery = "SELECT DISTINCT spectrum.id, MAX(%2$s) FROM spectrum " +
         "LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id " +
         "LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id " +
         "LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id " +
@@ -43,7 +46,6 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
             "LIMIT %4$d " +
             "OFFSET %5$d";
 
-        // does this guarantee ordering?
         SQLQuery query = getCurrentSession().createSQLQuery(String.format(baseQuery + extraParams, "%" + filter + "%", orderBy, direction, length, start))
             .addScalar("spectrum.id", LongType.INSTANCE);
 

@@ -117,8 +117,6 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
     private PsmMapper psmMapper;
@@ -424,13 +422,16 @@ public class ProjectOverviewController implements Controllable {
         //do nothing
     }
 
+    /**
+     * Update the spectrum table with new rows or no rows
+     */
     private void updatePsmTable() {
         AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
         if (selectedAnalyticalRun != null) {
             setPsmTableCellRenderers();
             GlazedLists.replaceAll(spectra, psmsTableModel.getRows(selectedAnalyticalRun), false);
-            projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getStatusText());
+            projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getPageIndicator());
         } else {
             GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
             projectOverviewPanel.getPageLabelSpectra().setText("");
