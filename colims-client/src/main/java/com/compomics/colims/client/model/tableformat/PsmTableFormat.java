@@ -19,6 +19,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
 
     private static final String[] columnNames = {"Id", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
+
     public static final int SPECTRUM_ID = 0;
     public static final int PRECURSOR_CHARGE = 1;
     public static final int PRECURSOR_MZRATIO = 2;
