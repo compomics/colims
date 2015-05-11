@@ -1,6 +1,6 @@
 # colims
 
- * [Project_Description](#project-description)
+ * [Project Description](#project-description)
  * [Downloads](#downloads)
  * [Usage](#usage)
  * [Project Funding](#project-funding)
@@ -32,14 +32,16 @@ See the [wiki](https://github.com/compomics/colims/wiki) for additional informat
 
 ## Project Funding
 
-Colims has been developed as part of the [ProteomeXchange](http://www.proteomexchange.org) Infrastructure project of the [7th Framework Programme](http://cordis.europa.eu/fp7/home_en.html) of the [European Commission](http://ec.europa.eu/index_en.htm European Commission), funded under contract number 260558.
+Colims has been developed as part of the [ProteomeXchange](http://www.proteomexchange.org) Infrastructure project of the [7th Framework Programme](http://cordis.europa.eu/fp7/home_en.html) of the [European Commission](http://ec.europa.eu/index_en.htm), funded under contract number 260558.
 
-![http://www.proteomexchange.org/](http://genesis.ugent.be/public_data/image/proteomeXChangeLogo.PNG)
-![http://cordis.europa.eu/fp7/home_en.html](http://cordis.europa.eu/icons/fp7_en.gif)
-![http://ec.europa.eu/index_en.htm](http://ec.europa.eu/wel/template-2009/images/banner/european-commission-flag.jpg)
+[![http://www.proteomexchange.org/](http://genesis.ugent.be/public_data/image/proteomeXChangeLogo.PNG)](http://www.proteomexchange.org)
+[![http://cordis.europa.eu/fp7/home_en.html](http://cordis.europa.eu/icons/fp7_en.gif)](http://cordis.europa.eu/fp7/home_en.html)
+[![http://ec.europa.eu/index_en.htm](http://ec.europa.eu/wel/template-2009/images/banner/european-commission-flag.jpg)](http://ec.europa.eu/index_en.htm)
 
 ----
 
-![https://www.jetbrains.com/idea/]( https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)
+| IntelliJ | Netbeans | Java | Maven |
+|:--:|:--:|:--:|:--:|
+| [![intellij](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](https://www.jetbrains.com/idea/) | [![netbeans](https://netbeans.org/images_www/visual-guidelines/NB-logo-single.jpg)](https://netbeans.org/) | [![java](http://genesis.ugent.be/public_data/image/java.png)](http://java.com/en/) | [![maven](http://genesis.ugent.be/public_data/image/maven.png)](http://maven.apache.org/) |
 
 [Go to top of page](#colims)
