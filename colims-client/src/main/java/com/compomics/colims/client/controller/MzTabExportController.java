@@ -49,7 +49,7 @@ public class MzTabExportController implements Controllable {
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
     //child controller
@@ -83,7 +83,7 @@ public class MzTabExportController implements Controllable {
     @Override
     public void init() {
         //init view
-        mzTabExportDialog = new MzTabExportDialog(colimsController.getColimsFrame(), true);
+        mzTabExportDialog = new MzTabExportDialog(mainController.getMainFrame(), true);
 
         //register to event bus
         eventBus.register(this);

@@ -9,16 +9,16 @@ import javax.swing.JTabbedPane;
  *
  * @author Niels Hulstaert Hulstaert
  */
-public class ColimsFrame extends javax.swing.JFrame {
-    
+public class MainFrame extends javax.swing.JFrame {
+
     public static final String MANAGMENT_TAB_TITLE = "Management";
     public static final String OVERVIEW_TAB_TITLE = "Overview";
     public static final String TASKS_TAB_TITLE = "Tasks";
 
     /**
-     * Creates new form MainFrame
+     * No-arg constructor.
      */
-    public ColimsFrame() {
+    public MainFrame() {
         initComponents();
     }
 
@@ -32,7 +32,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JPanel getTasksManagementParentPanel() {
         return tasksManagementParentPanel;
-    }        
+    }
 
     public JMenuItem getUserManagementMenuItem() {
         return userManagementMenuItem;
@@ -52,7 +52,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getProjectsOverviewMenuItem() {
         return projectsOverviewMenuItem;
-    }       
+    }
 
     public JMenu getEditMenu() {
         return editMenu;
@@ -68,7 +68,7 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getProtocolManagementMenuItem() {
         return protocolManagementMenuItem;
-    }               
+    }
 
     public JMenu getAdminMenu() {
         return adminMenu;
@@ -76,7 +76,11 @@ public class ColimsFrame extends javax.swing.JFrame {
 
     public JMenuItem getExitMenuItem() {
         return exitMenuItem;
-    }         
+    }
+
+    public JMenu getFileMenu() {
+        return fileMenu;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

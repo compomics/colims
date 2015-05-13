@@ -82,7 +82,7 @@ public class ProjectManagementController implements Controllable {
     private AnalyticalRunSetupController analyticalRunSetupController;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     //services
     @Autowired
     private ProjectService projectService;
@@ -123,7 +123,7 @@ public class ProjectManagementController implements Controllable {
         analyticalRunSetupController.init();
 
         //init projects table
-        SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
+        SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
         projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectManagementTableFormat());
         projectManagementPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
@@ -249,7 +249,7 @@ public class ProjectManagementController implements Controllable {
                     boolean deleteConfirmation = deleteEntity(projectToDelete, Project.class);
                     if (deleteConfirmation) {
                         //remove from overview table and clear selection
-                        colimsController.getProjects().remove(projectToDelete);
+                        mainController.getProjects().remove(projectToDelete);
                         projectsSelectionModel.clearSelection();
                     }
                 } else {
@@ -410,7 +410,7 @@ public class ProjectManagementController implements Controllable {
      * @param project the Project instance
      */
     public void addProject(final Project project) {
-        colimsController.getProjects().add(project);
+        mainController.getProjects().add(project);
     }
 
     /**
@@ -419,7 +419,7 @@ public class ProjectManagementController implements Controllable {
      * @return the number of projects
      */
     public int getProjectsSize() {
-        return colimsController.getProjects().size();
+        return mainController.getProjects().size();
     }
 
     /**
@@ -566,7 +566,7 @@ public class ProjectManagementController implements Controllable {
 
         //check delete permissions
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
-            int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
+            int option = JOptionPane.showConfirmDialog(mainController.getMainFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
                     + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
@@ -580,7 +580,7 @@ public class ProjectManagementController implements Controllable {
                 }
             }
         } else {
-            colimsController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
+            mainController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
         }
 
         return deleteConfirmation;

@@ -53,7 +53,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     /**
      * The parent frame.
      */
-    private JFrame colimsFrame;
+    private JFrame mainFrame;
     /**
      * The controller.
      */
@@ -102,8 +102,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     /**
      * Creates new form ProjectOverviewPanel1
      */
-    public ProjectOverviewPanel(final JFrame colimsFrame, final ProjectOverviewController projectOverviewController, final UtilitiesUserPreferences utilitiesUserPreferences) {
-        this.colimsFrame = colimsFrame;
+    public ProjectOverviewPanel(final JFrame mainFrame, final ProjectOverviewController projectOverviewController, final UtilitiesUserPreferences utilitiesUserPreferences) {
+        this.mainFrame = mainFrame;
         this.projectOverviewController = projectOverviewController;
         this.utilitiesUserPreferences = utilitiesUserPreferences;
 
@@ -1124,22 +1124,22 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_errorPlotTypeCheckBoxMenuItemActionPerformed
 
     private void exportSpectrumGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, null, null, true, getSpectrum(), null);
+        new ExportGraphicsDialog(mainFrame, null, null, true, getSpectrum(), null);
     }//GEN-LAST:event_exportSpectrumGraphicsJMenuItemActionPerformed
 
     private void exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, null, null, true, getSpectrumAndPlots(), null);
+        new ExportGraphicsDialog(mainFrame, null, null, true, getSpectrumAndPlots(), null);
     }//GEN-LAST:event_exportSpectrumAndPlotsGraphicsJMenuItemActionPerformed
 
     private void exportSequenceFragmentationGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
-        new ExportGraphicsDialog(colimsFrame, null, null, true, getSequenceFragmentationPlot(), null);
+        new ExportGraphicsDialog(mainFrame, null, null, true, getSequenceFragmentationPlot(), null);
     }//GEN-LAST:event_exportSequenceFragmentationGraphicsJMenuItemActionPerformed
 
     private void exportIntensityHistogramGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportIntensityHistogramGraphicsJMenuItemActionPerformed
         ChartPanel chartPanel = getIntensityHistogramPlot().getChartPanel();
         ChartPanel tempChartPanel = new ChartPanel(chartPanel.getChart());
         tempChartPanel.setBounds(new Rectangle(chartPanel.getBounds().width * 5, chartPanel.getBounds().height * 5));
-        new ExportGraphicsDialog(colimsFrame, null, null, true, tempChartPanel, null);
+        new ExportGraphicsDialog(mainFrame, null, null, true, tempChartPanel, null);
     }//GEN-LAST:event_exportIntensityHistogramGraphicsJMenuItemActionPerformed
 
     private void exportMassErrorPlotGraphicsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMassErrorPlotGraphicsJMenuItemActionPerformed
@@ -1147,7 +1147,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
             ChartPanel chartPanel = getMassErrorPlot().getChartPanel();
             ChartPanel tempChartPanel = new ChartPanel(chartPanel.getChart());
             tempChartPanel.setBounds(new Rectangle(chartPanel.getBounds().width * 5, chartPanel.getBounds().height * 5));
-            new ExportGraphicsDialog(colimsFrame, null, null, true, tempChartPanel, null);
+            new ExportGraphicsDialog(mainFrame, null, null, true, tempChartPanel, null);
         } else {
             JOptionPane.showMessageDialog(this, "No mass error plot to export!", "Export Error", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1182,7 +1182,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
 
     private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        new HelpDialog(colimsFrame, getClass().getResource("/helpFiles/SpectrumPanel.html"),
+        new HelpDialog(mainFrame, getClass().getResource("/helpFiles/SpectrumPanel.html"),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/peptide-shaker.gif")),
                 "PeptideShaker - Help");

@@ -21,7 +21,6 @@ import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
-import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Experiment;
@@ -110,7 +109,7 @@ public class ProjectOverviewController implements Controllable {
     private ProjectOverviewPanel projectOverviewPanel;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
     //services
@@ -140,10 +139,10 @@ public class ProjectOverviewController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectOverviewPanel = new ProjectOverviewPanel(colimsController.getColimsFrame(), this, utilitiesUserPreferences);
+        projectOverviewPanel = new ProjectOverviewPanel(mainController.getMainFrame(), this, utilitiesUserPreferences);
 
         //init projects table
-        SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
+        SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
         projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectSimpleTableFormat());
         projectOverviewPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
@@ -298,7 +297,7 @@ public class ProjectOverviewController implements Controllable {
         analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+                mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
                 AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
@@ -307,7 +306,7 @@ public class ProjectOverviewController implements Controllable {
                     updatePsmTable();
                 }
 
-                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
+                mainController.getMainFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
@@ -506,7 +505,7 @@ public class ProjectOverviewController implements Controllable {
         Spectrum selectedSpectrum = getSelectedSpectrum();
 
         if (getSelectedSpectrum() != null) {
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
             AnnotationPreferences annotationPreferences = projectOverviewPanel.getAnnotationPreferences();
 
@@ -635,7 +634,7 @@ public class ProjectOverviewController implements Controllable {
             } catch (Exception e) {
                 LOGGER.error(e.getCause(), e);
             }
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         } else {
             clearSpectrum();
         }

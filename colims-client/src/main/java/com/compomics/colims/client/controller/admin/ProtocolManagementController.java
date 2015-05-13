@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
@@ -65,7 +65,7 @@ public class ProtocolManagementController implements Controllable {
     private ProtocolEditDialog protocolEditDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private CvParamManagementController cvParamManagementController;
     //services
@@ -105,7 +105,7 @@ public class ProtocolManagementController implements Controllable {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), protocolManagementDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), protocolManagementDialog);
         protocolManagementDialog.setVisible(true);
     }
 
@@ -127,7 +127,7 @@ public class ProtocolManagementController implements Controllable {
      * Init the ProtocolManagementDialog.
      */
     private void initProtocolManagementDialog() {
-        protocolManagementDialog = new ProtocolManagementDialog(colimsController.getColimsFrame(), true);
+        protocolManagementDialog = new ProtocolManagementDialog(mainController.getMainFrame(), true);
 
         //add binding
         protocolBindingList = ObservableCollections.observableList(protocolService.findAll());

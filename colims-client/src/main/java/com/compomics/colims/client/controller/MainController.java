@@ -15,7 +15,7 @@ import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.ColimsFrame;
+import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.client.view.UserLoginDialog;
 import com.compomics.colims.core.authorization.PermissionException;
@@ -26,38 +26,32 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.logging.Level;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("colimsController")
-public class ColimsController implements Controllable, ActionListener {
+public class MainController implements Controllable, ActionListener {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
+    private static final Logger LOGGER = Logger.getLogger(MainController.class);
 
     //model
     @Value("${colims-client.version}")
@@ -70,7 +64,7 @@ public class ColimsController implements Controllable, ActionListener {
      */
     private final EventList<Project> projects = new BasicEventList<>();
     //views
-    private ColimsFrame colimsFrame;
+    private MainFrame mainFrame;
     private UserLoginDialog userLoginDialog;
     private MainHelpDialog mainHelpDialog;
     //child controllers
@@ -103,10 +97,10 @@ public class ColimsController implements Controllable, ActionListener {
     /**
      * Get the main view of this controller.
      *
-     * @return the ColimsFrame
+     * @return the MainFrame instance
      */
-    public ColimsFrame getColimsFrame() {
-        return colimsFrame;
+    public MainFrame getMainFrame() {
+        return mainFrame;
     }
 
     /**
@@ -123,7 +117,7 @@ public class ColimsController implements Controllable, ActionListener {
         //set uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException(Thread t, Throwable e) {
+            public void uncaughtException(final Thread t, final Throwable e) {
                 LOGGER.error(e.getMessage(), e);
                 //check for permission exceptions
                 if (e instanceof PermissionException) {
@@ -141,14 +135,17 @@ public class ColimsController implements Controllable, ActionListener {
         eventBus.register(this);
 
         //init views
-        colimsFrame = new ColimsFrame();
-        colimsFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
-        colimsFrame.setTitle("Colims " + version);
-        userLoginDialog = new UserLoginDialog(colimsFrame, true);
-        mainHelpDialog = new MainHelpDialog(colimsFrame, true);
+        mainFrame = new MainFrame();
+        mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
+        mainFrame.setTitle("Colims " + version);
+        userLoginDialog = new UserLoginDialog(mainFrame, true);
+        mainHelpDialog = new MainHelpDialog(mainFrame, true);
 
         //workaround for better beansbinding logging issue
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
+
+        //set close behaviour of main frame
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //find all projects
         projects.addAll(projectService.findAllWithEagerFetching());
@@ -165,15 +162,16 @@ public class ColimsController implements Controllable, ActionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
 
-        colimsFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
-        colimsFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
-        colimsFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
+        mainFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
+        mainFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
+        mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
         //add action listeners
-        //add menu item action listeners
-        colimsFrame.getProjectsManagementMenuItem().addActionListener(this);
-        colimsFrame.getProjectsOverviewMenuItem().addActionListener(this);
-        colimsFrame.getHelpMenuItem().addActionListener(this);
+        //add menu item action listener
+        mainFrame.getExitMenuItem().addActionListener(this);
+        mainFrame.getProjectsManagementMenuItem().addActionListener(this);
+        mainFrame.getProjectsOverviewMenuItem().addActionListener(this);
+        mainFrame.getHelpMenuItem().addActionListener(this);
 
         userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
             @Override
@@ -181,7 +179,7 @@ public class ColimsController implements Controllable, ActionListener {
                 if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
                     onLogin();
                 } else {
-                    showMessageDialog("Login validation fail", "Please provide an user name and password.", JOptionPane.WARNING_MESSAGE);
+                    showMessageDialog("Login validation fail", "Please provide a user name and password.", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -196,7 +194,7 @@ public class ColimsController implements Controllable, ActionListener {
 
         userLoginDialog.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent we) {
+            public void windowClosing(final WindowEvent we) {
                 System.exit(0);
             }
         });
@@ -209,15 +207,15 @@ public class ColimsController implements Controllable, ActionListener {
 //            initAdminSection();
 //        } else {
 //            //disable admin menu
-//            colimsFrame.getAdminMenu().setEnabled(false);
+//            mainFrame.getAdminMenu().setEnabled(false);
 //        }
 //        showView();
         //add change listener to tabbed pane
-        colimsFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
+        mainFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
 
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)) {
+            public void stateChanged(final ChangeEvent e) {
+                if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
                     //check connection to distributed queues
                     if (queueManager.testConnection()) {
                         taskManagementController.updateMonitoringTables();
@@ -233,34 +231,34 @@ public class ColimsController implements Controllable, ActionListener {
 
     @Override
     public void showView() {
-        colimsFrame.setExtendedState(colimsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        colimsFrame.setLocationRelativeTo(null);
-        colimsFrame.setVisible(true);
+        mainFrame.setExtendedState(mainFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
         //show login dialog
-        userLoginDialog.setLocationRelativeTo(colimsFrame);
+        userLoginDialog.setLocationRelativeTo(mainFrame);
         userLoginDialog.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         String menuItemLabel = e.getActionCommand();
 
-        if (menuItemLabel.equals(colimsFrame.getExitMenuItem().getText())) {
-            System.exit(0);
-        } else if (menuItemLabel.equals(colimsFrame.getProjectsManagementMenuItem().getText())) {
-            colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsManagementParentPanel());
-        } else if (menuItemLabel.equals(colimsFrame.getProjectsOverviewMenuItem().getText())) {
-            colimsFrame.getMainTabbedPane().setSelectedComponent(colimsFrame.getProjectsOverviewParentPanel());
-        } else if (menuItemLabel.equals(colimsFrame.getUserManagementMenuItem().getText())) {
+        if (menuItemLabel.equals(mainFrame.getExitMenuItem().getText())) {
+            mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+        } else if (menuItemLabel.equals(mainFrame.getProjectsManagementMenuItem().getText())) {
+            mainFrame.getMainTabbedPane().setSelectedComponent(mainFrame.getProjectsManagementParentPanel());
+        } else if (menuItemLabel.equals(mainFrame.getProjectsOverviewMenuItem().getText())) {
+            mainFrame.getMainTabbedPane().setSelectedComponent(mainFrame.getProjectsOverviewParentPanel());
+        } else if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementParentController.showView();
-        } else if (menuItemLabel.equals(colimsFrame.getInstrumentManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {
             instrumentManagementController.showView();
-        } else if (menuItemLabel.equals(colimsFrame.getMaterialManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(mainFrame.getMaterialManagementMenuItem().getText())) {
             materialManagementController.showView();
-        } else if (menuItemLabel.equals(colimsFrame.getProtocolManagementMenuItem().getText())) {
+        } else if (menuItemLabel.equals(mainFrame.getProtocolManagementMenuItem().getText())) {
             protocolManagementController.showView();
-        } else if (menuItemLabel.equals(colimsFrame.getHelpMenuItem().getText())) {
-            GuiUtils.centerDialogOnComponent(colimsFrame, mainHelpDialog);
+        } else if (menuItemLabel.equals(mainFrame.getHelpMenuItem().getText())) {
+            GuiUtils.centerDialogOnComponent(mainFrame, mainHelpDialog);
             mainHelpDialog.setVisible(true);
         }
     }
@@ -271,7 +269,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param messageEvent the message event
      */
     @Subscribe
-    public void onMessageEvent(MessageEvent messageEvent) {
+    public void onMessageEvent(final MessageEvent messageEvent) {
         showMessageDialog(messageEvent.getMessageTitle(), messageEvent.getMessage(), messageEvent.getMessageType());
     }
 
@@ -280,7 +278,7 @@ public class ColimsController implements Controllable, ActionListener {
      *
      * @param message the error message
      */
-    public void showUnexpectedErrorDialog(String message) {
+    public void showUnexpectedErrorDialog(final String message) {
         showMessageDialog("Unexpected error", "An unexpected error occured: "
                 + System.lineSeparator() + message
                 + System.lineSeparator() + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
@@ -292,7 +290,7 @@ public class ColimsController implements Controllable, ActionListener {
      *
      * @param message the error message
      */
-    public void showPermissionErrorDialog(String message) {
+    public void showPermissionErrorDialog(final String message) {
         showMessageDialog("Permission warning", "A permission warning occured: "
                 + System.lineSeparator() + message
                 + System.lineSeparator() + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
@@ -304,7 +302,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param materialChangeEvent the material change event
      */
     @Subscribe
-    public void onMaterialChangeEvent(MaterialChangeEvent materialChangeEvent) {
+    public void onMaterialChangeEvent(final MaterialChangeEvent materialChangeEvent) {
         updateProjects(materialChangeEvent);
     }
 
@@ -314,7 +312,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param instrumentChangeEvent the instrument change event
      */
     @Subscribe
-    public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
+    public void onInstrumentChangeEvent(final InstrumentChangeEvent instrumentChangeEvent) {
         updateProjects(instrumentChangeEvent);
     }
 
@@ -324,7 +322,7 @@ public class ColimsController implements Controllable, ActionListener {
      * @param protocolChangeEvent the protocol change event
      */
     @Subscribe
-    public void onProtocolChangeEvent(ProtocolChangeEvent protocolChangeEvent) {
+    public void onProtocolChangeEvent(final ProtocolChangeEvent protocolChangeEvent) {
         updateProjects(protocolChangeEvent);
     }
 
@@ -334,14 +332,16 @@ public class ColimsController implements Controllable, ActionListener {
      * @return the selected tab title
      */
     public String getSelectedTabTitle() {
-        JTabbedPane mainTabbedPane = colimsFrame.getMainTabbedPane();
+        JTabbedPane mainTabbedPane = mainFrame.getMainTabbedPane();
         return mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex());
     }
 
     /**
      * Reload all projects from the database if necessary.
+     *
+     * @param entityChangeEvent the entity change event
      */
-    private void updateProjects(EntityChangeEvent entityChangeEvent) {
+    private void updateProjects(final EntityChangeEvent entityChangeEvent) {
         if (entityChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
             projects.clear();
             projects.addAll(projectService.findAllWithEagerFetching());
@@ -368,7 +368,7 @@ public class ColimsController implements Controllable, ActionListener {
                 initAdminSection();
             } else {
                 //disable admin menu
-                colimsFrame.getAdminMenu().setEnabled(false);
+                mainFrame.getAdminMenu().setEnabled(false);
             }
         } else {
             showMessageDialog("Login fail", "No user with the given credentials could be found, please try again.", JOptionPane.ERROR_MESSAGE);
@@ -384,26 +384,27 @@ public class ColimsController implements Controllable, ActionListener {
      * @param message the dialog message
      * @param messageType the dialog message type
      */
-    private void showMessageDialog(String title, String message, int messageType) {
+    private void showMessageDialog(final String title, final String message, final int messageType) {
         if (messageType == JOptionPane.ERROR_MESSAGE) {
             //add message to JTextArea
             JTextArea textArea = new JTextArea(message);
             //put JTextArea in JScrollPane
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(600, 200));
+            scrollPane.getViewport().setOpaque(false);
             textArea.setEditable(false);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
 
-            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), scrollPane, title, messageType);
+            JOptionPane.showMessageDialog(mainFrame.getContentPane(), scrollPane, title, messageType);
         } else {
-            JOptionPane.showMessageDialog(colimsFrame.getContentPane(), message, title, messageType);
+            JOptionPane.showMessageDialog(mainFrame.getContentPane(), message, title, messageType);
         }
     }
 
     /**
      * Inits the admin section. This method is only called if the user is an
-     * admin.
+     * admin user.
      */
     private void initAdminSection() {
         //init admin controllers
@@ -413,10 +414,10 @@ public class ColimsController implements Controllable, ActionListener {
         protocolManagementController.init();
 
         //add action listeners
-        colimsFrame.getUserManagementMenuItem().addActionListener(this);
-        colimsFrame.getInstrumentManagementMenuItem().addActionListener(this);
-        colimsFrame.getMaterialManagementMenuItem().addActionListener(this);
-        colimsFrame.getProtocolManagementMenuItem().addActionListener(this);
+        mainFrame.getUserManagementMenuItem().addActionListener(this);
+        mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
+        mainFrame.getMaterialManagementMenuItem().addActionListener(this);
+        mainFrame.getProtocolManagementMenuItem().addActionListener(this);
     }
 
 }
