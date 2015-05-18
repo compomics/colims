@@ -30,12 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
@@ -163,6 +160,15 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         return searchParameters;
     }
 
+    public JButton getNextPageSpectra() { return nextPageSpectra; }
+    public JButton getPrevPageSpectra() { return prevPageSpectra; }
+    public JButton getFirstPageSpectra() { return firstPageSpectra; }
+    public JButton getLastPageSpectra() { return lastPageSpectra; }
+
+    public JTextField getFilterSpectra() { return filterSpectra; }
+
+    public JLabel getPageLabelSpectra() { return pageLabelSpectra; }
+
     /**
      * Set up the GUI.
      */
@@ -281,6 +287,12 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         psmPanel = new javax.swing.JPanel();
         psmScrollPane = new javax.swing.JScrollPane();
         psmTable = new javax.swing.JTable();
+        nextPageSpectra = new javax.swing.JButton();
+        prevPageSpectra = new javax.swing.JButton();
+        firstPageSpectra = new javax.swing.JButton();
+        lastPageSpectra = new javax.swing.JButton();
+        filterSpectra = new javax.swing.JTextField();
+        pageLabelSpectra = new javax.swing.JLabel();
         spectrumMainPanel = new javax.swing.JPanel();
         spectrumContainerJPanel = new javax.swing.JPanel();
         spectrumJToolBar = new javax.swing.JToolBar();
@@ -588,29 +600,29 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         projectsScrollPane.setOpaque(false);
 
         projectsTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {new Integer(1), "A", "Project 1"},
-                        {new Integer(2), "B", "Project 2"},
-                        {new Integer(3), "B", "Project 3"},
-                        {new Integer(4), "C", "Project 4"}
-                },
-                new String[]{
-                        "", "Label", "Title"
-                }
+            new Object [][] {
+                { new Integer(1), "A", "Project 1"},
+                { new Integer(2), "B", "Project 2"},
+                { new Integer(3), "B", "Project 3"},
+                { new Integer(4), "C", "Project 4"}
+            },
+            new String [] {
+                "", "Label", "Title"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false, false
+            boolean[] canEdit = new boolean [] {
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         projectsTable.setPreferredSize(new java.awt.Dimension(150, 64));
@@ -619,18 +631,18 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout projectsPanelLayout = new javax.swing.GroupLayout(projectsPanel);
         projectsPanel.setLayout(projectsPanelLayout);
         projectsPanelLayout.setHorizontalGroup(
-                projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(projectsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                                .addContainerGap())
+            projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(projectsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(projectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addContainerGap())
         );
         projectsPanelLayout.setVerticalGroup(
-                projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(projectsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(projectsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addContainerGap())
+            projectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(projectsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(projectsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         experimentsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Experiments"));
@@ -640,29 +652,29 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         experimentsScrollPane.setOpaque(false);
 
         experimentsTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {new Integer(1), "Exp A"},
-                        {new Integer(2), "Exp B"},
-                        {new Integer(3), "Exp C"},
-                        {new Integer(4), "Exp D"}
-                },
-                new String[]{
-                        "", "Title"
-                }
+            new Object [][] {
+                { new Integer(1), "Exp A"},
+                { new Integer(2), "Exp B"},
+                { new Integer(3), "Exp C"},
+                { new Integer(4), "Exp D"}
+            },
+            new String [] {
+                "", "Title"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Integer.class, java.lang.Object.class
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         experimentsScrollPane.setViewportView(experimentsTable);
@@ -670,18 +682,18 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout experimentsPanelLayout = new javax.swing.GroupLayout(experimentsPanel);
         experimentsPanel.setLayout(experimentsPanelLayout);
         experimentsPanelLayout.setHorizontalGroup(
-                experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(experimentsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                                .addContainerGap())
+            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(experimentsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addContainerGap())
         );
         experimentsPanelLayout.setVerticalGroup(
-                experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(experimentsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                                .addContainerGap())
+            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(experimentsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         samplesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Experiment samples"));
@@ -691,29 +703,29 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         samplesScrollPane.setOpaque(false);
 
         samplesTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {new Integer(1), "Sample A"},
-                        {new Integer(2), "Sample B"},
-                        {new Integer(3), "Sample C"},
-                        {new Integer(4), "Sample D"}
-                },
-                new String[]{
-                        "", "Name"
-                }
+            new Object [][] {
+                { new Integer(1), "Sample A"},
+                { new Integer(2), "Sample B"},
+                { new Integer(3), "Sample C"},
+                { new Integer(4), "Sample D"}
+            },
+            new String [] {
+                "", "Name"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Integer.class, java.lang.String.class
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         samplesScrollPane.setViewportView(samplesTable);
@@ -721,18 +733,18 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout samplesPanelLayout = new javax.swing.GroupLayout(samplesPanel);
         samplesPanel.setLayout(samplesPanelLayout);
         samplesPanelLayout.setHorizontalGroup(
-                samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(samplesPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                                .addContainerGap())
+            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(samplesPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addContainerGap())
         );
         samplesPanelLayout.setVerticalGroup(
-                samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(samplesPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                                .addContainerGap())
+            samplesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(samplesPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(samplesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         analyticalRunsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Sample analytical runs"));
@@ -742,29 +754,29 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         analyticalRunsScrollPane.setOpaque(false);
 
         analyticalRunsTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {new Integer(1), "Run 1"},
-                        {new Integer(2), "Run 2"},
-                        {new Integer(3), "Run 3"},
-                        {new Integer(4), "Run 4"}
-                },
-                new String[]{
-                        "", "Name"
-                }
+            new Object [][] {
+                { new Integer(1), "Run 1"},
+                { new Integer(2), "Run 2"},
+                { new Integer(3), "Run 3"},
+                { new Integer(4), "Run 4"}
+            },
+            new String [] {
+                "", "Name"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Integer.class, java.lang.String.class
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         analyticalRunsScrollPane.setViewportView(analyticalRunsTable);
@@ -772,18 +784,18 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
         analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
         analyticalRunsPanelLayout.setHorizontalGroup(
-                analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(analyticalRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                                .addContainerGap())
+            analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(analyticalRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addContainerGap())
         );
         analyticalRunsPanelLayout.setVerticalGroup(
-                analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(analyticalRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                                .addContainerGap())
+            analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(analyticalRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         psmPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Peptide spectrum matches"));
@@ -792,29 +804,29 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         psmScrollPane.setOpaque(false);
 
         psmTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {new Integer(1), "Q10586", "ABC", "spectrum_1", new Double(970.48), new Integer(2), new Double(639526.0), new Double(1646.55402)},
-                        {new Integer(2), "Q10586", "ABC", "spectrum_2", new Double(926.11), new Integer(3), new Double(973623.1875), new Double(1646.74992)},
-                        {new Integer(3), "Q10586", "ABC", "spectrum_3", new Double(899.42), new Integer(2), new Double(1608097.75), new Double(1646.90436)},
-                        {new Integer(4), "Q10586", "ABC", "spectrum_4", new Double(886.96), new Integer(2), new Double(615790.3125), new Double(1647.13464)}
-                },
-                new String[]{
-                        "", "Accession", "Sequence", "Title", "m/z", "Charge", "Intensity", "RT"
-                }
+            new Object [][] {
+                { new Integer(1), "Q10586", "ABC", "spectrum_1",  new Double(970.48),  new Integer(2),  new Double(639526.0),  new Double(1646.55402)},
+                { new Integer(2), "Q10586", "ABC", "spectrum_2",  new Double(926.11),  new Integer(3),  new Double(973623.1875),  new Double(1646.74992)},
+                { new Integer(3), "Q10586", "ABC", "spectrum_3",  new Double(899.42),  new Integer(2),  new Double(1608097.75),  new Double(1646.90436)},
+                { new Integer(4), "Q10586", "ABC", "spectrum_4",  new Double(886.96),  new Integer(2),  new Double(615790.3125),  new Double(1647.13464)}
+            },
+            new String [] {
+                "", "Accession", "Sequence", "Title", "m/z", "Charge", "Intensity", "RT"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         psmTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -824,21 +836,59 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         });
         psmScrollPane.setViewportView(psmTable);
 
+        nextPageSpectra.setText(">");
+
+        prevPageSpectra.setText("<");
+        prevPageSpectra.setEnabled(false);
+
+        firstPageSpectra.setText("<<");
+        firstPageSpectra.setEnabled(false);
+
+        lastPageSpectra.setText(">>");
+
+        filterSpectra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSpectraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout psmPanelLayout = new javax.swing.GroupLayout(psmPanel);
         psmPanel.setLayout(psmPanelLayout);
         psmPanelLayout.setHorizontalGroup(
-                psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(psmPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)
-                                .addContainerGap())
+            psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(psmPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, psmPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filterSpectra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, psmPanelLayout.createSequentialGroup()
+                                .addComponent(pageLabelSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(firstPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(prevPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(nextPageSpectra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lastPageSpectra)))))
+                .addContainerGap())
         );
         psmPanelLayout.setVerticalGroup(
-                psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(psmPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                                .addContainerGap())
+            psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(psmPanelLayout.createSequentialGroup()
+                .addComponent(filterSpectra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(psmScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
+                .addGroup(psmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nextPageSpectra)
+                    .addComponent(prevPageSpectra)
+                    .addComponent(firstPageSpectra)
+                    .addComponent(lastPageSpectra)
+                    .addComponent(pageLabelSpectra)))
         );
 
         spectrumMainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("spectrum"));
@@ -872,12 +922,12 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout spectrumPaddingPanelLayout = new javax.swing.GroupLayout(spectrumPaddingPanel);
         spectrumPaddingPanel.setLayout(spectrumPaddingPanelLayout);
         spectrumPaddingPanelLayout.setHorizontalGroup(
-                spectrumPaddingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+            spectrumPaddingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         spectrumPaddingPanelLayout.setVerticalGroup(
-                spectrumPaddingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 17, Short.MAX_VALUE)
+            spectrumPaddingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 17, Short.MAX_VALUE)
         );
 
         spectrumJPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -886,16 +936,16 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout spectrumOuterJPanelLayout = new javax.swing.GroupLayout(spectrumOuterJPanel);
         spectrumOuterJPanel.setLayout(spectrumOuterJPanelLayout);
         spectrumOuterJPanelLayout.setHorizontalGroup(
-                spectrumOuterJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)
+            spectrumOuterJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)
         );
         spectrumOuterJPanelLayout.setVerticalGroup(
-                spectrumOuterJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(spectrumOuterJPanelLayout.createSequentialGroup()
-                                .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
+            spectrumOuterJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(spectrumOuterJPanelLayout.createSequentialGroup()
+                .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spectrumJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
         );
 
         spectrumSplitPane.setRightComponent(spectrumOuterJPanel);
@@ -903,79 +953,79 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout spectrumContainerJPanelLayout = new javax.swing.GroupLayout(spectrumContainerJPanel);
         spectrumContainerJPanel.setLayout(spectrumContainerJPanelLayout);
         spectrumContainerJPanelLayout.setHorizontalGroup(
-                spectrumContainerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(spectrumContainerJPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(spectrumJToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
-                        .addComponent(spectrumSplitPane)
+            spectrumContainerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(spectrumContainerJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spectrumJToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(spectrumSplitPane)
         );
         spectrumContainerJPanelLayout.setVerticalGroup(
-                spectrumContainerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, spectrumContainerJPanelLayout.createSequentialGroup()
-                                .addComponent(spectrumSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spectrumJToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            spectrumContainerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, spectrumContainerJPanelLayout.createSequentialGroup()
+                .addComponent(spectrumSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spectrumJToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout spectrumMainPanelLayout = new javax.swing.GroupLayout(spectrumMainPanel);
         spectrumMainPanel.setLayout(spectrumMainPanelLayout);
         spectrumMainPanelLayout.setHorizontalGroup(
-                spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1031, Short.MAX_VALUE)
-                        .addGroup(spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(spectrumMainPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(spectrumContainerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addContainerGap()))
+            spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1041, Short.MAX_VALUE)
+            .addGroup(spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(spectrumMainPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(spectrumContainerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         spectrumMainPanelLayout.setVerticalGroup(
-                spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(spectrumMainPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(spectrumContainerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addContainerGap()))
+            spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(spectrumMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(spectrumMainPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(spectrumContainerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(projectsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(psmPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(samplesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(experimentsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(spectrumMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addContainerGap())
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(projectsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(psmPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(samplesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(experimentsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spectrumMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(psmPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addComponent(spectrumMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap())
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(psmPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(projectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(experimentsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
+                    .addComponent(spectrumMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1138,6 +1188,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                 "PeptideShaker - Help");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_helpMenuItemActionPerformed
+
+    private void filterSpectraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSpectraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filterSpectraActionPerformed
 
     /**
      * Save the current annotation preferences selected in the annotation menus.
@@ -1586,6 +1640,8 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JPopupMenu.Separator exportSpectrumGraphicsSeparator;
     private javax.swing.JMenu exportSpectrumMenu;
     private javax.swing.JMenuItem exportSpectrumValuesJMenuItem;
+    private javax.swing.JTextField filterSpectra;
+    private javax.swing.JButton firstPageSpectra;
     private javax.swing.JCheckBoxMenuItem forwardIonsDeNovoCheckBoxMenuItem;
     private javax.swing.JMenu helpJMenu;
     private javax.swing.JMenuItem helpMenuItem;
@@ -1595,10 +1651,14 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JButton lastPageSpectra;
     private javax.swing.JMenu lossMenu;
     private javax.swing.JMenu lossSplitter;
+    private javax.swing.JButton nextPageSpectra;
     private javax.swing.JMenu otherMenu;
+    private javax.swing.JLabel pageLabelSpectra;
     private javax.swing.JCheckBoxMenuItem precursorCheckMenu;
+    private javax.swing.JButton prevPageSpectra;
     private javax.swing.JPanel projectsPanel;
     private javax.swing.JScrollPane projectsScrollPane;
     private javax.swing.JTable projectsTable;
