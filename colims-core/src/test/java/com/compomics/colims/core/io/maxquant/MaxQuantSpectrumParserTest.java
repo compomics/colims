@@ -19,14 +19,8 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantSpectrumParserTest {
 
-    File msmsFile;
     @Autowired
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
-
-    public MaxQuantSpectrumParserTest() {
-        msmsFile = new File(getClass().getClassLoader().getResource("data/maxquant/msms_subset_1000.tsv").getPath());
-
-    }
 
     /**
      * Test of parse method, of class MaxQuantSpectrumParser.
@@ -34,7 +28,7 @@ public class MaxQuantSpectrumParserTest {
     @Test
     public void testParse() throws Exception {
         System.out.println("parseTest");
-        Map<Integer, MSnSpectrum> result = maxQuantSpectrumParser.parse(msmsFile);
+        Map<Integer, MSnSpectrum> result = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
         assertThat(result.keySet().size(), is(999));
         assertThat(Integer.parseInt(result.get(899).getScanNumber()), is(58732));
         assertThat(result.get(899).getSpectrumTitle(), is("QE2_120326_OPL2023_stoolpools_MdW_LB_stoolpool1_02-58732"));
@@ -49,7 +43,7 @@ public class MaxQuantSpectrumParserTest {
     public void testParseWithoutPeaklist() throws Exception {
         System.out.println("testWithoutPeaklist");
         MaxQuantSpectrumParser instance = new MaxQuantSpectrumParser();
-        Map<Integer, MSnSpectrum> result = instance.parse(msmsFile, false);
+        Map<Integer, MSnSpectrum> result = instance.parse(MaxQuantTestSuite.msmsFile, false);
         //throws a nullpointer
         String mgf = result.get(899).asMgf();
         String expectedString = mgf.substring(mgf.indexOf("\n", mgf.indexOf("SCAN")) + 1, mgf.indexOf("END"));
@@ -60,7 +54,7 @@ public class MaxQuantSpectrumParserTest {
     public void testParseWithPeaklist() throws Exception {
         System.out.println("parseWithPeaklist");
         boolean addPeakList = true;
-        Map<Integer, MSnSpectrum> result = maxQuantSpectrumParser.parse(msmsFile, addPeakList);
+        Map<Integer, MSnSpectrum> result = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile, addPeakList);
         assertThat(result.keySet().size(), is(999));
         assertThat(result.get(899).getPeakList().size(), is(22));
         Iterator<Peak> peaks = result.get(899).getPeakList().iterator();

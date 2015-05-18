@@ -44,7 +44,7 @@ public class MaxQuantEvidenceParser {
      */
     public static final Map<Integer, QuantificationWeight[]> weightOptions = new HashMap<>();
     static {
-        weightOptions.put(1, null);
+        weightOptions.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
         weightOptions.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
         weightOptions.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
     }

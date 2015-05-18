@@ -21,13 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MaxQuantProteinGroupParserTest {
 
-    private File shortTestFile;
     @Autowired
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
-
-    public MaxQuantProteinGroupParserTest() throws IOException {        
-        shortTestFile = new ClassPathResource("data/maxquant/proteinGroups_subset.tsv").getFile();
-    }
 
     /**
      * Test of parseMaxQuantProteinGroups method, of class
@@ -36,8 +31,7 @@ public class MaxQuantProteinGroupParserTest {
     @Test
     public void testParse() throws Exception {
         System.out.println("parseMaxQuantProteinGroups");
-        File aProteinGroupsFile = shortTestFile;
-        Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(aProteinGroupsFile);
+        Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile);
         assertThat(result.keySet().size(), is(1760));
         assertThat(result.get(1722).getMainMatch(), is("Q9Y105"));
         assertThat(result.get(1722).getNProteins(), both(is(result.get(1722).getTheoreticProteinsAccessions().size())).and(is(1)));

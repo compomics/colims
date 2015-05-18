@@ -67,7 +67,7 @@ public class MaxQuantParameterParser {
         return experimentParams;
     }
 
-    public Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException, HeaderEnumNotInitialisedException {
+    private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException, HeaderEnumNotInitialisedException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
         Map<String, String> row;
 
@@ -147,12 +147,16 @@ public class MaxQuantParameterParser {
 
     private Map<String, String> parseParameters(File parameterFile) throws IOException {
         Map<String, String> parameters = new HashMap<>();
+
         try (FileInputStream fis = new FileInputStream(parameterFile);
-             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-             LineNumberReader reader = new LineNumberReader(isr)) {
+            InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+            LineNumberReader reader = new LineNumberReader(isr)) {
+
             String line;
+
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split("\t");
+
                 if (split.length == 2) {
                     parameters.put(split[0].toLowerCase(Locale.US), split[1]);
                 } else {
@@ -160,6 +164,7 @@ public class MaxQuantParameterParser {
                 }
             }
         }
+
         return parameters;
     }
 
