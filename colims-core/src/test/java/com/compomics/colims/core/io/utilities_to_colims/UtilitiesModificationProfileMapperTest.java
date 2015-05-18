@@ -1,21 +1,14 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.service.ModificationService;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PtmToPrideMap;
-import eu.isas.peptideshaker.myparameters.PSPtmScores;
-import eu.isas.peptideshaker.scoring.PtmScoring;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +22,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author Niels Hulstaert
@@ -43,7 +35,6 @@ public class UtilitiesModificationProfileMapperTest {
     @Autowired
     private UtilitiesModificationProfileMapper utilitiesModificationProfileMapper;
     private ModificationProfile modificationProfile;
-    private CvTerm nonUtilitiesPtm;
 
     /**
      * Load the search parameters with the modifications.
@@ -58,9 +49,6 @@ public class UtilitiesModificationProfileMapperTest {
         Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
         PTMFactory.getInstance().clearFactory();
         PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
-
-        String nonUtilitiesPtmName = "L-proline removal";
-        CvTerm nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 
         PTM ptm1 = PTMFactory.getInstance().getPTM("carbamidomethyl c");
         PTM ptm2 = PTMFactory.getInstance().getPTM("oxidation of m");
@@ -103,7 +91,7 @@ public class UtilitiesModificationProfileMapperTest {
      * @throws com.compomics.colims.core.io.MappingException
      */
     @Test
-    public void testMapModificationProfile_1() throws MappingException {
+    public void testMapModificationProfile1() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
         utilitiesModificationProfileMapper.map(modificationProfile, searchParameters);
@@ -130,7 +118,7 @@ public class UtilitiesModificationProfileMapperTest {
      * @throws com.compomics.colims.core.io.MappingException
      */
     @Test
-    public void testMapModificationProfile_2() throws MappingException {
+    public void testMapModificationProfile2() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("AKL");
@@ -157,7 +145,7 @@ public class UtilitiesModificationProfileMapperTest {
      * @throws com.compomics.colims.core.io.MappingException
      */
     @Test
-    public void testMapModificationProfile_3() throws MappingException {
+    public void testMapModificationProfile3() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("AKL");

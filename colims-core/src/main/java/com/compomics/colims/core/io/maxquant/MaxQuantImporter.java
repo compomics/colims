@@ -161,7 +161,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @throws IOException thrown in case of an I/O related problem
      */
     private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
-        QuantificationSettings quantificationSettings = null;
+        QuantificationSettings quantificationSettings;
 
         List<File> quantFiles = new ArrayList<>();
         quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?

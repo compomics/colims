@@ -10,6 +10,7 @@ import java.util.Map;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.google.common.io.LineReader;
 import java.util.Locale;
+import org.apache.log4j.Logger;
 
 /**
  * Convert a tabular file into an {@link Iterable} that returns
@@ -20,10 +21,12 @@ import java.util.Locale;
  */
 public class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
 
-    static final char delimiter = '\t';
-    FileReader fileReader = null;
-    LineReader lineReader = null;
-    String[] nextLine = null;
+    private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator.class);
+
+    private static final char DELIMITER = '\t';
+    private FileReader fileReader = null;
+    private LineReader lineReader = null;
+    private String[] nextLine = null;
     private String[] headers = new String[0];
 
     /**
@@ -32,7 +35,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
      * the the values found on lines two and further until the end of the file.
      *
      * @param evidenceFile tab separated values file
-     * @throws IOException
+     * @throws IOException thrown in case of an input/output related error
      */
     public TabularFileLineValuesIterator(final File evidenceFile) throws IOException {
         // Extract headers
@@ -41,27 +44,27 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         String readLine = lineReader.readLine().toLowerCase(Locale.US);
 
         // Determine the headers for this particular file, so we can assign values to the right key in our map
-        headers = readLine.split("" + delimiter);
+        headers = readLine.split("" + DELIMITER);
 
         // Initialize the first line in the nextLine field
         advanceLine();
     }
 
     public TabularFileLineValuesIterator(final File evidenceFile, HeaderEnum[] headerEnumeration) throws IOException {
-        // Extract headers	
+        // Extract headers
         fileReader = new FileReader(evidenceFile);
         lineReader = new LineReader(fileReader);
         String readLine = lineReader.readLine().toLowerCase(Locale.US);
         for (HeaderEnum aHeader : headerEnumeration) {
-            for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.allPossibleColumnNames().length; numberOfPossibleHeaders++){
-                if(readLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])){
+            for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.allPossibleColumnNames().length; numberOfPossibleHeaders++) {
+                if (readLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])) {
                     aHeader.setColumnReference(numberOfPossibleHeaders);
                 }
             }
         }
-        
+
         // Determine the headers for this particular file, so we can assign values to the right key in our map
-        headers = readLine.split("" + delimiter);
+        headers = readLine.split("" + DELIMITER);
 
         // Initialize the first line in the nextLine field
         advanceLine();
@@ -75,7 +78,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     }
 
     /**
-     * Parse the next line and split its values by the configured delimiter.
+     * Parse the next line and split its values by the configured DELIMITER.
      * Also handles the end of file by setting nextLine to null.
      */
     void advanceLine() {
@@ -83,12 +86,12 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         try {
             String readLine = lineReader.readLine();
             if (readLine != null) {
-                nextLine = readLine.split("" + delimiter);
+                nextLine = readLine.split("" + DELIMITER);
                 return;
             }
         } catch (IOException e) {
             // XXX Hmmm, just printing a stacktrace is a very poor way to handle an IOException at this point...
-            e.printStackTrace();
+           LOGGER.error(e.getMessage(), e);
         }
         nextLine = null;
     }
@@ -99,7 +102,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
             try {
                 fileReader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
         }
 

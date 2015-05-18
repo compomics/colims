@@ -1,9 +1,7 @@
 
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 /**
  *

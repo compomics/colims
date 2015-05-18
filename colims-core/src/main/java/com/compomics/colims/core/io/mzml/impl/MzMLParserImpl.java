@@ -321,10 +321,10 @@ public class MzMLParserImpl implements MzMLParser {
                         switch (cvParam.getAccession()) {
                             case "MS:1000744":
                             case "MS:1000040":
-                                mzRatio = new Double(cvParam.getValue());
+                                mzRatio = Double.valueOf(cvParam.getValue());
                                 break;
                             case "MS:1000041":
-                                charge = new Integer(cvParam.getValue());
+                                charge = Integer.valueOf(cvParam.getValue());
                                 break;
                             default:
                         }

@@ -3,9 +3,12 @@ package com.compomics.colims.client.view;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -13,18 +16,25 @@ import javax.swing.JTextField;
  */
 public class DatabaseLoginDialog extends javax.swing.JDialog {
 
+    private static final Logger LOGGER = Logger.getLogger(DatabaseLoginDialog.class);
+
     /**
-     * Dialog constructor
+     * Dialog constructor.
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
     public DatabaseLoginDialog(final Frame parent, final boolean modal) {
-        super(parent, modal);  
-        
+        super(parent, modal);
+
         initComponents();
-        
+
         this.getContentPane().setBackground(Color.WHITE);
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")));
+        try {
+            this.setIconImage(Toolkit.getDefaultToolkit().getImage(new ClassPathResource("/icons/colims_icon.png").getURL()));
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
     }
 
     public JButton getCloseButton() {
@@ -45,7 +55,7 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
 
     public JButton getLoginButton() {
         return loginButton;
-    }              
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

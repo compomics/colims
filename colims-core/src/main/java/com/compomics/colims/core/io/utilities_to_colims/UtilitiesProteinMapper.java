@@ -74,16 +74,14 @@ public class UtilitiesProteinMapper {
                             //get utilities Protein from SequenceFactory
                             com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
                             Protein matchedProtein = getProtein(sourceProtein);
-                            if (matchedProtein != null) {
-                                PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                                peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
-                                peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-                                peptideHasProteins.add(peptideHasProtein);
-                                //set entity relations
-                                peptideHasProtein.setProtein(matchedProtein);
-                                peptideHasProtein.setPeptide(targetPeptide);
-                                peptideHasProtein.setMainGroupProtein(mainMatchedProtein);
-                            }
+                            PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
+                            peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
+                            peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
+                            peptideHasProteins.add(peptideHasProtein);
+                            //set entity relations
+                            peptideHasProtein.setProtein(matchedProtein);
+                            peptideHasProtein.setPeptide(targetPeptide);
+                            peptideHasProtein.setMainGroupProtein(mainMatchedProtein);
                         }
                     } else {
                         //only set the main matched protein as the protein and leave the main group protein empty
@@ -112,10 +110,10 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Get the Colims Protein by protein accession or sequence digest. This
+     * Get the Colims protein by protein accession or sequence digest. This
      * method looks for the protein in the newly added proteins and the
-     * database. If it was not found, look in the utilities SequenceFactory and
-     * it to newly added proteins.
+     * database. If it was not found, it looks in the utilities SequenceFactory
+     * and it's added to newly added proteins.
      *
      * @param sourceProtein the utilities protein
      * @return the found Protein instance

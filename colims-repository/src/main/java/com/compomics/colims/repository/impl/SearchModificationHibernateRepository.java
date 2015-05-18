@@ -1,8 +1,6 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
-import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.SearchModificationRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

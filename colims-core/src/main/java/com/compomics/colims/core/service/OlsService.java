@@ -2,7 +2,6 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
 
 import java.util.List;

@@ -9,10 +9,11 @@ import com.compomics.colims.repository.SpectrumRepository;
 import java.util.List;
 
 /**
- * Table model to implement search and sort methods
- * Created by Iain on 24/04/2015.
+ * Table model to implement search and sort methods Created by Iain on
+ * 24/04/2015.
  */
 public class PsmTableModel extends DefaultEventTableModel {
+
     private SpectrumRepository spectrumRepository;
 
     public static final int SPECTRUM_ID = 0;
@@ -32,12 +33,13 @@ public class PsmTableModel extends DefaultEventTableModel {
     public String filter;
 
     /**
-     * Constructor time
+     * Constructor time.
+     *
      * @param source Something for the parent
      * @param tableFormat Something for the parent
      * @param spectrumRepository A spectrum repository to query for rows
      */
-    public PsmTableModel(EventList source, TableFormat tableFormat, SpectrumRepository spectrumRepository) {
+    public PsmTableModel(final EventList source, final TableFormat tableFormat, final SpectrumRepository spectrumRepository) {
         super(source, tableFormat);
         reset(null);
 
@@ -45,11 +47,13 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Updates the row count and returns a list of spectra for the given search parameters
+     * Updates the row count and returns a list of spectra for the given search
+     * parameters.
+     *
      * @param analyticalRun The run from which spectra are queried
      * @return List of Spectrum objects
      */
-    public List getRows(AnalyticalRun analyticalRun) {
+    public List getRows(final AnalyticalRun analyticalRun) {
         rowCount = spectrumRepository.getSpectraCountForRun(analyticalRun, sortColumn, filter);
 
         if (rowCount < page * perPage) {
@@ -60,7 +64,8 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Builds a string to display the current page
+     * Builds a string to display the current page.
+     *
      * @return Page x of y
      */
     public String getPageIndicator() {
@@ -68,10 +73,11 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Reset the table to default values, either empty or with data
+     * Reset the table to default values, either empty or with data.
+     *
      * @param analyticalRun An optional run to obtain spectra from
      */
-    public void reset(AnalyticalRun analyticalRun) {
+    public void reset(final AnalyticalRun analyticalRun) {
         page = 0;
         perPage = 20;
         sortColumn = getColumnDbName(0);
@@ -81,7 +87,8 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Update the sort column or reverse direction if same column specified
+     * Update the sort column or reverse direction if same column specified.
+     *
      * @param index Column index
      */
     public void updateSort(int index) {
@@ -97,11 +104,12 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Get the database column name from the table column
+     * Get the database column name from the table column.
+     *
      * @param column Column index
      * @return Database column name
      */
-    public String getColumnDbName(int column) {
+    public String getColumnDbName(final int column) {
         switch (column) {
             case SPECTRUM_ID:
                 return "spectrum.id";
@@ -125,7 +133,8 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Whether the current page is the last page
+     * Whether the current page is the last page.
+     *
      * @return Yay or nay
      */
     public boolean isMaxPage() {
@@ -133,7 +142,8 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Calculate the highest page in the current data set
+     * Calculate the highest page in the current data set.
+     *
      * @return Highest page number
      */
     public int getMaxPage() {
@@ -141,7 +151,8 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Get current page
+     * Get current page.
+     *
      * @return Current page
      */
     public int getPage() {
@@ -149,20 +160,22 @@ public class PsmTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Set the current page (within acceptable range)
+     * Set the current page (within acceptable range).
+     *
      * @param page Page number
      */
-    public void setPage(int page) {
+    public void setPage(final int page) {
         if (page <= getMaxPage() && page > 0) {
             this.page = page;
         }
     }
 
     /**
-     * Update filter text
+     * Update filter text.
+     *
      * @param filter Filter string
      */
-    public void setFilter(String filter) {
+    public void setFilter(final String filter) {
         this.filter = filter;
     }
 }

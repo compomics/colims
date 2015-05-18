@@ -275,7 +275,7 @@ public class MzIdentMLExporter {
                 data.add(mapper.readValue(node, type));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         return data;
@@ -314,10 +314,10 @@ public class MzIdentMLExporter {
         try {
             item.add(mapper.readValue(node, type));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         return item.get(0);
     }
-    
+
 }

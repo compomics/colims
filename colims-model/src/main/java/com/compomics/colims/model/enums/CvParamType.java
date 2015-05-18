@@ -67,14 +67,29 @@ public enum CvParamType {
         }
     }
 
+    /**
+     * Get all children of this instance.
+     *
+     * @return the list of child cv param types
+     */
     public List<CvParamType> getChildren() {
         return children;
     }
 
+    /**
+     * Get the parent of this instance.
+     *
+     * @return the parent cv param type
+     */
     public CvParamType getParent() {
         return parent;
     }
 
+    /**
+     * Check whether this cv param type is a mandatory one or not.
+     *
+     * @return true or false
+     */
     public Boolean isMandatory() {
         return mandatory;
     }

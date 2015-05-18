@@ -69,11 +69,11 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     /**
      * The neutral loss menus.
      */
-    private HashMap<NeutralLoss, JCheckBoxMenuItem> lossMenus = new HashMap<NeutralLoss, JCheckBoxMenuItem>();
+    private HashMap<NeutralLoss, JCheckBoxMenuItem> lossMenus = new HashMap<>();
     /**
      * The charge menus.
      */
-    private HashMap<Integer, JCheckBoxMenuItem> chargeMenus = new HashMap<Integer, JCheckBoxMenuItem>();
+    private HashMap<Integer, JCheckBoxMenuItem> chargeMenus = new HashMap<>();
     /**
      * The current search parameters.
      */
@@ -1439,7 +1439,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
 
         boolean selected;
 
-        ArrayList<String> selectedLosses = new ArrayList<String>();
+        ArrayList<String> selectedLosses = new ArrayList<>();
 
         for (JCheckBoxMenuItem lossMenuItem : lossMenus.values()) {
 

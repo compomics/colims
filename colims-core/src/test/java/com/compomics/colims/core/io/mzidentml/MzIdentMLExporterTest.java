@@ -30,12 +30,12 @@ import java.util.Map;
 /**
  * Created by Iain on 13/01/2015.
  */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 public class MzIdentMLExporterTest {
+
     @Autowired
     private MzIdentMLExporter exporter;
 
@@ -67,13 +67,13 @@ public class MzIdentMLExporterTest {
         exporter.init();
         CvList cvList = new CvList();
         cvList.getCv().addAll(exporter.getDataList("CvList", Cv.class));
-        Assert.assertEquals(cvList.getCv().size(), 4);
+        Assert.assertEquals(4, cvList.getCv().size());
     }
 
     @Test
     public void testClassItemMapping() {
         exporter.init();
-        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker",  AnalysisSoftware.class);
-        Assert.assertEquals(as.getName(), "PeptideShaker");
+        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker", AnalysisSoftware.class);
+        Assert.assertEquals("PeptideShaker", as.getName());
     }
 }

@@ -44,32 +44,33 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class UnimodMarshallerTest {
 
-    private Resource unimodResource;
+    private static final String MOD_NAME = "DTT_C";
+
     @Autowired
     private UnimodMarshaller unimodMarshaller;
 
-    public UnimodMarshallerTest() throws IOException {
-        unimodResource = new ClassPathResource("unimod/unimod.xml");
-    }
-
     /**
-     * Test the marshalling of the unimod.xml file
+     * Test the marshalling of the unimod.xml file.
      *
-     * @throws JDOMException top level exception that can be thrown in case of a problem in the JDOM classes.
+     * @throws JDOMException top level exception that can be thrown in case of a
+     * problem in the JDOM classes.
      */
     @Test
     public void testMarshall() throws JDOMException {
         Assert.assertFalse(unimodMarshaller.getModifications().isEmpty());
     }
 
+    /**
+     * Test the retrieval of a modification from the marshaller of both
+     * Modification and SearchModification instances.
+     */
     @Test
     public void testGetModificationByName() {
-        SearchModification searchModification = unimodMarshaller.getModificationByName(SearchModification.class, "DTT_C");
+        SearchModification searchModification = unimodMarshaller.getModificationByName(SearchModification.class, MOD_NAME);
         Assert.assertNotNull(searchModification);
 
-        Modification modification = unimodMarshaller.getModificationByName(Modification.class, "DTT_C");
+        Modification modification = unimodMarshaller.getModificationByName(Modification.class, MOD_NAME);
         Assert.assertNotNull(modification);
     }
-
 
 }

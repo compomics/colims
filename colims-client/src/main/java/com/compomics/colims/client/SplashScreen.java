@@ -6,7 +6,9 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * @author Peter De Bruycker
@@ -86,7 +89,11 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
         window = new JWindow();
 
         if (image == null) {
-            image = loadImage(imageResourcePath);
+            try {
+                image = loadImage(imageResourcePath);
+            } catch (IOException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
             if (image == null) {
                 return;
             }
@@ -152,7 +159,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      * Set the progress message of the progress bar.
      *
      * @param progressMessage the progress bar label message
-     * @param value           the progress bar value
+     * @param value the progress bar value
      */
     public void setProgressLabel(final String progressMessage, final int value) {
         if (showProgressLabel) {
@@ -178,8 +185,9 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      * @param path the image file path
      * @return the Image instance
      */
-    private Image loadImage(final String path) {
-        URL url = this.getClass().getResource(path);
+    private Image loadImage(final String path) throws IOException {
+//        URL url = this.getClass().getResource(path);
+        URL url = new ClassPathResource(path).getURL();
 
         if (url == null) {
             LOGGER.warn("Unable to locate splash screen in classpath at: " + path);

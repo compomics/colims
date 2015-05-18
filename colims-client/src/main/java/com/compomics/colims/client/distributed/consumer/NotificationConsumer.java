@@ -38,7 +38,12 @@ public class NotificationConsumer implements MessageListener {
     @Override
     public void onMessage(final Message message) {
         try {
-            ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
+            ActiveMQObjectMessage objectMessage = null;
+            if (message instanceof ActiveMQObjectMessage) {
+                objectMessage = (ActiveMQObjectMessage) message;
+            } else {
+                throw new IllegalStateException("The retrieved message is of an incorrect type.");
+            }
             Notification notification = (Notification) objectMessage.getObject();
 
             LOGGER.info("received notification message");

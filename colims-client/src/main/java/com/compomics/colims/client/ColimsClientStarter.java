@@ -18,21 +18,28 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * This class starts the client application.
  *
  * @author Niels Hulstaert
  */
-public class ColimsClientStarter {
+public final class ColimsClientStarter {
 
-    private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    /**
+     * The startup error message.
+     */
     private static final String ERROR_MESSAGE = "An error occured during startup, please try again."
             + System.lineSeparator() + "If the problem persists, contact your administrator or post an issue on the google code page.";
 
     /**
-     * Constructor.
+     * Private constructor.
      *
      * @param contextPaths the spring context paths
      */
-    public ColimsClientStarter(final String[] contextPaths) {
+    private ColimsClientStarter(final String[] contextPaths) {
         launchColimsClient(contextPaths);
     }
 

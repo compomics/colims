@@ -14,7 +14,8 @@ import java.util.List;
 public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
 
     /**
-     * Return a list of spectra according to all these parameters
+     * Return a list of spectra according to all these parameters.
+     *
      * @param analyticalRun Analytical run with which spectra are associated
      * @param start Start point in results (SQL OFFSET)
      * @param length Length of result list (SQL LIMIT)
@@ -26,7 +27,8 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter);
 
     /**
-     * Count the spectra for a given run with optional filtering
+     * Count the spectra for a given run with optional filtering.
+     *
      * @param analyticalRun Analytical run instance
      * @param orderBy Ordering parameter
      * @param filter Filter string (or empty string)

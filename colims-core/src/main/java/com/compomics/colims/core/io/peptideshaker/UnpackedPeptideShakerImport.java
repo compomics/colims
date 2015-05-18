@@ -35,7 +35,7 @@ public class UnpackedPeptideShakerImport extends DataImport {
     /**
      * The CpsParent instance for interacting with the .cps file.
      */
-    private CpsParent cpsParent;
+    private transient CpsParent cpsParent;
 
     /**
      * Constructor.

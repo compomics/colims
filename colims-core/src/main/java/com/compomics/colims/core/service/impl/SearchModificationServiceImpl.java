@@ -1,6 +1,5 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.SearchModificationService;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.repository.SearchModificationRepository;

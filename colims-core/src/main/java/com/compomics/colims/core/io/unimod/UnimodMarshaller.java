@@ -70,7 +70,7 @@ public class UnimodMarshaller {
         Resource unimodResource = new ClassPathResource("unimod/unimod.xml");
         SAXBuilder builder = new SAXBuilder();
 
-        Document document = null;
+        Document document;
         try {
             document = builder.build(unimodResource.getInputStream());
 
