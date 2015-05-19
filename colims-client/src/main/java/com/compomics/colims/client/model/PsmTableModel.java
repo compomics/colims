@@ -164,8 +164,8 @@ public class PsmTableModel extends DefaultEventTableModel {
      *
      * @param page Page number
      */
-    public void setPage(final int page) {
-        if (page <= getMaxPage() && page > 0) {
+    public void setPage(int page) {
+        if (page <= getMaxPage() && page >= 0) {
             this.page = page;
         }
     }

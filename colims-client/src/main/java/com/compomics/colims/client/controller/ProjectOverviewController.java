@@ -395,6 +395,10 @@ public class ProjectOverviewController implements Controllable {
         });
 
         projectOverviewPanel.getFilterSpectra().addKeyListener(new KeyAdapter() {
+            /**
+             * Listener for PSM table filter, only responds to alphanumeric characters
+             * @param e The KeyEvent
+             */
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
