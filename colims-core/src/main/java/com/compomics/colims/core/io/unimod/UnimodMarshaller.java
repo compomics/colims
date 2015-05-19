@@ -5,7 +5,6 @@ import com.compomics.colims.model.SearchModification;
 import org.apache.log4j.Logger;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.util.IteratorIterable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,7 @@ public class UnimodMarshaller {
      * This maps holds the modifications from the parsed UNIMOD .xml file. This map can contains instances of {@link
      * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}.
      */
-    private java.util.Map<String, AbstractModification> modifications = new HashMap<>();
+    private final java.util.Map<String, AbstractModification> modifications = new HashMap<>();
 
     public Map<String, AbstractModification> getModifications() {
         return modifications;
@@ -70,7 +69,7 @@ public class UnimodMarshaller {
         Resource unimodResource = new ClassPathResource("unimod/unimod.xml");
         SAXBuilder builder = new SAXBuilder();
 
-        Document document = null;
+        Document document;
         try {
             document = builder.build(unimodResource.getInputStream());
 

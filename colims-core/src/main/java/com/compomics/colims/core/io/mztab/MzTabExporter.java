@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -89,7 +88,7 @@ public class MzTabExporter {
     private static final String CONTACT_AFFILIATION = "contact[%d]-affiliation";
     private static final String CONTACT_EMAIL = "contact[%d]-email";
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
 
     /**

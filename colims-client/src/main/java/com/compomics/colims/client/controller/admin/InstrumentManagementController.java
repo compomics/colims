@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
@@ -61,7 +61,7 @@ public class InstrumentManagementController implements Controllable {
     private InstrumentEditDialog instrumentEditDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private CvParamManagementController cvParamManagementController;
     //services
@@ -107,7 +107,7 @@ public class InstrumentManagementController implements Controllable {
         //clear selection
         instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), instrumentManagementDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), instrumentManagementDialog);
         instrumentManagementDialog.setVisible(true);
     }
 
@@ -126,7 +126,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     private void initInstrumentManagementDialog() {
-        instrumentManagementDialog = new InstrumentManagementDialog(colimsController.getColimsFrame(), true);
+        instrumentManagementDialog = new InstrumentManagementDialog(mainController.getMainFrame(), true);
 
         //add binding
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());

@@ -94,13 +94,14 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
+     * Test the mapping for a peptide with 3 modifications, none of them are
+     * present in the db.
      *
      * @throws MappingException
      */
     @Test
     public void testMapModification_1() throws MappingException {
-        //create ModificationMatches       
+        //create ModificationMatches
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         ModificationMatch oxidationMatch = new ModificationMatch(oxidation.getName(), true, 7);
         modificationMatches.add(oxidationMatch);
@@ -150,43 +151,49 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-            if (modification.getName().equals("monohydroxylated residue")) {
-                Assert.assertEquals("monohydroxylated residue", modification.getName());
-                Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
-                Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
-                Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
-                Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
-            } else if (modification.getName().equals("phosphorylated residue")) {
-                Assert.assertEquals("phosphorylated residue", modification.getName());
-                Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
-                Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
-                Assert.assertEquals(phosphorylationScore, peptideHasModification.getProbabilityScore(), 0.001);
-                Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
-            } else if (modification.getName().equals("L-proline removal")) {
-                Assert.assertEquals("L-proline removal", modification.getName());
-                Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
-                Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
-                Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
-                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getProbabilityScore(), 0.001);
-                Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
-            } else {
-                Assert.fail();
+            switch (modification.getName()) {
+                case "monohydroxylated residue":
+                    Assert.assertEquals("monohydroxylated residue", modification.getName());
+                    Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
+                    Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
+                    Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
+                    Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
+                    break;
+                case "phosphorylated residue":
+                    Assert.assertEquals("phosphorylated residue", modification.getName());
+                    Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
+                    Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
+                    Assert.assertEquals(phosphorylationScore, peptideHasModification.getProbabilityScore(), 0.001);
+                    Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
+                    break;
+                case "L-proline removal":
+                    Assert.assertEquals("L-proline removal", modification.getName());
+                    Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
+                    Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
+                    Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getProbabilityScore(), 0.001);
+                    Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);
+                    break;
+                default:
+                    Assert.fail();
+                    break;
             }
         }
 
     }
 
     /**
-     * Test the mapping for a peptide with 1 modification, which is present in the db.
+     * Test the mapping for a peptide with 1 modification, which is present in
+     * the db.
      *
      * @throws MappingException
      * @throws IOException
      */
     @Test
     public void testMapModification_2() throws MappingException, IOException {
-        //create ModificationMatches       
+        //create ModificationMatches
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         ModificationMatch oxidationMatch = new ModificationMatch("methionine oxidation with neutral loss of 64 Da", false, 7);
         modificationMatches.add(oxidationMatch);
@@ -229,8 +236,9 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 UNIMOD modification. The modification is not found in the db, the
-     * PtmToPrideMap or the ols service. It should be found in the UNIMOD modifications.
+     * Test the mapping for a peptide with 1 UNIMOD modification. The
+     * modification is not found in the db, the PtmToPrideMap or the ols
+     * service. It should be found in the UNIMOD modifications.
      *
      * @throws MappingException
      * @throws IOException
@@ -266,15 +274,16 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
-     * PtmToPrideMap or the ols service.
+     * Test the mapping for a peptide with 1 nonsense modification. The
+     * modification is not found in the db, the PtmToPrideMap or the ols
+     * service.
      *
      * @throws MappingException
      * @throws IOException
      */
     @Test
     public void testMapModification_4() throws MappingException, IOException {
-        //create ModificationMatches       
+        //create ModificationMatches
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         ModificationMatch modificationMatch = new ModificationMatch("nonsense modification", true, 7);
         modificationMatches.add(modificationMatch);

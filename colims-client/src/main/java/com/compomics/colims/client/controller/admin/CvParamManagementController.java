@@ -1,7 +1,7 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -49,7 +49,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     private CvParamManagementDialog cvParamManagementDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private EventBus eventBus;
     //services
@@ -70,7 +70,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     @Override
     public void init() {
         //init view
-        cvParamManagementDialog = new CvParamManagementDialog(colimsController.getColimsFrame(), true);
+        cvParamManagementDialog = new CvParamManagementDialog(mainController.getMainFrame(), true);
 
         //register to event bus
         //eventBus.register(this);
@@ -227,7 +227,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
         //clear selection
         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), cvParamManagementDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), cvParamManagementDialog);
         cvParamManagementDialog.setVisible(true);
     }
 

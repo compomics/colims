@@ -62,7 +62,7 @@ public class MzMLParserTest {
     @Test
     public void testParseMzmlFile() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
-        List<File> mzMLFiles = new ArrayList<File>();
+        List<File> mzMLFiles = new ArrayList<>();
         File mzMLFile = new ClassPathResource("data/test_mzML_1.mzML").getFile();
         mzMLFiles.add(mzMLFile);
 

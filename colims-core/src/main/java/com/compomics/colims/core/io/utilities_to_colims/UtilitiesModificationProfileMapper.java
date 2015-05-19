@@ -17,7 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to
+ * Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
@@ -46,17 +47,20 @@ public class UtilitiesModificationProfileMapper {
     @Autowired
     private OlsService olsService;
     /**
-     * The map of cached modifications (key: modification name, value: the search modification).
+     * The map of cached modifications (key: modification name, value: the
+     * search modification).
      */
     private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification profile to the Colims search parameters. The Utilities PTMs are matched first onto
-     * CV terms from PSI-MOD.
+     * Map the utilities modification profile to the Colims search parameters.
+     * The Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
-     * @param modificationProfile the Utilities modification profile with the modifications used for the searches.
-     * @param searchParameters    the Colims search parameters
-     * @throws ModificationMappingException thrown in case of a modification mapping problem
+     * @param modificationProfile the Utilities modification profile with the
+     * modifications used for the searches.
+     * @param searchParameters the Colims search parameters
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
     public void map(final ModificationProfile modificationProfile, final SearchParameters searchParameters) throws ModificationMappingException {
         //iterate over fixed modifications
@@ -64,7 +68,7 @@ public class UtilitiesModificationProfileMapper {
             //try to find a mapped CV term
             CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationName);
 
-            SearchModification searchModification = null;
+            SearchModification searchModification;
             if (cvTerm != null) {
                 searchModification = mapCvTerm(cvTerm);
             } else {
@@ -104,7 +108,8 @@ public class UtilitiesModificationProfileMapper {
     }
 
     /**
-     * Map the given CvTerm utilities object to a SearchModification instance. Return null if no mapping was possible.
+     * Map the given CvTerm utilities object to a SearchModification instance.
+     * Return null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
      * @return the Colims SearchModification entity
@@ -127,22 +132,25 @@ public class UtilitiesModificationProfileMapper {
 
             if (searchModification == null) {
                 //the search modification was not found in the database
-                if (cvTerm.getOntology().equals("PSI-MOD")) {
-                    //look for the search modification in the PSI-MOD ontology by accession
-                    searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
-
-                    if (searchModification != null) {
-                        //add to cached search modifications with the PSI-MOD accession as key
-                        cachedSearchModifications.put(searchModification.getAccession(), searchModification);
-                    }
-                } else if (cvTerm.getOntology().equals("UNIMOD")) {
-                    //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
-                    searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
-
-                    if (searchModification != null) {
-                        //add to cached search modifications with the UNIMOD accession as key
-                        cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
-                    }
+                switch (cvTerm.getOntology()) {
+                    case "PSI-MOD":
+                        //look for the search modification in the PSI-MOD ontology by accession
+                        searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
+                        if (searchModification != null) {
+                            //add to cached search modifications with the PSI-MOD accession as key
+                            cachedSearchModifications.put(searchModification.getAccession(), searchModification);
+                        }
+                        break;
+                    case "UNIMOD":
+                        //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
+                        searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
+                        if (searchModification != null) {
+                            //add to cached search modifications with the UNIMOD accession as key
+                            cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Should not be able to get here.");
                 }
 
                 if (searchModification == null) {
@@ -163,7 +171,8 @@ public class UtilitiesModificationProfileMapper {
     }
 
     /**
-     * Map the given PTM to a SearchModification instance. Return null if no mapping was possible.
+     * Map the given PTM to a SearchModification instance. Return null if no
+     * mapping was possible.
      *
      * @param ptm the PTM instance
      * @return the Colims SearchModification instance

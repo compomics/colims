@@ -2,8 +2,6 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.repository.AnalyticalRunRepository;
-import com.compomics.colims.repository.SpectrumRepository;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +29,12 @@ public class SpectrumRepositoryTest extends TestCase {
     @Autowired
     SpectrumRepository spectrumRepository;
 
-    AnalyticalRun analyticalRun;
+    private AnalyticalRun analyticalRun;
 
     @Before
+    @Override
     public void setUp() throws Exception {
-        analyticalRun = analyticalRunRepository.findById(1L);
+        this.analyticalRun = analyticalRunRepository.findById(1L);
     }
 
     @Test

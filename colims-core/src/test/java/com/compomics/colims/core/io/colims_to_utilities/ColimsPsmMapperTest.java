@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.colims_to_utilities.ColimsPsmMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

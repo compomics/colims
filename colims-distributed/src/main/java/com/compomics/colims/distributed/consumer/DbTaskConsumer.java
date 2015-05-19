@@ -51,7 +51,12 @@ public class DbTaskConsumer implements MessageListener {
     @Override
     public void onMessage(final Message message) {
         try {
-            ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage) message;
+            ActiveMQObjectMessage objectMessage = null;
+            if (message instanceof ActiveMQObjectMessage) {
+                objectMessage = (ActiveMQObjectMessage) message;
+            } else {
+                throw new IllegalStateException("The retrieved message is of an incorrect type.");
+            }
             DbTask dbTask = (DbTask) objectMessage.getObject();
 
             String jmsMessageID = objectMessage.getJMSMessageID();

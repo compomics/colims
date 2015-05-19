@@ -24,7 +24,8 @@ public class UtilitiesSearchParametersMapperTest {
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
 
     /**
-     * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
+     * Test the mapping of Utilities SearchParameters to Colims
+     * SearchParameters.
      */
     @Test
     public void testMapSearchParameters() {
@@ -60,7 +61,7 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertEquals(1L, searchParameters.getEnzyme().getId().longValue());
 
         Assert.assertNotNull(searchParameters.getNumberOfMissedCleavages());
-        Assert.assertEquals(Integer.valueOf(2), searchParameters.getNumberOfMissedCleavages());
+        Assert.assertEquals(2, searchParameters.getNumberOfMissedCleavages().intValue());
 
         Assert.assertNotNull(searchParameters.getPrecMassToleranceUnit());
         Assert.assertEquals(MassAccuracyType.DA, searchParameters.getPrecMassToleranceUnit());
@@ -73,13 +74,13 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertEquals(0.5, searchParameters.getFragMassTolerance(), 0.01);
 
         Assert.assertNotNull(searchParameters.getLowerCharge());
-        Assert.assertEquals(Integer.valueOf(charge.value), searchParameters.getLowerCharge());
+        Assert.assertEquals(charge.value, searchParameters.getLowerCharge().intValue());
         Assert.assertNotNull(searchParameters.getUpperCharge());
-        Assert.assertEquals(Integer.valueOf(charge.value), searchParameters.getUpperCharge());
+        Assert.assertEquals(charge.value, searchParameters.getUpperCharge().intValue());
 
         Assert.assertNotNull(searchParameters.getFirstSearchedIonType());
-        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.A_ION), searchParameters.getFirstSearchedIonType());
+        Assert.assertEquals(PeptideFragmentIon.A_ION, searchParameters.getFirstSearchedIonType().intValue());
         Assert.assertNotNull(searchParameters.getSecondSearchedIonType());
-        Assert.assertEquals(Integer.valueOf(PeptideFragmentIon.B_ION), searchParameters.getSecondSearchedIonType());
+        Assert.assertEquals(PeptideFragmentIon.B_ION, searchParameters.getSecondSearchedIonType().intValue());
     }
 }

@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +55,11 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
 
-    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
      * Compomics utilities sequence factory.
      */
-    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
 
     @Override
     public void clear() {
@@ -161,7 +160,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @throws IOException thrown in case of an I/O related problem
      */
     private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
-        QuantificationSettings quantificationSettings = null;
+        QuantificationSettings quantificationSettings;
 
         List<File> quantFiles = new ArrayList<>();
         quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?

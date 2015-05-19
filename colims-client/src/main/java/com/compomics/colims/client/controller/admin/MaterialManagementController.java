@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
@@ -65,7 +65,7 @@ public class MaterialManagementController implements Controllable {
     private MaterialEditDialog materialEditDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private CvParamManagementController cvParamManagementController;
     //services
@@ -111,7 +111,7 @@ public class MaterialManagementController implements Controllable {
         //clear selection
         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), materialManagementDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), materialManagementDialog);
         materialManagementDialog.setVisible(true);
     }
 
@@ -130,7 +130,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     private void initMaterialManagementDialog() {
-        materialManagementDialog = new MaterialManagementDialog(colimsController.getColimsFrame(), true);
+        materialManagementDialog = new MaterialManagementDialog(mainController.getMainFrame(), true);
 
         //add binding
         materialBindingList = ObservableCollections.observableList(materialService.findAll());

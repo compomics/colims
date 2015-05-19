@@ -22,10 +22,13 @@ public class AnalyticalRunSimpleTableFormat implements AdvancedTableFormat<Analy
     public static final int NUMBER_OF_SPECTRA = 3;
     private final SpectrumService spectrumService;
 
+    /**
+     * No-arg constructor.
+     */
     public AnalyticalRunSimpleTableFormat() {
         spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
-    }    
-    
+    }
+
     @Override
     public Class getColumnClass(final int column) {
         switch (column) {

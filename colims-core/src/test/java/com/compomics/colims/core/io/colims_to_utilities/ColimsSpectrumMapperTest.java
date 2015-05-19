@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
@@ -47,7 +46,7 @@ public class ColimsSpectrumMapperTest {
         byte[] data = Files.readAllBytes(inputSpectra.toPath());
         SpectrumFile spectrumFile = new SpectrumFile();
         spectrumFile.setContent(data);
-        List<SpectrumFile> spectrumFileList = new ArrayList<SpectrumFile>();
+        List<SpectrumFile> spectrumFileList = new ArrayList<>();
         spectrumFileList.add(spectrumFile);
 
         spectrum.setAccession("fake spectrum 1");

@@ -7,7 +7,6 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.preferences.IdentificationParameters;

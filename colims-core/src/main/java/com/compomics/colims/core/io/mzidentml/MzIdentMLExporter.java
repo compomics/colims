@@ -32,7 +32,7 @@ public class MzIdentMLExporter {
     private static final String MZIDENTML_VERSION = "1.1.0"; // TODO: version switch
 
     private MzIdentMLMarshaller marshaller;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private JsonNode mzIdentMLParamList;
     private AnalyticalRun analyticalRun;
     private Experiment experiment;
@@ -275,7 +275,7 @@ public class MzIdentMLExporter {
                 data.add(mapper.readValue(node, type));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         return data;
@@ -314,10 +314,10 @@ public class MzIdentMLExporter {
         try {
             item.add(mapper.readValue(node, type));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         return item.get(0);
     }
-    
+
 }

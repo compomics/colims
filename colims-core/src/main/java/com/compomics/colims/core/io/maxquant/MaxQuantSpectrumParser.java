@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Quantification;
@@ -17,8 +16,7 @@ import com.compomics.util.experiment.massspectrometry.Precursor;
 import com.compomics.util.experiment.massspectrometry.Spectrum;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
-import org.apache.log4j.Logger;
+
 import org.springframework.stereotype.Component;
 
 /**

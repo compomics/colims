@@ -2,7 +2,6 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
-import org.apache.xml.xml_soap.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.compomics.colims.model.Modification;
-import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 import java.util.List;
 

@@ -45,7 +45,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     private Class<T> type;
     private final JFileChooser fileChooser = new FileChooser();
     private final JFileChooser exportDirectoryChooser = new FileChooser();
-    private BindingGroup bindingGroup;
+    private transient BindingGroup bindingGroup;
     private ObservableList<T> binaryFileBindingList;
     private int previouslySelectedIndex = -1;
 

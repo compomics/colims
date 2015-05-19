@@ -64,7 +64,7 @@ public class SearchSettingsMapperTest {
         fastaDb = fastaDbService.findById(1L);
 
         //set stub IdentificationFile
-        File identificationFile = new ClassPathResource("data/peptideshaker/HeLa Example.cps").getFile();
+        File identificationFile = new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile();
         identificationFiles = new ArrayList<>();
         identificationFiles.add(identificationFile);
     }

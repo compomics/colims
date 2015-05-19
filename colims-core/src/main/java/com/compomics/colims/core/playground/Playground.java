@@ -5,15 +5,9 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Project;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.apache.xml.xml_soap.Map;
-import org.apache.xml.xml_soap.MapItem;
-import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
-import uk.ac.ebi.ook.web.model.DataHolder;
 
 /**
  * @author Niels Hulstaert

@@ -4,12 +4,10 @@ import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchCvParam;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
-import com.compomics.util.experiment.biology.PTM;
 import org.apache.log4j.Logger;
 
 import com.compomics.colims.model.SearchParameters;

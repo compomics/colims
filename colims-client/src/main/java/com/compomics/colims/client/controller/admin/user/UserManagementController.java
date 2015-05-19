@@ -2,11 +2,8 @@ package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
@@ -61,7 +58,7 @@ public class UserManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsController.class);
+    private static final Logger LOGGER = Logger.getLogger(MainController.class);
 
     //model
     private ObservableList<User> userBindingList;

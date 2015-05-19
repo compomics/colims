@@ -67,7 +67,7 @@ public class AnalyticalRunSetupController implements Controllable {
     private AnalyticalRunSetupDialog analyticalRunSetupDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
     //child controller
@@ -101,7 +101,7 @@ public class AnalyticalRunSetupController implements Controllable {
     @Override
     public void init() {
         //init view
-        analyticalRunSetupDialog = new AnalyticalRunSetupDialog(colimsController.getColimsFrame(), true);
+        analyticalRunSetupDialog = new AnalyticalRunSetupDialog(mainController.getMainFrame(), true);
 
         //register to event bus
         eventBus.register(this);
@@ -240,7 +240,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 getCardLayout().first(analyticalRunSetupDialog.getTopPanel());
                 onCardSwitch();
 
-                GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), analyticalRunSetupDialog);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), analyticalRunSetupDialog);
                 analyticalRunSetupDialog.setVisible(true);
             } else {
                 eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));

@@ -1,12 +1,16 @@
 package com.compomics.colims.client;
 
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.controller.DatabaseLoginController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.Painter;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import org.apache.log4j.Logger;
@@ -14,20 +18,37 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * This class starts the client application.
  *
  * @author Niels Hulstaert
  */
-public class ColimsClientStarter {
+public final class ColimsClientStarter {
 
-    private final static Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    /**
+     * The startup error message.
+     */
     private static final String ERROR_MESSAGE = "An error occured during startup, please try again."
             + System.lineSeparator() + "If the problem persists, contact your administrator or post an issue on the google code page.";
 
-    public ColimsClientStarter(String[] contextPaths) {
+    /**
+     * Private constructor.
+     *
+     * @param contextPaths the spring context paths
+     */
+    private ColimsClientStarter(final String[] contextPaths) {
         launchColimsClient(contextPaths);
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main method.
+     *
+     * @param args the main method arguments
+     */
+    public static void main(final String[] args) {
         /*
          * Set the Nimbus look and feel
          */
@@ -50,10 +71,30 @@ public class ColimsClientStarter {
         }
         //</editor-fold>
 
+        //set background color for JOptionPane and JPanel instances
+        UIManager.getLookAndFeelDefaults().put("OptionPane.background", Color.WHITE);
+        UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+        UIManager.getLookAndFeelDefaults().put("FileChooser.background", Color.WHITE);
+        //set background color for JFileChooser instances
+        UIManager.getLookAndFeelDefaults().put("FileChooser[Enabled].backgroundPainter",
+                new Painter<JFileChooser>() {
+                    @Override
+                    public void paint(final Graphics2D g, final JFileChooser object, final int width, final int height) {
+                        g.setColor(Color.WHITE);
+                        g.draw(object.getBounds());
+
+                    }
+                });
+
         ColimsClientStarter colimsClientStarter = new ColimsClientStarter(new String[]{"colims-client-context.xml"});
     }
 
-    private void launchColimsClient(String[] contextPaths) {
+    /**
+     * Launch the client.
+     *
+     * @param contextPaths the spring context paths
+     */
+    private void launchColimsClient(final String[] contextPaths) {
         try {
             //init and show database login dialog for database login credentials
             DatabaseLoginController databaseLoginController = new DatabaseLoginController();
@@ -77,15 +118,15 @@ public class ColimsClientStarter {
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
 
-            ColimsController colimsController = ApplicationContextProvider.getInstance().getBean("colimsController");
+            MainController mainController = ApplicationContextProvider.getInstance().getBean("colimsController");
             SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
 
             //set final progress bar step
             splashScreen.setProgressLabel("Loading GUI...", splashScreen.getMaximum() - 1);
-            colimsController.init();
+            mainController.init();
             splashScreen.dispose();
 
-            colimsController.showView();
+            mainController.showView();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             //add message to JTextArea

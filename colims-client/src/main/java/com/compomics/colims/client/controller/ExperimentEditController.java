@@ -46,7 +46,7 @@ public class ExperimentEditController implements Controllable {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     //services
     @Autowired
     private ExperimentService experimentService;
@@ -79,7 +79,7 @@ public class ExperimentEditController implements Controllable {
         //eventBus.register(this);
 
         //init view
-        experimentEditDialog = new ExperimentEditDialog(colimsController.getColimsFrame(), true);
+        experimentEditDialog = new ExperimentEditDialog(mainController.getMainFrame(), true);
         experimentBinaryFileDialog = new ExperimentBinaryFileDialog(experimentEditDialog, true);
         experimentBinaryFileDialog.getBinaryFileManagementPanel().init(ExperimentBinaryFile.class);
 
@@ -218,7 +218,7 @@ public class ExperimentEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), experimentEditDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), experimentEditDialog);
         experimentEditDialog.setVisible(true);
     }
 

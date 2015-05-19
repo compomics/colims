@@ -13,21 +13,12 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.model.PsmTableModel;
-import com.compomics.colims.client.model.tableformat.AnalyticalRunSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.ExperimentSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.ProjectSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.SampleSimpleTableFormat;
-import com.compomics.colims.client.model.tableformat.PsmTableFormat;
+import com.compomics.colims.client.model.tableformat.*;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
-import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.util.experiment.identification.PeptideAssumption;
@@ -48,21 +39,23 @@ import com.compomics.util.preferences.SpecificAnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * The project overview view controller.
@@ -110,7 +103,7 @@ public class ProjectOverviewController implements Controllable {
     private ProjectOverviewPanel projectOverviewPanel;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
     //services
@@ -140,10 +133,10 @@ public class ProjectOverviewController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectOverviewPanel = new ProjectOverviewPanel(colimsController.getColimsFrame(), this, utilitiesUserPreferences);
+        projectOverviewPanel = new ProjectOverviewPanel(mainController.getMainFrame(), this, utilitiesUserPreferences);
 
         //init projects table
-        SortedList<Project> sortedProjects = new SortedList<>(colimsController.getProjects(), new IdComparator());
+        SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
         projectsTableModel = GlazedListsSwing.eventTableModel(sortedProjects, new ProjectSimpleTableFormat());
         projectOverviewPanel.getProjectsTable().setModel(projectsTableModel);
         projectsSelectionModel = new DefaultEventSelectionModel<>(sortedProjects);
@@ -162,7 +155,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
-            projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
+                projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
 
         //init projects experiment table
         SortedList<Experiment> sortedExperiments = new SortedList<>(experiments, new IdComparator());
@@ -184,7 +177,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
-            projectOverviewPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
+                projectOverviewPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
 
         //init experiment samples table
         SortedList<Sample> sortedSamples = new SortedList<>(samples, new IdComparator());
@@ -205,7 +198,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser samplesTableSorter = TableComparatorChooser.install(
-            projectOverviewPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
+                projectOverviewPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample analyticalruns table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
@@ -227,7 +220,7 @@ public class ProjectOverviewController implements Controllable {
 
         //set sorting
         TableComparatorChooser analyticalRunsTableSorter = TableComparatorChooser.install(
-            projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
+                projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
@@ -298,7 +291,7 @@ public class ProjectOverviewController implements Controllable {
         analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+                mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
                 AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
@@ -307,7 +300,7 @@ public class ProjectOverviewController implements Controllable {
                     updatePsmTable();
                 }
 
-                colimsController.getColimsFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
+                mainController.getMainFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
@@ -510,7 +503,7 @@ public class ProjectOverviewController implements Controllable {
         Spectrum selectedSpectrum = getSelectedSpectrum();
 
         if (getSelectedSpectrum() != null) {
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
             AnnotationPreferences annotationPreferences = projectOverviewPanel.getAnnotationPreferences();
 
@@ -563,7 +556,7 @@ public class ProjectOverviewController implements Controllable {
                         ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(
                                 annotationPreferences,
                                 specificAnnotationPreferences,
-                                (MSnSpectrum) spectrum,
+                                spectrum,
                                 peptideAssumption.getPeptide());
                         spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
                         //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
@@ -632,14 +625,15 @@ public class ProjectOverviewController implements Controllable {
                     projectOverviewPanel.getSecondarySpectrumPlotsJPanel().repaint();
 
                     // update the panel border title
-                    //updateSpectrumPanelBorderTitle(currentSpectrum); // @TODO: re-add later
+                    //updateSpectrumPanelBorderTitle(currentSpectrum);
+                    // @TODO: re-add later
                     projectOverviewPanel.getSpectrumMainPanel().revalidate();
                     projectOverviewPanel.getSpectrumMainPanel().repaint();
                 }
             } catch (Exception e) {
                 LOGGER.error(e.getCause(), e);
             }
-            colimsController.getColimsFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         } else {
             clearSpectrum();
         }

@@ -1,14 +1,6 @@
 
 package com.compomics.colims.distributed.playground;
 
-import com.compomics.colims.distributed.model.Notification;
-import com.compomics.colims.distributed.model.enums.NotificationType;
-import com.compomics.colims.distributed.producer.NotificationProducer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 /**
  *
  * @author Niels Hulstaert

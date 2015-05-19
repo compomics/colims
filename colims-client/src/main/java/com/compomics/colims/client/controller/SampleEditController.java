@@ -91,7 +91,7 @@ public class SampleEditController implements Controllable {
     private ProgressDialogX analyticalRunProgressDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
     //child controller
@@ -130,7 +130,7 @@ public class SampleEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        sampleEditDialog = new SampleEditDialog(colimsController.getColimsFrame(), true);
+        sampleEditDialog = new SampleEditDialog(mainController.getMainFrame(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
 
@@ -363,7 +363,7 @@ public class SampleEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), sampleEditDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), sampleEditDialog);
         sampleEditDialog.setVisible(true);
     }
 
@@ -459,7 +459,7 @@ public class SampleEditController implements Controllable {
 
         //check delete permissions
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
-            int option = JOptionPane.showConfirmDialog(colimsController.getColimsFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
+            int option = JOptionPane.showConfirmDialog(mainController.getMainFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
                     + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
@@ -473,7 +473,7 @@ public class SampleEditController implements Controllable {
                 }
             }
         } else {
-            colimsController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
+            mainController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
         }
 
         return deleteConfirmation;

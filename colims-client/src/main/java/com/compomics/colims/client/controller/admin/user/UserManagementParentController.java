@@ -1,7 +1,7 @@
 package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.controller.ColimsController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import java.awt.event.ActionEvent;
@@ -21,7 +21,7 @@ public class UserManagementParentController implements Controllable {
     private UserManagementDialog userManagementDialog;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     //child controllers
     @Autowired
     private UserManagementController userManagementController;
@@ -50,7 +50,7 @@ public class UserManagementParentController implements Controllable {
     @Override
     public void init() {
         //init view
-        userManagementDialog = new UserManagementDialog(colimsController.getColimsFrame(), true);
+        userManagementDialog = new UserManagementDialog(mainController.getMainFrame(), true);
 
         //init child controllers
         userManagementController.init();
@@ -74,7 +74,7 @@ public class UserManagementParentController implements Controllable {
         roleManagementController.showView();
         permissionManagementController.showView();
 
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), userManagementDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), userManagementDialog);
         userManagementDialog.setVisible(true);
     }
 }

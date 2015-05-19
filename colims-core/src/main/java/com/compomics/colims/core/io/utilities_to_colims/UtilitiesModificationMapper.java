@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to
+ * Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
@@ -58,18 +58,20 @@ public class UtilitiesModificationMapper {
     @Autowired
     private UnimodMarshaller unimodMarshaller;
     /**
-     * The map of cached modifications (key: modification name, value: the modification).
+     * The map of cached modifications (key: modification name, value: the
+     * modification).
      */
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification matches to the Colims peptide. The Utilities PTMs are matched first onto CV terms
-     * from PSI-MOD.
+     * Map the utilities modification matches to the Colims peptide. The
+     * Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
-     * @param ptmScores           the PeptideShaker PTM scores
-     * @param targetPeptide       the Colims target peptide
-     * @throws ModificationMappingException thrown in case of a modification mapping problem
+     * @param ptmScores the PeptideShaker PTM scores
+     * @param targetPeptide the Colims target peptide
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
     public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         //iterate over modification matches
@@ -153,7 +155,8 @@ public class UtilitiesModificationMapper {
     }
 
     /**
-     * Map the given CvTerm Utilities object to a Modification instance. Return null if no mapping was possible.
+     * Map the given CvTerm Utilities object to a Modification instance. Return
+     * null if no mapping was possible.
      *
      * @param cvTerm the Utilities CvTerm
      * @return the Colims Modification entity
@@ -176,30 +179,33 @@ public class UtilitiesModificationMapper {
 
             if (modification == null) {
                 //the modification was not found in the database
-                if (cvTerm.getOntology().equals("PSI-MOD")) {
-                    //look for the modification in the PSI-MOD ontology by accession
-                    modification = olsService.findModificationByAccession(Modification.class, cvTerm.getAccession());
-
-                    if (modification != null) {
-                        //add to cached modifications with the PSI-MOD accession as key
-                        cachedModifications.put(modification.getAccession(), modification);
-                    }
-                } else if (cvTerm.getOntology().equals("UNIMOD")) {
-                    //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
-                    modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, cvTerm.getName(), cvTerm.getAccession());
-
-                    if (modification != null) {
-                        //add to cached modifications with the UNIMOD accession as key
-                        cachedModifications.put(cvTerm.getAccession(), modification);
-                    } else {
-                        //find the modification in the UNIMOD modifications
-                        unimodMarshaller.getModificationByName(Modification.class, cvTerm.getName());
-
+                switch (cvTerm.getOntology()) {
+                    case "PSI-MOD":
+                        //look for the modification in the PSI-MOD ontology by accession
+                        modification = olsService.findModificationByAccession(Modification.class, cvTerm.getAccession());
+                        if (modification != null) {
+                            //add to cached modifications with the PSI-MOD accession as key
+                            cachedModifications.put(modification.getAccession(), modification);
+                        }
+                        break;
+                    case "UNIMOD":
+                        //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
+                        modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, cvTerm.getName(), cvTerm.getAccession());
                         if (modification != null) {
                             //add to cached modifications with the UNIMOD accession as key
                             cachedModifications.put(cvTerm.getAccession(), modification);
+                        } else {
+                            //find the modification in the UNIMOD modifications
+                            modification = unimodMarshaller.getModificationByName(Modification.class, cvTerm.getName());
+
+                            if (modification != null) {
+                                //add to cached modifications with the UNIMOD accession as key
+                                cachedModifications.put(cvTerm.getAccession(), modification);
+                            }
                         }
-                    }
+                        break;
+                    default:
+                        throw new IllegalStateException("Should not be able to get here.");
                 }
 
                 if (modification == null) {
@@ -219,9 +225,9 @@ public class UtilitiesModificationMapper {
         return modification;
     }
 
-
     /**
-     * Map the given ModificationMatch object to a Modification instance. Return null if no mapping was possible.
+     * Map the given ModificationMatch object to a Modification instance. Return
+     * null if no mapping was possible.
      *
      * @param modificationMatch the utilities ModificationMatch
      * @return the Colims Modification instance

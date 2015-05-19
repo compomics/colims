@@ -8,8 +8,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import com.compomics.colims.repository.QuantificationSettingsRepository;
-import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

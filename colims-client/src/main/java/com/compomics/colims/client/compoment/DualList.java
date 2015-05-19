@@ -25,7 +25,7 @@ public class DualList<T> extends javax.swing.JPanel {
     /**
      * The BindingGroup instance.
      */
-    private BindingGroup bindingGroup;
+    private transient BindingGroup bindingGroup;
     /**
      * The list of available items.
      */

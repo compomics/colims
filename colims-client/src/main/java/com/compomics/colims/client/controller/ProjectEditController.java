@@ -52,7 +52,7 @@ public class ProjectEditController implements Controllable {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     //services
     @Autowired
     private ProjectService projectService;
@@ -76,7 +76,7 @@ public class ProjectEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        projectEditDialog = new ProjectEditDialog(colimsController.getColimsFrame(), true);
+        projectEditDialog = new ProjectEditDialog(mainController.getMainFrame(), true);
 
         //init dual list
         users = userService.findAll();
@@ -154,7 +154,7 @@ public class ProjectEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(colimsController.getColimsFrame(), projectEditDialog);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), projectEditDialog);
         projectEditDialog.setVisible(true);
     }
 

@@ -32,6 +32,9 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      */
     private CvParamType[] multiCvParamKeys;
 
+    /**
+     * No-arg constructor.
+     */
     public TypedCvParamSummaryListModel() {
         singleCvParams = new EnumMap<>(CvParamType.class);
         multiCvParams = new EnumMap<>(CvParamType.class);
@@ -52,7 +55,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * @param cvParamType the CV param type
      * @param t the T instance
      */
-    public void updateSingleCvParam(CvParamType cvParamType, T t) {
+    public void updateSingleCvParam(final CvParamType cvParamType, final T t) {
         singleCvParams.put(cvParamType, t);
         this.fireContentsChanged(this, 0, getSize());
     }
@@ -64,7 +67,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * @param cvParamType the CvParamType
      * @param cvParams the list of CV params
      */
-    public void updateMultiCvParam(CvParamType cvParamType, List<T> cvParams) {
+    public void updateMultiCvParam(final CvParamType cvParamType, final List<T> cvParams) {
         multiCvParams.put(cvParamType, cvParams);
         this.fireContentsChanged(this, 0, getSize());
     }
@@ -75,7 +78,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * @param singleCvParams the map of single CV params
      * @param multiCvParams the map of multi CV params
      */
-    public void update(EnumMap<CvParamType, T> singleCvParams, EnumMap<CvParamType, List<T>> multiCvParams) {
+    public void update(final EnumMap<CvParamType, T> singleCvParams, final EnumMap<CvParamType, List<T>> multiCvParams) {
         this.singleCvParams = singleCvParams;
         this.multiCvParams = multiCvParams;
         singleCvParamKeys = singleCvParams.keySet().toArray(new CvParamType[singleCvParams.size()]);
@@ -90,7 +93,7 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
      * @param cvParamType the CvParamType
      * @return is it a single CV param
      */
-    public boolean isSingleCvParam(CvParamType cvParamType) {
+    public boolean isSingleCvParam(final CvParamType cvParamType) {
         boolean isSingleCvParam = false;
         if (singleCvParams.containsKey(cvParamType)) {
             isSingleCvParam = true;
@@ -104,8 +107,11 @@ public class TypedCvParamSummaryListModel<T extends AuditableTypedCvParam> exten
     }
 
     @Override
-    public Object getElementAt(int index) {
+    public Object getElementAt(final int index) {
         Object element;
+        if (singleCvParamKeys == null || multiCvParamKeys == null) {
+            throw new IllegalStateException("Keys array cannot be null.");
+        }
         if (index < singleCvParamKeys.length) {
             element = singleCvParamKeys[index];
         } else {

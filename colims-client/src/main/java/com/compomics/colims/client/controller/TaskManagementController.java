@@ -6,7 +6,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.CompletedDbTaskQueueTableModel;
 import com.compomics.colims.client.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.DbTaskQueueTableModel;
-import com.compomics.colims.client.view.ColimsFrame;
+import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.TaskManagementPanel;
 import com.compomics.colims.distributed.model.CompletedDbTask;
 import com.compomics.colims.distributed.model.DbTaskError;
@@ -61,7 +61,7 @@ public class TaskManagementController implements Controllable {
     private TaskManagementPanel taskManagementPanel;
     //parent controller
     @Autowired
-    private ColimsController colimsController;
+    private MainController mainController;
     //services
     @Autowired
     private QueueManager queueManager;
@@ -327,7 +327,7 @@ public class TaskManagementController implements Controllable {
             activityMessage += FINISHED_MESSAGE;
 
             //update tables if the task management tab is visible
-            if (colimsController.getSelectedTabTitle().equals(ColimsFrame.TASKS_TAB_TITLE)) {
+            if (mainController.getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
                 updateMonitoringTables();
             }
         }

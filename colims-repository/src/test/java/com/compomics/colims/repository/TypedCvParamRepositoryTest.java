@@ -1,10 +1,7 @@
 package com.compomics.colims.repository;
 
 
-import com.compomics.colims.model.InstrumentCvParam;
-import com.compomics.colims.model.ProtocolCvParam;
 import com.compomics.colims.model.SearchCvParam;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import org.junit.Assert;
