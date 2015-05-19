@@ -74,46 +74,4 @@ public class MaxQuantPeptideParserTest {
         values.put(MaxQuantEvidenceHeaders.MS_MS_IDS.getColumnName(), multipleMsMsIds);
 
     }
-
-    /*@Test
-    public void testLinkPeptideToModificationsOxidization() throws HeaderEnumNotInitialisedException {
-        // Setup arguments
-        Peptide peptide = new Peptide();
-        Map<String, String> values = new HashMap<>();
-        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_PROBABILITIES.getColumnName().toLowerCase(), "AAM(1)GNFAAFSAIPGVEVR");
-        values.put(MaxQuantEvidenceHeaders.OXIDATION_M.getColumnName().toLowerCase(), "1");
-        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getColumnName().toLowerCase(), "1");
-        //maxQuantEvidenceParser.linkPeptideToModifications(peptide, values);
-        maxQuantEvidenceParser.addModification(MaxQuantEvidenceHeaders.Oxidation_M.getColumnName());
-        List<ModificationMatch> oxidationResults = maxQuantEvidenceParser.extractModifications(values);
-        peptide.addModificationMatch(oxidationResults.get(0));
-
-
-        // Check modification value matches what we expect
-        ArrayList<ModificationMatch> modifications = peptide.getModificationMatches();
-        Assert.assertEquals(1, modifications.size());
-        ModificationMatch pepHasMod = modifications.get(0);
-        Assert.assertEquals(3, pepHasMod.getModificationSite());
-        Assert.assertEquals(MaxQuantEvidenceHeaders.Oxidation_M.getColumnName(), pepHasMod.getTheoreticPtm());
-    }*/
-
-    /*@Test
-    public void testLinkPeptideToModificationsAcetyl() throws HeaderEnumNotInitialisedException {
-        // Setup arguments
-        Peptide peptide = new Peptide();
-        Map<String, String> values = new HashMap<>();
-        String modificationName = MaxQuantEvidenceHeaders.Acetyl_Protein_N_term.getColumnName();
-        values.put(modificationName, "1");
-        values.put(MaxQuantEvidenceHeaders.Modifications.getColumnName(), "1");
-        maxQuantEvidenceParser.addModification(MaxQuantEvidenceHeaders.Acetyl_Protein_N_term.getColumnName());
-        for (ModificationMatch match : maxQuantEvidenceParser.extractModifications(values)) {
-            peptide.addModificationMatch(match);
-        }
-        // Check modification value matches what we expect
-        List<ModificationMatch> modifications = peptide.getModificationMatches();
-        Assert.assertEquals(1, modifications.size());
-        ModificationMatch pepHasMod = modifications.get(0);
-        Assert.assertEquals(0, pepHasMod.getModificationSite());
-        Assert.assertEquals(modificationName, pepHasMod.getTheoreticPtm());
-    }*/
 }

@@ -31,19 +31,6 @@ public class MaxQuantImportMapperTest {
     @Autowired
     MaxQuantImporter maxQuantImporter;
 
-    private File maxQuantTextDirectory;
-    private FastaDb maxQuantTestFastaDb;
-
-    public MaxQuantImportMapperTest() throws IOException {
-        maxQuantTextDirectory = new ClassPathResource("data/maxquant").getFile();
-        
-        File fastaFile = new ClassPathResource("data/maxquant/testfasta.fasta").getFile();
-        maxQuantTestFastaDb = new FastaDb();
-        maxQuantTestFastaDb.setName(fastaFile.getName());
-        maxQuantTestFastaDb.setFileName(fastaFile.getName());
-        maxQuantTestFastaDb.setFilePath(fastaFile.getAbsolutePath());                
-    }
-
     /**
      * Test of map method, of class MaxQuantImporter.
      * @throws java.io.IOException
@@ -56,8 +43,13 @@ public class MaxQuantImportMapperTest {
      */
     @Test
     public void testMap() throws IOException, UnparseableException, HeaderEnumNotInitialisedException, MappingException, SQLException, ClassNotFoundException {
+        FastaDb maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+
         System.out.println("map");
-        MaxQuantImport maxQuantImport = new MaxQuantImport(maxQuantTextDirectory, maxQuantTestFastaDb);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);
         List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);
         assertThat(result.size(), is(not(0)));
     }
