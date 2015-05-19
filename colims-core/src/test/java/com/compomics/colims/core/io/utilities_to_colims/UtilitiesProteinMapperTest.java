@@ -37,7 +37,7 @@ public class UtilitiesProteinMapperTest {
     @BeforeClass
     public static void setupOnce() throws IOException, ClassNotFoundException {
         //load SequenceFactory for testing
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-march-2014_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
         SequenceFactory.getInstance().loadFastaFile(fastaFile, null);
     }
 
