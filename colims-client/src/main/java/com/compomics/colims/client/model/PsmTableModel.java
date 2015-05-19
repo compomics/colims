@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class PsmTableModel extends DefaultEventTableModel {
 
-    private SpectrumRepository spectrumRepository;
+    private final SpectrumRepository spectrumRepository;
 
     public static final int SPECTRUM_ID = 0;
     public static final int PRECURSOR_CHARGE = 1;

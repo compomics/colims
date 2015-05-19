@@ -26,8 +26,7 @@ public class SearchEngineHibernateRepository extends GenericHibernateRepository<
 
     @Override
     public SearchEngine findByTypeAndVersion(SearchEngineType searchEngineType, String version) {
-        SearchEngine searchEngine = findUniqueByCriteria(Restrictions.eq("searchEngineType", searchEngineType), Restrictions.eq("version", version));
-        return searchEngine;
+        return findUniqueByCriteria(Restrictions.eq("searchEngineType", searchEngineType), Restrictions.eq("version", version));
     }
 
 }

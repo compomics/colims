@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +55,11 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
 
-    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
      * Compomics utilities sequence factory.
      */
-    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
 
     @Override
     public void clear() {

@@ -7,7 +7,6 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
-import com.compomics.util.pride.CvTerm;
 import com.compomics.util.pride.PtmToPrideMap;
 import org.junit.Assert;
 import org.junit.Before;

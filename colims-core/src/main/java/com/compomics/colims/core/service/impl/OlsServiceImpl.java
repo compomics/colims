@@ -39,7 +39,7 @@ public class OlsServiceImpl implements OlsService {
      * com.compomics.colims.model.Modification} and
      * {@link com.compomics.colims.model.SearchModification}.
      */
-    private java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
+    private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
     /**
      * This interface provides access to the ontology lookup service.
      */

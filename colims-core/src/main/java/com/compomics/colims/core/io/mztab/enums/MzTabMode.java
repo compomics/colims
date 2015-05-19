@@ -1,7 +1,5 @@
 package com.compomics.colims.core.io.mztab.enums;
 
-import static com.compomics.colims.core.io.mztab.enums.MzTabType.values;
-
 /**
  * The mzTab mode enum.
  * <p/>

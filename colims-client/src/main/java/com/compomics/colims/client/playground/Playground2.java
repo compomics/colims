@@ -1,43 +1,23 @@
 package com.compomics.colims.client.playground;
 
-import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.distributed.impl.QueueManagerImpl;
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.model.enums.PersistType;
-import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.jms.InvalidSelectorException;
 import javax.jms.JMSException;
 import javax.management.openmbean.OpenDataException;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 

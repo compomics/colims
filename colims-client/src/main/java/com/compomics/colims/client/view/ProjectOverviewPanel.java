@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import javax.swing.*;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.DocumentFilter;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;

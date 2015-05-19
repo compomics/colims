@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.maxquant;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
@@ -11,10 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.compomics.colims.repository.ModificationRepository;
-import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

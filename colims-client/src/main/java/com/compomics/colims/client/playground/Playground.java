@@ -1,33 +1,11 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import javax.swing.UIManager;
 
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 

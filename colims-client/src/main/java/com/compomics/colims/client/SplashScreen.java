@@ -8,7 +8,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;

@@ -1,14 +1,11 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
-import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.enums.QuantificationWeight;
-import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;

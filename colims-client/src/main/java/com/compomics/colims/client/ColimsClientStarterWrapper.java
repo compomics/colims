@@ -29,10 +29,9 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
 
             String mainClass = "com.compomics.colims.client.ColimsClientStarter";
 
-            StringBuilder fileLocations = new StringBuilder();
             String[] argsAddedTo = Arrays.copyOf(args, args.length + 1);
             System.out.println(argsAddedTo.length);
-            argsAddedTo[argsAddedTo.length - 1] = fileLocations.toString();
+            argsAddedTo[argsAddedTo.length - 1] = "";
             launchTool("Colims-client", jarFile, null, mainClass, argsAddedTo);
         } catch (URISyntaxException ex) {
             LOGGER.error(ex);

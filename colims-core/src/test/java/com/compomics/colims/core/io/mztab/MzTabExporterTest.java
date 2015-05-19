@@ -5,23 +5,15 @@
 package com.compomics.colims.core.io.mztab;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.mzml.MzMLParser;
-import com.compomics.colims.model.*;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  *

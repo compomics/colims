@@ -29,12 +29,12 @@ public class SpectrumRepositoryTest extends TestCase {
     @Autowired
     SpectrumRepository spectrumRepository;
 
-    AnalyticalRun analyticalRun;
+    private AnalyticalRun analyticalRun;
 
     @Before
     @Override
     public void setUp() throws Exception {
-        analyticalRun = analyticalRunRepository.findById(1L);
+        this.analyticalRun = analyticalRunRepository.findById(1L);
     }
 
     @Test

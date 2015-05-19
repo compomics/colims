@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
-import com.compomics.colims.model.QuantificationSettings;
-import com.compomics.colims.model.SearchAndValidationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import java.util.List;

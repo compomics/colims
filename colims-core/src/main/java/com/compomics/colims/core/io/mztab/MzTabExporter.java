@@ -88,7 +88,7 @@ public class MzTabExporter {
     private static final String CONTACT_AFFILIATION = "contact[%d]-affiliation";
     private static final String CONTACT_EMAIL = "contact[%d]-email";
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
 
     /**

@@ -5,9 +5,7 @@ import java.io.IOException;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
-import com.compomics.colims.model.QuantificationFile;
 import com.compomics.colims.model.enums.FragmentationType;
-import com.compomics.util.experiment.identification.SearchParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

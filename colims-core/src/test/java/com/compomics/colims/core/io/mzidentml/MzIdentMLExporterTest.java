@@ -2,11 +2,7 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,12 +16,10 @@ import uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware;
 import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Created by Iain on 13/01/2015.
@@ -52,7 +46,7 @@ public class MzIdentMLExporterTest {
     public void testJSON() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
-        JsonNode root = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
+        JsonNode root = mapper.readTree(new ClassPathResource("/config/mzidentml.json").getURL());
 
         JsonNode cvList = root.get("cvList");
 
