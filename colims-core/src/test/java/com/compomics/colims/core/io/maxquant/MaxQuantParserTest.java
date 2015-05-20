@@ -1,7 +1,10 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;

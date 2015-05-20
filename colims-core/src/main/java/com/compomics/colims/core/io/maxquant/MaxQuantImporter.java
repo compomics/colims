@@ -2,6 +2,10 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
+import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.*;
@@ -24,7 +28,6 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
