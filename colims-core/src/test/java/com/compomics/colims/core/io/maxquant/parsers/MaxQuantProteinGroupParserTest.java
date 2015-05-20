@@ -31,8 +31,6 @@ public class MaxQuantProteinGroupParserTest {
      */
     @Test
     public void testParse() throws Exception {
-        System.out.println("parseMaxQuantProteinGroups");
-
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile.toPath());
 
         Map<Integer, ProteinMatch> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile);

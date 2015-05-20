@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.maxquant;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantEvidenceParser;

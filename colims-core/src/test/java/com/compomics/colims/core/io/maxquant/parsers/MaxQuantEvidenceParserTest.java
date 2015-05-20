@@ -75,6 +75,6 @@ public class MaxQuantEvidenceParserTest {
         Map<String, PeptidePosition> peptidePositions = maxQuantEvidenceParser.getPeptidePositions(MaxQuantTestSuite.peptidesFile);
 
         assertThat(peptidePositions.size(), not(0));
-        assert(peptidePositions.get("1220").getStart() < peptidePositions.get("1220").getEnd());
+        assertTrue(peptidePositions.get("1220").getStart() < peptidePositions.get("1220").getEnd());
     }
 }

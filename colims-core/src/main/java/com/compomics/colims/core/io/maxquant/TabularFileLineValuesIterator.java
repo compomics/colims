@@ -27,43 +27,56 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     private String[] headers = new String[0];
 
     /**
-     * Parse the .tsv evidenceFile and return a Map<String,String> instance for
-     * each line that maps the keys found on the first line to the values found
-     * the the values found on lines two and further until the end of the file.
+     * Parse a TSV file and create a map for each line that maps the keys
+     * found on the first line to the values found to the values found on
+     * lines two and further until the end of the file.
      *
-     * @param evidenceFile tab separated values file
+     * @param tsvFile tab separated values file
      * @throws IOException
      */
-    public TabularFileLineValuesIterator(final File evidenceFile) throws IOException {
-        // Extract headers
-        fileReader = new FileReader(evidenceFile);
+    public TabularFileLineValuesIterator(final File tsvFile) throws IOException {
+        fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
-        String readLine = lineReader.readLine().toLowerCase(Locale.US);
 
-        // Determine the headers for this particular file, so we can assign values to the right key in our map
-        headers = readLine.split("" + delimiter);
+        String firstLine = lineReader.readLine();
 
-        // Initialize the first line in the nextLine field
-        advanceLine();
+        if (firstLine == null || firstLine.isEmpty()) {
+            throw new IOException("Input file " + tsvFile.getPath() + " is empty");
+        } else {
+            headers = firstLine.toLowerCase(Locale.US).split("" + delimiter);
+
+            advanceLine();
+        }
     }
 
-    public TabularFileLineValuesIterator(final File evidenceFile, HeaderEnum[] headerEnumeration) throws IOException {
-        // Extract headers	
-        fileReader = new FileReader(evidenceFile);
+    /**
+     * Parse a TSV file and create a map of keys and values for the given enum
+     * of headers and each line in the file
+     * @param tsvFile The data file
+     * @param headerEnumeration An enum of headers to specify values for
+     * @throws IOException
+     */
+    public TabularFileLineValuesIterator(final File tsvFile, HeaderEnum[] headerEnumeration) throws IOException {
+        fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
-        String readLine = lineReader.readLine().toLowerCase(Locale.US);
+        String firstLine = lineReader.readLine();
+
+        if (firstLine == null || firstLine.isEmpty()) {
+            throw new IOException("Input file " + tsvFile.getPath() + " is empty");
+        } else {
+            firstLine = firstLine.toLowerCase(Locale.US);
+        }
+
         for (HeaderEnum aHeader : headerEnumeration) {
             for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.allPossibleColumnNames().length; numberOfPossibleHeaders++){
-                if(readLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])){
+                if (firstLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])){
                     aHeader.setColumnReference(numberOfPossibleHeaders);
                 }
             }
         }
-        
-        // Determine the headers for this particular file, so we can assign values to the right key in our map
-        headers = readLine.split("" + delimiter);
 
-        // Initialize the first line in the nextLine field
+        headers = firstLine.split("" + delimiter);
+
         advanceLine();
     }
 
@@ -79,7 +92,6 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
      * Also handles the end of file by setting nextLine to null.
      */
     void advanceLine() {
-        // Advance to the next line
         try {
             String readLine = lineReader.readLine();
             if (readLine != null) {
@@ -87,7 +99,6 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
                 return;
             }
         } catch (IOException e) {
-            // XXX Hmmm, just printing a stacktrace is a very poor way to handle an IOException at this point...
             e.printStackTrace();
         }
         nextLine = null;
@@ -108,8 +119,8 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
 
     @Override
     public Map<String, String> next() {
-        // nextLine[] is an array of values from the line
         Map<String, String> lineValues = new HashMap<>();
+
         for (int i = 0; i < nextLine.length; i++) {
             lineValues.put(headers[i], nextLine[i]);
         }

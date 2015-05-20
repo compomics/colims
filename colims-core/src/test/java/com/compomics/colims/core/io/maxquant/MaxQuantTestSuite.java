@@ -15,11 +15,11 @@ import java.io.File;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 //    MaxQuantEvidenceParserTest.class,
-//    MaxQuantParameterParserTest.class
+//    MaxQuantParameterParserTest.class,
 //    MaxQuantImportMapperTest.class,
-//    MaxQuantProteinGroupParserTest.class//,
-    MaxQuantSpectrumParserTest.class,
-//    TabularFileLineValuesIteratorTest.class
+//    MaxQuantProteinGroupParserTest.class,
+//    MaxQuantSpectrumParserTest.class,
+    TabularFileLineValuesIteratorTest.class
 })
 
 public class MaxQuantTestSuite {
@@ -53,7 +53,6 @@ public class MaxQuantTestSuite {
 
         @Override
         protected void after() {
-            System.out.println("AFTER");
             // placeholder for any tidying
         }
     };
