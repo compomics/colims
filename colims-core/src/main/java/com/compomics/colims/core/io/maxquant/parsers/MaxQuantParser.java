@@ -30,7 +30,7 @@ public class MaxQuantParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
-    private static final String PROTEINGROUPS = "proteinGroups.txt";
+    private static final String PROTEINGROUPSTXT = "proteinGroups.txt";
 
     @Autowired
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
@@ -39,12 +39,12 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
-    private Map<Integer, MSnSpectrum> msms = new HashMap<>();
-    private Map<Integer, ProteinMatch> proteinMap = new HashMap<>();
-    private Map<String, MaxQuantAnalyticalRun> spectraPerRunMap = new HashMap<>();
+    private Map<Integer, MSnSpectrum> spectra = new HashMap<>();
+    private Map<Integer, ProteinMatch> proteinMatches = new HashMap<>();
+    private Map<String, MaxQuantAnalyticalRun> analyticalRuns = new HashMap<>();
     private Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
-    private boolean initialised = false;
+    private boolean parsed = false;
 
     /**
      * An extra constructor for fun testing times
@@ -81,27 +81,27 @@ public class MaxQuantParser {
      */
     public void parseFolder(final File quantFolder, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
-        msms = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT), true);
+        spectra = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT), true);
 
         LOGGER.debug("parsing fragmentation types");
         fragmentations = maxQuantSpectrumParser.parseFragmentations((new File(quantFolder, MSMSTXT)));
 
-        Iterator<Map.Entry<Integer, MSnSpectrum>> spectra = getSpectraFromParsedFile().entrySet().iterator();
+        Iterator<Map.Entry<Integer, MSnSpectrum>> spectra = getSpectra().entrySet().iterator();
 
         while (spectra.hasNext()) {
             Map.Entry<Integer, MSnSpectrum> spectrum = spectra.next();
 
-            if (spectraPerRunMap.containsKey(spectrum.getValue().getFileName())) {
-                spectraPerRunMap.get(spectrum.getValue().getFileName()).addASpectrum(spectrum.getKey(), spectrum.getValue());
+            if (analyticalRuns.containsKey(spectrum.getValue().getFileName())) {
+                analyticalRuns.get(spectrum.getValue().getFileName()).addASpectrum(spectrum.getKey(), spectrum.getValue());
             } else {
                 MaxQuantAnalyticalRun maxQuantRun = new MaxQuantAnalyticalRun();
                 maxQuantRun.setAnalyticalRunName(spectrum.getValue().getFileName());
                 maxQuantRun.addASpectrum(spectrum.getKey(), spectrum.getValue());
-                spectraPerRunMap.put((spectrum.getValue().getFileName()), maxQuantRun);
+                analyticalRuns.put((spectrum.getValue().getFileName()), maxQuantRun);
             }
         }
 
-        if (spectraPerRunMap.isEmpty()) {
+        if (analyticalRuns.isEmpty()) {
             throw new UnparseableException("could not connect spectra to any run");
         }
 
@@ -109,27 +109,21 @@ public class MaxQuantParser {
         maxQuantEvidenceParser.parse(quantFolder, multiplicity);
 
         LOGGER.debug("parsing protein groups");
-        proteinMap = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPS));
+        proteinMatches = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT));
 
-        if (msms.keySet().isEmpty() || maxQuantEvidenceParser.peptideAssumptions.keySet().isEmpty() || proteinMap.keySet().isEmpty()) {
+        if (this.spectra.keySet().isEmpty() || maxQuantEvidenceParser.peptideAssumptions.keySet().isEmpty() || proteinMatches.keySet().isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {
-            initialised = true;
+            parsed = true;
         }
     }
 
     /**
-     * get all the {@code PeptideAssumption}s that were parsed from the max
-     * quant folder
-     *
-     * @return a {@code Collection} of all the {@code PeptideAssumption}s
+     * If parser has parsed
+     * @return Parsed
      */
-    public Collection<PeptideAssumption> getIdentificationsFromParsedFile() {
-        return Collections.unmodifiableCollection(maxQuantEvidenceParser.peptideAssumptions.values());
-    }
-
-    public boolean hasParsedAFile() {
-        return initialised;
+    public boolean hasParsed() {
+        return parsed;
     }
 
     /**
@@ -144,51 +138,57 @@ public class MaxQuantParser {
         return maxQuantEvidenceParser.peptideAssumptions.get(((SpectrumIntUrParameterShizzleStuff) aSpectrum.getUrParam(new SpectrumIntUrParameterShizzleStuff())).getSpectrumid());
     }
 
-    public Map<Integer, MSnSpectrum> getSpectraFromParsedFile() {
-        return Collections.unmodifiableMap(msms);
-    }
-
-    public Collection<ProteinMatch> getProteinsFromParsedFile() {
-        return Collections.unmodifiableCollection(proteinMap.values());
+    /**
+     * Return a copy of the spectra map
+     * @return Map of ids and spectra
+     */
+    public Map<Integer, MSnSpectrum> getSpectra() {
+        return Collections.unmodifiableMap(spectra);
     }
 
     /**
-     * gets the parsed protein hit that is the most likely according to max
-     * quant for the parsed identification
-     *
-     * @param aPeptideAssumption the identification to get the protein for
-     * @return the protein with the best association for the given parsed
-     * identification
-     * @throws NumberFormatException if the identification is not present in the
-     * parsed files
+     * Return a list of protein matches for a peptide assumption
+     * @param peptideAssumption A peptide assumption
+     * @return Collection of protein matches
+     * @throws NumberFormatException
      */
-    public ProteinMatch getBestProteinHitForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
-        return proteinMap.get(Integer.parseInt(aPeptideAssumption.getPeptide().getParentProteinsNoRemapping().get(0)));
-    }
-
-    public Collection<ProteinMatch> getProteinHitsForIdentification(PeptideAssumption aPeptideAssumption) throws NumberFormatException {
+    public Collection<ProteinMatch> getProteinHitsForIdentification(PeptideAssumption peptideAssumption) throws NumberFormatException {
         Collection<ProteinMatch> proteins = new ArrayList<>();
 
-        for (String proteinKey : aPeptideAssumption.getPeptide().getParentProteinsNoRemapping()) {
-            proteins.add(proteinMap.get(Integer.parseInt(proteinKey)));
+        for (String proteinKey : peptideAssumption.getPeptide().getParentProteinsNoRemapping()) {
+            if (proteinMatches.containsKey(Integer.parseInt(proteinKey))) {
+                proteins.add(proteinMatches.get(Integer.parseInt(proteinKey)));
+            }
         }
 
         return Collections.unmodifiableCollection(proteins);
     }
 
+    /**
+     * Return a list copy of the spectra per run map values
+     * @return Collection of runs
+     */
     public Collection<MaxQuantAnalyticalRun> getRuns() {
-        return Collections.unmodifiableCollection(spectraPerRunMap.values());
+        return Collections.unmodifiableCollection(analyticalRuns.values());
     }
 
+    /**
+     * Get fragmentation type for the given ID
+     * @param id The given ID
+     * @return A FragmentationType
+     */
     public FragmentationType getFragmentationType(Integer id) {
         return fragmentations.get(id);
     }
 
-    public void clearParsedProject() {
-        msms.clear();
+    /**
+     * Clear the parser
+     */
+    public void clear() {
+        spectra.clear();
         maxQuantEvidenceParser.clear();
-        proteinMap.clear();
-        spectraPerRunMap.clear();
-        initialised = false;
+        proteinMatches.clear();
+        analyticalRuns.clear();
+        parsed = false;
     }
 }

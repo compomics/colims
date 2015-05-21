@@ -14,12 +14,13 @@ import java.io.File;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-//    MaxQuantEvidenceParserTest.class,
-//    MaxQuantParameterParserTest.class,
+    MaxQuantEvidenceParserTest.class,
+    MaxQuantParameterParserTest.class,
 //    MaxQuantImportMapperTest.class,
-//    MaxQuantProteinGroupParserTest.class,
-//    MaxQuantSpectrumParserTest.class,
-    TabularFileLineValuesIteratorTest.class
+    MaxQuantProteinGroupParserTest.class,
+    MaxQuantSpectrumParserTest.class,
+    TabularFileLineValuesIteratorTest.class,
+    MaxQuantParserTest.class
 })
 
 public class MaxQuantTestSuite {

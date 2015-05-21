@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.maxquant.PeptidePosition;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
+import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.enums.QuantificationWeight;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -52,22 +54,31 @@ public class MaxQuantEvidenceParserTest {
 
     @Test
     public void testCreatePeptideAssumption() throws Exception {
-        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.evidenceFile);
-        Map<String, String> values = iterator.next();
+        Map<String, String> values = new HashMap<>();
+
+        values.put(MaxQuantEvidenceHeaders.SCORE.getColumnName(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getColumnName(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getColumnName(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getColumnName(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.PROTEINS.getColumnName(), "tr|B2RSN3|B2RSN3_MOUSE;sp|Q9CWF2|TBB2B_MOUSE;sp|Q7TMM9|TBB2A_MOUSE;tr|Q99J49|Q99J49_MOUSE;tr|Q62363|Q62363_MOUSE;sp|P68372|TBB4B_MOUSE;tr|Q9DCR1|Q9DCR1_MOUSE;tr|Q80ZV2|Q80ZV2_MOUSE;sp|Q9D6F9|TBB4A_MOUSE;sp|P99024|TBB5_MOUSE");
+        values.put(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getColumnName(), "218;407;234;295");
+        values.put(MaxQuantEvidenceHeaders.MS_MS_IDS.getColumnName(), "982;983;984");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getColumnName(), "Unmodified");
 
         PeptideAssumption assumption = maxQuantEvidenceParser.createPeptideAssumption(values);
 
         // check assumption details
-        assertThat(assumption.getScore(), is(81.854));
+        assertThat(assumption.getScore(), is(106.2));
         assertThat(assumption.getRank(), is(1));
-        assertThat(assumption.getIdentificationCharge().getChargeAsFormattedString(), is("+++"));
-        assertThat(assumption.getPeptide().getSequence(), is("AAHVFFTDSCPDALFNELVK"));
+        assertThat(assumption.getIdentificationCharge().getChargeAsFormattedString(), is("++"));
+        assertThat(assumption.getPeptide().getSequence(), is("TAVCDIPPR"));
+        assertThat(assumption.getPeptide().getParentProteinsNoRemapping().size(), is(4));
 
         MatchScore matchScore = (MatchScore) assumption.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY));
 
         // check the damned urparam
-        assertThat(matchScore.getProbability(), is(81.854));
-        assertThat(matchScore.getPostErrorProbability(), is(3.5521E-4));
+        assertThat(matchScore.getProbability(), is(106.2));
+        assertThat(matchScore.getPostErrorProbability(), is(-1.0));
     }
 
     @Test
@@ -75,6 +86,6 @@ public class MaxQuantEvidenceParserTest {
         Map<String, PeptidePosition> peptidePositions = maxQuantEvidenceParser.getPeptidePositions(MaxQuantTestSuite.peptidesFile);
 
         assertThat(peptidePositions.size(), not(0));
-        assertTrue(peptidePositions.get("1220").getStart() < peptidePositions.get("1220").getEnd());
+        assertTrue(peptidePositions.entrySet().iterator().next().getValue().getStart() < peptidePositions.entrySet().iterator().next().getValue().getEnd());
     }
 }

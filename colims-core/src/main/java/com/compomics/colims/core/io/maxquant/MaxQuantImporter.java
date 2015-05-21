@@ -84,7 +84,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
         try {
             //just in case
-            maxQuantParser.clearParsedProject();
+            maxQuantParser.clear();
             preparedFastaFile = prepareFasta(maxQuantImport.getFastaDb().getFilePath());
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(preparedFastaFile, null);
