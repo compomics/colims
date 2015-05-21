@@ -16,11 +16,12 @@ import java.io.File;
 @Suite.SuiteClasses({
     MaxQuantEvidenceParserTest.class,
     MaxQuantParameterParserTest.class,
-//    MaxQuantImportMapperTest.class,
+    MaxQuantParserTest.class,
     MaxQuantProteinGroupParserTest.class,
     MaxQuantSpectrumParserTest.class,
     TabularFileLineValuesIteratorTest.class,
-    MaxQuantParserTest.class
+    MaxQuantImporterTest.class,
+    MaxQuantIT.class
 })
 
 public class MaxQuantTestSuite {

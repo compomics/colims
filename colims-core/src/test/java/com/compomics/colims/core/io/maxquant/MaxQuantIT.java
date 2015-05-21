@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
@@ -32,12 +33,20 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
 /**
  * the actual max quant integration test, to be renamed when the parser gets
@@ -47,27 +56,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class MaxQuantIntoColimsIntegrationTest {
+public class MaxQuantIT {
 
     @Autowired
     private MaxQuantParser maxQuantParser;
+    @Autowired
+    private MaxQuantSpectrumParser maxQuantSpectrumParser;
     @Autowired
     private UserService userService;
     @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
     private ProjectService projectService;
-    // unused autowires, needed for asserts that will be added later
     @Autowired
     private ExperimentService experimentService;
     @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
     private SpectrumService spectrumService;
-    @Autowired
-    private PeptideService peptideService;
-    @Autowired
-    private ProteinService proteinService;
     @Autowired
     MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
@@ -76,30 +80,22 @@ public class MaxQuantIntoColimsIntegrationTest {
     MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
     @Autowired
     UtilitiesProteinMapper maxQuantProteinMapperStub;
-    private File testFolder;
 
-    public MaxQuantIntoColimsIntegrationTest() throws IOException {
-        this.testFolder = new ClassPathResource("data/maxquant_1512").getFile();
-    }
-
+    @Ignore
     @Test
     public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
-        System.out.println("Max Quant storage integration test");
-
+        // TODO: ignored due to utilities
         SequenceFactory sequenceFactory = SequenceFactory.getInstance();
         sequenceFactory.clearFactory();
-        sequenceFactory.loadFastaFile(new File(testFolder, "mouse.fasta"), null);
+        sequenceFactory.loadFastaFile(MaxQuantTestSuite.fastaFile, null);
 
-        maxQuantParser.parseFolder(testFolder);
+        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder);
+
         User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
         Project project = projectService.findById(1L);
-        //Project project = new Project();
-        //project.setDescription("experiment where we try to store max quant data");
-        //project.setTitle("max quant experiment");
-        //project.setLabel("MaxQuant insertion");
-        // projectService.save(project);
+
         final Experiment experiment = new Experiment();
         experiment.setProject(project);
         project.setExperiments(new ArrayList<Experiment>() {
@@ -116,12 +112,14 @@ public class MaxQuantIntoColimsIntegrationTest {
                 this.add(maxQuantSample);
             }
         });
-        //TODO change this with the normal mapper
+
         List<AnalyticalRun> colimsRuns = new ArrayList<>(maxQuantParser.getRuns().size());
+
         for (MaxQuantAnalyticalRun aRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();
             maxQuantUtilitiesAnalyticalRunMapper.map(aRun, targetRun);
             List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getListOfSpectra().size());
+
             for (MSnSpectrum aSpectrum : aRun.getListOfSpectra().values()) {
                 Spectrum targetSpectrum = new Spectrum();
                 utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
@@ -140,11 +138,42 @@ public class MaxQuantIntoColimsIntegrationTest {
             targetRun.setSpectrums(mappedSpectra);
             colimsRuns.add(targetRun);
         }
+
         maxQuantSample.setAnalyticalRuns(colimsRuns);
         experimentService.save(experiment);
 
-        Experiment experiment2 = experimentService.findById(1L);
-        List<Spectrum> spectrums = experiment.getSamples().get(0).getAnalyticalRuns().get(0).getSpectrums();
-        System.out.println("2");
+        Experiment savedExperiment = experimentService.findById(2L);
+        List<Spectrum> spectrums = savedExperiment.getSamples().get(0).getAnalyticalRuns().get(0).getSpectrums();
+
+        assertThat(spectrums.size(), is(colimsRuns.get(0).getSpectrums().size()));
+        assertThat(savedExperiment.getSamples().get(0).getName(), is("BREADBREADBREADBREAD"));
+        // TODO: more assertions
+    }
+
+    @Test
+    public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
+        User user = userService.findByName("admin");
+        userService.fetchAuthenticationRelations(user);
+        authenticationBean.setCurrentUser(user);
+        int startSpectraCount = spectrumService.findAll().size();
+
+        Map<Integer, MSnSpectrum> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile, true);
+        List<Spectrum> spectrumHolder = new ArrayList<>();
+        
+        for (MSnSpectrum spectrum : spectrumMap.values()) {
+            Spectrum colimsSpectrum = new Spectrum();
+            utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
+            spectrumHolder.add(colimsSpectrum);
+        }
+        
+        for (Spectrum spectrum : spectrumHolder) {
+            spectrumService.save(spectrum);
+        }
+        
+        List<Spectrum> storedSpectra = spectrumService.findAll();
+        int endAmountOfSpectra = storedSpectra.size();
+
+        assertThat(endAmountOfSpectra, is(both(not(startSpectraCount)).and(is(startSpectraCount + spectrumMap.size()))));
+        assertThat(storedSpectra.get(startSpectraCount + 138).getTitle(), is(spectrumHolder.get(138).getTitle()));
     }
 }
