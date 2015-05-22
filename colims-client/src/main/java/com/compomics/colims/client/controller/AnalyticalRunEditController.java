@@ -140,7 +140,7 @@ public class AnalyticalRunEditController implements Controllable {
         }
 
         //set the selected item in the instrument combobox
-        analyticalRunEditDialog.getInstrumentComboBox().setSelectedItem(analyticalRunToEdit.getInstrument());
+        analyticalRunEditDialog.getInstrumentComboBox().getModel().setSelectedItem(analyticalRunToEdit.getInstrument());
 
         showView();
     }

@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
@@ -8,6 +9,7 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.pride.PtmToPrideMap;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,8 @@ public class UtilitiesModificationProfileMapperTest {
 
     @Autowired
     private PtmCvTermMapper ptmCvTermMapper;
+    @Autowired
+    private OlsService olsService;
     @Autowired
     private UtilitiesModificationProfileMapper utilitiesModificationProfileMapper;
     private ModificationProfile modificationProfile;
@@ -81,6 +85,14 @@ public class UtilitiesModificationProfileMapperTest {
         } catch (FileNotFoundException | ClassNotFoundException ex) {
             Assert.fail();
         }
+    }
+
+    /**
+     * Clear the modifications cache.
+     */
+    @After
+    public void clearCache(){
+        olsService.getModificationsCache().clear();
     }
 
     /**

@@ -1,6 +1,8 @@
 
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.InstrumentCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.InstrumentCvParam;
-import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**

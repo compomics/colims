@@ -216,6 +216,8 @@ public class SampleEditDialog extends javax.swing.JDialog {
 
         storageLocationLabel.setText("Storage location");
 
+        attachementsTextField.setEditable(false);
+
         attachmentsEditButton.setText("edit...");
         attachmentsEditButton.setToolTipText("edit the binary attachments");
         attachmentsEditButton.setMaximumSize(new java.awt.Dimension(80, 25));

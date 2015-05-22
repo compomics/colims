@@ -308,6 +308,14 @@ public class GroupManagementController implements Controllable {
     }
 
     /**
+     * Reload the groups from the database after canceling.
+     */
+    public void onCancel() {
+        groupBindingList.clear();
+        groupBindingList.addAll(groupService.findAll());
+    }
+
+    /**
      * Check if a group with the given group name exists in the database.
      *
      * @param group the selected group

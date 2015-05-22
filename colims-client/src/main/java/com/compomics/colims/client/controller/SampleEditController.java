@@ -28,12 +28,7 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.DatabaseEntity;
-import com.compomics.colims.model.Material;
-import com.compomics.colims.model.Protocol;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.SampleBinaryFile;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
@@ -300,6 +295,19 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                if(sampleToEdit.getId() != null) {
+                    //roll back the changes
+                    Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
+
+                    //fetch sample binary files
+                    sampleService.fetchBinaryFiles(rolledBackSample);
+                    //fetch sample materials
+                    sampleService.fetchMaterials(rolledBackSample);
+
+                    sampleToEdit.setBinaryFiles(rolledBackSample.getBinaryFiles());
+                    sampleToEdit.setMaterials(rolledBackSample.getMaterials());
+                }
+
                 sampleEditDialog.dispose();
             }
         });
@@ -391,7 +399,7 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
         sampleEditDialog.getConditionTextField().setText(sampleToEdit.getCondition());
         //set the selected item in the owner combobox
-        sampleEditDialog.getProtocolComboBox().setSelectedItem(sampleToEdit.getProtocol());
+        sampleEditDialog.getProtocolComboBox().getModel().setSelectedItem(sampleToEdit.getProtocol());
         sampleEditDialog.getStorageLocationTextField().setText(sampleToEdit.getStorageLocation());
         sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
 

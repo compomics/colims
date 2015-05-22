@@ -62,6 +62,11 @@ public class UserManagementParentController implements Controllable {
         userManagementDialog.getCloseButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                userManagementController.onCancel();
+                groupManagementController.onCancel();
+                roleManagementController.onCancel();
+                permissionManagementController.onCancel();
+
                 userManagementDialog.dispose();
             }
         });

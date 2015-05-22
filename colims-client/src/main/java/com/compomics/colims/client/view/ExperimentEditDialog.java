@@ -106,6 +106,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
         storageLocationLabel.setText("Storage Location");
 
+        attachementsTextField.setEditable(false);
+
         attachmentsEditButton.setText("edit...");
         attachmentsEditButton.setToolTipText("edit the binary attachments");
         attachmentsEditButton.setMaximumSize(new java.awt.Dimension(80, 25));

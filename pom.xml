@@ -101,8 +101,8 @@
                     <version>2.5.1</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                         <showDeprecation>true</showDeprecation>
                         <debug>true</debug>
                     </configuration>
@@ -424,6 +424,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+        <!-- h2 in memory db for unit testing -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
     <reporting>

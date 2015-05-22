@@ -230,6 +230,14 @@ public class PermissionManagementController implements Controllable {
     }
 
     /**
+     * Reload the permissions from the database after canceling.
+     */
+    public void onCancel() {
+        permissionBindingList.clear();
+        permissionBindingList.addAll(permissionService.findAll());
+    }
+
+    /**
      * Check if a permission with the given permission name exists in the
      * database.
      *

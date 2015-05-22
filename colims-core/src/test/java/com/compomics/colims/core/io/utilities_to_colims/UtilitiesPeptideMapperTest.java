@@ -1,8 +1,9 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.MatchScore;
+import com.compomics.colims.model.Peptide;
+import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.model.Peptide;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *

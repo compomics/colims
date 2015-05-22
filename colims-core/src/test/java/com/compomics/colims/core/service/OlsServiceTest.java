@@ -1,7 +1,9 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.compomics.colims.model.Modification;
 
 import java.util.List;
 
@@ -26,6 +26,14 @@ public class OlsServiceTest {
 
     @Autowired
     private OlsService olsService;
+
+    /**
+     * Clear the modifications cache.
+     */
+    @After
+    public void clearCache(){
+        olsService.getModificationsCache().clear();
+    }
 
     /**
      * Test the find modification by accession method from the OlsService.

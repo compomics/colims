@@ -184,7 +184,7 @@ public class UserManagementController implements Controllable {
 
                         //set the selected item in the institution combobox
                         if (selectedUser.getInstitution() != null) {
-                            userManagementDialog.getInstitutionComboBox()
+                            userManagementDialog.getInstitutionComboBox().getModel()
                                     .setSelectedItem(selectedUser.getInstitution());
                         }
 
@@ -362,6 +362,17 @@ public class UserManagementController implements Controllable {
                 break;
         }
         resetSelection();
+    }
+
+    /**
+     * Reload the users from the database after canceling.
+     */
+    public void onCancel() {
+        userBindingList.clear();
+        userBindingList.addAll(userService.findAll());
+
+        institutionBindingList.clear();
+        institutionBindingList.addAll(institutionService.findAll());
     }
 
     /**

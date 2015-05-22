@@ -110,7 +110,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                     int selectedIndex = binaryFileList.getSelectedIndex();
                     if (selectedIndex != -1) {
                         //set selected item in combobox
-                        binaryFileTypeComboBox.setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
+                        binaryFileTypeComboBox.getModel().setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
                     }
 
                     previouslySelectedIndex = selectedIndex;

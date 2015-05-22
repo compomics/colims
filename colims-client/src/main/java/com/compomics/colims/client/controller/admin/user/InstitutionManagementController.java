@@ -191,7 +191,7 @@ public class InstitutionManagementController implements Controllable {
                         eventBus.post(messageEvent);
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Fasta DB selection", "Please select an institution to save or update.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Institution selection", "Please select an institution to save or update.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         });
@@ -199,6 +199,14 @@ public class InstitutionManagementController implements Controllable {
         institutionManagementDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                if (getSelectedInstitution() != null && getSelectedInstitution().getId() != null) {
+                    //roll back the changes
+                    Institution rolledBackInstitution = institutionService.findById(getSelectedInstitution().getId());
+                    int selectedIndex = institutionManagementDialog.getInstitutionList().getSelectedIndex();
+                    institutionBindingList.remove(selectedIndex);
+                    institutionBindingList.add(selectedIndex, rolledBackInstitution);
+                }
+
                 institutionManagementDialog.dispose();
             }
         });

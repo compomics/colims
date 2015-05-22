@@ -387,6 +387,14 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                if (protocolToEdit.getId() != null) {
+                    //roll back the changes
+                    Protocol rolledBackProtocol = protocolService.findById(protocolToEdit.getId());
+                    int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                    protocolBindingList.remove(selectedIndex);
+                    protocolBindingList.add(selectedIndex, rolledBackProtocol);
+                }
+
                 protocolEditDialog.dispose();
             }
         });

@@ -4,8 +4,8 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
@@ -16,23 +16,13 @@ import com.compomics.colims.client.view.admin.instrument.InstrumentEditDialog;
 import com.compomics.colims.client.view.admin.instrument.InstrumentManagementDialog;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -44,8 +34,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("instrumentManagementController")
@@ -113,8 +113,8 @@ public class InstrumentManagementController implements Controllable {
 
     /**
      * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the InstrumentManagementDialog is visible,
-     * clear the selection in the CV param summary list.
+     * CvParamManagementController. If the InstrumentManagementDialog is
+     * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent instance
      */
@@ -229,14 +229,13 @@ public class InstrumentManagementController implements Controllable {
         }
         );
 
-        instrumentManagementDialog.getCancelInstrumentManagementButton()
-                .addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(final ActionEvent e) {
-                        instrumentManagementDialog.dispose();
-                    }
-                }
-                );
+        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                instrumentManagementDialog.dispose();
+            }
+        }
+        );
 
     }
 
@@ -376,6 +375,14 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                if (instrumentToEdit.getId() != null) {
+                    //roll back the changes
+                    Instrument rolledBackInstrument = instrumentService.findById(instrumentToEdit.getId());
+                    int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                    instrumentBindingList.remove(selectedIndex);
+                    instrumentBindingList.add(selectedIndex, rolledBackInstrument);
+                }
+
                 instrumentEditDialog.dispose();
             }
         });
@@ -504,8 +511,7 @@ public class InstrumentManagementController implements Controllable {
         typedCvParamSummaryListModel.update(singleCvParams, multipleCvParams);
 
         //clear selection in CV param summary list
-        instrumentEditDialog.getCvParamSummaryList()
-                .getSelectionModel().clearSelection();
+        instrumentEditDialog.getCvParamSummaryList().getSelectionModel().clearSelection();
     }
 
     /**

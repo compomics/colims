@@ -1,10 +1,9 @@
 package com.compomics.colims.core.io.peptideshaker;
 
 import com.compomics.colims.model.FastaDb;
-
-import java.io.File;
-import java.io.IOException;
-
+import com.compomics.util.experiment.MsExperiment;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,14 +12,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.compomics.util.experiment.MsExperiment;
-
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.io.FileUtils;
 
 /**
  * @author Niels Hulstaert

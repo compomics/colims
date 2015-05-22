@@ -3,7 +3,9 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.util.experiment.biology.PTMFactory;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +48,8 @@ public class UtilitiesModificationMapperTest {
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
     private ModificationService modificationService;
+    @Autowired
+    private OlsService olsService;
     private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
@@ -91,6 +95,14 @@ public class UtilitiesModificationMapperTest {
 
         //add the non utilities PTM to the ptmCvTermMapper
 //        ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
+    }
+
+    /**
+     * Clear the modifications cache.
+     */
+    @After
+    public void clearCache(){
+        olsService.getModificationsCache().clear();
     }
 
     /**

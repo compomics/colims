@@ -1,17 +1,16 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
+import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.util.experiment.biology.Enzyme;
+import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
+import com.compomics.util.experiment.massspectrometry.Charge;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.compomics.colims.model.SearchParameters;
-import com.compomics.colims.model.enums.MassAccuracyType;
-import com.compomics.util.experiment.biology.Enzyme;
-import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
-import com.compomics.util.experiment.massspectrometry.Charge;
 
 /**
  * @author Niels Hulstaert

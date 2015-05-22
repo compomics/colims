@@ -387,6 +387,14 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                if (materialToEdit.getId() != null) {
+                    //roll back the changes
+                    Material rolledBackMaterial = materialService.findById(materialToEdit.getId());
+                    int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
+                    materialBindingList.remove(selectedIndex);
+                    materialBindingList.add(selectedIndex, rolledBackMaterial);
+                }
+
                 materialEditDialog.dispose();
             }
         });

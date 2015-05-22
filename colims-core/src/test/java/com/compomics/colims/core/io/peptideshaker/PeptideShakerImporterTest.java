@@ -65,8 +65,18 @@ public class PeptideShakerImporterTest {
         authenticationBean.setCurrentUser(adminUser);
     }
 
+    /**
+     * Test the importing of PeptideShaker data.
+     *
+     * @throws IOException
+     * @throws ArchiveException
+     * @throws ClassNotFoundException
+     * @throws MappingException
+     * @throws SQLException
+     * @throws InterruptedException
+     */
     @Test
-    public void testMap() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
+    public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
         //set mgf files and fasta file

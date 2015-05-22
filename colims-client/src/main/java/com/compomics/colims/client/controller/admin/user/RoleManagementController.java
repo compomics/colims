@@ -296,6 +296,14 @@ public class RoleManagementController implements Controllable {
     }
 
     /**
+     * Reload the roles from the database after canceling.
+     */
+    public void onCancel() {
+        roleBindingList.clear();
+        roleBindingList.addAll(roleService.findAll());
+    }
+
+    /**
      * Check if a role with the given role name exists in the database.
      *
      * @param role the selected role

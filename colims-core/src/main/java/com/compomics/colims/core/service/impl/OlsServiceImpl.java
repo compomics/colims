@@ -224,7 +224,7 @@ public class OlsServiceImpl implements OlsService {
             modification = clazz.newInstance();
             modification.setAccession(modToCopy.getAccession());
             modification.setName(modToCopy.getName());
-            if (!modToCopy.getAlternativeAccession().isEmpty()) {
+            if (modToCopy.getAlternativeAccession() != null && !modToCopy.getAlternativeAccession().isEmpty()) {
                 modification.setAlternativeAccession(modToCopy.getAlternativeAccession());
             }
             if (modToCopy.getMonoIsotopicMassShift() != null) {
