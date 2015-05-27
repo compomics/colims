@@ -89,9 +89,7 @@ public enum MaxQuantEvidenceHeaders implements HeaderEnum {
     }
 
     @Override
-    public void setColumnReference(int columnReference) {
-
-    }
+    public void setColumnReference(int columnReference) {}
 
     @Override
     public String getColumnName() throws HeaderEnumNotInitialisedException {

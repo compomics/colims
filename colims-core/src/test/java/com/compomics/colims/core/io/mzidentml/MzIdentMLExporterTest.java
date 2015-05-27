@@ -19,17 +19,16 @@ import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.springframework.core.io.ClassPathResource;
 
 /**
- * Created by Iain on 13/01/2015.
+ * @author Iain
  */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 public class MzIdentMLExporterTest {
-
     @Autowired
     private MzIdentMLExporter exporter;
 
@@ -46,7 +45,7 @@ public class MzIdentMLExporterTest {
     public void testJSON() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
-        JsonNode root = mapper.readTree(new ClassPathResource("/config/mzidentml.json").getURL());
+        JsonNode root = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
 
         JsonNode cvList = root.get("cvList");
 
@@ -58,16 +57,14 @@ public class MzIdentMLExporterTest {
 
     @Test
     public void testClassListMapping() throws IOException {
-        exporter.init();
         CvList cvList = new CvList();
         cvList.getCv().addAll(exporter.getDataList("CvList", Cv.class));
-        Assert.assertEquals(4, cvList.getCv().size());
+        Assert.assertEquals(cvList.getCv().size(), 4);
     }
 
     @Test
-    public void testClassItemMapping() {
-        exporter.init();
-        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker", AnalysisSoftware.class);
-        Assert.assertEquals("PeptideShaker", as.getName());
+    public void testClassItemMapping() throws IOException {
+        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker",  AnalysisSoftware.class);
+        Assert.assertEquals(as.getName(), "PeptideShaker");
     }
 }

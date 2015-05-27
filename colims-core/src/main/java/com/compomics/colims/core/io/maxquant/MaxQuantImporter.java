@@ -2,6 +2,10 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
+import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
+import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.*;
@@ -80,7 +84,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
         try {
             //just in case
-            maxQuantParser.clearParsedProject();
+            maxQuantParser.clear();
             preparedFastaFile = prepareFasta(maxQuantImport.getFastaDb().getFilePath());
             LOGGER.debug("Start loading FASTA file.");
             sequenceFactory.loadFastaFile(preparedFastaFile, null);

@@ -131,6 +131,16 @@ public class Institution extends AuditableDatabaseEntity {
         this.country = country;
     }
 
+    public String[] getAddress() {
+        String[] address = new String[3];
+
+        address[0] = getStreet() + " " + getNumber();
+        address[1] = getPostalCode() + " " + getCity();
+        address[2] = getCountry();
+
+        return address;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;

@@ -1,5 +1,6 @@
 package com.compomics.colims.core;
 
+import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIOTest;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporterTest;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapperTest;
@@ -14,7 +15,8 @@ import org.junit.runners.Suite;
  * Created by Niels Hulstaert on 20/05/15.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({UtilitiesModificationMapperTest.class,
+@Suite.SuiteClasses({
+        UtilitiesModificationMapperTest.class,
         UtilitiesModificationProfileMapperTest.class,
         OlsServiceTest.class,
         PeptideShakerImporterTest.class,

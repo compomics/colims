@@ -1,5 +1,6 @@
 package com.compomics.colims.core;
 
+import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -9,6 +10,6 @@ import org.junit.runners.Suite;
  * Created by Niels Hulstaert on 20/05/15.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({FastTests.class, SlowTests.class, UnstableTests.class})
+@Suite.SuiteClasses({FastTests.class, SlowTests.class})
 public class AllTests {
 }
