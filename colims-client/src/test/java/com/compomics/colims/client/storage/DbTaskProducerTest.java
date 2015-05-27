@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class DbTaskProducerTest {
      *
      * @throws Exception the exception
      */
+    @Ignore
     @Test
     public void testSendDbTaskMessage() throws Exception {
         final PersistDbTask persistDbTask = new PersistDbTask();
