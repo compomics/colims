@@ -33,15 +33,15 @@ public class Group extends AuditableDatabaseEntity {
      * The group name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a name")
-    @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a name.")
+    @Length(min = 3, max = 20, message = "Group name length must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**
      * The group description.
      */
     @Basic(optional = true)
-    @Length(max = 500, message = "Group description length must be less than {max} characters")
+    @Length(max = 500, message = "Group description length must be less than {max} characters.")
     @Column(name = "description", nullable = true)
     private String description;
     /**

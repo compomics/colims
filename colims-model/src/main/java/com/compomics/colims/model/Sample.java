@@ -34,8 +34,8 @@ public class Sample extends AuditableDatabaseEntity {
      * The sample name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a sample name")
-    @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a sample name.")
+    @Length(min = 5, max = 100, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false)
     private String name;
     /**

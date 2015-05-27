@@ -30,14 +30,14 @@ public class Material extends AuditableDatabaseEntity {
      * The material name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an instrument name")
-    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an instrument name.")
+    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = false)
     private String name;
     /**
      * The mandatory species CV term.
      */
-    @NotNull(message = "A material must have a species")
+    @NotNull(message = "A material must have a species.")
     @JoinColumn(name = "l_species_cv_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     private MaterialCvParam species;

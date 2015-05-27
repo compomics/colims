@@ -33,8 +33,8 @@ public class Experiment extends AuditableDatabaseEntity {
      * The title of the experiment.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an experiment title")
-    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an experiment title.")
+    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters.")
     @Column(name = "title", nullable = false, unique = true)
     private String title;
     /**
@@ -47,7 +47,7 @@ public class Experiment extends AuditableDatabaseEntity {
      * The description of the experiment. This is a free text field.
      */
     @Basic(optional = true)
-    @Length(max = 500, message = "Description must be less than {max} characters")
+    @Length(max = 500, message = "Description must be less than {max} characters.")
     @Column(name = "description", nullable = true)
     private String description;
     /**

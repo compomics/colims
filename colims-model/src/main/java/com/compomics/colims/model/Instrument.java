@@ -36,28 +36,28 @@ public class Instrument extends AuditableDatabaseEntity {
      * between instruments of the same type within on lab.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an instrument name")
-    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an instrument name.")
+    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**
      * The mandatory type CV term that represents the instrument type.
      */
-    @NotNull(message = "An instrument must have a type")
+    @NotNull(message = "An instrument must have a type.")
     @ManyToOne
     @JoinColumn(name = "l_type_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam type;
     /**
      * The mandatory instrument source CV term.
      */
-    @NotNull(message = "An instrument must have a source")
+    @NotNull(message = "An instrument must have a source.")
     @ManyToOne
     @JoinColumn(name = "l_source_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam source;
     /**
      * The mandatory detector CV term.
      */
-    @NotNull(message = "An instrument must have a detector")
+    @NotNull(message = "An instrument must have a detector.")
     @ManyToOne
     @JoinColumn(name = "l_detector_cv_id", referencedColumnName = "id", nullable = false)
     private InstrumentCvParam detector;
@@ -69,7 +69,7 @@ public class Instrument extends AuditableDatabaseEntity {
     /**
      * The list of analyzer CV terms. There has to be at least one analyzer.
      */
-    @NotEmpty(message = "An instrument must have at least one analyzer")
+    @NotEmpty(message = "An instrument must have at least one analyzer.")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "instrument_has_analyzer",

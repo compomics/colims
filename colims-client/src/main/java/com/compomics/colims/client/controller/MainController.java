@@ -207,16 +207,16 @@ public class MainController implements Controllable, ActionListener {
         });
 
         //while developing, set a default user in the AuthenticationBean
-        User currentUser = userService.findByName("admin");
-        userService.fetchAuthenticationRelations(currentUser);
-        authenticationBean.setCurrentUser(currentUser);
-        if (authenticationBean.isAdmin()) {
-            initAdminSection();
-        } else {
-            //disable admin menu
-            mainFrame.getAdminMenu().setEnabled(false);
-        }
-        showView();
+//        User currentUser = userService.findByName("admin");
+//        userService.fetchAuthenticationRelations(currentUser);
+//        authenticationBean.setCurrentUser(currentUser);
+//        if (authenticationBean.isAdmin()) {
+//            initAdminSection();
+//        } else {
+//            //disable admin menu
+//            mainFrame.getAdminMenu().setEnabled(false);
+//        }
+//        showView();
         //add change listener to tabbed pane
         mainFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
 
@@ -242,8 +242,8 @@ public class MainController implements Controllable, ActionListener {
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
         //show login dialog
-//        userLoginDialog.setLocationRelativeTo(mainFrame);
-//        userLoginDialog.setVisible(true);
+        userLoginDialog.setLocationRelativeTo(mainFrame);
+        userLoginDialog.setVisible(true);
     }
 
     @Override

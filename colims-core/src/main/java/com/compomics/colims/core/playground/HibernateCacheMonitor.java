@@ -19,8 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Aspect
 public class HibernateCacheMonitor {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(HibernateCacheMonitor.class);
     private static final NumberFormat NF = new DecimalFormat("0.0###");
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -41,7 +45,7 @@ public class HibernateCacheMonitor {
         statistics.setStatisticsEnabled(true);
 
         long hit0 = statistics.getQueryCacheHitCount();
-        long miss0 = statistics.getSecondLevelCacheMissCount();        
+        long miss0 = statistics.getSecondLevelCacheMissCount();
 
         Object result = pjp.proceed();
 

@@ -24,8 +24,8 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
      * The run name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an analytical run name")
-    @Length(min = 1, max = 100, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an analytical run name.")
+    @Length(min = 1, max = 100, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false)
     private String name;
     /**

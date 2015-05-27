@@ -34,23 +34,23 @@ public class User extends AuditableDatabaseEntity {
      * The user name. This is be used during the application log in.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an user name")
-    @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an user name.")
+    @Length(min = 3, max = 20, message = "User name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**
      * The first name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a first name")
-    @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a first name.")
+    @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters.")
     @Column(name = "first_name", nullable = false)
     private String firstName;
     /**
      * The last name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a last name")
+    @NotBlank(message = "Please insert a last name.")
     @Length(min = 3, max = 30, message = "Last name must be between {min} and {max} characters")
     @Column(name = "last_name", nullable = false)
     private String lastName;
@@ -58,15 +58,15 @@ public class User extends AuditableDatabaseEntity {
      * The email address.
      */
     @Basic(optional = false)
-    @Email(message = "Please insert a valid email address")
-    @NotBlank(message = "Please insert an email address")
+    @Email(message = "Please insert a valid email address.")
+    @NotBlank(message = "Please insert an email address.")
     @Column(name = "email", nullable = false)
     private String email;
     /**
      * The user password. This is stored encrypted in the database.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a password")
+    @NotBlank(message = "Please insert a password.")
     @Column(name = "password", nullable = false)
     private String password;
     /**
