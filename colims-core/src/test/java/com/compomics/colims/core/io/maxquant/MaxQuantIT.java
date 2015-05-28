@@ -150,6 +150,7 @@ public class MaxQuantIT {
         // TODO: more assertions
     }
 
+    @Ignore
     @Test
     public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
         User user = userService.findByName("admin");

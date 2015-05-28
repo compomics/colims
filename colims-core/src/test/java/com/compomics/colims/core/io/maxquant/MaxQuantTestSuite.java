@@ -20,8 +20,7 @@ import java.io.File;
     MaxQuantProteinGroupParserTest.class,
     MaxQuantSpectrumParserTest.class,
     TabularFileLineValuesIteratorTest.class,
-    MaxQuantImporterTest.class,
-    MaxQuantIT.class
+    MaxQuantImporterTest.class
 })
 
 public class MaxQuantTestSuite {

@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
-public class PeptideShakerIOTest {
+public class PeptideShakerIOTestIT {
 
     @Autowired
     private PeptideShakerIO peptideShakerIO;

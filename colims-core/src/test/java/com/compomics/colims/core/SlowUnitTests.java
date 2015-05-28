@@ -1,8 +1,5 @@
 package com.compomics.colims.core;
 
-import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIOTest;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporterTest;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapperTest;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationProfileMapperTest;
 import com.compomics.colims.core.service.OlsServiceTest;
@@ -18,8 +15,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         UtilitiesModificationMapperTest.class,
         UtilitiesModificationProfileMapperTest.class,
-        OlsServiceTest.class,
-        PeptideShakerImporterTest.class,
-        PeptideShakerIOTest.class})
-public class SlowTests {
+        OlsServiceTest.class})
+public class SlowUnitTests {
 }

@@ -5,6 +5,7 @@
 package com.compomics.colims.core.io.mztab;
 
 import com.compomics.colims.core.io.MappingException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class MzTabExporterTest {
      * @throws MzMLUnmarshallerException
      * @throws MappingException
      */
+    @Ignore
     @Test
     public void testExportSingleRun_1() throws IOException, MzMLUnmarshallerException, MappingException {
         mzTabExporter.exportAnalyticalRun(new File("testFile"), new MzTabExport());

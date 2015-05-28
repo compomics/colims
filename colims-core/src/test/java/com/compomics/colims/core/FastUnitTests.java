@@ -31,5 +31,5 @@ import org.junit.runners.Suite;
         SearchSettingsMapperTest.class,
         MaxQuantTestSuite.class
 })
-public class FastTests {
+public class FastUnitTests {
 }

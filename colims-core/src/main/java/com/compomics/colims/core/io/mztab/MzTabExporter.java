@@ -98,8 +98,8 @@ public class MzTabExporter {
      */
     @PostConstruct
     public void init() throws IOException {
-        Resource mzIdentMlJson = new ClassPathResource("/config/mzTab.json");
-        JsonNode mzTabParamsNode = mapper.readTree(mzIdentMlJson.getFile());
+        Resource mzTabJson = new ClassPathResource("config/mztab.json");
+        JsonNode mzTabParamsNode = mapper.readTree(mzTabJson.getInputStream());
 
         //parse Json node to a list of MzTabParam instances
         mzTabParams = parseJsonNode(mzTabParamsNode);

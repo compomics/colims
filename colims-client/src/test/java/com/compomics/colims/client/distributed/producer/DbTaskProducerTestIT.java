@@ -1,18 +1,13 @@
-package com.compomics.colims.client.storage;
+package com.compomics.colims.client.distributed.producer;
 
 import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
-import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.distributed.model.PersistMetadata;
 import com.compomics.colims.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
-import java.util.Date;
-import java.util.List;
-
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-client-context.xml", "classpath:colims-client-test-context.xml"})
-public class DbTaskProducerTest {
+public class DbTaskProducerTestIT {
 
     @Value("${distributed.queue.dbtask}")
     private String dbTaskQueueName;
@@ -36,14 +33,13 @@ public class DbTaskProducerTest {
     private QueueManager queueManager;
 
     /**
-     * In this test a PersistDbTask message is sent to the queue. It tests if
-     * whether the message has been received and afterwards if it could be deleted.
+     * In this test a PersistDbTask message is sent to the queue. It tests if whether the message has been received and
+     * afterwards if it could be deleted.
      *
      * @throws Exception the exception
      */
-    @Ignore
     @Test
-    public void testSendDbTaskMessage() throws Exception {
+    public void testSendDbTask() throws Exception {
         final PersistDbTask persistDbTask = new PersistDbTask();
         persistDbTask.setEnitityId(1L);
         persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
