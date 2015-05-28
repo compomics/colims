@@ -39,7 +39,9 @@ public class PeptideMapper {
             parentProteinAccessions.add(peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession());
         }
 
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modificationMatches);
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
+        assumedPeptide.setParentProteins(parentProteinAccessions);
+
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 }

@@ -28,10 +28,13 @@ public class ColimsModificationMapper {
         LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");
         for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
             String theoreticPTM = peptideHasModification.getModification().getAccession();
-            boolean isVariable = peptideHasModification.getModificationType().equals(ModificationType.VARIABLE);
-            int modificationSite = peptideHasModification.getLocation();
-            ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
-            modificationMatches.add(match);
+
+            if (theoreticPTM != null) {
+                boolean isVariable = peptideHasModification.getModificationType().equals(ModificationType.VARIABLE);
+                int modificationSite = peptideHasModification.getLocation();
+                ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
+                modificationMatches.add(match);
+            }
         }
     }
 }
