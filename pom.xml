@@ -505,7 +505,6 @@
                             <excludes>
                                 <exclude>**/*IT.class</exclude>
                                 <exclude>**/PeptideShakerImporterTest.class</exclude>
-                                <exclude>**/DbTaskProducerTest.class</exclude>
                             </excludes>
                             <argLine>${argLine}</argLine>
                         </configuration>
@@ -533,7 +532,7 @@
                             </execution>
                             <execution>
                                 <id>report</id>
-                                <phase>prepare-package</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
