@@ -47,8 +47,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -104,8 +102,6 @@ public class ProjectOverviewController implements Controllable {
     //parent controller
     @Autowired
     private MainController mainController;
-    @Autowired
-    private ProjectManagementController projectManagementController;
     //services
     @Autowired
     private SpectrumService spectrumService;
@@ -243,74 +239,59 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PROTEIN_ACCESSIONS).setPreferredWidth(300);
 
         //add action listeners
-        projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Project selectedProject = getSelectedProject();
-                    if (selectedProject != null) {
-                        //fill experiments table
-                        GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
-                    } else {
-                        GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
-                    }
+        projectsSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
+                Project selectedProject = getSelectedProject();
+                if (selectedProject != null) {
+                    //fill experiments table
+                    GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
+                } else {
+                    GlazedLists.replaceAll(experiments, new ArrayList<>(), false);
                 }
             }
         });
 
-        experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Experiment selectedExperiment = getSelectedExperiment();
-                    if (selectedExperiment != null) {
-                        //fill samples table
-                        GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
-                    } else {
-                        GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
-                    }
+        experimentsSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
+                Experiment selectedExperiment = getSelectedExperiment();
+                if (selectedExperiment != null) {
+                    //fill samples table
+                    GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
+                } else {
+                    GlazedLists.replaceAll(samples, new ArrayList<>(), false);
                 }
             }
         });
 
-        samplesSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Sample selectedSample = getSelectedSample();
-                    if (selectedSample != null) {
-                        //fill runs table
-                        GlazedLists.replaceAll(analyticalRuns, selectedSample.getAnalyticalRuns(), false);
-                    } else {
-                        GlazedLists.replaceAll(analyticalRuns, new ArrayList<AnalyticalRun>(), false);
-                    }
+        samplesSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
+                Sample selectedSample = getSelectedSample();
+                if (selectedSample != null) {
+                    //fill runs table
+                    GlazedLists.replaceAll(analyticalRuns, selectedSample.getAnalyticalRuns(), false);
+                } else {
+                    GlazedLists.replaceAll(analyticalRuns, new ArrayList<>(), false);
                 }
             }
         });
 
-        analyticalRunsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        analyticalRunsSelectionModel.addListSelectionListener(lse -> {
+            mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
+            AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
-                if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
-                    psmsTableModel.reset(selectedAnalyticalRun);
-                    updatePsmTable();
-                }
-
-                mainController.getMainFrame().setCursor(new java.awt.Cursor(Cursor.DEFAULT_CURSOR));
+            if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
+                psmsTableModel.reset(selectedAnalyticalRun);
+                updatePsmTable();
             }
+
+            mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         });
 
-        psmsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    //update the spectrum panel
-                    updateSpectrum();
-                }
+        psmsSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
+                //update the spectrum panel
+                updateSpectrum();
             }
         });
 
@@ -517,10 +498,7 @@ public class ProjectOverviewController implements Controllable {
 
                 Collection<Peak> peaks = spectrum.getPeakList();
 
-                if (peaks == null || peaks.isEmpty()) {
-                    // do nothing, peaks list not found
-                } else {
-
+                if (peaks != null && !peaks.isEmpty()) {
                     // add the data to the spectrum panel
                     Precursor precursor = spectrum.getPrecursor();
 
@@ -566,7 +544,7 @@ public class ProjectOverviewController implements Controllable {
 //                                    annotationPreferences.setNeutralLossesSequenceDependant(true);
 //                                }
 //                            }
-                        projectOverviewPanel.updateAnnotationMenus(identificationCharge, peptideAssumption.getPeptide());
+                        //projectOverviewPanel.updateAnnotationMenus(identificationCharge, peptideAssumption.getPeptide());
 
                         //currentSpectrumKey = spectrumKey; // @TODO: re-add me
                         // show all or just the annotated peaks
@@ -790,12 +768,25 @@ public class ProjectOverviewController implements Controllable {
     private void setPsmTableCellRenderers() {
         AnalyticalRun analyticalRun = getSelectedAnalyticalRun();
 
-        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME).
-                setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL, spectrumService.getMinimumRetentionTime(analyticalRun),
-                        spectrumService.getMaximumRetentionTime(analyticalRun), 50d, utilitiesUserPreferences.getSparklineColor(), utilitiesUserPreferences.getSparklineColor()));
-        ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()
-                .getColumn(PsmTableFormat.RETENTION_TIME).getCellRenderer()).showNumberAndChart(true, labelWidth + 5);
-        ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable().getColumnModel()
-                .getColumn(PsmTableFormat.RETENTION_TIME).getCellRenderer()).showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+        projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME)
+            .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+                spectrumService.getMinimumRetentionTime(analyticalRun),
+                spectrumService.getMaximumRetentionTime(analyticalRun),
+                50d,
+                utilitiesUserPreferences.getSparklineColor(),
+                utilitiesUserPreferences.getSparklineColor())
+            );
+
+        ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable()
+            .getColumnModel()
+            .getColumn(PsmTableFormat.RETENTION_TIME)
+            .getCellRenderer())
+            .showNumberAndChart(true, labelWidth + 5);
+
+        ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable()
+            .getColumnModel()
+            .getColumn(PsmTableFormat.RETENTION_TIME)
+            .getCellRenderer())
+            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 }
