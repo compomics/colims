@@ -88,8 +88,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<org.springframework.version>3.2.5.RELEASE</org.springframework.version>-->
         <org.springframework.version>4.1.2.RELEASE</org.springframework.version>
-        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <!--<sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>-->
+        <!--<sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>-->
     </properties>
 
     <build>
@@ -129,11 +129,11 @@
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>2.10</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.4.201502262128</version>
-                </plugin>
+                <!--<plugin>-->
+                <!--<groupId>org.jacoco</groupId>-->
+                <!--<artifactId>jacoco-maven-plugin</artifactId>-->
+                <!--<version>0.7.4.201502262128</version>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
         <!-- Plugins -->
@@ -516,29 +516,29 @@
                             </dependency>
                         </dependencies>
                     </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <configuration>
-                            <dataFile>${sonar.jacoco.reportPath}</dataFile>
-                            <destFile>${sonar.jacoco.reportPath}</destFile>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-test-resources</phase>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!--<plugin>-->
+                    <!--<groupId>org.jacoco</groupId>-->
+                    <!--<artifactId>jacoco-maven-plugin</artifactId>-->
+                    <!--<configuration>-->
+                    <!--<dataFile>${sonar.jacoco.reportPath}</dataFile>-->
+                    <!--<destFile>${sonar.jacoco.reportPath}</destFile>-->
+                    <!--</configuration>-->
+                    <!--<executions>-->
+                    <!--<execution>-->
+                    <!--<phase>generate-test-resources</phase>-->
+                    <!--<goals>-->
+                    <!--<goal>prepare-agent</goal>-->
+                    <!--</goals>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                    <!--<id>report</id>-->
+                    <!--<phase>package</phase>-->
+                    <!--<goals>-->
+                    <!--<goal>report</goal>-->
+                    <!--</goals>-->
+                    <!--</execution>-->
+                    <!--</executions>-->
+                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
@@ -551,20 +551,20 @@
             <properties>
                 <property_file.source>classpath</property_file.source>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.extension</groupId>
-                    <artifactId>arquillian-jacoco</artifactId>
-                    <version>1.0.0.Alpha8</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>org.jacoco.core</artifactId>
-                    <version>0.7.4.201502262128</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
+            <!--<dependencies>-->
+            <!--<dependency>-->
+            <!--<groupId>org.jboss.arquillian.extension</groupId>-->
+            <!--<artifactId>arquillian-jacoco</artifactId>-->
+            <!--<version>1.0.0.Alpha8</version>-->
+            <!--<scope>test</scope>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+            <!--<groupId>org.jacoco</groupId>-->
+            <!--<artifactId>org.jacoco.core</artifactId>-->
+            <!--<version>0.7.4.201502262128</version>-->
+            <!--<scope>test</scope>-->
+            <!--</dependency>-->
+            <!--</dependencies>-->
             <build>
                 <plugins>
                     <plugin>
@@ -603,29 +603,29 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <configuration>
-                            <dataFile>${sonar.jacoco.itReportPath}</dataFile>
-                            <destFile>${sonar.jacoco.itReportPath}</destFile>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-test-resources</phase>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!--<plugin>-->
+                    <!--<groupId>org.jacoco</groupId>-->
+                    <!--<artifactId>jacoco-maven-plugin</artifactId>-->
+                    <!--<configuration>-->
+                    <!--<dataFile>${sonar.jacoco.itReportPath}</dataFile>-->
+                    <!--<destFile>${sonar.jacoco.itReportPath}</destFile>-->
+                    <!--</configuration>-->
+                    <!--<executions>-->
+                    <!--<execution>-->
+                    <!--<phase>generate-test-resources</phase>-->
+                    <!--<goals>-->
+                    <!--<goal>prepare-agent</goal>-->
+                    <!--</goals>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                    <!--<id>report</id>-->
+                    <!--<phase>prepare-package</phase>-->
+                    <!--<goals>-->
+                    <!--<goal>report</goal>-->
+                    <!--</goals>-->
+                    <!--</execution>-->
+                    <!--</executions>-->
+                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
