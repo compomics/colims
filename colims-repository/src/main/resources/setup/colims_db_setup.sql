@@ -178,6 +178,10 @@ create table colims.peptide (
     psm_prob double precision,
     peptide_sequence varchar(255) not null,
     theoretical_mass double precision,
+    start integer,
+    end integer,
+    pre varchar(255),
+    post varchar(255),
     l_identification_file_id bigint,
     l_spectrum_id bigint,
     primary key (id)
@@ -459,6 +463,7 @@ create table colims.search_parameters_has_other_cv_param (
 create table colims.search_params_has_modification (
     id bigint not null auto_increment,
     modification_type integer,
+    residues varchar(22),
     l_search_modification_id bigint,
     l_search_parameters_id bigint,
     primary key (id)

@@ -24,31 +24,31 @@ public class Institution extends AuditableDatabaseEntity {
      * The institution name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert an institution name")
-    @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert an institution name.")
+    @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false)
     private String name;
     /**
      * The institution abbreviation.
      */
-    @NotBlank(message = "Please insert an institution abbreviation")
+    @NotBlank(message = "Please insert an institution abbreviation.")
     @Basic(optional = false)
-    @Length(min = 2, max = 10, message = "Institution abbreviation must be between {min} and {max} characters")
+    @Length(min = 2, max = 10, message = "Institution abbreviation must be between {min} and {max} characters.")
     @Column(name = "abbreviation", nullable = false)
     private String abbreviation;
     /**
      * The street where the institution is located.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a street name")
-    @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a street name.")
+    @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters.")
     @Column(name = "street", nullable = false)
     private String street;
     /**
      * The street number of the institution.
      */
     @Basic(optional = false)
-    @Min(value = 1, message = "Number must be higher or equal to 1")
+    @Min(value = 1, message = "Number must be higher or equal to 1.")
     @Column(name = "number", nullable = false)
     private Integer number;
     /**
@@ -56,14 +56,14 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
-    @Length(min = 3, max = 30, message = "City name must be between {min} and {max} characters")
+    @Length(min = 3, max = 30, message = "City name must be between {min} and {max} characters.")
     @Column(name = "city", nullable = false)
     private String city;
     /**
      * The postal code of the institution city.
      */
     @Basic(optional = true)
-    @Min(value = 1, message = "Postal code must be higher or equal to 1")
+    @Min(value = 1, message = "Postal code must be higher or equal to 1.")
     @Column(name = "postal_code", nullable = true)
     private Integer postalCode;
     /**
@@ -129,6 +129,16 @@ public class Institution extends AuditableDatabaseEntity {
 
     public void setCountry(final String country) {
         this.country = country;
+    }
+
+    public String[] getAddress() {
+        String[] address = new String[3];
+
+        address[0] = getStreet() + " " + getNumber();
+        address[1] = getPostalCode() + " " + getCity();
+        address[2] = getCountry();
+
+        return address;
     }
 
     @Override

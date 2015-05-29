@@ -35,23 +35,23 @@ public class Project extends AuditableDatabaseEntity {
      * The project title.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a project title")
-    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a project title.")
+    @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters.")
     @Column(name = "title", nullable = false, unique = true)
     private String title;
     /**
      * The project label.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a project label")
-    @Length(min = 3, max = 20, message = "Label must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a project label.")
+    @Length(min = 3, max = 20, message = "Label must be between {min} and {max} characters.")
     @Column(name = "label", nullable = false)
     private String label;
     /**
      * The project description. This is a free text field.
      */
     @Basic(optional = true)
-    @Length(max = 500, message = "Description must be less than {max} characters")
+    @Length(max = 500, message = "Description must be less than {max} characters.")
     @Column(name = "description", nullable = true)
     private String description;
     /**

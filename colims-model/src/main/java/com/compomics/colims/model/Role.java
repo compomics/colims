@@ -32,15 +32,15 @@ public class Role extends AuditableDatabaseEntity {
      * The role name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a role accession")
-    @Length(min = 3, max = 20, message = "Role name length must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a role accession.")
+    @Length(min = 3, max = 20, message = "Role name length must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**
      * The role description.
      */
     @Basic(optional = true)
-    @Length(max = 500, message = "Role description length must be less than {max} characters")
+    @Length(max = 500, message = "Role description length must be less than {max} characters.")
     @Column(name = "description")
     private String description;
     /**

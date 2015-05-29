@@ -34,8 +34,8 @@ public class Protocol extends AuditableDatabaseEntity {
      * The protocol name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a protocol name")
-    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a protocol name.")
+    @Length(min = 3, max = 30, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**

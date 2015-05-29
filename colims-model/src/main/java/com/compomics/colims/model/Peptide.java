@@ -60,6 +60,31 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
     /**
+     * The start position of the peptide
+     */
+    @Basic(optional = true)
+    @Column(name = "start", nullable = true)
+    private Integer start;
+    /**
+     * The end position of the peptide
+     */
+    @Basic(optional = true)
+    @Column(name = "end", nullable = true)
+    private Integer end;
+    /**
+     * The amino acid preceding the peptide
+     */
+    @Basic(optional = true)
+    @Column(name = "pre", nullable = true)
+    private String pre;
+    /**
+     * The amino acid following the peptide
+     */
+    @Basic(optional = true)
+    @Column(name = "post", nullable = true)
+    private String post;
+
+    /**
      * The IdentificationFile instance that identified this peptide-to-spectrum match.
      */
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
@@ -173,6 +198,22 @@ public class Peptide extends DatabaseEntity {
     public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
         this.quantificationGroups = quantificationGroups;
     }
+
+    public Integer getStart() {
+        return start;
+    }
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getEnd() { return end; }
+    public void setEnd(Integer end) { this.end = end; }
+
+    public String getPre() { return pre; }
+    public void setPre(String pre) { this.pre = pre; }
+
+    public String getPost() { return post; }
+    public void setPost(String post) { this.post = post; }
 
     public int getLength() {
         return sequence.length();

@@ -1,61 +1,62 @@
 package com.compomics.colims.core.io.maxquant;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
-import org.apache.commons.collections.IteratorUtils;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class TabularFileLineValuesIteratorTest {
 
     @Test
     public void testTabularFileLineValuesIterator() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
-        // Create iterator for ELVI
-        TabularFileLineValuesIterator elvi = new TabularFileLineValuesIterator(new File(MaxQuantTestSuite.maxQuantTextFolder, "evidence_subset_10.tsv"), MaxQuantEvidenceHeaders.values());
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.evidenceFile, MaxQuantEvidenceHeaders.values());
 
-        // Iterate over ELVI and assign values to a list for further inspection
-        @SuppressWarnings("unchecked")
-        List<Map<String, String>> list = IteratorUtils.toList(elvi);
+        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.evidenceFile.toPath());
 
-        // Check properties of first and last item in list
-        Map<String, String> first = list.get(0);
-        Assert.assertEquals("0", first.get(MaxQuantEvidenceHeaders.ID.getColumnName()));
-        Assert.assertEquals("0.83092", first.get(MaxQuantEvidenceHeaders.RETENTION_LENGTH.getColumnName()));
-        Assert.assertEquals("20242", first.get(MaxQuantEvidenceHeaders.RESOLUTION.getColumnName()));
-        Assert.assertEquals("pool3C", first.get(MaxQuantEvidenceHeaders.EXPERIMENT.getColumnName()));
-        Assert.assertEquals("", first.get(MaxQuantEvidenceHeaders.OXIDATION_M_SITE_IDS.getColumnName()));
-        Assert.assertEquals("0", first.get(MaxQuantEvidenceHeaders.PIF.getColumnName()));
-        Assert.assertEquals("751", first.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getColumnName()));
+        Map<String, String> item = iterator.next();
 
-        Map<String, String> last = list.get(list.size() - 1);
-        Assert.assertEquals("8", last.get(MaxQuantEvidenceHeaders.ID.getColumnName()));
-        Assert.assertEquals("0.9267", last.get(MaxQuantEvidenceHeaders.RETENTION_LENGTH.getColumnName()));
-        Assert.assertEquals("21095.4", last.get(MaxQuantEvidenceHeaders.RESOLUTION.getColumnName()));
-        Assert.assertEquals("pool4A", last.get(MaxQuantEvidenceHeaders.EXPERIMENT.getColumnName()));
-        Assert.assertEquals("", last.get(MaxQuantEvidenceHeaders.OXIDATION_M_SITE_IDS.getColumnName()));
-        Assert.assertEquals("0", last.get(MaxQuantEvidenceHeaders.PIF.getColumnName()));
-        Assert.assertEquals("1110", last.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getColumnName()));
+        assertThat(item.get(MaxQuantEvidenceHeaders.ID.getColumnName()), notNullValue());
+        assertFalse(item.get(MaxQuantEvidenceHeaders.ID.getColumnName()).isEmpty());
+        assertThat(rawFile.get(1), startsWith(item.get(MaxQuantEvidenceHeaders.SEQUENCE.getColumnName())));
+        assertTrue(rawFile.get(0).split("\t").length <= MaxQuantEvidenceHeaders.values().length);
     }
 
     @Test
     public void testGetHeaders() throws IOException {
-        TabularFileLineValuesIterator tflvi = new TabularFileLineValuesIterator(new File(MaxQuantTestSuite.maxQuantTextFolder, "msms_subset_1000.tsv"));
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.msmsFile);
+        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());
 
-        String[] headers = tflvi.getHeaders();
-        for (String header : headers) {
-            String safe = header.replaceAll(" |\\[|\\]|/|\\(|\\)|-|\\.", "_");
-            safe = safe.replace("__", "_").replace("__", "_");
-            safe = safe.replaceFirst("_$", "");
-            // Print headers safe for inclusion in an Enum
-            // System.out.println(String.format("%s(\"%s\"),", safe, header));
+        String[] headers = iterator.getHeaders();
+
+        assertThat(rawFile.get(0).toLowerCase(), startsWith(headers[0]));
+    }
+
+    @Test(expected = IOException.class)
+    public void testEmptyFile() throws IOException {
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(new ClassPathResource("data/empty.tsv").getFile());
+    }
+
+    @Test
+    public void testHasNext() throws IOException {
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(new ClassPathResource("data/maxquant/evidence_subset_10.tsv").getFile());
+
+        for (int i = 0; i < 9; ++i) {
+            iterator.next();
         }
 
-        Assert.assertEquals("protein group ids", headers[1]);
-        Assert.assertEquals("neutral loss level", headers[53]);
+        assertFalse(iterator.hasNext());
     }
 }

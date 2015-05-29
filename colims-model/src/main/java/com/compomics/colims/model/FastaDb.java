@@ -27,24 +27,24 @@ public class FastaDb extends DatabaseEntity {
      * The official name of the FASTA db.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB name")
-    @Length(min = 4, max = 100, message = "Name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a fasta DB name.")
+    @Length(min = 4, max = 100, message = "Name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false)
     private String name;
     /**
      * The name of the FASTA db file.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB file name")
-    @Length(min = 5, max = 200, message = "File name must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a fasta DB file name.")
+    @Length(min = 5, max = 200, message = "File name must be between {min} and {max} characters.")
     @Column(name = "file_name", nullable = false)
     private String fileName;
     /**
      * The FASTA db file path.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB file path")
-    @Length(min = 5, max = 250, message = "File path must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a fasta DB file path.")
+    @Length(min = 5, max = 250, message = "File path must be between {min} and {max} characters.")
     @Column(name = "file_path", nullable = false)
     private String filePath;
     /**
@@ -63,8 +63,8 @@ public class FastaDb extends DatabaseEntity {
      * The version of the FASTA db.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB version")
-    @Length(min = 3, max = 20, message = "Version must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a fasta DB version.")
+    @Length(min = 3, max = 20, message = "Version must be between {min} and {max} characters.")
     @Column(name = "version", nullable = false)
     private String version = "N/A";
     /**

@@ -188,7 +188,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                             //check if the instrument type can be deleted without breaking existing database relations,
                             //i.e. are there any constraints violations
                             if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("instrument type", fastaDbToDelete.getName());
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("fasta db", fastaDbToDelete.getName());
                                 eventBus.post(dbConstraintMessageEvent);
                             } else {
                                 //pass the exception
@@ -273,6 +273,8 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         //renew fasta DB list
         fastaDbBindingList.clear();
         fastaDbBindingList.addAll(fastaDbService.findAll());
+
+        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
 
         GuiUtils.centerDialogOnComponent(analyticalRunSetupController.getAnalyticalRunSetupDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);

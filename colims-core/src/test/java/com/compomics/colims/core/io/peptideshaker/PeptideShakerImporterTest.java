@@ -61,7 +61,7 @@ public class PeptideShakerImporterTest {
         PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
 
         //set admin user in authentication bean
-        User adminUser = userService.findByName("admin1");
+        User adminUser = userService.findByName("admin");
         authenticationBean.setCurrentUser(adminUser);
     }
 

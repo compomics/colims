@@ -27,15 +27,15 @@ public class Permission extends AuditableDatabaseEntity {
      * The permission name.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a permission accession")
-    @Length(min = 3, max = 20, message = "Permission name length must be between {min} and {max} characters")
+    @NotBlank(message = "Please insert a permission accession.")
+    @Length(min = 3, max = 20, message = "Permission name length must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     /**
      * The permission description.
      */
     @Basic(optional = true)
-    @Length(max = 500, message = "Permission description length must be less than {max} characters")
+    @Length(max = 500, message = "Permission description length must be less than {max} characters.")
     @Column(name = "description", nullable = true)
     private String description;
     /**

@@ -2,7 +2,8 @@
 INSERT INTO institution (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_code, street) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec');
 
 -- insert test users
-INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin11@test.com','admin1_first_name','admin1_last_name','admin1','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1),(2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab1@test.com','lab1_first_name','lab1_last_name','lab1','21HkOuddgSKsFAEunzfJwgeHGus+Ny5a', 1),(3,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab2@test.com','lab2_first_name','lab2_last_name','lab2','5VCdz+RPeCu1dkUfpzNedNA49K5S/TTn', 1),(4,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','collab1@test.com','collab1_first_name','collab1_last_name','collab1','ohgCuzOjoAC5s+k6mzEJqFwFeZsR7TWI',1);
+-- noinspection SqlDialectInspection
+INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin11@test.com','admin1_first_name','admin1_last_name','admin','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1), (2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab1@test.com','lab1_first_name','lab1_last_name','lab1','21HkOuddgSKsFAEunzfJwgeHGus+Ny5a', 1), (3,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab2@test.com','lab2_first_name','lab2_last_name','lab2','5VCdz+RPeCu1dkUfpzNedNA49K5S/TTn', 1), (4,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','collab1@test.com','collab1_first_name','collab1_last_name','collab1','ohgCuzOjoAC5s+k6mzEJqFwFeZsR7TWI',1);
 
 -- insert test groups
 INSERT INTO user_group (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','lab group description','lab'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','collaboration 1 group description','collaboration 1');
@@ -62,7 +63,10 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'methionine', '-64.1', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, protein_sequence) VALUES (1, 'Q8IWA5'), (2, 'Q13233');
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'BREAD'), (2, 'REDBREAD');
+
+-- insert test protein accession
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'EPICBREAD', 1);
 
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.35.0-beta');
@@ -76,7 +80,7 @@ INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) 
 INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'PSI-MS', 'SEARCH_TYPE');
 
 -- insert test search modifications
-INSERT INTO search_modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'UNIMOD:21', '79.98', '79.966331');
+INSERT INTO search_modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'UNIMOD:21', '79.98', '79.966331'), (3, 'fragment neutral loss', 'MS:1001524', null, 1.0, 2.5);
 
 -- insert a test analytical run
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
@@ -84,8 +88,14 @@ INSERT INTO analytical_run (id, creation_date, modification_date, user_name, nam
 -- insert a test spectrum
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 5, 'no', 3, 'Test Spectrum', 1);
 
+-- insert a spectrum file
+INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
+
 -- insert a search parameters
-INSERT INTO search_parameters (id) VALUES (1);
+INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, l_search_enzyme_cv_id) VALUES (1, 4, 1, 5, 1, 1);
+
+-- insert a search params has mod
+INSERT INTO search_params_has_modification (id, modification_type, residues, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 'CK', 3, 1);
 
 -- insert a search and val settings set of settings
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1);
@@ -94,7 +104,7 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
 
 -- insert a test peptide
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'ABCDEFGH', 1, 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, start, end, pre, post, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'ABCDEFGH', 1, 145, 157, 'K', 'G', 1, 1);
 
 -- insert a test peptide has mod
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);
