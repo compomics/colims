@@ -1,20 +1,12 @@
 package com.compomics.colims.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * This class represents a peptide entity in the database.
@@ -60,30 +52,29 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
     /**
-     * The start position of the peptide
+     * The start position of the peptide in the (main group) protein.
      */
     @Basic(optional = true)
     @Column(name = "start", nullable = true)
     private Integer start;
     /**
-     * The end position of the peptide
+     * The end position of the peptide in the (main group) protein.
      */
     @Basic(optional = true)
     @Column(name = "end", nullable = true)
     private Integer end;
     /**
-     * The amino acid preceding the peptide
+     * The amino acid preceding the peptide in the (main group) protein.
      */
     @Basic(optional = true)
-    @Column(name = "pre", nullable = true)
-    private String pre;
+    @Column(name = "pre_aa", length = 1, nullable = true)
+    private String preAA;
     /**
-     * The amino acid following the peptide
+     * The amino acid following the peptide in the (main group) protein.
      */
     @Basic(optional = true)
-    @Column(name = "post", nullable = true)
-    private String post;
-
+    @Column(name = "post_aa", length = 1, nullable = true)
+    private String postAA;
     /**
      * The IdentificationFile instance that identified this peptide-to-spectrum match.
      */
@@ -98,14 +89,12 @@ public class Peptide extends DatabaseEntity {
     @ManyToOne
     private Spectrum spectrum;
     /**
-     * The PeptideHasModification instances from the join table between the
-     * peptide and modification tables.
+     * The PeptideHasModification instances from the join table between the peptide and modification tables.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     /**
-     * The PeptideHasProtein instances from the join table between the
-     * peptide and protein tables.
+     * The PeptideHasProtein instances from the join table between the peptide and protein tables.
      */
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
@@ -202,18 +191,34 @@ public class Peptide extends DatabaseEntity {
     public Integer getStart() {
         return start;
     }
+
     public void setStart(Integer start) {
         this.start = start;
     }
 
-    public Integer getEnd() { return end; }
-    public void setEnd(Integer end) { this.end = end; }
+    public Integer getEnd() {
+        return end;
+    }
 
-    public String getPre() { return pre; }
-    public void setPre(String pre) { this.pre = pre; }
+    public void setEnd(Integer end) {
+        this.end = end;
+    }
 
-    public String getPost() { return post; }
-    public void setPost(String post) { this.post = post; }
+    public String getPreAA() {
+        return preAA;
+    }
+
+    public void setPreAA(String preAA) {
+        this.preAA = preAA;
+    }
+
+    public String getPostAA() {
+        return postAA;
+    }
+
+    public void setPostAA(String postAA) {
+        this.postAA = postAA;
+    }
 
     public int getLength() {
         return sequence.length();

@@ -1,21 +1,13 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import java.util.Objects;
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a protein entity in the database.
@@ -40,15 +32,13 @@ public class Protein extends DatabaseEntity {
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;
     /**
-     * The PeptideHasProtein instances from the join table between the peptide
-     * and protein tables.
+     * The PeptideHasProtein instances from the join table between the peptide and protein tables.
      */
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     /**
-     * The PeptideHasProtein instances from the join table between the peptide
-     * and protein tables. This list contains all join table entries where this
-     * protein is the main group protein.
+     * The PeptideHasProtein instances from the join table between the peptide and protein tables. This list contains
+     * all join table entries where this protein is the main group protein.
      */
     @OneToMany(mappedBy = "mainGroupProtein")
     private List<PeptideHasProtein> peptideHasMainGroupProteins = new ArrayList<>();

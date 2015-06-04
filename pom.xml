@@ -585,6 +585,10 @@
                                 <!-- default for failsafe-plugin is **/*IT.java  -->
                                 <include>**/*IT.class</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/PeptideShakerImporterIT.class</exclude>
+                                <exclude>**/PeptideShakerIOIT.class</exclude>
+                            </excludes>
                             <argLine>${argLine}</argLine>
                         </configuration>
                         <executions>

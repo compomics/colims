@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-client-context.xml", "classpath:colims-client-test-context.xml"})
-public class DbTaskProducerTestIT {
+public class DbTaskProducerIT {
 
     @Value("${distributed.queue.dbtask}")
     private String dbTaskQueueName;

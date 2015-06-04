@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * This class maps a Compomics Utilities peptide objects to Colims Peptide instance.
+ * This class maps a Compomics Utilities peptide object to Colims Peptide instance.
  *
  * @author Niels Hulstaert
  */
@@ -39,6 +39,7 @@ public class UtilitiesPeptideMapper {
      * @param ptmScores            the PSPtmScores instance
      * @param identificationCharge the charge
      * @param targetPeptide        the Colims peptide
+     * @param peptidePosition      contains information about the position of the peptide in the protein
      * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide, final PeptidePosition peptidePosition) throws ModificationMappingException {
@@ -52,10 +53,10 @@ public class UtilitiesPeptideMapper {
         targetPeptide.setPsmProbability(psmMatchScore.getProbability());
         //set psm posterior error probability
         targetPeptide.setPsmPostErrorProbability(psmMatchScore.getPostErrorProbability());
-
+        //set peptide protein position fields
         if (peptidePosition != null) {
-            targetPeptide.setPre(peptidePosition.getPre());
-            targetPeptide.setPost(peptidePosition.getPost());
+            targetPeptide.setPreAA(peptidePosition.getPreAA());
+            targetPeptide.setPostAA(peptidePosition.getPostAA());
             targetPeptide.setStart(peptidePosition.getStart());
             targetPeptide.setEnd(peptidePosition.getEnd());
         }

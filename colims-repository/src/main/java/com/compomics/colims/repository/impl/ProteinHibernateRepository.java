@@ -1,21 +1,22 @@
 package com.compomics.colims.repository.impl;
 
-import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Repository;
-
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    /**      * Logger instance.      */     private static final Logger LOGGER = Logger.getLogger(ProteinHibernateRepository.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ProteinHibernateRepository.class);
 
     @Override
     public Protein findBySequence(String sequence) {

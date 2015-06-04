@@ -188,7 +188,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>pre-integration-test</phase>
+                        <phase>preAA-integration-test</phase>
                     </execution>
                 </executions>
             </plugin>-->                                             

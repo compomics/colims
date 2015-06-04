@@ -1,10 +1,5 @@
 package com.compomics.colims.core.io.utilities_to_colims;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.service.ProteinService;
@@ -14,14 +9,18 @@ import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinAccession;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * This class maps a Compomics Utilities protein objects to Colims Protein
- * instances.
+ * This class maps a Compomics Utilities protein objects to Colims Protein instances.
  *
  * @author Niels Hulstaert
  */
@@ -47,12 +46,11 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Map the Utilities protein related objects to Colims proteins and add them
-     * to the peptide.
+     * Map the Utilities protein related objects to Colims proteins and add them to the peptide.
      *
-     * @param proteinMatches the utilities list of protein matches
+     * @param proteinMatches    the utilities list of protein matches
      * @param peptideMatchScore the PSM score
-     * @param targetPeptide the Colims peptide
+     * @param targetPeptide     the Colims peptide
      * @throws MappingException thrown in case of a mapping related problem
      */
     public void map(final List<ProteinMatch> proteinMatches, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
@@ -66,10 +64,20 @@ public class UtilitiesProteinMapper {
                     com.compomics.util.experiment.biology.Protein mainSourceProtein = SequenceFactory.getInstance().getProtein(proteinMatch.getMainMatch());
                     //get main match
                     Protein mainMatchedProtein = getProtein(mainSourceProtein);
+
                     //iterate over theoretic protein accessions if there is more than one.
                     //This means there is a protein group and the main matched protein is the main group protein.
                     //Note that the peptide scores will be the same for all group members
-                    if (proteinMatch.getTheoreticProteinsAccessions().size() > 1) {
+                    if (proteinMatch.getTheoreticProteinsAccessions().size() == 1) {
+                        //only set the main matched protein as the protein and leave the main group protein empty
+                        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
+                        peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
+                        peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
+                        peptideHasProteins.add(peptideHasProtein);
+                        //set entity relations
+                        peptideHasProtein.setProtein(mainMatchedProtein);
+                        peptideHasProtein.setPeptide(targetPeptide);
+                    } else {
                         for (String proteinAccession : proteinMatch.getTheoreticProteinsAccessions()) {
                             //get utilities Protein from SequenceFactory
                             com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
@@ -83,15 +91,6 @@ public class UtilitiesProteinMapper {
                             peptideHasProtein.setPeptide(targetPeptide);
                             peptideHasProtein.setMainGroupProtein(mainMatchedProtein);
                         }
-                    } else {
-                        //only set the main matched protein as the protein and leave the main group protein empty
-                        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                        peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
-                        peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-                        peptideHasProteins.add(peptideHasProtein);
-                        //set entity relations
-                        peptideHasProtein.setProtein(mainMatchedProtein);
-                        peptideHasProtein.setPeptide(targetPeptide);
                     }
                 }
             }
@@ -110,10 +109,9 @@ public class UtilitiesProteinMapper {
     }
 
     /**
-     * Get the Colims protein by protein accession or sequence digest. This
-     * method looks for the protein in the newly added proteins and the
-     * database. If it was not found, it looks in the utilities SequenceFactory
-     * and it's added to newly added proteins.
+     * Get the Colims protein by protein accession or sequence digest. This method looks for the protein in the newly
+     * added proteins and the database. If it was not found, it looks in the utilities SequenceFactory and it's added to
+     * newly added proteins.
      *
      * @param sourceProtein the utilities protein
      * @return the found Protein instance
@@ -155,7 +153,7 @@ public class UtilitiesProteinMapper {
     /**
      * Update the ProteinAccessions linked to a Protein.
      *
-     * @param protein the Protein instance
+     * @param protein   the Protein instance
      * @param accession the protein accession
      */
     private void updateAccessions(final Protein protein, final String accession) {

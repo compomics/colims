@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.peptideshaker;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.SearchSettingsMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.IdentificationFile;

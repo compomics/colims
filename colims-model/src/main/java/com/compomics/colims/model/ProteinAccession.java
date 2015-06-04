@@ -1,19 +1,11 @@
 package com.compomics.colims.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import javax.persistence.*;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
- * This class represents a protein accession entity in the database. This is a
- * separate entity in the database because a protein sequence can be linked to
- * accessions.
+ * This class represents a protein accession entity in the database. This is a separate entity in the database because a
+ * protein sequence can be linked to more than one accession.
  *
  * @author Niels Hulstaert
  */

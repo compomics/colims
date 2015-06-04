@@ -428,8 +428,8 @@ public class MzIdentMLExporter {
                     evidence.setId("PE-" + peptideHasProtein.getId().toString());
                     evidence.setStart(colimsPeptide.getStart());
                     evidence.setEnd(colimsPeptide.getEnd());
-                    evidence.setPre(colimsPeptide.getPre());
-                    evidence.setPost(colimsPeptide.getPost());
+                    evidence.setPre(colimsPeptide.getPreAA());
+                    evidence.setPost(colimsPeptide.getPostAA());
 
                     sequenceCollection.getPeptideEvidence().add(evidence);
 

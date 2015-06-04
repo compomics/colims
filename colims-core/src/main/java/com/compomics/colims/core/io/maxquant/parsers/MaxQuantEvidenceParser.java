@@ -286,8 +286,8 @@ public class MaxQuantEvidenceParser {
             values = peptideIterator.next();
 
             PeptidePosition position = new PeptidePosition();
-            position.setPre(values.get("amino acid before"));
-            position.setPost(values.get("amino acid after"));
+            position.setPreeAA(values.get("amino acid before"));
+            position.setPostAA(values.get("amino acid after"));
 
             if (values.get("start position").isEmpty() || values.get("start position") == null) {
                 position.setStart(0);

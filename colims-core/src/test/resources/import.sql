@@ -104,7 +104,7 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
 
 -- insert a test peptide
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, start, end, pre, post, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'ABCDEFGH', 1, 145, 157, 'K', 'G', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, start, end, pre_aa, post_aa, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'ABCDEFGH', 1, 145, 157, 'K', 'G', 1, 1);
 
 -- insert a test peptide has mod
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);

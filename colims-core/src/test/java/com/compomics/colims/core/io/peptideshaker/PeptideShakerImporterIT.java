@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,7 +37,7 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class PeptideShakerImporterTest {
+public class PeptideShakerImporterIT {
 
     @Autowired
     private PeptideShakerImporter peptideShakerImporter;
@@ -78,13 +79,16 @@ public class PeptideShakerImporterTest {
     @Test
     public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
+//        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new FileSystemResource("/home/niels/Desktop/example_dataset/HeLa Example.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
+//        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
+        mgfFiles.add(new FileSystemResource("/home/niels/Desktop/example_dataset/data/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
 
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
+//        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new FileSystemResource("/home/niels/Desktop/example_dataset/data/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
@@ -113,15 +117,38 @@ public class PeptideShakerImporterTest {
                 for (Peptide peptide : spectrum.getPeptides()) {
                     Assert.assertNotNull(peptide.getSpectrum());
                     Assert.assertFalse(peptide.getSequence().isEmpty());
-                    if (!peptide.getPeptideHasProteins().isEmpty()) {
-                        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
-                            Assert.assertNotNull(peptideHasProtein.getPeptide());
-                            Protein protein = peptideHasProtein.getProtein();
-                            Assert.assertNotNull(protein);
-                            Assert.assertFalse(protein.getProteinAccessions().isEmpty());
-                            Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
-                            Assert.assertFalse(protein.getSequence().isEmpty());
-                        }
+                    Assert.assertNotNull(peptide.getStart());
+                    Assert.assertNotNull(peptide.getEnd());
+                    Assert.assertEquals(peptide.getLength(), peptide.getEnd() - peptide.getStart() + 1);
+
+                    //test protein location related peptide fields
+                    if (peptide.getStart() != 1) {
+                        Assert.assertNotNull(peptide.getPreAA());
+                    } else {
+                        Assert.assertNull(peptide.getPreAA());
+                    }
+                    //a peptide without a protein makes no sense
+                    Assert.assertFalse(peptide.getPeptideHasProteins().isEmpty());
+                    Protein matchedProtein;
+                    if (peptide.getPeptideHasProteins().get(0).getMainGroupProtein() == null) {
+                        matchedProtein = peptide.getPeptideHasProteins().get(0).getProtein();
+                    } else {
+                        matchedProtein = peptide.getPeptideHasProteins().get(0).getMainGroupProtein();
+                        Assert.assertNotNull(matchedProtein);
+                    }
+                    if (peptide.getEnd() != matchedProtein.getSequence().length()) {
+                        Assert.assertNotNull(peptide.getPostAA());
+                    } else {
+                        Assert.assertNull(peptide.getPostAA());
+                    }
+
+                    for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
+                        Assert.assertNotNull(peptideHasProtein.getPeptide());
+                        Protein protein = peptideHasProtein.getProtein();
+                        Assert.assertNotNull(protein);
+                        Assert.assertFalse(protein.getProteinAccessions().isEmpty());
+                        Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
+                        Assert.assertFalse(protein.getSequence().isEmpty());
                     }
                     if (!peptide.getPeptideHasModifications().isEmpty()) {
                         for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {

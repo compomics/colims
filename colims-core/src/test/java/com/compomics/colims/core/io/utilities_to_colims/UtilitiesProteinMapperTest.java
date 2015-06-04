@@ -41,7 +41,7 @@ public class UtilitiesProteinMapperTest {
     }
 
     /**
-     * Test the protein mapping whithout protein groups
+     * Test the protein mapping without protein groups.
      *
      * @throws MappingException
      * @throws IOException
@@ -83,7 +83,7 @@ public class UtilitiesProteinMapperTest {
     }
 
     /**
-     * Test the protein mapping with protein groups
+     * Test the protein mapping with protein groups.
      *
      * @throws MappingException
      * @throws IOException
