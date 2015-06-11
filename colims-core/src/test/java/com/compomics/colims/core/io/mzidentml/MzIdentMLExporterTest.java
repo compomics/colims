@@ -2,8 +2,6 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +15,6 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Iain
@@ -29,42 +25,36 @@ import java.util.Map;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 public class MzIdentMLExporterTest {
+
     @Autowired
     private MzIdentMLExporter exporter;
 
     @Autowired
     private AnalyticalRunRepository repository;
 
+    /**
+     * Test the MZIdentML export of an analytical run.
+     *
+     * @throws IOException error thrown in case of a I/O related problem
+     */
     @Test
     public void testExport() throws IOException {
         AnalyticalRun run = repository.findById(1L);
-        System.out.println(exporter.export(run));
-    }
-
-    @Test
-    public void testJSON() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        JsonNode root = mapper.readTree(this.getClass().getResource("/config/mzidentml.json"));
-
-        JsonNode cvList = root.get("cvList");
-
-        for (JsonNode node : cvList) {
-            Map<String, List> data = mapper.readValue(node, Map.class);
-            System.out.println("ok");
-        }
+        String export = exporter.export(run);
+        System.out.println(export);
+        Assert.assertFalse(export.isEmpty());
     }
 
     @Test
     public void testClassListMapping() throws IOException {
         CvList cvList = new CvList();
         cvList.getCv().addAll(exporter.getDataList("CvList", Cv.class));
-        Assert.assertEquals(cvList.getCv().size(), 4);
+        Assert.assertEquals(2, cvList.getCv().size());
     }
 
     @Test
     public void testClassItemMapping() throws IOException {
-        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker",  AnalysisSoftware.class);
+        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker", AnalysisSoftware.class);
         Assert.assertEquals(as.getName(), "PeptideShaker");
     }
 }

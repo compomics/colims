@@ -52,30 +52,6 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
     /**
-     * The start position of the peptide in the (main group) protein.
-     */
-    @Basic(optional = true)
-    @Column(name = "start", nullable = true)
-    private Integer start;
-    /**
-     * The end position of the peptide in the (main group) protein.
-     */
-    @Basic(optional = true)
-    @Column(name = "end", nullable = true)
-    private Integer end;
-    /**
-     * The amino acid preceding the peptide in the (main group) protein.
-     */
-    @Basic(optional = true)
-    @Column(name = "pre_aa", length = 1, nullable = true)
-    private String preAA;
-    /**
-     * The amino acid following the peptide in the (main group) protein.
-     */
-    @Basic(optional = true)
-    @Column(name = "post_aa", length = 1, nullable = true)
-    private String postAA;
-    /**
      * The IdentificationFile instance that identified this peptide-to-spectrum match.
      */
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
@@ -188,40 +164,39 @@ public class Peptide extends DatabaseEntity {
         this.quantificationGroups = quantificationGroups;
     }
 
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
-    public Integer getEnd() {
-        return end;
-    }
-
-    public void setEnd(Integer end) {
-        this.end = end;
-    }
-
-    public String getPreAA() {
-        return preAA;
-    }
-
-    public void setPreAA(String preAA) {
-        this.preAA = preAA;
-    }
-
-    public String getPostAA() {
-        return postAA;
-    }
-
-    public void setPostAA(String postAA) {
-        this.postAA = postAA;
-    }
-
+    /**
+     * Get the peptide sequence length.
+     *
+     * @return
+     */
     public int getLength() {
         return sequence.length();
+    }
+
+    /**
+     * Return the protein of this peptide. In case of a protein group, the main group protein is returned.
+     *
+     * @return the peptide protein
+     */
+    public Protein getProtein() {
+        Protein protein = null;
+
+        if (peptideHasProteins.size() == 1) {
+            protein = peptideHasProteins.get(0).getProtein();
+        } else {
+            for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {
+                if (peptideHasProtein.isMainGroupProtein()) {
+                    protein = peptideHasProtein.getProtein();
+                    break;
+                }
+            }
+        }
+
+        if (protein == null) {
+            throw  new IllegalStateException("A peptide should have a parent protein.");
+        }
+
+        return protein;
     }
 
     @Override

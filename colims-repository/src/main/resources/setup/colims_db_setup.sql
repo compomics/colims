@@ -200,9 +200,10 @@
 
     create table colims.peptide_has_protein (
         id bigint not null auto_increment,
+        main_group_protein bit,
         peptide_post_error_prob double precision,
         peptide_prob double precision,
-        l_main_group_protein_id bigint,
+        protein_accession varchar(255),
         l_peptide_id bigint,
         l_protein_id bigint,
         primary key (id)
@@ -471,7 +472,7 @@
 
     create table colims.spectrum (
         id bigint not null auto_increment,
-        accession varchar(255) not null,
+        accession varchar(500) not null,
         charge integer,
         fragmentation_type varchar(255),
         intensity double precision,
@@ -479,7 +480,7 @@
         retention_time double precision,
         scan_number varchar(255) not null,
         scan_time double precision,
-        title varchar(255),
+        title varchar(500),
         l_analytical_run_id bigint,
         primary key (id)
     );
@@ -639,11 +640,6 @@
         add constraint FK_tnhhusqmuwc88nl8yo0t3r7f1
         foreign key (l_peptide_id)
         references colims.peptide (id);
-
-    alter table colims.peptide_has_protein
-        add constraint FK_7d9fvws08o48ai89aqi3ph8l9
-        foreign key (l_main_group_protein_id)
-        references colims.protein (id);
 
     alter table colims.peptide_has_protein
         add constraint FK_nljccjaj0g8pbmfy9sdjfghce

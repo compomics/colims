@@ -37,12 +37,6 @@ public class Protein extends DatabaseEntity {
     @OneToMany(mappedBy = "protein")
     private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
     /**
-     * The PeptideHasProtein instances from the join table between the peptide and protein tables. This list contains
-     * all join table entries where this protein is the main group protein.
-     */
-    @OneToMany(mappedBy = "mainGroupProtein")
-    private List<PeptideHasProtein> peptideHasMainGroupProteins = new ArrayList<>();
-    /**
      * The list of protein accessions linked to this protein.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "protein")
@@ -78,14 +72,6 @@ public class Protein extends DatabaseEntity {
 
     public void setPeptideHasProteins(List<PeptideHasProtein> peptideHasProteins) {
         this.peptideHasProteins = peptideHasProteins;
-    }
-
-    public List<PeptideHasProtein> getPeptideHasMainGroupProteins() {
-        return peptideHasMainGroupProteins;
-    }
-
-    public void setPeptideHasMainGroupProteins(List<PeptideHasProtein> peptideHasMainGroupProteins) {
-        this.peptideHasMainGroupProteins = peptideHasMainGroupProteins;
     }
 
     public List<ProteinAccession> getProteinAccessions() {

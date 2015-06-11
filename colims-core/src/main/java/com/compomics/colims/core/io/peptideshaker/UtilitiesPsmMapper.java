@@ -7,9 +7,7 @@ import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.experiment.biology.Protein;
 import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -166,28 +163,6 @@ public class UtilitiesPsmMapper {
 //                    proteinMatches.add(proteinMatch);
 //                }
 //            }
-
-            //set peptide location fields
-            //@TODO find a better place to set this, not easy because the UtilitiesProteinMapper is also used in the MaxQuant part.
-            if (!proteinMatches.isEmpty()) {
-                //@TODO only the first protein match in the list is considered, I'm not sure if this is correct
-                Protein mainSourceProtein = SequenceFactory.getInstance().getProtein(proteinMatches.get(0).getMainMatch());
-                ArrayList<Integer> peptideStarts = mainSourceProtein.getPeptideStart(targetPeptide.getSequence(), identificationParameters.getSequenceMatchingPreferences());
-                if (!peptideStarts.isEmpty()) {
-                    Integer start = peptideStarts.get(0);
-                    targetPeptide.setStart(start);
-                    targetPeptide.setEnd(start + targetPeptide.getLength() - 1);
-                    HashMap<Integer, String[]> surroundingAAs = mainSourceProtein.getSurroundingAA(targetPeptide.getSequence(), 1, identificationParameters.getSequenceMatchingPreferences());
-                    if (!surroundingAAs.isEmpty() && surroundingAAs.containsKey(start)) {
-                        if (!surroundingAAs.get(start)[0].isEmpty()) {
-                            targetPeptide.setPreAA(surroundingAAs.get(start)[0]);
-                        }
-                        if (!surroundingAAs.get(start)[1].isEmpty()) {
-                            targetPeptide.setPostAA(surroundingAAs.get(start)[1]);
-                        }
-                    }
-                }
-            }
 
             //map proteins
             MatchScore peptideMatchScore;

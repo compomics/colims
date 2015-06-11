@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -74,12 +73,13 @@ public class UtilitiesProteinMapperTest {
         PeptideHasProtein peptideHasProtein = targetPeptide.getPeptideHasProteins().get(0);
         Assert.assertNotNull(peptideHasProtein.getPeptide());
         Assert.assertNotNull(peptideHasProtein.getProtein());
+        Assert.assertEquals("P16083", peptideHasProtein.getProteinAccession());
         Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
         Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
         Assert.assertEquals("P16083", peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession());
 
-        //main group protein should be null
-        Assert.assertNull(peptideHasProtein.getMainGroupProtein());
+        //the is main group protein should be null
+        Assert.assertNull(peptideHasProtein.isMainGroupProtein());
     }
 
     /**
@@ -96,7 +96,7 @@ public class UtilitiesProteinMapperTest {
         //create new utilities peptide
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P06241");
-        //@todo can we still use this construcor if we don't want to redo the protein mapping
+        //@todo can we still use this constructor if we don't want to redo the protein mapping
         com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", parentProteins, new ArrayList<ModificationMatch>());
 
         Peptide targetPeptide = new Peptide();
@@ -120,13 +120,19 @@ public class UtilitiesProteinMapperTest {
         for (PeptideHasProtein peptideHasProtein : targetPeptide.getPeptideHasProteins()) {
             Assert.assertNotNull(peptideHasProtein.getPeptide());
             Assert.assertNotNull(peptideHasProtein.getProtein());
-            Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
-            Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
+            Assert.assertNotNull(peptideHasProtein.getProteinAccession());
             Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));
-            //main group protein should not be null
-            Assert.assertNotNull(peptideHasProtein.getMainGroupProtein());
-            Assert.assertEquals("P06241", peptideHasProtein.getMainGroupProtein().getProteinAccessions().get(0).getAccession());
-        }
 
+            if (!"P06241".equals(peptideHasProtein.getProteinAccession())) {
+                Assert.assertNull(peptideHasProtein.getPeptideProbability());
+                Assert.assertNull(peptideHasProtein.getPeptidePostErrorProbability());
+                Assert.assertFalse(peptideHasProtein.isMainGroupProtein());
+            } else {
+                Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
+                Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
+                Assert.assertTrue(peptideHasProtein.isMainGroupProtein());
+                Assert.assertEquals("P06241", peptideHasProtein.getProteinAccession());
+            }
+        }
     }
 }

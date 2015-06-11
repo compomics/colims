@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.util.PeptidePosition;
+import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.ModificationType;
@@ -10,6 +12,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
@@ -17,9 +20,12 @@ import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 import uk.ac.ebi.jmzidml.model.mzidml.Role;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * mzIdentML exporter, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them into
@@ -29,10 +35,15 @@ import java.util.*;
  */
 @Component
 public class MzIdentMLExporter {
+
     /**
      * Logger instance.
      */
-    private static final Logger logger = Logger.getLogger(MzIdentMLExporter.class);
+    private static final Logger LOGGER = Logger.getLogger(MzIdentMLExporter.class);
+    /**
+     * The json file that contains the MzIdentML controlled vocabulary terms.
+     */
+    private static final String DATA_FILE = "/config/mzidentml.json";   // TODO: a better name
 
     // TODO: are these only filled in on production build?
     @Value("${mzidentml.version}")
@@ -40,35 +51,53 @@ public class MzIdentMLExporter {
     @Value("${colims-core.version}")
     private final String COLIMS_VERSION = "latest";
 
-    private static final String DATA_FILE = "/config/mzidentml.json";   // TODO: a better name
-
-    private ObjectMapper mapper;
+    private ObjectMapper mapper = new ObjectMapper();
     private JsonNode mzIdentMLParamList;
+    /**
+     * The analytical run to export.
+     */
     private AnalyticalRun analyticalRun;
+    /**
+     * The MzIdentML instance from the MzIdentML object model.
+     */
     private MzIdentML mzIdentML;
+    /**
+     * The Inputs instance from the MzIdentML object model.
+     */
     private Inputs inputs;
 
     @Autowired
     private UserRepository userRepository;
 
     /**
-     * Set up JSON mapper and export a run in MzIdentML format.
+     * Read in the json file that contains controlled vocabulary terms.
+     *
+     * @throws IOException error thrown in case of a I/O related problem
      */
-    public String export(AnalyticalRun run) throws IOException {
-        mapper = new ObjectMapper();
+    @PostConstruct
+    public void init() throws IOException {
+        ClassPathResource jsonFile = new ClassPathResource(DATA_FILE);
+        mzIdentMLParamList = mapper.readTree(jsonFile.getURL());
+    }
 
-        mzIdentMLParamList = mapper.readTree(this.getClass().getResource(DATA_FILE));
+    /**
+     * Export a run in MzIdentML format.
+     *
+     * @param analyticalRun the analytical run to export.
+     * @return the MzIdentML String
+     * @throws IOException error thrown in case of a I/O related problem
+     */
+    public String export(AnalyticalRun analyticalRun) throws IOException {
+        this.analyticalRun = analyticalRun;
 
         MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
-        analyticalRun = run;
-
         return marshaller.marshal(base());
     }
 
     /**
      * Assemble necessary data into an MZIdentML object and it's many properties.
      *
-     * @return MZIdentML A fully furnished (hopefully) object
+     * @return MZIdentML a fully furnished (hopefully) object
      */
     private MzIdentML base() throws IOException {
         mzIdentML = new MzIdentML();
@@ -422,20 +451,27 @@ public class MzIdentMLExporter {
 
                     sequenceCollection.getDBSequence().add(dbSequence);
 
-                    PeptideEvidence evidence = new PeptideEvidence();
-                    evidence.setDBSequence(dbSequence);
-                    evidence.setPeptide(mzPeptide);
-                    evidence.setId("PE-" + peptideHasProtein.getId().toString());
-                    evidence.setStart(colimsPeptide.getStart());
-                    evidence.setEnd(colimsPeptide.getEnd());
-                    evidence.setPre(colimsPeptide.getPreAA());
-                    evidence.setPost(colimsPeptide.getPostAA());
+                    //calculate peptide location values
+                    //more than one position is possible
+                    Protein protein = colimsPeptide.getProtein();
+                    List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(colimsPeptide.getProtein().getSequence(), colimsPeptide.getSequence());
+                    for (PeptidePosition peptidePosition : peptidePositions) {
+                        PeptideEvidence evidence = new PeptideEvidence();
+                        evidence.setDBSequence(dbSequence);
+                        evidence.setPeptide(mzPeptide);
+                        evidence.setId("PE-" + peptideHasProtein.getId().toString());
 
-                    sequenceCollection.getPeptideEvidence().add(evidence);
+                        evidence.setStart(peptidePosition.getStartPosition());
+                        evidence.setEnd(peptidePosition.getEndPosition());
+                        evidence.setPre(peptidePosition.getPreAA().toString());
+                        evidence.setPost(peptidePosition.getPostAA().toString());
 
-                    PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                    evidenceRef.setPeptideEvidence(evidence);
-                    spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                        sequenceCollection.getPeptideEvidence().add(evidence);
+
+                        PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                        evidenceRef.setPeptideEvidence(evidence);
+                        spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                    }
                 }
             }
 
@@ -529,7 +565,7 @@ public class MzIdentMLExporter {
 
         DBSequence dbSequence = new DBSequence();
         dbSequence.setId("DBS-" + protein.getId().toString());
-        dbSequence.setAccession(peptideHasProtein.getMainGroupProtein().getProteinAccessions().get(0).getAccession());
+        dbSequence.setAccession(peptideHasProtein.getProteinAccession());
         dbSequence.setLength(protein.getSequence().length());
         dbSequence.setSeq(protein.getSequence());
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));
@@ -543,7 +579,7 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Get the CV representation of a colims modification.
+     * Get the CV representation of a Colims modification.
      *
      * @param modification A colims modification
      * @param <T>          Subclass of AbstractModification
@@ -581,7 +617,7 @@ public class MzIdentMLExporter {
             Constructor ctor = type.getDeclaredConstructor();
             contact = (T) ctor.newInstance();
         } catch (ReflectiveOperationException e) {
-            logger.error("Unable to instantiate contact object of type " + type.getName(), e);
+            LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
         }
 
         if (contact != null) {
@@ -607,14 +643,15 @@ public class MzIdentMLExporter {
         List<T> data = new ArrayList<>();
 
         if (listNode == null) {
-            logger.warn("Contact details not found for contact name: " + name);
+            LOGGER.warn("Contact details not found for contact name: " + name);
         } else {
             try {
                 for (JsonNode node : listNode) {
                     data.add(mapper.readValue(node, type));
                 }
             } catch (IOException e) {
-                logger.error("Unable to instantiate contact object of type " + type.getName(), e);
+                LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
+                throw e;
             }
         }
 
@@ -637,7 +674,7 @@ public class MzIdentMLExporter {
         try {
             item.add(mapper.readValue(node, type));
         } catch (IOException e) {
-            logger.error("Unable to instantiate contact object of type " + type.getName(), e);
+            LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
         }
 
         return item.get(0);

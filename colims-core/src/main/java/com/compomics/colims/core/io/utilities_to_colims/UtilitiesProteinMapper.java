@@ -65,31 +65,56 @@ public class UtilitiesProteinMapper {
                     //get main match
                     Protein mainMatchedProtein = getProtein(mainSourceProtein);
 
-                    //iterate over theoretic protein accessions if there is more than one.
-                    //This means there is a protein group and the main matched protein is the main group protein.
-                    //Note that the peptide scores will be the same for all group members
+                    /**
+                     * Iterate over the theoretic protein accessions.
+                     * If there's more than one, it's a protein group and the main matched protein is the main group protein.
+                     * Note that the peptide scores will be the same for all protein group members.
+                     */
                     if (proteinMatch.getTheoreticProteinsAccessions().size() == 1) {
-                        //only set the main matched protein as the protein and leave the main group protein empty
+                        //set the main matched protein as the protein in the {@link PeptideHasProtein}
                         PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
                         peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
                         peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-                        peptideHasProteins.add(peptideHasProtein);
+                        peptideHasProtein.setProteinAccession(mainSourceProtein.getAccession());
+
                         //set entity relations
                         peptideHasProtein.setProtein(mainMatchedProtein);
                         peptideHasProtein.setPeptide(targetPeptide);
+
+                        peptideHasProteins.add(peptideHasProtein);
                     } else {
                         for (String proteinAccession : proteinMatch.getTheoreticProteinsAccessions()) {
-                            //get utilities Protein from SequenceFactory
-                            com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
-                            Protein matchedProtein = getProtein(sourceProtein);
                             PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                            peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
-                            peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-                            peptideHasProteins.add(peptideHasProtein);
-                            //set entity relations
-                            peptideHasProtein.setProtein(matchedProtein);
+
+                            if (!proteinAccession.equals(proteinMatch.getMainMatch())) {
+                                //get the utilities Protein from SequenceFactory
+                                com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
+
+                                //set the is main group group flag to false
+                                peptideHasProtein.setMainGroupProtein(Boolean.FALSE);
+
+                                //set protein
+                                Protein matchedProtein = getProtein(sourceProtein);
+                                peptideHasProtein.setProtein(matchedProtein);
+                            } else {
+                                //only set the peptide scores for the main protein
+                                peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
+                                peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
+
+                                //set the is main protein group flag to true
+                                peptideHasProtein.setMainGroupProtein(Boolean.TRUE);
+
+                                //set protein
+                                peptideHasProtein.setProtein(mainMatchedProtein);
+                            }
+
+                            //set peptide
                             peptideHasProtein.setPeptide(targetPeptide);
-                            peptideHasProtein.setMainGroupProtein(mainMatchedProtein);
+
+                            //set protein accession
+                            peptideHasProtein.setProteinAccession(proteinAccession);
+
+                            peptideHasProteins.add(peptideHasProtein);
                         }
                     }
                 }
@@ -127,7 +152,7 @@ public class UtilitiesProteinMapper {
             targetProtein = proteinService.findBySequence(sourceProtein.getSequence());
 
             if (targetProtein == null) {
-                //map the utilities protein onto the colims protein
+                //map the utilities protein onto the Colims protein
                 targetProtein = new Protein(sourceProtein.getSequence());
                 ProteinAccession proteinAccession = new ProteinAccession(sourceProtein.getAccession());
 

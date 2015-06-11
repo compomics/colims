@@ -2,11 +2,11 @@ package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.core.io.maxquant.PeptidePosition;
-import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
+import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.enums.QuantificationWeight;
 import com.compomics.util.experiment.identification.PeptideAssumption;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +86,6 @@ public class MaxQuantEvidenceParserTest {
         Map<String, PeptidePosition> peptidePositions = maxQuantEvidenceParser.getPeptidePositions(MaxQuantTestSuite.peptidesFile);
 
         assertThat(peptidePositions.size(), not(0));
-        assertTrue(peptidePositions.entrySet().iterator().next().getValue().getStart() < peptidePositions.entrySet().iterator().next().getValue().getEnd());
+        assertTrue(peptidePositions.entrySet().iterator().next().getValue().getStartPosition() < peptidePositions.entrySet().iterator().next().getValue().getEndPosition());
     }
 }

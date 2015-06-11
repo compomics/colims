@@ -1,22 +1,12 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.FragmentationType;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a spectrum entity in the database.
@@ -35,13 +25,13 @@ public class Spectrum extends DatabaseEntity {
      * The spectrum accession.
      */
     @Basic(optional = false)
-    @Column(name = "accession", nullable = false)
+    @Column(name = "accession", length = 500, nullable = false)
     private String accession;
     /**
      * The spectrum title.
      */
     @Basic(optional = true)
-    @Column(name = "title", nullable = true)
+    @Column(name = "title", length = 500, nullable = true)
     private String title;
     /**
      * The scan number.
