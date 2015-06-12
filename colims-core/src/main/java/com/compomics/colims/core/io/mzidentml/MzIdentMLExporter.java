@@ -28,8 +28,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * mzIdentML exporter, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them into
- * valid XML
+ * MzIdentML exporter class, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them
+ * into valid XML.
  *
  * @author Iain
  */
@@ -448,12 +448,13 @@ public class MzIdentMLExporter {
 
                 for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
                     DBSequence dbSequence = createDBSequence(peptideHasProtein);
+                    //set protein accession
+                    dbSequence.setAccession(peptideHasProtein.getProteinAccession());
 
                     sequenceCollection.getDBSequence().add(dbSequence);
 
                     //calculate peptide location values
                     //more than one position is possible
-                    Protein protein = colimsPeptide.getProtein();
                     List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(colimsPeptide.getProtein().getSequence(), colimsPeptide.getSequence());
                     for (PeptidePosition peptidePosition : peptidePositions) {
                         PeptideEvidence evidence = new PeptideEvidence();
