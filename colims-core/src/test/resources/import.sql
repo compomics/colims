@@ -63,10 +63,17 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'methionine', '-64.1', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA'), (2, 'REDBREAD');
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (2, 'AAMAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (3, 'AACAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (4, 'AABAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
 
 -- insert test protein accession
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'EPICBREAD', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'PROT_ACC_11', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (2, 'PROT_ACC_12', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (3, 'PROT_ACC_2', 2);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (4, 'PROT_ACC_3', 3);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (5, 'PROT_ACC_4', 4);
 
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.35.0-beta');
@@ -105,9 +112,13 @@ INSERT INTO identification_file (id, file_type, content, file_name, file_path, l
 
 -- insert a test peptide
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 
--- insert a test peptide has mod
+-- insert a test peptide has modiciation
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);
 
 -- insert a test peptide has protein
 INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (1, 0.1, 0.9, NULL, 1, 1);
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (2, 0.1, 0.9, TRUE, 2, 2);
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (3, 0.1, 0.9, FALSE, 2, 3);
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (4, 0.1, 0.9, FALSE, 2, 4);
