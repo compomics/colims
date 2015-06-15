@@ -43,7 +43,7 @@ public class MzIdentMLExporter {
     /**
      * The json file that contains the MzIdentML controlled vocabulary terms.
      */
-    private static final String DATA_FILE = "/config/mzidentml.json";   // TODO: a better name
+    private static final String DATA_FILE = "config/mzidentml.json";   // TODO: a better name
 
     // TODO: are these only filled in on production build?
     @Value("${mzidentml.version}")
