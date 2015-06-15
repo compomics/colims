@@ -2,23 +2,21 @@ package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.enums.QuantificationWeight;
 import com.compomics.util.experiment.identification.PeptideAssumption;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -79,13 +77,5 @@ public class MaxQuantEvidenceParserTest {
         // check the damned urparam
         assertThat(matchScore.getProbability(), is(106.2));
         assertThat(matchScore.getPostErrorProbability(), is(-1.0));
-    }
-
-    @Test
-    public void testGetPeptidePositions() throws IOException {
-        Map<String, PeptidePosition> peptidePositions = maxQuantEvidenceParser.getPeptidePositions(MaxQuantTestSuite.peptidesFile);
-
-        assertThat(peptidePositions.size(), not(0));
-        assertTrue(peptidePositions.entrySet().iterator().next().getValue().getStartPosition() < peptidePositions.entrySet().iterator().next().getValue().getEndPosition());
     }
 }
