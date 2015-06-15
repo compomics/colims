@@ -19,7 +19,6 @@ import java.io.IOException;
 /**
  * @author Iain
  */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
