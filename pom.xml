@@ -508,42 +508,11 @@
                             </excludes>
                             <argLine>${argLine}</argLine>
                         </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.surefire</groupId>
-                                <artifactId>surefire-junit47</artifactId>
-                                <version>2.18.1</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
-                    <!--<plugin>-->
-                    <!--<groupId>org.jacoco</groupId>-->
-                    <!--<artifactId>jacoco-maven-plugin</artifactId>-->
-                    <!--<configuration>-->
-                    <!--<dataFile>${sonar.jacoco.reportPath}</dataFile>-->
-                    <!--<destFile>${sonar.jacoco.reportPath}</destFile>-->
-                    <!--</configuration>-->
-                    <!--<executions>-->
-                    <!--<execution>-->
-                    <!--<phase>generate-test-resources</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>prepare-agent</goal>-->
-                    <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                    <!--<id>report</id>-->
-                    <!--<phase>package</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>report</goal>-->
-                    <!--</goals>-->
-                    <!--</execution>-->
-                    <!--</executions>-->
-                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
         <profile>
-            <!-- Only run Integration Tests with Code Coverage -->
             <id>int-tests</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -551,27 +520,8 @@
             <properties>
                 <property_file.source>classpath</property_file.source>
             </properties>
-            <!--<dependencies>-->
-            <!--<dependency>-->
-            <!--<groupId>org.jboss.arquillian.extension</groupId>-->
-            <!--<artifactId>arquillian-jacoco</artifactId>-->
-            <!--<version>1.0.0.Alpha8</version>-->
-            <!--<scope>test</scope>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.jacoco</groupId>-->
-            <!--<artifactId>org.jacoco.core</artifactId>-->
-            <!--<version>0.7.4.201502262128</version>-->
-            <!--<scope>test</scope>-->
-            <!--</dependency>-->
-            <!--</dependencies>-->
             <build>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
@@ -607,29 +557,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--<plugin>-->
-                    <!--<groupId>org.jacoco</groupId>-->
-                    <!--<artifactId>jacoco-maven-plugin</artifactId>-->
-                    <!--<configuration>-->
-                    <!--<dataFile>${sonar.jacoco.itReportPath}</dataFile>-->
-                    <!--<destFile>${sonar.jacoco.itReportPath}</destFile>-->
-                    <!--</configuration>-->
-                    <!--<executions>-->
-                    <!--<execution>-->
-                    <!--<phase>generate-test-resources</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>prepare-agent</goal>-->
-                    <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                    <!--<id>report</id>-->
-                    <!--<phase>prepare-package</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>report</goal>-->
-                    <!--</goals>-->
-                    <!--</execution>-->
-                    <!--</executions>-->
-                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
