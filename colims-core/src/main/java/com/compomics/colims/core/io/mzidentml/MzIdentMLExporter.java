@@ -448,8 +448,6 @@ public class MzIdentMLExporter {
 
                 for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
                     DBSequence dbSequence = createDBSequence(peptideHasProtein);
-                    //set protein accession
-                    dbSequence.setAccession(peptideHasProtein.getProteinAccession());
 
                     sequenceCollection.getDBSequence().add(dbSequence);
 
