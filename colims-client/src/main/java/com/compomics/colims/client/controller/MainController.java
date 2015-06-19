@@ -86,6 +86,8 @@ public class MainController implements Controllable, ActionListener {
     private InstrumentManagementController instrumentManagementController;
     @Autowired
     private MaterialManagementController materialManagementController;
+    @Autowired
+    private ProteinOverviewController proteinOverviewController;
     //services
     @Autowired
     private UserService userService;
@@ -162,6 +164,7 @@ public class MainController implements Controllable, ActionListener {
         projectOverviewController.init();
         taskManagementController.init();
         cvParamManagementController.init();
+        proteinOverviewController.init();
 
         //add panel components
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -172,6 +175,7 @@ public class MainController implements Controllable, ActionListener {
         mainFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         mainFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
         mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
+        mainFrame.getProteinsParentPanel().add(proteinOverviewController.getProteinOverviewPanel(), gridBagConstraints);
 
         //add action listeners
         //add menu item action listener
