@@ -1,22 +1,28 @@
 package com.compomics.colims.core.playground;
 
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
+import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.biology.PTMFactory;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.xmlpull.v1.XmlPullParserException;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +30,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.xmlpull.v1.XmlPullParserException;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 /**
  * @author Niels Hulstaert
