@@ -14,7 +14,6 @@ import uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware;
 import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -41,11 +40,11 @@ public class MzIdentMLExporterTest {
     public void testExport() throws IOException {
         AnalyticalRun run = repository.findById(1L);
         String export = exporter.export(run);
-        System.out.println(export);
-
-        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
-        testFileWriter.write(export);
-        testFileWriter.close();
+//        System.out.println(export);
+//
+//        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
+//        testFileWriter.write(export);
+//        testFileWriter.close();
 
         Assert.assertFalse(export.isEmpty());
     }
