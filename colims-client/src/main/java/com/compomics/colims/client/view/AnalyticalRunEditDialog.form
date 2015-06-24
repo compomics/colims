@@ -52,18 +52,22 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="nameLabel" max="32767" attributes="0"/>
-                              <Component id="instrumentLabel" max="32767" attributes="0"/>
-                              <Component id="labelLabel" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="nameLabel" max="32767" attributes="0"/>
+                                  <Component id="instrumentLabel" max="32767" attributes="0"/>
+                                  <Component id="labelLabel" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="locationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="dateTimePicker" pref="389" max="32767" attributes="0"/>
                               <Component id="nameTextField" max="32767" attributes="0"/>
                               <Component id="instrumentComboBox" max="32767" attributes="0"/>
+                              <Component id="storageLocationTextField" alignment="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -89,7 +93,12 @@
                       <Component id="instrumentLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="instrumentComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="locationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="storageLocationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="updateButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -167,6 +176,13 @@
               <Dimension value="[104, 27]"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="locationLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Location"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="storageLocationTextField">
         </Component>
       </SubComponents>
     </Container>

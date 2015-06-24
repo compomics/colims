@@ -142,6 +142,8 @@ public class AnalyticalRunEditController implements Controllable {
         //set the selected item in the instrument combobox
         analyticalRunEditDialog.getInstrumentComboBox().getModel().setSelectedItem(analyticalRunToEdit.getInstrument());
 
+        analyticalRunEditDialog.getStorageLocationTextField().setText(analyticalRunToEdit.getStorageLocation());
+
         showView();
     }
 
@@ -168,6 +170,7 @@ public class AnalyticalRunEditController implements Controllable {
         if (analyticalRunEditDialog.getInstrumentComboBox().getSelectedIndex() != -1) {
             analyticalRunToEdit.setInstrument(instrumentBindingList.get(analyticalRunEditDialog.getInstrumentComboBox().getSelectedIndex()));
         }
+        analyticalRunToEdit.setStorageLocation(analyticalRunEditDialog.getStorageLocationTextField().getText());
     }
 
 }

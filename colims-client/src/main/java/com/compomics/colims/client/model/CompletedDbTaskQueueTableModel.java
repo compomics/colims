@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import org.joda.time.Duration;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 /**
  *
@@ -20,10 +23,17 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
+    private static final PeriodFormatter PERIOD_FORMAT = new PeriodFormatterBuilder()
+            .printZeroAlways()
+            .minimumPrintedDigits(2)
+            .appendMinutes()
+            .appendSeparator(":")
+            .appendSeconds()
+            .toFormatter();
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
-    private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "start", "duration"};
-    public static final int QUEUE_INDEX = 0;    
+    private final String[] columnNames = {"index", "ID", "type", "submitted on", "description", "user", "start", "duration"};
+    public static final int QUEUE_INDEX = 0;
     public static final int ID = 1;
     public static final int TYPE_INDEX = 2;
     public static final int SUBMITTED_INDEX = 3;
@@ -67,7 +77,7 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
      */
     public void removeAll() {
         messages.clear();
-        this.fireTableDataChanged();        
+        this.fireTableDataChanged();
     }
 
     @Override
@@ -115,11 +125,10 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
                 return new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date(completedDbTask.getStartedTimestamp()));
             case DURATION_INDEX:
                 Duration duration = new Duration(completedDbTask.getStartedTimestamp(), completedDbTask.getEndedTimestamp());
-                return duration.toStandardMinutes().toString();
-//                return TIME_FORMAT.format(new Date(completedDbTask.getEndedTimestamp() - completedDbTask.getStartedTimestamp()));
+                return PERIOD_FORMAT.print(duration.toPeriod());
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }
-                
+
     }
 }
