@@ -8,18 +8,13 @@ import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
-
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Davy
@@ -36,7 +31,7 @@ public class MaxQuantParameterParser {
     public void parse(File quantFolder) throws IOException, HeaderEnumNotInitialisedException {
         SearchParameters experimentParams = parseExperiment(quantFolder);
 
-        parseRuns(quantFolder, experimentParams);
+        runParameters = parseRuns(quantFolder, experimentParams);
     }
 
     public SearchParameters parseExperiment(File quantFolder) throws IOException, HeaderEnumNotInitialisedException {
@@ -68,7 +63,53 @@ public class MaxQuantParameterParser {
         return experimentParams;
     }
 
-    public Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException, HeaderEnumNotInitialisedException {
+    /**
+     * Get the version of MaxQuant used for the experiment
+     *
+     * @return Version number
+     */
+    public String getMaxQuantVersion() {
+        return version;
+    }
+
+    public String getMultiplicity() {
+        return multiplicity;
+    }
+
+    public Map<String, SearchParameters> getRunParameters() {
+        return Collections.unmodifiableMap(runParameters);
+    }
+
+    public void clear() {
+        runParameters.clear();
+        version = null;
+        multiplicity = null;
+    }
+
+    public Map<String, String> parseParameters(File parameterFile) throws IOException {
+        Map<String, String> parameters = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(parameterFile);
+             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+             LineNumberReader reader = new LineNumberReader(isr)) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] split = line.split("\t");
+
+                if (split.length == 2) {
+                    parameters.put(split[0].toLowerCase(Locale.US), split[1]);
+                } else {
+                    parameters.put(split[0].toLowerCase(Locale.US), "");
+                }
+            }
+        }
+
+        return parameters;
+    }
+
+    private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException, HeaderEnumNotInitialisedException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
         Map<String, String> row;
 
@@ -121,52 +162,6 @@ public class MaxQuantParameterParser {
         }
 
         return runParameters;
-    }
-
-    /**
-     * Get the version of MaxQuant used for the experiment
-     *
-     * @return Version number
-     */
-    public String getMaxQuantVersion() {
-        return version;
-    }
-
-    public String getMultiplicity() {
-        return multiplicity;
-    }
-
-    public Map<String, SearchParameters> getRunParameters() {
-        return Collections.unmodifiableMap(runParameters);
-    }
-
-    public void clear() {
-        runParameters.clear();
-        version = null;
-        multiplicity = null;
-    }
-
-    public Map<String, String> parseParameters(File parameterFile) throws IOException {
-        Map<String, String> parameters = new HashMap<>();
-
-        try (FileInputStream fis = new FileInputStream(parameterFile);
-             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-             LineNumberReader reader = new LineNumberReader(isr)) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] split = line.split("\t");
-
-                if (split.length == 2) {
-                    parameters.put(split[0].toLowerCase(Locale.US), split[1]);
-                } else {
-                    parameters.put(split[0].toLowerCase(Locale.US), "");
-                }
-            }
-        }
-
-        return parameters;
     }
 
     //naive copying of the data we fetched from the global parameters file
