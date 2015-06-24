@@ -18,7 +18,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public class BinaryFile extends AuditableDatabaseEntity {
-
+    
     private static final long serialVersionUID = -5581612780987474005L;
 
     /**

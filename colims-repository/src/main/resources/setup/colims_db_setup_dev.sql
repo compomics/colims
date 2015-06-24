@@ -6,6 +6,7 @@
         user_name varchar(255) not null,
         name varchar(100) not null,
         start_date datetime,
+        storage_location varchar(255),
         l_instrument_id bigint,
         l_sample_id bigint,
         primary key (id)
@@ -174,13 +175,9 @@
     create table colims.peptide (
         id bigint not null auto_increment,
         charge integer,
-        end integer,
-        post_aa varchar(1),
-        pre_aa varchar(1),
         psm_post_error_prob double precision,
         psm_prob double precision,
         peptide_sequence varchar(255) not null,
-        start integer,
         theoretical_mass double precision,
         l_identification_file_id bigint,
         l_spectrum_id bigint,

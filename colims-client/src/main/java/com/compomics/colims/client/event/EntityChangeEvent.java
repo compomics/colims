@@ -10,7 +10,7 @@ public abstract class EntityChangeEvent {
     /**
      *
      */
-    public static enum Type {
+    public enum Type {
 
         /**
          * Created entity event.

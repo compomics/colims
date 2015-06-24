@@ -2,28 +2,45 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-
-import java.util.*;
-
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
  * @author Davy
  */
 @Component("maxQuantAnalyticalRun")
 public class MaxQuantAnalyticalRun {
 
+    /**
+     * The MaxQuant directory.
+     */
+    private File maxQuantDirectory;
+    /**
+     * The analytical run name.
+     */
     private String analyticalRunName;
     private Map<Integer, MSnSpectrum> spectraFoundInAnalyticalRun = new HashMap<>();
     private SearchParameters runParameters;
 
-    public void addASpectrum(Integer id, MSnSpectrum aSpectrum) {
-        spectraFoundInAnalyticalRun.put(id, aSpectrum);
+    /**
+     * No-arg constructor.
+     */
+    public MaxQuantAnalyticalRun() {
     }
 
-    public Map<Integer, MSnSpectrum> getListOfSpectra() {
-        return Collections.unmodifiableMap(spectraFoundInAnalyticalRun);
+    /**
+     * Constructor.
+     *
+     * @param analyticalRunName the run name
+     * @param maxQuantDirectory the MaxQuant file directory
+     */
+    public MaxQuantAnalyticalRun(String analyticalRunName, File maxQuantDirectory) {
+        this.analyticalRunName = analyticalRunName;
+        this.maxQuantDirectory = maxQuantDirectory;
     }
 
     public void setAnalyticalRunName(String analyticalRunName) {
@@ -34,11 +51,27 @@ public class MaxQuantAnalyticalRun {
         return analyticalRunName;
     }
 
+    public File getMaxQuantDirectory() {
+        return maxQuantDirectory;
+    }
+
+    public void setMaxQuantDirectory(File maxQuantDirectory) {
+        this.maxQuantDirectory = maxQuantDirectory;
+    }
+
     public SearchParameters getParametersForRun() {
         return runParameters;
     }
 
     public void setParametersForRun(SearchParameters parametersForRun) {
         this.runParameters = parametersForRun;
+    }
+
+    public void addASpectrum(Integer id, MSnSpectrum aSpectrum) {
+        spectraFoundInAnalyticalRun.put(id, aSpectrum);
+    }
+
+    public Map<Integer, MSnSpectrum> getListOfSpectra() {
+        return Collections.unmodifiableMap(spectraFoundInAnalyticalRun);
     }
 }

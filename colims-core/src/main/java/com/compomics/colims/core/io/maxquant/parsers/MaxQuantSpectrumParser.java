@@ -1,60 +1,51 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-
-import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantMSMSHeaders;
+import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
 import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.enums.FragmentationType;
-import com.compomics.util.experiment.massspectrometry.Charge;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.Peak;
-import com.compomics.util.experiment.massspectrometry.Precursor;
-import com.compomics.util.experiment.massspectrometry.Spectrum;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import com.compomics.util.experiment.massspectrometry.*;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum}
- * instances.
- *
- * This class uses the {@link TabularFileLineValuesIterator} to actually parse
- * the files into Map<String,String> records.
+ * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum} instances.
+ * <p/>
+ * This class uses the {@link TabularFileLineValuesIterator} to actually parse the files into Map<String,String>
+ * records.
  */
 @Component("maxQuantSpectrumParser")
 public class MaxQuantSpectrumParser {
     /**
-     * parses a max quant msms text file without adding a peaklist to each
-     * spectrum
+     * parses a max quant msms text file without adding a peaklist to each spectrum
      *
      * @param msmsFile the file to parse
      * @return a map with key: spectrumid and value the corresponding spectrum
      * @throws IOException
-     * @throws com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException if a header was requested that
-     * was not defined
+     * @throws com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException if a header was requested
+     *                                                                                         that was not defined
      */
     public Map<Integer, MSnSpectrum> parse(final File msmsFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         return parse(msmsFile, false);
     }
 
     /**
-     * Parse the argument msms.txt file, and link all {@link Spectrum} instances
-     * and {@link Quantification}s found within to the argument
-     * {@link QuantificationGroup}.
+     * Parse the argument msms.txt file, and link all {@link Spectrum} instances and {@link Quantification}s found
+     * within to the argument {@link QuantificationGroup}.
      *
      * @param msmsFile
-     * @boolean addPeakList if a peaklist should be added to the spectra, should
-     * a peak list be requested and none could be built, an empty peaklist is
-     * added
      * @throws IOException
+     * @boolean addPeakList if a peaklist should be added to the spectra, should a peak list be requested and none could
+     * be built, an empty peaklist is added
      */
     public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
         Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
@@ -79,13 +70,13 @@ public class MaxQuantSpectrumParser {
 
     /**
      * Parse the fragmentations in an MSMS file
+     *
      * @param msmsFile File pointer
      * @return Map of ids and fragmentation types
-     * @throws IOException
-     * @throws UnparseableException
+     * @throws IOException                       thrown in case of an I/O related problem
      * @throws HeaderEnumNotInitialisedException
      */
-    public Map<Integer, FragmentationType> parseFragmentations(final File msmsFile) throws IOException, UnparseableException, HeaderEnumNotInitialisedException {
+    public Map<Integer, FragmentationType> parseFragmentations(final File msmsFile) throws IOException, HeaderEnumNotInitialisedException {
         Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, MaxQuantMSMSHeaders.values());
@@ -103,9 +94,10 @@ public class MaxQuantSpectrumParser {
     }
 
     /**
-     * Creates a unique (consecutive) identifier for each row in the msms table, which is used to cross-link the information in this file with
-     * the information stored in the other files.
-     * @param values List of values from the data file
+     * Creates a unique (consecutive) identifier for each row in the msms table, which is used to cross-link the
+     * information in this file with the information stored in the other files.
+     *
+     * @param values      List of values from the data file
      * @param addPeakList Whether peak list should be parsed and included in spectrum
      * @return Spectrum object
      * @throws HeaderEnumNotInitialisedException
@@ -142,9 +134,9 @@ public class MaxQuantSpectrumParser {
         HashMap<Double, Peak> peakList = new HashMap<>();
 
         if (addPeakList
-            && values.containsKey(MaxQuantMSMSHeaders.MATCHES.getColumnName())
-            && values.containsKey(MaxQuantMSMSHeaders.INTENSITIES.getColumnName())
-            && values.containsKey(MaxQuantMSMSHeaders.MASSES.getColumnName())) {
+                && values.containsKey(MaxQuantMSMSHeaders.MATCHES.getColumnName())
+                && values.containsKey(MaxQuantMSMSHeaders.INTENSITIES.getColumnName())
+                && values.containsKey(MaxQuantMSMSHeaders.MASSES.getColumnName())) {
             peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getColumnName()), values.get(MaxQuantMSMSHeaders.INTENSITIES.getColumnName()), values.get(MaxQuantMSMSHeaders.MASSES.getColumnName()));
         }
 
@@ -156,9 +148,10 @@ public class MaxQuantSpectrumParser {
 
     /**
      * Parse a series of strings (separated with ;) (not winky face) and create some mad peaks
-     * @param peaks String of peaks
+     *
+     * @param peaks       String of peaks
      * @param intensities String of intensities
-     * @param masses String of masses
+     * @param masses      String of masses
      * @return A map of peaks keyed with m/z
      */
     public HashMap<Double, Peak> parsePeakList(String peaks, String intensities, String masses) throws IllegalArgumentException {

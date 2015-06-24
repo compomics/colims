@@ -135,7 +135,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      *
      * @param maxQuantImport The MaxQuantImport instance
      * @param analyticalRun  the AnalyticalRun instance onto the search settings will be mapped
-     * @return
+     * @return the mapped SearchAndValidationSettings instance
      * @throws IOException                       thrown in case of an I/O related problem
      * @throws HeaderEnumNotInitialisedException thrown in case of an non initialised header exception
      */
@@ -160,7 +160,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      *
      * @param maxQuantImport The MaxQuantImport instance
      * @param analyticalRun  the AnalyticalRun instance onto the quantification settings will be mapped
-     * @return
+     * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */
     private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {

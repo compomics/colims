@@ -1,10 +1,10 @@
 package com.compomics.colims.core.io.peptideshaker;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-
-import org.apache.commons.compress.archivers.ArchiveException;
 
 /**
  * This interface defines PeptideShaker import methods.
@@ -20,7 +20,6 @@ public interface PeptideShakerIO {
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
      * @return the PeptideShaker import object
      * @throws IOException            thrown in case of an IO related problem
-     * @throws ArchiveException       thrown in case of an archive related problem
      * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
      * @throws java.sql.SQLException  thrown in case of a database access error
      * @throws InterruptedException   thrown in case a thread is interrupted

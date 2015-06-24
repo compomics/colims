@@ -59,7 +59,7 @@ public class ColimsSpectrumMapperTest {
         spectrum.setSpectrumFiles(spectrumFileList);
         spectrum.setScanNumber("12");
         spectrum.setScanTime(11231.1);
-        spectrum.setPeptides(new ArrayList<Peptide>());
+        spectrum.setPeptides(new ArrayList<>());
 
         MSnSpectrum targetSpectrum = new MSnSpectrum();
         colimsSpectrumMapper.map(spectrum, targetSpectrum);

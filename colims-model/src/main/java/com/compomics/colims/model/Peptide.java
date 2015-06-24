@@ -167,7 +167,7 @@ public class Peptide extends DatabaseEntity {
     /**
      * Get the peptide sequence length.
      *
-     * @return
+     * @return the sequence length
      */
     public int getLength() {
         return sequence.length();

@@ -70,7 +70,7 @@ public enum MaxQuantParameterHeaders implements HeaderEnum {
 
     String[] columnNames;
 
-    private MaxQuantParameterHeaders(final String[] fieldnames) {
+    MaxQuantParameterHeaders(final String[] fieldnames) {
         this.columnNames = fieldnames;
     }
 

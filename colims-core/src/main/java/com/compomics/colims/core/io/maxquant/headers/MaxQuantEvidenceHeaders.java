@@ -79,7 +79,12 @@ public enum MaxQuantEvidenceHeaders implements HeaderEnum {
 
     String[] columnNames;
 
-    private MaxQuantEvidenceHeaders(final String[] fieldnames) {
+    /**
+     * Private constructor.
+     *
+     * @param fieldnames the array of field names.
+     */
+    MaxQuantEvidenceHeaders(final String[] fieldnames) {
         this.columnNames = fieldnames;
     }
 

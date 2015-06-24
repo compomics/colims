@@ -56,7 +56,7 @@ public enum MaxQuantSummaryHeaders implements HeaderEnum {
 
     String[] columnNames;
 
-    private MaxQuantSummaryHeaders(final String[] fieldnames) {
+    MaxQuantSummaryHeaders(final String[] fieldnames) {
         this.columnNames = fieldnames;
     }
 

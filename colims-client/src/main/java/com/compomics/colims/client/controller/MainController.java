@@ -281,17 +281,6 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * In case of an unexpected error, show error dialog with the error message.
-     *
-     * @param message the error message
-     */
-    public void showUnexpectedErrorDialog(final String message) {
-        showMessageDialog("Unexpected error", "An unexpected error occured: "
-                + System.lineSeparator() + message
-                + System.lineSeparator() + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
-    }
-
-    /**
      * In case of a permission error, show permission error dialog with the
      * error message.
      *
@@ -341,6 +330,17 @@ public class MainController implements Controllable, ActionListener {
     public String getSelectedTabTitle() {
         JTabbedPane mainTabbedPane = mainFrame.getMainTabbedPane();
         return mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex());
+    }
+
+    /**
+     * In case of an unexpected error, show error dialog with the error message.
+     *
+     * @param message the error message
+     */
+    private void showUnexpectedErrorDialog(final String message) {
+        showMessageDialog("Unexpected error", "An unexpected error occured: "
+                + System.lineSeparator() + message
+                + System.lineSeparator() + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
 
     /**

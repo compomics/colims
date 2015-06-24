@@ -302,10 +302,6 @@ public class TaskManagementController implements Controllable {
             taskManagementPanel.getTaskQueueTable().getSelectionModel().clearSelection();
             taskManagementPanel.getCompletedTaskQueueTable().getSelectionModel().clearSelection();
             taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().clearSelection();
-
-//            storageMonitoringDialog.getStorageQueueTable().updateUI();
-//            storageMonitoringDialog.getStoredQueueTable().updateUI();
-//            storageMonitoringDialog.getErrorQueueTable().updateUI();
         } catch (UncategorizedJmsException ex) {
             LOGGER.error(ex.getMessage(), ex);
             postConnectionErrorMessage(ex.getMessage());

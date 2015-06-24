@@ -130,7 +130,7 @@ public class UtilitiesPsmMapper {
             List<ProteinMatch> proteinMatches = new ArrayList<>();
 
             ProteinMatch proteinMatch;
-            List<String> possibleProteins = new ArrayList();
+            List<String> possibleProteins = new ArrayList<>();
             for (String parentProtein : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
                 ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
                 if (parentProteins != null) {

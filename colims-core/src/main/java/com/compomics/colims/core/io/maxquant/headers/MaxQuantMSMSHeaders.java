@@ -64,7 +64,12 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
 
     String[] columnNames;
 
-    private MaxQuantMSMSHeaders(final String[] fieldnames) {
+    /**
+     * Private constructor.
+     *
+     * @param fieldnames the array of field names
+     */
+    MaxQuantMSMSHeaders(final String[] fieldnames) {
         this.columnNames = fieldnames;
     }
 
@@ -74,10 +79,14 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
     }
 
     @Override
-    public void setColumnReference(int columnReference) {}
+    public void setColumnReference(int columnReference) {
+    }
 
     @Override
     public String getColumnName() throws HeaderEnumNotInitialisedException {
+        if (columnNames.length < 1) {
+            throw new HeaderEnumNotInitialisedException("Headers have not been initialised.");
+        }
         return columnNames[0].toLowerCase(Locale.US);
     }
 }

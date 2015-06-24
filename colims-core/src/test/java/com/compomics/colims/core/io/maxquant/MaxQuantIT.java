@@ -9,11 +9,8 @@ import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilities
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -28,7 +25,7 @@ import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import java.io.File;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,7 +36,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

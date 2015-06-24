@@ -19,7 +19,7 @@ public enum DefaultRole {
      *
      * @param dbEntry the entry in the database
      */
-    private DefaultRole(final String dbEntry) {
+    DefaultRole(final String dbEntry) {
         this.dbEntry = dbEntry;
     }
 

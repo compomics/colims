@@ -88,6 +88,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
         try {
             AnalyticalRun analyticalRun = new AnalyticalRun();
+            //set the path of the .cps archive
+            analyticalRun.setStorageLocation(dataImport.getPeptideShakerCpsArchive().getCanonicalPath());
 
             //first, map the search settings
             //get the CpsParent instance for accessing the .cps file

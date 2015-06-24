@@ -27,7 +27,7 @@ public enum MzTabMode {
      *
      * @param mzTabName the enum name as shown in the GUI and in the mzTab file.
      */
-    private MzTabMode(String mzTabName) {
+    MzTabMode(String mzTabName) {
         this.mzTabName = mzTabName;
     }
 

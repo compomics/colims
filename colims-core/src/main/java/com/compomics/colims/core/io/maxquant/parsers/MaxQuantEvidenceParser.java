@@ -9,7 +9,6 @@ import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
 import com.compomics.colims.core.io.maxquant.urparams.MaxQuantPtmScoring;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
-import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.QuantificationGroup;
 import com.compomics.colims.model.enums.QuantificationWeight;
@@ -39,7 +38,7 @@ public class MaxQuantEvidenceParser {
     public Map<Integer, PeptideAssumption> peptideAssumptions = new HashMap<>();
 
     /**
-     * Iterable intensity headers, based on number of labels chosen
+     * Iterable intensity headers, based on number of labels chosen.
      */
     public static final Map<Integer, String[]> intensityHeaders = new HashMap<>();
 
@@ -50,7 +49,7 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * As above but quantification weights
+     * As above but quantification weights.
      */
     public static final Map<Integer, QuantificationWeight[]> weightOptions = new HashMap<>();
 
@@ -61,14 +60,13 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Parse an evidence file for peptides and quantifications, also create groups for these
+     * Parse an evidence file for peptides and quantifications, also create groups for these.
      *
      * @param quantFolder Evidence text file from MQ output
      * @throws IOException
      */
     public void parse(final File quantFolder, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT));
-        Map<String, PeptidePosition> peptidePositions = getPeptidePositions(new File(quantFolder, PEPTIDETXT));
 
         Map<String, String> values;
         int intensityCount;
@@ -135,7 +133,7 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Parse an intensity value from a string to a double
+     * Parse an intensity value from a string to a double.
      *
      * @param intensityStr Intensity in string form
      * @return Intensity in double form
@@ -151,7 +149,7 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Create a peptide assumption from a map of values
+     * Create a peptide assumption from a map of values.
      *
      * @param values Map of headers and values
      * @return A fresh peptide
@@ -191,7 +189,7 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Extract modifications from a given value set and link them to relevant peptides
+     * Extract modifications from a given value set and link them to relevant peptides.
      *
      * @param values Map of headers and values
      * @return A list of matches
@@ -284,43 +282,8 @@ public class MaxQuantEvidenceParser {
         return modificationsForPeptide;
     }
 
-    public Map<String, PeptidePosition> getPeptidePositions(File peptideFile) throws IOException {
-        Map<String, PeptidePosition> positions = new HashMap<>();
-
-        TabularFileLineValuesIterator peptideIterator = new TabularFileLineValuesIterator(peptideFile);
-
-        Map<String, String> values;
-
-        while (peptideIterator.hasNext()) {
-            values = peptideIterator.next();
-
-//            PeptidePosition position = new PeptidePosition();
-//            position.setPreeAA(values.get("amino acid before"));
-//            position.setPostAA(values.get("amino acid after"));
-//
-//            if (values.get("start position").isEmpty() || values.get("start position") == null) {
-//                position.setStart(0);
-//            } else {
-//                position.setStart(Integer.parseInt(values.get("start position")));
-//            }
-//
-//            if (values.get("end position").isEmpty() || values.get("end position") == null) {
-//                position.setEnd(0);
-//            } else {
-//                position.setEnd(Integer.parseInt(values.get("end position")));
-//            }
-//
-//            // split msms ids
-//            for (String msmsId : values.get("ms/ms ids").split(";")) {
-//                positions.put(msmsId, position);
-//            }
-        }
-
-        return positions;
-    }
-
     /**
-     * Clear run data from parser
+     * Clear run data from parser.
      */
     public void clear() {
         peptideAssumptions.clear();

@@ -1,18 +1,19 @@
 package com.compomics.colims.client.compoment;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @param <T> the object class that is used in a DualList instance.
@@ -94,11 +95,7 @@ public class DualList<T> extends javax.swing.JPanel {
      * @return the added items list
      */
     public List<T> getAddedItems() {
-        List<T> addedItems = new ArrayList<>();
-        for (T addedItem : addedItemBindingList) {
-            addedItems.add(addedItem);
-        }
-
+        List<T> addedItems = addedItemBindingList.stream().collect(Collectors.toList());
         return addedItems;
     }
 
@@ -124,11 +121,11 @@ public class DualList<T> extends javax.swing.JPanel {
         //init bindings
         bindingGroup = new BindingGroup();
 
-        availableItemBindingList = ObservableCollections.observableList(new ArrayList());
+        availableItemBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding availableItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, availableItemBindingList, availableItemList);
         bindingGroup.addBinding(availableItemBinding);
 
-        addedItemBindingList = ObservableCollections.observableList(new ArrayList());
+        addedItemBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding addedItemBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, addedItemBindingList, addedItemList);
         bindingGroup.addBinding(addedItemBinding);
 
@@ -140,10 +137,9 @@ public class DualList<T> extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent ae) {
                 List<T> oldAddedItems = getAddedItems();
 
-                List selectedItems = availableItemList.getSelectedValuesList();
+                List<T> selectedItems = availableItemList.getSelectedValuesList();
                 if (!selectedItems.isEmpty()) {
-                    for (Object selectedObject : selectedItems) {
-                        T selectedItem = (T) selectedObject;
+                    for (T selectedItem : selectedItems) {
                         //add to addedItemBindingList
                         addedItemBindingList.add(selectedItem);
                         //remove from availableItemBindingList
@@ -167,10 +163,9 @@ public class DualList<T> extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent ae) {
                 List<T> oldAddedItems = getAddedItems();
 
-                List selectedItems = addedItemList.getSelectedValuesList();
+                List<T> selectedItems = addedItemList.getSelectedValuesList();
                 if (!selectedItems.isEmpty()) {
-                    for (Object selectedObject : selectedItems) {
-                        T selectedItem = (T) selectedObject;
+                    for (T selectedItem : selectedItems) {
                         //add to availableItemBindingList and sort
                         availableItemBindingList.add(selectedItem);
                         //remove from addedItemBindingList
@@ -228,9 +223,9 @@ public class DualList<T> extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         availableScrollPane = new javax.swing.JScrollPane();
-        availableItemList = new javax.swing.JList();
+        availableItemList = new javax.swing.JList<T>();
         addedScrollPane = new javax.swing.JScrollPane();
-        addedItemList = new javax.swing.JList();
+        addedItemList = new javax.swing.JList<T>();
         buttonParentPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         addItemButton = new javax.swing.JButton();
@@ -239,12 +234,10 @@ public class DualList<T> extends javax.swing.JPanel {
         setOpaque(false);
 
         availableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Available"));
-        availableScrollPane.setOpaque(false);
 
         availableScrollPane.setViewportView(availableItemList);
 
         addedScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Added"));
-        addedScrollPane.setOpaque(false);
 
         addedScrollPane.setViewportView(addedItemList);
 
@@ -311,9 +304,9 @@ public class DualList<T> extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemButton;
-    private javax.swing.JList addedItemList;
+    private javax.swing.JList<T> addedItemList;
     private javax.swing.JScrollPane addedScrollPane;
-    private javax.swing.JList availableItemList;
+    private javax.swing.JList<T> availableItemList;
     private javax.swing.JScrollPane availableScrollPane;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel buttonParentPanel;

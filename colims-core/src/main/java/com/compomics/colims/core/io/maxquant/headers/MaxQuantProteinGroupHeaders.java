@@ -18,7 +18,7 @@ public enum  MaxQuantProteinGroupHeaders implements HeaderEnum {
 
     protected final String[] columnNames;
 
-    private MaxQuantProteinGroupHeaders(final String[] fieldnames) {
+    MaxQuantProteinGroupHeaders(final String[] fieldnames) {
         columnNames = fieldnames;
     }
 

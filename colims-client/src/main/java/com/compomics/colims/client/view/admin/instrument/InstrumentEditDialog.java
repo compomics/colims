@@ -74,7 +74,7 @@ public class InstrumentEditDialog extends javax.swing.JDialog {
         cvParamsPanel = new javax.swing.JPanel();
         cvParamSummaryScrollPane = new javax.swing.JScrollPane();
         cvParamSummaryList = new javax.swing.JList();
-        cvParamDualList = new com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.InstrumentCvParam>();
+        cvParamDualList = new com.compomics.colims.client.compoment.DualList<>();
         instrumentCvParamsCrudButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);

@@ -12,7 +12,7 @@ public enum MaxQuantModificationHeaders implements HeaderEnum {
 
     String[] columnNames;
 
-    private MaxQuantModificationHeaders(final String[] fieldnames) {
+    MaxQuantModificationHeaders(final String[] fieldnames) {
         this.columnNames = fieldnames;
     }
 
