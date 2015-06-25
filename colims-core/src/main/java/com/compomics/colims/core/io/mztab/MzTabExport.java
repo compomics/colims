@@ -3,11 +3,13 @@ package com.compomics.colims.core.io.mztab;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Sample;
 
 import java.util.List;
 
 /**
- * This wrapper class contains all necessary information (provided by the user) to write and export an mzTab file.
+ * This wrapper class contains all necessary information (provided by the user)
+ * to write and export an mzTab file.
  * <p/>
  * Created by niels on 6/03/15.
  */
@@ -26,9 +28,13 @@ public class MzTabExport {
      */
     private MzTabType mzTabType;
     /**
-     * The analytical runs to export.
+     * The description String.
      */
-    private List<AnalyticalRun> analyticalRuns;
+    private String description;
+    /**
+     * The samples to export.
+     */
+    private List<Sample> samples;
 
     public String getTitle() {
         return title;
@@ -54,11 +60,19 @@ public class MzTabExport {
         this.mzTabType = mzTabType;
     }
 
-    public List<AnalyticalRun> getAnalyticalRuns() {
-        return analyticalRuns;
+    public String getDescription() {
+        return description;
     }
 
-    public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
-        this.analyticalRuns = analyticalRuns;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Sample> getSamples() {
+        return samples;
+    }
+
+    public void setSamples(List<Sample> samples) {
+        this.samples = samples;
     }
 }

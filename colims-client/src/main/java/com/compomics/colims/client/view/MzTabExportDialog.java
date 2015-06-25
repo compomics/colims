@@ -3,9 +3,11 @@ package com.compomics.colims.client.view;
 import java.awt.Color;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -75,16 +77,12 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return summaryRadioButton;
     }
 
-    public PeptideShakerDataImportPanel getPeptideShakerDataImportPanel() {
-        return peptideShakerDataImportPanel;
+    public JTextArea getDescriptionTextArea() {
+        return descriptionTextArea;
     }
 
-    public MaxQuantDataImportPanel getMaxQuantDataImportPanel() {
-        return maxQuantDataImportPanel;
-    }
-
-    public JPanel getConfirmationPanel() {
-        return confirmationPanel;
+    public JCheckBox getAssayCheckbox() {
+        return assayCheckbox;
     }
 
     /**
@@ -101,20 +99,26 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         modeButtonGroup = new javax.swing.ButtonGroup();
         parentPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
-        typeAndModeSelectionPanel = new javax.swing.JPanel();
+        firstPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
+        typePanel = new javax.swing.JPanel();
+        identificationRadioButton = new javax.swing.JRadioButton();
         typeSelectionLabel = new javax.swing.JLabel();
         quantificationRadioButton = new javax.swing.JRadioButton();
-        identificationRadioButton = new javax.swing.JRadioButton();
-        rightPanel = new javax.swing.JPanel();
-        modeSelectionLabel = new javax.swing.JLabel();
+        modePanel = new javax.swing.JPanel();
         summaryRadioButton = new javax.swing.JRadioButton();
+        modeSelectionLabel = new javax.swing.JLabel();
         completeRadioButton = new javax.swing.JRadioButton();
+        rightPanel = new javax.swing.JPanel();
+        descriptionPanel = new javax.swing.JPanel();
+        descriptionLabel = new javax.swing.JLabel();
+        descriptionScrollPane = new javax.swing.JScrollPane();
+        descriptionTextArea = new javax.swing.JTextArea();
+        assayPanel = new javax.swing.JPanel();
+        assayLabel = new javax.swing.JLabel();
+        assayCheckbox = new javax.swing.JCheckBox();
         separator = new javax.swing.JSeparator();
-        peptideShakerDataImportPanel = new com.compomics.colims.client.view.PeptideShakerDataImportPanel();
-        maxQuantDataImportPanel = new com.compomics.colims.client.view.MaxQuantDataImportPanel();
-        confirmationPanel = new javax.swing.JPanel();
-        confirmationLabel = new javax.swing.JLabel();
+        secondPanel = new javax.swing.JPanel();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -132,43 +136,44 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         topPanel.setPreferredSize(new java.awt.Dimension(400, 285));
         topPanel.setLayout(new java.awt.CardLayout());
 
-        typeAndModeSelectionPanel.setName("typeAndModeSelectionPanel"); // NOI18N
-        typeAndModeSelectionPanel.setOpaque(false);
-        typeAndModeSelectionPanel.setLayout(new java.awt.GridBagLayout());
+        firstPanel.setName("firstPanel"); // NOI18N
+        firstPanel.setOpaque(false);
+        firstPanel.setLayout(new java.awt.GridBagLayout());
 
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(0, 0));
-
-        typeSelectionLabel.setText("Select the mzTab type:");
-
-        typeButtonGroup.add(quantificationRadioButton);
-        quantificationRadioButton.setText("Quantification");
+        leftPanel.setLayout(new java.awt.GridBagLayout());
 
         typeButtonGroup.add(identificationRadioButton);
         identificationRadioButton.setText("Identification");
 
-        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
-        leftPanel.setLayout(leftPanelLayout);
-        leftPanelLayout.setHorizontalGroup(
-            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(leftPanelLayout.createSequentialGroup()
+        typeSelectionLabel.setText("Select the mzTab type*:");
+
+        typeButtonGroup.add(quantificationRadioButton);
+        quantificationRadioButton.setText("Quantification");
+
+        javax.swing.GroupLayout typePanelLayout = new javax.swing.GroupLayout(typePanel);
+        typePanel.setLayout(typePanelLayout);
+        typePanelLayout.setHorizontalGroup(
+            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(identificationRadioButton)
                     .addComponent(quantificationRadioButton)
                     .addComponent(typeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        leftPanelLayout.setVerticalGroup(
-            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(leftPanelLayout.createSequentialGroup()
+        typePanelLayout.setVerticalGroup(
+            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(typeSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(quantificationRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(identificationRadioButton)
-                .addGap(152, 152, 152))
+                .addContainerGap())
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -177,34 +182,31 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        typeAndModeSelectionPanel.add(leftPanel, gridBagConstraints);
-
-        rightPanel.setOpaque(false);
-        rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
-
-        modeSelectionLabel.setText("Select the mzTab mode:");
+        leftPanel.add(typePanel, gridBagConstraints);
 
         modeButtonGroup.add(summaryRadioButton);
         summaryRadioButton.setText("Summary");
 
+        modeSelectionLabel.setText("Select the mzTab mode*:");
+
         modeButtonGroup.add(completeRadioButton);
         completeRadioButton.setText("Complete");
 
-        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
-        rightPanel.setLayout(rightPanelLayout);
-        rightPanelLayout.setHorizontalGroup(
-            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rightPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout modePanelLayout = new javax.swing.GroupLayout(modePanel);
+        modePanel.setLayout(modePanelLayout);
+        modePanelLayout.setHorizontalGroup(
+            modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(modeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(summaryRadioButton)
-                    .addComponent(completeRadioButton)
-                    .addComponent(modeSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                    .addComponent(completeRadioButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        rightPanelLayout.setVerticalGroup(
-            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rightPanelLayout.createSequentialGroup()
+        modePanelLayout.setVerticalGroup(
+            modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(modeSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -215,12 +217,100 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        leftPanel.add(modePanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        firstPanel.add(leftPanel, gridBagConstraints);
+
+        rightPanel.setOpaque(false);
+        rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
+        rightPanel.setLayout(new java.awt.GridBagLayout());
+
+        descriptionLabel.setText("Provide a description*:");
+
+        descriptionTextArea.setColumns(20);
+        descriptionTextArea.setRows(5);
+        descriptionScrollPane.setViewportView(descriptionTextArea);
+
+        javax.swing.GroupLayout descriptionPanelLayout = new javax.swing.GroupLayout(descriptionPanel);
+        descriptionPanel.setLayout(descriptionPanelLayout);
+        descriptionPanelLayout.setHorizontalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(descriptionPanelLayout.createSequentialGroup()
+                        .addComponent(descriptionLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        descriptionPanelLayout.setVerticalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(descriptionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        rightPanel.add(descriptionPanel, gridBagConstraints);
+
+        assayLabel.setText("Include assays:");
+
+        javax.swing.GroupLayout assayPanelLayout = new javax.swing.GroupLayout(assayPanel);
+        assayPanel.setLayout(assayPanelLayout);
+        assayPanelLayout.setHorizontalGroup(
+            assayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(assayPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(assayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(assayLabel)
+                    .addComponent(assayCheckbox))
+                .addContainerGap(411, Short.MAX_VALUE))
+        );
+        assayPanelLayout.setVerticalGroup(
+            assayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(assayPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(assayLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(assayCheckbox)
+                .addContainerGap(51, Short.MAX_VALUE))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        rightPanel.add(assayPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        typeAndModeSelectionPanel.add(rightPanel, gridBagConstraints);
+        firstPanel.add(rightPanel, gridBagConstraints);
 
         separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -228,39 +318,22 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
-        typeAndModeSelectionPanel.add(separator, gridBagConstraints);
+        firstPanel.add(separator, gridBagConstraints);
 
-        topPanel.add(typeAndModeSelectionPanel, "typeAndModeSelectionPanel");
+        topPanel.add(firstPanel, "firstPanel");
 
-        peptideShakerDataImportPanel.setName("peptideShakerDataImportPanel"); // NOI18N
-        topPanel.add(peptideShakerDataImportPanel, "peptideShakerDataImportPanel");
-
-        maxQuantDataImportPanel.setName("maxQuantDataImportPanel"); // NOI18N
-        topPanel.add(maxQuantDataImportPanel, "maxQuantDataImportPanel");
-
-        confirmationPanel.setName("confirmationPanel"); // NOI18N
-        confirmationPanel.setOpaque(false);
-
-        confirmationLabel.setText("The runs were sent successfully to the storage unit. Please go to the \"storage monitoring\" menu to view the storage state.");
-
-        javax.swing.GroupLayout confirmationPanelLayout = new javax.swing.GroupLayout(confirmationPanel);
-        confirmationPanel.setLayout(confirmationPanelLayout);
-        confirmationPanelLayout.setHorizontalGroup(
-            confirmationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(confirmationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(confirmationLabel)
-                .addContainerGap(434, Short.MAX_VALUE))
+        javax.swing.GroupLayout secondPanelLayout = new javax.swing.GroupLayout(secondPanel);
+        secondPanel.setLayout(secondPanelLayout);
+        secondPanelLayout.setHorizontalGroup(
+            secondPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1028, Short.MAX_VALUE)
         );
-        confirmationPanelLayout.setVerticalGroup(
-            confirmationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(confirmationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(confirmationLabel)
-                .addContainerGap(206, Short.MAX_VALUE))
+        secondPanelLayout.setVerticalGroup(
+            secondPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 227, Short.MAX_VALUE)
         );
 
-        topPanel.add(confirmationPanel, "confirmationPanel");
+        topPanel.add(secondPanel, "card3");
 
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);
@@ -357,29 +430,35 @@ public class MzTabExportDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox assayCheckbox;
+    private javax.swing.JLabel assayLabel;
+    private javax.swing.JPanel assayPanel;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JRadioButton completeRadioButton;
-    private javax.swing.JLabel confirmationLabel;
-    private javax.swing.JPanel confirmationPanel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JPanel descriptionPanel;
+    private javax.swing.JScrollPane descriptionScrollPane;
+    private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JButton finishButton;
+    private javax.swing.JPanel firstPanel;
     private javax.swing.JRadioButton identificationRadioButton;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JPanel leftPanel;
-    private com.compomics.colims.client.view.MaxQuantDataImportPanel maxQuantDataImportPanel;
     private javax.swing.ButtonGroup modeButtonGroup;
+    private javax.swing.JPanel modePanel;
     private javax.swing.JLabel modeSelectionLabel;
     private javax.swing.JPanel parentPanel;
-    private com.compomics.colims.client.view.PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     private javax.swing.JButton proceedButton;
     private javax.swing.JRadioButton quantificationRadioButton;
     private javax.swing.JPanel rightPanel;
+    private javax.swing.JPanel secondPanel;
     private javax.swing.JSeparator separator;
     private javax.swing.JRadioButton summaryRadioButton;
     private javax.swing.JPanel topPanel;
-    private javax.swing.JPanel typeAndModeSelectionPanel;
     private javax.swing.ButtonGroup typeButtonGroup;
+    private javax.swing.JPanel typePanel;
     private javax.swing.JLabel typeSelectionLabel;
     // End of variables declaration//GEN-END:variables
 }

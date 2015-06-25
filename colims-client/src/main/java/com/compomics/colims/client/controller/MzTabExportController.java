@@ -6,6 +6,7 @@ import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.MzTabExportDialog;
+import com.compomics.colims.core.io.mztab.MzTabExport;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.core.service.InstrumentService;
@@ -36,15 +37,14 @@ public class MzTabExportController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(MzTabExportController.class);
 
-    private static final String TYPE_AND_MODE_SELECTION_CARD = "typeAndModeSelectionPanel";
+    private static final String FIRST_PANEL = "firstPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
     //model
     private BindingGroup bindingGroup;
-    private MzTabType mzTabType;
-    private MzTabMode mzTabMode;
+    private MzTabExport mzTabExport = new MzTabExport();
     //view
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
@@ -102,7 +102,6 @@ public class MzTabExportController implements Controllable {
         bindingGroup = new BindingGroup();
 
         //bindings go here
-
         bindingGroup.bind();
 
         //add action listeners
@@ -111,9 +110,10 @@ public class MzTabExportController implements Controllable {
             public void actionPerformed(final ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
-                    case TYPE_AND_MODE_SELECTION_CARD:
-                        mzTabType = getSelectedMzTabType();
-                        mzTabMode = getSelectedMzTabMode();
+                    case FIRST_PANEL:
+                        mzTabExport.setMzTabType(getSelectedMzTabType());
+                        mzTabExport.setMzTabMode(getSelectedMzTabMode());
+                        mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
                         break;
                     default:
                         break;
@@ -128,7 +128,7 @@ public class MzTabExportController implements Controllable {
                 switch (currentCardName) {
                     case PS_DATA_IMPORT_CARD:
                     case MAX_QUANT_DATA_IMPORT_CARD:
-                        getCardLayout().show(mzTabExportDialog.getTopPanel(), TYPE_AND_MODE_SELECTION_CARD);
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), FIRST_PANEL);
                         break;
                     default:
                         getCardLayout().previous(mzTabExportDialog.getTopPanel());
@@ -179,7 +179,12 @@ public class MzTabExportController implements Controllable {
 
     @Override
     public void showView() {
+        //show first card
+        getCardLayout().first(mzTabExportDialog.getTopPanel());
+        onCardSwitch();
 
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), mzTabExportDialog);
+        mzTabExportDialog.setVisible(true);
     }
 
     /**
@@ -198,7 +203,7 @@ public class MzTabExportController implements Controllable {
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
         switch (currentCardName) {
-            case TYPE_AND_MODE_SELECTION_CARD:
+            case FIRST_PANEL:
                 mzTabExportDialog.getBackButton().setEnabled(false);
                 mzTabExportDialog.getProceedButton().setEnabled(true);
                 mzTabExportDialog.getFinishButton().setEnabled(false);

@@ -19,7 +19,6 @@ import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.view.ProjectManagementPanel;
-import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -37,6 +36,7 @@ import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -80,14 +80,14 @@ public class ProjectManagementController implements Controllable {
     private SampleEditController sampleEditController;
     @Autowired
     private AnalyticalRunSetupController analyticalRunSetupController;
+    @Autowired
+    private MzTabExportController MzTabExportController;
     //parent controller
     @Autowired
     private MainController mainController;
     //services
     @Autowired
     private ProjectService projectService;
-    @Autowired
-    private ExperimentService experimentService;
     @Autowired
     private SampleService sampleService;
     @Autowired
@@ -121,6 +121,7 @@ public class ProjectManagementController implements Controllable {
         experimentEditController.init();
         sampleEditController.init();
         analyticalRunSetupController.init();
+        MzTabExportController.init();
 
         //init projects table
         SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
@@ -198,7 +199,8 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setMinWidth(120);
 
         //set sorting
-        @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
+        @SuppressWarnings("UnusedAssignment")
+        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
@@ -206,6 +208,11 @@ public class ProjectManagementController implements Controllable {
                 projectManagementPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
+        //add action listeners to other sample actions popup menu items
+        SamplePopupMenuActionListener samplePopupMenuActionListener = new SamplePopupMenuActionListener();
+        projectManagementPanel.getAddRunMenuItem().addActionListener(samplePopupMenuActionListener);
+        projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
+
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -320,19 +327,6 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        projectManagementPanel.getAddAnalyticalRunButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
-                    analyticalRunSetupController.showView();
-                } else {
-                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
         projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -378,6 +372,16 @@ public class ProjectManagementController implements Controllable {
                 }
             }
         });
+
+        projectManagementPanel.getOtherSampleActionsButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton button = projectManagementPanel.getOtherSampleActionsButton();
+                projectManagementPanel.getSamplePopupMenu().show(button, button.getBounds().x, button.getBounds().y + button.getBounds().height);
+            }
+        });
+
     }
 
     @Override
@@ -637,5 +641,33 @@ public class ProjectManagementController implements Controllable {
         }
 
         return defaultSample;
+    }
+
+    /**
+     * Inner class for listening to other sample actions popup menu items.
+     */
+    private class SamplePopupMenuActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String menuItemLabel = e.getActionCommand();
+
+            if (menuItemLabel.equals(projectManagementPanel.getAddRunMenuItem().getText())) {
+                Sample selectedSample = getSelectedSample();
+                if (selectedSample != null) {
+                    analyticalRunSetupController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
+                EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+                if (selectedSamples.size() >= 1) {
+                    MzTabExportController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("MzTab export", "Please select one or more samples to export.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        }
+
     }
 }

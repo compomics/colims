@@ -146,8 +146,6 @@
                               <Component id="analyticalRunsTableScrollPane" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Component id="exportAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="editAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="deleteAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
@@ -166,7 +164,6 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="deleteAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="editAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="exportAnalyticalRunButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -214,21 +211,6 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="edit..."/>
                     <Property name="toolTipText" type="java.lang.String" value="edit the metadata of an existing run"/>
-                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[80, 25]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="exportAnalyticalRunButton">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="export..."/>
-                    <Property name="toolTipText" type="java.lang.String" value="export the selected analytical run in mzTab format"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[80, 25]"/>
                     </Property>
