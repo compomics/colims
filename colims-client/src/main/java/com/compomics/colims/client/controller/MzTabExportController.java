@@ -15,10 +15,14 @@ import com.google.common.eventbus.EventBus;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +101,12 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getIdentificationRadioButton().setSelected(true);
         //select the summary mode radio button
         mzTabExportDialog.getSummaryRadioButton().setSelected(true);
+        //disable the numbers of assays spinner
+        mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(false);
+
+        //set number of assays spinner model
+        SpinnerModel model = new SpinnerNumberModel(1, 1, 20, 1);
+        mzTabExportDialog.getNumberOfAssaysSpinner().setModel(model);
 
         //add binding
         bindingGroup = new BindingGroup();
@@ -173,6 +183,30 @@ public class MzTabExportController implements Controllable {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 mzTabExportDialog.dispose();
+            }
+        });
+
+        mzTabExportDialog.getAssaysCheckbox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                //enable or disable spinner
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(true);
+                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(false);
+                }
+            }
+        });
+
+        mzTabExportDialog.getAddStudyVariableButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Study variable addition", "Please provide a non-empty study variable description.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
     }
