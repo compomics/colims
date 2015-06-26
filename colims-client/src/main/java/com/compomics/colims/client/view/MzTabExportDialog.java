@@ -433,7 +433,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        topPanel.add(secondPanel, "card3");
+        topPanel.add(secondPanel, "secondPanel");
 
         bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bottomPanel.setOpaque(false);

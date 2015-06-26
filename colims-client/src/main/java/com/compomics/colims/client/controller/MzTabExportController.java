@@ -20,6 +20,7 @@ import java.awt.event.ItemListener;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -42,13 +43,14 @@ public class MzTabExportController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(MzTabExportController.class);
 
     private static final String FIRST_PANEL = "firstPanel";
-    private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
+    private static final String SECOND_PANEL = "secondPanel";
     private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
     private static final String CONFIRMATION_CARD = "confirmationPanel";
 
     //model
     private BindingGroup bindingGroup;
     private MzTabExport mzTabExport = new MzTabExport();
+    private DefaultListModel<String> studyVariableListModel = new DefaultListModel<>();
     //view
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
@@ -108,6 +110,9 @@ public class MzTabExportController implements Controllable {
         SpinnerModel model = new SpinnerNumberModel(1, 1, 20, 1);
         mzTabExportDialog.getNumberOfAssaysSpinner().setModel(model);
 
+        //set list model for the study variables JList
+        mzTabExportDialog.getStudyVariablesList().setModel(studyVariableListModel);
+
         //add binding
         bindingGroup = new BindingGroup();
 
@@ -124,6 +129,8 @@ public class MzTabExportController implements Controllable {
                         mzTabExport.setMzTabType(getSelectedMzTabType());
                         mzTabExport.setMzTabMode(getSelectedMzTabMode());
                         mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
+                        onCardSwitch();
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
                         break;
                     default:
                         break;
@@ -136,8 +143,7 @@ public class MzTabExportController implements Controllable {
             public void actionPerformed(final ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
-                    case PS_DATA_IMPORT_CARD:
-                    case MAX_QUANT_DATA_IMPORT_CARD:
+                    case SECOND_PANEL:
                         getCardLayout().show(mzTabExportDialog.getTopPanel(), FIRST_PANEL);
                         break;
                     default:
@@ -153,7 +159,7 @@ public class MzTabExportController implements Controllable {
             public void actionPerformed(final ActionEvent e) {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
-                    case PS_DATA_IMPORT_CARD:
+                    case SECOND_PANEL:
                         List<String> psValidationMessages = peptideShakerDataImportController.validate();
                         if (psValidationMessages.isEmpty()) {
                             getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
@@ -203,8 +209,26 @@ public class MzTabExportController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {
+                    studyVariableListModel.addElement(mzTabExportDialog.getStudyVariableTextField().getText());
+                    mzTabExportDialog.getStudyVariableTextField().setText("");
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Study variable addition", "Please provide a non-empty study variable description.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
+            }
+        });
+
+        mzTabExportDialog.getDeleteStudyVariableButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<String> studyVariablesToDelete = mzTabExportDialog.getStudyVariablesList().getSelectedValuesList();
+                if (!studyVariablesToDelete.isEmpty()) {
+                    for(String studyVariable : studyVariablesToDelete){
+                        studyVariableListModel.removeElement(studyVariable);
+                    }
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Study variable(s) removal", "Please select one or more study variables to delete.", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -244,10 +268,10 @@ public class MzTabExportController implements Controllable {
                 //show info
                 updateInfo("Click on \"proceed\" to select the necessary input files/directories.");
                 break;
-            case PS_DATA_IMPORT_CARD:
+            case SECOND_PANEL:
                 mzTabExportDialog.getBackButton().setEnabled(true);
-                mzTabExportDialog.getProceedButton().setEnabled(false);
-                mzTabExportDialog.getFinishButton().setEnabled(true);
+                mzTabExportDialog.getProceedButton().setEnabled(true);
+                mzTabExportDialog.getFinishButton().setEnabled(false);
                 //show info
                 updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
