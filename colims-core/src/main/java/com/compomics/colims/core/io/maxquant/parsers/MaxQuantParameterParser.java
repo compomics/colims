@@ -36,7 +36,7 @@ public class MaxQuantParameterParser {
     public void parse(File quantFolder) throws IOException {
         SearchParameters experimentParams = parseExperiment(quantFolder);
 
-        parseRuns(quantFolder, experimentParams);
+        runParameters = parseRuns(quantFolder, experimentParams);
     }
 
     public SearchParameters parseExperiment(File quantFolder) throws IOException {
@@ -66,61 +66,6 @@ public class MaxQuantParameterParser {
         }
 
         return experimentParams;
-    }
-
-    public Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
-        Map<String, String> row;
-
-        while (summaryIter.hasNext()) {
-            row = summaryIter.next();
-            SearchParameters run = cloneSearchParametersObject(experimentParams);
-
-            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
-                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
-            }
-
-            if (row.containsKey(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
-                ModificationProfile runModifications = new ModificationProfile();
-
-                if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName())) {
-                    for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
-                        if (!fixedMod.isEmpty()) {
-                            PTM fixedPTM = new PTM();
-                            fixedPTM.setName(fixedMod);
-                            runModifications.addFixedModification(fixedPTM);
-                        }
-                    }
-                }
-
-                if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName())) {
-                    for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
-                        if (!varMod.isEmpty()) {
-                            PTM varPTM = new PTM();
-                            varPTM.setName(varMod);
-                            runModifications.addVariableModification(varPTM);
-                        }
-                    }
-                }
-
-                run.setModificationProfile(runModifications);
-
-                // dummy enzyme (only name required)
-                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
-                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()), "a", "a", "a", "a"));
-                }
-
-                if (row.containsKey(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
-                    run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
-                }
-
-                //MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
-                //run.setParametersFile(tarredParameters.getTarredParaMeterFiles());
-                runParameters.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), run);
-            }
-        }
-
-        return runParameters;
     }
 
     /**
@@ -167,6 +112,59 @@ public class MaxQuantParameterParser {
         }
 
         return parameters;
+    }
+
+    private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
+        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
+        Map<String, String> row;
+
+        while (summaryIter.hasNext()) {
+            row = summaryIter.next();
+            SearchParameters run = cloneSearchParametersObject(experimentParams);
+
+            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
+                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
+            }
+
+            if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
+                ModificationProfile runModifications = new ModificationProfile();
+
+                    for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
+                        if (!fixedMod.isEmpty()) {
+                            PTM fixedPTM = new PTM();
+                            fixedPTM.setName(fixedMod);
+                            runModifications.addFixedModification(fixedPTM);
+                        }
+
+                }
+
+                    for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
+                        if (!varMod.isEmpty()) {
+                            PTM varPTM = new PTM();
+                            varPTM.setName(varMod);
+                            runModifications.addVariableModification(varPTM);
+                        }
+                    }
+
+
+                run.setModificationProfile(runModifications);
+
+                // dummy enzyme (only name required)
+                if (!row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
+                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()), "a", "a", "a", "a"));
+                }
+
+                if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
+                    run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
+                }
+
+                //MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
+                //run.setParametersFile(tarredParameters.getTarredParaMeterFiles());
+                runParameters.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), run);
+            }
+        }
+
+        return runParameters;
     }
 
     //naive copying of the data we fetched from the global parameters file
