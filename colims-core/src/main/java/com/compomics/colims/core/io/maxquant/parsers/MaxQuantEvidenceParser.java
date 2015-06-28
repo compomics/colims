@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
@@ -29,7 +30,16 @@ import java.util.*;
 @Component
 public class MaxQuantEvidenceParser {
     private static final String EVIDENCETXT = "evidence.txt";
-    private static final String PEPTIDETXT = "peptides.txt";
+
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
+            MaxQuantEvidenceHeaders.MS_MS_IDS,
+            MaxQuantEvidenceHeaders.SEQUENCE,
+            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+            MaxQuantEvidenceHeaders.SCORE,
+            MaxQuantEvidenceHeaders.DELTA_SCORE,
+            MaxQuantEvidenceHeaders.PEP,
+            MaxQuantEvidenceHeaders.MODIFICATIONS
+    };
 
     @Autowired
     private MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
@@ -65,8 +75,9 @@ public class MaxQuantEvidenceParser {
      * @param quantFolder Evidence text file from MQ output
      * @throws IOException
      */
-    public void parse(final File quantFolder, String multiplicity) throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT));
+    public void parse(final File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
+        //todo change to headerenum constructor
+        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT),mandatoryHeaders);
 
         Map<String, String> values;
         int intensityCount;
@@ -88,8 +99,8 @@ public class MaxQuantEvidenceParser {
                 ++i;
             }
 
-            if (values.containsKey(MaxQuantEvidenceHeaders.MS_MS_IDS.getColumnName()) && values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getColumnName()) != null) {
-                String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getColumnName()).split(";");
+            if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getDefaultColumnName()) != null) {
+                String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getDefaultColumnName()).split(";");
 
                 for (String msmsId : msmsIds) {
                     if (!msmsId.isEmpty()) {
@@ -155,30 +166,24 @@ public class MaxQuantEvidenceParser {
      * @return A fresh peptide
      * @throws HeaderEnumNotInitialisedException
      */
-    public PeptideAssumption createPeptideAssumption(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
-        Peptide peptide = new Peptide(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getColumnName()), extractModifications(values));
+    public PeptideAssumption createPeptideAssumption(final Map<String, String> values) {
+        Peptide peptide = new Peptide(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()), extractModifications(values));
+        // possibly dubious
+        peptide.setParentProteins(new ArrayList(Arrays.asList(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";"))));
 
-        if (values.containsKey(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getColumnName())) {
-            // possibly dubious
-            peptide.setParentProteins(new ArrayList(Arrays.asList(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getColumnName()).split(";"))));
-        }
 
         double score = -1, pep = -1;
 
-        if (values.containsKey(MaxQuantEvidenceHeaders.SCORE.getColumnName()) && !values.get(MaxQuantEvidenceHeaders.SCORE.getColumnName()).equals("NaN")) {
-            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getColumnName()));
-        } else if (values.containsKey(MaxQuantEvidenceHeaders.DELTA_SCORE.getColumnName()) && !values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getColumnName()).equals("NaN")) {
-            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getColumnName()));
+        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()).equals("NaN")) {
+            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()));
+        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()).equals("NaN")) {
+            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()));
         }
 
-        if (values.containsKey(MaxQuantEvidenceHeaders.PEP.getColumnName()))
-            pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getColumnName()));
+        if(values.containsKey(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()))
+        pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()));
 
-        Charge identificationCharge = null;
-
-        if (values.containsKey(MaxQuantEvidenceHeaders.CHARGE.getColumnName())) {
-            identificationCharge = new Charge(Charge.PLUS, Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getColumnName())));
-        }
+        Charge identificationCharge =  new Charge(Charge.PLUS, Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName())));
 
         //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
         PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
@@ -195,61 +200,61 @@ public class MaxQuantEvidenceParser {
      * @return A list of matches
      * @throws HeaderEnumNotInitialisedException
      */
-    private ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) throws HeaderEnumNotInitialisedException {
+    private ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) {
         ArrayList<ModificationMatch> modificationsForPeptide = new ArrayList<>();
 
         // Sequence representation including the post-translational modifications (abbreviation of the modification in
         // brackets before the modified AA). The sequence is always surrounded by underscore characters ('_').
         // Also that looks like a face.
-        String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getColumnName());
+        String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName());
 
         if (modifications == null || "Unmodified".equalsIgnoreCase(modifications)) {
             return modificationsForPeptide;
         } else {
             for (MaxQuantModificationHeaders modificationHeader : MaxQuantModificationHeaders.values()) {
                 int location = -1;
-                String modificationString = values.get(modificationHeader.getColumnName());
+                String modificationString = values.get(modificationHeader.getDefaultColumnName());
 
                 // if modification found
                 if (modificationString != null) {
                     // N-term check
-                    if (modificationHeader.getColumnName().contains("n-term")) {
+                    if (modificationHeader.getDefaultColumnName().contains("n-term")) {
                         if ("1".equals(modificationString)) {
                             MaxQuantPtmScoring score = new MaxQuantPtmScoring();
                             // N-term has position 0
                             location = 0;
                             score.setDeltaScore(100.0);
                             score.setScore(100.0);
-                            ModificationMatch match = new ModificationMatch(modificationHeader.getColumnName(), true, location);
+                            ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
                             match.addUrParam(score);
                             modificationsForPeptide.add(match);
                         }
                     }
 
                     //C-term check
-                    if (modificationHeader.getColumnName().contains("c-term")) {
+                    if (modificationHeader.getDefaultColumnName().contains("c-term")) {
                         if ("1".equals(modificationString)) {
                             // C-term has position end of sequence
                             MaxQuantPtmScoring score = new MaxQuantPtmScoring();
-                            location = values.get(MaxQuantEvidenceHeaders.SEQUENCE.getColumnName()).length() + 1;
+                            location = values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() + 1;
                             score.setDeltaScore(100.0);
                             score.setScore(100.0);
-                            ModificationMatch match = new ModificationMatch(modificationHeader.getColumnName(), true, location);
+                            ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
                             match.addUrParam(score);
                             modificationsForPeptide.add(match);
                         }
                     }
 
                     //means the modification is in the sequence and we have to check the most likely location
-                    if ((modificationString = values.get(modificationHeader.getColumnName() + " probabilities")) != null) {
+                    if ((modificationString = values.get(modificationHeader.getDefaultColumnName() + " probabilities")) != null) {
                         if (modificationString.contains("(")) {
                             modificationString = modificationString.replaceAll("_", "");
                             int previousLocation = 0;
                             String[] modificationLocations = modificationString.split("\\(");
                             String[] modificationDeltaScores = null;
 
-                            if (values.containsKey(modificationHeader.getColumnName() + " score diffs")) {
-                                modificationDeltaScores = values.get(modificationHeader.getColumnName() + " score diffs").split("\\(");
+                            if (values.containsKey(modificationHeader.getDefaultColumnName() + " score diffs")) {
+                                modificationDeltaScores = values.get(modificationHeader.getDefaultColumnName() + " score diffs").split("\\(");
                             }
 
                             for (int i = 0; i < modificationLocations.length; i++) {
@@ -265,7 +270,7 @@ public class MaxQuantEvidenceParser {
                                     score.setScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
                                     modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
                                     location = modificationLocations[i - 1].length();
-                                    ModificationMatch match = new ModificationMatch(modificationHeader.getColumnName(), true, location);
+                                    ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
                                     match.addUrParam(score);
                                     modificationsForPeptide.add(match);
                                 }

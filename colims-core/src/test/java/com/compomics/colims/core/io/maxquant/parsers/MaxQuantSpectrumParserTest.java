@@ -35,7 +35,7 @@ public class MaxQuantSpectrumParserTest {
 
         assertThat(result.size(), is(rawFile.size() - 1));
         assertThat(rawFile.get(1), containsString(result.get(0).getFileName()));
-        assertThat(result.get(0).getPeakList().size(), is(0));
+        assertThat(result.get(0).getPeakList().size(), is(19));
         assertThat(result.get(0).getPrecursor().getRt(), not(0.0));
         assertThat(result.get(0).asMgf(), containsString("TITLE=" + result.get(0).getSpectrumTitle()));
     }

@@ -3,15 +3,12 @@ package com.compomics.colims.core.io.maxquant;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
-
-import java.util.Locale;
 
 /**
  * Convert a tabular file into an {@link Iterable} that returns
@@ -56,7 +53,8 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     /**
      * Parse a TSV file and create a map of keys and values for the given enum
      * of headers and each line in the file.
-     * @param tsvFile The data file
+     *
+     * @param tsvFile           The data file
      * @param headerEnumeration An enum of headers to specify values for
      * @throws IOException
      */
@@ -71,11 +69,20 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
             firstLine = firstLine.toLowerCase(Locale.US);
         }
 
+        List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
+
+        List<String> failedHeaders = new ArrayList<>();
+
         for (HeaderEnum aHeader : headerEnumeration) {
-            for (int numberOfPossibleHeaders = 0; numberOfPossibleHeaders < aHeader.allPossibleColumnNames().length; numberOfPossibleHeaders++){
-                if (firstLine.contains(aHeader.allPossibleColumnNames()[numberOfPossibleHeaders])){
-                    aHeader.setColumnReference(numberOfPossibleHeaders);
-                }
+
+            aHeader.setColumnNameNumber(aHeader.allPossibleColumnNames().indexOf(aHeader.allPossibleColumnNames().stream()
+                    .filter(firstLineList::contains)
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IOException("missing expected header: " + aHeader.getDefaultColumnName()))));
+
+            if (failedHeaders.size() > 0) {
+                throw new IOException("missing expected header: " + String.join(", ", failedHeaders));
             }
         }
 
@@ -104,7 +111,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
             }
         } catch (IOException e) {
             // XXX Hmmm, just printing a stacktrace is a very poor way to handle an IOException at this point...
-           LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         nextLine = null;
     }

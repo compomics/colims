@@ -2,6 +2,7 @@ package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
@@ -25,16 +26,23 @@ import java.util.Map;
  */
 @Component("maxQuantSpectrumParser")
 public class MaxQuantSpectrumParser {
+
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
+            MaxQuantMSMSHeaders.ID,
+            MaxQuantMSMSHeaders.FRAGMENTATION,
+            MaxQuantMSMSHeaders.MATCHES,
+            MaxQuantMSMSHeaders.INTENSITIES,
+            MaxQuantMSMSHeaders.MASSES,
+    };
+
     /**
      * parses a max quant msms text file without adding a peaklist to each spectrum
      *
      * @param msmsFile the file to parse
      * @return a map with key: spectrumid and value the corresponding spectrum
      * @throws IOException
-     * @throws com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException if a header was requested
-     *                                                                                         that was not defined
      */
-    public Map<Integer, MSnSpectrum> parse(final File msmsFile) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public Map<Integer, MSnSpectrum> parse(final File msmsFile) throws IOException, UnparseableException {
         return parse(msmsFile, false);
     }
 
@@ -47,23 +55,22 @@ public class MaxQuantSpectrumParser {
      * @boolean addPeakList if a peaklist should be added to the spectra, should a peak list be requested and none could
      * be built, an empty peaklist is added
      */
-    public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public Map<Integer, MSnSpectrum> parse(final File msmsFile, boolean addPeakList) throws IOException, UnparseableException {
         Map<Integer, MSnSpectrum> spectrumMap = new HashMap<>();
         // Convert file into some values we can loop over, without reading file in at once
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, MaxQuantMSMSHeaders.values());
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
 
         // Create and persist objects for all lines in file
         for (Map<String, String> values : valuesIterator) {
             // Create objects
-            if (values.containsKey(MaxQuantMSMSHeaders.ID.getColumnName())) {
-                Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getColumnName()));
+            Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
 
-                MSnSpectrum spectrum = parseSpectrum(values, addPeakList);
-                SpectrumIntUrParameterShizzleStuff nastyworkaround = new SpectrumIntUrParameterShizzleStuff();
-                nastyworkaround.setSpectrumid(id);
-                spectrum.addUrParam(nastyworkaround);
-                spectrumMap.put(id, spectrum);
-            }
+            MSnSpectrum spectrum = parseSpectrum(values, addPeakList);
+            SpectrumIntUrParameterShizzleStuff nastyworkaround = new SpectrumIntUrParameterShizzleStuff();
+            nastyworkaround.setSpectrumid(id);
+            spectrum.addUrParam(nastyworkaround);
+            spectrumMap.put(id, spectrum);
+
         }
         return spectrumMap;
     }
@@ -74,20 +81,16 @@ public class MaxQuantSpectrumParser {
      * @param msmsFile File pointer
      * @return Map of ids and fragmentation types
      * @throws IOException                       thrown in case of an I/O related problem
-     * @throws HeaderEnumNotInitialisedException
      */
-    public Map<Integer, FragmentationType> parseFragmentations(final File msmsFile) throws IOException, HeaderEnumNotInitialisedException {
+    public Map<Integer, FragmentationType> parseFragmentations(final File msmsFile) throws IOException {
         Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, MaxQuantMSMSHeaders.values());
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
 
         for (Map<String, String> values : valuesIterator) {
             // Create objects
-            if (values.containsKey(MaxQuantMSMSHeaders.ID.getColumnName())) {
-                Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getColumnName()));
-
-                fragmentations.put(id, FragmentationType.valueOf(values.get(MaxQuantMSMSHeaders.FRAGMENTATION.getColumnName())));
-            }
+            Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
+            fragmentations.put(id, FragmentationType.valueOf(values.get(MaxQuantMSMSHeaders.FRAGMENTATION.getDefaultColumnName())));
         }
 
         return fragmentations;
@@ -100,21 +103,20 @@ public class MaxQuantSpectrumParser {
      * @param values      List of values from the data file
      * @param addPeakList Whether peak list should be parsed and included in spectrum
      * @return Spectrum object
-     * @throws HeaderEnumNotInitialisedException
      * @throws UnparseableException
      */
-    private MSnSpectrum parseSpectrum(Map<String, String> values, boolean addPeakList) throws HeaderEnumNotInitialisedException, UnparseableException {
+    private MSnSpectrum parseSpectrum(Map<String, String> values, boolean addPeakList)throws UnparseableException {
         //create the precursor of the fragment
-        double rt = Double.valueOf(values.get(MaxQuantMSMSHeaders.RETENTION_TIME.getColumnName()));
+        double rt = Double.valueOf(values.get(MaxQuantMSMSHeaders.RETENTION_TIME.getDefaultColumnName()));
         // The mass-over-charge of the precursor ion. Double m_z =
-        double mz = Double.valueOf(values.get(MaxQuantMSMSHeaders.M_Z.getColumnName()));
+        double mz = Double.valueOf(values.get(MaxQuantMSMSHeaders.M_Z.getDefaultColumnName()));
         //charge - state of the precursor ion
         Precursor precursor;
 
-        if (values.containsKey(MaxQuantMSMSHeaders.CHARGE.getColumnName()) && values.containsKey(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getColumnName())) {
+        if (values.containsKey(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName()) && values.containsKey(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getDefaultColumnName())) {
             ArrayList<Charge> charges = new ArrayList<>();
-            charges.add(new Charge(Charge.PLUS, Integer.valueOf(values.get(MaxQuantMSMSHeaders.CHARGE.getColumnName()))));
-            String precursorIntensityString = values.get(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getColumnName());
+            charges.add(new Charge(Charge.PLUS, Integer.valueOf(values.get(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName()))));
+            String precursorIntensityString = values.get(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getDefaultColumnName());
 
             if (precursorIntensityString.equalsIgnoreCase("nan")) {
                 precursorIntensityString = "-1";
@@ -126,19 +128,13 @@ public class MaxQuantSpectrumParser {
             throw new UnparseableException("could not parse precursor");
         }
 
-        String scanNumber = values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getColumnName());
-        String fileName = values.get(MaxQuantMSMSHeaders.RAW_FILE.getColumnName());
-        String spectrumTitle = String.format("%s-%s", fileName, values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getColumnName()));
+        String scanNumber = values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
+        String fileName = values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName());
+        String spectrumTitle = String.format("%s-%s", fileName, values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName()));
 
         // we add an empty peaklist should there be no peaks to parse. it is initialised on null in the parent object and this could give problems down the line
-        HashMap<Double, Peak> peakList = new HashMap<>();
+        HashMap<Double, Peak> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()), values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()), values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName()));
 
-        if (addPeakList
-                && values.containsKey(MaxQuantMSMSHeaders.MATCHES.getColumnName())
-                && values.containsKey(MaxQuantMSMSHeaders.INTENSITIES.getColumnName())
-                && values.containsKey(MaxQuantMSMSHeaders.MASSES.getColumnName())) {
-            peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getColumnName()), values.get(MaxQuantMSMSHeaders.INTENSITIES.getColumnName()), values.get(MaxQuantMSMSHeaders.MASSES.getColumnName()));
-        }
 
         MSnSpectrum spectrum = new MSnSpectrum(2, precursor, spectrumTitle, peakList, fileName);
         spectrum.setScanNumber(scanNumber);

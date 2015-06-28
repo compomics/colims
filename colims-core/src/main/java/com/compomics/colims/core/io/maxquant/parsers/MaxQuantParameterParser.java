@@ -33,13 +33,13 @@ public class MaxQuantParameterParser {
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
 
-    public void parse(File quantFolder) throws IOException, HeaderEnumNotInitialisedException {
+    public void parse(File quantFolder) throws IOException {
         SearchParameters experimentParams = parseExperiment(quantFolder);
 
         parseRuns(quantFolder, experimentParams);
     }
 
-    public SearchParameters parseExperiment(File quantFolder) throws IOException, HeaderEnumNotInitialisedException {
+    public SearchParameters parseExperiment(File quantFolder) throws IOException {
         SearchParameters experimentParams = new SearchParameters();
         File parameterFile = new File(quantFolder, PARAMETERS);
 
@@ -49,9 +49,9 @@ public class MaxQuantParameterParser {
         while (parameterIter.hasNext()) {
             row = parameterIter.next();
 
-            if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FASTA_FILE.getColumnName())) {
+            if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FASTA_FILE.getDefaultColumnName())) {
                 experimentParams.setFastaFile(new File(FilenameUtils.separatorsToSystem(row.getValue())));
-            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getColumnName())) {
+            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getDefaultColumnName())) {
                 experimentParams.setFragmentIonAccuracy(Double.parseDouble(row.getValue().split(" ")[0]));
 
                 if (row.getValue().split(" ")[1].equalsIgnoreCase("da")) {
@@ -60,7 +60,7 @@ public class MaxQuantParameterParser {
                     experimentParams.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.PPM);
                 }
 
-            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.VERSION.getColumnName())) {
+            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.VERSION.getDefaultColumnName())) {
                 version = row.getValue();
             }
         }
@@ -68,7 +68,7 @@ public class MaxQuantParameterParser {
         return experimentParams;
     }
 
-    public Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException, HeaderEnumNotInitialisedException {
+    public Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
         Map<String, String> row;
 
@@ -76,15 +76,15 @@ public class MaxQuantParameterParser {
             row = summaryIter.next();
             SearchParameters run = cloneSearchParametersObject(experimentParams);
 
-            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getColumnName())) {
-                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getColumnName());
+            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
+                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
             }
 
-            if (row.containsKey(MaxQuantSummaryHeaders.RAW_FILE.getColumnName()) && !row.get(MaxQuantSummaryHeaders.RAW_FILE.getColumnName()).equalsIgnoreCase("total")) {
+            if (row.containsKey(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
                 ModificationProfile runModifications = new ModificationProfile();
 
-                if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getColumnName())) {
-                    for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getColumnName()).split(";")) {
+                if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName())) {
+                    for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
                         if (!fixedMod.isEmpty()) {
                             PTM fixedPTM = new PTM();
                             fixedPTM.setName(fixedMod);
@@ -93,8 +93,8 @@ public class MaxQuantParameterParser {
                     }
                 }
 
-                if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getColumnName())) {
-                    for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getColumnName()).split(";")) {
+                if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName())) {
+                    for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
                         if (!varMod.isEmpty()) {
                             PTM varPTM = new PTM();
                             varPTM.setName(varMod);
@@ -106,17 +106,17 @@ public class MaxQuantParameterParser {
                 run.setModificationProfile(runModifications);
 
                 // dummy enzyme (only name required)
-                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getColumnName()).isEmpty()) {
-                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getColumnName()), "a", "a", "a", "a"));
+                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
+                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()), "a", "a", "a", "a"));
                 }
 
-                if (row.containsKey(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName()) && !row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName()).isEmpty()) {
-                    run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getColumnName())));
+                if (row.containsKey(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
+                    run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
                 }
 
                 //MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
                 //run.setParametersFile(tarredParameters.getTarredParaMeterFiles());
-                runParameters.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getColumnName()), run);
+                runParameters.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), run);
             }
         }
 
