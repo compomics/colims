@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
@@ -41,7 +40,7 @@ public class MaxQuantSpectrumParserTest {
     }
 
     @Test
-    public void testParseFragmentations() throws HeaderEnumNotInitialisedException, IOException, UnparseableException {
+    public void testParseFragmentations() throws IOException, UnparseableException {
         Map<Integer, FragmentationType> fragmentations = maxQuantSpectrumParser.parseFragmentations(MaxQuantTestSuite.msmsFile);
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());
 

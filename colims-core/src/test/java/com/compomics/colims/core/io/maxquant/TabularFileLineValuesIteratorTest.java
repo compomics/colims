@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ import static org.junit.Assert.*;
 public class TabularFileLineValuesIteratorTest {
 
     @Test
-    public void testTabularFileLineValuesIterator() throws IOException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testTabularFileLineValuesIterator() throws IOException, UnparseableException {
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.evidenceFile, new HeaderEnum[]{
                 MaxQuantEvidenceHeaders.ID,
                 MaxQuantEvidenceHeaders.SEQUENCE

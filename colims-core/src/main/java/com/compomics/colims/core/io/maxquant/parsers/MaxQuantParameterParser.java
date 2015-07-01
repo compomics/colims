@@ -1,7 +1,7 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
+import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.util.experiment.biology.Enzyme;
@@ -32,6 +32,12 @@ public class MaxQuantParameterParser {
 
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
+
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
+            MaxQuantSummaryHeaders.MULTIPLICITY,
+            MaxQuantSummaryHeaders.RAW_FILE,
+
+    };
 
     public void parse(File quantFolder) throws IOException {
         SearchParameters experimentParams = parseExperiment(quantFolder);
@@ -114,8 +120,9 @@ public class MaxQuantParameterParser {
         return parameters;
     }
 
+
     private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY));
+        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY), mandatoryHeaders);
         Map<String, String> row;
 
         while (summaryIter.hasNext()) {
@@ -129,6 +136,8 @@ public class MaxQuantParameterParser {
             if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
                 ModificationProfile runModifications = new ModificationProfile();
 
+                if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName())) {
+
                     for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
                         if (!fixedMod.isEmpty()) {
                             PTM fixedPTM = new PTM();
@@ -136,7 +145,10 @@ public class MaxQuantParameterParser {
                             runModifications.addFixedModification(fixedPTM);
                         }
 
+                    }
                 }
+
+                if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName())) {
 
                     for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
                         if (!varMod.isEmpty()) {
@@ -146,11 +158,12 @@ public class MaxQuantParameterParser {
                         }
                     }
 
+                }
 
                 run.setModificationProfile(runModifications);
 
                 // dummy enzyme (only name required)
-                if (!row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
+                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
                     run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()), "a", "a", "a", "a"));
                 }
 

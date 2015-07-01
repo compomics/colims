@@ -1,7 +1,5 @@
 package com.compomics.colims.core.io.maxquant.headers;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

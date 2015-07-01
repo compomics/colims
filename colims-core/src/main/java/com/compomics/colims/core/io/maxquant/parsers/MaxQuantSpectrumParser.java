@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.maxquant.parsers;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
 import com.compomics.colims.model.Quantification;

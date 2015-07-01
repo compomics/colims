@@ -5,7 +5,6 @@ import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
 import com.compomics.colims.core.io.maxquant.urparams.MaxQuantPtmScoring;

@@ -4,7 +4,6 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.MaxQuantAnalyticalRun;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.core.io.maxquant.urparams.SpectrumIntUrParameterShizzleStuff;
 import com.compomics.colims.model.enums.FragmentationType;
@@ -51,11 +50,10 @@ public class MaxQuantParser {
      *
      * @param quantFolder File pointer to MaxQuant txt folder
      * @throws IOException thrown in case of a I/O related problem
-     * @throws HeaderEnumNotInitialisedException
      * @throws MappingException
      * @throws UnparseableException
      */
-    public void parseFolder(final File quantFolder) throws IOException, HeaderEnumNotInitialisedException, MappingException, UnparseableException {
+    public void parseFolder(final File quantFolder) throws IOException, MappingException, UnparseableException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
         Map<String, String> row;
         String multiplicity = null;
