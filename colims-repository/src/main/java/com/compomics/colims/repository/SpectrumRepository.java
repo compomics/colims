@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 
 import java.util.List;
@@ -43,6 +44,13 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return the number of spectra
      */
     Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun);
+
+    /**
+     * Get spectra associated with a given peptide
+     * @param peptide The peptide
+     * @return List of spectra
+     */
+    List<Spectrum> getSpectraForPeptide(final Peptide peptide);
 
     /**
      * Get the minimum retention time of spectra associated to the given

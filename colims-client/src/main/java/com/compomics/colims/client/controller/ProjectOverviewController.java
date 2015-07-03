@@ -411,7 +411,7 @@ public class ProjectOverviewController implements Controllable {
             GlazedLists.replaceAll(spectra, psmsTableModel.getRows(selectedAnalyticalRun), false);
             projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getPageIndicator());
         } else {
-            GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
+            GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
             projectOverviewPanel.getPageLabelSpectra().setText("");
         }
     }

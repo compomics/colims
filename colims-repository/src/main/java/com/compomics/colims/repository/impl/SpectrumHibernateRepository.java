@@ -2,6 +2,7 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 
+import com.compomics.colims.model.Peptide;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
@@ -56,12 +57,7 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
                     .list();
 
             // sorting here because unable to pass order by list through criteria
-            Collections.sort(returnList, new Comparator<Spectrum>() {
-                @Override
-                public int compare(final Spectrum s1, final Spectrum s2) {
-                    return Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId()));
-                }
-            });
+            Collections.sort(returnList, (s1, s2) -> Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId())));
         }
 
         return returnList;
@@ -81,6 +77,11 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
         numberOfSpectra = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).longValue();
 
         return numberOfSpectra;
+    }
+
+    @Override
+    public List<Spectrum> getSpectraForPeptide(final Peptide peptide) {
+        return createCriteria(Restrictions.eq("id", peptide)).list();
     }
 
     @Override
