@@ -1,22 +1,16 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.MzTabExportDialog;
 import com.compomics.colims.core.io.mztab.MzTabExport;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
-import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
@@ -24,8 +18,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
-import org.jdesktop.beansbinding.BindingGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,38 +41,21 @@ public class MzTabExportController implements Controllable {
 
     private static final String FIRST_PANEL = "firstPanel";
     private static final String SECOND_PANEL = "secondPanel";
-    private static final String MAX_QUANT_DATA_IMPORT_CARD = "maxQuantDataImportPanel";
-    private static final String CONFIRMATION_CARD = "confirmationPanel";
+    private static final String ASSAY = "assay ";
 
     //model
-    private BindingGroup bindingGroup;
-    private MzTabExport mzTabExport = new MzTabExport();
-    private DefaultListModel<String> studyVariableListModel = new DefaultListModel<>();
+    private final MzTabExport mzTabExport = new MzTabExport();
+    private final DefaultListModel<String> assayListModel = new DefaultListModel<>();
+    private final DefaultMutableTreeNode studyVariableRootNode = new DefaultMutableTreeNode("Study variables");
+    private final DefaultTreeModel studyVariableTreeModel = new DefaultTreeModel(studyVariableRootNode);
     //view
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
     @Autowired
     private MainController mainController;
-    @Autowired
-    private ProjectManagementController projectManagementController;
-    //child controller
-    @Autowired
-    private PeptideShakerDataImportController peptideShakerDataImportController;
-    @Autowired
-    private MaxQuantDataImportController maxQuantDataImportController;
-    @Autowired
-    private FastaDbManagementController fastaDbManagementController;
     //services
     @Autowired
-    private InstrumentService instrumentService;
-    @Autowired
     private EventBus eventBus;
-    @Autowired
-    private AuthenticationBean authenticationBean;
-    @Autowired
-    private DbTaskProducer storageTaskProducer;
-    @Autowired
-    private QueueManager queueManager;
 
     /**
      * Get the view of this controller.
@@ -94,30 +74,21 @@ public class MzTabExportController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
-        //init child controller
-        fastaDbManagementController.init();
-        peptideShakerDataImportController.init();
-        maxQuantDataImportController.init();
-
         //select the identification type radio button
         mzTabExportDialog.getIdentificationRadioButton().setSelected(true);
         //select the summary mode radio button
         mzTabExportDialog.getSummaryRadioButton().setSelected(true);
-        //disable the numbers of assays spinner
-        mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(false);
 
         //set number of assays spinner model
         SpinnerModel model = new SpinnerNumberModel(1, 1, 20, 1);
         mzTabExportDialog.getNumberOfAssaysSpinner().setModel(model);
 
-        //set list model for the study variables JList
-        mzTabExportDialog.getStudyVariablesList().setModel(studyVariableListModel);
+        //set study variables tree model
+        mzTabExportDialog.getStudyVariableTree().setRootVisible(false);
+        mzTabExportDialog.getStudyVariableTree().setModel(studyVariableTreeModel);
 
-        //add binding
-        bindingGroup = new BindingGroup();
-
-        //bindings go here
-        bindingGroup.bind();
+        //set assay list model
+        mzTabExportDialog.getAssayList().setModel(assayListModel);
 
         //add action listeners
         mzTabExportDialog.getProceedButton().addActionListener(new ActionListener() {
@@ -126,11 +97,24 @@ public class MzTabExportController implements Controllable {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
                     case FIRST_PANEL:
-                        mzTabExport.setMzTabType(getSelectedMzTabType());
-                        mzTabExport.setMzTabMode(getSelectedMzTabMode());
-                        mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
-                        onCardSwitch();
-                        getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
+                        List<String> firstPanelValidationMessages = validateFirstPanel();
+                        if (firstPanelValidationMessages.isEmpty()) {
+                            mzTabExport.setMzTabType(getSelectedMzTabType());
+                            mzTabExport.setMzTabMode(getSelectedMzTabMode());
+                            mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
+
+                            //update assay list model
+                            assayListModel.clear();
+                            for (int i = 1; i <= (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue(); i++) {
+                                assayListModel.add(i - 1, ASSAY + i);
+                            }
+
+                            getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
+                            onCardSwitch();
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", firstPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            eventBus.post(messageEvent);
+                        }
                         break;
                     default:
                         break;
@@ -160,25 +144,23 @@ public class MzTabExportController implements Controllable {
                 String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
                 switch (currentCardName) {
                     case SECOND_PANEL:
-                        List<String> psValidationMessages = peptideShakerDataImportController.validate();
-                        if (psValidationMessages.isEmpty()) {
-                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
+//                        if (psValidationMessages.isEmpty()) {
+//                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
+//                        } else {
+//                            MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
+//                            eventBus.post(messageEvent);
+//                        }
                         onCardSwitch();
                         break;
-                    case MAX_QUANT_DATA_IMPORT_CARD:
-                        List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
-                        if (maxQuantValidationMessages.isEmpty()) {
-                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        onCardSwitch();
-                        break;
+//                    case MAX_QUANT_DATA_IMPORT_CARD:
+//                        if (maxQuantValidationMessages.isEmpty()) {
+//                            getCardLayout().show(mzTabExportDialog.getTopPanel(), CONFIRMATION_CARD);
+//                        } else {
+//                            MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
+//                            eventBus.post(messageEvent);
+//                        }
+//                        onCardSwitch();
+//                        break;
                     default:
                         break;
                 }
@@ -192,24 +174,18 @@ public class MzTabExportController implements Controllable {
             }
         });
 
-        mzTabExportDialog.getAssaysCheckbox().addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                //enable or disable spinner
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(true);
-                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    mzTabExportDialog.getNumberOfAssaysSpinner().setEnabled(false);
-                }
-            }
-        });
-
         mzTabExportDialog.getAddStudyVariableButton().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {
-                    studyVariableListModel.addElement(mzTabExportDialog.getStudyVariableTextField().getText());
+                    DefaultMutableTreeNode studyVariable = new DefaultMutableTreeNode(mzTabExportDialog.getStudyVariableTextField().getText());
+                    studyVariableTreeModel.insertNodeInto(studyVariable, studyVariableRootNode, studyVariableTreeModel.getChildCount(studyVariableRootNode));
+
+                    //expand tree with invisible root node trick
+                    mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariableRootNode.getPath()));
+
+                    //reset text field
                     mzTabExportDialog.getStudyVariableTextField().setText("");
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Study variable addition", "Please provide a non-empty study variable description.", JOptionPane.WARNING_MESSAGE);
@@ -222,13 +198,27 @@ public class MzTabExportController implements Controllable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<String> studyVariablesToDelete = mzTabExportDialog.getStudyVariablesList().getSelectedValuesList();
-                if (!studyVariablesToDelete.isEmpty()) {
-                    for(String studyVariable : studyVariablesToDelete){
-                        studyVariableListModel.removeElement(studyVariable);
+                TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
+                if (selectionModel.getSelectionPaths().length != 0 && !selectionModel.getSelectionPaths()[0].getLastPathComponent().equals(studyVariableRootNode)) {
+                    for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                        studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
                     }
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Study variable(s) removal", "Please select one or more study variables to delete.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
+            }
+        });
+
+        mzTabExportDialog.getAddAssayButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List selectedValuesList = mzTabExportDialog.getAssayList().getSelectedValuesList();
+                if (!selectedValuesList.isEmpty() && isStudyVariableSelected()) {
+
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and a study variable to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -240,6 +230,13 @@ public class MzTabExportController implements Controllable {
         //show first card
         getCardLayout().first(mzTabExportDialog.getTopPanel());
         onCardSwitch();
+
+        //reset tree model
+        studyVariableRootNode.removeAllChildren();
+        studyVariableTreeModel.reload();
+
+        //reset assay list
+        assayListModel.clear();
 
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), mzTabExportDialog);
         mzTabExportDialog.setVisible(true);
@@ -266,7 +263,7 @@ public class MzTabExportController implements Controllable {
                 mzTabExportDialog.getProceedButton().setEnabled(true);
                 mzTabExportDialog.getFinishButton().setEnabled(false);
                 //show info
-                updateInfo("Click on \"proceed\" to select the necessary input files/directories.");
+                updateInfo("Click on \"proceed\" to provide one or more study variables.");
                 break;
             case SECOND_PANEL:
                 mzTabExportDialog.getBackButton().setEnabled(true);
@@ -275,19 +272,19 @@ public class MzTabExportController implements Controllable {
                 //show info
                 updateInfo("Click on \"finish\" to validate the input and store the run(s).");
                 break;
-            case MAX_QUANT_DATA_IMPORT_CARD:
-                mzTabExportDialog.getBackButton().setEnabled(true);
-                mzTabExportDialog.getProceedButton().setEnabled(false);
-                mzTabExportDialog.getFinishButton().setEnabled(true);
-                //show info
-                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
-                break;
-            case CONFIRMATION_CARD:
-                mzTabExportDialog.getBackButton().setEnabled(false);
-                mzTabExportDialog.getProceedButton().setEnabled(false);
-                mzTabExportDialog.getFinishButton().setEnabled(false);
-                updateInfo("");
-                break;
+//            case MAX_QUANT_DATA_IMPORT_CARD:
+//                mzTabExportDialog.getBackButton().setEnabled(true);
+//                mzTabExportDialog.getProceedButton().setEnabled(false);
+//                mzTabExportDialog.getFinishButton().setEnabled(true);
+//                //show info
+//                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
+//                break;
+//            case CONFIRMATION_CARD:
+//                mzTabExportDialog.getBackButton().setEnabled(false);
+//                mzTabExportDialog.getProceedButton().setEnabled(false);
+//                mzTabExportDialog.getFinishButton().setEnabled(false);
+//                updateInfo("");
+//                break;
             default:
                 break;
         }
@@ -323,6 +320,21 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
+     * Validate the user input in the first panel.
+     *
+     * @return the list of validation messages.
+     */
+    private List<String> validateFirstPanel() {
+        List<String> validationMessages = new ArrayList<>();
+
+        if (mzTabExportDialog.getDescriptionTextArea().getText().isEmpty()) {
+            validationMessages.add("Please provide a description.");
+        }
+
+        return validationMessages;
+    }
+
+    /**
      * Get the selected mzTab mode.
      *
      * @return the selected MzTabMode
@@ -340,6 +352,28 @@ public class MzTabExportController implements Controllable {
         }
 
         return selectedMzTabMode;
+    }
+
+    /**
+     * Check if one and only one study variable is selected in the tree. Returns
+     * false if nothing or another path level (assay, root path) is selected.
+     *
+     * @return the boolean result
+     */
+    private boolean isStudyVariableSelected() {
+        boolean isStudyVariableSelected = false;
+
+        TreePath[] selectionPaths = mzTabExportDialog.getStudyVariableTree().getSelectionModel().getSelectionPaths();
+        //check if one and only one node is selected
+        if (selectionPaths.length == 1) {
+            DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) selectionPaths[0].getLastPathComponent();
+            //check if the parent node is the root node
+            if (lastPathComponent.getParent().equals(studyVariableRootNode)) {
+                isStudyVariableSelected = true;
+            }
+        }
+
+        return isStudyVariableSelected;
     }
 
 }
