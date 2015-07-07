@@ -2,7 +2,9 @@ package com.compomics.colims.client.model;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
 import com.compomics.colims.core.service.ProteinService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.ProteinRepository;
 
 import javax.swing.table.DefaultTableModel;
@@ -14,13 +16,25 @@ import java.util.List;
  */
 public class ProteinTableModel extends PagingTableModel {
 
-    public ProteinTableModel(EventList source, TableFormat tableFormat) {
+    private final ProteinRepository proteinRepository;
+
+    public ProteinTableModel(EventList source, TableFormat tableFormat, ProteinRepository proteinRepository) {
         super(source, tableFormat);
+        this.proteinRepository = proteinRepository;
     }
 
     @Override
     public String getColumnDbName(int column) {
-        return null;
+        switch (column) {
+            case ProteinTableFormat.ID:
+                return "protein.id";
+            case ProteinTableFormat.SEQUENCE:
+                return "protein.sequence";
+            case ProteinTableFormat.ACCESSION:
+                return "protein_accession.accession";
+            default:
+                throw new IllegalArgumentException("Unexpected column number " + column);
+        }
     }
 
     /**
@@ -30,7 +44,17 @@ public class ProteinTableModel extends PagingTableModel {
      * @param analyticalRun The run from which spectra are queried
      * @return List of Spectrum objects
      */
-    public List getRows(ProteinRepository proteinRepository) {
-        return new ArrayList<>();
+    public List getRows(AnalyticalRun analyticalRun) {
+        rowCount = proteinRepository.getProteinCountForRun(analyticalRun, sortColumn, filter);
+
+        if (rowCount < page * perPage) {
+            page = getMaxPage();
+        }
+
+        return proteinRepository.getPagedProteinsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+    }
+
+    public void reset(final AnalyticalRun analyticalRun) {
+        super.reset(analyticalRun == null ? 0 : proteinRepository.getProteinCountForRun(analyticalRun, sortColumn, filter));
     }
 }

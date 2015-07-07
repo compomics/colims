@@ -13,13 +13,21 @@ import java.util.stream.Collectors;
  */
 public class PeptideTableFormat implements AdvancedTableFormat<Peptide> {
 
-    private static final String[] columnNames = {"ID"};
+    private static final String[] columnNames = {"ID", "Sequence", "Charge"};
+
+    public static final int ID = 0;
+    public static final int SEQUENCE = 1;
+    public static final int CHARGE = 2;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case 0:
+            case ID:
                 return Long.class;
+            case SEQUENCE:
+                return String.class;
+            case CHARGE:
+                return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -43,8 +51,12 @@ public class PeptideTableFormat implements AdvancedTableFormat<Peptide> {
     @Override
     public Object getColumnValue(Peptide peptide, int column) {
         switch (column) {
-            case 0:
+            case ID:
                 return peptide.getId();
+            case SEQUENCE:
+                return peptide.getSequence();
+            case CHARGE:
+                return peptide.getCharge();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

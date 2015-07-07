@@ -14,14 +14,18 @@ public class ProteinTableFormat implements AdvancedTableFormat<Protein> {
 
     private static final String[] columnNames = {"ID", "Accession", "Sequence"};
 
+    public static final int ID = 0;
+    public static final int ACCESSION = 1;
+    public static final int SEQUENCE = 2;
+
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case 0:
+            case ID:
                 return Long.class;
-            case 1:
+            case ACCESSION:
                 return String.class;
-            case 2:
+            case SEQUENCE:
                 return String.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -46,14 +50,14 @@ public class ProteinTableFormat implements AdvancedTableFormat<Protein> {
     @Override
     public Object getColumnValue(Protein protein, int column) {
         switch (column) {
-            case 0:
+            case ID:
                 return protein.getId();
-            case 1:
+            case ACCESSION:
                 return protein.getProteinAccessions()
                     .stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(", "));
-            case 2:
+            case SEQUENCE:
                 return protein.getSequence();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);

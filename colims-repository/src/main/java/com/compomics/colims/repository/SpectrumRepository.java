@@ -46,13 +46,6 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun);
 
     /**
-     * Get spectra associated with a given peptide
-     * @param peptide The peptide
-     * @return List of spectra
-     */
-    List<Spectrum> getSpectraForPeptide(final Peptide peptide);
-
-    /**
      * Get the minimum retention time of spectra associated to the given
      * analytical run.
      *

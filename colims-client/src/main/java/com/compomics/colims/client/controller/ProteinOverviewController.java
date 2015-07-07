@@ -24,6 +24,10 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +58,7 @@ public class ProteinOverviewController implements Controllable {
     private DefaultEventSelectionModel<Protein> proteinSelectionModel;
     private DefaultEventSelectionModel<Peptide> peptideSelectionModel;
     private DefaultEventSelectionModel<Spectrum> spectrumSelectionModel;
+    private AnalyticalRun selectedAnalyticalRun;
 
     @Override
     public void init() {
@@ -64,33 +69,7 @@ public class ProteinOverviewController implements Controllable {
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
         for (Project project : mainController.getProjects()) {
-            DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getTitle());
-
-            if (project.getExperiments().size() > 0) {
-                for (Experiment experiment : project.getExperiments()) {
-                    DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(experiment.getTitle());
-
-                    if (experiment.getSamples().size() > 0) {
-                        for (Sample sample : experiment.getSamples()) {
-                            DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample.getName());
-
-                            if (sample.getAnalyticalRuns().size() > 0) {
-                                for (AnalyticalRun analyticalRun : sample.getAnalyticalRuns()) {
-                                    DefaultMutableTreeNode runNode = new DefaultMutableTreeNode(analyticalRun);
-
-                                    sampleNode.add(runNode);
-                                }
-
-                                experimentNode.add(sampleNode);
-                            }
-                        }
-
-                        projectNode.add(experimentNode);
-                    }
-                }
-
-                projectsNode.add(projectNode);
-            }
+            projectsNode.add(buildProjectTree(project));
         }
 
         DefaultTreeModel treeModel = new DefaultTreeModel(projectsNode);
@@ -99,7 +78,7 @@ public class ProteinOverviewController implements Controllable {
         // init proteins table
         SortedList<Protein> sortedProteins = new SortedList<>(proteins, null);
 
-        proteinTableModel = new ProteinTableModel(sortedProteins, new ProteinTableFormat());
+        proteinTableModel = new ProteinTableModel(sortedProteins, new ProteinTableFormat(), proteinRepository);
         proteinOverviewPanel.getProteinsTable().setModel(proteinTableModel);
         proteinSelectionModel = new DefaultEventSelectionModel<>(sortedProteins);
         proteinSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -123,17 +102,35 @@ public class ProteinOverviewController implements Controllable {
 //        spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 //        proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
 
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setPreferredWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMinWidth(40);
+
+        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setPreferredWidth(40);
+        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setMaxWidth(40);
+        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setMinWidth(40);
+
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMinWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(10);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_INTENSITY).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PEPTIDE_SEQUENCE).setPreferredWidth(300);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PROTEIN_ACCESSIONS).setPreferredWidth(300);
+
         //  Listeners
 
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
 
             if (node != null && node.isLeaf()) {
-                AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
+                selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
 
-                // TODO: page it because it's slow
-
-                GlazedLists.replaceAll(proteins, proteinRepository.getProteinsForRun(analyticalRun), false);
+                proteinTableModel.reset(selectedAnalyticalRun);
+                updateProteinTable();
             }
         });
 
@@ -159,6 +156,89 @@ public class ProteinOverviewController implements Controllable {
                 }
             }
         });
+
+        proteinOverviewPanel.getProteinsTable().getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
+                proteinTableModel.setPage(0);
+
+                updateProteinTable();
+            }
+        });
+
+        proteinOverviewPanel.getFirstPageProteins().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinTableModel.setPage(0);
+                updateProteinTable();
+
+                proteinOverviewPanel.getNextPageProteins().setEnabled(true);
+                proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
+                proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
+                proteinOverviewPanel.getLastPageProteins().setEnabled(true);
+            }
+        });
+
+        proteinOverviewPanel.getPrevPageProteins().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinTableModel.setPage(proteinTableModel.getPage() - 1);
+                updateProteinTable();
+
+                proteinOverviewPanel.getNextPageProteins().setEnabled(true);
+                proteinOverviewPanel.getLastPageProteins().setEnabled(true);
+
+                if (proteinTableModel.getPage() == 0) {
+                    proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
+                    proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
+                }
+            }
+        });
+
+        proteinOverviewPanel.getNextPageProteins().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinTableModel.setPage(proteinTableModel.getPage() + 1);
+                updateProteinTable();
+
+                proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
+                proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
+
+                if (proteinTableModel.isMaxPage()) {
+                    proteinOverviewPanel.getNextPageProteins().setEnabled(false);
+                    proteinOverviewPanel.getLastPageProteins().setEnabled(false);
+                }
+            }
+        });
+
+        proteinOverviewPanel.getLastPageProteins().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinTableModel.setPage(proteinTableModel.getMaxPage());
+                updateProteinTable();
+
+                proteinOverviewPanel.getNextPageProteins().setEnabled(false);
+                proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
+                proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
+                proteinOverviewPanel.getLastPageProteins().setEnabled(false);
+            }
+        });
+
+        proteinOverviewPanel.getFilterProteins().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+
+                String filterText = proteinOverviewPanel.getFilterProteins().getText();
+
+                if (filterText.matches("^[a-zA-Z0-9]*$")) {
+                    proteinTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
+
+                    updateProteinTable();
+                }
+            }
+        });
     }
 
     @Override
@@ -166,5 +246,50 @@ public class ProteinOverviewController implements Controllable {
 
     public ProteinOverviewPanel getProteinOverviewPanel() {
         return proteinOverviewPanel;
+    }
+
+    /**
+     * Build a node tree for a given project consisting of experiments, samples and runs
+     * @param project A project to represent
+     * @return A node of nodes
+     */
+    private DefaultMutableTreeNode buildProjectTree(Project project) {
+        DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getTitle());
+
+        if (project.getExperiments().size() > 0) {
+            for (Experiment experiment : project.getExperiments()) {
+                DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(experiment.getTitle());
+
+                if (experiment.getSamples().size() > 0) {
+                    for (Sample sample : experiment.getSamples()) {
+                        DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample.getName());
+
+                        if (sample.getAnalyticalRuns().size() > 0) {
+                            for (AnalyticalRun analyticalRun : sample.getAnalyticalRuns()) {
+                                DefaultMutableTreeNode runNode = new DefaultMutableTreeNode(analyticalRun);
+
+                                sampleNode.add(runNode);
+                            }
+
+                            experimentNode.add(sampleNode);
+                        }
+                    }
+
+                    projectNode.add(experimentNode);
+                }
+            }
+        }
+
+        return projectNode;
+    }
+
+    private void updateProteinTable() {
+        if (selectedAnalyticalRun != null) {
+            GlazedLists.replaceAll(proteins, proteinTableModel.getRows(selectedAnalyticalRun), false);
+            proteinOverviewPanel.getPageLabelProteins().setText(proteinTableModel.getPageIndicator());
+        } else {
+            GlazedLists.replaceAll(proteins, new ArrayList<>(), false);
+            proteinOverviewPanel.getPageLabelProteins().setText("");
+        }
     }
 }

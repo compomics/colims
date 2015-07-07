@@ -25,7 +25,10 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      * @param analyticalRun The run
      * @return A list of proteins
      */
-    List<Protein> getProteinsForRun(AnalyticalRun analyticalRun);
+    List<Protein> getPagedProteinsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
+
+
+    int getProteinCountForRun(final AnalyticalRun analyticalRun, final String orderBy, final String filter);
 
 //    /**
 //     * Find a protein with hibernate search by the sequence.

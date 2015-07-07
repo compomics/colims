@@ -21,6 +21,16 @@ import java.util.List;
 @Transactional
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
+    public static final String BASE_QUERY = "SELECT DISTINCT protein.id, MAX(%3$s) FROM protein"
+        + " LEFT JOIN peptide_has_protein php ON php.l_protein_id = protein.id"
+        + " LEFT JOIN peptide pep ON pep.id = php.l_peptide_id"
+        + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
+        + " LEFT JOIN protein_accession ON protein.id = protein_accession.l_protein_id"
+        + " WHERE (protein.protein_sequence LIKE '%2$s'"
+        + " OR protein_accession.accession LIKE '%2$s')"
+        + " AND sp.l_analytical_run_id = %1$d"
+        + " GROUP BY protein.id";
+
     /**
      * Logger instance.
      */
@@ -34,16 +44,17 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     }
 
     @Override
-    public List<Protein> getProteinsForRun(AnalyticalRun analyticalRun) {
+    public List<Protein> getPagedProteinsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter) {
         List<Protein> proteins = new ArrayList<>();
 
-        String queryString = "SELECT DISTINCT pro.id FROM protein pro"
-            + " JOIN peptide_has_protein php ON php.l_protein_id = pro.id"
-            + " JOIN peptide pep ON pep.id = php.l_peptide_id"
-            + " JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
-            + " WHERE sp.l_analytical_run_id = " + analyticalRun.getId();
+        String extraParams = " ORDER BY MAX(%3$s) %4$s, protein.id"
+            + " LIMIT %5$d "
+            + " OFFSET %6$d";
 
-        final List idList = getCurrentSession().createSQLQuery(queryString).addScalar("pro.id", LongType.INSTANCE).list();
+        final List idList = getCurrentSession()
+            .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
+            .addScalar("protein.id", LongType.INSTANCE)
+            .list();
 
         if (idList.size() > 0) {
             proteins = createCriteria().add(Restrictions.in("id", idList)).list();
@@ -52,6 +63,12 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
         }
 
         return proteins;
+    }
+
+    @Override
+    public int getProteinCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter) {
+        return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", orderBy))
+            .list().size();
     }
 
 //    @Override

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
 
-    private static final String[] columnNames = {"Id", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
+    private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
 
     public static final int SPECTRUM_ID = 0;
