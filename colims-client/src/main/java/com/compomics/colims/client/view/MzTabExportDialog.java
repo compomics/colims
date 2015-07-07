@@ -117,7 +117,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return studyVariableTree;
     }
 
-    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -163,7 +163,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         studyVariablesAddLabel = new javax.swing.JLabel();
         assaysPanel = new javax.swing.JPanel();
         assayListScrollPane = new javax.swing.JScrollPane();
-        assayList = new javax.swing.JList();
+        assayList = new javax.swing.JList<String>();
         assayButtonsParentPanel = new javax.swing.JPanel();
         assayButtonsPanel = new javax.swing.JPanel();
         addAssayButton = new javax.swing.JButton();
@@ -307,7 +307,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                     .addGroup(descriptionPanelLayout.createSequentialGroup()
                         .addComponent(descriptionLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE))
+                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
                 .addContainerGap())
         );
         descriptionPanelLayout.setVerticalGroup(
@@ -346,7 +346,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                         .addComponent(numberOfAssaysLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(numberOfAssaysSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(190, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
         numberOfAssaysPanelLayout.setVerticalGroup(
             numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,7 +427,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                             .addComponent(studyVariableTextField))
                         .addContainerGap())
                     .addGroup(studyVariablesPanelLayout.createSequentialGroup()
-                        .addComponent(studyVariablesAddLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+                        .addComponent(studyVariablesAddLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                         .addGap(119, 119, 119))))
         );
         studyVariablesPanelLayout.setVerticalGroup(
@@ -449,7 +449,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.6;
+        gridBagConstraints.weightx = 0.65;
         gridBagConstraints.weighty = 1.0;
         secondPanel.add(studyVariablesPanel, gridBagConstraints);
 
@@ -503,9 +503,9 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         assaysPanelLayout.setHorizontalGroup(
             assaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(assaysPanelLayout.createSequentialGroup()
-                .addComponent(assayListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(assayListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(assayButtonsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                .addComponent(assayButtonsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         assaysPanelLayout.setVerticalGroup(
             assaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -520,7 +520,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.4;
+        gridBagConstraints.weightx = 0.35;
         gridBagConstraints.weighty = 1.0;
         secondPanel.add(assaysPanel, gridBagConstraints);
 
@@ -559,7 +559,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -625,7 +625,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JButton addStudyVariableButton;
     private javax.swing.JPanel assayButtonsPanel;
     private javax.swing.JPanel assayButtonsParentPanel;
-    private javax.swing.JList assayList;
+    private javax.swing.JList<String> assayList;
     private javax.swing.JScrollPane assayListScrollPane;
     private javax.swing.JLabel assaysDescriptionLabel;
     private javax.swing.JPanel assaysPanel;

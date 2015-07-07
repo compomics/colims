@@ -103,10 +103,16 @@ public class MzTabExportController implements Controllable {
                             mzTabExport.setMzTabMode(getSelectedMzTabMode());
                             mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
 
-                            //update assay list model
-                            assayListModel.clear();
-                            for (int i = 1; i <= (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue(); i++) {
-                                assayListModel.add(i - 1, ASSAY + i);
+                            //check if the number of assays has changed and if necessary, update the second panel
+                            int numberOfAssays = assayListModel.getSize() + getNumberOfAssaysInTree();
+                            if (numberOfAssays != (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue()) {
+                                //update assay list model
+                                assayListModel.clear();
+                                for (int i = 1; i <= (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue(); i++) {
+                                    assayListModel.add(i - 1, ASSAY + i);
+                                }
+                                //update study variables tree
+                                removeAllAssays();
                             }
 
                             getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
@@ -199,8 +205,18 @@ public class MzTabExportController implements Controllable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
-                if (selectionModel.getSelectionPaths().length != 0 && !selectionModel.getSelectionPaths()[0].getLastPathComponent().equals(studyVariableRootNode)) {
+                //check if one or more study variables have been selected
+                if (areOneOrMoreNodesSelected(true)) {
                     for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                        //check for assays linked to the study variable to remove
+                        DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                        Enumeration<DefaultMutableTreeNode> assays = studyVariable.children();
+                        while (assays.hasMoreElements()) {
+                            DefaultMutableTreeNode assay = assays.nextElement();
+                            //add to assay list
+                            assayListModel.addElement((String) assay.getUserObject());
+                        }
+
                         studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
                     }
                 } else {
@@ -214,11 +230,47 @@ public class MzTabExportController implements Controllable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                List selectedValuesList = mzTabExportDialog.getAssayList().getSelectedValuesList();
-                if (!selectedValuesList.isEmpty() && isStudyVariableSelected()) {
+                List<String> selectedValuesList = mzTabExportDialog.getAssayList().getSelectedValuesList();
+                if (!selectedValuesList.isEmpty() && isOneStudyVariableSelected()) {
+                    DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) mzTabExportDialog.getStudyVariableTree().getSelectionPaths()[0].getLastPathComponent();
+                    for (String assay : selectedValuesList) {
+                        //remove from assay list
+                        assayListModel.removeElement(assay);
 
+                        //add to tree and expand node
+                        DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(assay);
+                        studyVariableTreeModel.insertNodeInto(assayTreeNode, studyVariable, studyVariableTreeModel.getChildCount(studyVariable));
+
+                        mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariable.getPath()));
+                    }
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and a study variable to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
+            }
+        });
+
+        mzTabExportDialog.getRemoveAssayButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
+                //check if one or more assays have been selected
+                if (areOneOrMoreNodesSelected(false)) {
+                    for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                        //check for assays linked to the study variable to remove
+                        DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                        Enumeration<DefaultMutableTreeNode> assays = studyVariable.children();
+                        while (assays.hasMoreElements()) {
+                            DefaultMutableTreeNode assay = assays.nextElement();
+                            //add to assay list
+                            assayListModel.addElement((String) assay.getUserObject());
+                        }
+
+                        studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
+                    }
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Assay(s) removal", "Please select one or more assays to remove.", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
             }
@@ -263,14 +315,14 @@ public class MzTabExportController implements Controllable {
                 mzTabExportDialog.getProceedButton().setEnabled(true);
                 mzTabExportDialog.getFinishButton().setEnabled(false);
                 //show info
-                updateInfo("Click on \"proceed\" to provide one or more study variables.");
+                updateInfo("Click on \"proceed\" to link study variables to assays.");
                 break;
             case SECOND_PANEL:
                 mzTabExportDialog.getBackButton().setEnabled(true);
                 mzTabExportDialog.getProceedButton().setEnabled(true);
                 mzTabExportDialog.getFinishButton().setEnabled(false);
                 //show info
-                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
+                updateInfo("Click on \"proceed\" to validate the input and store the run(s).");
                 break;
 //            case MAX_QUANT_DATA_IMPORT_CARD:
 //                mzTabExportDialog.getBackButton().setEnabled(true);
@@ -360,8 +412,8 @@ public class MzTabExportController implements Controllable {
      *
      * @return the boolean result
      */
-    private boolean isStudyVariableSelected() {
-        boolean isStudyVariableSelected = false;
+    private boolean isOneStudyVariableSelected() {
+        boolean isOneStudyVariableSelected = false;
 
         TreePath[] selectionPaths = mzTabExportDialog.getStudyVariableTree().getSelectionModel().getSelectionPaths();
         //check if one and only one node is selected
@@ -369,11 +421,68 @@ public class MzTabExportController implements Controllable {
             DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) selectionPaths[0].getLastPathComponent();
             //check if the parent node is the root node
             if (lastPathComponent.getParent().equals(studyVariableRootNode)) {
-                isStudyVariableSelected = true;
+                isOneStudyVariableSelected = true;
             }
         }
 
-        return isStudyVariableSelected;
+        return isOneStudyVariableSelected;
+    }
+
+    /**
+     * Check if one or more nodes are selected in the tree. Returns
+     * false if nothing or another path level (study variable or assay, root path) is selected.
+     *
+     * @param isStudyVariable true for study variable nodes, false for assay nodes
+     * @return the boolean result
+     */
+    private boolean areOneOrMoreNodesSelected(boolean isStudyVariableNode) {
+        boolean areOneOrMoreNodesSelected = true;
+
+        TreePath[] selectionPaths = mzTabExportDialog.getStudyVariableTree().getSelectionModel().getSelectionPaths();
+        //check if one or more nodes are selected
+        if (selectionPaths.length >= 1) {
+            for (TreePath selectionPath : selectionPaths) {
+                DefaultMutableTreeNode lastPathComponent = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+                //check, depending on the isStudyVariable boolean, if the parent node is the root node
+                if (isStudyVariableNode ? !lastPathComponent.getParent().equals(studyVariableRootNode) : lastPathComponent.getParent().equals(studyVariableRootNode)) {
+                    areOneOrMoreNodesSelected = false;
+                    break;
+                }
+            }
+        } else {
+            areOneOrMoreNodesSelected = false;
+        }
+
+        return areOneOrMoreNodesSelected;
+    }
+
+    /**
+     * Get the number of assays in the study variables tree.
+     *
+     * @return the number of assays
+     */
+    private int getNumberOfAssaysInTree() {
+        int numberOfAssaysInTree = 0;
+
+        Enumeration studyVariables = studyVariableRootNode.children();
+        while (studyVariables.hasMoreElements()) {
+            DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) studyVariables.nextElement();
+            numberOfAssaysInTree += studyVariable.getChildCount();
+        }
+
+        return numberOfAssaysInTree;
+    }
+
+    /**
+     * Remove all assays from the study variables tree.
+     */
+    private void removeAllAssays() {
+        Enumeration studyVariables = studyVariableRootNode.children();
+        while (studyVariables.hasMoreElements()) {
+            DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) studyVariables.nextElement();
+            studyVariable.removeAllChildren();
+        }
+        studyVariableTreeModel.reload();
     }
 
 }
