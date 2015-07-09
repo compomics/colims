@@ -2,6 +2,7 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Protein;
 
@@ -11,23 +12,23 @@ import java.util.stream.Collectors;
 /**
  * Created by Iain on 23/06/2015.
  */
-public class PeptideTableFormat implements AdvancedTableFormat<Peptide> {
+public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> {
 
-    private static final String[] columnNames = {"ID", "Sequence", "Charge"};
+    private static final String[] columnNames = {"Sequence", "Charge", "Spectra"};
 
-    public static final int ID = 0;
-    public static final int SEQUENCE = 1;
-    public static final int CHARGE = 2;
+    public static final int SEQUENCE = 0;
+    public static final int CHARGE = 1;
+    public static final int SPECTRA = 2;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case ID:
-                return Long.class;
             case SEQUENCE:
                 return String.class;
             case CHARGE:
                 return Integer.class;
+            case SPECTRA:
+                return Long.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -49,14 +50,14 @@ public class PeptideTableFormat implements AdvancedTableFormat<Peptide> {
     }
 
     @Override
-    public Object getColumnValue(Peptide peptide, int column) {
+    public Object getColumnValue(PeptideTableRow peptide, int column) {
         switch (column) {
-            case ID:
-                return peptide.getId();
             case SEQUENCE:
                 return peptide.getSequence();
             case CHARGE:
                 return peptide.getCharge();
+            case SPECTRA:
+                return peptide.getSpectrumCount();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

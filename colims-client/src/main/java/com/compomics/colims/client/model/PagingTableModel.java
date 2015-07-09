@@ -99,6 +99,12 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     }
 
     /**
+     * Get the number of rows displayed per page
+     * @return That value
+     */
+    public int getPerPage() { return perPage; }
+
+    /**
      * Update filter text.
      *
      * @param filter Filter string

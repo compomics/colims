@@ -29,7 +29,7 @@ public class ProteinTableModel extends PagingTableModel {
             case ProteinTableFormat.ID:
                 return "protein.id";
             case ProteinTableFormat.SEQUENCE:
-                return "protein.sequence";
+                return "protein.protein_sequence";
             case ProteinTableFormat.ACCESSION:
                 return "protein_accession.accession";
             default:

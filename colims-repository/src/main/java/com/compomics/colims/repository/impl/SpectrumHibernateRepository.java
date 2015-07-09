@@ -69,6 +69,18 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
+    public List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun) {
+        List<Long> ids = new ArrayList<>();
+
+        ids = createCriteria()
+            .add(Restrictions.eq("analyticalRun", analyticalRun))
+            .setProjection(Projections.property("id"))
+            .list();
+
+        return ids;
+    }
+
+    @Override
     public Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun) {
         Long numberOfSpectra;
 

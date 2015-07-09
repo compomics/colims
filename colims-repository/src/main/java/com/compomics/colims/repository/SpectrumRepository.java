@@ -38,6 +38,14 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
 
     /**
+     * Returns a list of spectrum ids associated with a given run
+     *
+     * @param analyticalRun The analytical run
+     * @return List of IDs
+     */
+    List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
+
+    /**
      * Count the spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance

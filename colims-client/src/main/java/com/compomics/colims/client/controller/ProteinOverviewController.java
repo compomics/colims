@@ -7,6 +7,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.client.model.ProteinTableModel;
 import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
@@ -24,12 +25,14 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Iain on 19/06/2015.
@@ -53,19 +56,19 @@ public class ProteinOverviewController implements Controllable {
     private AdvancedTableModel peptideTableModel;
     private PsmTableModel psmTableModel;
     private final EventList<Protein> proteins = new BasicEventList<>();
-    private final EventList<Peptide> peptides = new BasicEventList<>();
+    private final EventList<PeptideTableRow> peptides = new BasicEventList<>();
     private final EventList<Spectrum> spectra = new BasicEventList<>();
     private DefaultEventSelectionModel<Protein> proteinSelectionModel;
-    private DefaultEventSelectionModel<Peptide> peptideSelectionModel;
+    private DefaultEventSelectionModel<PeptideTableRow> peptideSelectionModel;
     private DefaultEventSelectionModel<Spectrum> spectrumSelectionModel;
     private AnalyticalRun selectedAnalyticalRun;
+    private List<Long> spectrumIdsForRun = new ArrayList<>();
 
     @Override
     public void init() {
         eventBus.register(this);
         proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
 
-        // set up the tree!
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
         for (Project project : mainController.getProjects()) {
@@ -85,7 +88,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinSelectionModel);
 
         // init peptides table
-        SortedList<Peptide> sortedPeptides = new SortedList<>(peptides, null);
+        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptides, null);
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
         proteinOverviewPanel.getPeptidesTable().setModel(peptideTableModel);
@@ -105,10 +108,6 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setPreferredWidth(40);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMinWidth(40);
-
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setPreferredWidth(40);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setMaxWidth(40);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.ID).setMinWidth(40);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
@@ -131,6 +130,15 @@ public class ProteinOverviewController implements Controllable {
 
                 proteinTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
+
+                // TODO: list of spectrum ids
+                spectrumIdsForRun = spectrumRepository.getSpectraIdsForRun(selectedAnalyticalRun);
+
+                // Set scrollpane to match row count (TODO: doesn't work!)
+                proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
+                    proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
+                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
+                ));
             }
         });
 
@@ -139,7 +147,12 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
                 } else {
-                    GlazedLists.replaceAll(peptides, peptideRepository.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0)), false);
+                    List<PeptideTableRow> peptideTableRows = peptideRepository.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0), spectrumIdsForRun)
+                        .stream()
+                        .map(PeptideTableRow::new)
+                        .collect(Collectors.toList());
+
+                    GlazedLists.replaceAll(peptides, peptideTableRows, false);
                 }
             }
         });
@@ -149,10 +162,14 @@ public class ProteinOverviewController implements Controllable {
                 if (peptideSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
                 } else {
-                    List<Spectrum> spectrumList = new ArrayList<>();
-                    spectrumList.add(peptideSelectionModel.getSelected().get(0).getSpectrum());
+                    List<Peptide> peptides = peptideRepository.getPeptidesFromSequence(peptideSelectionModel.getSelected().get(0).getSequence(), spectrumIdsForRun);
+                    List<Spectrum> selectedSpectra = new ArrayList<>();
 
-                    GlazedLists.replaceAll(spectra, spectrumList, false);
+                    for (Peptide peptide : peptides) {
+                        selectedSpectra.add(peptide.getSpectrum());
+                    }
+
+                    GlazedLists.replaceAll(spectra, selectedSpectra, false);
                 }
             }
         });
