@@ -1,6 +1,8 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.progress.ProgressEndEvent;
+import com.compomics.colims.client.event.progress.ProgressStartEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.MzTabExportDialog;
 import com.compomics.colims.core.io.mztab.MzTabExport;
@@ -176,15 +178,9 @@ public class MzTabExportController implements Controllable {
                             updateAnalyticalRunsAssaysRefs();
                             getCardLayout().show(mzTabExportDialog.getTopPanel(), LAST_PANEL);
                             onCardSwitch();
-                        }
-                        break;
-                    case LAST_PANEL:
-                        List<String> lastPanelValidationMessages = validateLastPanel();
-                        if (lastPanelValidationMessages.isEmpty()) {
-                            mzTabExport.setFileName(mzTabExportDialog.getFileNameTextField().getText());
-                            mzTabExport.setExportDirectory(mzTabExportDialog.getExportDirectoryChooser().getSelectedFile());
-                            onCardSwitch();
-
+                        } else {
+                            MessageEvent messageEvent = new MessageEvent("Validation failure", thirdPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                            eventBus.post(messageEvent);
                         }
                         break;
                     default:
@@ -212,10 +208,18 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getFinishButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                MzTabExporterWorker mzTabExporterWorker = new MzTabExporterWorker();
-//                progresController.getProgressDialog().getProgressBar().setIndeterminate(true);
-                progresController.showProgressBar(1, "exporting");
-                mzTabExporterWorker.execute();
+                List<String> lastPanelValidationMessages = validateLastPanel();
+                if (lastPanelValidationMessages.isEmpty()) {
+                    mzTabExport.setFileName(mzTabExportDialog.getFileNameTextField().getText());
+                    mzTabExport.setExportDirectory(mzTabExportDialog.getExportDirectoryChooser().getSelectedFile());
+                    MzTabExporterWorker mzTabExporterWorker = new MzTabExporterWorker();
+                    ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
+                    eventBus.post(progressStartEvent);
+                    mzTabExporterWorker.execute();
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", lastPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
@@ -738,12 +742,11 @@ public class MzTabExportController implements Controllable {
         @Override
         protected Void doInBackground() throws Exception {
 
-            //show progress bar
-            progresController.showProgressBar(5, "Exporting.");
-
             LOGGER.info("Exporting mzTab file " + mzTabExport.getFileName() + " to directory " + mzTabExport.getExportDirectory());
             mzTabExporter.export(mzTabExport);
             LOGGER.info("Finished exporting mzTab file " + mzTabExport.getFileName());
+
+            Thread.sleep(10000);
 
             return null;
         }
@@ -757,8 +760,8 @@ public class MzTabExportController implements Controllable {
             } catch (CancellationException ex) {
                 LOGGER.info("Cancelling mzTab export.");
             } finally {
-                //hide progress bar
-                progresController.hideProgressDialog();
+                //hide progress dialog
+                eventBus.post(new ProgressEndEvent());
                 //hide export dialog
                 mzTabExportDialog.setVisible(false);
             }

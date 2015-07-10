@@ -5,6 +5,9 @@
  */
 package com.compomics.colims.client.event.progress;
 
+import java.awt.Component;
+import javax.swing.JFrame;
+
 /**
  * Event thrown when a progress dialog should start.
  *
@@ -12,6 +15,10 @@ package com.compomics.colims.client.event.progress;
  */
 public class ProgressStartEvent {
 
+    /**
+     * The parent frame of the progress dialog to show.
+     */
+    private JFrame parent;
     /**
      * Is the progress dialog indeterminate.
      */
@@ -28,12 +35,14 @@ public class ProgressStartEvent {
     /**
      * Constructor.
      *
+     * @param parent the parent frame
      * @param isIndeterminate whether the progress should be indeterminate or
      * not
      * @param numberOfSteps the number of progress steps
      * @param headerText the progress headerText
      */
-    public ProgressStartEvent(boolean isIndeterminate, Integer numberOfSteps, String headerText) {
+    public ProgressStartEvent(final JFrame parent, final boolean isIndeterminate, final Integer numberOfSteps, final String headerText) {
+        this.parent = parent;
         this.isIndeterminate = isIndeterminate;
         this.numberOfSteps = numberOfSteps;
         this.headerText = headerText;
@@ -61,6 +70,14 @@ public class ProgressStartEvent {
 
     public void setHeaderText(String headerText) {
         this.headerText = headerText;
+    }
+
+    public JFrame getParent() {
+        return parent;
+    }
+
+    public void setParent(JFrame parent) {
+        this.parent = parent;
     }
 
 }
