@@ -381,7 +381,7 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="browseFastaButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="browse..."/>
+                        <Property name="text" type="java.lang.String" value="browse"/>
                         <Property name="toolTipText" type="java.lang.String" value="select a fasta file to set the file name and the file path text fields"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 25]"/>
@@ -413,7 +413,7 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="browseTaxonomyButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="browse..."/>
+                        <Property name="text" type="java.lang.String" value="browse"/>
                         <Property name="toolTipText" type="java.lang.String" value="select taxonomy ID and species from the NEWT taxonomy ontology"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 25]"/>

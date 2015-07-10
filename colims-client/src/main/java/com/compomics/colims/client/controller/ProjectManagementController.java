@@ -81,7 +81,7 @@ public class ProjectManagementController implements Controllable {
     @Autowired
     private AnalyticalRunSetupController analyticalRunSetupController;
     @Autowired
-    private MzTabExportController MzTabExportController;
+    private MzTabExportController mzTabExportController;
     //parent controller
     @Autowired
     private MainController mainController;
@@ -121,7 +121,7 @@ public class ProjectManagementController implements Controllable {
         experimentEditController.init();
         sampleEditController.init();
         analyticalRunSetupController.init();
-        MzTabExportController.init();
+        mzTabExportController.init();
 
         //init projects table
         SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
@@ -662,7 +662,8 @@ public class ProjectManagementController implements Controllable {
             } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
                 EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
                 if (selectedSamples.size() >= 1) {
-                    MzTabExportController.showView();
+                    mzTabExportController.getMzTabExport().setSamples(selectedSamples);
+                    mzTabExportController.showView();
                 } else {
                     eventBus.post(new MessageEvent("MzTab export", "Please select one or more samples to export.", JOptionPane.INFORMATION_MESSAGE));
                 }

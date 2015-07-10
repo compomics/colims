@@ -37,7 +37,7 @@ public class MzTabExporterTest {
     @Ignore
     @Test
     public void testExportSingleRun_1() throws IOException, MzMLUnmarshallerException, MappingException {
-        mzTabExporter.exportAnalyticalRun(new File("testFile"), new MzTabExport());
+        mzTabExporter.export(new MzTabExport());
 
         System.out.println("test");
     }

@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.io.mztab;
 
-import com.compomics.colims.model.AnalyticalRun;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -105,11 +104,16 @@ public class MzTabExporter {
         mzTabParams = parseJsonNode(mzTabParamsNode);
     }
 
-    public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
-        try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+    /**
+     * Export the mzTabExport input to a mzTab file.
+     *
+     * @param mzTabExport
+     */
+    public void export(MzTabExport mzTabExport) {
+        try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             pw.println("under development");
 
@@ -118,15 +122,9 @@ public class MzTabExporter {
         }
     }
 
-    public void exportAnalyticalRun(File exportDirectory, MzTabExport mzTabExport) {
-
-
-        System.out.println("test");
-
-    }
-
     /**
-     * This method parses the json root node and returns a list of MzTabParam instances.
+     * This method parses the json root node and returns a list of MzTabParam
+     * instances.
      *
      * @param jsonNode the root JsonNode
      * @return the list of MzTabParam instances

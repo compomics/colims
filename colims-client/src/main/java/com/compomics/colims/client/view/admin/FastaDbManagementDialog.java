@@ -13,10 +13,13 @@ import javax.swing.JTextField;
  */
 public class FastaDbManagementDialog extends javax.swing.JDialog {
 
+    /**
+     * The fasta file chooser.
+     */
     private final JFileChooser fastaFileChooser = new JFileChooser();
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent frame
      * @param modal the modal boolean
@@ -225,7 +228,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         filePathLabel.setText("File Path*");
 
-        browseFastaButton.setText("browse...");
+        browseFastaButton.setText("browse");
         browseFastaButton.setToolTipText("select a fasta file to set the file name and the file path text fields");
         browseFastaButton.setMaximumSize(new java.awt.Dimension(80, 25));
         browseFastaButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -236,7 +239,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         taxonomyLabel.setText("Taxonomy");
 
-        browseTaxonomyButton.setText("browse...");
+        browseTaxonomyButton.setText("browse");
         browseTaxonomyButton.setToolTipText("select taxonomy ID and species from the NEWT taxonomy ontology");
         browseTaxonomyButton.setMaximumSize(new java.awt.Dimension(80, 25));
         browseTaxonomyButton.setMinimumSize(new java.awt.Dimension(80, 25));
