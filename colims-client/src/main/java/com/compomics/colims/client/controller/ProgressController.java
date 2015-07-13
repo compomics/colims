@@ -46,14 +46,14 @@ public class ProgressController implements Controllable {
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")),
                 true);
-
+        
         progressDialog.setTitle(progressStartEvent.getHeaderText() + " Please Wait...");
         if (!progressStartEvent.isIsIndeterminate()) {
             progressDialog.getProgressBar().setMaximum(progressStartEvent.getNumberOfSteps() + 1);
             progress = 1;
         } else {
             progressDialog.getProgressBar().setIndeterminate(true);
-            progressDialog.
+            progressDialog.getProgressBar().setStringPainted(false);
         }
 
         GuiUtils.centerDialogOnComponent(progressStartEvent.getParent(), progressDialog);
