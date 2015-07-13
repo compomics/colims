@@ -101,9 +101,9 @@ public class ProteinOverviewController implements Controllable {
 
         psmTableModel = new PsmTableModel(sortedSpectra, new PsmTableFormat(), spectrumRepository);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);
-//        spectrumSelectionModel = new DefaultEventSelectionModel<>(sortedSpectra);
-//        spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
+        spectrumSelectionModel = new DefaultEventSelectionModel<>(sortedSpectra);
+        spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
 
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setPreferredWidth(40);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
@@ -131,7 +131,6 @@ public class ProteinOverviewController implements Controllable {
                 proteinTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
 
-                // TODO: list of spectrum ids
                 spectrumIdsForRun = spectrumRepository.getSpectraIdsForRun(selectedAnalyticalRun);
 
                 // Set scrollpane to match row count (TODO: doesn't work!)

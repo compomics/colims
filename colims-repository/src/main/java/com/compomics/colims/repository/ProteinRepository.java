@@ -27,7 +27,13 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      */
     List<Protein> getPagedProteinsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
 
-
+    /**
+     * Count the number of proteins related to a given analytical run
+     * @param analyticalRun Run of interest
+     * @param orderBy Column to order by
+     * @param filter Filter string
+     * @return
+     */
     int getProteinCountForRun(final AnalyticalRun analyticalRun, final String orderBy, final String filter);
 
 //    /**
