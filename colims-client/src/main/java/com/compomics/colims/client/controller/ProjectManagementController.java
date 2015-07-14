@@ -36,6 +36,7 @@ import com.google.common.eventbus.EventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -660,14 +661,36 @@ public class ProjectManagementController implements Controllable {
                     eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
                 }
             } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
-                EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
-                if (selectedSamples.size() >= 1) {
-                    mzTabExportController.getMzTabExport().setSamples(selectedSamples);
+                List<String> validationMessages = validateMzTabExportSampleSelection();
+                if (validateMzTabExportSampleSelection().isEmpty()) {
+                    mzTabExportController.getMzTabExport().setSamples(samplesSelectionModel.getSelected());
                     mzTabExportController.showView();
                 } else {
-                    eventBus.post(new MessageEvent("MzTab export", "Please select one or more samples to export.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("MzTab export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
                 }
             }
+        }
+
+        /**
+         * Validate the samples selected for MzTab export.
+         *
+         * @return the list of validation messages
+         */
+        private List<String> validateMzTabExportSampleSelection() {
+            List<String> validationMessages = new ArrayList<>();
+
+            EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+            if (selectedSamples.isEmpty()) {
+                validationMessages.add("Please select one or more samples to export.");
+            }
+            for (Sample selectedSample : selectedSamples) {
+                if (selectedSample.getAnalyticalRuns().isEmpty()) {
+                    validationMessages.add("Every selected sample must have at least one run.");
+                    break;
+                }
+            }
+
+            return validationMessages;
         }
 
     }

@@ -11,6 +11,7 @@ import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.google.common.eventbus.EventBus;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
@@ -58,7 +59,7 @@ public class MzTabExportController implements Controllable {
     private static final String ASSAY = "assay ";
 
     //model
-    private final MzTabExport mzTabExport = new MzTabExport();
+    private MzTabExport mzTabExport = new MzTabExport();
     private final DefaultListModel<String> assaysToCVListModel = new DefaultListModel<>();
     private final DefaultMutableTreeNode studyVariableRootNode = new DefaultMutableTreeNode("Study variables");
     private final DefaultTreeModel studyVariableTreeModel = new DefaultTreeModel(studyVariableRootNode);
@@ -173,9 +174,9 @@ public class MzTabExportController implements Controllable {
                         }
                         break;
                     case THIRD_PANEL:
+                        updateAnalyticalRunsToExport();
                         List<String> thirdPanelValidationMessages = validateThirdPanel();
                         if (thirdPanelValidationMessages.isEmpty()) {
-                            updateAnalyticalRunsAssaysRefs();
                             getCardLayout().show(mzTabExportDialog.getTopPanel(), LAST_PANEL);
                             onCardSwitch();
                         } else {
@@ -389,11 +390,18 @@ public class MzTabExportController implements Controllable {
         getCardLayout().first(mzTabExportDialog.getTopPanel());
         onCardSwitch();
 
+        //dereference MzTabExport instance
+        mzTabExport = new MzTabExport();
+
+        //reset first panel input
+        mzTabExportDialog.getDescriptionTextArea().setText("");
+        mzTabExportDialog.getNumberOfAssaysSpinner().getModel().setValue(1);
+
         //reset tree model
         studyVariableRootNode.removeAllChildren();
         studyVariableTreeModel.reload();
 
-        //reset assay list
+        //reset assay lists
         assaysToCVListModel.clear();
         assaysToRunsListModel.clear();
 
@@ -522,16 +530,12 @@ public class MzTabExportController implements Controllable {
             validationMessages.add("All assays must be linked to study variables.");
         }
         //check for study variables nodes with no assays
-        boolean hasNoChildren = false;
         Enumeration children = studyVariableRootNode.children();
         while (children.hasMoreElements()) {
             if (((DefaultMutableTreeNode) children.nextElement()).getChildCount() == 0) {
-                hasNoChildren = true;
+                validationMessages.add("All study variables must have at least one assay.");
                 break;
             }
-        }
-        if (hasNoChildren) {
-            validationMessages.add("All study variables must have at least one assay.");
         }
 
         return validationMessages;
@@ -547,6 +551,14 @@ public class MzTabExportController implements Controllable {
 
         if (!assaysToRunsListModel.isEmpty()) {
             validationMessages.add("All assays must be linked to analytical runs.");
+        }
+        //ensure that all runs linked with assays have been searched with the same search engine
+        List<AnalyticalRun> runs = mzTabExport.getRuns();
+        SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
+        for(int i = 1; i < runs.size(); i++){
+            if(!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())){
+                validationMessages.add("All runs linked to assays must have the same search engine");
+            }
         }
 
         return validationMessages;
@@ -711,15 +723,19 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Update the analytical runs to assays references.
+     * Update the analytical runs to export; set the list of runs and assays
+     * references in the MzTabExport instance.
      */
-    private void updateAnalyticalRunsAssaysRefs() {
+    private void updateAnalyticalRunsToExport() {
+        List<AnalyticalRun> analyticalRuns = mzTabExport.getRuns();
+        analyticalRuns.clear();
         Map<AnalyticalRun, int[]> analyticalRunAssaysRefs = mzTabExport.getAnalyticalRunsAssaysRefs();
         analyticalRunAssaysRefs.clear();
 
-        Enumeration nodes = analyticalRunRootNode.depthFirstEnumeration();
+        Enumeration nodes = analyticalRunRootNode.breadthFirstEnumeration();
         while (nodes.hasMoreElements()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
+            //the analytical runs are on node level 2
             if (node.getLevel() == 2) {
                 Enumeration assays = node.children();
                 int[] assayNumbers = new int[node.getChildCount()];
@@ -728,8 +744,11 @@ public class MzTabExportController implements Controllable {
                     String assay = ((DefaultMutableTreeNode) assays.nextElement()).getUserObject().toString();
                     int assayNumber = Integer.valueOf(assay.substring(assay.indexOf(" ") + 1));
                     assayNumbers[index] = assayNumber;
+                    index++;
                 }
-                analyticalRunAssaysRefs.put((AnalyticalRun) ((DefaultMutableTreeNode) node).getUserObject(), assayNumbers);
+                AnalyticalRun analyticalRun = (AnalyticalRun) ((DefaultMutableTreeNode) node).getUserObject();
+                analyticalRuns.add(analyticalRun);
+                analyticalRunAssaysRefs.put(analyticalRun, assayNumbers);
             }
         }
     }

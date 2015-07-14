@@ -43,6 +43,10 @@ public class MzTabExport {
      */
     private List<Sample> samples;
     /**
+     * The runs to export.
+     */
+    private List<AnalyticalRun> runs;
+    /**
      * Link between study variables and assays.
      */
     private Map<String, int[]> studyVariablesAssaysRefs = new HashMap<>();
@@ -97,6 +101,14 @@ public class MzTabExport {
 
     public void setSamples(List<Sample> samples) {
         this.samples = samples;
+    }
+
+    public List<AnalyticalRun> getRuns() {
+        return runs;
+    }
+
+    public void setRuns(List<AnalyticalRun> runs) {
+        this.runs = runs;
     }
 
     public Map<String, int[]> getStudyVariablesAssaysRefs() {

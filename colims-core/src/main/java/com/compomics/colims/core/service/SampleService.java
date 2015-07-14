@@ -6,6 +6,8 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.enums.SearchEngineType;
+import java.util.List;
 
 /**
  * This interface provides service methods for the Sample class.

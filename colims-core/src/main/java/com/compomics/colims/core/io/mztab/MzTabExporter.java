@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.io.mztab;
 
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -89,6 +88,10 @@ public class MzTabExporter {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
+    /**
+     * The MzTabExport instance.
+     */
+    private MzTabExport mzTabExport;
 
     /**
      * Inits the exporter; parses the mzTab json file into java objects.
@@ -107,9 +110,34 @@ public class MzTabExporter {
     /**
      * Export the mzTabExport input to a mzTab file.
      *
-     * @param mzTabExport
+     * @param mzTabExport the MzTabExport instance
      */
     public void export(MzTabExport mzTabExport) {
+        this.mzTabExport = mzTabExport;
+        switch (mzTabExport.getMzTabType()) {
+            case QUANTIFICATION:
+                switch (mzTabExport.getMzTabMode()) {
+                    case SUMMARY:
+                        break;
+                    case COMPLETE:
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case IDENTIFICATION:
+                switch (mzTabExport.getMzTabMode()) {
+                    case SUMMARY:
+                        break;
+                    case COMPLETE:
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
                 OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
                 BufferedWriter bw = new BufferedWriter(osw);
@@ -120,6 +148,23 @@ public class MzTabExporter {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
+    }
+
+    private String constructMetadata() {
+        StringBuilder metada = new StringBuilder();
+
+        //version, type, mode and description
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_VERSION).append(COLUMN_DELIMETER).append(VERSION).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_MODE).append(COLUMN_DELIMETER).append(mzTabExport.getMzTabMode().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_TYPE).append(COLUMN_DELIMETER).append(mzTabExport.getMzTabType().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(DESCRIPTION).append(COLUMN_DELIMETER).append(mzTabExport.getDescription()).append(System.lineSeparator());
+        //run locations
+        for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
+            metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(String.format(RUN_LOCATION, i)).append(COLUMN_DELIMETER).append(mzTabExport.getRuns().get(i).getStorageLocation()).append(System.lineSeparator());
+        }
+        //search engine scores
+
+        return metada.toString();
     }
 
     /**
