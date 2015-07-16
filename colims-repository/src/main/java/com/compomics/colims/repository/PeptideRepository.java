@@ -1,6 +1,8 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @param spectrumIds List of spectrum ids to restrict results
      * @return
      */
-    List<Object[]> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
+    List<PeptideHasProtein> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
 
     /**
      * Get a list of Peptide objects matching the given sequence, limiting
@@ -28,4 +30,6 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return
      */
     List getPeptidesFromSequence(String sequence, List<Long> spectrumIds);
+
+    List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
 }

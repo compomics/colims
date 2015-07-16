@@ -6,7 +6,9 @@ import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Protein;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +55,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     public Object getColumnValue(PeptideTableRow peptide, int column) {
         switch (column) {
             case SEQUENCE:
-                return peptide.getSequence();
+                return "<html>" + peptide.getAnnotatedSequence() + "</html>";
             case CHARGE:
                 return peptide.getCharge();
             case SPECTRA:

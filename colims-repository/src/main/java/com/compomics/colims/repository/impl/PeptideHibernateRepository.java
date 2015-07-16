@@ -1,9 +1,9 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -20,20 +20,11 @@ import java.util.List;
 @Transactional
 public class PeptideHibernateRepository extends GenericHibernateRepository<Peptide, Long> implements PeptideRepository {
     @Override
-    public List<Object[]> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
-        // either get all ids first and do second query with projections
-        // or write yet more sql
-
-        return getCurrentSession()
-            .createCriteria(PeptideHasProtein.class)
-            .createAlias("peptide", "pep")
+    public List<PeptideHasProtein> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
+        return getCurrentSession().createCriteria(PeptideHasProtein.class)
             .add(Restrictions.eq("protein", protein))
-            .add(Restrictions.in("pep.spectrum.id", spectrumIds))
-            .setProjection(Projections.projectionList()
-                .add(Projections.groupProperty("pep.sequence")) // AAH THIS ISN'T IN THIS MODEL
-                .add(Projections.count("id"))
-                .add(Projections.property("pep.charge"))
-            )
+            .createCriteria("peptide")
+            .add(Restrictions.in("spectrum.id", spectrumIds))
             .list();
     }
 
@@ -46,4 +37,11 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
             .list();
     }
 
+    @Override
+    public List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides) {
+        return getCurrentSession()
+            .createCriteria(PeptideHasModification.class)
+            .add(Restrictions.in("peptide", peptides))
+            .list();
+    }
 }

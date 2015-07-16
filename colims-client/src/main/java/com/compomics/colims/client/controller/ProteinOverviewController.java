@@ -31,7 +31,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -146,10 +148,25 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
                 } else {
-                    List<PeptideTableRow> peptideTableRows = peptideRepository.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0), spectrumIdsForRun)
-                        .stream()
-                        .map(PeptideTableRow::new)
-                        .collect(Collectors.toList());
+                    List<PeptideHasProtein> newPeptides = peptideRepository.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0), spectrumIdsForRun);
+
+                    List<PeptideTableRow> peptideTableRows = new ArrayList<>();
+                    Map<String, Integer> stringIntegerMap = new HashMap<>();
+
+                    for (PeptideHasProtein peptideHasProtein : newPeptides) {
+                        Peptide peptide = peptideHasProtein.getPeptide();
+
+                        if (stringIntegerMap.containsKey(peptide.getSequence())) {
+                            peptideTableRows.get(stringIntegerMap.get(peptide.getSequence())).addPeptide(peptide);
+                        } else {
+                            peptideTableRows.add(new PeptideTableRow(peptide));
+                            stringIntegerMap.put(peptide.getSequence(), stringIntegerMap.size());
+                        }
+                    }
+
+                    for (PeptideTableRow peptideTableRow : peptideTableRows) {
+                        peptideTableRow.getPeptideHasModifications().addAll(peptideRepository.getModificationsForMultiplePeptides(peptideTableRow.getPeptides()));
+                    }
 
                     GlazedLists.replaceAll(peptides, peptideTableRows, false);
                 }
@@ -162,11 +179,7 @@ public class ProteinOverviewController implements Controllable {
                     GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
                 } else {
                     List<Peptide> peptides = peptideRepository.getPeptidesFromSequence(peptideSelectionModel.getSelected().get(0).getSequence(), spectrumIdsForRun);
-                    List<Spectrum> selectedSpectra = new ArrayList<>();
-
-                    for (Peptide peptide : peptides) {
-                        selectedSpectra.add(peptide.getSpectrum());
-                    }
+                    List<Spectrum> selectedSpectra = peptides.stream().map(Peptide::getSpectrum).collect(Collectors.toList());
 
                     GlazedLists.replaceAll(spectra, selectedSpectra, false);
                 }
