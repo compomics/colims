@@ -1,6 +1,5 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Representation of a row in the Peptides table
  * Created by Iain on 08/07/2015.
  */
 public class PeptideTableRow {
@@ -48,14 +48,14 @@ public class PeptideTableRow {
         return charge;
     }
 
+    /**
+     * Get or create an annotated sequence for the peptide
+     * @return Annotated string
+     */
     public String getAnnotatedSequence() {
         if (annotatedSequence.length() > 0) {
             return annotatedSequence.toString();
         } else {
-            // for each aa
-            // if has mod add <b>thing</b>
-            // else don't
-
             annotatedSequence = new StringBuilder();
 
             int[] mods = new int[sequence.length()];
