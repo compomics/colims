@@ -5,6 +5,7 @@ import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.List;
@@ -41,11 +42,11 @@ public class MzTabExport {
     /**
      * The samples to export.
      */
-    private List<Sample> samples;
+    private List<Sample> samples = new ArrayList<>();
     /**
      * The runs to export.
      */
-    private List<AnalyticalRun> runs;
+    private List<AnalyticalRun> runs = new ArrayList<>();
     /**
      * Link between study variables and assays.
      */

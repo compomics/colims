@@ -390,16 +390,20 @@ public class MzTabExportController implements Controllable {
         getCardLayout().first(mzTabExportDialog.getTopPanel());
         onCardSwitch();
 
-        //dereference MzTabExport instance
+        //dereference MzTabExport instance but keep samples
+        List<Sample> samples = mzTabExport.getSamples();
         mzTabExport = new MzTabExport();
+        mzTabExport.setSamples(samples);
 
         //reset first panel input
         mzTabExportDialog.getDescriptionTextArea().setText("");
         mzTabExportDialog.getNumberOfAssaysSpinner().getModel().setValue(1);
 
-        //reset tree model
+        //reset tree models
         studyVariableRootNode.removeAllChildren();
         studyVariableTreeModel.reload();
+        analyticalRunRootNode.removeAllChildren();
+        analyticalRunTreeModel.reload();
 
         //reset assay lists
         assaysToCVListModel.clear();
@@ -415,6 +419,9 @@ public class MzTabExportController implements Controllable {
             }
         }
         expandTree(mzTabExportDialog.getAnalyticalRunTree());
+
+        //reset second panel text field
+        mzTabExportDialog.getStudyVariableTextField().setText("");
 
         //reset last panel text fields
         mzTabExportDialog.getFileNameTextField().setText("");
@@ -555,8 +562,8 @@ public class MzTabExportController implements Controllable {
         //ensure that all runs linked with assays have been searched with the same search engine
         List<AnalyticalRun> runs = mzTabExport.getRuns();
         SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
-        for(int i = 1; i < runs.size(); i++){
-            if(!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())){
+        for (int i = 1; i < runs.size(); i++) {
+            if (!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())) {
                 validationMessages.add("All runs linked to assays must have the same search engine");
             }
         }
@@ -574,6 +581,9 @@ public class MzTabExportController implements Controllable {
 
         if (mzTabExportDialog.getFileNameTextField().getText().isEmpty()) {
             validationMessages.add("Please provide a file name.");
+        }
+        if (mzTabExportDialog.getExportDirectoryTextField().getText().isEmpty()) {
+            validationMessages.add("Please provide an export directory.");
         }
 
         return validationMessages;

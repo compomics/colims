@@ -178,7 +178,7 @@ public class ProjectManagementController implements Controllable {
         samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
         projectManagementPanel.getSamplesTable().setModel(samplesTableModel);
         samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
-        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        samplesSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         projectManagementPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
 
         //set column widths
@@ -645,7 +645,7 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Inner class for listening to other sample actions popup menu items.
+     * Inner class for listening to other sample actions pop up menu items.
      */
     private class SamplePopupMenuActionListener implements ActionListener {
 
@@ -653,17 +653,17 @@ public class ProjectManagementController implements Controllable {
         public void actionPerformed(ActionEvent e) {
             String menuItemLabel = e.getActionCommand();
 
+            EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
             if (menuItemLabel.equals(projectManagementPanel.getAddRunMenuItem().getText())) {
-                Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
+                if (selectedSamples.size() == 1) {
                     analyticalRunSetupController.showView();
                 } else {
-                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Analytical run addition", "Please select one and only one sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
                 }
             } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
                 List<String> validationMessages = validateMzTabExportSampleSelection();
                 if (validateMzTabExportSampleSelection().isEmpty()) {
-                    mzTabExportController.getMzTabExport().setSamples(samplesSelectionModel.getSelected());
+                    mzTabExportController.getMzTabExport().setSamples(selectedSamples);
                     mzTabExportController.showView();
                 } else {
                     eventBus.post(new MessageEvent("MzTab export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
