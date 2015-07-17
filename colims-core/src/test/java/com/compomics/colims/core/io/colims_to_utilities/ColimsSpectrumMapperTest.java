@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
