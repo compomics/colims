@@ -1,5 +1,8 @@
 package com.compomics.colims.core.io.maxquant.headers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -62,7 +65,8 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
     TYPE(new String[]{"Type"}),
     UNIPROT(new String[]{"Uniprot"});
 
-    String[] columnNames;
+    List<String> columnNames;
+    int standardColumnNameIndex = 0;
 
     /**
      * Private constructor.
@@ -70,23 +74,32 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
      * @param fieldnames the array of field names
      */
     MaxQuantMSMSHeaders(final String[] fieldnames) {
-        this.columnNames = fieldnames;
+
+        columnNames = new ArrayList<>(fieldnames.length);
+        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
-    public String[] allPossibleColumnNames() {
+    public List<String> allPossibleColumnNames() {
         return this.columnNames;
     }
 
     @Override
-    public void setColumnReference(int columnReference) {
+    public void setColumnNameNumber(int columnNameNumber) {
+        standardColumnNameIndex = columnNameNumber;
     }
 
     @Override
-    public String getColumnName() throws HeaderEnumNotInitialisedException {
-        if (columnNames.length < 1) {
-            throw new HeaderEnumNotInitialisedException("Headers have not been initialised.");
+    public String getColumnName(int columnNameNumber) {
+        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
+            return columnNames.get(0);
         }
-        return columnNames[0].toLowerCase(Locale.US);
+        return columnNames.get(columnNameNumber);
+    }
+
+
+    @Override
+    public String getDefaultColumnName() {
+        return columnNames.get(standardColumnNameIndex);
     }
 }

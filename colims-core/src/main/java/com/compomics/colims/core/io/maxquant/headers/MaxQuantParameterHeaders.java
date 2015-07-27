@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.maxquant.headers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -68,26 +69,42 @@ public enum MaxQuantParameterHeaders implements HeaderEnum {
     USE_PEPTIDES_MODDED_WITH(new String[]{"Modifications included in protein quantification"}),
     VERSION(new String[]{"Version"});
 
-    String[] columnNames;
 
+    List<String> columnNames;
+    int standardColumnNameIndex = 0;
+
+    /**
+     * Private constructor.
+     *
+     * @param fieldnames the array of field names
+     */
     MaxQuantParameterHeaders(final String[] fieldnames) {
-        this.columnNames = fieldnames;
+
+        columnNames = new ArrayList<>(fieldnames.length);
+        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
-    public String[] allPossibleColumnNames() {
+    public List<String> allPossibleColumnNames() {
         return this.columnNames;
     }
 
     @Override
-    public void setColumnReference(int columnReference) {}
-
-    @Override
-    public String getColumnName() throws HeaderEnumNotInitialisedException {
-        return columnNames[0].toLowerCase(Locale.US);
+    public void setColumnNameNumber(int columnNameNumber) {
+        standardColumnNameIndex = columnNameNumber;
     }
 
-    public List<String> getColumn() {
-        return Arrays.asList(this.columnNames);
+    @Override
+    public String getColumnName(int columnNameNumber) {
+        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
+            return columnNames.get(0);
+        }
+        return columnNames.get(columnNameNumber);
+    }
+
+
+    @Override
+    public String getDefaultColumnName() {
+        return columnNames.get(standardColumnNameIndex);
     }
 }

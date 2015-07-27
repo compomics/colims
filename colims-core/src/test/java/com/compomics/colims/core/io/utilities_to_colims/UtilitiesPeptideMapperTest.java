@@ -34,7 +34,8 @@ public class UtilitiesPeptideMapperTest {
     @Test
     public void testMapPeptide() throws MappingException, IOException {
         //create new utilities Peptide
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>(), new ArrayList<>());
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
+        sourcePeptide.setParentProteins(new ArrayList<>());
 
 //        Pept
 

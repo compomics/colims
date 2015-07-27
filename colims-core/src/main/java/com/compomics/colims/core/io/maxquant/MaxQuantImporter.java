@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.*;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
@@ -119,7 +118,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
                 mappedRuns.add(targetRun);
             }
 
-        } catch (IOException | ClassNotFoundException | HeaderEnumNotInitialisedException | UnparseableException | MappingException ex) {
+        } catch (IOException | ClassNotFoundException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         } finally {
@@ -139,7 +138,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @throws IOException                       thrown in case of an I/O related problem
      * @throws HeaderEnumNotInitialisedException thrown in case of an non initialised header exception
      */
-    private SearchAndValidationSettings mapSearchSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException, HeaderEnumNotInitialisedException {
+    private SearchAndValidationSettings mapSearchSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings;
 
         List<File> identificationFiles = new ArrayList<>();

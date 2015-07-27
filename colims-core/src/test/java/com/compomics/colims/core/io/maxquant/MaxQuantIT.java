@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
@@ -79,7 +78,7 @@ public class MaxQuantIT {
 
     @Ignore
     @Test
-    public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
+    public void runStorage() throws IOException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
         // TODO: ignored due to utilities
         SequenceFactory sequenceFactory = SequenceFactory.getInstance();
         sequenceFactory.clearFactory();
@@ -148,7 +147,7 @@ public class MaxQuantIT {
 
     @Ignore
     @Test
-    public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testSpectrumInsertion() throws IOException, MappingException, UnparseableException {
         User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
