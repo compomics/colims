@@ -68,9 +68,6 @@ public class MzTabExportController implements Controllable {
     private final DefaultTreeModel analyticalRunTreeModel = new DefaultTreeModel(analyticalRunRootNode);
     //view
     private MzTabExportDialog mzTabExportDialog;
-    //child controller
-    @Autowired
-    private ProgressController progresController;
     //parent controller
     @Autowired
     private MainController mainController;

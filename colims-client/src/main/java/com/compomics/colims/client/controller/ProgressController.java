@@ -8,8 +8,6 @@ import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +44,7 @@ public class ProgressController implements Controllable {
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/colims_icon.png")),
                 true);
-        
+
         progressDialog.setTitle(progressStartEvent.getHeaderText() + " Please Wait...");
         if (!progressStartEvent.isIsIndeterminate()) {
             progressDialog.getProgressBar().setMaximum(progressStartEvent.getNumberOfSteps() + 1);

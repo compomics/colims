@@ -39,7 +39,7 @@ public class MzTabExporter {
     private static final String JSON_VALUES = "values";
     private static final String JSON_NAME = "user_friendly_name";
     private static final String MZTAB_EXTENSION = ".mzTab";
-    private static final String COLUMN_DELIMETER = "/t";
+    private static final String COLUMN_DELIMITER = "/t";
     private static final String COMMENT_PREFIX = "COM";
     private static final String METADATA_PREFIX = "MTD";
     /**
@@ -154,13 +154,13 @@ public class MzTabExporter {
         StringBuilder metada = new StringBuilder();
 
         //version, type, mode and description
-        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_VERSION).append(COLUMN_DELIMETER).append(VERSION).append(System.lineSeparator());
-        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_MODE).append(COLUMN_DELIMETER).append(mzTabExport.getMzTabMode().mzTabName()).append(System.lineSeparator());
-        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(MZTAB_TYPE).append(COLUMN_DELIMETER).append(mzTabExport.getMzTabType().mzTabName()).append(System.lineSeparator());
-        metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(DESCRIPTION).append(COLUMN_DELIMETER).append(mzTabExport.getDescription()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_VERSION).append(COLUMN_DELIMITER).append(VERSION).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_MODE).append(COLUMN_DELIMITER).append(mzTabExport.getMzTabMode().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_TYPE).append(COLUMN_DELIMITER).append(mzTabExport.getMzTabType().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(DESCRIPTION).append(COLUMN_DELIMITER).append(mzTabExport.getDescription()).append(System.lineSeparator());
         //run locations
         for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
-            metada.append(METADATA_PREFIX).append(COLUMN_DELIMETER).append(String.format(RUN_LOCATION, i)).append(COLUMN_DELIMETER).append(mzTabExport.getRuns().get(i).getStorageLocation()).append(System.lineSeparator());
+            metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(RUN_LOCATION, i)).append(COLUMN_DELIMITER).append(mzTabExport.getRuns().get(i).getStorageLocation()).append(System.lineSeparator());
         }
         //search engine scores
 
@@ -198,5 +198,21 @@ public class MzTabExporter {
 
         return mzTabParams;
     }
+
+   /**
+    * Get the protein search engine score line.
+    *
+    * @return
+    */
+   private String getProteinSearchEngineScore(){
+       StringBuilder searchEngineScore = new StringBuilder();
+
+       searchEngineScore.append(METADATA_PREFIX).append(COLUMN_DELIMITER)
+               .append(String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1)).append(COLUMN_DELIMITER);
+
+       
+
+       return searchEngineScore.toString();
+   }
 
 }

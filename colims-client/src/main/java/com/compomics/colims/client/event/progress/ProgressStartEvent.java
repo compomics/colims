@@ -5,7 +5,6 @@
  */
 package com.compomics.colims.client.event.progress;
 
-import java.awt.Component;
 import javax.swing.JFrame;
 
 /**
