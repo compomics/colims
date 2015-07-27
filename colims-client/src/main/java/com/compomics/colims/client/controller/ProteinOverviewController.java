@@ -8,9 +8,11 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.model.PeptideTableRow;
+import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.model.ProteinTableModel;
 import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
@@ -56,7 +58,7 @@ public class ProteinOverviewController implements Controllable {
     private ProteinOverviewPanel proteinOverviewPanel;
     private ProteinTableModel proteinTableModel;
     private AdvancedTableModel peptideTableModel;
-    private PsmTableModel psmTableModel;
+    private ProteinPanelPsmTableModel psmTableModel;
     private final EventList<Protein> proteins = new BasicEventList<>();
     private final EventList<PeptideTableRow> peptides = new BasicEventList<>();
     private final EventList<Spectrum> spectra = new BasicEventList<>();
@@ -101,7 +103,7 @@ public class ProteinOverviewController implements Controllable {
         // init PSM table
         SortedList<Spectrum> sortedSpectra = new SortedList<>(spectra, null);
 
-        psmTableModel = new PsmTableModel(sortedSpectra, new PsmTableFormat(), spectrumRepository);
+        psmTableModel = new ProteinPanelPsmTableModel(sortedSpectra, new ProteinPanelPsmTableFormat(), spectrumRepository);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);
         spectrumSelectionModel = new DefaultEventSelectionModel<>(sortedSpectra);
         spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -111,16 +113,14 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMinWidth(40);
 
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setMinWidth(40);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(10);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(50);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PRECURSOR_INTENSITY).setPreferredWidth(50);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME).setPreferredWidth(50);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PEPTIDE_SEQUENCE).setPreferredWidth(300);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.PROTEIN_ACCESSIONS).setPreferredWidth(300);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMinWidth(40);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(10);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_INTENSITY).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME).setPreferredWidth(50);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
 
         //  Listeners
 
