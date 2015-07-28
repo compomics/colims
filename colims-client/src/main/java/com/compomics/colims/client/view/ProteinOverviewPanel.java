@@ -181,7 +181,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
                 .addGap(63, 63, 63))
         );
 
-        psmPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Peptide-Spectrum Matches"));
+        psmPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Peptide-Spectrum Matches (double-click to view spectrum)"));
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 

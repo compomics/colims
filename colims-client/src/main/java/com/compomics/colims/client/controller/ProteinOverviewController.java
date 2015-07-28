@@ -10,11 +10,9 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.model.ProteinTableModel;
-import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
-import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.PeptideRepository;
@@ -47,6 +45,8 @@ public class ProteinOverviewController implements Controllable {
     @Autowired
     private MainController mainController;
     @Autowired
+    private SpectrumPopupController spectrumPopupController;
+    @Autowired
     private EventBus eventBus;
     @Autowired
     private ProteinRepository proteinRepository;
@@ -72,6 +72,8 @@ public class ProteinOverviewController implements Controllable {
     public void init() {
         eventBus.register(this);
         proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
+
+        spectrumPopupController.init();
 
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
@@ -182,6 +184,20 @@ public class ProteinOverviewController implements Controllable {
                     List<Spectrum> selectedSpectra = peptides.stream().map(Peptide::getSpectrum).collect(Collectors.toList());
 
                     GlazedLists.replaceAll(spectra, selectedSpectra, false);
+                }
+            }
+        });
+
+        proteinOverviewPanel.getPsmTable().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JTable table = (JTable) e.getSource();
+                //int row = table.rowAtPoint(e.getPoint());
+
+                if (e.getClickCount() == 2 && !spectrumSelectionModel.getSelected().isEmpty()) {
+                    // get selected spectrum and update panel
+                    // show panel
+                    spectrumPopupController.updateView(spectrumSelectionModel.getSelected().get(0));
                 }
             }
         });
