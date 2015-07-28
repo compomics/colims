@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
+ * Controller for spectrum panel pop-up window
+ *
  * Created by Iain on 28/07/2015.
  */
 @Component
@@ -63,6 +65,10 @@ public class SpectrumPopupController implements Controllable {
         spectrumPopupDialog.setVisible(true);
     }
 
+    /**
+     * Update the panel for the given spectrum then display it
+     * @param spectrum A spectrum to show
+     */
     public void updateView(Spectrum spectrum) {
         AnnotationPreferences annotationPreferences = new AnnotationPreferences();
         UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
