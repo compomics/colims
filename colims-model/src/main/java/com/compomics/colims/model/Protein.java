@@ -32,10 +32,10 @@ public class Protein extends DatabaseEntity {
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;
     /**
-     * The PeptideHasProtein instances from the join table between the peptide and protein tables.
+     * The ProteinGroupHasProtein instances from the join table between the protein group and protein tables.
      */
     @OneToMany(mappedBy = "protein")
-    private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
+    private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
     /**
      * The list of protein accessions linked to this protein.
      */
@@ -66,12 +66,12 @@ public class Protein extends DatabaseEntity {
         this.sequence = sequence;
     }
 
-    public List<PeptideHasProtein> getPeptideHasProteins() {
-        return peptideHasProteins;
+    public List<ProteinGroupHasProtein> getProteinGroupHasProteins() {
+        return proteinGroupHasProteins;
     }
 
-    public void setPeptideHasProteins(List<PeptideHasProtein> peptideHasProteins) {
-        this.peptideHasProteins = peptideHasProteins;
+    public void setProteinGroupHasProteins(List<ProteinGroupHasProtein> proteinGroupHasProteins) {
+        this.proteinGroupHasProteins = proteinGroupHasProteins;
     }
 
     public List<ProteinAccession> getProteinAccessions() {

@@ -115,17 +115,19 @@ public class PeptideShakerImporterIT {
                     Assert.assertNotNull(peptide.getSpectrum());
                     Assert.assertFalse(peptide.getSequence().isEmpty());
 
-                    //a peptide without a protein makes no sense
-                    Assert.assertFalse(peptide.getPeptideHasProteins().isEmpty());
+                    //a peptide without a protein (group) makes no sense
+                    Assert.assertFalse(peptide.getPeptideHasProteinGroups().isEmpty());
 
-                    for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {
-                        Assert.assertNotNull(peptideHasProtein.getPeptide());
-                        Assert.assertNotNull(peptideHasProtein.getProteinAccession());
-                        Protein protein = peptideHasProtein.getProtein();
-                        Assert.assertNotNull(protein);
-                        Assert.assertFalse(protein.getProteinAccessions().isEmpty());
-                        Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
-                        Assert.assertFalse(protein.getSequence().isEmpty());
+                    for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {
+                        Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
+                        for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+                            Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
+                            Protein protein = proteinGroupHasProtein.getProtein();
+                            Assert.assertNotNull(protein);
+                            Assert.assertFalse(protein.getProteinAccessions().isEmpty());
+                            Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
+                            Assert.assertFalse(protein.getSequence().isEmpty());
+                        }
                     }
                     if (!peptide.getPeptideHasModifications().isEmpty()) {
                         for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {

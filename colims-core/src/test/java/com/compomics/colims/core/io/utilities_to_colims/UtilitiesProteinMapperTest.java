@@ -3,9 +3,10 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
+import com.compomics.colims.model.PeptideHasProteinGroup;
+import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.util.experiment.identification.SequenceFactory;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -69,18 +70,27 @@ public class UtilitiesProteinMapperTest {
 
         utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
 
-        Assert.assertNotNull(targetPeptide.getPeptideHasProteins());
-        Assert.assertEquals(1, targetPeptide.getPeptideHasProteins().size());
-        PeptideHasProtein peptideHasProtein = targetPeptide.getPeptideHasProteins().get(0);
-        Assert.assertNotNull(peptideHasProtein.getPeptide());
-        Assert.assertNotNull(peptideHasProtein.getProtein());
-        Assert.assertEquals("P16083", peptideHasProtein.getProteinAccession());
-        Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
-        Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
-        Assert.assertEquals("P16083", peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession());
+        Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
 
-        //the is main group protein should be null
-        Assert.assertNull(peptideHasProtein.isMainGroupProtein());
+        PeptideHasProteinGroup peptideHasProteinGroup = targetPeptide.getPeptideHasProteinGroups().get(0);
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
+        Assert.assertNotNull(peptideHasProteinGroup.getProteinGroup());
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptideProbability());
+        Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProteinGroup.getPeptideProbability(), 0.001);
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptidePostErrorProbability());
+        Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProteinGroup.getPeptidePostErrorProbability(), 0.001);
+
+        ProteinGroup proteinGroup = peptideHasProteinGroup.getProteinGroup();
+        Assert.assertNotNull(proteinGroup.getPeptideHasProteinGroups());
+        Assert.assertEquals(1, proteinGroup.getProteinGroupHasProteins().size());
+
+        ProteinGroupHasProtein proteinGroupHasProtein = proteinGroup.getProteinGroupHasProteins().get(0);
+        Assert.assertNotNull(proteinGroupHasProtein.getProteinGroup());
+        Assert.assertNotNull(proteinGroupHasProtein.getProtein());
+        Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
+        Assert.assertTrue(proteinGroupHasProtein.getIsMainGroupProtein());
+        Assert.assertEquals("P16083", proteinGroupHasProtein.getProteinAccession());
     }
 
     /**
@@ -116,24 +126,31 @@ public class UtilitiesProteinMapperTest {
 
         utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
 
-        Assert.assertNotNull(targetPeptide.getPeptideHasProteins());
-        Assert.assertEquals(3, targetPeptide.getPeptideHasProteins().size());
+        Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
 
-        for (PeptideHasProtein peptideHasProtein : targetPeptide.getPeptideHasProteins()) {
-            Assert.assertNotNull(peptideHasProtein.getPeptide());
-            Assert.assertNotNull(peptideHasProtein.getProtein());
-            Assert.assertNotNull(peptideHasProtein.getProteinAccession());
-            Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(peptideHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));
+        PeptideHasProteinGroup peptideHasProteinGroup = targetPeptide.getPeptideHasProteinGroups().get(0);
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
+        Assert.assertNotNull(peptideHasProteinGroup.getProteinGroup());
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptideProbability());
+        Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProteinGroup.getPeptideProbability(), 0.001);
+        Assert.assertNotNull(peptideHasProteinGroup.getPeptidePostErrorProbability());
+        Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProteinGroup.getPeptidePostErrorProbability(), 0.001);
 
-            if (!"P06241".equals(peptideHasProtein.getProteinAccession())) {
-                Assert.assertNull(peptideHasProtein.getPeptideProbability());
-                Assert.assertNull(peptideHasProtein.getPeptidePostErrorProbability());
-                Assert.assertFalse(peptideHasProtein.isMainGroupProtein());
+        ProteinGroup proteinGroup = peptideHasProteinGroup.getProteinGroup();
+        Assert.assertNotNull(proteinGroup.getPeptideHasProteinGroups());
+        Assert.assertEquals(3, proteinGroup.getProteinGroupHasProteins().size());
+
+        for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+            Assert.assertNotNull(proteinGroupHasProtein.getProtein());
+            Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
+            Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(proteinGroupHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));
+
+            if (!"P06241".equals(proteinGroupHasProtein.getProteinAccession())) {
+                Assert.assertFalse(proteinGroupHasProtein.getIsMainGroupProtein());
             } else {
-                Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProtein.getPeptideProbability(), 0.001);
-                Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProtein.getPeptidePostErrorProbability(), 0.001);
-                Assert.assertTrue(peptideHasProtein.isMainGroupProtein());
-                Assert.assertEquals("P06241", peptideHasProtein.getProteinAccession());
+                Assert.assertTrue(proteinGroupHasProtein.getIsMainGroupProtein());
+                Assert.assertEquals("P06241", proteinGroupHasProtein.getProteinAccession());
             }
         }
     }

@@ -2,10 +2,7 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -108,8 +105,10 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
         String proteinAccessionsString;
 
         List<ProteinAccession> proteinAccessions = new ArrayList<>();
-        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {           
-            proteinAccessions.addAll(peptideHasProtein.getProtein().getProteinAccessions());
+        for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {
+            for(ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+                proteinAccessions.addAll(proteinGroupHasProtein.getProtein().getProteinAccessions());
+            }
         }
 
         Joiner joiner = Joiner.on(", ");

@@ -110,15 +110,22 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 -- insert a test identification file
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
 
--- insert a test peptide
+-- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 
 -- insert a test peptide has modiciation
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);
 
--- insert a test peptide has protein
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (1, 0.1, 0.9, NULL, 1, 1, 'PROT_ACC_11');
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (2, 0.1, 0.9, TRUE, 2, 2, 'PROT_ACC_2');
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (3, 0.1, 0.9, FALSE, 2, 3, 'PROT_ACC_3');
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (4, 0.1, 0.9, FALSE, 2, 4, 'PROT_ACC_4');
+-- insert test protein groups
+INSERT INTO protein_group (id) VALUES (1), (2);
+
+-- insert test protein group has proteins
+INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
+INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
+INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
+INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
+
+-- insert test peptide has protein groups
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_pep_has_prot_gr_pep_id,  l_pep_has_prot_gr_prot_gr_id) VALUES (1, 0.1, 0.9, 1, 1);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_pep_has_prot_gr_pep_id,  l_pep_has_prot_gr_prot_gr_id) VALUES (2, 0.1, 0.9, 2, 2);

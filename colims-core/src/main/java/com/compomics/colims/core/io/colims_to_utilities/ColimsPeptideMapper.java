@@ -2,17 +2,17 @@ package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 /**
- *
  * @author Kenneth Verheggen
  */
 @Component("colimsPeptideMapper")
@@ -29,8 +29,8 @@ public class ColimsPeptideMapper {
         LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
         //set sequence
         ArrayList<ProteinMatch> parentProteins = new ArrayList<>();
-        for (PeptideHasProtein pepHasProtein : sourcePeptide.getPeptideHasProteins()) {
-            colimsProteinMapper.map(pepHasProtein.getProtein(), parentProteins);
+        for (PeptideHasProteinGroup peptideHasProteinGroup : sourcePeptide.getPeptideHasProteinGroups()) {
+            colimsProteinMapper.map(peptideHasProteinGroup.getProteinGroup().getMainProtein(), parentProteins);
         }
 
         ArrayList<String> parentProteinAccessions = new ArrayList<>();

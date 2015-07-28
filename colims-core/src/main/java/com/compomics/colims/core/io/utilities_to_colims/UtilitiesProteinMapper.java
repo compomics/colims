@@ -3,10 +3,7 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.service.ProteinService;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
+import com.compomics.colims.model.*;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import org.apache.log4j.Logger;
@@ -55,71 +52,51 @@ public class UtilitiesProteinMapper {
      */
     public void map(final List<ProteinMatch> proteinMatches, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
         try {
-            List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
             //iterate over protein matches
             for (ProteinMatch proteinMatch : proteinMatches) {
                 //iterate over all possible matches
                 if (proteinMatch != null) {
-                    //get utilities Protein from SequenceFactory
-                    com.compomics.util.experiment.biology.Protein mainSourceProtein = SequenceFactory.getInstance().getProtein(proteinMatch.getMainMatch());
-                    //get main match
-                    Protein mainMatchedProtein = getProtein(mainSourceProtein);
-
                     /**
                      * Iterate over the theoretic protein accessions.
                      * If there's more than one, it's a protein group and the main matched protein is the main group protein.
                      * Note that the peptide scores will be the same for all protein group members.
                      */
-                    if (proteinMatch.getTheoreticProteinsAccessions().size() == 1) {
-                        //set the main matched protein as the protein in the {@link PeptideHasProtein}
-                        PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-                        peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
-                        peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-                        peptideHasProtein.setProteinAccession(mainSourceProtein.getAccession());
+                    PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+                    //set the peptide scores
+                    peptideHasProteinGroup.setPeptideProbability(peptideMatchScore.getProbability());
+                    peptideHasProteinGroup.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
+
+                    ProteinGroup proteinGroup = new ProteinGroup();
+                    for (String proteinAccession : proteinMatch.getTheoreticProteinsAccessions()) {
+                        ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
+
+                        //get the utilities Protein from SequenceFactory
+                        com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
+                        //set protein
+                        Protein matchedProtein = getProtein(sourceProtein);
+                        proteinGroupHasProtein.setProtein(matchedProtein);
+
+                        if (proteinAccession.equals(proteinMatch.getMainMatch())) {
+                            //set the is main protein group flag to true
+                            proteinGroupHasProtein.setIsMainGroupProtein(true);
+                        }
+
+                        //set protein accession
+                        proteinGroupHasProtein.setProteinAccession(proteinAccession);
 
                         //set entity relations
-                        peptideHasProtein.setProtein(mainMatchedProtein);
-                        peptideHasProtein.setPeptide(targetPeptide);
-
-                        peptideHasProteins.add(peptideHasProtein);
-                    } else {
-                        for (String proteinAccession : proteinMatch.getTheoreticProteinsAccessions()) {
-                            PeptideHasProtein peptideHasProtein = new PeptideHasProtein();
-
-                            if (!proteinAccession.equals(proteinMatch.getMainMatch())) {
-                                //get the utilities Protein from SequenceFactory
-                                com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
-
-                                //set the is main group group flag to false
-                                peptideHasProtein.setMainGroupProtein(Boolean.FALSE);
-
-                                //set protein
-                                Protein matchedProtein = getProtein(sourceProtein);
-                                peptideHasProtein.setProtein(matchedProtein);
-                            } else {
-                                //only set the peptide scores for the main protein
-                                peptideHasProtein.setPeptideProbability(peptideMatchScore.getProbability());
-                                peptideHasProtein.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-
-                                //set the is main protein group flag to true
-                                peptideHasProtein.setMainGroupProtein(Boolean.TRUE);
-
-                                //set protein
-                                peptideHasProtein.setProtein(mainMatchedProtein);
-                            }
-
-                            //set peptide
-                            peptideHasProtein.setPeptide(targetPeptide);
-
-                            //set protein accession
-                            peptideHasProtein.setProteinAccession(proteinAccession);
-
-                            peptideHasProteins.add(peptideHasProtein);
-                        }
+                        proteinGroupHasProtein.setProteinGroup(proteinGroup);
+                        proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
                     }
+                    //set entity relations
+                    proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                    //set peptide
+                    peptideHasProteinGroup.setPeptide(targetPeptide);
+                    //set protein group
+                    peptideHasProteinGroup.setProteinGroup(proteinGroup);
+                    targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
                 }
             }
-            targetPeptide.setPeptideHasProteins(peptideHasProteins);
         } catch (IOException | IllegalArgumentException | InterruptedException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex);
