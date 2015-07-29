@@ -22,7 +22,6 @@ import com.compomics.colims.repository.ProteinRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
-import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,10 @@ public class ProteinOverviewController implements Controllable {
     private DefaultEventSelectionModel<Spectrum> spectrumSelectionModel;
     private AnalyticalRun selectedAnalyticalRun;
     private List<Long> spectrumIdsForRun = new ArrayList<>();
-    private final int labelWidth = 50;
+    private double minimumRetentionTime;
+    private double maximumRetentionTime;
+    private double minimumCharge;
+    private double maximumCharge;
 
     @Override
     public void init() {
@@ -151,6 +153,11 @@ public class ProteinOverviewController implements Controllable {
                     proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
                     proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
                 ));
+
+                minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
+                maximumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
+                minimumCharge = spectrumService.getMinimumCharge(selectedAnalyticalRun);
+                maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
             }
         });
 
@@ -295,6 +302,10 @@ public class ProteinOverviewController implements Controllable {
     @Override
     public void showView() {}
 
+    /**
+     * Get the panel associated with this controller
+     * @return Protein overview panel
+     */
     public ProteinOverviewPanel getProteinOverviewPanel() {
         return proteinOverviewPanel;
     }
@@ -334,6 +345,9 @@ public class ProteinOverviewController implements Controllable {
         return projectNode;
     }
 
+    /**
+     * Update protein table contents and label
+     */
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
             GlazedLists.replaceAll(proteins, proteinTableModel.getRows(selectedAnalyticalRun), false);
@@ -345,19 +359,20 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Set the PSM table cell renderers.
+     * Set sparklines for the PSM table
      */
     private void setPsmTableCellRenderers() {
-        UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+        Color sparklineColor = new UtilitiesUserPreferences().getSparklineColor();
+        int labelWidth = 55;
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
             .setCellRenderer(
                 new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                    spectrumService.getMinimumRetentionTime(selectedAnalyticalRun), // TODO: cache these
-                    spectrumService.getMaximumRetentionTime(selectedAnalyticalRun),
+                    minimumRetentionTime,
+                    maximumRetentionTime,
                     50d,
-                    utilitiesUserPreferences.getSparklineColor(),
-                    utilitiesUserPreferences.getSparklineColor()
+                    sparklineColor,
+                    sparklineColor
                 )
             );
 
@@ -365,7 +380,7 @@ public class ProteinOverviewController implements Controllable {
             .getColumnModel()
             .getColumn(PsmTableFormat.RETENTION_TIME)
             .getCellRenderer())
-            .showNumberAndChart(true, labelWidth + 5);
+            .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
             .getColumnModel()
@@ -373,16 +388,15 @@ public class ProteinOverviewController implements Controllable {
             .getCellRenderer())
             .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
 
-        // do confidence
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE)
             .setCellRenderer(
                 new JSparklinesIntervalChartTableCellRenderer(
                     PlotOrientation.HORIZONTAL,
-                    (double) spectrumService.getMinimumCharge(selectedAnalyticalRun), // TODO: and these
-                    (double) spectrumService.getMaximumCharge(selectedAnalyticalRun),
+                    minimumCharge,
+                    maximumCharge,
                     50d,
-                    utilitiesUserPreferences.getSparklineColor(),
-                    utilitiesUserPreferences.getSparklineColor()
+                    sparklineColor,
+                    sparklineColor
                 )
             );
 
@@ -390,7 +404,7 @@ public class ProteinOverviewController implements Controllable {
             .getColumnModel()
             .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
             .getCellRenderer())
-            .showNumberAndChart(true, labelWidth + 5);
+            .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
             .getColumnModel()

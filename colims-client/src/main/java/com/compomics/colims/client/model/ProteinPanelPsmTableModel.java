@@ -6,6 +6,8 @@ import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.repository.SpectrumRepository;
 
 /**
+ * Table model for spectrum table on the protein panel
+ *
  * Created by Iain on 27/07/2015.
  */
 public class ProteinPanelPsmTableModel extends PsmTableModel {

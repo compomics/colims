@@ -55,8 +55,8 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="proteinsPanel" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                      <Component id="peptidesPanel" min="-2" pref="200" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="peptidesPanel" min="-2" pref="220" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="psmPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
@@ -109,7 +109,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="filterProteins" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="proteinsScrollPane" pref="233" max="32767" attributes="0"/>
+                          <Component id="proteinsScrollPane" pref="211" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="nextPageProteins" alignment="3" min="-2" max="-2" attributes="0"/>

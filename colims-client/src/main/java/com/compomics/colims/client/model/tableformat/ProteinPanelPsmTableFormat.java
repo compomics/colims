@@ -7,11 +7,12 @@ import com.compomics.colims.model.Spectrum;
 import java.util.Comparator;
 
 /**
+ * Spectrum table format for the protein panel
+ *
  * Created by Iain on 27/07/2015.
  */
 public class ProteinPanelPsmTableFormat extends PsmTableFormat {
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Confidence"};
-    private static final String NOT_APPLICABLE = "N/A";
 
     public static final int SPECTRUM_ID = 0;
     public static final int PRECURSOR_CHARGE = 1;
