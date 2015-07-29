@@ -22,6 +22,7 @@ import com.compomics.colims.repository.ProteinRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
+import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -352,7 +353,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
             .setCellRenderer(
                 new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                    spectrumService.getMinimumRetentionTime(selectedAnalyticalRun),
+                    spectrumService.getMinimumRetentionTime(selectedAnalyticalRun), // TODO: cache these
                     spectrumService.getMaximumRetentionTime(selectedAnalyticalRun),
                     50d,
                     utilitiesUserPreferences.getSparklineColor(),
@@ -369,6 +370,31 @@ public class ProteinOverviewController implements Controllable {
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
             .getColumnModel()
             .getColumn(PsmTableFormat.RETENTION_TIME)
+            .getCellRenderer())
+            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+
+        // do confidence
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE)
+            .setCellRenderer(
+                new JSparklinesIntervalChartTableCellRenderer(
+                    PlotOrientation.HORIZONTAL,
+                    (double) spectrumService.getMinimumCharge(selectedAnalyticalRun), // TODO: and these
+                    (double) spectrumService.getMaximumCharge(selectedAnalyticalRun),
+                    50d,
+                    utilitiesUserPreferences.getSparklineColor(),
+                    utilitiesUserPreferences.getSparklineColor()
+                )
+            );
+
+        ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+            .getColumnModel()
+            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
+            .getCellRenderer())
+            .showNumberAndChart(true, labelWidth + 5);
+
+        ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+            .getColumnModel()
+            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
             .getCellRenderer())
             .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
