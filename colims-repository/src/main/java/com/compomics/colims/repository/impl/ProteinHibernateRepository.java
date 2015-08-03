@@ -66,8 +66,8 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     }
 
     @Override
-    public int getProteinCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter) {
-        return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", orderBy))
+    public int getProteinCountForRun(AnalyticalRun analyticalRun, String filter) {
+        return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", "protein.id"))
             .list().size();
     }
 

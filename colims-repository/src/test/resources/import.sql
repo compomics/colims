@@ -100,3 +100,6 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 
 -- insert a test peptide has protein
 INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (1, 0.1, 0.9, NULL, 1, 1);
+
+-- insert a test peptide has modification
+INSERT INTO peptide_has_modification (id, delta_score, location, modification_type, prob_score, l_modification_id, l_peptide_id) VALUES (1, NULL, 0, 1, 0, 1, 1);

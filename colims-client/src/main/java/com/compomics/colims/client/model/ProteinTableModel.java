@@ -3,12 +3,9 @@ package com.compomics.colims.client.model;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
-import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.ProteinRepository;
 
-import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +42,7 @@ public class ProteinTableModel extends PagingTableModel {
      * @return List of Spectrum objects
      */
     public List getRows(AnalyticalRun analyticalRun) {
-        rowCount = proteinRepository.getProteinCountForRun(analyticalRun, sortColumn, filter);
+        rowCount = proteinRepository.getProteinCountForRun(analyticalRun, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
@@ -55,6 +52,6 @@ public class ProteinTableModel extends PagingTableModel {
     }
 
     public void reset(final AnalyticalRun analyticalRun) {
-        super.reset(analyticalRun == null ? 0 : proteinRepository.getProteinCountForRun(analyticalRun, sortColumn, filter));
+        super.reset(analyticalRun == null ? 0 : proteinRepository.getProteinCountForRun(analyticalRun, filter));
     }
 }

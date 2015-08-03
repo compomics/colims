@@ -18,7 +18,7 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * list of spectra to ensure results relate to the current run.
      * @param protein A protein
      * @param spectrumIds List of spectrum ids to restrict results
-     * @return
+     * @return List of PeptideHasProtein objects
      */
     List<PeptideHasProtein> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
 
@@ -27,9 +27,14 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * results to the given list of spectrum ids
      * @param sequence Peptide sequence
      * @param spectrumIds List of spectrum ids to restrict results
-     * @return
+     * @return List of Peptides
      */
     List getPeptidesFromSequence(String sequence, List<Long> spectrumIds);
 
+    /**
+     * Get all modifications for a list of peptides (which are likely to have the same sequence)
+     * @param peptides A list of peptides to search on
+     * @return List of PeptideHasModification objects
+     */
     List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
 }

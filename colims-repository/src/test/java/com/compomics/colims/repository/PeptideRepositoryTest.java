@@ -1,5 +1,7 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProtein;
 import com.compomics.colims.model.Protein;
 import org.junit.Test;
@@ -40,5 +42,27 @@ public class PeptideRepositoryTest {
         List<PeptideHasProtein> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
 
         assertThat(peptides.size(), not(0));
+    }
+
+    @Test
+    public void testGetPeptidesFromSequence() {
+        String sequence = "ABCDEFGH";
+        List<Long> ids = new ArrayList<>();
+        ids.add(1L);
+
+        List peptides = peptideRepository.getPeptidesFromSequence(sequence, ids);
+
+        assertThat(peptides.size(), not(0));
+    }
+
+    @Test
+    public void testGetModificationsForMultiplePeptides() {
+        List<Peptide> peptides = new ArrayList<>();
+        peptides.add(peptideRepository.findById(1L));
+        peptides.add(peptideRepository.findById(2L));
+
+        List<PeptideHasModification> peptideHasModifications = peptideRepository.getModificationsForMultiplePeptides(peptides);
+
+        assertThat(peptideHasModifications.size(), not(0));
     }
 }
