@@ -5,10 +5,10 @@ import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.biology.PTM;
+import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
@@ -22,7 +22,10 @@ import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
 import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
-import com.compomics.util.preferences.*;
+import com.compomics.util.preferences.AnnotationPreferences;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
+import com.compomics.util.preferences.SpecificAnnotationPreferences;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 
 /**
  * Controller for spectrum panel pop-up window
- *
+ * <p/>
  * Created by Iain on 28/07/2015.
  */
 @Component
@@ -67,6 +70,7 @@ public class SpectrumPopupController implements Controllable {
 
     /**
      * Update the panel for the given spectrum then display it
+     *
      * @param spectrum A spectrum to show
      */
     public void updateView(Spectrum spectrum) {
@@ -84,15 +88,15 @@ public class SpectrumPopupController implements Controllable {
 
             if (peaks != null && !peaks.isEmpty()) {
                 SpectrumPanel spectrumPanel = new SpectrumPanel(
-                    mSnSpectrum.getMzValuesAsArray(),
-                    mSnSpectrum.getIntensityValuesAsArray(),
-                    mSnSpectrum.getPrecursor().getMz(),
-                    mSnSpectrum.getPrecursor().getPossibleChargesAsString(),
-                    "",
-                    40,
-                    false, false, false,
-                    2,
-                    false
+                        mSnSpectrum.getMzValuesAsArray(),
+                        mSnSpectrum.getIntensityValuesAsArray(),
+                        mSnSpectrum.getPrecursor().getMz(),
+                        mSnSpectrum.getPrecursor().getPossibleChargesAsString(),
+                        "",
+                        40,
+                        false, false, false,
+                        2,
+                        false
                 );
 
                 spectrumPanel.setDeltaMassWindow(annotationPreferences.getFragmentIonAccuracy());
@@ -109,18 +113,19 @@ public class SpectrumPopupController implements Controllable {
                     PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
 
                     SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
-                        mSnSpectrum.getSpectrumKey(),
-                        peptideAssumption,
-                        new SequenceMatchingPreferences()
+                            mSnSpectrum.getSpectrumKey(),
+                            peptideAssumption,
+                            new SequenceMatchingPreferences(),
+                            new SequenceMatchingPreferences()
                     );
 
                     PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
 
                     ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
-                        annotationPreferences,
-                        specificAnnotationPreferences,
-                        mSnSpectrum,
-                        peptideAssumption.getPeptide()
+                            annotationPreferences,
+                            specificAnnotationPreferences,
+                            mSnSpectrum,
+                            peptideAssumption.getPeptide()
                     );
 
                     spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
@@ -128,14 +133,14 @@ public class SpectrumPopupController implements Controllable {
                     spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
 
                     spectrumPanel.addAutomaticDeNovoSequencing(
-                        peptideAssumption.getPeptide(),
-                        annotations,
-                        searchParameters.getIonSearched1(),
-                        searchParameters.getIonSearched2(),
-                        annotationPreferences.getDeNovoCharge(),
-                        annotationPreferences.showForwardIonDeNovoTags(),
-                        annotationPreferences.showRewindIonDeNovoTags(),
-                        false
+                            peptideAssumption.getPeptide(),
+                            annotations,
+                            searchParameters.getIonSearched1(),
+                            searchParameters.getIonSearched2(),
+                            annotationPreferences.getDeNovoCharge(),
+                            annotationPreferences.showForwardIonDeNovoTags(),
+                            annotationPreferences.showRewindIonDeNovoTags(),
+                            false
                     );
 
                     spectrumPopupDialog.getSpectrumJPanel().removeAll();
@@ -144,12 +149,12 @@ public class SpectrumPopupController implements Controllable {
                     spectrumPopupDialog.getSpectrumJPanel().repaint();
 
                     SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-                        getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
-                        annotations,
-                        true,
-                        searchParameters.getModificationProfile(),
-                        searchParameters.getIonSearched1(),
-                        searchParameters.getIonSearched2()
+                            getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
+                            annotations,
+                            true,
+                            searchParameters.getModificationProfile(),
+                            searchParameters.getIonSearched1(),
+                            searchParameters.getIonSearched2()
                     );
 
                     spectrumPopupDialog.getSecondarySpectrumPlotsJPanel().removeAll();
@@ -217,15 +222,15 @@ public class SpectrumPopupController implements Controllable {
         }
 
         return Peptide.getTaggedModifiedSequence(
-            searchParameters.getModificationProfile(),
-            peptide,
-            confidentLocations,
-            new HashMap<>(),
-            secondaryAmbiguousLocations,
-            fixedModifications,
-            useHtmlColorCoding,
-            includeHtmlStartEndTag,
-            useShortName
+                searchParameters.getModificationProfile(),
+                peptide,
+                confidentLocations,
+                new HashMap<>(),
+                secondaryAmbiguousLocations,
+                fixedModifications,
+                useHtmlColorCoding,
+                includeHtmlStartEndTag,
+                useShortName
         );
     }
 }
