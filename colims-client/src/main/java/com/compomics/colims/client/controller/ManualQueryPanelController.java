@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
  *
  * @author Davy Maddelein
  */
-
 @Component("manualQueryPanelController")
 public class ManualQueryPanelController implements Controllable {
     
