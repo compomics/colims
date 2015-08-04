@@ -51,7 +51,7 @@ public class DbTaskConsumer implements MessageListener {
     @Override
     public void onMessage(final Message message) {
         try {
-            ActiveMQObjectMessage objectMessage = null;
+            ActiveMQObjectMessage objectMessage;
             if (message instanceof ActiveMQObjectMessage) {
                 objectMessage = (ActiveMQObjectMessage) message;
             } else {

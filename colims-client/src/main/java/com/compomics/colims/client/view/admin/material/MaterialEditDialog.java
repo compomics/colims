@@ -71,7 +71,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         cvParamsPanel = new javax.swing.JPanel();
         cvParamSummaryScrollPane = new javax.swing.JScrollPane();
         cvParamSummaryList = new javax.swing.JList();
-        cvParamDualList = new com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.MaterialCvParam>();
+        cvParamDualList = new com.compomics.colims.client.compoment.DualList<>();
         materialCvParamsCrudButton = new javax.swing.JButton();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();

@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.maxquant.utilities_mappers;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.io.maxquant.urparams.MaxQuantPtmScoring;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.model.Peptide;

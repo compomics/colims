@@ -19,7 +19,7 @@ public enum DefaultGroup {
      *
      * @param dbEntry the entry in the database
      */
-    private DefaultGroup(final String dbEntry) {
+    DefaultGroup(final String dbEntry) {
         this.dbEntry = dbEntry;
     }
 

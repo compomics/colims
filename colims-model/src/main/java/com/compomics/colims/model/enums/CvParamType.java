@@ -59,7 +59,7 @@ public enum CvParamType {
      * @param parent the parent CV term type
      * @param mandatory whether or not the CV term type is mandatory
      */
-    private CvParamType(final CvParamType parent, final Boolean mandatory) {
+    CvParamType(final CvParamType parent, final Boolean mandatory) {
         this.parent = parent;
         this.mandatory = mandatory;
         if (this.parent != null) {

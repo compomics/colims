@@ -1,14 +1,13 @@
 package com.compomics.colims.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.*;
-
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents an analytical run entity in the database.
@@ -48,6 +47,12 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @ManyToOne
     private Instrument instrument;
     /**
+     * The storage location of the run, for example the file path of the imported data. This is a free text field.
+     */
+    @Basic(optional = true)
+    @Column(name = "storage_location", nullable = true)
+    private String storageLocation;
+    /**
      * The spectra of this AnalyticalRun instance.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
@@ -85,6 +90,14 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
+    }
+
+    public String getStorageLocation() {
+        return storageLocation;
+    }
+
+    public void setStorageLocation(String storageLocation) {
+        this.storageLocation = storageLocation;
     }
 
     public List<Spectrum> getSpectrums() {

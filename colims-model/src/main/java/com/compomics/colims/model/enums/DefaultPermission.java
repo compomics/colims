@@ -19,7 +19,7 @@ public enum DefaultPermission {
      *
      * @param dbEntry the entry in the database
      */
-    private DefaultPermission(final String dbEntry) {
+    DefaultPermission(final String dbEntry) {
         this.dbEntry = dbEntry;
     }
 

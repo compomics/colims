@@ -40,7 +40,12 @@ public class MzIdentMLExporterTest {
     public void testExport() throws IOException {
         AnalyticalRun run = repository.findById(1L);
         String export = exporter.export(run);
-        System.out.println(export);
+//        System.out.println(export);
+//
+//        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
+//        testFileWriter.write(export);
+//        testFileWriter.close();
+
         Assert.assertFalse(export.isEmpty());
     }
 

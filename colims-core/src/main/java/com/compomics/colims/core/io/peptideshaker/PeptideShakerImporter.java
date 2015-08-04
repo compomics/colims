@@ -88,6 +88,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
         try {
             AnalyticalRun analyticalRun = new AnalyticalRun();
+            //set the path of the .cps archive
+            analyticalRun.setStorageLocation(dataImport.getPeptideShakerCpsArchive().getCanonicalPath());
 
             //first, map the search settings
             //get the CpsParent instance for accessing the .cps file
@@ -216,8 +218,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     private void loadSpectrumMatches(final Ms2Identification ms2Identification, final UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
-            ms2Identification.loadSpectrumMatches(spectrumFileName, null);
-            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null);
+            ms2Identification.loadSpectrumMatches(spectrumFileName, null, false);
+            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null, false);
         }
     }
 
@@ -235,8 +237,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     private void loadSpectrumMatchesOld(final Ms2Identification ms2Identification, final UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
             loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
-            ms2Identification.loadSpectrumMatches(spectrumFileName, null);
-            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null);
+            ms2Identification.loadSpectrumMatches(spectrumFileName, null, false);
+            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null, false);
         }
     }
 
@@ -262,8 +264,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
      * @throws InterruptedException   thrown in case of an interrupted thread problem
      */
     private void loadPeptideMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        ms2Identification.loadPeptideMatches(null);
-        ms2Identification.loadPeptideMatchParameters(new PSParameter(), null);
+        ms2Identification.loadPeptideMatches(null, false);
+        ms2Identification.loadPeptideMatchParameters(new PSParameter(), null, false);
     }
 
     /**
@@ -276,8 +278,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
      * @throws InterruptedException   thrown in case of an interrupted thread problem
      */
     private void loadProteinMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        ms2Identification.loadProteinMatches(null);
-        ms2Identification.loadProteinMatchParameters(new PSParameter(), null);
+        ms2Identification.loadProteinMatches(null, false);
+        ms2Identification.loadProteinMatchParameters(new PSParameter(), null, false);
     }
 
 }

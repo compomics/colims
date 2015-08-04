@@ -7,7 +7,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import java.util.List;
 
 /**
- * This wrapper class contains all necessary information (provided by the user) to export and write a mzTab file.
+ * This wrapper class contains all necessary information (provided by the user) to write and export an mzTab file.
  * <p/>
  * Created by niels on 6/03/15.
  */

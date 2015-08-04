@@ -2,18 +2,14 @@ package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -28,7 +24,7 @@ import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import java.io.File;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,7 +35,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -83,7 +78,7 @@ public class MaxQuantIT {
 
     @Ignore
     @Test
-    public void runStorage() throws IOException, HeaderEnumNotInitialisedException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
+    public void runStorage() throws IOException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
         // TODO: ignored due to utilities
         SequenceFactory sequenceFactory = SequenceFactory.getInstance();
         sequenceFactory.clearFactory();
@@ -152,7 +147,7 @@ public class MaxQuantIT {
 
     @Ignore
     @Test
-    public void testSpectrumInsertion() throws IOException, MappingException, HeaderEnumNotInitialisedException, UnparseableException {
+    public void testSpectrumInsertion() throws IOException, MappingException, UnparseableException {
         User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);

@@ -518,6 +518,7 @@ public class ProjectOverviewController implements Controllable {
                         SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
                                 spectrum.getSpectrumKey(),
                                 peptideAssumption,
+                                new SequenceMatchingPreferences(),
                                 new SequenceMatchingPreferences());
                         ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(
                                 annotationPreferences,
@@ -757,24 +758,24 @@ public class ProjectOverviewController implements Controllable {
         AnalyticalRun analyticalRun = getSelectedAnalyticalRun();
 
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME)
-            .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                spectrumService.getMinimumRetentionTime(analyticalRun),
-                spectrumService.getMaximumRetentionTime(analyticalRun),
-                50d,
-                utilitiesUserPreferences.getSparklineColor(),
-                utilitiesUserPreferences.getSparklineColor())
-            );
+                .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+                                spectrumService.getMinimumRetentionTime(analyticalRun),
+                                spectrumService.getMaximumRetentionTime(analyticalRun),
+                                50d,
+                                utilitiesUserPreferences.getSparklineColor(),
+                                utilitiesUserPreferences.getSparklineColor())
+                );
 
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.RETENTION_TIME)
-            .getCellRenderer())
-            .showNumberAndChart(true, labelWidth + 5);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showNumberAndChart(true, labelWidth + 5);
 
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.RETENTION_TIME)
-            .getCellRenderer())
-            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 }

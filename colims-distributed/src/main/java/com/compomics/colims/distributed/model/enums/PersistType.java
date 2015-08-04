@@ -19,7 +19,7 @@ public enum PersistType {
      *
      * @param userFriendlyName the user friendly name
      */
-    private PersistType(final String userFriendlyName) {
+    PersistType(final String userFriendlyName) {
         this.userFriendlyName = userFriendlyName;
     }
 

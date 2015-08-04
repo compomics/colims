@@ -118,7 +118,7 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);
 
 -- insert a test peptide has protein
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (1, 0.1, 0.9, NULL, 1, 1);
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (2, 0.1, 0.9, TRUE, 2, 2);
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (3, 0.1, 0.9, FALSE, 2, 3);
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id) VALUES (4, 0.1, 0.9, FALSE, 2, 4);
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (1, 0.1, 0.9, NULL, 1, 1, 'PROT_ACC_11');
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (2, 0.1, 0.9, TRUE, 2, 2, 'PROT_ACC_2');
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (3, 0.1, 0.9, FALSE, 2, 3, 'PROT_ACC_3');
+INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (4, 0.1, 0.9, FALSE, 2, 4, 'PROT_ACC_4');

@@ -40,7 +40,8 @@ public class ColimsPeptideMapper {
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
         ArrayList<ModificationMatch> modifications = new ArrayList<>();
         colimsModMapper.map(sourcePeptide, modifications);
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);        
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modifications);
+        assumedPeptide.setParentProteins(parentProteinAccessions);
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 
@@ -52,7 +53,8 @@ public class ColimsPeptideMapper {
         //TODO : REVERT THE MODIFICATIONMAPPING !!!!
         ArrayList<ModificationMatch> modifications = new ArrayList<>();
         colimsModMapper.map(sourcePeptide, modifications);
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), parentProteinAccessions, modifications);
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modifications);
+        assumedPeptide.setParentProteins(parentProteinAccessions);
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 

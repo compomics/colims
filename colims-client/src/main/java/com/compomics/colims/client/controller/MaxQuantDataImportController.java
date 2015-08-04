@@ -97,7 +97,7 @@ public class MaxQuantDataImportController implements Controllable {
      * @return the list of validation messages
      */
     public List<String> validate() {
-        List<String> validationMessages = new ArrayList();
+        List<String> validationMessages = new ArrayList<>();
 
         if (maxQuantDirectory == null) {
             validationMessages.add("Please select a MaxQuant data files directory.");

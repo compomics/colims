@@ -3,8 +3,6 @@ package com.compomics.colims.core.io.maxquant.parsers;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
-import com.compomics.colims.core.io.maxquant.headers.HeaderEnumNotInitialisedException;
-import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 
@@ -33,7 +31,7 @@ public class MaxQuantParserTest {
     MaxQuantParser maxQuantParser;
 
     @Before
-    public void setUp() throws HeaderEnumNotInitialisedException, MappingException, UnparseableException, IOException {
+    public void setUp() throws MappingException, UnparseableException, IOException {
         maxQuantParser.clear();
         maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder);
     }

@@ -53,12 +53,13 @@ public class UtilitiesProteinMapperTest {
         //create new utilities peptide
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P16083");
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", parentProteins, new ArrayList<ModificationMatch>());
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
+        sourcePeptide.setParentProteins(parentProteins);
 
         Peptide targetPeptide = new Peptide();
 
         //create utilities protein matches
-        List<ProteinMatch> proteinMatches = new ArrayList();
+        List<ProteinMatch> proteinMatches = new ArrayList<>();
         ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.setMainMatch("P16083");
         proteinMatches.add(proteinMatch);
@@ -97,12 +98,13 @@ public class UtilitiesProteinMapperTest {
         ArrayList<String> parentProteins = new ArrayList<>();
         parentProteins.add("P06241");
         //@todo can we still use this constructor if we don't want to redo the protein mapping
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", parentProteins, new ArrayList<ModificationMatch>());
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
+        sourcePeptide.setParentProteins(parentProteins);
 
         Peptide targetPeptide = new Peptide();
 
         //create utilities protein matches
-        List<ProteinMatch> proteinMatches = new ArrayList();
+        List<ProteinMatch> proteinMatches = new ArrayList<>();
         ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.addTheoreticProtein("P07947");
         proteinMatch.addTheoreticProtein("P12931");

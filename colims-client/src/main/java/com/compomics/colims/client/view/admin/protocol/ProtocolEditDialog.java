@@ -71,7 +71,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         cvParamsPanel = new javax.swing.JPanel();
         cvParamSummaryScrollPane = new javax.swing.JScrollPane();
         cvParamSummaryList = new javax.swing.JList();
-        cvParamDualList = new com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.ProtocolCvParam>();
+        cvParamDualList = new com.compomics.colims.client.compoment.DualList<>();
         protocolCvParamsCrudButton = new javax.swing.JButton();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();

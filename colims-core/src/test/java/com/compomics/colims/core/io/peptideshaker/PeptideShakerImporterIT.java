@@ -98,6 +98,7 @@ public class PeptideShakerImporterIT {
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
+        Assert.assertTrue(testAnalyticalRun.getStorageLocation().contains("colims_test_ps_file.cps"));
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());

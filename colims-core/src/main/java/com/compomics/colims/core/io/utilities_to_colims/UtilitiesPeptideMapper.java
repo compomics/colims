@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.ModificationMappingException;
-import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.model.Peptide;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;

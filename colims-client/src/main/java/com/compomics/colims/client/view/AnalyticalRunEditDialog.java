@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent dialog
      * @param modal is the dialog modal
@@ -43,6 +43,10 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         return nameTextField;
     }
 
+    public JTextField getStorageLocationTextField() {
+        return storageLocationTextField;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,6 +65,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         updateButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         dateTimePicker = new com.compomics.colims.client.compoment.DateTimePicker();
+        locationLabel = new javax.swing.JLabel();
+        storageLocationTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Analytical run metadata management");
@@ -90,6 +96,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         dateTimePicker.setName(""); // NOI18N
         dateTimePicker.setPreferredSize(new java.awt.Dimension(104, 27));
 
+        locationLabel.setText("Location");
+
         javax.swing.GroupLayout analyticalRunEditPanelLayout = new javax.swing.GroupLayout(analyticalRunEditPanel);
         analyticalRunEditPanel.setLayout(analyticalRunEditPanelLayout);
         analyticalRunEditPanelLayout.setHorizontalGroup(
@@ -103,15 +111,18 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(analyticalRunEditPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(instrumentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(instrumentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(labelLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(locationLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(dateTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
                             .addComponent(nameTextField)
-                            .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(storageLocationTextField))))
                 .addContainerGap())
         );
         analyticalRunEditPanelLayout.setVerticalGroup(
@@ -129,7 +140,11 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                 .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instrumentLabel)
                     .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(locationLabel)
+                    .addComponent(storageLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -156,8 +171,10 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox instrumentComboBox;
     private javax.swing.JLabel instrumentLabel;
     private javax.swing.JLabel labelLabel;
+    private javax.swing.JLabel locationLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField storageLocationTextField;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

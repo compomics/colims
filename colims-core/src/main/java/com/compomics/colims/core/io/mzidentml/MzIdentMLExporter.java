@@ -133,8 +133,6 @@ public class MzIdentMLExporter {
 
     /**
      * Create collection for associated entities, add the owner of this run.
-     *
-     * @return An audit collection
      */
     private void auditCollection() throws IOException {
         // TODO: currently all users are associated with a placeholder org
@@ -350,7 +348,7 @@ public class MzIdentMLExporter {
         fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
-        if (searchParameters.getFragMassToleranceUnit().toString() == "DA") {
+        if (searchParameters.getFragMassToleranceUnit().equals("DA")) {
             fragmentMinus.setUnitName("dalton");
             fragmentMinus.setUnitAccession("UO:0000221");
             fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
@@ -448,8 +446,6 @@ public class MzIdentMLExporter {
 
                 for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
                     DBSequence dbSequence = createDBSequence(peptideHasProtein);
-                    //set protein accession
-                    dbSequence.setAccession(peptideHasProtein.getProteinAccession());
 
                     sequenceCollection.getDBSequence().add(dbSequence);
 

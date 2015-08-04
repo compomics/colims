@@ -130,7 +130,7 @@ public class UtilitiesPsmMapper {
             List<ProteinMatch> proteinMatches = new ArrayList<>();
 
             ProteinMatch proteinMatch;
-            List<String> possibleProteins = new ArrayList();
+            List<String> possibleProteins = new ArrayList<>();
             for (String parentProtein : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
                 ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
                 if (parentProteins != null) {
@@ -156,7 +156,6 @@ public class UtilitiesPsmMapper {
 
 //            //iterate over protein keys
 //            //get parent proteins without remapping them
-//            //@todo this is the way to go for MaxQuant, but what about PeptideShaker?
 //            for (String proteinKey : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
 //                ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
 //                if (proteinMatch != null) {
