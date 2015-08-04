@@ -121,11 +121,11 @@ INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification
 INSERT INTO protein_group (id) VALUES (1), (2);
 
 -- insert test protein group has proteins
-INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
-INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
-INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
-INSERT INTO protein_group_has_protein (id, l_prot_gr_has_prot_prot_id, l_prot_gr_has_prot_prot_gr_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
 
 -- insert test peptide has protein groups
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_pep_has_prot_gr_pep_id,  l_pep_has_prot_gr_prot_gr_id) VALUES (1, 0.1, 0.9, 1, 1);
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_pep_has_prot_gr_pep_id,  l_pep_has_prot_gr_prot_gr_id) VALUES (2, 0.1, 0.9, 2, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.1, 0.9, 2, 2);

@@ -68,7 +68,7 @@ public class UtilitiesProteinMapperTest {
         //create peptide scores
         MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
 
-        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+//        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
 
         Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
         Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
@@ -124,7 +124,7 @@ public class UtilitiesProteinMapperTest {
         //create peptide scores
         MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
 
-        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+//        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
 
         Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
         Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());

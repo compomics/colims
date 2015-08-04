@@ -21,7 +21,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class maps the Utilities PSM input to a Colims spectrum entity and related classes (Peptide, Protein, ...).
@@ -128,40 +130,51 @@ public class UtilitiesPsmMapper {
             targetPeptide.setSpectrum(targetSpectrum);
 
             List<ProteinMatch> proteinMatches = new ArrayList<>();
-
-            ProteinMatch proteinMatch;
-            List<String> possibleProteins = new ArrayList<>();
-            for (String parentProtein : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
-                ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
-                if (parentProteins != null) {
-                    for (String proteinKey : parentProteins) {
-                        if (!possibleProteins.contains(proteinKey)) {
-                            try {
-                                proteinMatch = identification.getProteinMatch(proteinKey);
-                                if (proteinMatch.getPeptideMatchesKeys().contains(bestMatchingPeptideKey)) {
-                                    possibleProteins.add(proteinKey);
-                                }
-                            } catch (Exception e) {
-                                //protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
-                                LOGGER.error("Non-existing protein key in protein map: " + proteinKey);
-                            }
-                        }
-                    }
-                }
-            }
-            proteinMatch = identification.getProteinMatch(possibleProteins.get(0));
-            if (proteinMatch != null) {
-                proteinMatches.add(proteinMatch);
-            }
-
-//            //iterate over protein keys
-//            //get parent proteins without remapping them
-//            for (String proteinKey : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
-//                ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
-//                if (proteinMatch != null) {
-//                    proteinMatches.add(proteinMatch);
+            Map<ProteinMatch, PSParameter> proteinMatchesMap = new HashMap<>();
+//            ProteinMatch proteinMatch;
+//            List<String> possibleProteins = new ArrayList<>();
+//            for (String parentProtein : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
+//                ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
+//                if (parentProteins != null) {
+//                    for (String proteinKey : parentProteins) {
+//                        if (!possibleProteins.contains(proteinKey)) {
+//                            try {
+//                                proteinMatch = identification.getProteinMatch(proteinKey);
+//                                if (proteinMatch.getPeptideMatchesKeys().contains(bestMatchingPeptideKey)) {
+//                                    possibleProteins.add(proteinKey);
+//                                }
+//                            } catch (Exception e) {
+//                                //protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
+//                                LOGGER.error("Non-existing protein key in protein map: " + proteinKey);
+//                            }
+//                        }
+//                    }
 //                }
 //            }
+//            proteinMatch = identification.getProteinMatch(possibleProteins.get(0));
+//            PSParameter psParameter = (PSParameter) identification.getProteinMatchParameter(possibleProteins.get(0));
+//            if (proteinMatch != null) {
+//                proteinMatches.add(proteinMatch);
+//            }
+
+            //iterate over protein keys
+            //get parent proteins without remapping them
+            for (String proteinKey : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
+                ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
+                if (proteinMatch != null) {
+                    proteinMatches.add(proteinMatch);
+                    PSParameter psParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, new PSParameter());
+                    proteinMatchesMap.put(proteinMatch, psmParameter);
+                }
+            }
+
+            if (proteinMatchesMap.size() > 1) {
+                System.out.println("--------------------------");
+                for (PSParameter psParameter : proteinMatchesMap.values()) {
+                    System.out.println("score: " + psParameter.getPeptideProbabilityScore());
+                }
+                System.out.println("**************************");
+            }
 
             //map proteins
             MatchScore peptideMatchScore;
@@ -172,7 +185,7 @@ public class UtilitiesPsmMapper {
                 peptideMatchScore = new MatchScore(0.0, 0.0);
             }
 
-            utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+            utilitiesProteinMapper.map(proteinMatchesMap, peptideMatchScore, targetPeptide);
         } else {
             LOGGER.debug("No best peptide assumption was found for spectrum match " + spectrumMatch.getKey());
         }
@@ -240,7 +253,7 @@ public class UtilitiesPsmMapper {
                 peptideMatchScore = new MatchScore(0.0, 0.0);
             }
 
-            utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+//            utilitiesProteinMapper.map(proteinMatchesMap, peptideMatchScore, targetPeptide);
         } else {
             LOGGER.debug("No best peptide assumption was found for spectrum match " + spectrumMatch.getKey());
         }

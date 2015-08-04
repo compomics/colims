@@ -6,6 +6,7 @@ import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.*;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,15 +46,15 @@ public class UtilitiesProteinMapper {
     /**
      * Map the Utilities protein related objects to Colims proteins and add them to the peptide.
      *
-     * @param proteinMatches    the utilities list of protein matches
+     * @param proteinMatches    the map of utilities protein matches (key: ProteinMatch instance, value: PSParameter instance)
      * @param peptideMatchScore the PSM score
      * @param targetPeptide     the Colims peptide
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(final List<ProteinMatch> proteinMatches, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
+    public void map(final Map<ProteinMatch, PSParameter> proteinMatches, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
         try {
             //iterate over protein matches
-            for (ProteinMatch proteinMatch : proteinMatches) {
+            for (ProteinMatch proteinMatch : proteinMatches.keySet()) {
                 //iterate over all possible matches
                 if (proteinMatch != null) {
                     /**

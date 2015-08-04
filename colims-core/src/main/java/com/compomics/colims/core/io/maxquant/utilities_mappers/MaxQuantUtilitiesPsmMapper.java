@@ -34,7 +34,7 @@ public class MaxQuantUtilitiesPsmMapper {
         PeptideAssumption sourcePeptide = maxQuantParser.getIdentificationForSpectrum(aParsedSpectrum);
         maxQuantUtilitiesPeptideMapper.map(sourcePeptide, targetPeptide);
         List<ProteinMatch> proteinMatches = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(sourcePeptide));
-        utilitiesProteinMapper.map(proteinMatches, (MatchScore) sourcePeptide.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY)), targetPeptide);
+//        utilitiesProteinMapper.map(proteinMatches, (MatchScore) sourcePeptide.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY)), targetPeptide);
         targetSpectrum.getPeptides().add(targetPeptide);
         targetPeptide.setSpectrum(targetSpectrum);
     }

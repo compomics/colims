@@ -3,10 +3,7 @@ package com.compomics.colims.model;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +18,18 @@ public class ProteinGroup extends DatabaseEntity {
 
     private static final long serialVersionUID = -8217759222711303528L;
 
+    /**
+     * The protein probability score.
+     */
+    @Basic(optional = true)
+    @Column(name = "protein_prob", nullable = true)
+    private Double proteinProbability;
+    /**
+     * The protein posterior error probability score.
+     */
+    @Basic(optional = true)
+    @Column(name = "protein_post_error_prob", nullable = true)
+    private Double proteinPostErrorProbability;
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
@@ -37,6 +46,22 @@ public class ProteinGroup extends DatabaseEntity {
      * No-arg constructor.
      */
     public ProteinGroup() {
+    }
+
+    public Double getProteinProbability() {
+        return proteinProbability;
+    }
+
+    public void setProteinProbability(Double proteinProbability) {
+        this.proteinProbability = proteinProbability;
+    }
+
+    public Double getProteinPostErrorProbability() {
+        return proteinPostErrorProbability;
+    }
+
+    public void setProteinPostErrorProbability(Double proteinPostErrorProbability) {
+        this.proteinPostErrorProbability = proteinPostErrorProbability;
     }
 
     public List<PeptideHasProteinGroup> getPeptideHasProteinGroups() {
