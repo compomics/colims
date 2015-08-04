@@ -14,6 +14,7 @@ public class MainFrame extends javax.swing.JFrame {
     public static final String MANAGMENT_TAB_TITLE = "Management";
     public static final String OVERVIEW_TAB_TITLE = "Overview";
     public static final String TASKS_TAB_TITLE = "Tasks";
+    public static final String PROTEINS_TAB_TITLE = "Proteins";
 
     /**
      * No-arg constructor.
@@ -33,6 +34,8 @@ public class MainFrame extends javax.swing.JFrame {
     public JPanel getTasksManagementParentPanel() {
         return tasksManagementParentPanel;
     }
+
+    public JPanel getProteinsParentPanel() { return proteinsParentPanel; }
 
     public JMenuItem getUserManagementMenuItem() {
         return userManagementMenuItem;
@@ -95,6 +98,7 @@ public class MainFrame extends javax.swing.JFrame {
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
         tasksManagementParentPanel = new javax.swing.JPanel();
+        proteinsParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -130,6 +134,9 @@ public class MainFrame extends javax.swing.JFrame {
         tasksManagementParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Tasks", tasksManagementParentPanel);
         tasksManagementParentPanel.getAccessibleContext().setAccessibleName("");
+
+        proteinsParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Proteins", proteinsParentPanel);
 
         fileMenu.setText("File");
 
@@ -205,6 +212,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel projectsManagementParentPanel;
     private javax.swing.JMenuItem projectsOverviewMenuItem;
     private javax.swing.JPanel projectsOverviewParentPanel;
+    private javax.swing.JPanel proteinsParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JPanel tasksManagementParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;

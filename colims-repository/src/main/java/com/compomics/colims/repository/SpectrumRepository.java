@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 
 import java.util.List;
@@ -35,6 +36,14 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return Row count
      */
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
+
+    /**
+     * Returns a list of spectrum ids associated with a given run
+     *
+     * @param analyticalRun The analytical run
+     * @return List of IDs
+     */
+    List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
 
     /**
      * Count the spectra associated to the given analytical run.

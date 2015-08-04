@@ -1,5 +1,6 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,6 +10,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
@@ -22,12 +29,36 @@ public class ProteinRepositoryTest {
 
     @Autowired
     private ProteinRepository proteinRepository;
+    @Autowired
+    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testFindBySequence() {
         Protein foundProtein = proteinRepository.findBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
         Assert.assertNotNull(foundProtein);
         Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
+    }
+
+    @Test
+    public void testGetPagedProteinsForRunTest() {
+        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+
+        List<Protein> proteins = proteinRepository.getPagedProteinsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
+
+        assertThat(proteins.size(), not(0));
+        assertThat(proteins.get(0).getId(), is(1L));
+
+        proteins = proteinRepository.getPagedProteinsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
+
+        assertThat(proteins.size(), is(0));
+    }
+
+    @Test
+    public void testGetProteinCountForRun() {
+        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+
+        assertThat(proteinRepository.getProteinCountForRun(analyticalRun, ""), not(0));
+        assertThat(proteinRepository.getProteinCountForRun(analyticalRun, "NOTAPROTEIN"), is(0));
     }
 
 //    @Test

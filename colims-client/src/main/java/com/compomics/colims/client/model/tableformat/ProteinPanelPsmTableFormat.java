@@ -1,33 +1,25 @@
 package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.Spectrum;
-import com.google.common.base.Joiner;
-import java.util.ArrayList;
+
 import java.util.Comparator;
-import java.util.List;
 
 /**
+ * Spectrum table format for the protein panel
  *
- * @author Niels Hulstaert
+ * Created by Iain on 27/07/2015.
  */
-public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
-
-    private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
-    private static final String NOT_APPLICABLE = "N/A";
+public class ProteinPanelPsmTableFormat extends PsmTableFormat {
+    private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Confidence"};
 
     public static final int SPECTRUM_ID = 0;
     public static final int PRECURSOR_CHARGE = 1;
     public static final int PRECURSOR_MZRATIO = 2;
     public static final int PRECURSOR_INTENSITY = 3;
     public static final int RETENTION_TIME = 4;
-    public static final int PEPTIDE_SEQUENCE = 5;
-    public static final int PSM_CONFIDENCE = 6;
-    public static final int PROTEIN_ACCESSIONS = 7;
+    public static final int PSM_CONFIDENCE = 5;
 
     @Override
     public Class getColumnClass(int column) {
@@ -42,12 +34,8 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
                 return Double.class;
             case RETENTION_TIME:
                 return Double.class;
-            case PEPTIDE_SEQUENCE:
-                return String.class;
             case PSM_CONFIDENCE:
                 return Double.class;
-            case PROTEIN_ACCESSIONS:
-                return String.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -83,38 +71,14 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
                 return spectrum.getIntensity();
             case RETENTION_TIME:
                 return spectrum.getRetentionTime();
-            case PEPTIDE_SEQUENCE:
-                return (peptide != null) ? peptide.getSequence() : NOT_APPLICABLE;
-            case PSM_CONFIDENCE:                
+            case PSM_CONFIDENCE:
                 double confidence = (peptide != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
                 if (confidence <= 0) {
                     confidence = 0;
                 }
                 return confidence;
-            case PROTEIN_ACCESSIONS:
-                return (peptide != null) ? getProteinAccessions(peptide) : NOT_APPLICABLE;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
-    }
-
-    /**
-     * Get the protein accessions as a concatenated String.
-     *
-     * @param peptide the Peptide instance
-     * @return the concatenated protein accessions
-     */
-    private String getProteinAccessions(Peptide peptide) {
-        String proteinAccessionsString;
-
-        List<ProteinAccession> proteinAccessions = new ArrayList<>();
-        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {           
-            proteinAccessions.addAll(peptideHasProtein.getProtein().getProteinAccessions());
-        }
-
-        Joiner joiner = Joiner.on(", ");
-        proteinAccessionsString = joiner.join(proteinAccessions);
-
-        return proteinAccessionsString;
     }
 }

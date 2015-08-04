@@ -2,6 +2,7 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 
+import com.compomics.colims.model.Peptide;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,49 +28,52 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     /**
      * Query string for paging method, alter at your peril.
      */
-    private final String baseQuery = "SELECT DISTINCT spectrum.id, MAX(%2$s) FROM spectrum "
-            + "LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id "
-            + "LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id "
-            + "LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id "
-            + "LEFT JOIN protein_accession ON protein_accession.l_protein_id = protein.id "
-            + "WHERE (spectrum.id LIKE '%1$s' "
-            + "OR peptide.peptide_sequence LIKE '%1$s' "
-            + "OR protein_accession.accession LIKE '%1$s') "
-            + "GROUP BY spectrum.id ";
+    private static final String BASE_QUERY = "SELECT DISTINCT spectrum.id, MAX(%3$s) FROM spectrum"
+            + " LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id"
+            + " LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id"
+            + " LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id"
+            + " LEFT JOIN protein_accession ON protein_accession.l_protein_id = protein.id"
+            + " WHERE (spectrum.id LIKE '%2$s'"
+            + " OR peptide.peptide_sequence LIKE '%2$s'"
+            + " OR protein_accession.accession LIKE '%2$s')"
+            + " AND spectrum.l_analytical_run_id = %1$d"
+            + " GROUP BY spectrum.id ";
 
     @Override
     public List getPagedSpectra(final AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter) {
-        String extraParams = "ORDER BY MAX(%2$s) %3$s, spectrum.id "
-                + "LIMIT %4$d "
-                + "OFFSET %5$d";
+        List<Spectrum> spectra = new ArrayList<>();
 
-        SQLQuery query = getCurrentSession().createSQLQuery(String.format(baseQuery + extraParams, "%" + filter + "%", orderBy, direction, length, start))
-                .addScalar("spectrum.id", LongType.INSTANCE);
+        String extraParams = "ORDER BY MAX(%3$s) %4$s, spectrum.id "
+                + "LIMIT %5$d "
+                + "OFFSET %6$d";
 
-        final List idList = query.list();
-        List<Spectrum> returnList = new ArrayList<>();
+        final List idList = getCurrentSession()
+            .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
+            .addScalar("spectrum.id", LongType.INSTANCE)
+            .list();
 
         if (idList.size() > 0) {
-            returnList = createCriteria()
-                    .add(Restrictions.in("id", idList))
-                    .list();
+            spectra = createCriteria().add(Restrictions.in("id", idList)).list();
 
             // sorting here because unable to pass order by list through criteria
-            Collections.sort(returnList, new Comparator<Spectrum>() {
-                @Override
-                public int compare(final Spectrum s1, final Spectrum s2) {
-                    return Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId()));
-                }
-            });
+            Collections.sort(spectra, (s1, s2) -> Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId())));
         }
 
-        return returnList;
+        return spectra;
     }
 
     @Override
     public int getSpectraCountForRun(final AnalyticalRun analyticalRun, final String orderBy, final String filter) {
-        return getCurrentSession().createSQLQuery(String.format(baseQuery, "%" + filter + "%", orderBy))
+        return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", orderBy))
                 .list().size();
+    }
+
+    @Override
+    public List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun) {
+        return createCriteria()
+            .add(Restrictions.eq("analyticalRun", analyticalRun))
+            .setProjection(Projections.property("id"))
+            .list();
     }
 
     @Override
