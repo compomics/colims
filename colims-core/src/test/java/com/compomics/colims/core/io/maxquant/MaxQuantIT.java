@@ -4,7 +4,6 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
-import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
@@ -68,8 +67,6 @@ public class MaxQuantIT {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
-    MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
-    @Autowired
     UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     @Autowired
     MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
@@ -112,7 +109,8 @@ public class MaxQuantIT {
 
         for (MaxQuantAnalyticalRun aRun : maxQuantParser.getRuns()) {
             AnalyticalRun targetRun = new AnalyticalRun();
-            maxQuantUtilitiesAnalyticalRunMapper.map(aRun, targetRun);
+            targetRun.setStorageLocation(aRun.getMaxQuantDirectory().getCanonicalPath());
+
             List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getListOfSpectra().size());
 
             for (MSnSpectrum aSpectrum : aRun.getListOfSpectra().values()) {

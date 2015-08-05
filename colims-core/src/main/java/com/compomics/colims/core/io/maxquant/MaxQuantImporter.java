@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
-import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
@@ -52,8 +51,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
-    private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
-    @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
@@ -94,11 +91,10 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
             for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
                 AnalyticalRun targetRun = new AnalyticalRun();
+                targetRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
                 //first, map the search settings
                 SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(maxQuantImport, targetRun);
-
-                maxQuantUtilitiesAnalyticalRunMapper.map(aParsedRun, targetRun);
 
                 List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
 
