@@ -308,18 +308,15 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getNextPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!psmsTableModel.isMaxPage()) {
-                    psmsTableModel.setPage(psmsTableModel.getPage() + 1);
+                psmsTableModel.setPage(psmsTableModel.getPage() + 1);
+                updatePsmTable();
 
-                    projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
-                    projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
+                projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
+                projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
 
-                    if (psmsTableModel.isMaxPage()) {
-                        projectOverviewPanel.getNextPageSpectra().setEnabled(false);
-                        projectOverviewPanel.getLastPageSpectra().setEnabled(false);
-                    }
-
-                    updatePsmTable();
+                if (psmsTableModel.isMaxPage()) {
+                    projectOverviewPanel.getNextPageSpectra().setEnabled(false);
+                    projectOverviewPanel.getLastPageSpectra().setEnabled(false);
                 }
             }
         });
@@ -327,18 +324,15 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPrevPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (psmsTableModel.getPage() != 0) {
-                    psmsTableModel.setPage(psmsTableModel.getPage() - 1);
+                psmsTableModel.setPage(psmsTableModel.getPage() - 1);
+                updatePsmTable();
 
-                    projectOverviewPanel.getNextPageSpectra().setEnabled(true);
-                    projectOverviewPanel.getLastPageSpectra().setEnabled(true);
+                projectOverviewPanel.getNextPageSpectra().setEnabled(true);
+                projectOverviewPanel.getLastPageSpectra().setEnabled(true);
 
-                    if (psmsTableModel.getPage() == 0) {
-                        projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
-                        projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
-                    }
-
-                    updatePsmTable();
+                if (psmsTableModel.getPage() == 0) {
+                    projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
+                    projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
                 }
             }
         });
@@ -346,32 +340,26 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getFirstPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (psmsTableModel.getPage() != 0) {
-                    psmsTableModel.setPage(0);
+                psmsTableModel.setPage(0);
+                updatePsmTable();
 
-                    projectOverviewPanel.getNextPageSpectra().setEnabled(true);
-                    projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
-                    projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
-                    projectOverviewPanel.getLastPageSpectra().setEnabled(true);
-
-                    updatePsmTable();
-                }
+                projectOverviewPanel.getNextPageSpectra().setEnabled(true);
+                projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
+                projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
+                projectOverviewPanel.getLastPageSpectra().setEnabled(true);
             }
         });
 
         projectOverviewPanel.getLastPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!psmsTableModel.isMaxPage()) {
-                    psmsTableModel.setPage(psmsTableModel.getMaxPage());
+                psmsTableModel.setPage(psmsTableModel.getMaxPage());
+                updatePsmTable();
 
-                    projectOverviewPanel.getNextPageSpectra().setEnabled(false);
-                    projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
-                    projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
-                    projectOverviewPanel.getLastPageSpectra().setEnabled(false);
-
-                    updatePsmTable();
-                }
+                projectOverviewPanel.getNextPageSpectra().setEnabled(false);
+                projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
+                projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
+                projectOverviewPanel.getLastPageSpectra().setEnabled(false);
             }
         });
 
@@ -411,7 +399,7 @@ public class ProjectOverviewController implements Controllable {
             GlazedLists.replaceAll(spectra, psmsTableModel.getRows(selectedAnalyticalRun), false);
             projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getPageIndicator());
         } else {
-            GlazedLists.replaceAll(spectra, new ArrayList<Spectrum>(), false);
+            GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
             projectOverviewPanel.getPageLabelSpectra().setText("");
         }
     }

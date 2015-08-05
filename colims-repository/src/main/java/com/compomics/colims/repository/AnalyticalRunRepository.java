@@ -7,6 +7,4 @@ import com.compomics.colims.model.AnalyticalRun;
  *
  * @author Niels Hulstaert
  */
-public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {
-
-}
+public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {}
