@@ -220,7 +220,7 @@ public class ProjectOverviewController implements Controllable {
 
         //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
-        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat(), spectrumRepository);
+        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
         psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

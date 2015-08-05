@@ -47,7 +47,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * @author Niels Hulstaert
  */
-@Component("colimsController")
+@Component("mainController")
 public class MainController implements Controllable, ActionListener {
 
     /**

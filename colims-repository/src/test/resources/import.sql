@@ -62,7 +62,7 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 INSERT INTO modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', 'UNIMOD:35', '-64.1', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
+-- INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
 
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.28.0');
@@ -90,13 +90,40 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 -- insert a test identification file
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
 
--- insert a test spectrum
+-- insert test spectra
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 5, 'no', 3, 'Test Spectrum', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000000', 1, 'CID', 1, 1, 3, 'no', 3, 'Test Spectrum 2', 1);
 
--- insert a test peptide
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'ABCDEFGH', 1, 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'HGFEDCBA', 1, 1, 1);
+-- insert test peptides
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (3, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 
--- insert a test peptide has protein
-INSERT INTO peptide_has_protein (id,  peptide_post_error_prob,  peptide_prob,  main_group_protein,  l_peptide_id,  l_protein_id, protein_accession) VALUES (1, 0.1, 0.9, NULL, 1, 1, 'TEST_ACCESSION');
+
+-- insert test proteins
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (2, 'AAMAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (3, 'AACAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (4, 'AABAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+
+-- insert test protein accession
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'PROT_ACC_11', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (2, 'PROT_ACC_12', 1);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (3, 'PROT_ACC_2', 2);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (4, 'PROT_ACC_3', 3);
+INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (5, 'PROT_ACC_4', 4);
+
+-- insert test protein groups
+INSERT INTO protein_group (id) VALUES (1), (2);
+
+-- insert test protein group has proteins
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
+
+-- insert test peptide has protein groups
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.1, 0.9, 2, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.1, 0.9, 3, 1);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.1, 0.9, 3, 2);

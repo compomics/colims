@@ -9,6 +9,7 @@ import ca.odell.glazedlists.swing.DefaultEventTableModel;
  * Created by Iain on 19/06/2015.
  */
 public abstract class PagingTableModel extends DefaultEventTableModel {
+
     int page;
     int perPage;
     int rowCount;
@@ -100,9 +101,12 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
 
     /**
      * Get the number of rows displayed per page
+     *
      * @return That value
      */
-    public int getPerPage() { return perPage; }
+    public int getPerPage() {
+        return perPage;
+    }
 
     /**
      * Update filter text.

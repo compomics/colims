@@ -2,7 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProtein;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.Protein;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,17 +29,17 @@ public class PeptideRepositoryTest {
 
     @Autowired
     PeptideRepository peptideRepository;
+    @Autowired
+    ProteinRepository proteinRepository;
 
     @Test
     public void testGetPeptidesForProtein() throws Exception {
-        Protein protein = new Protein();
-        protein.setId(1l);
-        protein.setSequence("BREADBREADBREADBREADBREAD");
+        Protein protein = proteinRepository.findById(1L);
 
         List<Long> spectrumIds = new ArrayList<>();
         spectrumIds.add(1L);
 
-        List<PeptideHasProtein> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+        List<PeptideHasProteinGroup> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
 
         assertThat(peptides.size(), not(0));
     }

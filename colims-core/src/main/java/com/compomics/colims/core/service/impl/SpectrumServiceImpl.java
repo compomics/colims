@@ -6,6 +6,13 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,15 +21,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("spectrumService")
@@ -96,8 +96,8 @@ public class SpectrumServiceImpl implements SpectrumService {
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
-                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
-                BufferedReader br = new BufferedReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+             BufferedReader br = new BufferedReader(isr)) {
             boolean inSpectrum = false;
             String line;
             while ((line = br.readLine()) != null) {
@@ -184,4 +184,18 @@ public class SpectrumServiceImpl implements SpectrumService {
         }
     }
 
+    @Override
+    public List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+        return spectrumRepository.getPagedSpectra(analyticalRun, start, length, orderBy, direction, filter);
+    }
+
+    @Override
+    public int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter) {
+        return spectrumRepository.getSpectraCountForRun(analyticalRun, orderBy, filter);
+    }
+
+    @Override
+    public List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun) {
+        return spectrumRepository.getSpectraIdsForRun(analyticalRun);
+    }
 }
