@@ -93,6 +93,22 @@ public class ManualQueryPanelControllerTest extends TestCase {
 
         assertThat(message, is("cannot execute any commands that are not selects"));
 
+
+    }
+
+    @Test
+    public void testFaultyQuery(){
+
+        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * this is totally not correct syntax");
+
+        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
+
+        assertThat(message,is("there was a problem with your query: select * this is totally not correct syntax"));
+
+    }
+
+    @Test
+    public void testSQLInjection(){
         manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText(
                 "SELECT * FROM colims_user WHERE username = ' '; DELETE FROM experiment WHERE 1 or username = ' '");
 
@@ -107,18 +123,6 @@ public class ManualQueryPanelControllerTest extends TestCase {
         manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
 
         assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getRowCount(),is(2));
-
-
-    }
-
-    @Test
-    public void testFaultyQuery(){
-
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * this is totally not correct syntax");
-
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
-
-        assertThat(message,is("there was a problem with your query: select * this is totally not correct syntax"));
 
     }
 }
