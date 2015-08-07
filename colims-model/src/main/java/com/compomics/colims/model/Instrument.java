@@ -1,24 +1,16 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents an instrument entity in the database.
@@ -32,8 +24,8 @@ public class Instrument extends AuditableDatabaseEntity {
     private static final long serialVersionUID = -7111402094194930375L;
 
     /**
-     * The instrument in-house name. This field is used to make a distinction
-     * between instruments of the same type within on lab.
+     * The instrument in-house name. This field is used to make a distinction between instruments of the same type
+     * within on lab.
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an instrument name.")
@@ -74,9 +66,9 @@ public class Instrument extends AuditableDatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "instrument_has_analyzer",
             joinColumns = {
-                @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_instrument_cv_param_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_instrument_cv_param_id", referencedColumnName = "id")})
     private List<InstrumentCvParam> analyzers = new ArrayList<>();
 
     /**

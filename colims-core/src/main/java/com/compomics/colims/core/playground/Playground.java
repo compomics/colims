@@ -1,5 +1,6 @@
 package com.compomics.colims.core.playground;
 
+import com.compomics.colims.core.service.ExperimentService;
 import org.springframework.context.ApplicationContext;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProjectService;
@@ -45,8 +46,8 @@ public class Playground {
 //        
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
 
-        ProjectService projectService = (ProjectService) applicationContext.getBean("projectService");
-        List<Project> findAll = projectService.findAll();
+        ExperimentService experimentService = (ExperimentService) applicationContext.getBean("experimentService");
+        experimentService.findByProjectIdAndTitle(1L, "bla");
 
         System.out.println("test");
     }

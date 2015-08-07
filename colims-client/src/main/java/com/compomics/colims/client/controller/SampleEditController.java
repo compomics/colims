@@ -40,6 +40,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.log4j.Logger;
@@ -50,6 +51,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,6 +60,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("sampleEditController")
+@Lazy
 public class SampleEditController implements Controllable {
 
     /**
@@ -85,6 +88,7 @@ public class SampleEditController implements Controllable {
     private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
+    @Lazy
     private AnalyticalRunEditController analyticalRunEditController;
     //services
     @Autowired
@@ -112,6 +116,7 @@ public class SampleEditController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -120,9 +125,6 @@ public class SampleEditController implements Controllable {
         sampleEditDialog = new SampleEditDialog(mainController.getMainFrame(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
-
-        //init child controller
-        analyticalRunEditController.init();
 
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());

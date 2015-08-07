@@ -65,7 +65,7 @@ public class Experiment extends AuditableDatabaseEntity {
     /**
      * The experiment samples.
      */
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
     List<Sample> samples = new ArrayList<>();
     /**

@@ -13,7 +13,18 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.google.common.eventbus.EventBus;
-import java.awt.CardLayout;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -23,21 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import javax.swing.AbstractButton;
-import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingWorker;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The mzTab export view controller.
@@ -45,6 +41,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("mzTabExportController")
+@Lazy
 public class MzTabExportController implements Controllable {
 
     /**
@@ -91,6 +88,7 @@ public class MzTabExportController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //init view
         mzTabExportDialog = new MzTabExportDialog(mainController.getMainFrame(), true);
@@ -438,8 +436,7 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Show the correct info and disable/enable the right buttons when switching
-     * between cards.
+     * Show the correct info and disable/enable the right buttons when switching between cards.
      */
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
@@ -495,7 +492,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -595,7 +592,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -607,11 +604,10 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Check if one and only one one with the given level is selected in the
-     * tree. Returns false if nothing or another path level (assay, root path)
-     * is selected.
+     * Check if one and only one one with the given level is selected in the tree. Returns false if nothing or another
+     * path level (assay, root path) is selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -632,11 +628,10 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Check if one or more nodes are selected in the tree. Returns false if
-     * nothing or another path level (study variable or assay, root path) is
-     * selected.
+     * Check if one or more nodes are selected in the tree. Returns false if nothing or another path level (study
+     * variable or assay, root path) is selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -681,8 +676,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel the JTree model instance
-     * @param rootNode the tree root node
+     * @param treeModel        the JTree model instance
+     * @param rootNode         the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {
@@ -730,8 +725,7 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Update the analytical runs to export; set the list of runs and assays
-     * references in the MzTabExport instance.
+     * Update the analytical runs to export; set the list of runs and assays references in the MzTabExport instance.
      */
     private void updateAnalyticalRunsToExport() {
         List<AnalyticalRun> analyticalRuns = mzTabExport.getRuns();

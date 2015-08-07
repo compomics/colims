@@ -20,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("peptideShakerDataImportController")
+@Lazy
 public class PeptideShakerDataImportController implements Controllable {
 
     /**

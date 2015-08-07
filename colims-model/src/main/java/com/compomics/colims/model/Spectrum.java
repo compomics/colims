@@ -85,7 +85,7 @@ public class Spectrum extends DatabaseEntity {
     /**
      * The peptides that identify this spectrum.
      */
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
     private List<Peptide> peptides = new ArrayList<>();
     /**

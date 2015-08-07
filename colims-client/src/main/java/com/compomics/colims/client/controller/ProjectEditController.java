@@ -12,12 +12,6 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.UserNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -26,7 +20,16 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 
 /**
  * The project edit view controller.
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("projectEditController")
+@Lazy
 public class ProjectEditController implements Controllable {
 
     /**
@@ -71,6 +75,7 @@ public class ProjectEditController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -159,8 +164,7 @@ public class ProjectEditController implements Controllable {
     }
 
     /**
-     * Update the project edit dialog with the selected project in the project
-     * overview table.
+     * Update the project edit dialog with the selected project in the project overview table.
      *
      * @param project the Project instance
      */

@@ -2,16 +2,13 @@ package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.CREATED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.DELETED;
-import static com.compomics.colims.client.event.EntityChangeEvent.Type.UPDATED;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
-import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.PermissionChangeEvent;
 import com.compomics.colims.client.event.admin.RoleChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
@@ -21,6 +18,21 @@ import com.compomics.colims.model.Role;
 import com.compomics.colims.model.comparator.PermissionNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.hibernate.exception.ConstraintViolationException;
+import org.jdesktop.beansbinding.*;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -28,29 +40,12 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JListBinding;
-import org.jdesktop.swingbinding.SwingBindings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("roleManagementController")
+@Lazy
 public class RoleManagementController implements Controllable {
 
     //model
@@ -72,6 +67,7 @@ public class RoleManagementController implements Controllable {
     private PermissionService permissionService;
 
     @Override
+    @PostConstruct
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();
@@ -266,8 +262,7 @@ public class RoleManagementController implements Controllable {
     }
 
     /**
-     * Listen to a PermissionChangeEvent and update the available permissions in
-     * the DualList.
+     * Listen to a PermissionChangeEvent and update the available permissions in the DualList.
      *
      * @param permissionChangeEvent the PermissionChangeEvent
      */

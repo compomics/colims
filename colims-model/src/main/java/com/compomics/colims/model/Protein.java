@@ -40,7 +40,7 @@ public class Protein extends DatabaseEntity {
      * The list of protein accessions linked to this protein.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "protein")
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinAccession> proteinAccessions = new ArrayList<>();
 
     /**

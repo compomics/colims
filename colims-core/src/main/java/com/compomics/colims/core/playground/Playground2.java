@@ -7,14 +7,8 @@ import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
+import com.compomics.colims.core.service.*;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.biology.PTMFactory;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -37,79 +31,85 @@ import java.util.List;
 public class Playground2 {
 
     public static void main(String[] args) throws XmlPullParserException, IOException, MappingException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, ArchiveException {
+        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
         ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
 
-        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-        PeptideShakerImporter peptideShakerImporter = applicationContext.getBean("peptideShakerImporter", PeptideShakerImporter.class);
+//        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
+//        PeptideShakerImporter peptideShakerImporter = applicationContext.getBean("peptideShakerImporter", PeptideShakerImporter.class);
         UserService userService = applicationContext.getBean("userService", UserService.class);
-        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
-        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
+//        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
+//        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
         AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
-        UtilitiesProteinMapper utilitiesProteinMapper = applicationContext.getBean("utilitiesProteinMapper", UtilitiesProteinMapper.class);
-        UtilitiesPeptideMapper utilitiesPeptideMapper = applicationContext.getBean("utilitiesPeptideMapper", UtilitiesPeptideMapper.class);
-        PeptideService peptideService = applicationContext.getBean("peptideService", PeptideService.class);
+//        UtilitiesProteinMapper utilitiesProteinMapper = applicationContext.getBean("utilitiesProteinMapper", UtilitiesProteinMapper.class);
+//        UtilitiesPeptideMapper utilitiesPeptideMapper = applicationContext.getBean("utilitiesPeptideMapper", UtilitiesPeptideMapper.class);
+//        PeptideService peptideService = applicationContext.getBean("peptideService", PeptideService.class);
+        ExperimentService experimentService = applicationContext.getBean("experimentService", ExperimentService.class);
 
-        //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        PTMFactory.getInstance().clearFactory();
-        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
+//        //load mods from test resources instead of user folder
+//        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
+//        PTMFactory.getInstance().clearFactory();
+//        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
+
+        Experiment bla = experimentService.findByProjectIdAndTitle(1L, "experiment 1");
 
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(adminUser);
         authenticationBean.setCurrentUser(adminUser);
 
-        //import PeptideShaker .cps file
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
-        //set mgf files and fasta file
-        List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
-        unpackedPsDataImport.setMgfFiles(mgfFiles);
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
-        FastaDb fastaDb = new FastaDb();
-        fastaDb.setName(fastaFile.getName());
-        fastaDb.setFileName(fastaFile.getName());
-        fastaDb.setFilePath(fastaFile.getAbsolutePath());
-        unpackedPsDataImport.setFastaDb(fastaDb);
 
-//        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
-        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
-        //get sample from db
-        Sample sample = sampleService.findAll().get(0);
-
-        //set sample and persist
-        for (AnalyticalRun analyticalRun : analyticalRuns) {
-            //set modification and creation date
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
-            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
-            analyticalRun.setSample(sample);
-            analyticalRunService.saveOrUpdate(analyticalRun);
-        }
-
-        //import PeptideShaker .cps file
-        unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
-        //set mgf files and fasta file
-        mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
-        unpackedPsDataImport.setMgfFiles(mgfFiles);
-        unpackedPsDataImport.setFastaDb(fastaDb);
-
-//        analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
-
-        //get sample from db
-        sample = sampleService.findAll().get(0);
-
-        //set sample and persist
-        for (AnalyticalRun analyticalRun : analyticalRuns) {
-            //set modification and creation date
-            analyticalRun.setCreationDate(new Date());
-            analyticalRun.setModificationDate(new Date());
-            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
-            analyticalRun.setSample(sample);
-            analyticalRunService.saveOrUpdate(analyticalRun);
-        }
+//        //import PeptideShaker .cps file
+//        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
+//        //set mgf files and fasta file
+//        List<File> mgfFiles = new ArrayList<>();
+//        mgfFiles.add(new ClassPathResource("data/peptideshaker/input_spectra.mgf").getFile());
+//        unpackedPsDataImport.setMgfFiles(mgfFiles);
+//        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();
+//        FastaDb fastaDb = new FastaDb();
+//        fastaDb.setName(fastaFile.getName());
+//        fastaDb.setFileName(fastaFile.getName());
+//        fastaDb.setFilePath(fastaFile.getAbsolutePath());
+//        unpackedPsDataImport.setFastaDb(fastaDb);
+//
+////        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+//        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+//
+//        //get sample from db
+//        Sample sample = sampleService.findAll().get(0);
+//
+//        //set sample and persist
+//        for (AnalyticalRun analyticalRun : analyticalRuns) {
+//            //set modification and creation date
+//            analyticalRun.setCreationDate(new Date());
+//            analyticalRun.setModificationDate(new Date());
+//            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
+//            analyticalRun.setSample(sample);
+//            analyticalRunService.saveOrUpdate(analyticalRun);
+//        }
+//
+//        //import PeptideShaker .cps file
+//        unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
+//        //set mgf files and fasta file
+//        mgfFiles = new ArrayList<>();
+//        mgfFiles.add(new ClassPathResource("small_scale/example.mgf").getFile());
+//        unpackedPsDataImport.setMgfFiles(mgfFiles);
+//        unpackedPsDataImport.setFastaDb(fastaDb);
+//
+////        analyticalRuns = peptideShakerImporter.mapAnalyticalRuns(unpackedPsDataImport);
+//
+//        //get sample from db
+//        sample = sampleService.findAll().get(0);
+//
+//        //set sample and persist
+//        for (AnalyticalRun analyticalRun : analyticalRuns) {
+//            //set modification and creation date
+//            analyticalRun.setCreationDate(new Date());
+//            analyticalRun.setModificationDate(new Date());
+//            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
+//            analyticalRun.setSample(sample);
+//            analyticalRunService.saveOrUpdate(analyticalRun);
+//        }
 
 //        //load SequenceFactory for testing
 //        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot_sprot_101104_human_concat.fasta").getFile();

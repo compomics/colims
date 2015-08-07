@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -33,6 +34,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("permissionManagementController")
+@Lazy
 public class PermissionManagementController implements Controllable {
 
     //model
@@ -59,6 +62,7 @@ public class PermissionManagementController implements Controllable {
     private PermissionService permissionService;
 
     @Override
+    @PostConstruct
     public void init() {
         //get view
         userManagementDialog = userManagementController.getUserManagementDialog();

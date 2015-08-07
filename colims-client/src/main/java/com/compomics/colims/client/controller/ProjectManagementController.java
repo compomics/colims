@@ -8,6 +8,8 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
@@ -16,35 +18,28 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.view.ProjectManagementPanel;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.model.DatabaseEntity;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Protocol;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The project management view controller.
@@ -74,14 +69,19 @@ public class ProjectManagementController implements Controllable {
     private ProjectManagementPanel projectManagementPanel;
     //child controller
     @Autowired
+    @Lazy
     private ProjectEditController projectEditController;
     @Autowired
+    @Lazy
     private ExperimentEditController experimentEditController;
     @Autowired
+    @Lazy
     private SampleEditController sampleEditController;
     @Autowired
+    @Lazy
     private AnalyticalRunSetupController analyticalRunSetupController;
     @Autowired
+    @Lazy
     private MzTabExportController mzTabExportController;
     //parent controller
     @Autowired
@@ -116,13 +116,6 @@ public class ProjectManagementController implements Controllable {
 
         //init view
         projectManagementPanel = new ProjectManagementPanel();
-
-        //init child controllers
-        projectEditController.init();
-        experimentEditController.init();
-        sampleEditController.init();
-        analyticalRunSetupController.init();
-        mzTabExportController.init();
 
         //init projects table
         SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
@@ -558,11 +551,10 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, analytical runs) from
-     * the database. Shows a confirmation dialog first. When confirmed, a
-     * DeleteDbTask message is sent to the DB task queue.
+     * Delete the database entity (project, experiment, analytical runs) from the database. Shows a confirmation dialog
+     * first. When confirmed, a DeleteDbTask message is sent to the DB task queue.
      *
-     * @param entity the database entity to delete
+     * @param entity        the database entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */

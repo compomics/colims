@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,6 +28,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("institutionManagementController")
+@Lazy
 public class InstitutionManagementController implements Controllable {
 
     /**
@@ -58,6 +61,7 @@ public class InstitutionManagementController implements Controllable {
     private InstitutionService institutionService;
 
     @Override
+    @PostConstruct
     public void init() {
         //init view
         institutionManagementDialog = new InstitutionManagementDialog(userManagementController.getUserManagementParentController().getUserManagementDialog(), true);

@@ -117,7 +117,7 @@ public final class ColimsClientStarter {
             //set application context in ApplicationContextProvider
             ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
 
-            MainController mainController = ApplicationContextProvider.getInstance().getBean("colimsController");
+            MainController mainController = ApplicationContextProvider.getInstance().getBean("mainController");
             SplashScreen splashScreen = ApplicationContextProvider.getInstance().getBean("splashScreen");
 
             //set final progress bar step

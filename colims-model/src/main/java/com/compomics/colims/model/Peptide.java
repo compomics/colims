@@ -72,7 +72,7 @@ public class Peptide extends DatabaseEntity {
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")

@@ -39,7 +39,7 @@ public class ProteinGroup extends DatabaseEntity {
      * The ProteinGroupHasProtein instances from the join table between the protein group and protein tables.
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "proteinGroup")
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
 
     /**

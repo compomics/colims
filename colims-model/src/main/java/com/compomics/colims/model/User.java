@@ -1,23 +1,14 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jasypt.util.password.BasicPasswordEncryptor;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents an user entity in the database.
@@ -72,7 +63,7 @@ public class User extends AuditableDatabaseEntity {
     /**
      * The institution the user belongs to.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "l_institution_id", referencedColumnName = "id")
     private Institution institution;
     /**
@@ -91,9 +82,9 @@ public class User extends AuditableDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "user_has_group",
             joinColumns = {
-                @JoinColumn(name = "l_user_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_user_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_group_id", referencedColumnName = "id")})
     private List<Group> groups = new ArrayList<>();
 
     /**
@@ -186,8 +177,7 @@ public class User extends AuditableDatabaseEntity {
     }
 
     /**
-     * Check the user input against the digested password in the database.
-     * Returns true if the check was successful.
+     * Check the user input against the digested password in the database. Returns true if the check was successful.
      *
      * @param plainPassword the plain password String
      * @return did the password check pass

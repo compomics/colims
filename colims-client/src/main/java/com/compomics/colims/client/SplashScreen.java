@@ -1,24 +1,16 @@
 package com.compomics.colims.client;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.io.IOException;
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JWindow;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ClassPathResource;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * @author Peter De Bruycker
@@ -114,8 +106,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     }
 
     /**
-     * Dispose of the the splash screen. Once disposed, the same splash screen
-     * instance may not be shown again.
+     * Dispose of the the splash screen. Once disposed, the same splash screen instance may not be shown again.
      */
     public void dispose() {
         window.dispose();
@@ -158,7 +149,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
      * Set the progress message of the progress bar.
      *
      * @param progressMessage the progress bar label message
-     * @param value the progress bar value
+     * @param value           the progress bar value
      */
     public void setProgressLabel(final String progressMessage, final int value) {
         if (showProgressLabel) {

@@ -43,7 +43,7 @@ public class QuantificationParameters extends DatabaseEntity {
     @OneToMany(mappedBy = "quantificationParameterSettings")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "quant_param_settings_has_reagent",
             joinColumns = {
         @JoinColumn(name = "l_quant_parameters_id", referencedColumnName = "id")},

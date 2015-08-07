@@ -34,7 +34,7 @@ public class PeptideRepositoryTest {
 
     @Test
     public void testGetPeptidesForProtein() throws Exception {
-        Protein protein = proteinRepository.findById(1L);
+        Protein protein = proteinRepository.findById(4L);
 
         List<Long> spectrumIds = new ArrayList<>();
         spectrumIds.add(1L);
