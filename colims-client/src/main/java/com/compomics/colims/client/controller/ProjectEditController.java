@@ -183,6 +183,7 @@ public class ProjectEditController implements Controllable {
         projectEditDialog.getOwnerComboBox().getModel().setSelectedItem(projectToEdit.getOwner());
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
         //populate user dual list
+        projectService.fetchUsers(projectToEdit);
         projectEditDialog.getUserDualList().populateLists(users, projectToEdit.getUsers());
 
         showView();

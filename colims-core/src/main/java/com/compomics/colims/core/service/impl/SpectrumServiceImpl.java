@@ -8,7 +8,7 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,13 +174,13 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public void fetchSpectrumFiles(Spectrum spectrum) {
         try {
+            spectrum.getSpectrumFiles().size();
+        } catch (LazyInitializationException e) {
             //attach the spectrum to the new session
             spectrumRepository.saveOrUpdate(spectrum);
             if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
                 Hibernate.initialize(spectrum.getSpectrumFiles());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 

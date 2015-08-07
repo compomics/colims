@@ -85,13 +85,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void fetchAuthenticationRelations(final User user) {
         try {
+            user.getGroups().size();
+        } catch (LazyInitializationException e) {
             //attach the user to the new session
             userRepository.saveOrUpdate(user);
             if (!Hibernate.isInitialized(user.getGroups())) {
                 Hibernate.initialize(user.getGroups());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 
