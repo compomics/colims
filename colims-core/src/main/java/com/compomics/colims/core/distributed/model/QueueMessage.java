@@ -1,4 +1,4 @@
-package com.compomics.colims.distributed.model;
+package com.compomics.colims.core.distributed.model;
 
 import java.io.Serializable;
 

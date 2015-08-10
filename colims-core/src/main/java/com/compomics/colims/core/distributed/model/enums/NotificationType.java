@@ -1,4 +1,4 @@
-package com.compomics.colims.distributed.model.enums;
+package com.compomics.colims.core.distributed.model.enums;
 
 /**
  * This enum contains the different notification types.

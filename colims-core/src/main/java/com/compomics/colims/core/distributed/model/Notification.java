@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.distributed.model;
+package com.compomics.colims.core.distributed.model;
 
-import com.compomics.colims.distributed.model.enums.NotificationType;
+import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import java.util.Objects;
 
 /**

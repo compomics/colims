@@ -1,6 +1,6 @@
-package com.compomics.colims.distributed.model;
+package com.compomics.colims.core.distributed.model;
 
-import com.compomics.colims.distributed.model.enums.PersistType;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import java.io.Serializable;
 import java.util.Date;
