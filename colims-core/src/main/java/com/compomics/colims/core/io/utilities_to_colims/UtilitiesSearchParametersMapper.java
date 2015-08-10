@@ -3,16 +3,14 @@ package com.compomics.colims.core.io.utilities_to_colims;
 import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.TypedCvParamService;
-
 import com.compomics.colims.model.SearchCvParam;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.factory.CvParamFactory;
-import org.apache.log4j.Logger;
-
-import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.factory.CvParamFactory;
 import com.compomics.util.experiment.biology.Enzyme;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +29,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
+
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
