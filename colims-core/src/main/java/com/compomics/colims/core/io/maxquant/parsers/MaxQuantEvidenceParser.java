@@ -1,22 +1,17 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
-import com.compomics.colims.core.io.maxquant.urparams.MaxQuantPtmScoring;
-import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.QuantificationGroup;
+import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.QuantificationWeight;
-import com.compomics.util.experiment.biology.Peptide;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.experiment.massspectrometry.Charge;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -40,11 +35,8 @@ public class MaxQuantEvidenceParser {
             MaxQuantEvidenceHeaders.MODIFICATIONS
     };
 
-    @Autowired
-    private MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
-
     public Map<Integer, List<Quantification>> quantifications = new HashMap<>();
-    public Map<Integer, PeptideAssumption> peptideAssumptions = new HashMap<>();
+    public Map<Integer, com.compomics.colims.model.Peptide> peptides = new HashMap<>();
 
     /**
      * Iterable intensity headers, based on number of labels chosen.
@@ -103,19 +95,14 @@ public class MaxQuantEvidenceParser {
 
                 for (String msmsId : msmsIds) {
                     if (!msmsId.isEmpty()) {
-                        if (peptideAssumptions.containsKey(Integer.parseInt(msmsId))) {
+                        if (peptides.containsKey(Integer.parseInt(msmsId))) {
                             throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
                         }
 
                         int spectrumID = Integer.parseInt(msmsId);
-                        PeptideAssumption assumption = createPeptideAssumption(values);
+                        com.compomics.colims.model.Peptide peptide = createPeptide(values);
 
-                        peptideAssumptions.put(spectrumID, assumption);
-
-                        // create colims peptide from assumption, for use in group
-                        com.compomics.colims.model.Peptide peptide = new com.compomics.colims.model.Peptide();
-                        maxQuantUtilitiesPeptideMapper.map(assumption, peptide);
-                        maxQuantUtilitiesPeptideMapper.clear();
+                        peptides.put(spectrumID, peptide);
 
                         List<Quantification> spectrumQuantList = new ArrayList<>();
 
@@ -158,49 +145,35 @@ public class MaxQuantEvidenceParser {
         return intensity;
     }
 
-    /**
-     * Create a peptide assumption from a map of values.
-     *
-     * @param values Map of headers and values
-     * @return A fresh peptide
-     * @throws HeaderEnumNotInitialisedException
-     */
-    public PeptideAssumption createPeptideAssumption(final Map<String, String> values) {
-        Peptide peptide = new Peptide(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()), extractModifications(values));
-        // possibly dubious
-        peptide.setParentProteins(new ArrayList(Arrays.asList(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";"))));
+    public com.compomics.colims.model.Peptide createPeptide(final Map<String, String> values) {
+        com.compomics.colims.model.Peptide peptide = new com.compomics.colims.model.Peptide();
 
+        double probability = -1, pep = -1;
 
-        double score = -1, pep = -1;
-
-        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()).equals("NaN")) {
-            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()));
-        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()).equals("NaN")) {
-            score = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()));
+        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()));
+        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()));
         }
 
-        if(values.containsKey(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()))
-        pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()));
+        if(values.containsKey(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName())) {
+            pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()));
+        }
 
-        Charge identificationCharge =  new Charge(Charge.PLUS, Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName())));
+        peptide.setCharge(Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName())));
+        peptide.setPsmPostErrorProbability(pep);
+        peptide.setPsmProbability(probability);
+        peptide.setSequence(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()));
+        peptide.setTheoreticalMass(Double.valueOf(values.get(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName())));
+        peptide.setPeptideHasModifications(createModifications(peptide, values));
 
-        //99 is missing value according to statistics (har har) --> Advocate.MAXQUANT does not exist for the moment(and probably never will)
-        PeptideAssumption assumption = new PeptideAssumption(peptide, 1, 99, identificationCharge, score);
-        assumption.addUrParam(new MatchScore(score, pep));
-
-
-        return assumption;
+        return peptide;
     }
 
-    /**
-     * Extract modifications from a given value set and link them to relevant peptides.
-     *
-     * @param values Map of headers and values
-     * @return A list of matches
-     * @throws HeaderEnumNotInitialisedException
-     */
-    private ArrayList<ModificationMatch> extractModifications(final Map<String, String> values) {
-        ArrayList<ModificationMatch> modificationsForPeptide = new ArrayList<>();
+    private List<PeptideHasModification> createModifications(com.compomics.colims.model.Peptide peptide, final Map<String, String> values) {
+        List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
+
+        // TODO: check locations (mapper mentions 1-indexed in utils modification...)
 
         // Sequence representation including the post-translational modifications (abbreviation of the modification in
         // brackets before the modified AA). The sequence is always surrounded by underscore characters ('_').
@@ -208,89 +181,88 @@ public class MaxQuantEvidenceParser {
         String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName());
 
         if (modifications == null || "Unmodified".equalsIgnoreCase(modifications)) {
-            return modificationsForPeptide;
+            return peptideHasModifications;
         } else {
             for (MaxQuantModificationHeaders modificationHeader : MaxQuantModificationHeaders.values()) {
-                int location = -1;
                 String modificationString = values.get(modificationHeader.getDefaultColumnName());
 
-                // if modification found
                 if (modificationString != null) {
-                    // N-term check
-                    if (modificationHeader.getDefaultColumnName().contains("n-term")) {
-                        if ("1".equals(modificationString)) {
-                            MaxQuantPtmScoring score = new MaxQuantPtmScoring();
-                            // N-term has position 0
-                            location = 0;
-                            score.setDeltaScore(100.0);
-                            score.setScore(100.0);
-                            ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
-                            match.addUrParam(score);
-                            modificationsForPeptide.add(match);
-                        }
+                    if (modificationHeader.getDefaultColumnName().contains("n-term") && "1".equals(modificationString)) {
+                        PeptideHasModification phModification = new PeptideHasModification();
+                        // all currently set as variable mods
+                        phModification.setModificationType(ModificationType.VARIABLE);
+                        // theoretic ptm = modificationHeader.getDefaultColumnName()
+                        phModification.setModification(new Modification()); // TODO!! need methods from utilsmodmapper
+
+                        phModification.setDeltaScore(100.0);
+                        phModification.setLocation(0);
+                        phModification.setProbabilityScore(100.0);
+                        phModification.setPeptide(peptide);
+
+                        peptideHasModifications.add(phModification);
                     }
 
-                    //C-term check
-                    if (modificationHeader.getDefaultColumnName().contains("c-term")) {
-                        if ("1".equals(modificationString)) {
-                            // C-term has position end of sequence
-                            MaxQuantPtmScoring score = new MaxQuantPtmScoring();
-                            location = values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() + 1;
-                            score.setDeltaScore(100.0);
-                            score.setScore(100.0);
-                            ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
-                            match.addUrParam(score);
-                            modificationsForPeptide.add(match);
-                        }
+                    if (modificationHeader.getDefaultColumnName().contains("c-term") && "1".equals(modificationString)) {
+                        PeptideHasModification phModification = new PeptideHasModification();
+
+                        phModification.setModificationType(ModificationType.VARIABLE);
+                        phModification.setModification(new Modification());
+                        phModification.setDeltaScore(100.0);
+                        phModification.setLocation(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1);
+                        phModification.setProbabilityScore(100.0);
+                        phModification.setPeptide(peptide);
+
+                        peptideHasModifications.add(phModification);
                     }
 
-                    //means the modification is in the sequence and we have to check the most likely location
-                    if ((modificationString = values.get(modificationHeader.getDefaultColumnName() + " probabilities")) != null) {
-                        if (modificationString.contains("(")) {
-                            modificationString = modificationString.replaceAll("_", "");
-                            int previousLocation = 0;
-                            String[] modificationLocations = modificationString.split("\\(");
-                            String[] modificationDeltaScores = null;
+                    if ((modificationString = values.get(modificationHeader.getDefaultColumnName() + " probabilities")) != null && modificationString.contains("(")) {
+                        modificationString = modificationString.replaceAll("_", "");
+                        int location = -1;
+                        int previousLocation = 0;
+                        String[] modificationLocations = modificationString.split("\\(");
+                        String[] modificationDeltaScores = null;
 
-                            if (values.containsKey(modificationHeader.getDefaultColumnName() + " score diffs")) {
-                                modificationDeltaScores = values.get(modificationHeader.getDefaultColumnName() + " score diffs").split("\\(");
-                            }
+                        if (values.containsKey(modificationHeader.getDefaultColumnName() + " score diffs")) {
+                            modificationDeltaScores = values.get(modificationHeader.getDefaultColumnName() + " score diffs").split("\\(");
+                        }
 
-                            for (int i = 0; i < modificationLocations.length; i++) {
-                                if (modificationLocations[i].contains(")")) {
-                                    MaxQuantPtmScoring score = new MaxQuantPtmScoring();
+                        for (int i = 0; i < modificationLocations.length; i++) {
+                            if (modificationLocations[i].contains(")")) {
+                                PeptideHasModification phModification = new PeptideHasModification();
 
-                                    if (modificationDeltaScores != null) {
-                                        score.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
-                                    } else {
-                                        score.setDeltaScore(-1.0);
-                                    }
+                                phModification.setModificationType(ModificationType.VARIABLE);
+                                phModification.setModification(new Modification());
+                                phModification.setPeptide(peptide);
 
-                                    score.setScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
-                                    modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-                                    location = modificationLocations[i - 1].length();
-                                    ModificationMatch match = new ModificationMatch(modificationHeader.getDefaultColumnName(), true, location);
-                                    match.addUrParam(score);
-                                    modificationsForPeptide.add(match);
+                                if (modificationDeltaScores != null) {
+                                    phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
+                                } else {
+                                    phModification.setDeltaScore(-1.0);
                                 }
-                                previousLocation = location + previousLocation;
+
+                                phModification.setProbabilityScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
+
+                                modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
+                                phModification.setLocation(modificationLocations[i - 1].length());
+
+                                peptideHasModifications.add(phModification);
                             }
+
+                            previousLocation = location + previousLocation;
                         }
                     }
                 }
             }
-            //TODO parse parameters for fixed and variable modifications
-            //parameters.get("fixed modifications"), parameters.get("variable modifications")
         }
 
-        return modificationsForPeptide;
+        return peptideHasModifications;
     }
 
     /**
      * Clear run data from parser.
      */
     public void clear() {
-        peptideAssumptions.clear();
+        peptides.clear();
         quantifications.clear();
     }
 }

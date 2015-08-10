@@ -1,7 +1,7 @@
 package com.compomics.colims.core.io.maxquant;
 
+import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public class MaxQuantAnalyticalRun {
      * The analytical run name.
      */
     private String analyticalRunName;
-    private Map<Integer, MSnSpectrum> spectraFoundInAnalyticalRun = new HashMap<>();
+    private Map<Integer, Spectrum> spectraFoundInAnalyticalRun = new HashMap<>();
     private SearchParameters runParameters;
 
     /**
@@ -67,11 +67,11 @@ public class MaxQuantAnalyticalRun {
         this.runParameters = parametersForRun;
     }
 
-    public void addASpectrum(Integer id, MSnSpectrum aSpectrum) {
+    public void addASpectrum(Integer id, Spectrum aSpectrum) {
         spectraFoundInAnalyticalRun.put(id, aSpectrum);
     }
 
-    public Map<Integer, MSnSpectrum> getListOfSpectra() {
+    public Map<Integer, Spectrum> getSpectra() {
         return Collections.unmodifiableMap(spectraFoundInAnalyticalRun);
     }
 }
