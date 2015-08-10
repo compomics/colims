@@ -111,9 +111,9 @@ public class MaxQuantIT {
             AnalyticalRun targetRun = new AnalyticalRun();
             targetRun.setStorageLocation(aRun.getMaxQuantDirectory().getCanonicalPath());
 
-            List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getListOfSpectra().size());
+            List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getSpectra().size());
 
-            for (MSnSpectrum aSpectrum : aRun.getListOfSpectra().values()) {
+            for (MSnSpectrum aSpectrum : aRun.getSpectra().values()) {
                 Spectrum targetSpectrum = new Spectrum();
                 utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
                 mappedSpectra.add(targetSpectrum);

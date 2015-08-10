@@ -8,7 +8,6 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +28,9 @@ public class MaxQuantUtilitiesPsmMapper {
     @Autowired
     private UtilitiesProteinMapper utilitiesProteinMapper;
 
-    public void map(MSnSpectrum aParsedSpectrum, MaxQuantParser maxQuantParser, Spectrum targetSpectrum) throws MappingException {
-        Peptide targetPeptide = new Peptide();
-        PeptideAssumption sourcePeptide = maxQuantParser.getIdentificationForSpectrum(aParsedSpectrum);
-        maxQuantUtilitiesPeptideMapper.map(sourcePeptide, targetPeptide);
+    public void map(Spectrum aParsedSpectrum, MaxQuantParser maxQuantParser, Spectrum targetSpectrum) throws MappingException {
+        Peptide targetPeptide = maxQuantParser.getIdentificationForSpectrum(aParsedSpectrum);
+
         List<ProteinMatch> proteinMatches = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(sourcePeptide));
         utilitiesProteinMapper.map(proteinMatches, (MatchScore) sourcePeptide.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY)), targetPeptide);
         targetSpectrum.getPeptides().add(targetPeptide);

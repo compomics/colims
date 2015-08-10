@@ -5,26 +5,12 @@ import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.model.enums.SearchEngineType;
-import com.compomics.util.experiment.identification.SequenceFactory;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +31,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
     @Autowired
-    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
-    @Autowired
     private MaxQuantParameterParser parameterParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
@@ -55,36 +39,19 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
 
-    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
-    /**
-     * Compomics utilities sequence factory.
-     */
-    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-
     @Override
     public void clear() {
-        try {
-            spectrumFactory.clearFactory();
-            sequenceFactory.clearFactory();
-            parameterParser.clear();
-        } catch (IOException | SQLException ex) {
-            LOGGER.error(ex);
-        }
+        parameterParser.clear();
     }
 
     @Override
     public List<AnalyticalRun> importData(MaxQuantImport maxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
-        File preparedFastaFile = null;
 
         try {
             //just in case
             maxQuantParser.clear();
-            preparedFastaFile = prepareFasta(maxQuantImport.getFastaDb().getFilePath());
-            LOGGER.debug("Start loading FASTA file.");
-            sequenceFactory.loadFastaFile(preparedFastaFile, null);
-            LOGGER.debug("Finish loading FASTA file.");
 
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory());
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
@@ -96,17 +63,18 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
                 //first, map the search settings
                 SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(maxQuantImport, targetRun);
 
-                List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getListOfSpectra().size());
+                List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getSpectra().size());
 
-                for (Map.Entry<Integer, MSnSpectrum> aParsedSpectrum : aParsedRun.getListOfSpectra().entrySet()) {
+                for (Map.Entry<Integer, Spectrum> aParsedSpectrum : aParsedRun.getSpectra().entrySet()) {
                     Spectrum targetSpectrum = new Spectrum();
 
                     //set entity relation
                     targetSpectrum.setAnalyticalRun(targetRun);
 
-                    //for the spectra we can just use the standard utilities mapper
-                    utilitiesSpectrumMapper.map(aParsedSpectrum.getValue(), maxQuantParser.getFragmentationType(aParsedSpectrum.getKey()), targetSpectrum);
                     mappedSpectra.add(targetSpectrum);
+
+                    // instead of mapper here we can just build relations as needed
+                    // but i wonder if even this can't be included in the parser
 
                     maxQuantUtilitiesPsmMapper.map(aParsedSpectrum.getValue(), maxQuantParser, targetSpectrum);
                 }
@@ -114,14 +82,11 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
                 mappedRuns.add(targetRun);
             }
 
-        } catch (IOException | ClassNotFoundException | UnparseableException | MappingException ex) {
+        } catch (IOException |  UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
-        } finally {
-            if (preparedFastaFile != null) {
-                preparedFastaFile.delete();
-            }
         }
+
         return mappedRuns;
     }
 
@@ -173,76 +138,4 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
         return quantificationSettings;
     }
-
-    private File prepareFasta(String filePath) throws IOException {
-        File originalFile = new File(filePath);
-        File preparedFile = new File(System.getProperty("java.io.tmpdir") + "/maxquantspikedfastas", originalFile.getName());
-        if (!preparedFile.getParentFile().exists()) {
-            preparedFile.getParentFile().mkdir();
-        }
-        if (preparedFile.exists()) {
-            preparedFile.delete();
-        }
-        String line;
-        try (FileOutputStream fos = new FileOutputStream(preparedFile);
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
-            try (FileInputStream fis = new FileInputStream((originalFile));
-                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                 LineNumberReader originalReader = new LineNumberReader(isr)) {
-                while ((line = originalReader.readLine()) != null) {
-                    pw.println(line);
-                }
-            }
-            try (InputStream fileStream = ResourceUtils.getResourceByRelativePath("config/maxquant/contaminants.fasta").getInputStream();
-                 InputStreamReader isr = new InputStreamReader(fileStream, Charset.forName("UTF-8").newDecoder());
-                 LineNumberReader contaminantsReader = new LineNumberReader(isr)) {
-                while ((line = contaminantsReader.readLine()) != null) {
-                    pw.println(line);
-                }
-            }
-            pw.flush();
-        }
-        File finalFile = new File(preparedFile.getParentFile(), preparedFile.getName() + "_spiked.fasta");
-        if (finalFile.exists()) {
-            finalFile.delete();
-        }
-        try (FileOutputStream fos = new FileOutputStream(finalFile);
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter finalWriter = new BufferedWriter(osw)) {
-            StringBuilder normalBuffer = new StringBuilder();
-            StringBuilder reverseBuffer = new StringBuilder();
-            try (FileInputStream fis = new FileInputStream(preparedFile);
-                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                 LineNumberReader preparedFileReader = new LineNumberReader(isr)) {
-                while ((line = preparedFileReader.readLine()) != null) {
-                    if (line.contains(">")) {
-                        finalWriter.write(normalBuffer.toString());
-                        finalWriter.write(reverseBuffer.toString());
-                        normalBuffer = new StringBuilder();
-                        reverseBuffer = new StringBuilder();
-                        if (line.contains("CON__")) {
-                            line = line.replace(">", ">generic|");
-                            line = line.replaceFirst(" ", "|");
-                            reverseBuffer.append(line.replaceFirst("CON__", "REV__CON__")).append("\n");
-                        } else if (line.matches(">.*|")) {
-                            reverseBuffer.append(line.replaceFirst("\\|", "|REV__")).append("\n");
-                        }
-                        normalBuffer.append(line).append("\n");
-                    } else {
-                        normalBuffer.append(line).append("\n");
-                        reverseBuffer.append(line).append("\n");
-                    }
-                }
-            }
-            if (normalBuffer.length() != 0 && reverseBuffer.length() != 0) {
-                finalWriter.append(normalBuffer.toString()).append("\n");
-                finalWriter.append(reverseBuffer.toString()).append("\n");
-            }
-            preparedFile.delete();
-        }
-        return finalFile;
-    }
-
 }
