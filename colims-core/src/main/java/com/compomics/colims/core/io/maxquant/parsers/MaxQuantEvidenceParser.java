@@ -6,10 +6,7 @@ import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.Quantification;
-import com.compomics.colims.model.QuantificationGroup;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.QuantificationWeight;
 import org.springframework.stereotype.Component;
@@ -35,13 +32,15 @@ public class MaxQuantEvidenceParser {
             MaxQuantEvidenceHeaders.MODIFICATIONS
     };
 
+    // TODO: integers to longs?
     public Map<Integer, List<Quantification>> quantifications = new HashMap<>();
-    public Map<Integer, com.compomics.colims.model.Peptide> peptides = new HashMap<>();
+    public Map<Integer, Peptide> peptides = new HashMap<>();
+    public Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
 
     /**
      * Iterable intensity headers, based on number of labels chosen.
      */
-    public static final Map<Integer, String[]> intensityHeaders = new HashMap<>();
+    private static final Map<Integer, String[]> intensityHeaders = new HashMap<>();
 
     static {
         intensityHeaders.put(1, new String[]{"intensity"});
@@ -145,8 +144,8 @@ public class MaxQuantEvidenceParser {
         return intensity;
     }
 
-    public com.compomics.colims.model.Peptide createPeptide(final Map<String, String> values) {
-        com.compomics.colims.model.Peptide peptide = new com.compomics.colims.model.Peptide();
+    public Peptide createPeptide(final Map<String, String> values) {
+        Peptide peptide = new Peptide();
 
         double probability = -1, pep = -1;
 
@@ -166,6 +165,14 @@ public class MaxQuantEvidenceParser {
         peptide.setSequence(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()));
         peptide.setTheoreticalMass(Double.valueOf(values.get(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName())));
         peptide.setPeptideHasModifications(createModifications(peptide, values));
+
+        List<Integer> proteinGroups = new ArrayList<>();
+
+        for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";")) {
+            proteinGroups.add(Integer.parseInt(id));
+        }
+
+        peptideProteins.put(peptide, proteinGroups);
 
         return peptide;
     }

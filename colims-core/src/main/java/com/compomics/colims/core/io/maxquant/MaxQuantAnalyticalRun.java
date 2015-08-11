@@ -67,7 +67,7 @@ public class MaxQuantAnalyticalRun {
         this.runParameters = parametersForRun;
     }
 
-    public void addASpectrum(Integer id, Spectrum aSpectrum) {
+    public void addSpectrum(Integer id, Spectrum aSpectrum) {
         spectraFoundInAnalyticalRun.put(id, aSpectrum);
     }
 

@@ -16,6 +16,7 @@ public enum  MaxQuantProteinGroupHeaders implements HeaderEnum {
     FASTAHEADER(new String[]{"Fasta headers"}),
     ID(new String[]{"id"}),
     MSMSIDS(new String[]{"MS/MS IDs"}),
+    PEP(new String[]{"PEP"}),
     PEPTIDEIDS(new String[]{"Peptide IDs"}),
     REVERSE(new String[]{"Reverse"});
 

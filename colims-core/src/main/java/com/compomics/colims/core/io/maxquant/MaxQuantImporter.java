@@ -3,8 +3,6 @@ package com.compomics.colims.core.io.maxquant;
 import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
-import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.model.enums.SearchEngineType;
@@ -35,8 +33,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
-    private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
-    @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
 
     @Override
@@ -56,28 +52,22 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory());
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
 
-            for (MaxQuantAnalyticalRun aParsedRun : maxQuantParser.getRuns()) {
+            for (MaxQuantAnalyticalRun maxQuantAnalyticalRun : maxQuantParser.getRuns()) {
                 AnalyticalRun targetRun = new AnalyticalRun();
                 targetRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
-                //first, map the search settings
                 SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(maxQuantImport, targetRun);
 
-                List<Spectrum> mappedSpectra = new ArrayList<>(aParsedRun.getSpectra().size());
+                List<Spectrum> mappedSpectra = new ArrayList<>(maxQuantAnalyticalRun.getSpectra().size());
 
-                for (Map.Entry<Integer, Spectrum> aParsedSpectrum : aParsedRun.getSpectra().entrySet()) {
-                    Spectrum targetSpectrum = new Spectrum();
+                for (Map.Entry<Integer, Spectrum> entry : maxQuantAnalyticalRun.getSpectra().entrySet()) {
+                    Spectrum targetSpectrum = mapSpectrum(entry.getValue());
 
-                    //set entity relation
                     targetSpectrum.setAnalyticalRun(targetRun);
 
                     mappedSpectra.add(targetSpectrum);
-
-                    // instead of mapper here we can just build relations as needed
-                    // but i wonder if even this can't be included in the parser
-
-                    maxQuantUtilitiesPsmMapper.map(aParsedSpectrum.getValue(), maxQuantParser, targetSpectrum);
                 }
+
                 targetRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(targetRun);
             }
@@ -97,7 +87,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @param analyticalRun  the AnalyticalRun instance onto the search settings will be mapped
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException                       thrown in case of an I/O related problem
-     * @throws HeaderEnumNotInitialisedException thrown in case of an non initialised header exception
      */
     private SearchAndValidationSettings mapSearchSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings;
@@ -113,6 +102,34 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
         searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
         return searchAndValidationSettings;
+    }
+
+    /**
+     * Create relationships for the children of a spectrum
+     *
+     * @param spectrum A spectrum object
+     * @return The same object but with a bunch of relations
+     * @throws MappingException
+     */
+    private Spectrum mapSpectrum(Spectrum spectrum) throws MappingException {
+        Peptide peptide = maxQuantParser.getIdentificationForSpectrum(spectrum);
+
+        List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(peptide));
+
+        for (ProteinGroup proteinGroup : proteinGroups) {
+            PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();
+            phpGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
+            phpGroup.setPeptideProbability(peptide.getPsmProbability());
+            phpGroup.setPeptide(peptide);
+            phpGroup.setProteinGroup(proteinGroup);
+
+            proteinGroup.getPeptideHasProteinGroups().add(phpGroup);
+        }
+
+        spectrum.getPeptides().add(peptide);
+        peptide.setSpectrum(spectrum);
+
+        return spectrum;
     }
 
     /**
