@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,26 +48,23 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), false);
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
 
-            for (MaxQuantAnalyticalRun maxQuantAnalyticalRun : maxQuantParser.getRuns()) {
-                AnalyticalRun targetRun = new AnalyticalRun();
-                targetRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
+            for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
+                analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
                 SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunParameters().values().iterator().next();
-                targetRun.setSearchAndValidationSettings(searchAndValidationSettings);
-                searchAndValidationSettings.setAnalyticalRun(targetRun);
+                analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
+                searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
-                List<Spectrum> mappedSpectra = new ArrayList<>(maxQuantAnalyticalRun.getSpectra().size());
+                List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
 
-                for (Map.Entry<Integer, Spectrum> entry : maxQuantAnalyticalRun.getSpectra().entrySet()) {
-                    Spectrum targetSpectrum = mapSpectrum(entry.getValue());
+                for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+                    spectrum.setAnalyticalRun(analyticalRun);
 
-                    targetSpectrum.setAnalyticalRun(targetRun);
-
-                    mappedSpectra.add(targetSpectrum);
+                    mappedSpectra.add(mapSpectrum(spectrum));
                 }
 
-                targetRun.setSpectrums(mappedSpectra);
-                mappedRuns.add(targetRun);
+                analyticalRun.setSpectrums(mappedSpectra);
+                mappedRuns.add(analyticalRun);
             }
 
         } catch (IOException |  UnparseableException | MappingException ex) {

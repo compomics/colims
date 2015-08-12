@@ -1,12 +1,8 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
-import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
@@ -20,9 +16,6 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.colims.repository.AuthenticationBean;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SequenceFactory;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -66,21 +59,9 @@ public class MaxQuantIT {
     private ExperimentService experimentService;
     @Autowired
     private SpectrumService spectrumService;
-    @Autowired
-    UtilitiesSpectrumMapper utilitiesSpectrumMapper;
-    @Autowired
-    MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
-    @Autowired
-    UtilitiesProteinMapper maxQuantProteinMapperStub;
 
-    @Ignore
     @Test
     public void runStorage() throws IOException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
-        // TODO: ignored due to utilities
-        SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-        sequenceFactory.clearFactory();
-        sequenceFactory.loadFastaFile(MaxQuantTestSuite.fastaFile, null);
-
         maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder);
 
         User user = userService.findByName("admin");

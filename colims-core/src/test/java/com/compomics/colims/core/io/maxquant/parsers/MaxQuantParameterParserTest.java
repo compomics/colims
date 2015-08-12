@@ -35,17 +35,17 @@ public class MaxQuantParameterParserTest {
      * Test of parse method, of class MaxQuantParameterParser.
      * @throws java.lang.Exception
      */
-    @Test
-    public void testParse() throws Exception {
-        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder);
-        Map<String, SearchParameters> result = maxQuantParameterParser.getRunParameters();
-
-        // insane way to get the single entry from the map
-        ModificationProfile testProfile =  result.entrySet().iterator().next().getValue().getModificationProfile();
-        assertThat(testProfile.getAllModifications(), is(not(empty())));
-        assertThat(testProfile.getFixedModifications(), is(empty()));
-        assertThat(testProfile.getVariableModifications().size(), is(2));
-    }
+//    @Test
+//    public void testParse() throws Exception {
+//        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder);
+//        Map<String, SearchParameters> result = maxQuantParameterParser.getRunParameters();
+//
+//        // insane way to get the single entry from the map
+//        ModificationProfile testProfile =  result.entrySet().iterator().next().getValue().getModificationProfile();
+//        assertThat(testProfile.getAllModifications(), is(not(empty())));
+//        assertThat(testProfile.getFixedModifications(), is(empty()));
+//        assertThat(testProfile.getVariableModifications().size(), is(2));
+//    }
     @Test
     public void testParseParameters() throws Exception {
         Set<String> uniqueLines = new HashSet<>();
@@ -58,12 +58,12 @@ public class MaxQuantParameterParserTest {
         assertThat(parameters.get("user name"), is("compomics"));
     }
 
-    @Test
-    public void testParseExperiment() throws Exception {
-        SearchParameters searchParameters = maxQuantParameterParser.parseExperiment(MaxQuantTestSuite.maxQuantTextFolder);
-        Map<String, String> fileParameters = maxQuantParameterParser.parseParameters(MaxQuantTestSuite.parameterFile);
-
-        assertThat(fileParameters.get("ms/ms tol. (ftms)"), containsString(searchParameters.getPrecursorAccuracyType().toString().toLowerCase()));
-        assertThat(FilenameUtils.separatorsToSystem(searchParameters.getFastaFile().getPath()), is(FilenameUtils.separatorsToSystem(fileParameters.get("fasta file"))));
-    }
+//    @Test
+//    public void testParseExperiment() throws Exception {
+//        SearchParameters searchParameters = maxQuantParameterParser.parseExperiment(MaxQuantTestSuite.maxQuantTextFolder);
+//        Map<String, String> fileParameters = maxQuantParameterParser.parseParameters(MaxQuantTestSuite.parameterFile);
+//
+//        assertThat(fileParameters.get("ms/ms tol. (ftms)"), containsString(searchParameters.getPrecursorAccuracyType().toString().toLowerCase()));
+//        assertThat(FilenameUtils.separatorsToSystem(searchParameters.getFastaFile().getPath()), is(FilenameUtils.separatorsToSystem(fileParameters.get("fasta file"))));
+//    }
 }
