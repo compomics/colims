@@ -4,10 +4,14 @@ import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
-import com.compomics.util.experiment.biology.Enzyme;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.preferences.ModificationProfile;
+import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.IdentificationFile;
+import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.enums.BinaryFileType;
+import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.enums.SearchEngineType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +22,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,9 +30,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MaxQuantParameterParser {
+    @Autowired
+    private SearchAndValidationSettingsService searchAndValidationSettingsService;
 
-    private String version, multiplicity = null;
-    private Map<String, SearchParameters> runParameters = new HashMap<>();
+    private String multiplicity = null;
+    private Map<String, SearchAndValidationSettings> runParameters = new HashMap<>();
 
     private static final String PARAMETERS = "parameters.txt";
     private static final String SUMMARY = "summary.txt";
@@ -39,61 +45,70 @@ public class MaxQuantParameterParser {
 
     };
 
-    public void parse(File quantFolder) throws IOException {
-        SearchParameters experimentParams = parseExperiment(quantFolder);
+    public void parse(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+        SearchAndValidationSettings searchAndValidationSettings = parseSettings(quantFolder, fastaDb, storeFiles);
 
-        runParameters = parseRuns(quantFolder, experimentParams);
+        runParameters = newParseRuns(quantFolder, searchAndValidationSettings);
     }
 
-    public SearchParameters parseExperiment(File quantFolder) throws IOException {
-        SearchParameters experimentParams = new SearchParameters();
-        File parameterFile = new File(quantFolder, PARAMETERS);
+    public SearchAndValidationSettings parseSettings(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+        SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
+        searchAndValidationSettings.setFastaDb(fastaDb);
 
-        Iterator<Entry<String, String>> parameterIter = parseParameters(parameterFile).entrySet().iterator();
+        com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
+        searchParameters.setSearchType(null);
+
+        Iterator<Entry<String, String>> parameterIterator = parseParameters(new File(quantFolder, PARAMETERS)).entrySet().iterator();
         Entry<String, String> row;
+        String version = null;
 
-        while (parameterIter.hasNext()) {
-            row = parameterIter.next();
+        while (parameterIterator.hasNext()) {
+            row = parameterIterator.next();
 
-            if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FASTA_FILE.getDefaultColumnName())) {
-                experimentParams.setFastaFile(new File(FilenameUtils.separatorsToSystem(row.getValue())));
-            } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getDefaultColumnName())) {
-                experimentParams.setFragmentIonAccuracy(Double.parseDouble(row.getValue().split(" ")[0]));
+            if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getDefaultColumnName())) {
+                searchParameters.setFragMassTolerance(Double.parseDouble(row.getValue().split(" ")[0]));
+                // TODO: precursor mass tolerance, is it anywhere?
 
                 if (row.getValue().split(" ")[1].equalsIgnoreCase("da")) {
-                    experimentParams.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.DA);
+                    searchParameters.setFragMassToleranceUnit(MassAccuracyType.DA);
+                    searchParameters.setPrecMassToleranceUnit(MassAccuracyType.DA);
                 } else {
-                    experimentParams.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.PPM);
+                    searchParameters.setFragMassToleranceUnit(MassAccuracyType.PPM);
+                    searchParameters.setPrecMassToleranceUnit(MassAccuracyType.PPM);
                 }
-
             } else if (row.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.VERSION.getDefaultColumnName())) {
                 version = row.getValue();
             }
         }
 
-        return experimentParams;
-    }
+        searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAX_QUANT, version));
 
-    /**
-     * Get the version of MaxQuant used for the experiment
-     *
-     * @return Version number
-     */
-    public String getMaxQuantVersion() {
-        return version;
+        // currently just storing whole folder
+        IdentificationFile identificationFileEntity = new IdentificationFile(quantFolder.getName(), quantFolder.getCanonicalPath());
+
+        if (storeFiles) {
+            identificationFileEntity.setBinaryFileType(BinaryFileType.ZIP);
+            byte[] content = IOUtils.readAndZip(quantFolder);
+            identificationFileEntity.setContent(content);
+        }
+
+        //set entity relations
+        identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
+        searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
+
+        return searchAndValidationSettings;
     }
 
     public String getMultiplicity() {
         return multiplicity;
     }
 
-    public Map<String, SearchParameters> getRunParameters() {
+    public Map<String, SearchAndValidationSettings> getRunParameters() {
         return Collections.unmodifiableMap(runParameters);
     }
 
     public void clear() {
         runParameters.clear();
-        version = null;
         multiplicity = null;
     }
 
@@ -120,71 +135,70 @@ public class MaxQuantParameterParser {
         return parameters;
     }
 
-
-    private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
+    private Map<String, SearchAndValidationSettings> newParseRuns(File quantFolder, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
+        Map<String, SearchAndValidationSettings> allSettings = new HashMap<>();
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY), mandatoryHeaders);
         Map<String, String> row;
 
         while (summaryIter.hasNext()) {
             row = summaryIter.next();
-            SearchParameters run = cloneSearchParametersObject(experimentParams);
+            SearchAndValidationSettings runSettings = cloneSearchAndValidationSettings(searchAndValidationSettings);
 
             if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
                 multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
             }
 
             if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
-                ModificationProfile runModifications = new ModificationProfile();
-
-                if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName())) {
-
-                    for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
-                        if (!fixedMod.isEmpty()) {
-                            PTM fixedPTM = new PTM();
-                            fixedPTM.setName(fixedMod);
-                            runModifications.addFixedModification(fixedPTM);
-                        }
-
-                    }
-                }
-
-                if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName())) {
-
-                    for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
-                        if (!varMod.isEmpty()) {
-                            PTM varPTM = new PTM();
-                            varPTM.setName(varMod);
-                            runModifications.addVariableModification(varPTM);
-                        }
-                    }
-
-                }
-
-                run.setModificationProfile(runModifications);
-
-                // dummy enzyme (only name required)
                 if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
-                    run.setEnzyme(new Enzyme(0, row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()), "a", "a", "a", "a"));
+                    // TODO: enzyme from service (see utilitiessearchparametersmapper)
+                    //runParameters.setEnzyme();
+                    //row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName());
                 }
 
                 if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
-                    run.setnMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
+                    runSettings.getSearchParameters().setNumberOfMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
                 }
-
-                //MaxQuantParameterFileAggregator tarredParameters = new MaxQuantParameterFileAggregator(summaryFile, parameterFile);
-                //run.setParametersFile(tarredParameters.getTarredParaMeterFiles());
-                runParameters.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), run);
             }
+
+            allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), runSettings);
         }
 
-        return runParameters;
+        return allSettings;
     }
 
-    //naive copying of the data we fetched from the global parameters file
-    private SearchParameters cloneSearchParametersObject(SearchParameters experimentParameters) {
-        SearchParameters searchParams = new SearchParameters();
-        searchParams.setFastaFile(experimentParameters.getFastaFile());
-        searchParams.setFragmentIonAccuracy(experimentParameters.getFragmentIonAccuracy());
-        return searchParams;
+    // TODO: is this modification data ever needed? not accessed by mappers
+//    private Map<String, SearchParameters> parseRuns(File quantFolder, SearchParameters experimentParams) throws IOException {
+//        if (row.containsKey(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName())) {
+//
+//            for (String fixedMod : row.get(MaxQuantSummaryHeaders.FIXED_MODIFICATIONS.getDefaultColumnName()).split(";")) {
+//                if (!fixedMod.isEmpty()) {
+//                    PTM fixedPTM = new PTM();
+//                    fixedPTM.setName(fixedMod);
+//                    runModifications.addFixedModification(fixedPTM);
+//                }
+//            }
+//        }
+//
+//        if (row.containsKey(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName())) {
+//
+//            for (String varMod : row.get(MaxQuantSummaryHeaders.VARIABLE_MODIFICATIONS.getDefaultColumnName()).split(";")) {
+//                if (!varMod.isEmpty()) {
+//                    PTM varPTM = new PTM();
+//                    varPTM.setName(varMod);
+//                    runModifications.addVariableModification(varPTM);
+//                }
+//            }
+//        }
+//    }
+
+    private SearchAndValidationSettings cloneSearchAndValidationSettings(SearchAndValidationSettings oldSettings) {
+        SearchAndValidationSettings newSettings = new SearchAndValidationSettings();
+
+        newSettings.setFastaDb(oldSettings.getFastaDb());
+        newSettings.setSearchEngine(oldSettings.getSearchEngine());
+        newSettings.getSearchParameters().setFragMassTolerance(oldSettings.getSearchParameters().getFragMassTolerance());
+        newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());
+
+        return newSettings;
     }
 }
