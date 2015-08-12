@@ -6,7 +6,6 @@ import com.compomics.colims.core.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
-import com.compomics.util.experiment.massspectrometry.Peak;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -69,7 +68,7 @@ public class MaxQuantSpectrumParser {
 //        spectrum.setScanTime(); TODO: missing in original method but used in mapper
         spectrum.setTitle(spectrumTitle);
 
-        Map<Double, Peak> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()),
+        Map<Double, Double> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()),
             values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
             values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
         );
@@ -88,8 +87,8 @@ public class MaxQuantSpectrumParser {
      * @param masses      String of masses
      * @return A map of peaks keyed with m/z
      */
-    public Map<Double, Peak> parsePeakList(String peaks, String intensities, String masses) throws IllegalArgumentException {
-        Map<Double, Peak> peakMap = new HashMap<>();
+    public Map<Double, Double> parsePeakList(String peaks, String intensities, String masses) throws IllegalArgumentException {
+        Map<Double, Double> peakMap = new TreeMap<>();
 
         if (!peaks.isEmpty() && !intensities.isEmpty() && !masses.isEmpty()) {
             String[] peakList = peaks.split(";");
@@ -103,15 +102,15 @@ public class MaxQuantSpectrumParser {
             for (int i = 0; i < peakList.length; i++) {
                 int charge = 1;
 
-                Double moverz = Double.parseDouble(massList[i]) / charge;
-                peakMap.put(moverz, new Peak(moverz, Double.parseDouble(intensityList[i])));
+                Double mZ = Double.parseDouble(massList[i]) / charge;
+                peakMap.put(mZ, Double.parseDouble(intensityList[i]));
             }
         }
 
         return peakMap;
     }
 
-    private SpectrumFile spectrumToMGF(Spectrum spectrum, String scanNumber, Map<Double, Peak> peakList) {
+    private SpectrumFile spectrumToMGF(Spectrum spectrum, String scanNumber, Map<Double, Double> peakList) {
         StringBuilder results = new StringBuilder();
         String newLine = System.getProperty("line.separator");
 
@@ -132,14 +131,7 @@ public class MaxQuantSpectrumParser {
             results.append("SCANS=").append(scanNumber).append(newLine);
         }
 
-        // add the values to a tree map to get them sorted in mz
-        Map<Double, Double> sortedPeakList = new TreeMap<>();
-
-        for (Peak peak : peakList.values()) {
-            sortedPeakList.put(peak.mz, peak.intensity);
-        }
-
-        for (Map.Entry<Double, Double> entry : sortedPeakList.entrySet()) {
+        for (Map.Entry<Double, Double> entry : peakList.entrySet()) {
             results.append(entry.getKey()).append(" ").append(entry.getValue()).append(newLine);
         }
 
