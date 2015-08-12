@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -88,29 +89,22 @@ public class MaxQuantIT {
 
         List<AnalyticalRun> colimsRuns = new ArrayList<>(maxQuantParser.getRuns().size());
 
-        for (MaxQuantAnalyticalRun aRun : maxQuantParser.getRuns()) {
-            AnalyticalRun targetRun = new AnalyticalRun();
-            targetRun.setStorageLocation(aRun.getMaxQuantDirectory().getCanonicalPath());
+        for (AnalyticalRun aRun : maxQuantParser.getRuns()) {
+            List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getSpectrums().size());
 
-            List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getSpectra().size());
-
-            for (MSnSpectrum aSpectrum : aRun.getSpectra().values()) {
-                Spectrum targetSpectrum = new Spectrum();
-                utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
-                mappedSpectra.add(targetSpectrum);
+            for (Spectrum aSpectrum : aRun.getSpectrums()) {
+                mappedSpectra.add(aSpectrum);
                 //only get best hit
-                PeptideAssumption identification = maxQuantParser.getIdentificationForSpectrum(aSpectrum);
-                final Peptide targetPeptide = new Peptide();
-                maxQuantUtilitiesPeptideMapper.map(identification, targetPeptide);
-                targetSpectrum.setPeptides(new ArrayList<Peptide>() {
+                Peptide identification = maxQuantParser.getIdentificationForSpectrum(aSpectrum);
+
+                aSpectrum.setPeptides(new ArrayList<Peptide>() {
                     {
-                        this.add(targetPeptide);
+                        this.add(identification);
                     }
                 });
-//                maxQuantProteinMapperStub.map(new ArrayList(maxQuantParser.getProteinHitsForIdentification(identification)), (MatchScore) identification.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY)), targetPeptide);
             }
-            targetRun.setSpectrums(mappedSpectra);
-            colimsRuns.add(targetRun);
+            aRun.setSpectrums(mappedSpectra);
+            colimsRuns.add(aRun);
         }
 
         maxQuantSample.setAnalyticalRuns(colimsRuns);
@@ -124,7 +118,6 @@ public class MaxQuantIT {
         // TODO: more assertions
     }
 
-    @Ignore
     @Test
     public void testSpectrumInsertion() throws IOException, MappingException, UnparseableException {
         User user = userService.findByName("admin");
@@ -132,18 +125,10 @@ public class MaxQuantIT {
         authenticationBean.setCurrentUser(user);
         int startSpectraCount = spectrumService.findAll().size();
 
-        Map<Integer, MSnSpectrum> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile, true);
-        List<Spectrum> spectrumHolder = new ArrayList<>();
-        
-        for (MSnSpectrum spectrum : spectrumMap.values()) {
-            Spectrum colimsSpectrum = new Spectrum();
-            utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
-            spectrumHolder.add(colimsSpectrum);
-        }
-        
-        for (Spectrum spectrum : spectrumHolder) {
-            spectrumService.save(spectrum);
-        }
+        Map<Integer, Spectrum> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
+        List<Spectrum> spectrumHolder = spectrumMap.values().stream().collect(Collectors.toList());
+
+        spectrumHolder.forEach(spectrumService::save);
         
         List<Spectrum> storedSpectra = spectrumService.findAll();
         int endAmountOfSpectra = storedSpectra.size();

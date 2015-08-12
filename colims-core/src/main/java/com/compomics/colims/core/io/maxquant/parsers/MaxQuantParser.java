@@ -89,6 +89,8 @@ public class MaxQuantParser {
                 analyticalRun.setName(entry.getValue().getTitle());
                 // TODO: maxquant folder?
                 analyticalRun.getSpectrums().add(entry.getValue());
+
+                analyticalRuns.put(entry.getValue().getTitle(), analyticalRun);
             }
         }
 

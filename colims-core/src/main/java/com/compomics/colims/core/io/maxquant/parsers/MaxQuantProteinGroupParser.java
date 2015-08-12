@@ -51,8 +51,11 @@ public class MaxQuantProteinGroupParser {
 
     private ProteinGroup parseProteinGroup(final Map<String, String> values) {
         ProteinGroup proteinGroup = new ProteinGroup();
-        proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
         proteinGroup.setProteinProbability(1.0);   // TODO: not in file
+
+        if (values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName()) != null) {
+            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
+        }
 
         // TODO!! we need the sequence from the fasta
         String temporarySequence ="BREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREAD";

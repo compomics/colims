@@ -1,10 +1,9 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.enums.QuantificationWeight;
-import com.compomics.util.experiment.identification.PeptideAssumption;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class MaxQuantEvidenceParserTest {
     public void testParse() throws Exception {
         maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextFolder, "1");
 
-        assertThat(maxQuantEvidenceParser.peptideAssumptions.size(), not(0));
+        assertThat(maxQuantEvidenceParser.peptides.size(), not(0));
         assertThat(maxQuantEvidenceParser.quantifications.size(), not(0));
         assertThat(maxQuantEvidenceParser.quantifications.get(0).get(0).getIntensity(), is(7431500.0));
         assertThat(maxQuantEvidenceParser.quantifications.get(0).get(0).getWeight(), is(QuantificationWeight.LIGHT));
@@ -51,7 +50,7 @@ public class MaxQuantEvidenceParserTest {
     }
 
     @Test
-    public void testCreatePeptideAssumption() throws Exception {
+    public void testCreatePeptide() throws Exception {
         Map<String, String> values = new HashMap<>();
 
         values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
@@ -64,19 +63,13 @@ public class MaxQuantEvidenceParserTest {
         values.put(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName(), "0.9");
         values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "Unmodified");
 
-        PeptideAssumption assumption = maxQuantEvidenceParser.createPeptideAssumption(values);
+        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
 
         // check assumption details
-        assertThat(assumption.getScore(), is(106.2));
-        assertThat(assumption.getRank(), is(1));
-        assertThat(assumption.getIdentificationCharge().getChargeAsFormattedString(), is("++"));
-        assertThat(assumption.getPeptide().getSequence(), is("TAVCDIPPR"));
-        assertThat(assumption.getPeptide().getParentProteinsNoRemapping().size(), is(4));
-
-        MatchScore matchScore = (MatchScore) assumption.getUrParam(new MatchScore(Double.NaN, Double.NEGATIVE_INFINITY));
-
-        // check the damned urparam
-        assertThat(matchScore.getProbability(), is(106.2));
-        assertThat(matchScore.getPostErrorProbability(), is(0.9));
+        assertThat(peptide.getPsmProbability(), is(106.2));
+        assertThat(peptide.getPsmPostErrorProbability(), is(0.9));
+        assertThat(peptide.getTheoreticalMass(), is(1027.51206));
+        assertThat(peptide.getCharge(), is(2));
+        assertThat(peptide.getSequence(), is("TAVCDIPPR"));
     }
 }
