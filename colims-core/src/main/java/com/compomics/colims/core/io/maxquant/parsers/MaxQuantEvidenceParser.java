@@ -6,9 +6,11 @@ import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
+import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.QuantificationWeight;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -16,47 +18,69 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Parser for the MaxQuant evidence file
+ *
  * Created by Iain on 01/12/2014.
  */
 @Component
 public class MaxQuantEvidenceParser {
+    @Autowired
+    private UtilitiesModificationMapper utilitiesModificationMapper;
+
+    /**
+     * Name of evidence file
+     */
     private static final String EVIDENCETXT = "evidence.txt";
 
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantEvidenceHeaders.MS_MS_IDS,
-            MaxQuantEvidenceHeaders.SEQUENCE,
-            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-            MaxQuantEvidenceHeaders.SCORE,
-            MaxQuantEvidenceHeaders.DELTA_SCORE,
-            MaxQuantEvidenceHeaders.PEP,
-            MaxQuantEvidenceHeaders.MODIFICATIONS
+    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[] {
+        MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
+        MaxQuantEvidenceHeaders.CHARGE,
+        MaxQuantEvidenceHeaders.DELTA_SCORE,
+        MaxQuantEvidenceHeaders.MASS,
+        MaxQuantEvidenceHeaders.MODIFICATIONS,
+        MaxQuantEvidenceHeaders.MS_MS_IDS,
+        MaxQuantEvidenceHeaders.OXIDATION_M,
+        MaxQuantEvidenceHeaders.PEP,
+        MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+        MaxQuantEvidenceHeaders.SCORE,
+        MaxQuantEvidenceHeaders.SEQUENCE
     };
 
-    // TODO: integers to longs?
+    /**
+     * Spectrum IDs and associated quantifications
+     */
     public Map<Integer, List<Quantification>> quantifications = new HashMap<>();
+
+    /**
+     * Spectrum IDs and peptides
+     */
     public Map<Integer, Peptide> peptides = new HashMap<>();
+
+    /**
+     * Peptides and associated protein group IDs
+     */
     public Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
 
     /**
      * Iterable intensity headers, based on number of labels chosen.
      */
-    private static final Map<Integer, String[]> intensityHeaders = new HashMap<>();
+    private static final Map<Integer, String[]> INTENSITY_HEADERS = new HashMap<>();
 
     static {
-        intensityHeaders.put(1, new String[]{"intensity"});
-        intensityHeaders.put(2, new String[]{"intensity l", "intensity h"});
-        intensityHeaders.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
+        INTENSITY_HEADERS.put(1, new String[]{"intensity"});
+        INTENSITY_HEADERS.put(2, new String[]{"intensity l", "intensity h"});
+        INTENSITY_HEADERS.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
     }
 
     /**
      * As above but quantification weights.
      */
-    public static final Map<Integer, QuantificationWeight[]> weightOptions = new HashMap<>();
+    public static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
 
     static {
-        weightOptions.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
-        weightOptions.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
-        weightOptions.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
+        WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
+        WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
+        WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
     }
 
     /**
@@ -66,16 +90,15 @@ public class MaxQuantEvidenceParser {
      * @throws IOException
      */
     public void parse(final File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
-        //todo change to headerenum constructor
-        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT),mandatoryHeaders);
+        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT), MANDATORY_HEADERS);
 
         Map<String, String> values;
         int intensityCount;
 
         intensityCount = Integer.parseInt(multiplicity);
 
-        QuantificationWeight[] weights = weightOptions.get(intensityCount);
-        String[] intensityColumns = intensityHeaders.get(intensityCount);
+        QuantificationWeight[] weights = WEIGHT_OPTIONS.get(intensityCount);
+        String[] intensityColumns = INTENSITY_HEADERS.get(intensityCount);
 
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
@@ -144,6 +167,12 @@ public class MaxQuantEvidenceParser {
         return intensity;
     }
 
+    /**
+     * Create a Peptide from a row in the evidence file
+     *
+     * @param values Set of values from a line in the file
+     * @return Peptide object
+     */
     public Peptide createPeptide(final Map<String, String> values) {
         Peptide peptide = new Peptide();
 
@@ -168,8 +197,10 @@ public class MaxQuantEvidenceParser {
 
         List<Integer> proteinGroups = new ArrayList<>();
 
-        for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";")) {
-            proteinGroups.add(Integer.parseInt(id));
+        if (values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()) != null) {
+            for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";")) {
+                proteinGroups.add(Integer.parseInt(id));
+            }
         }
 
         peptideProteins.put(peptide, proteinGroups);
@@ -177,19 +208,25 @@ public class MaxQuantEvidenceParser {
         return peptide;
     }
 
-    private List<PeptideHasModification> createModifications(com.compomics.colims.model.Peptide peptide, final Map<String, String> values) {
+    /**
+     * Create modifications for a given peptide
+     * @param peptide Peptide to associate with modifications
+     * @param values Row of data from evidence file
+     * @return List of PeptideHasModification objects
+     */
+    private List<PeptideHasModification> createModifications(Peptide peptide, final Map<String, String> values) {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
-        // TODO: check locations (mapper mentions 1-indexed in utils modification...)
-
-        // Sequence representation including the post-translational modifications (abbreviation of the modification in
-        // brackets before the modified AA). The sequence is always surrounded by underscore characters ('_').
-        // Also that looks like a face.
         String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName());
 
         if (modifications == null || "Unmodified".equalsIgnoreCase(modifications)) {
             return peptideHasModifications;
         } else {
+            // not sure about this method
+            // column contains 1+ names, presumably ; separated
+            // is same as column name
+            // in which case why a separate enum
+
             for (MaxQuantModificationHeaders modificationHeader : MaxQuantModificationHeaders.values()) {
                 String modificationString = values.get(modificationHeader.getDefaultColumnName());
 
@@ -199,7 +236,7 @@ public class MaxQuantEvidenceParser {
                         // all currently set as variable mods
                         phModification.setModificationType(ModificationType.VARIABLE);
                         // theoretic ptm = modificationHeader.getDefaultColumnName()
-                        phModification.setModification(new Modification()); // TODO!! need methods from utilsmodmapper
+                        phModification.setModification(utilitiesModificationMapper.mapModificationMatch(modificationHeader.getDefaultColumnName()));
 
                         phModification.setDeltaScore(100.0);
                         phModification.setLocation(0);
@@ -269,6 +306,7 @@ public class MaxQuantEvidenceParser {
      * Clear run data from parser.
      */
     public void clear() {
+        peptideProteins.clear();
         peptides.clear();
         quantifications.clear();
     }

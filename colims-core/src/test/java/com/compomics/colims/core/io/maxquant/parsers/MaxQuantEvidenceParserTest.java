@@ -72,4 +72,19 @@ public class MaxQuantEvidenceParserTest {
         assertThat(peptide.getCharge(), is(2));
         assertThat(peptide.getSequence(), is("TAVCDIPPR"));
     }
+
+    @Test
+    public void testCreateModifications() {
+        Map<String, String> values = new HashMap<>();
+
+        values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "Acetyl (Protein N-term)");
+
+        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
+
+        assertThat(peptide.getPeptideHasModifications().size(), not(0));
+    }
 }
