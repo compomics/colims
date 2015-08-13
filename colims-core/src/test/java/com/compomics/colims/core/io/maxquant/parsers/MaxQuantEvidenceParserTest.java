@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.Peptide;
@@ -29,6 +30,7 @@ public class MaxQuantEvidenceParserTest {
 
     @Test
     public void testParse() throws Exception {
+        maxQuantEvidenceParser.clear();
         maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextFolder, "1");
 
         assertThat(maxQuantEvidenceParser.peptides.size(), not(0));
@@ -39,6 +41,8 @@ public class MaxQuantEvidenceParserTest {
 
     @Test
     public void testParseIntensity() {
+        maxQuantEvidenceParser.clear();
+
         // typical value
         assertThat(maxQuantEvidenceParser.parseIntensity("1285500"), is(1285500.0));
         // empty
@@ -51,6 +55,8 @@ public class MaxQuantEvidenceParserTest {
 
     @Test
     public void testCreatePeptide() throws Exception {
+        maxQuantEvidenceParser.clear();
+
         Map<String, String> values = new HashMap<>();
 
         values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
@@ -74,7 +80,9 @@ public class MaxQuantEvidenceParserTest {
     }
 
     @Test
-    public void testCreateModifications() {
+    public void testCreateSingleModification() throws ModificationMappingException {
+        maxQuantEvidenceParser.clear();
+
         Map<String, String> values = new HashMap<>();
 
         values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
@@ -82,9 +90,33 @@ public class MaxQuantEvidenceParserTest {
         values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
         values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
         values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "Acetyl (Protein N-term)");
+        values.put(MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM.getDefaultColumnName(), "1");
 
         Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
 
         assertThat(peptide.getPeptideHasModifications().size(), not(0));
+        assertThat(peptide.getPeptideHasModifications().get(0).getProbabilityScore(), is(100.0));
+        assertThat(peptide.getPeptideHasModifications().get(0).getLocation(), is(0));
+    }
+
+    @Test
+    public void testCreateMultipleModifications() throws ModificationMappingException {
+        maxQuantEvidenceParser.clear();
+
+        Map<String, String> values = new HashMap<>();
+
+        values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "3 Oxidation (M)");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_PROBABILITIES.getDefaultColumnName(), "GFM(0.852)VTRSYTVGVM(0.716)M(0.716)M(0.716)HR");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_SCORE_DIFFS.getDefaultColumnName(), "GFM(2.82)VTRSYTVGVM(0)M(0)M(0)HR");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M.getDefaultColumnName(), "3");
+
+        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
+
+        assertThat(peptide.getPeptideHasModifications().size(), not(0));
+        assertThat(peptide.getPeptideHasModifications().get(0).getDeltaScore(), is(2.82));
     }
 }

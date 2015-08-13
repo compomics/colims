@@ -140,9 +140,6 @@ public class UtilitiesModificationMapper {
                 peptideHasModification.setPeptide(targetPeptide);
 
                 targetPeptide.getPeptideHasModifications().add(peptideHasModification);
-            } else {
-                LOGGER.error("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
-                throw new ModificationMappingException("The modification match " + modificationMatch.getTheoreticPtm() + " could not be mapped.");
             }
         }
     }
@@ -161,7 +158,7 @@ public class UtilitiesModificationMapper {
      * @param cvTerm the Utilities CvTerm
      * @return the Colims Modification entity
      */
-    private Modification mapUtilitiesCvTerm(final CvTerm cvTerm) {
+    private Modification mapUtilitiesCvTerm(final CvTerm cvTerm) throws ModificationMappingException {
         Modification modification;
 
         //look for the modification in the newModifications map
@@ -222,6 +219,11 @@ public class UtilitiesModificationMapper {
             }
         }
 
+        if (modification == null) {
+            LOGGER.error("The modification match " + cvTerm.getAccession() + " could not be mapped.");
+            throw new ModificationMappingException("The modification match " + cvTerm.getAccession() + " could not be mapped.");
+        }
+
         return modification;
     }
 
@@ -232,7 +234,7 @@ public class UtilitiesModificationMapper {
      * @param modificationMatch the utilities ModificationMatch
      * @return the Colims Modification instance
      */
-    public Modification mapModificationMatch(final String theoreticPTM) {
+    public Modification mapModificationMatch(final String theoreticPTM) throws ModificationMappingException {
         Modification modification;
 
         //look for the modification in the newModifications map
@@ -274,6 +276,11 @@ public class UtilitiesModificationMapper {
             }
             //add to cached modifications
             cachedModifications.put(modification.getName(), modification);
+        }
+
+        if (modification == null) {
+            LOGGER.error("The modification match " + theoreticPTM + " could not be mapped.");
+            throw new ModificationMappingException("The modification match " + theoreticPTM + " could not be mapped.");
         }
 
         return modification;
