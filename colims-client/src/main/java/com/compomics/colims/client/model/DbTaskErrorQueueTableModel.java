@@ -2,9 +2,9 @@ package com.compomics.colims.client.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.model.DbTask;
-import com.compomics.colims.distributed.model.DbTaskError;
-import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

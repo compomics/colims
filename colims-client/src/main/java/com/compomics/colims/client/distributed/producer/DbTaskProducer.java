@@ -1,6 +1,6 @@
 package com.compomics.colims.client.distributed.producer;
 
-import com.compomics.colims.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.DbTask;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;

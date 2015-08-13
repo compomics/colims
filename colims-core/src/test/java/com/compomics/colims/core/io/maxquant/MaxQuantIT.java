@@ -1,36 +1,19 @@
 package com.compomics.colims.core.io.maxquant;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantSpectrumParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPeptideMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesProteinMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,14 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.hamcrest.CoreMatchers.both;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * the actual max quant integration test, to be renamed when the parser gets
- * extracted
+ * the actual max quant integration test, to be renamed when the parser gets extracted
  *
  * @author Davy
  */
@@ -70,11 +56,7 @@ public class MaxQuantIT {
     @Autowired
     MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
-    UtilitiesSpectrumMapper utilitiesSpectrumMapper;
-    @Autowired
     MaxQuantUtilitiesPeptideMapper maxQuantUtilitiesPeptideMapper;
-    @Autowired
-    UtilitiesProteinMapper maxQuantProteinMapperStub;
 
     @Ignore
     @Test
@@ -117,7 +99,7 @@ public class MaxQuantIT {
 
             for (MSnSpectrum aSpectrum : aRun.getListOfSpectra().values()) {
                 Spectrum targetSpectrum = new Spectrum();
-                utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
+//                utilitiesSpectrumMapper.map(aSpectrum, FragmentationType.CID, targetSpectrum);
                 mappedSpectra.add(targetSpectrum);
                 //only get best hit
                 PeptideAssumption identification = maxQuantParser.getIdentificationForSpectrum(aSpectrum);
@@ -155,17 +137,17 @@ public class MaxQuantIT {
 
         Map<Integer, MSnSpectrum> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile, true);
         List<Spectrum> spectrumHolder = new ArrayList<>();
-        
+
         for (MSnSpectrum spectrum : spectrumMap.values()) {
             Spectrum colimsSpectrum = new Spectrum();
-            utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
+//            utilitiesSpectrumMapper.map(spectrum, FragmentationType.CID, colimsSpectrum);
             spectrumHolder.add(colimsSpectrum);
         }
-        
+
         for (Spectrum spectrum : spectrumHolder) {
             spectrumService.save(spectrum);
         }
-        
+
         List<Spectrum> storedSpectra = spectrumService.findAll();
         int endAmountOfSpectra = storedSpectra.size();
 

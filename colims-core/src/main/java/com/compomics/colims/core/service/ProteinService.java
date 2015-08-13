@@ -36,4 +36,11 @@ public interface ProteinService extends GenericService<Protein, Long> {
      * @return the number of proteins
      */
     int getProteinCountForRun(final AnalyticalRun analyticalRun, final String filter);
+
+    /**
+     * Fetch the protein accessions.
+     *
+     * @param protein the given Protein instance
+     */
+    void fetchAccessions(Protein protein);
 }

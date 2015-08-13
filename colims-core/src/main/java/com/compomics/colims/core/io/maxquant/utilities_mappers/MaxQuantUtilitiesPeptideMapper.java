@@ -1,16 +1,14 @@
 package com.compomics.colims.core.io.maxquant.utilities_mappers;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.maxquant.urparams.MaxQuantPtmScoring;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,9 +18,6 @@ import org.springframework.stereotype.Component;
  */
 @Component("maxQuantUtilitiesPeptideMapper")
 public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption, Peptide> {
-
-    @Autowired
-    private UtilitiesPeptideMapper utilitiesPeptideMapper;
 
     /**
      * maps the source max quant peptide assumption to the target Colims peptide disclaimer: needs to be from the parser
@@ -46,13 +41,13 @@ public class MaxQuantUtilitiesPeptideMapper implements Mapper<PeptideAssumption,
             ptmScores.addConfidentModificationSite(match.getTheoreticPtm(), match.getModificationSite());
             ptmScores.addPtmScoring(match.getTheoreticPtm(), ptmScoring);
         }
-        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);
+//        utilitiesPeptideMapper.map(source.getPeptide(), matchScore, ptmScores, source.getIdentificationCharge().value, target);
     }
 
     /**
      * Clear resources.
      */
     public void clear() {
-        utilitiesPeptideMapper.clear();
+//        utilitiesPeptideMapper.clear();
     }
 }

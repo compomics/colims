@@ -1,10 +1,10 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.DbTask;
-import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.distributed.model.Notification;
-import com.compomics.colims.distributed.model.enums.NotificationType;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
+import com.compomics.colims.core.distributed.model.Notification;
+import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.compomics.colims.distributed.producer.NotificationProducer;
 import javax.jms.JMSException;
 import javax.jms.Message;

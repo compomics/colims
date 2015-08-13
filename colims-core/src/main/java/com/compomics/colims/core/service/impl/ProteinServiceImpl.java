@@ -4,6 +4,8 @@ import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
+import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,5 +70,18 @@ public class ProteinServiceImpl implements ProteinService {
     @Override
     public int getProteinCountForRun(AnalyticalRun analyticalRun, String filter) {
         return proteinRepository.getProteinCountForRun(analyticalRun, filter);
+    }
+
+    @Override
+    public void fetchAccessions(Protein protein) {
+        try {
+            protein.getProteinAccessions().size();
+        } catch (LazyInitializationException e) {
+            //attach the protein to the new session
+            proteinRepository.saveOrUpdate(protein);
+            if (!Hibernate.isInitialized(protein.getProteinAccessions())) {
+                Hibernate.initialize(protein.getProteinAccessions());
+            }
+        }
     }
 }

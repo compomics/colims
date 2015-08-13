@@ -1,38 +1,26 @@
 package com.compomics.colims.core.io.maxquant;
 
-import com.compomics.colims.core.io.*;
+import com.compomics.colims.core.io.DataImporter;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesAnalyticalRunMapper;
 import com.compomics.colims.core.io.maxquant.utilities_mappers.MaxQuantUtilitiesPsmMapper;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.enums.QuantificationEngineType;
-import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The DataImporter class for MaxQuant projects.
@@ -43,10 +31,8 @@ import org.springframework.stereotype.Component;
 public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
-    @Autowired
-    private SearchSettingsMapper searchSettingsMapper;
-    @Autowired
-    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
+    //    @Autowired
+//    private SearchSettingsMapper searchSettingsMapper;
     @Autowired
     private MaxQuantParameterParser parameterParser;
     @Autowired
@@ -55,8 +41,8 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     private MaxQuantUtilitiesAnalyticalRunMapper maxQuantUtilitiesAnalyticalRunMapper;
     @Autowired
     private MaxQuantUtilitiesPsmMapper maxQuantUtilitiesPsmMapper;
-    @Autowired
-    private QuantificationSettingsMapper quantificationSettingsMapper;
+//    @Autowired
+//    private QuantificationSettingsMapper quantificationSettingsMapper;
 
     private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
     /**
@@ -109,7 +95,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
                     targetSpectrum.setAnalyticalRun(targetRun);
 
                     //for the spectra we can just use the standard utilities mapper
-                    utilitiesSpectrumMapper.map(aParsedSpectrum.getValue(), maxQuantParser.getFragmentationType(aParsedSpectrum.getKey()), targetSpectrum);
+//                    utilitiesSpectrumMapper.map(aParsedSpectrum.getValue(), maxQuantParser.getFragmentationType(aParsedSpectrum.getKey()), targetSpectrum);
                     mappedSpectra.add(targetSpectrum);
 
                     maxQuantUtilitiesPsmMapper.map(aParsedSpectrum.getValue(), maxQuantParser, targetSpectrum);
@@ -139,17 +125,17 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @throws HeaderEnumNotInitialisedException thrown in case of an non initialised header exception
      */
     private SearchAndValidationSettings mapSearchSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
-        SearchAndValidationSettings searchAndValidationSettings;
+        SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         List<File> identificationFiles = new ArrayList<>();
         identificationFiles.add(maxQuantImport.getMaxQuantDirectory());
 
         // TODO: settings for multiple runs
-        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
+//        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
 
         //set entity relations
-        analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
-        searchAndValidationSettings.setAnalyticalRun(analyticalRun);
+//        analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
+//        searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
         return searchAndValidationSettings;
     }
@@ -163,13 +149,13 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * @throws IOException thrown in case of an I/O related problem
      */
     private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
-        QuantificationSettings quantificationSettings;
+        QuantificationSettings quantificationSettings = new QuantificationSettings();
 
         List<File> quantFiles = new ArrayList<>();
         quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?
         QuantificationParameters params = new QuantificationParameters();
 
-        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
+//        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
 
         //set entity relations
         analyticalRun.setQuantificationSettings(quantificationSettings);

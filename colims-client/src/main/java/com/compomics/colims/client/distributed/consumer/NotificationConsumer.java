@@ -1,7 +1,7 @@
 package com.compomics.colims.client.distributed.consumer;
 
 import com.compomics.colims.client.event.NotificationEvent;
-import com.compomics.colims.distributed.model.Notification;
+import com.compomics.colims.core.distributed.model.Notification;
 import com.google.common.eventbus.EventBus;
 import javax.jms.JMSException;
 import javax.jms.Message;

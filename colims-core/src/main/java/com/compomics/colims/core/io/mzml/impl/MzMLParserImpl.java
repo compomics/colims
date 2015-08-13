@@ -5,51 +5,26 @@
 package com.compomics.colims.core.io.mzml.impl;
 
 import com.compomics.colims.core.io.MappingException;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-import uk.ac.ebi.jmzml.model.mzml.BinaryDataArray;
-import uk.ac.ebi.jmzml.model.mzml.CVParam;
-import uk.ac.ebi.jmzml.model.mzml.InstrumentConfiguration;
-import uk.ac.ebi.jmzml.model.mzml.InstrumentConfigurationList;
-import uk.ac.ebi.jmzml.model.mzml.PrecursorList;
-import uk.ac.ebi.jmzml.model.mzml.Run;
-import uk.ac.ebi.jmzml.model.mzml.SampleList;
-import uk.ac.ebi.jmzml.model.mzml.ScanList;
-import uk.ac.ebi.jmzml.model.mzml.SelectedIonList;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
-
 import com.compomics.colims.core.io.mzml.MzMLParser;
-import com.compomics.colims.core.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.InstrumentCvParam;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent;
-import uk.ac.ebi.jmzml.model.mzml.ComponentList;
-import uk.ac.ebi.jmzml.model.mzml.DetectorComponent;
-import uk.ac.ebi.jmzml.model.mzml.SourceComponent;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+import uk.ac.ebi.jmzml.model.mzml.*;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("mzMLParser")
@@ -58,8 +33,6 @@ public class MzMLParserImpl implements MzMLParser {
     private static final Logger LOGGER = Logger.getLogger(MzMLParserImpl.class);
     private static final String DEFAULT_SAMPLE_ACCESSION = "default_sample";
     private final Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
-    @Autowired
-    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
 
     public MzMLParserImpl() {
         mzMLUnmarshallers = new HashMap<>();
@@ -93,11 +66,10 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     /**
-     * Adds the samples to the experiment. If no samples are found, a default
-     * sample is added.
+     * Adds the samples to the experiment. If no samples are found, a default sample is added.
      *
      * @param mzMLFileName the mzML file name
-     * @param experiment the experiment
+     * @param experiment   the experiment
      */
     private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.info("Start parsing samples");
@@ -133,11 +105,10 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     /**
-     * Adds the run to the correct sample from the sample list, as there is only
-     * one run present in a mzML file.
+     * Adds the run to the correct sample from the sample list, as there is only one run present in a mzML file.
      *
      * @param mzMLFileName the mzML file name
-     * @param samples the sample list
+     * @param samples      the sample list
      */
     private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException, MappingException {
         //get run
@@ -180,7 +151,7 @@ public class MzMLParserImpl implements MzMLParser {
     /**
      * Adds the instrument to the analytical run
      *
-     * @param mzMLFileName the mzML file name
+     * @param mzMLFileName  the mzML file name
      * @param analyticalRun the analytical run
      */
     private void addInstrument(String mzMLFileName, AnalyticalRun analyticalRun) {
@@ -255,7 +226,7 @@ public class MzMLParserImpl implements MzMLParser {
     /**
      * Adds spectra to the analytical run
      *
-     * @param mzMLFileName the mzML file name
+     * @param mzMLFileName  the mzML file name
      * @param analyticalRun the analytical run
      */
     private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException, MappingException {
@@ -351,7 +322,8 @@ public class MzMLParserImpl implements MzMLParser {
         MSnSpectrum mSnSpectrum = new MSnSpectrum(2, precursor, mzMLSpectrum.getId(), peaks, mzMLFileName);
         mSnSpectrum.setScanStartTime(scanTime);
         //map MSnSpectrum to colims spectrum
-        utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.EDT, spectrum);
+        //@TODO change this unnecessary mapping
+//        utilitiesSpectrumMapper.map(mSnSpectrum, FragmentationType.EDT, spectrum);
 
         return spectrum;
     }

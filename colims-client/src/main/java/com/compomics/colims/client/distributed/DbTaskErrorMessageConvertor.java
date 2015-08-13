@@ -1,7 +1,7 @@
 package com.compomics.colims.client.distributed;
 
-import com.compomics.colims.distributed.model.DbTask;
-import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.DbTaskError;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;

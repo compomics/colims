@@ -26,7 +26,7 @@ import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
