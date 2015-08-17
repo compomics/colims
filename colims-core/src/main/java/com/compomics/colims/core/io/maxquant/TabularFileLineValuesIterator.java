@@ -72,13 +72,16 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
 
         for (HeaderEnum aHeader : headerEnumeration) {
+            Optional<String> header = aHeader.allPossibleColumnNames()
+                .stream()
+                .filter(firstLineList::contains)
+                .findFirst();
 
-            aHeader.setColumnNameNumber(aHeader.allPossibleColumnNames().indexOf(aHeader.allPossibleColumnNames()
-                    .stream()
-                    .filter(firstLineList::contains)
-                    .findFirst()
-                    .orElseThrow(
-                            () -> new IOException("missing expected header: " + aHeader.getDefaultColumnName()))));
+            if (header.isPresent()) {
+                aHeader.setColumnNameNumber(aHeader.allPossibleColumnNames().indexOf(header.get()));
+            }
+
+
 
         }
 

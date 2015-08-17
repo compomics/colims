@@ -4,9 +4,7 @@ import com.compomics.colims.core.io.*;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.enums.QuantificationEngineType;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
-                SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunParameters().values().iterator().next();
+                SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunSettings().values().iterator().next();
                 analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
                 searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 

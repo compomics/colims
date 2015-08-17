@@ -10,6 +10,7 @@ import java.util.Locale;
  */
 public enum MaxQuantSummaryHeaders implements HeaderEnum {
     AV_ABSOLUTE_MASS_DEVIATION(new String[]{"Av. Absolute Mass Deviation"}),
+    ENZYME(new String[] {"Enzyme"}),
     FIXED_MODIFICATIONS(new String[]{"Fixed modifications"}),
     INSTRUMENT(new String[]{"Instrument"}),
     ISOTOPE_PATTERNS(new String[]{"Isotope Patterns"}),

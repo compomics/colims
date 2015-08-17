@@ -6,7 +6,6 @@ import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantEvidenceHeaders;
-import com.compomics.colims.core.io.maxquant.headers.MaxQuantModificationHeaders;
 import com.compomics.colims.core.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.ModificationType;

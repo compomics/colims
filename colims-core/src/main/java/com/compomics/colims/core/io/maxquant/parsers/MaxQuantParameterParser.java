@@ -4,12 +4,14 @@ import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.IdentificationFile;
-import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.*;
+import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.BinaryFileType;
+import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.SearchEngineType;
 
@@ -22,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 
+import com.compomics.colims.model.factory.CvParamFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,33 +35,74 @@ import org.springframework.stereotype.Component;
 public class MaxQuantParameterParser {
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
+    @Autowired
+    private TypedCvParamService typedCvParamService;
+    @Autowired
+    private OlsService olsService;
 
+    /**
+     * Experiment multiplicity
+     */
     private String multiplicity = null;
-    private Map<String, SearchAndValidationSettings> runParameters = new HashMap<>();
 
+    /**
+     * Settings used in the experiment, indexed by run
+     */
+    private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
+
+    /**
+     * Parameters file name
+     */
     private static final String PARAMETERS = "parameters.txt";
+
+    /**
+     * Summary data file name
+     */
     private static final String SUMMARY = "summary.txt";
 
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantSummaryHeaders.MULTIPLICITY,
-            MaxQuantSummaryHeaders.RAW_FILE,
-
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[] {
+        MaxQuantSummaryHeaders.ENZYME,
+        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+        MaxQuantSummaryHeaders.MULTIPLICITY,
+        MaxQuantSummaryHeaders.PROTEASE,
+        MaxQuantSummaryHeaders.RAW_FILE
     };
 
+    private static final String MS_ONTOLOGY_LABEL = "MS";
+    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
+    private static final String NOT_APPLICABLE = "N/A";
+
+    /**
+     * Parse parameters for experiment
+     *
+     * @param quantFolder Experiment data folder
+     * @param fastaDb FASTA used in experiment
+     * @param storeFiles Whether data files should be stored with experiment
+     * @throws IOException
+     */
     public void parse(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = parseSettings(quantFolder, fastaDb, storeFiles);
 
-        runParameters = newParseRuns(quantFolder, searchAndValidationSettings);
+        runSettings = parseRuns(quantFolder, searchAndValidationSettings);
     }
 
-    public SearchAndValidationSettings parseSettings(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+    /**
+     * Parse common search and validation settings for an experiment
+     *
+     * @param maxQuantFolder Experiment data folder
+     * @param fastaDb FASTA used in experiment
+     * @param storeFiles Whether data files should be stored with experiment
+     * @return A SearchAndValidationSettings object
+     * @throws IOException
+     */
+    public SearchAndValidationSettings parseSettings(File maxQuantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
         searchAndValidationSettings.setFastaDb(fastaDb);
 
-        com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
+        SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(null);
 
-        Iterator<Entry<String, String>> parameterIterator = parseParameters(new File(quantFolder, PARAMETERS)).entrySet().iterator();
+        Iterator<Entry<String, String>> parameterIterator = parseParameters(new File(maxQuantFolder, PARAMETERS)).entrySet().iterator();
         Entry<String, String> row;
         String version = null;
 
@@ -81,14 +125,17 @@ public class MaxQuantParameterParser {
             }
         }
 
+        searchAndValidationSettings.setSearchParameterSettings(searchParameters);   // TODO: why is this called searchparametersettings
+        searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
+
         searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAX_QUANT, version));
 
         // currently just storing whole folder
-        IdentificationFile identificationFileEntity = new IdentificationFile(quantFolder.getName(), quantFolder.getCanonicalPath());
+        IdentificationFile identificationFileEntity = new IdentificationFile(maxQuantFolder.getName(), maxQuantFolder.getCanonicalPath());
 
         if (storeFiles) {
             identificationFileEntity.setBinaryFileType(BinaryFileType.ZIP);
-            byte[] content = IOUtils.readAndZip(quantFolder);
+            byte[] content = IOUtils.readAndZip(maxQuantFolder);
             identificationFileEntity.setContent(content);
         }
 
@@ -99,19 +146,39 @@ public class MaxQuantParameterParser {
         return searchAndValidationSettings;
     }
 
+    /**
+     * Get the multiplicity for this experiment
+     *
+     * @return Parsed multiplicity value
+     */
     public String getMultiplicity() {
         return multiplicity;
     }
 
-    public Map<String, SearchAndValidationSettings> getRunParameters() {
-        return Collections.unmodifiableMap(runParameters);
+    /**
+     * Get the run settings stored in this object
+     *
+     * @return Copy of the filename/settings map
+     */
+    public Map<String, SearchAndValidationSettings> getRunSettings() {
+        return Collections.unmodifiableMap(runSettings);
     }
 
+    /**
+     * Clear data stored in parser
+     */
     public void clear() {
-        runParameters.clear();
+        runSettings.clear();
         multiplicity = null;
     }
 
+    /**
+     * Parse a parameters file
+     *
+     * @param parameterFile File to be parsed
+     * @return Key-value list of file data
+     * @throws IOException
+     */
     public Map<String, String> parseParameters(File parameterFile) throws IOException {
         Map<String, String> parameters = new HashMap<>();
 
@@ -135,7 +202,15 @@ public class MaxQuantParameterParser {
         return parameters;
     }
 
-    private Map<String, SearchAndValidationSettings> newParseRuns(File quantFolder, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
+    /**
+     * Parse the search and validation settings for a given data set
+     *
+     * @param quantFolder Data folder for max quant run
+     * @param searchAndValidationSettings An initial SearchAndValidationSettings object to decorate per run
+     * @return Settings indexed by run file name
+     * @throws IOException
+     */
+    private Map<String, SearchAndValidationSettings> parseRuns(File quantFolder, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
         Map<String, SearchAndValidationSettings> allSettings = new HashMap<>();
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY), mandatoryHeaders);
         Map<String, String> row;
@@ -149,10 +224,26 @@ public class MaxQuantParameterParser {
             }
 
             if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
-                if (row.containsKey(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()) && !row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName()).isEmpty()) {
-                    // TODO: enzyme from service (see utilitiessearchparametersmapper)
-                    //runParameters.setEnzyme();
-                    //row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName());
+                // apparently protease was old column name
+                String enzymeName = row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName()) == null
+                    ? row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName())
+                    : row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName());
+
+                if (!enzymeName.isEmpty()) {
+                    // TODO: separate this into utility (not utilities) class
+                    TypedCvParam enzyme = typedCvParamService.findByName(enzymeName, CvParamType.SEARCH_PARAM_ENZYME, true);
+
+                    if (enzyme == null) {
+                        enzyme = olsService.findEnzymeByName(enzymeName);
+
+                        if (enzyme == null) {
+                            enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, enzymeName);
+                        }
+
+                        typedCvParamService.save(enzyme);
+                    }
+
+                    runSettings.getSearchParameters().setEnzyme((SearchCvParam) enzyme);
                 }
 
                 if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
@@ -163,7 +254,27 @@ public class MaxQuantParameterParser {
             allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), runSettings);
         }
 
+        // TODO: search type
+
         return allSettings;
+    }
+
+    /**
+     * Deep copy a SearchAndValidationSettings object
+     *
+     * @param oldSettings Settings to clone
+     * @return Cloned object
+     */
+    private SearchAndValidationSettings cloneSearchAndValidationSettings(SearchAndValidationSettings oldSettings) {
+        SearchAndValidationSettings newSettings = new SearchAndValidationSettings();
+        newSettings.setSearchParameterSettings(new SearchParameters());
+
+        newSettings.setFastaDb(oldSettings.getFastaDb());
+        newSettings.setSearchEngine(oldSettings.getSearchEngine());
+        newSettings.getSearchParameters().setFragMassTolerance(oldSettings.getSearchParameters().getFragMassTolerance());
+        newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());
+
+        return newSettings;
     }
 
     // TODO: is this modification data ever needed? not accessed by mappers
@@ -190,15 +301,4 @@ public class MaxQuantParameterParser {
 //            }
 //        }
 //    }
-
-    private SearchAndValidationSettings cloneSearchAndValidationSettings(SearchAndValidationSettings oldSettings) {
-        SearchAndValidationSettings newSettings = new SearchAndValidationSettings();
-
-        newSettings.setFastaDb(oldSettings.getFastaDb());
-        newSettings.setSearchEngine(oldSettings.getSearchEngine());
-        newSettings.getSearchParameters().setFragMassTolerance(oldSettings.getSearchParameters().getFragMassTolerance());
-        newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());
-
-        return newSettings;
-    }
 }

@@ -1,15 +1,15 @@
 package com.compomics.colims.core.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.preferences.ModificationProfile;
 
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
+import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.SearchParameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
 
 /**
@@ -31,21 +30,22 @@ public class MaxQuantParameterParserTest {
     @Autowired
     MaxQuantParameterParser maxQuantParameterParser;
 
-    /**
-     * Test of parse method, of class MaxQuantParameterParser.
-     * @throws java.lang.Exception
-     */
-//    @Test
-//    public void testParse() throws Exception {
-//        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder);
-//        Map<String, SearchParameters> result = maxQuantParameterParser.getRunParameters();
-//
-//        // insane way to get the single entry from the map
-//        ModificationProfile testProfile =  result.entrySet().iterator().next().getValue().getModificationProfile();
-//        assertThat(testProfile.getAllModifications(), is(not(empty())));
-//        assertThat(testProfile.getFixedModifications(), is(empty()));
-//        assertThat(testProfile.getVariableModifications().size(), is(2));
-//    }
+    @Test
+    public void testParse() throws Exception {
+        FastaDb fastaDb = new FastaDb();
+        fastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getCanonicalPath());
+        fastaDb.setName("test fasta");
+
+        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder, fastaDb, false);
+        Map<String, SearchAndValidationSettings> result = maxQuantParameterParser.getRunSettings();
+
+        // insane way to get the single entry from the map
+        SearchParameters testProfile =  result.entrySet().iterator().next().getValue().getSearchParameters();
+        assertThat(testProfile.getEnzyme().getName(), is("Trypsin/P"));
+        //assertThat(testProfile.getFixedModifications(), is(empty()));
+        //assertThat(testProfile.getVariableModifications().size(), is(2));
+    }
+
     @Test
     public void testParseParameters() throws Exception {
         Set<String> uniqueLines = new HashSet<>();

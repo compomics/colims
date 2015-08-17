@@ -51,7 +51,7 @@ public class MaxQuantProteinGroupParser {
 
     private ProteinGroup parseProteinGroup(final Map<String, String> values) {
         ProteinGroup proteinGroup = new ProteinGroup();
-        proteinGroup.setProteinProbability(1.0);   // TODO: not in file
+        //proteinGroup.setProteinProbability(1.0);   // TODO: not in file
 
         if (values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName()) != null) {
             proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
