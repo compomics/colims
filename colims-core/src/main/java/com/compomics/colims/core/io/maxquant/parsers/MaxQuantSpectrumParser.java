@@ -15,7 +15,7 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum} instances.
- * <p/>
+ *
  * This class uses the {@link TabularFileLineValuesIterator} to actually parse the files into Map<String,String>
  * records.
  */
@@ -27,18 +27,18 @@ public class MaxQuantSpectrumParser {
             MaxQuantMSMSHeaders.FRAGMENTATION,
             MaxQuantMSMSHeaders.MATCHES,
             MaxQuantMSMSHeaders.INTENSITIES,
-            MaxQuantMSMSHeaders.MASSES,
+            MaxQuantMSMSHeaders.MASSES
     };
 
-    public Map<Integer, Spectrum> parse(final File msmsFile) throws IOException {
-        Map<Integer, Spectrum> spectra = new HashMap<>();
+    public Map<Spectrum, Integer> parse(final File msmsFile) throws IOException {
+        Map<Spectrum, Integer> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
 
         for (Map<String, String> values : valuesIterator) {
             Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
 
-            spectra.put(id, parseSpectrum(values));
+            spectra.put(parseSpectrum(values), id);
         }
 
         return spectra;

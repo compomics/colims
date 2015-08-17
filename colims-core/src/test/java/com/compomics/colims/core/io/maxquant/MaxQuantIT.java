@@ -14,7 +14,6 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.colims.repository.AuthenticationBean;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,8 +123,8 @@ public class MaxQuantIT {
         authenticationBean.setCurrentUser(user);
         int startSpectraCount = spectrumService.findAll().size();
 
-        Map<Integer, Spectrum> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
-        List<Spectrum> spectrumHolder = spectrumMap.values().stream().collect(Collectors.toList());
+        Map<Spectrum, Integer> spectrumMap = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
+        List<Spectrum> spectrumHolder = spectrumMap.keySet().stream().collect(Collectors.toList());
 
         spectrumHolder.forEach(spectrumService::save);
         

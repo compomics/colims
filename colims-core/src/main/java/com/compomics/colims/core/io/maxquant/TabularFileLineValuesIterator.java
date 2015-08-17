@@ -80,9 +80,6 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
             if (header.isPresent()) {
                 aHeader.setColumnNameNumber(aHeader.allPossibleColumnNames().indexOf(header.get()));
             }
-
-
-
         }
 
         headers = firstLine.split("" + DELIMITER);

@@ -9,9 +9,7 @@ import java.util.*;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -40,13 +38,9 @@ public class MaxQuantParserTest {
     /**
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
      */
-    @Ignore
     @Test
     public void testGetIdentificationForSpectrum() throws Exception {
-        // TODO: needs the right things populated to work
-
-        Map<Integer, Spectrum> spectra = maxQuantParser.getSpectra();
-        Spectrum spectrum = spectra.get(0);
+        Spectrum spectrum = maxQuantParser.getSpectra().keySet().iterator().next();
         Peptide assumption = maxQuantParser.getIdentificationForSpectrum(spectrum);
 
         assertThat(assumption, isA(Peptide.class));
@@ -63,9 +57,9 @@ public class MaxQuantParserTest {
      */
     @Test
     public void testGetSpectra() throws Exception {
-        Map<Integer, Spectrum> spectra = maxQuantParser.getSpectra();
+        Map<Spectrum, Integer> spectra = maxQuantParser.getSpectra();
         assertThat(spectra.size(), not(0));
-        assertThat(spectra.get(0), isA(Spectrum.class));
+        assertThat(spectra.keySet().iterator().next(), isA(Spectrum.class));
 
         maxQuantParser.clear();
         spectra = maxQuantParser.getSpectra();

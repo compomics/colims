@@ -46,6 +46,11 @@ public class MaxQuantParameterParser {
     private String multiplicity = null;
 
     /**
+     * Default search type
+     */
+    private SearchCvParam defaultSearchType = null;
+
+    /**
      * Settings used in the experiment, indexed by run
      */
     private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
@@ -60,6 +65,11 @@ public class MaxQuantParameterParser {
      */
     private static final String SUMMARY = "summary.txt";
 
+    private static final String MS_ONTOLOGY_LABEL = "MS";
+    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
+    private static final String NOT_APPLICABLE = "N/A";
+    private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
+
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[] {
         MaxQuantSummaryHeaders.ENZYME,
         MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
@@ -67,10 +77,6 @@ public class MaxQuantParameterParser {
         MaxQuantSummaryHeaders.PROTEASE,
         MaxQuantSummaryHeaders.RAW_FILE
     };
-
-    private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
-    private static final String NOT_APPLICABLE = "N/A";
 
     /**
      * Parse parameters for experiment
@@ -81,6 +87,14 @@ public class MaxQuantParameterParser {
      * @throws IOException
      */
     public void parse(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+        TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
+
+        if (searchType != null) {
+            defaultSearchType = (SearchCvParam) searchType;
+        } else {
+            throw new IllegalStateException("The default search type CV term was not found in the database.");
+        }
+
         SearchAndValidationSettings searchAndValidationSettings = parseSettings(quantFolder, fastaDb, storeFiles);
 
         runSettings = parseRuns(quantFolder, searchAndValidationSettings);
@@ -100,7 +114,7 @@ public class MaxQuantParameterParser {
         searchAndValidationSettings.setFastaDb(fastaDb);
 
         SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setSearchType(null);
+        searchParameters.setSearchType(defaultSearchType);
 
         Iterator<Entry<String, String>> parameterIterator = parseParameters(new File(maxQuantFolder, PARAMETERS)).entrySet().iterator();
         Entry<String, String> row;
@@ -144,32 +158,6 @@ public class MaxQuantParameterParser {
         searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
 
         return searchAndValidationSettings;
-    }
-
-    /**
-     * Get the multiplicity for this experiment
-     *
-     * @return Parsed multiplicity value
-     */
-    public String getMultiplicity() {
-        return multiplicity;
-    }
-
-    /**
-     * Get the run settings stored in this object
-     *
-     * @return Copy of the filename/settings map
-     */
-    public Map<String, SearchAndValidationSettings> getRunSettings() {
-        return Collections.unmodifiableMap(runSettings);
-    }
-
-    /**
-     * Clear data stored in parser
-     */
-    public void clear() {
-        runSettings.clear();
-        multiplicity = null;
     }
 
     /**
@@ -254,8 +242,6 @@ public class MaxQuantParameterParser {
             allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), runSettings);
         }
 
-        // TODO: search type
-
         return allSettings;
     }
 
@@ -275,6 +261,32 @@ public class MaxQuantParameterParser {
         newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());
 
         return newSettings;
+    }
+
+    /**
+     * Get the multiplicity for this experiment
+     *
+     * @return Parsed multiplicity value
+     */
+    public String getMultiplicity() {
+        return multiplicity;
+    }
+
+    /**
+     * Get the run settings stored in this object
+     *
+     * @return Copy of the filename/settings map
+     */
+    public Map<String, SearchAndValidationSettings> getRunSettings() {
+        return Collections.unmodifiableMap(runSettings);
+    }
+
+    /**
+     * Clear data stored in parser
+     */
+    public void clear() {
+        runSettings.clear();
+        multiplicity = null;
     }
 
     // TODO: is this modification data ever needed? not accessed by mappers

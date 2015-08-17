@@ -37,7 +37,7 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
-    private Map<Integer, Spectrum> spectra = new HashMap<>();
+    private Map<Spectrum, Integer> spectrumIds = new HashMap<>();
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
     private Map<Integer, FragmentationType> fragmentations = new HashMap<>();
@@ -79,18 +79,18 @@ public class MaxQuantParser {
      */
     public void parseFolder(final File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
-        spectra = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
+        spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
 
-        for (Map.Entry<Integer, Spectrum> entry : getSpectra().entrySet()) {
-            if (analyticalRuns.containsKey(entry.getValue().getTitle())) {
-                analyticalRuns.get(entry.getValue().getTitle()).getSpectrums().add(entry.getValue());
+        for (Map.Entry<Spectrum, Integer> entry : getSpectra().entrySet()) {
+            if (analyticalRuns.containsKey(entry.getKey().getTitle())) {
+                analyticalRuns.get(entry.getKey().getTitle()).getSpectrums().add(entry.getKey());
             } else {
                 AnalyticalRun analyticalRun = new AnalyticalRun();
-                analyticalRun.setName(entry.getValue().getTitle());
+                analyticalRun.setName(entry.getKey().getTitle());
                 // TODO: maxquant folder?
-                analyticalRun.getSpectrums().add(entry.getValue());
+                analyticalRun.getSpectrums().add(entry.getKey());
 
-                analyticalRuns.put(entry.getValue().getTitle(), analyticalRun);
+                analyticalRuns.put(entry.getKey().getTitle(), analyticalRun);
             }
         }
 
@@ -104,7 +104,7 @@ public class MaxQuantParser {
         LOGGER.debug("parsing protein groups");
         proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT));
 
-        if (this.spectra.size() == 0 || maxQuantEvidenceParser.peptides.size() == 0 || proteinGroups.size() == 0) {
+        if (this.spectrumIds.size() == 0 || maxQuantEvidenceParser.peptides.size() == 0 || proteinGroups.size() == 0) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {
             parsed = true;
@@ -121,14 +121,14 @@ public class MaxQuantParser {
     }
 
     /**
-     * fetch the associated identification with a spectrum, null if not present
+     * Fetch the identification associated with a spectrum
      *
-     * @param spectrum the spectrum to fetch the identification for
+     * @param spectrum the spectrum
      * @return the {@code PeptideAssumption} connected to the spectrum
      * @throws NumberFormatException if the spectrum is not present in the parsed file
      */
     public Peptide getIdentificationForSpectrum(Spectrum spectrum) throws NumberFormatException {
-        return maxQuantEvidenceParser.peptides.get(spectrum.getId());
+        return maxQuantEvidenceParser.peptides.get(spectrumIds.get(spectrum));
     }
 
     /**
@@ -136,8 +136,8 @@ public class MaxQuantParser {
      *
      * @return Map of ids and spectra
      */
-    public Map<Integer, Spectrum> getSpectra() {
-        return Collections.unmodifiableMap(spectra);
+    public Map<Spectrum, Integer> getSpectra() {
+        return Collections.unmodifiableMap(spectrumIds);
     }
 
     /**
@@ -177,7 +177,7 @@ public class MaxQuantParser {
      * Clear the parser.
      */
     public void clear() {
-        spectra.clear();
+        spectrumIds.clear();
         maxQuantEvidenceParser.clear();
         proteinGroups.clear();
         analyticalRuns.clear();
