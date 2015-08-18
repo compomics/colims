@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import org.junit.Ignore;
@@ -27,6 +28,8 @@ public class MaxQuantProteinGroupParserTest {
 
     @Autowired
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
+    @Autowired
+    private MaxQuantParser maxQuantParser;
 
     /**
      * Test of parseMaxQuantProteinGroups method, of class
@@ -34,9 +37,14 @@ public class MaxQuantProteinGroupParserTest {
      */
     @Test
     public void testParse() throws Exception {
+        FastaDb maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile.toPath());
 
-        Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile);
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile, maxQuantParser.parseFasta(maxQuantTestFastaDb));
 
         // minus headers
         assert(result.size() <= rawFile.size() - 1);

@@ -5,10 +5,15 @@ import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Component;
 public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
+
     @Autowired
     private MaxQuantParameterParser parameterParser;
     @Autowired
@@ -44,7 +50,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
             maxQuantParser.clear();
 
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), false);
-            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), parameterParser.getMultiplicity());
+            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), parameterParser.getMultiplicity());
 
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());

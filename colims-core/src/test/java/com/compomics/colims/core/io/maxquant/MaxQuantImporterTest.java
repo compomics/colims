@@ -3,7 +3,11 @@ package com.compomics.colims.core.io.maxquant;
 import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.FastaDb;
 
@@ -11,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
 /**

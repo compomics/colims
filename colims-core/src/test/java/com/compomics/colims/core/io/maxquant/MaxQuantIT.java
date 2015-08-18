@@ -7,13 +7,7 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.User;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
 
 import java.io.IOException;
@@ -61,7 +55,12 @@ public class MaxQuantIT {
 
     @Test
     public void runStorage() throws IOException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
-        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder);
+        FastaDb maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+
+        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);
 
         User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);

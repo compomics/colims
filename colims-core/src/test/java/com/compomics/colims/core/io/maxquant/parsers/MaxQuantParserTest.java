@@ -7,10 +7,13 @@ import com.compomics.colims.core.io.maxquant.UnparseableException;
 import java.io.IOException;
 import java.util.*;
 
+import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +34,26 @@ public class MaxQuantParserTest {
 
     @Before
     public void setUp() throws MappingException, UnparseableException, IOException {
+        FastaDb maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+
         maxQuantParser.clear();
-        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder);
+        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);
+    }
+
+    @Test
+    public void testParseFasta() throws IOException {
+        FastaDb maxQuantTestFastaDb = new FastaDb();
+        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+
+        Map<String, String> parsedFasta = maxQuantParser.parseFasta(maxQuantTestFastaDb);
+
+        assertThat(parsedFasta.size(), greaterThan(0));
+        // TODO: more test cases
     }
 
     /**

@@ -4,16 +4,15 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.UnparseableException;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantSummaryHeaders;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FragmentationType;
+import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +28,7 @@ public class MaxQuantParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
     private static final String PROTEINGROUPSTXT = "proteinGroups.txt";
+    private static final String BLOCK_SEPARATOR = ">";   // TODO: is it always this?
 
     @Autowired
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
@@ -37,6 +37,7 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
+    private Map<String, String> parsedFasta = new HashMap<>();
     private Map<Spectrum, Integer> spectrumIds = new HashMap<>();
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
@@ -52,7 +53,7 @@ public class MaxQuantParser {
      * @throws MappingException
      * @throws UnparseableException
      */
-    public void parseFolder(final File quantFolder) throws IOException, MappingException, UnparseableException {
+    public void parseFolder(final File quantFolder, final FastaDb fastaDb) throws IOException, MappingException, UnparseableException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
         Map<String, String> row;
         String multiplicity = null;
@@ -66,7 +67,7 @@ public class MaxQuantParser {
             }
         }
 
-        parseFolder(quantFolder, multiplicity);
+        parseFolder(quantFolder, fastaDb, multiplicity);
     }
 
     /**
@@ -77,7 +78,7 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException
      */
-    public void parseFolder(final File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parseFolder(final File quantFolder, final FastaDb fastaDb, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
         spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
 
@@ -87,7 +88,6 @@ public class MaxQuantParser {
             } else {
                 AnalyticalRun analyticalRun = new AnalyticalRun();
                 analyticalRun.setName(entry.getKey().getTitle());
-                // TODO: maxquant folder?
                 analyticalRun.getSpectrums().add(entry.getKey());
 
                 analyticalRuns.put(entry.getKey().getTitle(), analyticalRun);
@@ -102,13 +102,52 @@ public class MaxQuantParser {
         maxQuantEvidenceParser.parse(quantFolder, multiplicity);
 
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT));
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT), parseFasta(fastaDb));
 
         if (this.spectrumIds.size() == 0 || maxQuantEvidenceParser.peptides.size() == 0 || proteinGroups.size() == 0) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {
             parsed = true;
         }
+    }
+
+    /**
+     * Parse a FASTA file into a map of protein -> sequence pairs
+     *
+     * @param fastaDb FASTA file to parse
+     * @return String/String map of protein/sequence
+     * @throws IOException If the file is invalid
+     */
+    public Map<String, String> parseFasta(FastaDb fastaDb) throws IOException {
+        Map<String, String> parsedFasta = new HashMap<>();
+        StringBuilder sequence = new StringBuilder();
+        String header = "";
+
+        try {
+            LineReader reader = new LineReader(new FileReader(fastaDb.getFilePath()));
+            String line = reader.readLine();
+
+            while (line != null) {
+                if (line.startsWith(BLOCK_SEPARATOR)) {
+                    if (sequence.length() > 0) {
+                        // extract only accession
+                        parsedFasta.put(header.substring(1).split(" ")[0], sequence.toString());
+                        sequence.setLength(0);
+                    }
+
+                    header = line;
+                } else {
+                    sequence.append(line);
+                }
+
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new IOException("Error parsing FASTA file, please check that it contains valid data");
+        }
+
+        return parsedFasta;
     }
 
     /**

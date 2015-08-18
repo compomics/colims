@@ -4,15 +4,12 @@ import com.compomics.colims.core.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.core.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.core.io.maxquant.headers.MaxQuantProteinGroupHeaders;
 import com.compomics.colims.core.service.ProteinService;
-import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
+import com.compomics.colims.model.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.model.ProteinGroupHasProtein;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +25,8 @@ public class MaxQuantProteinGroupParser {
             MaxQuantProteinGroupHeaders.CONTAMINANT,
             MaxQuantProteinGroupHeaders.ID,
             MaxQuantProteinGroupHeaders.ACCESSION,
-            MaxQuantProteinGroupHeaders.EVIDENCEIDS
+            MaxQuantProteinGroupHeaders.EVIDENCEIDS,
+            MaxQuantProteinGroupHeaders.PEP
     };
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantProteinGroupParser.class);
@@ -36,20 +34,24 @@ public class MaxQuantProteinGroupParser {
     @Autowired
     private ProteinService proteinService;
 
-    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile) throws IOException {
+    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFasta) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, mandatoryHeaders);
 
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getDefaultColumnName())), parseProteinGroup(values));
+            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFasta);
+
+            if (proteinGroup.getMainProtein() != null) {
+                proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getDefaultColumnName())), parseProteinGroup(values, parsedFasta));
+            }
         }
 
         return proteinGroups;
     }
 
-    private ProteinGroup parseProteinGroup(final Map<String, String> values) {
+    private ProteinGroup parseProteinGroup(final Map<String, String> values, Map<String, String> parsedFasta) {
         ProteinGroup proteinGroup = new ProteinGroup();
         //proteinGroup.setProteinProbability(1.0);   // TODO: not in file
 
@@ -57,14 +59,13 @@ public class MaxQuantProteinGroupParser {
             proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
         }
 
-        // TODO!! we need the sequence from the fasta
-        String temporarySequence ="BREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREADBREAD";
-
         String parsedAccession = values.get(MaxQuantProteinGroupHeaders.ACCESSION.getDefaultColumnName());
+        List<String> filteredAccessions = new ArrayList<>();
+
+        //  NEW PLAN!! chop off full header in fasta parse then just match on accession
 
         if (parsedAccession.contains(";")) {
             String[] accessions = parsedAccession.split(";");
-            List<String> filteredAccessions = new ArrayList<>();
 
             for (String accession : accessions) {
                 if (!accession.contains("REV") && !accession.contains("CON")) {
@@ -72,17 +73,17 @@ public class MaxQuantProteinGroupParser {
                 }
             }
 
-            boolean main = true;
+            boolean isMainGroup = true;
 
             for (String accession : filteredAccessions) {
-                if (main) {
-                    main = false;
-                }
+                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFasta.get(accession), accession, isMainGroup));
 
-                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(temporarySequence, accession, main));
+                if (isMainGroup) {
+                    isMainGroup = false;
+                }
             }
-        } else {
-            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(temporarySequence, parsedAccession, true));
+        } else if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
+            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFasta.get(parsedAccession), parsedAccession, true));
         }
 
         return proteinGroup;
