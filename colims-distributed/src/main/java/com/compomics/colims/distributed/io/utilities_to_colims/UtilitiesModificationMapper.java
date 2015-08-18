@@ -86,7 +86,7 @@ public class UtilitiesModificationMapper {
                 modification = mapModificationMatch(modificationMatch);
             }
 
-            //set entity relations if modification could be mapped
+            //set entity associations if modification could be mapped
             if (modification != null) {
                 PeptideHasModification peptideHasModification = new PeptideHasModification();
 
@@ -135,7 +135,7 @@ public class UtilitiesModificationMapper {
                     peptideHasModification.setModificationType(ModificationType.FIXED);
                 }
 
-                //set entity relations
+                //set entity associations
                 peptideHasModification.setModification(modification);
                 peptideHasModification.setPeptide(targetPeptide);
 

@@ -133,7 +133,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
         // TODO: settings for multiple runs
 //        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), maxQuantImport.getFastaDb(), parameterParser.getRunParameters().values().iterator().next(), identificationFiles, false);
 
-        //set entity relations
+        //set entity associations
 //        analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
 //        searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
@@ -157,7 +157,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
 //        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
 
-        //set entity relations
+        //set entity associations
         analyticalRun.setQuantificationSettings(quantificationSettings);
         quantificationSettings.setAnalyticalRun(analyticalRun);
 

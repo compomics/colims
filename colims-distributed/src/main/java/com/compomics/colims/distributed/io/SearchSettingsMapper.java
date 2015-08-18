@@ -56,7 +56,7 @@ public class SearchSettingsMapper {
 
         //look for the given search parameter settings in the database
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
-        //set entity relations
+        //set entity associations
         searchAndValidationSettings.setSearchParameterSettings(searchParameters);
 //        searchParameterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
@@ -64,14 +64,14 @@ public class SearchSettingsMapper {
          * SearchEngine
          */
         SearchEngine searchEngine = searchAndValidationSettingsService.getSearchEngine(searchEngineType, version);
-        //set entity relations
+        //set entity associations
         searchAndValidationSettings.setSearchEngine(searchEngine);
 //        searchEngine.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * FastaDb
          */
-        //set entity relations
+        //set entity associations
         searchAndValidationSettings.setFastaDb(fastaDb);
 //        fastaDb.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
@@ -100,7 +100,7 @@ public class SearchSettingsMapper {
                 identificationFileEntity.setContent(content);
             }
 
-            //set entity relations
+            //set entity associations
             identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
             searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
         }

@@ -1,18 +1,18 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.maxquant.MaxQuantImport;
-import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
-import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
-import com.compomics.colims.core.service.DataStorageService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.maxquant.MaxQuantImport;
+import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
+import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.service.DataStorageService;
+import com.compomics.colims.core.service.SampleService;
+import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter2;
+import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
@@ -59,7 +59,7 @@ public class PersistDbTaskHandler {
      * The PeptideShaker data importer.
      */
     @Autowired
-    private PeptideShakerImporter peptideShakerImporter;
+    private PeptideShakerImporter2 peptideShakerImporter;
     /**
      * The MaxQuant data importer.
      */

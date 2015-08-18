@@ -76,7 +76,7 @@ public class UtilitiesModificationProfileMapper {
                 searchModification = mapPtm(modificationProfile.getBackedUpPtmsMap().get(modificationName));
             }
 
-            //set entity relations if the search modification could be mapped
+            //set entity associations if the search modification could be mapped
             if (searchModification != null) {
                 SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
@@ -87,7 +87,7 @@ public class UtilitiesModificationProfileMapper {
                     searchParametersHasModification.setModificationType(ModificationType.FIXED);
                 }
 
-                //set entity relations
+                //set entity associations
                 searchParametersHasModification.setSearchModification(searchModification);
                 searchParametersHasModification.setSearchParameters(searchParameters);
 

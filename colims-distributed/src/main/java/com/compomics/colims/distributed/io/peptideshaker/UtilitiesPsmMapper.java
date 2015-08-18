@@ -21,9 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class maps the Utilities PSM input to a Colims spectrum entity and related classes (Peptide, Protein, ...).
@@ -129,11 +127,10 @@ public class UtilitiesPsmMapper {
             //set the relation between the IdentificationFile and Peptide entities
             targetPeptide.setIdentificationFile(identificationFile);
 
-            //set entity relations
+            //set entity associations
             targetSpectrum.getPeptides().add(targetPeptide);
             targetPeptide.setSpectrum(targetSpectrum);
 
-            Map<ProteinMatch, PSParameter> proteinMatches = new HashMap<>();
             ProteinMatch proteinMatch;
             List<String> possibleProteins = new ArrayList<>();
             for (String parentProtein : bestMatchingPeptide.getParentProteins(identificationParameters.getSequenceMatchingPreferences())) {
@@ -155,17 +152,7 @@ public class UtilitiesPsmMapper {
                 }
             }
             proteinMatch = identification.getProteinMatch(possibleProteins.get(0));
-            PSParameter psParameter = (PSParameter) identification.getProteinMatchParameter(possibleProteins.get(0), new PSParameter());
-            if (proteinMatch != null) {
-                proteinMatches.put(proteinMatch, psParameter);
-            }
-
-            if (proteinMatches.size() > 1) {
-                System.out.println("dddddd");
-            }
-            if (proteinMatches.isEmpty()) {
-                System.out.println("fefefefef");
-            }
+            PSParameter proteinGroupScore = (PSParameter) identification.getProteinMatchParameter(possibleProteins.get(0), new PSParameter());
 
 //            //iterate over protein keys
 //            //get parent proteins without remapping them
@@ -186,7 +173,11 @@ public class UtilitiesPsmMapper {
                 peptideMatchScore = new MatchScore(0.0, 0.0);
             }
 
-            utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+            if (proteinMatch != null) {
+                utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, peptideMatchScore, targetPeptide);
+            } else {
+                throw new IllegalStateException("No protein match could be found for peptide: " + targetPeptide.getSequence());
+            }
         } else {
             LOGGER.debug("No best peptide assumption was found for spectrum match " + spectrumMatch.getKey());
         }
@@ -230,7 +221,7 @@ public class UtilitiesPsmMapper {
             //link the IdentificationFile to the peptide
             targetPeptide.setIdentificationFile(identificationFile);
 
-            //set entity relations
+            //set entity associations
             targetSpectrum.getPeptides().add(targetPeptide);
             targetPeptide.setSpectrum(targetSpectrum);
 

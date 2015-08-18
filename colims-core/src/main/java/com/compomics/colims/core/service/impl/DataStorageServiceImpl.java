@@ -8,12 +8,15 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
+import com.compomics.colims.repository.ProteinGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the DataStorageService interface.
@@ -26,6 +29,8 @@ public class DataStorageServiceImpl implements DataStorageService {
 
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
+    @Autowired
+    ProteinGroupRepository proteinGroupRepository;
 
     @Override
     public void store(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate) {
@@ -34,7 +39,7 @@ public class DataStorageServiceImpl implements DataStorageService {
             Date auditDate = new Date();
 
             SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
-            if(searchAndValidationSettings != null) {
+            if (searchAndValidationSettings != null) {
                 //set the audit fields for the SearchAndValidationSettings
                 searchAndValidationSettings.setCreationDate(auditDate);
                 searchAndValidationSettings.setModificationDate(auditDate);
@@ -42,11 +47,25 @@ public class DataStorageServiceImpl implements DataStorageService {
             }
 
             QuantificationSettings quantificationSettings = analyticalRun.getQuantificationSettings();
-            if(quantificationSettings != null) {
+            if (quantificationSettings != null) {
                 //set the audit fields for the QuantificationSettings
                 quantificationSettings.setCreationDate(auditDate);
                 quantificationSettings.setModificationDate(auditDate);
                 quantificationSettings.setUserName(userName);
+            }
+
+            Set<ProteinGroup> proteinGroups = new HashSet<>();
+            //collect all unique ProteinGroup instances
+            for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+                for (Peptide peptide : spectrum.getPeptides()) {
+                    for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {
+                        proteinGroups.add(peptideHasProteinGroup.getProteinGroup());
+                    }
+                }
+            }
+            //and save them
+            for (ProteinGroup proteinGroup : proteinGroups) {
+                proteinGroupRepository.save(proteinGroup);
             }
 
             analyticalRun.setCreationDate(auditDate);
@@ -56,7 +75,6 @@ public class DataStorageServiceImpl implements DataStorageService {
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrument);
             analyticalRunRepository.saveOrUpdate(analyticalRun);
-            //throw new IllegalArgumentException("test");
         }
     }
 

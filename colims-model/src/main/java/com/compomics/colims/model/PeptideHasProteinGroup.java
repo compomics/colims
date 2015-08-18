@@ -36,7 +36,6 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
      */
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
     @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private ProteinGroup proteinGroup;
 
     public Double getPeptideProbability() {
@@ -82,8 +81,8 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
             return false;
         if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
             return false;
-        if (!peptide.equals(that.peptide)) return false;
-        return proteinGroup.equals(that.proteinGroup);
+        if (peptide != null ? !peptide.equals(that.peptide) : that.peptide != null) return false;
+        return !(proteinGroup != null ? !proteinGroup.equals(that.proteinGroup) : that.proteinGroup != null);
 
     }
 
@@ -91,8 +90,8 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
     public int hashCode() {
         int result = peptideProbability != null ? peptideProbability.hashCode() : 0;
         result = 31 * result + (peptidePostErrorProbability != null ? peptidePostErrorProbability.hashCode() : 0);
-        result = 31 * result + peptide.hashCode();
-        result = 31 * result + proteinGroup.hashCode();
+        result = 31 * result + (peptide != null ? peptide.hashCode() : 0);
+        result = 31 * result + (proteinGroup != null ? proteinGroup.hashCode() : 0);
         return result;
     }
 }

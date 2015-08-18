@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -62,18 +60,16 @@ public class UtilitiesProteinMapperTest {
         Peptide targetPeptide = new Peptide();
 
         //create utilities protein matches
-        Map<ProteinMatch, PSParameter> proteinMatches = new HashMap<>();
         ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.setMainMatch("P16083");
         PSParameter psParameter = new PSParameter();
         psParameter.setProteinProbability(56.3);
         psParameter.setProteinProbabilityScore(99.4);
-        proteinMatches.put(proteinMatch, psParameter);
 
         //create peptide scores
         MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
 
-        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+        utilitiesProteinMapper.map(proteinMatch, psParameter, peptideMatchScore, targetPeptide);
 
         Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
         Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
@@ -121,7 +117,6 @@ public class UtilitiesProteinMapperTest {
         Peptide targetPeptide = new Peptide();
 
         //create utilities protein matches
-        Map<ProteinMatch, PSParameter> proteinMatches = new HashMap<>();
         ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
         proteinMatch.addTheoreticProtein("P07947");
         proteinMatch.addTheoreticProtein("P12931");
@@ -129,12 +124,11 @@ public class UtilitiesProteinMapperTest {
         PSParameter psParameter = new PSParameter();
         psParameter.setProteinProbability(56.3);
         psParameter.setProteinProbabilityScore(99.4);
-        proteinMatches.put(proteinMatch, psParameter);
 
         //create peptide scores
         MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
 
-        utilitiesProteinMapper.map(proteinMatches, peptideMatchScore, targetPeptide);
+        utilitiesProteinMapper.map(proteinMatch, psParameter, peptideMatchScore, targetPeptide);
 
         Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
         Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());

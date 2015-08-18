@@ -18,7 +18,6 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Repository("proteinRepository")
-@Transactional
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
     public static final String BASE_QUERY = "SELECT DISTINCT protein.id, MAX(%3$s) FROM protein"
