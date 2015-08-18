@@ -10,30 +10,35 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * Create grouped proteins from the protein groups file output by MaxQuant
+ *
  * @author Iain
  */
 @Component("maxQuantProteinGroupParser")
 public class MaxQuantProteinGroupParser {
 
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantProteinGroupHeaders.REVERSE,
-            MaxQuantProteinGroupHeaders.CONTAMINANT,
-            MaxQuantProteinGroupHeaders.ID,
-            MaxQuantProteinGroupHeaders.ACCESSION,
-            MaxQuantProteinGroupHeaders.EVIDENCEIDS,
-            MaxQuantProteinGroupHeaders.PEP
-    };
-
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantProteinGroupParser.class);
-
     @Autowired
     private ProteinService proteinService;
 
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
+        MaxQuantProteinGroupHeaders.ACCESSION,
+        MaxQuantProteinGroupHeaders.EVIDENCEIDS,
+        MaxQuantProteinGroupHeaders.ID,
+        MaxQuantProteinGroupHeaders.PEP
+    };
+
+    /**
+     * Parse a data file and return grouped proteins
+     *
+     * @param proteinGroupsFile MaxQuant protein groups file
+     * @param parsedFasta FASTA parsed into header/sequence pairs
+     * @return Protein groups indexed by id
+     * @throws IOException
+     */
     public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFasta) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, mandatoryHeaders);
@@ -51,9 +56,15 @@ public class MaxQuantProteinGroupParser {
         return proteinGroups;
     }
 
-    private ProteinGroup parseProteinGroup(final Map<String, String> values, Map<String, String> parsedFasta) {
+    /**
+     * Construct a group of proteins
+     *
+     * @param values A row of values
+     * @param parsedFasta A parsed fasta
+     * @return A protein group
+     */
+    private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFasta) {
         ProteinGroup proteinGroup = new ProteinGroup();
-        //proteinGroup.setProteinProbability(1.0);   // TODO: not in file
 
         if (values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName()) != null) {
             proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
@@ -61,8 +72,6 @@ public class MaxQuantProteinGroupParser {
 
         String parsedAccession = values.get(MaxQuantProteinGroupHeaders.ACCESSION.getDefaultColumnName());
         List<String> filteredAccessions = new ArrayList<>();
-
-        //  NEW PLAN!! chop off full header in fasta parse then just match on accession
 
         if (parsedAccession.contains(";")) {
             String[] accessions = parsedAccession.split(";");
@@ -89,6 +98,13 @@ public class MaxQuantProteinGroupParser {
         return proteinGroup;
     }
 
+    /**
+     * Create a protein and it's relation to a protein group
+     * @param sequence The sequence of the protein
+     * @param accession The accession of the protein
+     * @param mainGroup Whether this is the main protein of the group
+     * @return A ProteinGroupHasProtein object
+     */
     private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup) {
         Protein protein = proteinService.findBySequence(sequence);
 
@@ -101,7 +117,6 @@ public class MaxQuantProteinGroupParser {
         ProteinGroupHasProtein pghProtein = new ProteinGroupHasProtein();
         pghProtein.setIsMainGroupProtein(mainGroup);
 
-        // relationships
         proteinAccession.setProtein(protein);
         protein.getProteinAccessions().add(proteinAccession);
         protein.getProteinGroupHasProteins().add(pghProtein);

@@ -28,7 +28,7 @@ public class MaxQuantParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
     private static final String MSMSTXT = "msms.txt";
     private static final String PROTEINGROUPSTXT = "proteinGroups.txt";
-    private static final String BLOCK_SEPARATOR = ">";   // TODO: is it always this?
+    private static final String BLOCK_SEPARATOR = ">";
 
     @Autowired
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
@@ -37,7 +37,6 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
-    private Map<String, String> parsedFasta = new HashMap<>();
     private Map<Spectrum, Integer> spectrumIds = new HashMap<>();
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
@@ -53,7 +52,7 @@ public class MaxQuantParser {
      * @throws MappingException
      * @throws UnparseableException
      */
-    public void parseFolder(final File quantFolder, final FastaDb fastaDb) throws IOException, MappingException, UnparseableException {
+    public void parseFolder(File quantFolder, FastaDb fastaDb) throws IOException, MappingException, UnparseableException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
         Map<String, String> row;
         String multiplicity = null;
@@ -78,7 +77,7 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException
      */
-    public void parseFolder(final File quantFolder, final FastaDb fastaDb, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parseFolder(File quantFolder, FastaDb fastaDb, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
         spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
 
@@ -216,6 +215,7 @@ public class MaxQuantParser {
      * Clear the parser.
      */
     public void clear() {
+        fragmentations.clear();
         spectrumIds.clear();
         maxQuantEvidenceParser.clear();
         proteinGroups.clear();

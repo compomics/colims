@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class MaxQuantProteinGroupParserTest {
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile, maxQuantParser.parseFasta(maxQuantTestFastaDb));
 
         // minus headers
-        assert(result.size() <= rawFile.size() - 1);
+        assertThat(result.size(), lessThan(rawFile.size()));
 
         ProteinGroup proteinGroup = result.entrySet().iterator().next().getValue();
 

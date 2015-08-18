@@ -30,7 +30,7 @@ public class MaxQuantSpectrumParser {
             MaxQuantMSMSHeaders.MASSES
     };
 
-    public Map<Spectrum, Integer> parse(final File msmsFile) throws IOException {
+    public Map<Spectrum, Integer> parse(File msmsFile) throws IOException {
         Map<Spectrum, Integer> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);

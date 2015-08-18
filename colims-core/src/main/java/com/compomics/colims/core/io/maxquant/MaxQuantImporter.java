@@ -5,15 +5,10 @@ import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.core.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +17,9 @@ import org.springframework.stereotype.Component;
  * The DataImporter class for MaxQuant projects.
  *
  * @author Davy
+ * @author Iain
  */
-@Component("maxQuantImporter")
+@Component
 public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
@@ -46,7 +42,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
 
         try {
-            //just in case
             maxQuantParser.clear();
 
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), false);
@@ -108,7 +103,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     }
 
     /**
-     * Map the quantification settings.
+     * Map the quantification settings. To be refactored
      *
      * @param maxQuantImport The MaxQuantImport instance
      * @param analyticalRun  the AnalyticalRun instance onto the quantification settings will be mapped

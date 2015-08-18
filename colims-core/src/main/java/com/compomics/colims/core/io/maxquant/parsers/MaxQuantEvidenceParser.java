@@ -89,7 +89,7 @@ public class MaxQuantEvidenceParser {
      * @param quantFolder Evidence text file from MQ output
      * @throws IOException
      */
-    public void parse(final File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parse(File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT), MANDATORY_HEADERS);
 
         Map<String, String> values;
@@ -173,7 +173,7 @@ public class MaxQuantEvidenceParser {
      * @param values Set of values from a line in the file
      * @return Peptide object
      */
-    public Peptide createPeptide(final Map<String, String> values) throws ModificationMappingException {
+    public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();
 
         double probability = -1, pep = -1;
@@ -210,11 +210,12 @@ public class MaxQuantEvidenceParser {
 
     /**
      * Create modifications for a given peptide
+     *
      * @param peptide Peptide to associate with modifications
      * @param values Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
-    private List<PeptideHasModification> createModifications(Peptide peptide, final Map<String, String> values) throws ModificationMappingException {
+    private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName());
@@ -237,13 +238,7 @@ public class MaxQuantEvidenceParser {
 
                 if (modificationString != null) {
                     if (modificationHeader.contains("n-term") && "1".equals(modificationString)) {
-                        PeptideHasModification phModification = new PeptideHasModification();
-                        // all currently set as variable mods
-                        phModification.setModificationType(ModificationType.VARIABLE);
-                        phModification.setDeltaScore(100.0);
-                        phModification.setLocation(0);
-                        phModification.setProbabilityScore(100.0);
-                        phModification.setPeptide(peptide);
+                        PeptideHasModification phModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
 
                         Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
                         modification.getPeptideHasModifications().add(phModification);
@@ -253,14 +248,7 @@ public class MaxQuantEvidenceParser {
                     }
 
                     if (modificationHeader.contains("c-term") && "1".equals(modificationString)) {
-                        PeptideHasModification phModification = new PeptideHasModification();
-
-                        phModification.setModificationType(ModificationType.VARIABLE);
-                        phModification.setModification(new Modification());
-                        phModification.setDeltaScore(100.0);
-                        phModification.setLocation(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1);
-                        phModification.setProbabilityScore(100.0);
-                        phModification.setPeptide(peptide);
+                        PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1, 100.0, peptide);
 
                         Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
                         modification.getPeptideHasModifications().add(phModification);
@@ -323,5 +311,17 @@ public class MaxQuantEvidenceParser {
         peptideProteins.clear();
         peptides.clear();
         quantifications.clear();
+    }
+
+    private PeptideHasModification createPeptideHasModification(double deltaScore, int location, double probability, Peptide peptide) {
+        PeptideHasModification phModification = new PeptideHasModification();
+
+        phModification.setModificationType(ModificationType.VARIABLE);
+        phModification.setDeltaScore(deltaScore);
+        phModification.setLocation(location);
+        phModification.setProbabilityScore(probability);
+        phModification.setPeptide(peptide);
+
+        return phModification;
     }
 }
