@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -79,16 +78,13 @@ public class PeptideShakerImporterIT {
     @Test
     public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
-//        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new FileSystemResource("/home/niels/Desktop/example_dataset/HeLa Example.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-//        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
-        mgfFiles.add(new FileSystemResource("/home/niels/Desktop/example_dataset/data/qExactive01819.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
 
-//        File fastaFile = new ClassPathResource("/home/niels/Desktop/example_dataset/data/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
-        File fastaFile = new FileSystemResource("/home/niels/Desktop/example_dataset/data/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("/home/niels/Desktop/example_dataset/data/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
