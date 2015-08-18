@@ -2,7 +2,6 @@ package com.compomics.colims.core;
 
 import com.compomics.colims.core.authorization.AuthorizationInterceptorTest;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapperTest;
-import com.compomics.colims.core.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.core.io.mzidentml.MzIdentMLExporterTest;
 import com.compomics.colims.core.io.mzml.MzMLParserTest;
 import com.compomics.colims.core.io.unimod.UnimodMarshallerTest;
@@ -20,7 +19,6 @@ import org.junit.runners.Suite;
         UnimodMarshallerTest.class,
         MzMLParserTest.class,
         MzIdentMLExporterTest.class,
-        MaxQuantTestSuite.class
 })
 public class FastUnitTests {
 }

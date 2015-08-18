@@ -1,6 +1,6 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.service.AnalyticalRunService;

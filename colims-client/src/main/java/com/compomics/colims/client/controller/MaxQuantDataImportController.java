@@ -2,19 +2,20 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
-import com.compomics.colims.core.io.maxquant.MaxQuantImport;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.model.FastaDb;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFileChooser;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 /**
  * The MaxQuant data import view controller.
@@ -93,8 +94,7 @@ public class MaxQuantDataImportController implements Controllable {
     }
 
     /**
-     * Validate the user input. Returns an empty list if no validation errors
-     * were encountered.
+     * Validate the user input. Returns an empty list if no validation errors were encountered.
      *
      * @return the list of validation messages
      */

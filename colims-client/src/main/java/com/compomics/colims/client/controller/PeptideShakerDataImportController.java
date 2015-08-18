@@ -3,7 +3,7 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;

@@ -16,7 +16,7 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.log4j.Logger;
 
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.io.ExperimentIO;

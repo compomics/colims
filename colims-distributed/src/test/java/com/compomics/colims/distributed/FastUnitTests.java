@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed;
 
 import com.compomics.colims.distributed.io.SearchSettingsMapperTest;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapperTest;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapperTest;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapperTest;
@@ -19,7 +20,8 @@ import org.junit.runners.Suite;
         UtilitiesProteinMapperTest.class,
         UtilitiesSearchParametersMapperTest.class,
         UtilitiesSpectrumMapperTest.class,
-        SearchSettingsMapperTest.class
+        SearchSettingsMapperTest.class,
+        MaxQuantTestSuite.class
 })
 public class FastUnitTests {
 }

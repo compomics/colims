@@ -1,6 +1,6 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
 import org.apache.commons.compress.archivers.ArchiveException;
 
 import java.io.File;
