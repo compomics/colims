@@ -138,7 +138,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
 
-            if (node != null && node.isLeaf()) {
+            if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
                 selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
 
                 proteinTableModel.reset(selectedAnalyticalRun);
