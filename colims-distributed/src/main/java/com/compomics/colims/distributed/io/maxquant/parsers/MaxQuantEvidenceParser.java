@@ -245,7 +245,8 @@ public class MaxQuantEvidenceParser {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
 
                         Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
-                        modification.getPeptideHasModifications().add(phModification);
+
+                        //modification.getPeptideHasModifications().add(phModification);
 
                         phModification.setModification(modification);
                         peptideHasModifications.add(phModification);
@@ -255,7 +256,7 @@ public class MaxQuantEvidenceParser {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1, 100.0, peptide);
 
                         Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
-                        modification.getPeptideHasModifications().add(phModification);
+                        //modification.getPeptideHasModifications().add(phModification);
 
                         phModification.setModification(modification);
 
@@ -282,7 +283,7 @@ public class MaxQuantEvidenceParser {
                                 phModification.setPeptide(peptide);
 
                                 Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
-                                modification.getPeptideHasModifications().add(phModification);
+                                //modification.getPeptideHasModifications().add(phModification);
 
                                 if (modificationDeltaScores != null) {
                                     phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));

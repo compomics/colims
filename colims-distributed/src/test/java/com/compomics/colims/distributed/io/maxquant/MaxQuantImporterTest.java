@@ -40,6 +40,6 @@ public class MaxQuantImporterTest {
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);
         List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);
-        assertThat(result.size(), is(not(0)));
+        assertThat(result.size(), is(1));
     }
 }

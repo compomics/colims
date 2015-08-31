@@ -120,7 +120,7 @@ public class MaxQuantProteinGroupParser {
 
         proteinAccession.setProtein(protein);
         protein.getProteinAccessions().add(proteinAccession);
-        protein.getProteinGroupHasProteins().add(pghProtein);
+        //protein.getProteinGroupHasProteins().add(pghProtein);
         pghProtein.setProtein(protein);
         pghProtein.setProteinAccession(accession);
 
