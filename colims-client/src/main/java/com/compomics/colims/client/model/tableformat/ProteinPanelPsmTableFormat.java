@@ -21,6 +21,10 @@ public class ProteinPanelPsmTableFormat extends PsmTableFormat {
     public static final int RETENTION_TIME = 4;
     public static final int PSM_CONFIDENCE = 5;
 
+//    public ProteinPanelPsmTableFormat(Spectrum spectrum) {
+//
+//    }
+
     @Override
     public Class getColumnClass(int column) {
         switch (column) {

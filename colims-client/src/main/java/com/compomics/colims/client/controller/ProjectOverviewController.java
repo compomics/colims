@@ -17,6 +17,7 @@ import com.compomics.colims.client.model.tableformat.*;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
+import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
@@ -106,13 +107,13 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
+    private PeptideService peptideService;
+    @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
     private PsmMapper psmMapper;
     @Autowired
     private EventBus eventBus;
-    @Autowired
-    private SpectrumRepository spectrumRepository;
 
     /**
      * Get the view of this controller.
@@ -220,7 +221,7 @@ public class ProjectOverviewController implements Controllable {
 
         //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
-        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
+        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat(spectrumService, peptideService));
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
         psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -1,9 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +61,14 @@ public class PeptideRepositoryTest {
         List<PeptideHasModification> peptideHasModifications = peptideRepository.getModificationsForMultiplePeptides(peptides);
 
         assertThat(peptideHasModifications.size(), not(0));
+    }
+
+    @Test
+    public void testGetProteinAccessionsForPeptide() {
+        Peptide peptide = peptideRepository.findById(1L);
+
+        List<String> proteinAccessions = peptideRepository.getProteinAccessionsForPeptide(peptide);
+
+        assertThat(proteinAccessions.size(), not(0));
     }
 }

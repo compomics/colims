@@ -31,13 +31,11 @@ public class MaxQuantImporterTest {
     /**
      * Test of map method, of class MaxQuantImporter.
      */
-    @Ignore
     @Test
     public void testMap() throws Exception {
-        // TODO: ignored due to utilities
         FastaDb maxQuantTestFastaDb = new FastaDb();
-        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
+        maxQuantTestFastaDb.setName("uniprot-taxonomy%3A10090.fasta");
+        maxQuantTestFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
         maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);

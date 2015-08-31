@@ -1,9 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.*;
 
 import java.util.List;
 
@@ -38,4 +35,12 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return List of PeptideHasModification objects
      */
     List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
+
+    /**
+     * Get all protein accessions associated with a peptide
+     *
+     * @param peptide Peptide to find accessions for
+     * @return A list of accessions
+     */
+    List<String> getProteinAccessionsForPeptide(Peptide peptide);
 }

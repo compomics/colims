@@ -1,11 +1,9 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.PeptideRepository;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +22,8 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     @Override
     public List<PeptideHasProteinGroup> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
         Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class)
-//                .createCriteria("peptide")
-//                .add(Restrictions.in("spectrum.id", spectrumIds))
+                .createCriteria("peptide")
+                .add(Restrictions.in("spectrum.id", spectrumIds))
                 .createCriteria("proteinGroup", "l_protein_group_id")
                 .createAlias("proteinGroupHasProteins", "proteinGroupHasProteinsAlias")
                 .add(Restrictions.eq("proteinGroupHasProteinsAlias.protein", protein));
@@ -54,5 +52,18 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
                 .createCriteria(PeptideHasModification.class)
                 .add(Restrictions.in("peptide", peptides))
                 .list();
+    }
+
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        // decent temporary solution
+        List stuff = getCurrentSession()
+            .createSQLQuery("SELECT protein_accession  FROM peptide" +
+                " LEFT OUTER JOIN peptide_has_protein_group ON peptide.id = peptide_has_protein_group.l_peptide_id" +
+                " LEFT OUTER JOIN protein_group_has_protein ON peptide_has_protein_group.l_protein_group_id = protein_group_has_protein.l_protein_group_id" +
+                " WHERE peptide.id = " + peptide.getId())
+            .list();
+
+        return stuff;
     }
 }

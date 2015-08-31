@@ -58,7 +58,7 @@ public class MaxQuantSpectrumParser {
 
         // is null checking required here? check other parsers
 
-        spectrum.setAccession(values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName()) + "_cus_" + spectrumTitle);   // TODO: wtf
+        spectrum.setAccession(values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName()) + "_cus_" + spectrumTitle);   // TODO: why
         spectrum.setCharge(Integer.valueOf(values.get(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName())));
         spectrum.setFragmentationType(FragmentationType.valueOf(values.get(MaxQuantMSMSHeaders.FRAGMENTATION.getDefaultColumnName())));
         spectrum.setIntensity(Double.parseDouble(intensity));

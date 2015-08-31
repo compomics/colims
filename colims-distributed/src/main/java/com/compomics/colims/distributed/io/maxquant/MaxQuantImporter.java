@@ -70,7 +70,6 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
                 analyticalRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(analyticalRun);
             }
-
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);

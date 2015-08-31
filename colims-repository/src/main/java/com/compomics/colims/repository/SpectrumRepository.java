@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 
 import java.util.List;
@@ -98,4 +99,6 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return the maximum charge value
      */
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
+
+    Peptide getRepresentativePeptide(final Spectrum spectrum);
 }

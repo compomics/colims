@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 
@@ -126,4 +127,6 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * @return List of IDs
      */
     List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
+
+    Peptide getRepresentativePeptide(final Spectrum spectrum);
 }

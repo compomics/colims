@@ -148,8 +148,8 @@ public class ProteinOverviewController implements Controllable {
 
                 // Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
-                        proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
-                        proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
+                    proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
+                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
                 ));
 
                 minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);

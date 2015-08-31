@@ -37,10 +37,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -207,6 +204,18 @@ public class MainController implements Controllable, ActionListener {
             @Override
             public void windowClosing(final WindowEvent we) {
                 System.exit(0);
+            }
+        });
+
+        userLoginDialog.getUserPasswordTextField().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+
+                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                    System.exit(0);
+                    userLoginDialog.getLoginButton().doClick();
+                }
             }
         });
 

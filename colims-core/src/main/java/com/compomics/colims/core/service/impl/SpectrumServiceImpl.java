@@ -3,6 +3,7 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
@@ -197,5 +198,10 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun) {
         return spectrumRepository.getSpectraIdsForRun(analyticalRun);
+    }
+
+    @Override
+    public Peptide getRepresentativePeptide(Spectrum spectrum) {
+        return spectrumRepository.getRepresentativePeptide(spectrum);
     }
 }

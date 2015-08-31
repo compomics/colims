@@ -11,8 +11,9 @@ import com.compomics.colims.repository.SpectrumRepository;
 import java.util.List;
 
 /**
- * Table model to implement search and sort methods Created by Iain on
- * 24/04/2015.
+ * Table model to implement search and sort method
+ *
+ * @author Iain
  */
 public class PsmTableModel extends PagingTableModel {
 

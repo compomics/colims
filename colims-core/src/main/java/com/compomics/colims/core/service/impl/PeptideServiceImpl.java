@@ -1,10 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.PeptideRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -13,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,5 +89,10 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides) {
         return peptideRepository.getModificationsForMultiplePeptides(peptides);
+    }
+
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        return peptideRepository.getProteinAccessionsForPeptide(peptide);
     }
 }

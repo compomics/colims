@@ -82,14 +82,16 @@ public class MaxQuantParser {
         spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
 
         for (Map.Entry<Spectrum, Integer> entry : getSpectra().entrySet()) {
-            if (analyticalRuns.containsKey(entry.getKey().getTitle())) {
-                analyticalRuns.get(entry.getKey().getTitle()).getSpectrums().add(entry.getKey());
+            String rawFile = entry.getKey().getTitle().split("-")[0];   // this rather sucks
+
+            if (analyticalRuns.containsKey(rawFile)) {
+                analyticalRuns.get(rawFile).getSpectrums().add(entry.getKey());
             } else {
                 AnalyticalRun analyticalRun = new AnalyticalRun();
-                analyticalRun.setName(entry.getKey().getTitle());
+                analyticalRun.setName(rawFile);
                 analyticalRun.getSpectrums().add(entry.getKey());
 
-                analyticalRuns.put(entry.getKey().getTitle(), analyticalRun);
+                analyticalRuns.put(rawFile, analyticalRun);
             }
         }
 
@@ -186,10 +188,14 @@ public class MaxQuantParser {
      * @throws NumberFormatException
      */
     public List<ProteinGroup> getProteinHitsForIdentification(Peptide peptide) throws NumberFormatException {
-        return maxQuantEvidenceParser.peptideProteins.get(peptide)
+        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.peptideProteins.get(peptide)
             .stream()
             .map(proteinGroups::get)
             .collect(Collectors.toList());
+
+        peptideProteinGroups.removeIf(p -> p == null);
+
+        return peptideProteinGroups;
     }
 
     /**

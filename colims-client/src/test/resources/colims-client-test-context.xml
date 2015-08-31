@@ -11,23 +11,25 @@
     <bean id="splashScreen" class="com.compomics.colims.client.SplashScreenStub"/>
 
     <!--  Embedded ActiveMQ Broker -->
-    <amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">
-        <amq:managementContext>
-            <amq:managementContext createConnector="true"/>
-        </amq:managementContext>
-        <amq:transportConnectors>
-            <amq:transportConnector uri="tcp://localhost:0"/>
-        </amq:transportConnectors>
-    </amq:broker>
+    <!--<amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">-->
+        <!--<amq:managementContext>-->
+            <!--<amq:managementContext createConnector="true"/>-->
+        <!--</amq:managementContext>-->
+        <!--<amq:transportConnectors>-->
+            <!--<amq:transportConnector uri="tcp://localhost:0"/>-->
+        <!--</amq:transportConnectors>-->
+    <!--</amq:broker>-->
 
-    <!-- ActiveMQ connection factory -->
-    <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">
-        <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
-    </bean>
+    <!--&lt;!&ndash; ActiveMQ connection factory &ndash;&gt;-->
+    <!--<bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">-->
+        <!--<property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>-->
+    <!--</bean>-->
 
     <!-- Client connector for jmx -->
-    <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-          p:serviceUrl="${distributed.jmx.service.url}" depends-on="broker"/>
+    <!--<bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"-->
+          <!--p:serviceUrl="${distributed.jmx.service.url}" depends-on="broker"/>-->
+
+    <import resource="classpath:colims-core-context.xml"/>
 
     <bean id="colimsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
