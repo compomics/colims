@@ -36,7 +36,7 @@ public class PeptideRepositoryTest {
         List<Long> spectrumIds = new ArrayList<>();
         spectrumIds.add(1L);
 
-        List<PeptideHasProteinGroup> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+        List<Peptide> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
 
         assertThat(peptides.size(), not(0));
     }

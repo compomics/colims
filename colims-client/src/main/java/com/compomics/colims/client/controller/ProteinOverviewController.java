@@ -164,14 +164,12 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
                 } else {
-                    List<PeptideHasProteinGroup> newPeptides = peptideService.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0), spectrumIdsForRun);
+                    List<Peptide> newPeptides = peptideService.getPeptidesForProtein(proteinSelectionModel.getSelected().get(0), spectrumIdsForRun);
 
                     List<PeptideTableRow> peptideTableRows = new ArrayList<>();
                     Map<String, Integer> stringIntegerMap = new HashMap<>();
 
-                    for (PeptideHasProteinGroup peptideHasProteinGroup : newPeptides) {
-                        Peptide peptide = peptideHasProteinGroup.getPeptide();
-
+                    for (Peptide peptide : newPeptides) {
                         if (stringIntegerMap.containsKey(peptide.getSequence())) {
                             peptideTableRows.get(stringIntegerMap.get(peptide.getSequence())).addPeptide(peptide);
                         } else {

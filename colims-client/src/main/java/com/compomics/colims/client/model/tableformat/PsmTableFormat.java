@@ -2,24 +2,21 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.google.common.base.Joiner;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  *
  * @author Niels Hulstaert
  */
-@Component
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
-    SpectrumService spectrumService;
-    PeptideService peptideService;
+    private SpectrumService spectrumService;
+    private PeptideService peptideService;
 
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
@@ -33,12 +30,9 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     public static final int PSM_CONFIDENCE = 6;
     public static final int PROTEIN_ACCESSIONS = 7;
 
-    public PsmTableFormat(SpectrumService spectrumService, PeptideService peptideService) {
-        this.spectrumService = spectrumService;
-        this.peptideService = peptideService;
-    }
-
     public PsmTableFormat() {
+        this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
+        this.peptideService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(PeptideService.class);
     }
 
     @Override

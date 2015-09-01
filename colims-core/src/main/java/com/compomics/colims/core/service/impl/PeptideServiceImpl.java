@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,7 +76,7 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<PeptideHasProteinGroup> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
+    public List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
         return peptideRepository.getPeptidesForProtein(protein, spectrumIds);
     }
 
@@ -94,5 +93,10 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
         return peptideRepository.getProteinAccessionsForPeptide(peptide);
+    }
+
+    @Override
+    public List<Peptide> getPeptidesForSpectrum(Spectrum spectrum) {
+        return peptideRepository.getPeptidesForSpectrum(spectrum);
     }
 }

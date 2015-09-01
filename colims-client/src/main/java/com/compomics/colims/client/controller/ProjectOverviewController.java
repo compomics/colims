@@ -21,7 +21,6 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
@@ -53,8 +52,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import java.util.List;
 
 /**
  * The project overview view controller.
@@ -221,7 +220,7 @@ public class ProjectOverviewController implements Controllable {
 
         //init sample spectra table
         SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
-        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat(spectrumService, peptideService));
+        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
         projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
         psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -506,7 +505,9 @@ public class ProjectOverviewController implements Controllable {
                     spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
 
                     //only do this for spectra that have a psm
-                    if (!selectedSpectrum.getPeptides().isEmpty()) {
+                    List<Peptide> peptides = peptideService.getPeptidesForSpectrum(selectedSpectrum);
+
+                    if (peptides.isEmpty()) {
                         SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match
                         psmMapper.map(selectedSpectrum, spectrumMatch);
 

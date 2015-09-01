@@ -26,7 +26,7 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @param spectrumIds List of spectrum ids to restrict results
      * @return List of PeptideHasProteinGroup objects
      */
-    List<PeptideHasProteinGroup> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
+    List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
 
     /**
      * Get a list of Peptide objects matching the given sequence, limiting results to the given list of spectrum ids
@@ -52,4 +52,6 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @return A list of accessions
      */
     List<String> getProteinAccessionsForPeptide(Peptide peptide);
+
+    List<Peptide> getPeptidesForSpectrum(Spectrum spectrum);
 }
