@@ -69,7 +69,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
                 " LEFT OUTER JOIN peptide_has_protein_group ON peptide.id = peptide_has_protein_group.l_peptide_id" +
                 " LEFT OUTER JOIN protein_group_has_protein ON peptide_has_protein_group.l_protein_group_id = protein_group_has_protein.l_protein_group_id" +
                 " WHERE peptide.id = " + peptide.getId() +
-                " AND protein_accession NOT NULL")
+                " AND protein_accession IS NOT NULL")
             .list();
 
         return stuff;

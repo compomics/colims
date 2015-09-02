@@ -4,6 +4,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
+import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.biology.PTM;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Controller for spectrum panel pop-up window
@@ -52,6 +54,8 @@ public class SpectrumPopupController implements Controllable {
     MainController mainController;
     @Autowired
     private SpectrumService spectrumService;
+    @Autowired
+    private PeptideService peptideService;
     @Autowired
     ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
@@ -106,9 +110,11 @@ public class SpectrumPopupController implements Controllable {
                 spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
                 spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
 
-                if (!spectrum.getPeptides().isEmpty()) {
+                List<com.compomics.colims.model.Peptide> peptides = peptideService.getPeptidesForSpectrum(spectrum);
+
+                if (!peptides.isEmpty()) {
                     SpectrumMatch spectrumMatch = new SpectrumMatch();
-                    psmMapper.map(spectrum, spectrumMatch);
+                    psmMapper.map(spectrum, spectrumMatch, peptides.get(0));
 
                     PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
 

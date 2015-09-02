@@ -509,7 +509,7 @@ public class ProjectOverviewController implements Controllable {
 
                     if (peptides.isEmpty()) {
                         SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match
-                        psmMapper.map(selectedSpectrum, spectrumMatch);
+                        psmMapper.map(selectedSpectrum, spectrumMatch, peptides.get(0));
 
                         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
                         int identificationCharge = peptideAssumption.getIdentificationCharge().value;

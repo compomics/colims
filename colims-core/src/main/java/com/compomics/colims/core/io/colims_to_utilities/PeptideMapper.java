@@ -34,15 +34,8 @@ public class PeptideMapper {
         peptideService.fetchPeptideHasModifications(sourcePeptide);
         colimsModMapper.map(sourcePeptide, modificationMatches);
 
-        ArrayList<String> parentProteinAccessions = new ArrayList<>();
-        for (PeptideHasProteinGroup peptideHasProteinGroup : sourcePeptide.getPeptideHasProteinGroups()) {
-            for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
-                parentProteinAccessions.add(proteinGroupHasProtein.getProtein().getProteinAccessions().get(0).getAccession());
-            }
-        }
-
         com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
-        assumedPeptide.setParentProteins(parentProteinAccessions);
+        assumedPeptide.setParentProteins((ArrayList) peptideService.getProteinAccessionsForPeptide(sourcePeptide));
 
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }

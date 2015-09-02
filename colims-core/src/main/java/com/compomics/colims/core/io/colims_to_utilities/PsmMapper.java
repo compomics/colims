@@ -22,11 +22,10 @@ public class PsmMapper {
     @Autowired
     private PeptideMapper peptideMapper;
 
-    public void map(final Spectrum spectrum, final SpectrumMatch spectrumMatch) {
+    public void map(final Spectrum spectrum, final SpectrumMatch spectrumMatch, Peptide peptide) {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         
         //for the moment, get the first peptide and set it as the best assumption
-        Peptide peptide = spectrum.getPeptides().get(0);
         PeptideMatch peptideMatch = new PeptideMatch();
         peptideMapper.map(peptide, peptideMatch);
         PeptideAssumption assumption = new PeptideAssumption(peptideMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), peptide.getPsmProbability());
