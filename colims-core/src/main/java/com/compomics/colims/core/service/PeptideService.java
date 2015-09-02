@@ -53,5 +53,11 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      */
     List<String> getProteinAccessionsForPeptide(Peptide peptide);
 
+    /**
+     * Get peptides linked to spectrum
+     *
+     * @param spectrum Spectrum with which to search peptides
+     * @return List of peptide objects
+     */
     List<Peptide> getPeptidesForSpectrum(Spectrum spectrum);
 }

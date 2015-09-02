@@ -111,7 +111,6 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
      * @return the concatenated protein accessions
      */
     private String getProteinAccessions(Peptide peptide) {
-        // todo: check for null
         Joiner joiner = Joiner.on(", ");
         return joiner.join(peptideService.getProteinAccessionsForPeptide(peptide));
     }

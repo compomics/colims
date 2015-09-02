@@ -44,5 +44,11 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      */
     List<String> getProteinAccessionsForPeptide(Peptide peptide);
 
+    /**
+     * Get all peptides associated with a spectrum
+     *
+     * @param spectrum Spectrum to search peptides with
+     * @return List of peptides
+     */
     List<Peptide> getPeptidesForSpectrum(Spectrum spectrum);
 }
