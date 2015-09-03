@@ -2,11 +2,11 @@ package com.compomics.colims.client.playground;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.PersistMetadata;
-import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.enums.PersistType;
+import com.compomics.colims.core.distributed.model.PersistMetadata;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 

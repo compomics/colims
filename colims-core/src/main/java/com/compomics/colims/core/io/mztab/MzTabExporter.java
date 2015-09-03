@@ -5,8 +5,6 @@
  */
 package com.compomics.colims.core.io.mztab;
 
-import com.compomics.colims.model.AnalyticalRun;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,7 +39,7 @@ public class MzTabExporter {
     private static final String JSON_VALUES = "values";
     private static final String JSON_NAME = "user_friendly_name";
     private static final String MZTAB_EXTENSION = ".mzTab";
-    private static final String COLUMN_DELIMETER = "/t";
+    private static final String COLUMN_DELIMITER = "/t";
     private static final String COMMENT_PREFIX = "COM";
     private static final String METADATA_PREFIX = "MTD";
     /**
@@ -90,6 +88,10 @@ public class MzTabExporter {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
+    /**
+     * The MzTabExport instance.
+     */
+    private MzTabExport mzTabExport;
 
     /**
      * Inits the exporter; parses the mzTab json file into java objects.
@@ -105,11 +107,41 @@ public class MzTabExporter {
         mzTabParams = parseJsonNode(mzTabParamsNode);
     }
 
-    public void exportAnalyticalRun(File exportDirectory, AnalyticalRun analyticalRun) {
-        try (FileOutputStream fos = new FileOutputStream(new File(exportDirectory, analyticalRun.getName() + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+    /**
+     * Export the mzTabExport input to a mzTab file.
+     *
+     * @param mzTabExport the MzTabExport instance
+     */
+    public void export(MzTabExport mzTabExport) {
+        this.mzTabExport = mzTabExport;
+        switch (mzTabExport.getMzTabType()) {
+            case QUANTIFICATION:
+                switch (mzTabExport.getMzTabMode()) {
+                    case SUMMARY:
+                        break;
+                    case COMPLETE:
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case IDENTIFICATION:
+                switch (mzTabExport.getMzTabMode()) {
+                    case SUMMARY:
+                        break;
+                    case COMPLETE:
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+        try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             pw.println("under development");
 
@@ -118,15 +150,26 @@ public class MzTabExporter {
         }
     }
 
-    public void exportAnalyticalRun(File exportDirectory, MzTabExport mzTabExport) {
+    private String constructMetadata() {
+        StringBuilder metada = new StringBuilder();
 
+        //version, type, mode and description
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_VERSION).append(COLUMN_DELIMITER).append(VERSION).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_MODE).append(COLUMN_DELIMITER).append(mzTabExport.getMzTabMode().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_TYPE).append(COLUMN_DELIMITER).append(mzTabExport.getMzTabType().mzTabName()).append(System.lineSeparator());
+        metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(DESCRIPTION).append(COLUMN_DELIMITER).append(mzTabExport.getDescription()).append(System.lineSeparator());
+        //run locations
+        for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
+            metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(RUN_LOCATION, i)).append(COLUMN_DELIMITER).append(mzTabExport.getRuns().get(i).getStorageLocation()).append(System.lineSeparator());
+        }
+        //search engine scores
 
-        System.out.println("test");
-
+        return metada.toString();
     }
 
     /**
-     * This method parses the json root node and returns a list of MzTabParam instances.
+     * This method parses the json root node and returns a list of MzTabParam
+     * instances.
      *
      * @param jsonNode the root JsonNode
      * @return the list of MzTabParam instances
@@ -155,5 +198,21 @@ public class MzTabExporter {
 
         return mzTabParams;
     }
+
+   /**
+    * Get the protein search engine score line.
+    *
+    * @return
+    */
+   private String getProteinSearchEngineScore(){
+       StringBuilder searchEngineScore = new StringBuilder();
+
+       searchEngineScore.append(METADATA_PREFIX).append(COLUMN_DELIMITER)
+               .append(String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1)).append(COLUMN_DELIMITER);
+
+       
+
+       return searchEngineScore.toString();
+   }
 
 }

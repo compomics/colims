@@ -4,10 +4,10 @@
  */
 package com.compomics.colims.core.service;
 
-import java.util.List;
-
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
+
+import java.util.List;
 
 /**
  * This interface provides service methods for the Project class.
@@ -37,4 +37,11 @@ public interface ProjectService extends GenericService<Project, Long> {
      * @return the User instance
      */
     User getUserWithMostProjectOwns();
+
+    /**
+     * Fetch the users linked to the given project.
+     *
+     * @param project the Project instance
+     */
+    void fetchUsers(Project project);
 }

@@ -3,30 +3,34 @@ package com.compomics.colims.client.model;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
+import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.SpectrumRepository;
 
 import java.util.List;
 
 /**
- * Table model to implement search and sort methods Created by Iain on
- * 24/04/2015.
+ * Table model to implement search and sort method
+ *
+ * @author Iain
  */
 public class PsmTableModel extends PagingTableModel {
 
-    private final SpectrumRepository spectrumRepository;
+    /**
+     * The SpectrumService instance.
+     */
+    private final SpectrumService spectrumService;
 
     /**
      * Constructor time.
      *
      * @param source Something for the parent
      * @param tableFormat Something for the parent
-     * @param spectrumRepository A spectrum repository to query for rows
      */
-    public PsmTableModel(final EventList source, final TableFormat tableFormat, final SpectrumRepository spectrumRepository) {
+    public PsmTableModel(final EventList source, final TableFormat tableFormat) {
         super(source, tableFormat);
-
-        this.spectrumRepository = spectrumRepository;
+        spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
     }
 
     /**
@@ -37,13 +41,13 @@ public class PsmTableModel extends PagingTableModel {
      * @return List of Spectrum objects
      */
     public List getRows(final AnalyticalRun analyticalRun) {
-        rowCount = spectrumRepository.getSpectraCountForRun(analyticalRun, sortColumn, filter);
+        rowCount = spectrumService.getSpectraCountForRun(analyticalRun, sortColumn, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return spectrumRepository.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+        return spectrumService.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
     }
 
     /**
@@ -52,7 +56,7 @@ public class PsmTableModel extends PagingTableModel {
      * @param analyticalRun An optional run to obtain spectra from
      */
     public void reset(final AnalyticalRun analyticalRun) {
-        super.reset(analyticalRun == null ? 0 : spectrumRepository.getSpectraCountForRun(analyticalRun, sortColumn, filter));
+        super.reset(analyticalRun == null ? 0 : spectrumService.getSpectraCountForRun(analyticalRun, sortColumn, filter));
     }
 
     /**

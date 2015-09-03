@@ -207,15 +207,9 @@
             <artifactId>colims-repository</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-distributed</artifactId>
         </dependency>
 
         <dependency>

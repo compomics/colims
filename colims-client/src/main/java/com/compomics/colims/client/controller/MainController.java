@@ -2,7 +2,6 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.compomics.colims.client.controller.admin.CvParamManagementController;
 import com.compomics.colims.client.controller.admin.InstrumentManagementController;
 import com.compomics.colims.client.controller.admin.MaterialManagementController;
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
@@ -30,24 +29,22 @@ import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  * @author Niels Hulstaert
  */
-@Component("colimsController")
+@Component("mainController")
 public class MainController implements Controllable, ActionListener {
 
     /**
@@ -61,8 +58,7 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private AuthenticationBean authenticationBean;
     /**
-     * The project EventList that is used as table model in the project
-     * management and overview tabs.
+     * The project EventList that is used as table model in the project management and overview tabs.
      */
     private final EventList<Project> projects = new BasicEventList<>();
     //views
@@ -77,14 +73,16 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private TaskManagementController taskManagementController;
     @Autowired
+    @Lazy
     private ProtocolManagementController protocolManagementController;
     @Autowired
+    @Lazy
     private UserManagementParentController userManagementParentController;
     @Autowired
-    private CvParamManagementController cvParamManagementController;
-    @Autowired
+    @Lazy
     private InstrumentManagementController instrumentManagementController;
     @Autowired
+    @Lazy
     private MaterialManagementController materialManagementController;
     @Autowired
     private ProteinOverviewController proteinOverviewController;
@@ -163,7 +161,6 @@ public class MainController implements Controllable, ActionListener {
         projectManagementController.init();
         projectOverviewController.init();
         taskManagementController.init();
-        cvParamManagementController.init();
         proteinOverviewController.init();
 
         //add panel components
@@ -207,6 +204,18 @@ public class MainController implements Controllable, ActionListener {
             @Override
             public void windowClosing(final WindowEvent we) {
                 System.exit(0);
+            }
+        });
+
+        userLoginDialog.getUserPasswordTextField().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+
+                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                    System.exit(0);
+                    userLoginDialog.getLoginButton().doClick();
+                }
             }
         });
 
@@ -285,8 +294,7 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * In case of a permission error, show permission error dialog with the
-     * error message.
+     * In case of a permission error, show permission error dialog with the error message.
      *
      * @param message the error message
      */
@@ -360,8 +368,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Check the user credentials and init the admin section if necessary. If
-     * unsuccessful, show a message dialog and reset the input fields.
+     * Check the user credentials and init the admin section if necessary. If unsuccessful, show a message dialog and
+     * reset the input fields.
      */
     private void onLogin() {
         //check if a user with given user name and password is found in the db
@@ -391,8 +399,8 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Shows a message dialog.
      *
-     * @param title the dialog title
-     * @param message the dialog message
+     * @param title       the dialog title
+     * @param message     the dialog message
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
@@ -414,16 +422,9 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Inits the admin section. This method is only called if the user is an
-     * admin user.
+     * Inits the admin section. This method is only called if the user is an admin user.
      */
     private void initAdminSection() {
-        //init admin controllers
-        userManagementParentController.init();
-        instrumentManagementController.init();
-        materialManagementController.init();
-        protocolManagementController.init();
-
         //add action listeners
         mainFrame.getUserManagementMenuItem().addActionListener(this);
         mainFrame.getInstrumentManagementMenuItem().addActionListener(this);

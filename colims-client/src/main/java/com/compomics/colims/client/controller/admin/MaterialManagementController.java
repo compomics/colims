@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -45,6 +46,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -53,6 +55,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("materialManagementController")
+@Lazy
 public class MaterialManagementController implements Controllable {
 
     //model
@@ -67,6 +70,7 @@ public class MaterialManagementController implements Controllable {
     @Autowired
     private MainController mainController;
     @Autowired
+    @Lazy
     private CvParamManagementController cvParamManagementController;
     //services
     @Autowired
@@ -92,6 +96,7 @@ public class MaterialManagementController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);

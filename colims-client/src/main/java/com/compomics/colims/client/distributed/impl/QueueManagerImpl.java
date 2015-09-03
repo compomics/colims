@@ -2,8 +2,8 @@ package com.compomics.colims.client.distributed.impl;
 
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.DbTaskErrorMessageConvertor;
-import com.compomics.colims.distributed.model.QueueMessage;
-import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.QueueMessage;
+import com.compomics.colims.core.distributed.model.DbTaskError;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Enumeration;

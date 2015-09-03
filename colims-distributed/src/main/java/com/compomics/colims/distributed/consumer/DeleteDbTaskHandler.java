@@ -1,14 +1,14 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.core.io.maxquant.MaxQuantImporter;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImporter;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.model.CompletedDbTask;
-import com.compomics.colims.distributed.model.DbTaskError;
-import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.core.distributed.model.CompletedDbTask;
+import com.compomics.colims.core.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import org.apache.log4j.Logger;

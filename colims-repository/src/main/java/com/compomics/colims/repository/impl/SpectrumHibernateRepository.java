@@ -29,15 +29,15 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
      * Query string for paging method, alter at your peril.
      */
     private static final String BASE_QUERY = "SELECT DISTINCT spectrum.id, MAX(%3$s) FROM spectrum"
-            + " LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id"
-            + " LEFT JOIN peptide_has_protein ON peptide_has_protein.l_peptide_id = peptide.id"
-            + " LEFT JOIN protein ON peptide_has_protein.l_protein_id = protein.id"
-            + " LEFT JOIN protein_accession ON protein_accession.l_protein_id = protein.id"
-            + " WHERE (spectrum.id LIKE '%2$s'"
-            + " OR peptide.peptide_sequence LIKE '%2$s'"
-            + " OR protein_accession.accession LIKE '%2$s')"
-            + " AND spectrum.l_analytical_run_id = %1$d"
-            + " GROUP BY spectrum.id ";
+        + " LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id"
+        + " LEFT JOIN peptide_has_protein_group ON peptide_has_protein_group.l_peptide_id = peptide.id"
+        + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id = protein_group.id"
+        + " LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_group_id = protein_group.id"
+        + " WHERE (spectrum.id LIKE '%2$s'"
+        + " OR peptide.peptide_sequence LIKE '%2$s'"
+        + " OR protein_group_has_protein.protein_accession LIKE '%2$s')"
+        + " AND spectrum.l_analytical_run_id = %1$d"
+        + " GROUP BY spectrum.id ";
 
     @Override
     public List getPagedSpectra(final AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter) {
@@ -144,5 +144,12 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
         maximumCharge = (Integer) criteria.setProjection(Projections.max("charge")).uniqueResult();
 
         return maximumCharge;
+    }
+
+    @Override
+    public Peptide getRepresentativePeptide(final Spectrum spectrum) {
+        return (Peptide) getCurrentSession().createCriteria(Peptide.class)
+            .add(Restrictions.eq("spectrum", spectrum))
+            .uniqueResult();
     }
 }

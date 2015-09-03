@@ -10,12 +10,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -24,13 +18,22 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("analyticalRunEditController")
+@Lazy
 public class AnalyticalRunEditController implements Controllable {
 
     /**
@@ -65,6 +68,7 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -126,8 +130,7 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     /**
-     * Update the analytical run edit dialog with the selected analytical run in
-     * the analytical run overview table.
+     * Update the analytical run edit dialog with the selected analytical run in the analytical run overview table.
      *
      * @param analyticalRun the selected analytical run in the overview table
      */
@@ -159,8 +162,7 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected analytical run in the
-     * analytical runs table
+     * Update the instance fields of the selected analytical run in the analytical runs table
      */
     private void updateAnalyticalRunToEdit() {
         analyticalRunToEdit.setName(analyticalRunEditDialog.getNameTextField().getText());

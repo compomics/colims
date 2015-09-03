@@ -7,6 +7,7 @@
 /colims-distributed/derby.log
 /target/
 /derby.log
+/target/
 pom.xml~
 .gitignore~
 
@@ -62,4 +63,3 @@ crashlytics-build.properties
 nb-configuration.xml
 *nbactions.xml
 *nbactions.xml.rej
-

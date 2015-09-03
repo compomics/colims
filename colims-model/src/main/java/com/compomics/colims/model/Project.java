@@ -1,24 +1,12 @@
 package com.compomics.colims.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents a project entity in the database.
@@ -64,17 +52,17 @@ public class Project extends AuditableDatabaseEntity {
      * The users of this project.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "project_has_user",
             joinColumns = {
-        @JoinColumn(name = "l_project_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_project_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_user_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_user_id", referencedColumnName = "id")})
     private List<User> users = new ArrayList<>();
     /**
      * The project experiments.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    @OneToMany(mappedBy = "project")
     private List<Experiment> experiments = new ArrayList<>();
     /**
      * The project materials.

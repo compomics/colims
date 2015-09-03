@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -38,6 +39,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +49,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("fastaDbManagementController")
+@Lazy
 public class FastaDbManagementController implements Controllable, OLSInputable {
 
     /**
@@ -69,6 +72,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     private FastaDbService fastaDbService;
 
     @Override
+    @PostConstruct
     public void init() {
         //init view
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunSetupController.getAnalyticalRunSetupDialog(), true);

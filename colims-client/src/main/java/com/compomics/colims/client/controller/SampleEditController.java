@@ -22,18 +22,16 @@ import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
-import com.compomics.colims.core.io.mztab.MzTabExporter;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.distributed.model.DeleteDbTask;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
-import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -41,12 +39,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.List;
-import javax.swing.JFileChooser;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -55,6 +51,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -63,6 +60,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("sampleEditController")
+@Lazy
 public class SampleEditController implements Controllable {
 
     /**
@@ -83,7 +81,6 @@ public class SampleEditController implements Controllable {
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
-    private ProgressDialogX analyticalRunProgressDialog;
     //parent controller
     @Autowired
     private MainController mainController;
@@ -91,10 +88,9 @@ public class SampleEditController implements Controllable {
     private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
+    @Lazy
     private AnalyticalRunEditController analyticalRunEditController;
     //services
-    @Autowired
-    private MzTabExporter mzTabExporter;
     @Autowired
     private SampleService sampleService;
     @Autowired
@@ -120,6 +116,7 @@ public class SampleEditController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -128,9 +125,6 @@ public class SampleEditController implements Controllable {
         sampleEditDialog = new SampleEditDialog(mainController.getMainFrame(), true);
         sampleBinaryFileDialog = new SampleBinaryFileDialog(sampleEditDialog, true);
         sampleBinaryFileDialog.getBinaryFileManagementPanel().init(SampleBinaryFile.class);
-
-        //init child controller
-        analyticalRunEditController.init();
 
         //init dual list
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
@@ -347,26 +341,6 @@ public class SampleEditController implements Controllable {
                 }
             }
         });
-
-        sampleEditDialog.getExportAnalyticalRunButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
-
-                if (selectedAnalyticalRuns.size() >= 1) {
-                    int returnVal = sampleEditDialog.getExportDirectoryChooser().showOpenDialog(sampleEditDialog);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File exportDirectory = sampleEditDialog.getExportDirectoryChooser().getSelectedFile();
-                        if (exportDirectory.isDirectory()) {
-                            AnalyticalRunExportWorker analyticalRunExportWorker = new AnalyticalRunExportWorker(exportDirectory);
-                            analyticalRunExportWorker.execute();
-                        }
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select an or more analytical runs to export.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
     }
 
     @Override
@@ -524,28 +498,4 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
     }
 
-    /**
-     * Swingworker that exports the given AnalyticalRun in mzTab format.
-     */
-    private class AnalyticalRunExportWorker extends SwingWorker<Void, Void> {
-
-        private final File exportDirectory;
-
-        public AnalyticalRunExportWorker(File exportDirectory) {
-            this.exportDirectory = exportDirectory;
-        }
-
-        @Override
-        protected Void doInBackground() throws Exception {
-            mzTabExporter.exportAnalyticalRun(exportDirectory, analyticalRunsSelectionModel.getSelected().get(0));
-
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            super.done();
-        }
-
-    }
 }

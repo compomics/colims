@@ -80,7 +80,7 @@ public class Sample extends AuditableDatabaseEntity {
     /**
      * The analytical runs that were performed using this sample.
      */
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 

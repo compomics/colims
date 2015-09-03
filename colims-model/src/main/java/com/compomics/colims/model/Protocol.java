@@ -1,23 +1,14 @@
 package com.compomics.colims.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents a protocol entity in the database.
@@ -68,9 +59,9 @@ public class Protocol extends AuditableDatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {
-        @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_chemical_labeling_cv_param_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_chemical_labeling_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> chemicalLabels = new ArrayList<>();
     /**
      * The list of other, user chosen CV terms that define this protocol.
@@ -79,9 +70,9 @@ public class Protocol extends AuditableDatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_other_cv_param",
             joinColumns = {
-        @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_other_protocol_cv_param_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_other_protocol_cv_param_id", referencedColumnName = "id")})
     private List<ProtocolCvParam> otherCvParams = new ArrayList<>();
 
     /**

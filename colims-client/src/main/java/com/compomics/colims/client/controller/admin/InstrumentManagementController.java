@@ -31,9 +31,11 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -49,6 +51,7 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Component("instrumentManagementController")
+@Lazy
 public class InstrumentManagementController implements Controllable {
 
     //model
@@ -63,6 +66,7 @@ public class InstrumentManagementController implements Controllable {
     @Autowired
     private MainController mainController;
     @Autowired
+    @Lazy
     private CvParamManagementController cvParamManagementController;
     //services
     @Autowired
@@ -88,6 +92,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -112,8 +117,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the InstrumentManagementDialog is
+     * Listen to a CV param change event posted by the CvParamManagementController. If the InstrumentManagementDialog is
      * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent instance
@@ -182,7 +186,7 @@ public class InstrumentManagementController implements Controllable {
             public void actionPerformed(final ActionEvent e) {
                 if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
                     Instrument instrumentToDelete = getSelectedInstrument();
-                    //check if the instrument is already has an id.
+                    //check if the instrument already has an id.
                     //If so, delete the instrument from the db.
                     if (instrumentToDelete.getId() != null) {
                         try {
@@ -214,27 +218,27 @@ public class InstrumentManagementController implements Controllable {
         });
 
         instrumentManagementDialog.getEditInstrumentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
-                    updateInstrumentEditDialog(getSelectedInstrument());
+                                                                                   @Override
+                                                                                   public void actionPerformed(final ActionEvent e) {
+                                                                                       if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                                                                                           updateInstrumentEditDialog(getSelectedInstrument());
 
-                    //show dialog
-                    GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
-                    instrumentEditDialog.setVisible(true);
-                } else {
-                    eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        }
+                                                                                           //show dialog
+                                                                                           GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+                                                                                           instrumentEditDialog.setVisible(true);
+                                                                                       } else {
+                                                                                           eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
+                                                                                       }
+                                                                                   }
+                                                                               }
         );
 
         instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                instrumentManagementDialog.dispose();
-            }
-        }
+                                                                                               @Override
+                                                                                               public void actionPerformed(final ActionEvent e) {
+                                                                                                   instrumentManagementDialog.dispose();
+                                                                                               }
+                                                                                           }
         );
 
     }
@@ -409,8 +413,7 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Check if a instrument with the given instrument name exists in the
-     * database.
+     * Check if a instrument with the given instrument name exists in the database.
      *
      * @param instrument the instrument
      * @return does the instrument name exist

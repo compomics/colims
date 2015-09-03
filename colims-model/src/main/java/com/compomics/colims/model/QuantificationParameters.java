@@ -1,22 +1,10 @@
 package com.compomics.colims.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "quantification_parameters")
@@ -43,12 +31,12 @@ public class QuantificationParameters extends DatabaseEntity {
     @OneToMany(mappedBy = "quantificationParameterSettings")
     private List<QuantificationSettings> quantificationSettingses = new ArrayList<>();
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "quant_param_settings_has_reagent",
             joinColumns = {
-        @JoinColumn(name = "l_quant_parameters_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_quant_parameters_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_quant_cv_param_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_quant_cv_param_id", referencedColumnName = "id")})
     private List<QuantificationCvParam> reagents = new ArrayList<>();
 
     public Integer getLabelCount() {

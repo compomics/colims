@@ -1,9 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.*;
 
 import java.util.List;
 
@@ -13,14 +10,15 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 public interface PeptideRepository extends GenericRepository<Peptide, Long> {
+
     /**
      * Return data about all peptides relating to a given protein. Uses a
      * list of spectra to ensure results relate to the current run.
      * @param protein A protein
      * @param spectrumIds List of spectrum ids to restrict results
-     * @return List of PeptideHasProtein objects
+     * @return List of PeptideHasProteinGroup objects
      */
-    List<PeptideHasProtein> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
+    List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds);
 
     /**
      * Get a list of Peptide objects matching the given sequence, limiting
@@ -37,4 +35,20 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return List of PeptideHasModification objects
      */
     List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
+
+    /**
+     * Get all protein accessions associated with a peptide
+     *
+     * @param peptide Peptide to find accessions for
+     * @return A list of accessions
+     */
+    List<String> getProteinAccessionsForPeptide(Peptide peptide);
+
+    /**
+     * Get all peptides associated with a spectrum
+     *
+     * @param spectrum Spectrum to search peptides with
+     * @return List of peptides
+     */
+    List<Peptide> getPeptidesForSpectrum(Spectrum spectrum);
 }

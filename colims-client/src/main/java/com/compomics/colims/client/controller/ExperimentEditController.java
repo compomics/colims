@@ -13,16 +13,19 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The experiment edit view controller.
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("experimentEditController")
+@Lazy
 public class ExperimentEditController implements Controllable {
 
     /**
@@ -74,6 +78,7 @@ public class ExperimentEditController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         //eventBus.register(this);

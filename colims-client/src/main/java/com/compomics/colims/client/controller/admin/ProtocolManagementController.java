@@ -4,8 +4,8 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
@@ -16,13 +16,28 @@ import com.compomics.colims.client.view.admin.protocol.ProtocolEditDialog;
 import com.compomics.colims.client.view.admin.protocol.ProtocolManagementDialog;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvParam;
 import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.hibernate.exception.ConstraintViolationException;
+import org.jdesktop.beansbinding.*;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -30,29 +45,12 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JListBinding;
-import org.jdesktop.swingbinding.SwingBindings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("protocolManagementController")
+@Lazy
 public class ProtocolManagementController implements Controllable {
 
     //model
@@ -67,6 +65,7 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private MainController mainController;
     @Autowired
+    @Lazy
     private CvParamManagementController cvParamManagementController;
     //services
     @Autowired
@@ -101,6 +100,7 @@ public class ProtocolManagementController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void showView() {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
@@ -110,9 +110,8 @@ public class ProtocolManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the ProtocolManagementDialog is visible,
-     * clear the selection in the CV param summary list.
+     * Listen to a CV param change event posted by the CvParamManagementController. If the ProtocolManagementDialog is
+     * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
      */

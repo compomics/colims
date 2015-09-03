@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,6 +28,7 @@ import no.uib.olsdialog.OLSInputable;
 import org.apache.xml.xml_soap.MapItem;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("cvParamManagementController")
+@Lazy
 public class CvParamManagementController implements Controllable, OLSInputable {
 
     private static final String ADD_CV_PARAM = "add";
@@ -68,6 +71,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //init view
         cvParamManagementDialog = new CvParamManagementDialog(mainController.getMainFrame(), true);

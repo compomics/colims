@@ -4,12 +4,6 @@
  */
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
@@ -17,9 +11,14 @@ import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
 import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("projectService")
@@ -90,5 +89,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public long countAll() {
         return projectRepository.countAll();
+    }
+
+    @Override
+    public void fetchUsers(Project project) {
+        try {
+            project.getUsers().size();
+        } catch (LazyInitializationException e) {
+            //attach the user to the new session
+            projectRepository.saveOrUpdate(project);
+            if (!Hibernate.isInitialized(project.getUsers())) {
+                Hibernate.initialize(project.getUsers());
+            }
+        }
     }
 }

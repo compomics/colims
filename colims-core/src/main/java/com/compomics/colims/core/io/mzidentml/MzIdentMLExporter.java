@@ -444,30 +444,32 @@ public class MzIdentMLExporter {
                 sequenceCollection.getPeptide().add(mzPeptide);
                 spectrumIdentificationItem.setPeptide(mzPeptide);
 
-                for (PeptideHasProtein peptideHasProtein : colimsPeptide.getPeptideHasProteins()) {
-                    DBSequence dbSequence = createDBSequence(peptideHasProtein);
+                for (PeptideHasProteinGroup peptideHasProteinGroup : colimsPeptide.getPeptideHasProteinGroups()) {
+                    for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+                        DBSequence dbSequence = createDBSequence(proteinGroupHasProtein);
 
-                    sequenceCollection.getDBSequence().add(dbSequence);
+                        sequenceCollection.getDBSequence().add(dbSequence);
 
-                    //calculate peptide location values
-                    //more than one position is possible
-                    List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(colimsPeptide.getProtein().getSequence(), colimsPeptide.getSequence());
-                    for (PeptidePosition peptidePosition : peptidePositions) {
-                        PeptideEvidence evidence = new PeptideEvidence();
-                        evidence.setDBSequence(dbSequence);
-                        evidence.setPeptide(mzPeptide);
-                        evidence.setId("PE-" + peptideHasProtein.getId().toString());
+                        //calculate peptide location values
+                        //more than one position is possible
+                        List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.getProtein().getSequence(), colimsPeptide.getSequence());
+                        for (PeptidePosition peptidePosition : peptidePositions) {
+                            PeptideEvidence evidence = new PeptideEvidence();
+                            evidence.setDBSequence(dbSequence);
+                            evidence.setPeptide(mzPeptide);
+                            evidence.setId("PE-" + peptideHasProteinGroup.getId().toString());
 
-                        evidence.setStart(peptidePosition.getStartPosition());
-                        evidence.setEnd(peptidePosition.getEndPosition());
-                        evidence.setPre(peptidePosition.getPreAA().toString());
-                        evidence.setPost(peptidePosition.getPostAA().toString());
+                            evidence.setStart(peptidePosition.getStartPosition());
+                            evidence.setEnd(peptidePosition.getEndPosition());
+                            evidence.setPre(peptidePosition.getPreAA().toString());
+                            evidence.setPost(peptidePosition.getPostAA().toString());
 
-                        sequenceCollection.getPeptideEvidence().add(evidence);
+                            sequenceCollection.getPeptideEvidence().add(evidence);
 
-                        PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                        evidenceRef.setPeptideEvidence(evidence);
-                        spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                            PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                            evidenceRef.setPeptideEvidence(evidence);
+                            spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                        }
                     }
                 }
             }
@@ -554,15 +556,15 @@ public class MzIdentMLExporter {
     /**
      * Create a new DBSequence from a protein.
      *
-     * @param peptideHasProtein Peptide to protein object representation
-     * @return Representative DBSequence
+     * @param proteinGroupHasProtein protein group to protein representation
+     * @return representative DBSequence
      */
-    private DBSequence createDBSequence(PeptideHasProtein peptideHasProtein) throws IOException {
-        Protein protein = peptideHasProtein.getProtein();
+    private DBSequence createDBSequence(ProteinGroupHasProtein proteinGroupHasProtein) throws IOException {
+        Protein protein = proteinGroupHasProtein.getProtein();
 
         DBSequence dbSequence = new DBSequence();
         dbSequence.setId("DBS-" + protein.getId().toString());
-        dbSequence.setAccession(peptideHasProtein.getProteinAccession());
+        dbSequence.setAccession(proteinGroupHasProtein.getProteinAccession());
         dbSequence.setLength(protein.getSequence().length());
         dbSequence.setSeq(protein.getSequence());
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));

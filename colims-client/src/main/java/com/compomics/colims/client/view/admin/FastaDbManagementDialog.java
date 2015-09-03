@@ -13,10 +13,13 @@ import javax.swing.JTextField;
  */
 public class FastaDbManagementDialog extends javax.swing.JDialog {
 
+    /**
+     * The fasta file chooser.
+     */
     private final JFileChooser fastaFileChooser = new JFileChooser();
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent frame
      * @param modal the modal boolean
@@ -25,8 +28,6 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         initComponents();
-
-        fastaDbListInfoTextArea.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     }
 
     public JFileChooser getFastaFileChooser() {
@@ -112,8 +113,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbList = new javax.swing.JList();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        fastaDbListInfoScrollPane = new javax.swing.JScrollPane();
-        fastaDbListInfoTextArea = new javax.swing.JTextArea();
+        descriptionLabel = new javax.swing.JLabel();
         fastaDbDetailParentPanel = new javax.swing.JPanel();
         fastaDbDetailPanel = new javax.swing.JPanel();
         nameTextField = new javax.swing.JTextField();
@@ -170,14 +170,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         deleteButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        fastaDbListInfoTextArea.setEditable(false);
-        fastaDbListInfoTextArea.setColumns(20);
-        fastaDbListInfoTextArea.setLineWrap(true);
-        fastaDbListInfoTextArea.setRows(5);
-        fastaDbListInfoTextArea.setText("Please select a fasta DB from the list. If necessary, add a new one. \nYou can select a file and taxonomy by clicking the \"browse\" buttons. ");
-        fastaDbListInfoTextArea.setWrapStyleWord(true);
-        fastaDbListInfoTextArea.setBorder(null);
-        fastaDbListInfoScrollPane.setViewportView(fastaDbListInfoTextArea);
+        descriptionLabel.setText("<html>Please select a fasta DB from the list.<br>If necessary, add a new one.<br>You can select a file and taxonomy by clicking the<br>\"browse\" buttons.</html> ");
 
         javax.swing.GroupLayout fastaDbOverviewPanelLayout = new javax.swing.GroupLayout(fastaDbOverviewPanel);
         fastaDbOverviewPanel.setLayout(fastaDbOverviewPanelLayout);
@@ -186,22 +179,24 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
             .addGroup(fastaDbOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(fastaDbOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fastaDbListInfoScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fastaDbOverviewPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(fastaDbListScrollPane))
+                    .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addGroup(fastaDbOverviewPanelLayout.createSequentialGroup()
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         fastaDbOverviewPanelLayout.setVerticalGroup(
             fastaDbOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(fastaDbOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fastaDbListInfoScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -233,7 +228,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         filePathLabel.setText("File Path*");
 
-        browseFastaButton.setText("browse...");
+        browseFastaButton.setText("browse");
         browseFastaButton.setToolTipText("select a fasta file to set the file name and the file path text fields");
         browseFastaButton.setMaximumSize(new java.awt.Dimension(80, 25));
         browseFastaButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -244,7 +239,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         taxonomyLabel.setText("Taxonomy");
 
-        browseTaxonomyButton.setText("browse...");
+        browseTaxonomyButton.setText("browse");
         browseTaxonomyButton.setToolTipText("select taxonomy ID and species from the NEWT taxonomy ontology");
         browseTaxonomyButton.setMaximumSize(new java.awt.Dimension(80, 25));
         browseTaxonomyButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -407,11 +402,10 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton browseTaxonomyButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JPanel fastaDbDetailPanel;
     private javax.swing.JPanel fastaDbDetailParentPanel;
     private javax.swing.JList fastaDbList;
-    private javax.swing.JScrollPane fastaDbListInfoScrollPane;
-    private javax.swing.JTextArea fastaDbListInfoTextArea;
     private javax.swing.JScrollPane fastaDbListScrollPane;
     private javax.swing.JPanel fastaDbManagementPanel;
     private javax.swing.JPanel fastaDbManagmentParentPanel;

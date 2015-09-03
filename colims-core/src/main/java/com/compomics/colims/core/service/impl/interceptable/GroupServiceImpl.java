@@ -4,18 +4,17 @@
  */
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.repository.GroupRepository;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -92,5 +91,4 @@ public class GroupServiceImpl implements GroupService {
     public long countAll() {
         return groupRepository.countAll();
     }
-
 }

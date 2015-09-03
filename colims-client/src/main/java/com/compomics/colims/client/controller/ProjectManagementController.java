@@ -8,6 +8,8 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
@@ -16,34 +18,28 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.view.ProjectManagementPanel;
-import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.model.DeleteDbTask;
-import com.compomics.colims.model.DatabaseEntity;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Protocol;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.List;
 
 /**
  * The project management view controller.
@@ -73,21 +69,26 @@ public class ProjectManagementController implements Controllable {
     private ProjectManagementPanel projectManagementPanel;
     //child controller
     @Autowired
+    @Lazy
     private ProjectEditController projectEditController;
     @Autowired
+    @Lazy
     private ExperimentEditController experimentEditController;
     @Autowired
+    @Lazy
     private SampleEditController sampleEditController;
     @Autowired
+    @Lazy
     private AnalyticalRunSetupController analyticalRunSetupController;
+    @Autowired
+    @Lazy
+    private MzTabExportController mzTabExportController;
     //parent controller
     @Autowired
     private MainController mainController;
     //services
     @Autowired
     private ProjectService projectService;
-    @Autowired
-    private ExperimentService experimentService;
     @Autowired
     private SampleService sampleService;
     @Autowired
@@ -115,12 +116,6 @@ public class ProjectManagementController implements Controllable {
 
         //init view
         projectManagementPanel = new ProjectManagementPanel();
-
-        //init child controllers
-        projectEditController.init();
-        experimentEditController.init();
-        sampleEditController.init();
-        analyticalRunSetupController.init();
 
         //init projects table
         SortedList<Project> sortedProjects = new SortedList<>(mainController.getProjects(), new IdComparator());
@@ -176,7 +171,7 @@ public class ProjectManagementController implements Controllable {
         samplesTableModel = GlazedListsSwing.eventTableModel(sortedSamples, new SampleManagementTableFormat());
         projectManagementPanel.getSamplesTable().setModel(samplesTableModel);
         samplesSelectionModel = new DefaultEventSelectionModel<>(sortedSamples);
-        samplesSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        samplesSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         projectManagementPanel.getSamplesTable().setSelectionModel(samplesSelectionModel);
 
         //set column widths
@@ -198,7 +193,8 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getSamplesTable().getColumnModel().getColumn(SampleManagementTableFormat.NUMBER_OF_RUNS).setMinWidth(120);
 
         //set sorting
-        @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
+        @SuppressWarnings("UnusedAssignment")
+        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
         TableComparatorChooser experimentsTableSorter = TableComparatorChooser.install(
                 projectManagementPanel.getExperimentsTable(), sortedExperiments, TableComparatorChooser.SINGLE_COLUMN);
@@ -206,6 +202,11 @@ public class ProjectManagementController implements Controllable {
                 projectManagementPanel.getSamplesTable(), sortedSamples, TableComparatorChooser.SINGLE_COLUMN);
 
         //add action listeners
+        //add action listeners to other sample actions popup menu items
+        SamplePopupMenuActionListener samplePopupMenuActionListener = new SamplePopupMenuActionListener();
+        projectManagementPanel.getAddRunMenuItem().addActionListener(samplePopupMenuActionListener);
+        projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
+
         projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
@@ -320,19 +321,6 @@ public class ProjectManagementController implements Controllable {
             }
         });
 
-        projectManagementPanel.getAddAnalyticalRunButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
-                    analyticalRunSetupController.showView();
-                } else {
-                    eventBus.post(new MessageEvent("Analytical run addition", "Please select a sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
         projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -378,6 +366,16 @@ public class ProjectManagementController implements Controllable {
                 }
             }
         });
+
+        projectManagementPanel.getOtherSampleActionsButton().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton button = projectManagementPanel.getOtherSampleActionsButton();
+                projectManagementPanel.getSamplePopupMenu().show(button, button.getBounds().x, button.getBounds().y + button.getBounds().height);
+            }
+        });
+
     }
 
     @Override
@@ -553,11 +551,10 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, analytical runs) from
-     * the database. Shows a confirmation dialog first. When confirmed, a
-     * DeleteDbTask message is sent to the DB task queue.
+     * Delete the database entity (project, experiment, analytical runs) from the database. Shows a confirmation dialog
+     * first. When confirmed, a DeleteDbTask message is sent to the DB task queue.
      *
-     * @param entity the database entity to delete
+     * @param entity        the database entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
@@ -637,5 +634,56 @@ public class ProjectManagementController implements Controllable {
         }
 
         return defaultSample;
+    }
+
+    /**
+     * Inner class for listening to other sample actions pop up menu items.
+     */
+    private class SamplePopupMenuActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String menuItemLabel = e.getActionCommand();
+
+            EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+            if (menuItemLabel.equals(projectManagementPanel.getAddRunMenuItem().getText())) {
+                if (selectedSamples.size() == 1) {
+                    analyticalRunSetupController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("Analytical run addition", "Please select one and only one sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
+                }
+            } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
+                List<String> validationMessages = validateMzTabExportSampleSelection();
+                if (validateMzTabExportSampleSelection().isEmpty()) {
+                    mzTabExportController.getMzTabExport().setSamples(selectedSamples);
+                    mzTabExportController.showView();
+                } else {
+                    eventBus.post(new MessageEvent("MzTab export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
+                }
+            }
+        }
+
+        /**
+         * Validate the samples selected for MzTab export.
+         *
+         * @return the list of validation messages
+         */
+        private List<String> validateMzTabExportSampleSelection() {
+            List<String> validationMessages = new ArrayList<>();
+
+            EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
+            if (selectedSamples.isEmpty()) {
+                validationMessages.add("Please select one or more samples to export.");
+            }
+            for (Sample selectedSample : selectedSamples) {
+                if (selectedSample.getAnalyticalRuns().isEmpty()) {
+                    validationMessages.add("Every selected sample must have at least one run.");
+                    break;
+                }
+            }
+
+            return validationMessages;
+        }
+
     }
 }

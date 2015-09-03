@@ -31,8 +31,7 @@ public interface UserService extends GenericService<User, Long> {
     User findByName(String name);
 
     /**
-     * Fetch the user relations for authentication purposes; groups, roles and
-     * permissions.
+     * Fetch the user relations for authentication purposes; groups, roles and permissions.
      *
      * @param user the given user
      */
@@ -47,12 +46,18 @@ public interface UserService extends GenericService<User, Long> {
     boolean isDefaultUser(User user);
 
     /**
-     * Find the user name by the given user ID. Returns null is no user with the
-     * given ID was found.
+     * Find the user name by the given user ID. Returns null is no user with the given ID was found.
      *
      * @param userId the user ID
      * @return the found user name
      */
     String findUserNameById(Long userId);
+
+    /**
+     * Fetch the institution association.
+     *
+     * @param user the given user
+     */
+    void fetchInstitution(User user);
 
 }

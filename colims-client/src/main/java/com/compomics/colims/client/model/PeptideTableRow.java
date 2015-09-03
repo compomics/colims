@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of a row in the Peptides table
- * Created by Iain on 08/07/2015.
+ * Representation of a row in the Peptides table Created by Iain on 08/07/2015.
  */
 public class PeptideTableRow {
+
     private String sequence;
     private StringBuilder annotatedSequence;
     private int charge;
@@ -50,6 +50,7 @@ public class PeptideTableRow {
 
     /**
      * Get or create an annotated sequence for the peptide
+     *
      * @return Annotated string
      */
     public String getAnnotatedSequence() {
@@ -67,8 +68,8 @@ public class PeptideTableRow {
             for (int i = 0; i < sequence.length(); ++i) {
                 if (mods[i] > 0) {
                     annotatedSequence.append("<b>")
-                        .append(sequence.charAt(i))
-                        .append("</b>");
+                            .append(sequence.charAt(i))
+                            .append("</b>");
                 } else {
                     annotatedSequence.append(sequence.charAt(i));
                 }

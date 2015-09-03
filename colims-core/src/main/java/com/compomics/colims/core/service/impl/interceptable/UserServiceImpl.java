@@ -4,22 +4,21 @@
  */
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
-import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("userService")
@@ -86,13 +85,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void fetchAuthenticationRelations(final User user) {
         try {
+            user.getGroups().size();
+        } catch (LazyInitializationException e) {
             //attach the user to the new session
             userRepository.saveOrUpdate(user);
             if (!Hibernate.isInitialized(user.getGroups())) {
                 Hibernate.initialize(user.getGroups());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 
@@ -118,12 +117,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public String findUserNameById(Long userId) {
         String userName = null;
-        
-        User foundUser = userRepository.findById(userId);  
-        if(foundUser != null){
+
+        User foundUser = userRepository.findById(userId);
+        if (foundUser != null) {
             userName = foundUser.getName();
         }
-        
+
         return userName;
+    }
+
+    @Override
+    public void fetchInstitution(User user) {
+        try {
+            user.getInstitution().getId();
+        } catch (LazyInitializationException e) {
+            //attach the user to the new session
+            userRepository.saveOrUpdate(user);
+            if (!Hibernate.isInitialized(user.getInstitution())) {
+                Hibernate.initialize(user.getInstitution());
+            }
+        }
     }
 }

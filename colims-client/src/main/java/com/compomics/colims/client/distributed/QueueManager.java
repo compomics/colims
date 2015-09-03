@@ -1,7 +1,7 @@
 package com.compomics.colims.client.distributed;
 
-import com.compomics.colims.distributed.model.QueueMessage;
-import com.compomics.colims.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.QueueMessage;
+import com.compomics.colims.core.distributed.model.DbTaskError;
 import java.util.List;
 
 /**

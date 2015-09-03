@@ -2,16 +2,15 @@ package com.compomics.colims.client.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.model.CompletedDbTask;
-import com.compomics.colims.distributed.model.DbTask;
-import com.compomics.colims.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.CompletedDbTask;
+import com.compomics.colims.core.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import org.joda.time.Duration;
-import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 

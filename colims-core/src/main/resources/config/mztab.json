@@ -1,72 +1,99 @@
 {
-  "protein_search_engine_score": {
-    "name": {"user_friendly_name": "protein search engine score"},
-    "values": {
-      "mascot": {
-        "ontology": "MS",
-        "accession": "MS:1001171",
-        "name": "Mascot:score"
-      }
+    "protein_search_engine_score": {
+        "name": {
+            "user_friendly_name": "protein search engine score"
+        },
+        "values": {
+            "default": {
+                "ontology": "MS",
+                "accession": "MS:1002363",
+                "name": "search engine specific score for proteins"
+            }
+        },
+        "values": {
+            "mascot": {
+                "ontology": "MS",
+                "accession": "MS:1001171",
+                "name": "Mascot:score"
+            }
+        }
+    },
+    "peptide_search_engine_score": {
+        "name": {
+            "user_friendly_name": "peptide search engine score"
+        },
+        "values": {
+            "default": {
+                "ontology": "MS",
+                "accession": "MS:1002358",
+                "name": "search engine specific score for distinct peptides"
+            },
+            "peptideshaker": {
+                "ontology": "MS",
+                "accession": "MS:1002468",
+                "name": "PeptideShaker peptide score"
+            }
+        }
+    },
+    "psm_search_engine_score": {
+        "name": {
+            "user_friendly_name": "PSM search engine score"
+        },
+        "values": {
+            "default": {
+                "ontology": "MS",
+                "accession": "MS:1001153",
+                "name": "search engine specific score"
+            },
+            "peptideshaker": {
+                "ontology": "MS",
+                "accession": "MS:1002466",
+                "name": "PeptideShaker PSM score"
+            },
+            "mascot": {
+                "ontology": "MS",
+                "accession": "MS:1001171",
+                "name": "Mascot:score"
+            }
+        }
+    },
+    "quantification_unit": {
+        "name": {
+            "user_friendly_name": "quantification unit"
+        },
+        "values": {
+            "Arbitrary": {
+                "ontology": "PRIDE",
+                "accession": "PRIDE:0000330",
+                "name": "Arbitrary quantification unit"
+            },
+            "Relative": {
+                "ontology": "PRIDE",
+                "accession": "PRIDE:0000393",
+                "name": "Relative quantification unit"
+            },
+            "Absolute": {
+                "ontology": "PRIDE",
+                "accession": "PRIDE:0000394",
+                "name": "Absolute quantification unit"
+            }
+        }
+    },
+    "software": {
+        "name": {
+            "user_friendly_name": "software"
+        },
+        "values": {
+            "PeptideShaker": {
+                "ontology": "MS",
+                "accession": "MS:1002458",
+                "name": "PeptideShaker"
+            },
+            "MaxQuant": {
+                "ontology": "MS",
+                "accession": "MS:1001583",
+                "name": "MaxQuant"
+            }
+        }
     }
-  },
-  "psm_search_engine_score": {
-    "name": {"user_friendly_name": " PSM search engine score"},
-    "values": {
-      "peptideshaker": {
-        "ontology": "MS",
-        "accession": "MS:1002466",
-        "name": "PeptideShaker PSM score"
-      },
-      "maxquant_psm": {
-        "ontology": "MS",
-        "accession": "MS:1001979",
-        "name": "MaxQuant:PTM Score"
-      },
-      "mascot": {
-        "ontology": "MS",
-        "accession": "MS:1001171",
-        "name": "Mascot:score"
-      },
-      "search_engine_specific": {
-        "ontology": "MS",
-        "accession": "MS:1001153",
-        "name": "search engine specific score"
-      }
-    }
-  },
-  "quantification_unit": {
-    "name": {"user_friendly_name": "quantification unit"},
-    "values": {
-      "Arbitrary": {
-        "ontology": "PRIDE",
-        "accession": "PRIDE:0000330",
-        "name": "Arbitrary quantification unit"
-      },
-      "Relative": {
-        "ontology": "PRIDE",
-        "accession": "PRIDE:0000393",
-        "name": "Relative quantification unit"
-      },
-      "Absolute": {
-        "ontology": "PRIDE",
-        "accession": "PRIDE:0000394",
-        "name": "Absolute quantification unit"
-      }
-    }
-  },
-  "software": {
-    "name": {"user_friendly_name": "software"},
-    "values": {
-      "PeptideShaker": {
-        "ontology": "MS",
-        "accession": "MS:1002458",
-        "name": "PeptideShaker"
-      },
-      "MaxQuant": {
-        "ontology": "MS",
-        "accession": "MS:1001583",
-        "name": "MaxQuant"
-      }
-    }
-  }
 }

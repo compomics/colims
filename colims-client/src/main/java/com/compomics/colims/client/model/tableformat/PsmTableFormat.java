@@ -2,20 +2,21 @@ package com.compomics.colims.client.model.tableformat;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProtein;
-import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.model.*;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
+
 import java.util.Comparator;
-import java.util.List;
 
 /**
  *
  * @author Niels Hulstaert
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
+    private SpectrumService spectrumService;
+    private PeptideService peptideService;
 
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
@@ -28,6 +29,11 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     public static final int PEPTIDE_SEQUENCE = 5;
     public static final int PSM_CONFIDENCE = 6;
     public static final int PROTEIN_ACCESSIONS = 7;
+
+    public PsmTableFormat() {
+        this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
+        this.peptideService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(PeptideService.class);
+    }
 
     @Override
     public Class getColumnClass(int column) {
@@ -70,7 +76,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
 
     @Override
     public Object getColumnValue(Spectrum spectrum, int column) {
-        Peptide peptide = (!spectrum.getPeptides().isEmpty()) ? spectrum.getPeptides().get(0) : null;
+        Peptide peptide = spectrumService.getRepresentativePeptide(spectrum);
 
         switch (column) {
             case SPECTRUM_ID:
@@ -105,16 +111,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
      * @return the concatenated protein accessions
      */
     private String getProteinAccessions(Peptide peptide) {
-        String proteinAccessionsString;
-
-        List<ProteinAccession> proteinAccessions = new ArrayList<>();
-        for (PeptideHasProtein peptideHasProtein : peptide.getPeptideHasProteins()) {           
-            proteinAccessions.addAll(peptideHasProtein.getProtein().getProteinAccessions());
-        }
-
         Joiner joiner = Joiner.on(", ");
-        proteinAccessionsString = joiner.join(proteinAccessions);
-
-        return proteinAccessionsString;
+        return joiner.join(peptideService.getProteinAccessionsForPeptide(peptide));
     }
 }

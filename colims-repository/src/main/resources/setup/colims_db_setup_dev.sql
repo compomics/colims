@@ -195,14 +195,12 @@
         primary key (id)
     );
 
-    create table colims.peptide_has_protein (
+    create table colims.peptide_has_protein_group (
         id bigint not null auto_increment,
-        main_group_protein bit,
         peptide_post_error_prob double precision,
         peptide_prob double precision,
-        protein_accession varchar(255),
         l_peptide_id bigint,
-        l_protein_id bigint,
+        l_protein_group_id bigint,
         primary key (id)
     );
 
@@ -243,6 +241,22 @@
         id bigint not null auto_increment,
         accession varchar(255) not null,
         l_protein_id bigint,
+        primary key (id)
+    );
+
+    create table colims.protein_group (
+        id bigint not null auto_increment,
+        protein_post_error_prob double precision,
+        protein_prob double precision,
+        primary key (id)
+    );
+
+    create table colims.protein_group_has_protein (
+        id bigint not null auto_increment,
+        main_group_protein bit not null,
+        protein_accession varchar(255),
+        l_protein_id bigint,
+        l_protein_group_id bigint,
         primary key (id)
     );
 
@@ -638,15 +652,15 @@
         foreign key (l_peptide_id)
         references colims.peptide (id);
 
-    alter table colims.peptide_has_protein
-        add constraint FK_nljccjaj0g8pbmfy9sdjfghce
+    alter table colims.peptide_has_protein_group
+        add constraint FK_6p49h05apq1tmnbxd7fq373kf
         foreign key (l_peptide_id)
         references colims.peptide (id);
 
-    alter table colims.peptide_has_protein
-        add constraint FK_i6ufytgonthuo7d6246l7rkme
-        foreign key (l_protein_id)
-        references colims.protein (id);
+    alter table colims.peptide_has_protein_group
+        add constraint FK_bhksl9n6n2ipxf3aif89w7lbi
+        foreign key (l_protein_group_id)
+        references colims.protein_group (id);
 
     alter table colims.project
         add constraint FK_nont146vvfurex1thyophrki0
@@ -667,6 +681,16 @@
         add constraint FK_7mnvsvxdpjtoi386cssgoyp00
         foreign key (l_protein_id)
         references colims.protein (id);
+
+    alter table colims.protein_group_has_protein
+        add constraint FK_3y4fusqr7m1g8t1fqs1bisxi7
+        foreign key (l_protein_id)
+        references colims.protein (id);
+
+    alter table colims.protein_group_has_protein
+        add constraint FK_e8w47xchhe3yamyqgyms0ps48
+        foreign key (l_protein_group_id)
+        references colims.protein_group (id);
 
     alter table colims.protocol
         add constraint FK_68woyi6fqi6j99t2511tiayb2

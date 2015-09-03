@@ -72,8 +72,8 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
     public <T extends TypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvParamType) {
         List<T> cvTerms = new ArrayList<>();
 
-        for(TypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvParamType)){
-            if(clazz.isInstance(cvTerm)){
+        for (TypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvParamType)) {
+            if (clazz.isInstance(cvTerm)) {
                 cvTerms.add((T) cvTerm);
             }
         }

@@ -1,7 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
-
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 
@@ -18,11 +17,11 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * Return a list of spectra according to all these parameters.
      *
      * @param analyticalRun Analytical run with which spectra are associated
-     * @param start Start point in results (SQL OFFSET)
-     * @param length Length of result list (SQL LIMIT)
-     * @param orderBy Column to order by (SQL ORDER BY [column]
-     * @param direction Ordering direction (SQL ORDER BY [dir])
-     * @param filter Filter string (SQL LIKE %[filter]%)
+     * @param start         Start point in results (SQL OFFSET)
+     * @param length        Length of result list (SQL LIMIT)
+     * @param orderBy       Column to order by (SQL ORDER BY [column]
+     * @param direction     Ordering direction (SQL ORDER BY [dir])
+     * @param filter        Filter string (SQL LIKE %[filter]%)
      * @return List of spectra
      */
     List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter);
@@ -31,14 +30,14 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * Count the spectra for a given run with optional filtering.
      *
      * @param analyticalRun Analytical run instance
-     * @param orderBy Ordering parameter
-     * @param filter Filter string (or empty string)
+     * @param orderBy       Ordering parameter
+     * @param filter        Filter string (or empty string)
      * @return Row count
      */
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
 
     /**
-     * Returns a list of spectrum ids associated with a given run
+     * Returns a list of spectrum ids associated with a given run.
      *
      * @param analyticalRun The analytical run
      * @return List of IDs
@@ -54,8 +53,7 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Long countSpectraByAnalyticalRun(final AnalyticalRun analyticalRun);
 
     /**
-     * Get the minimum retention time of spectra associated to the given
-     * analytical run.
+     * Get the minimum retention time of spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance
      * @return the minimum retention time value
@@ -63,8 +61,7 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Double getMinimumRetentionTime(final AnalyticalRun analyticalRun);
 
     /**
-     * Get the maximum retention time of spectra associated to the given
-     * analytical run.
+     * Get the maximum retention time of spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance
      * @return the maximum retention time value
@@ -72,8 +69,7 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Double getMaximumRetentionTime(final AnalyticalRun analyticalRun);
 
     /**
-     * Get the minimum M/Z ratio of spectra associated to the given analytical
-     * run.
+     * Get the minimum M/Z ratio of spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance
      * @return the minimum M/Z ratio value
@@ -81,8 +77,7 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Double getMinimumMzRatio(final AnalyticalRun analyticalRun);
 
     /**
-     * Get the maximum M/Z ratio of spectra associated to the given analytical
-     * run.
+     * Get the maximum M/Z ratio of spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance
      * @return the maximum M/Z ratio value
@@ -104,4 +99,6 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return the maximum charge value
      */
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
+
+    Peptide getRepresentativePeptide(final Spectrum spectrum);
 }

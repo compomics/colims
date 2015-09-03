@@ -1,17 +1,15 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
+import com.compomics.colims.core.service.ProtocolService;
+import com.compomics.colims.model.Protocol;
+import com.compomics.colims.repository.ProtocolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.core.service.ProtocolService;
-import com.compomics.colims.model.Protocol;
-import com.compomics.colims.repository.ProtocolRepository;
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("protocolService")

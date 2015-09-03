@@ -82,10 +82,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         return storageLocationTextField;
     }
 
-    public JButton getExportAnalyticalRunButton() {
-        return exportAnalyticalRunButton;
-    }
-
     public JFileChooser getExportDirectoryChooser() {
         return exportDirectoryChooser;
     }
@@ -108,7 +104,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         analyticalRunsTable = new javax.swing.JTable();
         deleteAnalyticalRunButton = new javax.swing.JButton();
         editAnalyticalRunButton = new javax.swing.JButton();
-        exportAnalyticalRunButton = new javax.swing.JButton();
         detailPanel = new javax.swing.JPanel();
         attachementsLabel = new javax.swing.JLabel();
         conditionTextField = new javax.swing.JTextField();
@@ -171,12 +166,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
         editAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        exportAnalyticalRunButton.setText("export...");
-        exportAnalyticalRunButton.setToolTipText("export the selected analytical run in mzTab format");
-        exportAnalyticalRunButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        exportAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        exportAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
         javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
         analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
         analyticalRunsPanelLayout.setHorizontalGroup(
@@ -187,8 +176,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
                     .addComponent(analyticalRunsTableScrollPane)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(exportAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -202,8 +189,7 @@ public class SampleEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -365,7 +351,6 @@ public class SampleEditDialog extends javax.swing.JDialog {
     private javax.swing.JButton deleteAnalyticalRunButton;
     private javax.swing.JPanel detailPanel;
     private javax.swing.JButton editAnalyticalRunButton;
-    private javax.swing.JButton exportAnalyticalRunButton;
     private com.compomics.colims.client.compoment.DualList materialDualList;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;

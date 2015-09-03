@@ -1,20 +1,18 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.PeptideRepository;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("peptideService")
@@ -62,7 +60,7 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public long countAll() {
         return peptideRepository.countAll();
-    }    
+    }
 
     @Override
     public void fetchPeptideHasModifications(final Peptide peptide) {
@@ -75,5 +73,30 @@ public class PeptideServiceImpl implements PeptideService {
         } catch (HibernateException hbe) {
             LOGGER.error(hbe, hbe.getCause());
         }
+    }
+
+    @Override
+    public List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
+        return peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+    }
+
+    @Override
+    public List getPeptidesFromSequence(String sequence, List<Long> spectrumIds) {
+        return peptideRepository.getPeptidesFromSequence(sequence, spectrumIds);
+    }
+
+    @Override
+    public List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides) {
+        return peptideRepository.getModificationsForMultiplePeptides(peptides);
+    }
+
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        return peptideRepository.getProteinAccessionsForPeptide(peptide);
+    }
+
+    @Override
+    public List<Peptide> getPeptidesForSpectrum(Spectrum spectrum) {
+        return peptideRepository.getPeptidesForSpectrum(spectrum);
     }
 }

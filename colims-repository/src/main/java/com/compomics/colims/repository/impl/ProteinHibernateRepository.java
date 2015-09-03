@@ -18,23 +18,18 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Repository("proteinRepository")
-@Transactional
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
     public static final String BASE_QUERY = "SELECT DISTINCT protein.id, MAX(%3$s) FROM protein"
-        + " LEFT JOIN peptide_has_protein php ON php.l_protein_id = protein.id"
-        + " LEFT JOIN peptide pep ON pep.id = php.l_peptide_id"
+        + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_id = protein.id"
+        + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id"  // hmm
+        + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
         + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
         + " LEFT JOIN protein_accession ON protein.id = protein_accession.l_protein_id"
         + " WHERE (protein.protein_sequence LIKE '%2$s'"
         + " OR protein_accession.accession LIKE '%2$s')"
         + " AND sp.l_analytical_run_id = %1$d"
         + " GROUP BY protein.id";
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ProteinHibernateRepository.class);
 
     @Override
     public Protein findBySequence(String sequence) {

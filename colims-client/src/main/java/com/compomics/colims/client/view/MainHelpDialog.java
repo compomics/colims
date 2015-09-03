@@ -35,7 +35,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         try {
-            uri = new URI("https://code.google.com/p/colims/");
+            uri = new URI("https://github.com/compomics/colims");
         } catch (URISyntaxException ex) {
             LOGGER.error(ex);
         }
@@ -102,19 +102,17 @@ public class MainHelpDialog extends javax.swing.JDialog {
         helpPanel.setOpaque(false);
 
         helpMessageScrollPane.setBorder(null);
-        helpMessageScrollPane.setOpaque(false);
 
         helpMessageTextArea.setEditable(false);
         helpMessageTextArea.setBackground(new java.awt.Color(240, 240, 240));
         helpMessageTextArea.setColumns(20);
         helpMessageTextArea.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         helpMessageTextArea.setRows(2);
-        helpMessageTextArea.setText("For help or issues, please go to\nthe colims google code page.");
+        helpMessageTextArea.setText("For help or issues, please go to\nthe colims github page.");
         helpMessageTextArea.setAutoscrolls(false);
         helpMessageTextArea.setBorder(null);
         helpMessageTextArea.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         helpMessageTextArea.setEnabled(false);
-        helpMessageTextArea.setOpaque(false);
         helpMessageScrollPane.setViewportView(helpMessageTextArea);
 
         uriButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N

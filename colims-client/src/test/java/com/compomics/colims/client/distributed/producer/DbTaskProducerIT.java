@@ -2,10 +2,10 @@ package com.compomics.colims.client.distributed.producer;
 
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.core.io.peptideshaker.PeptideShakerImport;
-import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.PersistMetadata;
-import com.compomics.colims.distributed.model.enums.PersistType;
+import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.PersistMetadata;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.model.Instrument;
 import org.junit.Assert;
 import org.junit.Test;

@@ -6,7 +6,7 @@
 
 package com.compomics.colims.client.event;
 
-import com.compomics.colims.distributed.model.Notification;
+import com.compomics.colims.core.distributed.model.Notification;
 
 /**
  * Event thrown when a Notification from the distributed module is received.

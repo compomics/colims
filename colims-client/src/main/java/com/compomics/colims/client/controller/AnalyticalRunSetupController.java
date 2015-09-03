@@ -10,9 +10,9 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.distributed.model.PersistDbTask;
-import com.compomics.colims.distributed.model.PersistMetadata;
-import com.compomics.colims.distributed.model.enums.PersistType;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.PersistMetadata;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
@@ -29,9 +29,11 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -46,6 +48,7 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Component("analyticalRunSetupController")
+@Lazy
 public class AnalyticalRunSetupController implements Controllable {
 
     /**
@@ -72,10 +75,13 @@ public class AnalyticalRunSetupController implements Controllable {
     private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
+    @Lazy
     private PeptideShakerDataImportController peptideShakerDataImportController;
     @Autowired
+    @Lazy
     private MaxQuantDataImportController maxQuantDataImportController;
     @Autowired
+    @Lazy
     private FastaDbManagementController fastaDbManagementController;
     //services
     @Autowired
@@ -99,6 +105,7 @@ public class AnalyticalRunSetupController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //init view
         analyticalRunSetupDialog = new AnalyticalRunSetupDialog(mainController.getMainFrame(), true);

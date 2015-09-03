@@ -70,11 +70,11 @@ public class Peptide extends DatabaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     /**
-     * The PeptideHasProtein instances from the join table between the peptide and protein tables.
+     * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
-    private List<PeptideHasProtein> peptideHasProteins = new ArrayList<>();
+    private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
     private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
@@ -148,12 +148,12 @@ public class Peptide extends DatabaseEntity {
         this.peptideHasModifications = peptideHasModifications;
     }
 
-    public List<PeptideHasProtein> getPeptideHasProteins() {
-        return peptideHasProteins;
+    public List<PeptideHasProteinGroup> getPeptideHasProteinGroups() {
+        return peptideHasProteinGroups;
     }
 
-    public void setPeptideHasProteins(List<PeptideHasProtein> peptideHasProteins) {
-        this.peptideHasProteins = peptideHasProteins;
+    public void setPeptideHasProteinGroups(List<PeptideHasProteinGroup> peptideHasProteinGroups) {
+        this.peptideHasProteinGroups = peptideHasProteinGroups;
     }
 
     public List<QuantificationGroup> getQuantificationGroups() {
@@ -171,32 +171,6 @@ public class Peptide extends DatabaseEntity {
      */
     public int getLength() {
         return sequence.length();
-    }
-
-    /**
-     * Return the protein of this peptide. In case of a protein group, the main group protein is returned.
-     *
-     * @return the peptide protein
-     */
-    public Protein getProtein() {
-        Protein protein = null;
-
-        if (peptideHasProteins.size() == 1) {
-            protein = peptideHasProteins.get(0).getProtein();
-        } else {
-            for (PeptideHasProtein peptideHasProtein : peptideHasProteins) {
-                if (peptideHasProtein.isMainGroupProtein()) {
-                    protein = peptideHasProtein.getProtein();
-                    break;
-                }
-            }
-        }
-
-        if (protein == null) {
-            throw  new IllegalStateException("A peptide should have a parent protein.");
-        }
-
-        return protein;
     }
 
     @Override

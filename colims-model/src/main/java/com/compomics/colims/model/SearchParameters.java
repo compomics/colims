@@ -2,24 +2,10 @@ package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * This class represents a search parameters entity in the database.
@@ -110,7 +96,7 @@ public class SearchParameters extends DatabaseEntity {
      * The search parameters other than the modifications searched.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "search_parameters_has_other_cv_param",
             joinColumns = {
                     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},

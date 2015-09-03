@@ -5,11 +5,11 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
+
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<AnalyticalRun> {
@@ -22,6 +22,9 @@ public class AnalyticalRunManagementTableFormat implements AdvancedTableFormat<A
     public static final int START_DATE = 2;
     public static final int CREATED = 3;
     public static final int NUMBER_OF_SPECTRA = 4;
+    /**
+     * The SpectrumService instance.
+     */
     private final SpectrumService spectrumService;
 
     public AnalyticalRunManagementTableFormat() {

@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"       
+<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"       
-       xmlns:context="http://www.springframework.org/schema/context"   
-       xmlns:jms="http://www.springframework.org/schema/jms"
-       xmlns:amq="http://activemq.apache.org/schema/core"        
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:amq="http://activemq.apache.org/schema/core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/jms 
-       http://www.springframework.org/schema/jms/spring-jms.xsd
        http://activemq.apache.org/schema/core 
        http://activemq.apache.org/schema/core/activemq-core.xsd">
-     
-   <bean id="splashScreen" class="com.compomics.colims.client.SplashScreenStub" />
-                
+
+    <bean id="splashScreen" class="com.compomics.colims.client.SplashScreenStub"/>
+
     <!--  Embedded ActiveMQ Broker -->
-    <amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}"> 
-        <amq:managementContext>
-            <amq:managementContext createConnector="true"/>
-        </amq:managementContext>         
-        <amq:transportConnectors>
-            <amq:transportConnector uri="tcp://localhost:0" />         
-        </amq:transportConnectors>
-    </amq:broker>    
-    
-    <!-- ActiveMQ connection factory -->
-    <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">
-        <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
-    </bean>
-    
+    <!--<amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">-->
+        <!--<amq:managementContext>-->
+            <!--<amq:managementContext createConnector="true"/>-->
+        <!--</amq:managementContext>-->
+        <!--<amq:transportConnectors>-->
+            <!--<amq:transportConnector uri="tcp://localhost:0"/>-->
+        <!--</amq:transportConnectors>-->
+    <!--</amq:broker>-->
+
+    <!--&lt;!&ndash; ActiveMQ connection factory &ndash;&gt;-->
+    <!--<bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">-->
+        <!--<property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>-->
+    <!--</bean>-->
+
     <!-- Client connector for jmx -->
-    <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean" 
-          p:serviceUrl="${distributed.jmx.service.url}" depends-on="broker"/>
+    <!--<bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"-->
+          <!--p:serviceUrl="${distributed.jmx.service.url}" depends-on="broker"/>-->
+
+    <import resource="classpath:colims-core-context.xml"/>
 
     <bean id="colimsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
@@ -55,7 +51,9 @@
                 <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>
                 <prop key="hibernate.generate_statistics">false</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
-                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.region.factory_class">
+                    org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+                </prop>
                 <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>
                 <prop key="hibernate.cache.use_structured_entries">true</prop>
                 <prop key="hibernate.cache.use_query_cache">true</prop>
@@ -63,5 +61,5 @@
             </props>
         </property>
     </bean>
-    
+
 </beans>

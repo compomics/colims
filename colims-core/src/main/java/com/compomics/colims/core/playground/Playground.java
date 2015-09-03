@@ -1,13 +1,12 @@
 package com.compomics.colims.core.playground;
 
-import org.springframework.context.ApplicationContext;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Project;
+import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -46,7 +45,8 @@ public class Playground {
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
 
         ProjectService projectService = (ProjectService) applicationContext.getBean("projectService");
-        List<Project> findAll = projectService.findAll();
+        Project project = projectService.findById(1L);
+        projectService.fetchUsers(project);
 
         System.out.println("test");
     }

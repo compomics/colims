@@ -3,11 +3,11 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
-import org.springframework.stereotype.Component;
-
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.model.enums.DefaultPermission;
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +24,7 @@ public class AuthenticationBean {
      */
     private User currentUser;
     /**
-     * The default permissions map (key: default permission Enum; value: does
-     * the user has the default permission?).
+     * The default permissions map (key: default permission Enum; value: does the user has the default permission?).
      */
     private Map<DefaultPermission, Boolean> defaultPermissions = new HashMap<>();
 
@@ -100,8 +99,7 @@ public class AuthenticationBean {
     }
 
     /**
-     * Reset the default permissions map; all default permissions are set to
-     * false.
+     * Reset the default permissions map; all default permissions are set to false.
      */
     private void resetDefaultPermissions() {
         defaultPermissions = new HashMap<>();

@@ -3,11 +3,11 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
-import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.GroupService;
@@ -20,6 +20,23 @@ import com.compomics.colims.model.comparator.GroupNameComparator;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
+import org.jdesktop.beansbinding.*;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -27,25 +44,6 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
-import org.jdesktop.swingbinding.JListBinding;
-import org.jdesktop.swingbinding.SwingBindings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 
 /**
  * The user management view parent controller.
@@ -53,6 +51,7 @@ import org.springframework.stereotype.Component;
  * @author Niels Hulstaert
  */
 @Component("userManagementParentController")
+@Lazy
 public class UserManagementController implements Controllable {
 
     /**
@@ -72,6 +71,7 @@ public class UserManagementController implements Controllable {
     @Autowired
     private UserManagementParentController userManagementParentController;
     @Autowired
+    @Lazy
     private InstitutionManagementController institutionManagementController;
     @Autowired
     private EventBus eventBus;
@@ -104,6 +104,7 @@ public class UserManagementController implements Controllable {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         //get view
         userManagementDialog = userManagementParentController.getUserManagementDialog();
@@ -184,6 +185,8 @@ public class UserManagementController implements Controllable {
 
                         //set the selected item in the institution combobox
                         if (selectedUser.getInstitution() != null) {
+                            //fetch institution association
+                            userService.fetchInstitution(selectedUser);
                             userManagementDialog.getInstitutionComboBox().getModel()
                                     .setSelectedItem(selectedUser.getInstitution());
                         }
@@ -335,8 +338,7 @@ public class UserManagementController implements Controllable {
     }
 
     /**
-     * Listen to a GroupChangeEvent and update the available groups in the
-     * DualList.
+     * Listen to a GroupChangeEvent and update the available groups in the DualList.
      *
      * @param groupChangeEvent the GroupEvent
      */

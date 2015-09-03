@@ -4,16 +4,16 @@ import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.repository.SampleRepository;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- *
  * @author Kenneth Verheggen
  */
 @Service("sampleService")
@@ -66,13 +66,13 @@ public class SampleServiceImpl implements SampleService {
     @Override
     public void fetchBinaryFiles(final Sample sample) {
         try {
+            sample.getBinaryFiles().size();
+        } catch (LazyInitializationException e) {
             //attach the sample to the new session
             sampleRepository.saveOrUpdate(sample);
             if (!Hibernate.isInitialized(sample.getBinaryFiles())) {
                 Hibernate.initialize(sample.getBinaryFiles());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 
@@ -84,14 +84,14 @@ public class SampleServiceImpl implements SampleService {
     @Override
     public void fetchMaterials(final Sample sample) {
         try {
+            sample.getMaterials().size();
+        } catch (LazyInitializationException e) {
             //attach the sample to the new session
             sampleRepository.saveOrUpdate(sample);
             if (!Hibernate.isInitialized(sample.getMaterials())) {
                 Hibernate.initialize(sample.getMaterials());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
-    
+
 }
