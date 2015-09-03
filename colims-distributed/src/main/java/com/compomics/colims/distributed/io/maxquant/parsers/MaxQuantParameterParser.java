@@ -1,35 +1,33 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
+import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.SearchEngineType;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.nio.charset.Charset;
-import java.util.*;
-import java.util.Map.Entry;
-
 import com.compomics.colims.model.factory.CvParamFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.Map.Entry;
+
 /**
+ * Parse MaxQuant parameters file
+ *
  * @author Davy
+ * @author Iain
  */
 @Component
 public class MaxQuantParameterParser {
@@ -39,6 +37,11 @@ public class MaxQuantParameterParser {
     private TypedCvParamService typedCvParamService;
     @Autowired
     private OlsService olsService;
+
+    /**
+     * MaxQuant version
+     */
+    private String version = null;
 
     /**
      * Experiment multiplicity
@@ -279,6 +282,15 @@ public class MaxQuantParameterParser {
      */
     public Map<String, SearchAndValidationSettings> getRunSettings() {
         return Collections.unmodifiableMap(runSettings);
+    }
+
+    /**
+     * Get the version of MaxQuant used
+     *
+     * @return Version number string
+     */
+    public String getVersion() {
+        return this.version;
     }
 
     /**

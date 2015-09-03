@@ -1,13 +1,13 @@
 package com.compomics.colims.distributed.io.maxquant;
 
+import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.google.common.io.LineReader;
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
-import com.google.common.io.LineReader;
-import org.apache.log4j.Logger;
 
 /**
  * Convert a tabular file into an {@link Iterable} that returns

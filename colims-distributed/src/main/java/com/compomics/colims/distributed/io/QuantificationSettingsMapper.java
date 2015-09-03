@@ -33,7 +33,7 @@ public class QuantificationSettingsMapper {
 
             quantFile.setFileName(file.getName());
             quantFile.setFilePath(file.getCanonicalPath());
-            quantFile.setContent(IOUtils.readAndZip(file)); // do we always want to store the file? idk
+            quantFile.setContent(IOUtils.readAndZip(file)); // TODO: do we always want to store the file?
             quantFile.setBinaryFileType(BinaryFileType.TEXT);
 
             quantSettings.getQuantificationFiles().add(quantFile);

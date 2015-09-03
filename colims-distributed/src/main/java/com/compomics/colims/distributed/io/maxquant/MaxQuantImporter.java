@@ -7,10 +7,12 @@ import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,11 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
+
+    /**
+     * Quant file name
+     */
+    private static final String QUANT_FILE = "msms.txt";
 
     @Autowired
     private MaxQuantParameterParser parameterParser;
@@ -69,6 +76,8 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
 
                 analyticalRun.setSpectrums(mappedSpectra);
                 mappedRuns.add(analyticalRun);
+
+                analyticalRun.setQuantificationSettings(importQuantSettings(new File(maxQuantImport.getMaxQuantDirectory(), QUANT_FILE), analyticalRun));
             }
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
@@ -107,26 +116,24 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     }
 
     /**
-     * Map the quantification settings. To be refactored
+     * Map the quantification settings
      *
-     * @param maxQuantImport The MaxQuantImport instance
+     * @param quantFile The file containing quant data
      * @param analyticalRun  the AnalyticalRun instance onto the quantification settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */
-//    private QuantificationSettings importQuantSettings(final MaxQuantImport maxQuantImport, final AnalyticalRun analyticalRun) throws IOException {
-//        QuantificationSettings quantificationSettings;
-//
-//        List<File> quantFiles = new ArrayList<>();
-//        quantFiles.add(new File(maxQuantImport.getMaxQuantDirectory(), "msms.txt"));  // TODO: make a constant also is this the right file?
-//        QuantificationParameters params = new QuantificationParameters();
-//
-//        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getMaxQuantVersion(), quantFiles, params);
-//
-//        //set entity relations
-//        analyticalRun.setQuantificationSettings(quantificationSettings);
-//        quantificationSettings.setAnalyticalRun(analyticalRun);
-//
-//        return quantificationSettings;
-//    }
+    private QuantificationSettings importQuantSettings(File quantFile, final AnalyticalRun analyticalRun) throws IOException {
+        QuantificationSettings quantificationSettings;
+
+        List<File> quantFiles = new ArrayList<>();
+        quantFiles.add(quantFile);
+        QuantificationParameters params = new QuantificationParameters();
+
+        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getVersion(), quantFiles, params);
+
+        quantificationSettings.setAnalyticalRun(analyticalRun);
+
+        return quantificationSettings;
+    }
 }
