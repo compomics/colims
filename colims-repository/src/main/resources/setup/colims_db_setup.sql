@@ -142,7 +142,6 @@
         name varchar(30) not null,
         l_cell_type_cv_id bigint,
         l_compartment_cv_id bigint,
-        l_project_id bigint,
         l_species_cv_id bigint not null,
         l_tissue_cv_id bigint,
         primary key (id)
@@ -616,11 +615,6 @@
         add constraint FK_sfmjhs53n62t8v7xstsb9ln2
         foreign key (l_compartment_cv_id)
         references colims.material_cv_param (id);
-
-    alter table colims.material
-        add constraint FK_1w1sodocqmm73kw7ll3uslwqi
-        foreign key (l_project_id)
-        references colims.project (id);
 
     alter table colims.material
         add constraint FK_e8ustpafqp4yhgp0ycperpy6u

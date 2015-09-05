@@ -64,11 +64,6 @@ public class Project extends AuditableDatabaseEntity {
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     @OneToMany(mappedBy = "project")
     private List<Experiment> experiments = new ArrayList<>();
-    /**
-     * The project materials.
-     */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Material> materials = new ArrayList<>();
 
     /**
      * No-arg constructor.
@@ -114,14 +109,6 @@ public class Project extends AuditableDatabaseEntity {
 
     public void setExperiments(List<Experiment> experiments) {
         this.experiments = experiments;
-    }
-
-    public List<Material> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(List<Material> materials) {
-        this.materials = materials;
     }
 
     public User getOwner() {

@@ -142,7 +142,6 @@
         name varchar(30) not null,
         l_cell_type_cv_id bigint,
         l_compartment_cv_id bigint,
-        l_project_id bigint,
         l_species_cv_id bigint not null,
         l_tissue_cv_id bigint,
         primary key (id)
@@ -618,11 +617,6 @@
         references colims.material_cv_param (id);
 
     alter table colims.material
-        add constraint FK_1w1sodocqmm73kw7ll3uslwqi
-        foreign key (l_project_id)
-        references colims.project (id);
-
-    alter table colims.material
         add constraint FK_e8ustpafqp4yhgp0ycperpy6u
         foreign key (l_species_cv_id)
         references colims.material_cv_param (id);
@@ -929,8 +923,8 @@ INSERT INTO instrument_has_analyzer (l_instrument_id,l_instrument_cv_param_id) V
 
 INSERT INTO material_cv_param (id,creation_date,modification_date,user_name,accession,cv_property,label,name,ontology) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','9606','SPECIES','NEWT','Homo sapiens (Human)','NEWT UniProt Taxonomy Database[NEWT]');
 
-INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_type_cv_id,l_compartment_cv_id,l_project_id,l_species_cv_id,l_tissue_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','material 1',null,null,null,1,null);
-INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_type_cv_id,l_compartment_cv_id,l_project_id,l_species_cv_id,l_tissue_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','material 2',null,null,null,1,null);
+INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_type_cv_id,l_compartment_cv_id,l_species_cv_id,l_tissue_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','material 1',null,null,1,null);
+INSERT INTO material (id,creation_date,modification_date,user_name,name,l_cell_type_cv_id,l_compartment_cv_id,l_species_cv_id,l_tissue_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','material 2',null,null,1,null);
 
 INSERT INTO protocol (id,creation_date,modification_date,user_name,name,l_cell_based_cv_id,l_enzyme_cv_id,l_reduction_cv_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','protocol 7',null,null,null);
 INSERT INTO protocol (id,creation_date,modification_date,user_name,name,l_cell_based_cv_id,l_enzyme_cv_id,l_reduction_cv_id) VALUES (2,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','protocol 1',null,null,null);

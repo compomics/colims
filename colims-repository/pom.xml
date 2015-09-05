@@ -19,27 +19,32 @@
     </properties>
 
     <dependencies>
-        
+
         <!-- colims dependency -->
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-model</artifactId>
         </dependency>
-        
-        <!-- spring dependencies -->      
+
+        <!-- spring dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <!-- db dependencies -->
@@ -48,18 +53,18 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.27</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
-        </dependency> 
-        
+        </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.3-1101-jdbc41</version>
         </dependency>
-                   
+
     </dependencies>
 </project>

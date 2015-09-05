@@ -1,13 +1,12 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a material entity in the database.
@@ -53,12 +52,6 @@ public class Material extends AuditableDatabaseEntity {
     @JoinColumn(name = "l_compartment_cv_id", referencedColumnName = "id", nullable = true)
     @ManyToOne
     private MaterialCvParam compartment;
-    /**
-     * The project in which the material was analyzed.
-     */
-    @JoinColumn(name = "l_project_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Project project;
     /**
      * The samples that originate from this material.
      */
@@ -120,14 +113,6 @@ public class Material extends AuditableDatabaseEntity {
         this.compartment = compartment;
     }
 
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
     public List<Sample> getSamples() {
         return samples;
     }
@@ -137,42 +122,28 @@ public class Material extends AuditableDatabaseEntity {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 43 * hash + Objects.hashCode(this.name);
-        hash = 43 * hash + Objects.hashCode(this.species);
-        hash = 43 * hash + Objects.hashCode(this.tissue);
-        hash = 43 * hash + Objects.hashCode(this.cellType);
-        hash = 43 * hash + Objects.hashCode(this.compartment);
-        hash = 43 * hash + Objects.hashCode(this.project);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Material material = (Material) o;
+
+        if (name != null ? !name.equals(material.name) : material.name != null) return false;
+        if (species != null ? !species.equals(material.species) : material.species != null) return false;
+        if (tissue != null ? !tissue.equals(material.tissue) : material.tissue != null) return false;
+        if (cellType != null ? !cellType.equals(material.cellType) : material.cellType != null) return false;
+        return !(compartment != null ? !compartment.equals(material.compartment) : material.compartment != null);
+
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Material other = (Material) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.species, other.species)) {
-            return false;
-        }
-        if (!Objects.equals(this.tissue, other.tissue)) {
-            return false;
-        }
-        if (!Objects.equals(this.cellType, other.cellType)) {
-            return false;
-        }
-        if (!Objects.equals(this.compartment, other.compartment)) {
-            return false;
-        }
-        return Objects.equals(this.project, other.project);
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (species != null ? species.hashCode() : 0);
+        result = 31 * result + (tissue != null ? tissue.hashCode() : 0);
+        result = 31 * result + (cellType != null ? cellType.hashCode() : 0);
+        result = 31 * result + (compartment != null ? compartment.hashCode() : 0);
+        return result;
     }
 
     @Override
