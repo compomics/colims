@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.JFileChooser" name="proteinExportFileChooser">
+      <Properties>
+        <Property name="dialogTitle" type="java.lang.String" value="Save protein data as TSV file"/>
+      </Properties>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[1398, 800]"/>
@@ -84,20 +91,20 @@
                               <Component id="proteinsScrollPane" alignment="0" pref="990" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="filterProteins" alignment="1" min="-2" pref="162" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="pageLabelProteins" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="firstPageProteins" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="prevPageProteins" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="nextPageProteins" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="lastPageProteins" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
+                                  <Component id="filterProteins" min="-2" pref="162" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="exportProteins" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="pageLabelProteins" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="firstPageProteins" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="prevPageProteins" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="nextPageProteins" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="lastPageProteins" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -117,6 +124,7 @@
                               <Component id="firstPageProteins" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lastPageProteins" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="pageLabelProteins" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="exportProteins" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       </Group>
@@ -176,6 +184,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="pageLabelProteins">
+                </Component>
+                <Component class="javax.swing.JButton" name="exportProteins">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Export..."/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

@@ -42,9 +42,11 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     public List<Protein> getPagedProteinsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter) {
         List<Protein> proteins = new ArrayList<>();
 
-        String extraParams = " ORDER BY MAX(%3$s) %4$s, protein.id"
-            + " LIMIT %5$d "
-            + " OFFSET %6$d";
+        String extraParams = " ORDER BY MAX(%3$s) %4$s, protein.id";
+
+        if (length > 0) {
+            extraParams += " LIMIT %5$d  OFFSET %6$d";
+        }
 
         final List idList = getCurrentSession()
             .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))

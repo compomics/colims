@@ -36,6 +36,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     public JButton getNextPageProteins() { return nextPageProteins; }
     public JButton getPrevPageProteins() { return prevPageProteins; }
     public JTextField getFilterProteins() { return filterProteins; }
+    public JButton getExportProteins() { return exportProteins; }
+    public JFileChooser getProteinExportFileChooser() { return proteinExportFileChooser; }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -46,6 +48,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        proteinExportFileChooser = new javax.swing.JFileChooser();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         proteinsPanel = new javax.swing.JPanel();
@@ -57,6 +60,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         nextPageProteins = new javax.swing.JButton();
         lastPageProteins = new javax.swing.JButton();
         pageLabelProteins = new javax.swing.JLabel();
+        exportProteins = new javax.swing.JButton();
         peptidesPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         peptidesTable = new javax.swing.JTable();
@@ -66,6 +70,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         projectTree = new javax.swing.JTree();
+
+        proteinExportFileChooser.setDialogTitle("Save protein data as TSV file");
 
         setMinimumSize(new java.awt.Dimension(1398, 800));
         setPreferredSize(new java.awt.Dimension(1398, 800));
@@ -107,6 +113,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
 
         lastPageProteins.setText(">>");
 
+        exportProteins.setText("Export...");
+
         javax.swing.GroupLayout proteinsPanelLayout = new javax.swing.GroupLayout(proteinsPanel);
         proteinsPanel.setLayout(proteinsPanelLayout);
         proteinsPanelLayout.setHorizontalGroup(
@@ -117,18 +125,19 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
                     .addComponent(proteinsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, proteinsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(proteinsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(filterProteins, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, proteinsPanelLayout.createSequentialGroup()
-                                .addComponent(pageLabelProteins)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(firstPageProteins)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(prevPageProteins)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nextPageProteins)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lastPageProteins)))))
+                        .addComponent(filterProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, proteinsPanelLayout.createSequentialGroup()
+                        .addComponent(exportProteins)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pageLabelProteins)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(firstPageProteins)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(prevPageProteins)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextPageProteins)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastPageProteins)))
                 .addContainerGap())
         );
         proteinsPanelLayout.setVerticalGroup(
@@ -143,7 +152,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
                     .addComponent(prevPageProteins)
                     .addComponent(firstPageProteins)
                     .addComponent(lastPageProteins)
-                    .addComponent(pageLabelProteins))
+                    .addComponent(pageLabelProteins)
+                    .addComponent(exportProteins))
                 .addGap(8, 8, 8))
         );
 
@@ -269,6 +279,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton exportProteins;
     private javax.swing.JTextField filterProteins;
     private javax.swing.JButton firstPageProteins;
     private javax.swing.JPanel jPanel1;
@@ -284,6 +295,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JTable peptidesTable;
     private javax.swing.JButton prevPageProteins;
     private javax.swing.JTree projectTree;
+    private javax.swing.JFileChooser proteinExportFileChooser;
     private javax.swing.JPanel proteinsPanel;
     private javax.swing.JScrollPane proteinsScrollPane;
     private javax.swing.JTable proteinsTable;
