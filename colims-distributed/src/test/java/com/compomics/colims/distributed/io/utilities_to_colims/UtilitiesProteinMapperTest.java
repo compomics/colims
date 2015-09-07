@@ -1,9 +1,6 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.util.experiment.identification.SequenceFactory;
@@ -21,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * @author Niels Hulstaert
@@ -51,42 +47,25 @@ public class UtilitiesProteinMapperTest {
      */
     @Test
     public void testMapProtein_1() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
-        //create new utilities peptide
-        ArrayList<String> parentProteins = new ArrayList<>();
-        parentProteins.add("P16083");
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
-        sourcePeptide.setParentProteins(parentProteins);
-
-        Peptide targetPeptide = new Peptide();
+        ProteinGroup proteinGroup = new ProteinGroup();
 
         //create utilities protein matches
-        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
-        proteinMatch.setMainMatch("P16083");
+        ProteinMatch proteinMatch = new ProteinMatch("P16083");
         PSParameter psParameter = new PSParameter();
         psParameter.setProteinProbability(56.3);
         psParameter.setProteinProbabilityScore(99.4);
 
-        //create peptide scores
-        MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
+        //create protein group score
+        PSParameter proteinGroupScore = new PSParameter();
+        proteinGroupScore.setProteinProbabilityScore(0.45);
+        proteinGroupScore.setProteinProbability(0.77);
 
-        utilitiesProteinMapper.map(proteinMatch, psParameter, peptideMatchScore, targetPeptide);
+        utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
-        Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
-        Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
-
-        PeptideHasProteinGroup peptideHasProteinGroup = targetPeptide.getPeptideHasProteinGroups().get(0);
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
-        Assert.assertNotNull(peptideHasProteinGroup.getProteinGroup());
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptideProbability());
-        Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProteinGroup.getPeptideProbability(), 0.001);
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptidePostErrorProbability());
-        Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProteinGroup.getPeptidePostErrorProbability(), 0.001);
-
-        ProteinGroup proteinGroup = peptideHasProteinGroup.getProteinGroup();
-        Assert.assertEquals(99.4, proteinGroup.getProteinProbability(), 0.001);
-        Assert.assertEquals(56.3, proteinGroup.getProteinPostErrorProbability(), 0.01);
-        Assert.assertNotNull(proteinGroup.getPeptideHasProteinGroups());
+        Assert.assertNotNull(proteinGroup.getProteinGroupHasProteins());
         Assert.assertEquals(1, proteinGroup.getProteinGroupHasProteins().size());
+        Assert.assertEquals(0.45, proteinGroup.getProteinProbability(), 0.001);
+        Assert.assertEquals(0.77, proteinGroup.getProteinPostErrorProbability(), 0.01);
 
         ProteinGroupHasProtein proteinGroupHasProtein = proteinGroup.getProteinGroupHasProteins().get(0);
         Assert.assertNotNull(proteinGroupHasProtein.getProteinGroup());
@@ -107,17 +86,10 @@ public class UtilitiesProteinMapperTest {
      */
     @Test
     public void testMapProtein_2() throws MappingException, IOException, SQLException, ClassNotFoundException, InterruptedException {
-        //create new utilities peptide
-        ArrayList<String> parentProteins = new ArrayList<>();
-        parentProteins.add("P06241");
-        //@todo can we still use this constructor if we don't want to redo the protein mapping
-        com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
-        sourcePeptide.setParentProteins(parentProteins);
-
-        Peptide targetPeptide = new Peptide();
+        ProteinGroup proteinGroup = new ProteinGroup();
 
         //create utilities protein matches
-        ProteinMatch proteinMatch = new ProteinMatch(sourcePeptide, sourcePeptide.getKey());
+        ProteinMatch proteinMatch = new ProteinMatch("P06241");
         proteinMatch.addTheoreticProtein("P07947");
         proteinMatch.addTheoreticProtein("P12931");
         proteinMatch.setMainMatch("P06241");
@@ -125,29 +97,19 @@ public class UtilitiesProteinMapperTest {
         psParameter.setProteinProbability(56.3);
         psParameter.setProteinProbabilityScore(99.4);
 
-        //create peptide scores
-        MatchScore peptideMatchScore = new MatchScore(0.5, 0.1);
+        //create protein group score
+        PSParameter proteinGroupScore = new PSParameter();
+        proteinGroupScore.setProteinProbabilityScore(0.45);
+        proteinGroupScore.setProteinProbability(0.77);
 
-        utilitiesProteinMapper.map(proteinMatch, psParameter, peptideMatchScore, targetPeptide);
+        utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
-        Assert.assertNotNull(targetPeptide.getPeptideHasProteinGroups());
-        Assert.assertEquals(1, targetPeptide.getPeptideHasProteinGroups().size());
-
-        PeptideHasProteinGroup peptideHasProteinGroup = targetPeptide.getPeptideHasProteinGroups().get(0);
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
-        Assert.assertNotNull(peptideHasProteinGroup.getProteinGroup());
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptideProbability());
-        Assert.assertEquals(peptideMatchScore.getProbability(), peptideHasProteinGroup.getPeptideProbability(), 0.001);
-        Assert.assertNotNull(peptideHasProteinGroup.getPeptidePostErrorProbability());
-        Assert.assertEquals(peptideMatchScore.getPostErrorProbability(), peptideHasProteinGroup.getPeptidePostErrorProbability(), 0.001);
-
-        ProteinGroup proteinGroup = peptideHasProteinGroup.getProteinGroup();
-        Assert.assertEquals(99.4, proteinGroup.getProteinProbability(), 0.001);
-        Assert.assertEquals(56.3, proteinGroup.getProteinPostErrorProbability(), 0.01);
-        Assert.assertNotNull(proteinGroup.getPeptideHasProteinGroups());
+        Assert.assertNotNull(proteinGroup.getProteinGroupHasProteins());
         Assert.assertEquals(3, proteinGroup.getProteinGroupHasProteins().size());
+        Assert.assertEquals(0.45, proteinGroup.getProteinProbability(), 0.001);
+        Assert.assertEquals(0.77, proteinGroup.getProteinPostErrorProbability(), 0.01);
 
-        for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+        for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
             Assert.assertNotNull(proteinGroupHasProtein.getProtein());
             Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
             Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(proteinGroupHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));

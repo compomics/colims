@@ -1,11 +1,5 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
@@ -32,18 +26,6 @@ public class DeleteDbTaskHandler {
     private CompletedTaskProducer completedTaskProducer;
     @Autowired
     private DbTaskErrorProducer dbTaskErrorProducer;
-    @Autowired
-    private PeptideShakerIO peptideShakerIO;
-    @Autowired
-    private PeptideShakerImporter peptideShakerImporter;
-    @Autowired
-    private MaxQuantImporter maxQuantImporter;
-    @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private SampleService sampleService;
 
     public void handleDeleteDbTask(DeleteDbTask deleteDbTask) {
         Long started = System.currentTimeMillis();

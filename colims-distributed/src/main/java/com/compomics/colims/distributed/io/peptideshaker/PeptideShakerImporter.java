@@ -3,18 +3,23 @@ package com.compomics.colims.distributed.io.peptideshaker;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.io.SearchSettingsMapper;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapper;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.IdentificationFile;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
+import com.compomics.util.experiment.identification.matches.PeptideMatch;
+import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import com.compomics.util.experiment.identification.matches_iterators.PeptideMatchesIterator;
+import com.compomics.util.experiment.identification.matches_iterators.ProteinMatchesIterator;
+import com.compomics.util.experiment.identification.matches_iterators.PsmIterator;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import com.compomics.util.experiment.personalization.UrParameter;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.utils.CpsParent;
 import org.apache.log4j.Logger;
@@ -52,10 +57,15 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     /**
-     * The Compomics Utilities to Colims PSM mapper.
+     * The Compomics Utilities to Colims protein mapper.
      */
     @Autowired
-    private UtilitiesPsmMapper utilitiesPsmMapper;
+    private UtilitiesProteinMapper utilitiesProteinMapper;
+    /**
+     * The Compomics Utilities to Colims peptide mapper.
+     */
+    @Autowired
+    private UtilitiesPeptideMapper utilitiesPeptideMapper;
     /**
      * Compomics Utilities spectrum factory.
      */
@@ -68,8 +78,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     /**
      * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
      *
-     * @throws java.io.IOException   thrown in case of an IO related problem
-     * @throws java.sql.SQLException thrown in case of an SQL related problem
+     * @throws IOException  thrown in case of an IO related problem
+     * @throws SQLException thrown in case of an SQL related problem
      */
     @Override
     public void clear() throws IOException, SQLException {
@@ -78,7 +88,9 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
         //@todo Check if we need to clear the ObjectsCache because we started using the CpsParent class for accessing the .cps file
         //objectsCache = new ObjectsCache();
         //objectsCache.setAutomatedMemoryManagement(true);
-        utilitiesPsmMapper.clear();
+        //call clear methods on child mappers
+        utilitiesPeptideMapper.clear();
+        utilitiesProteinMapper.clear();
     }
 
     @Override
@@ -106,7 +118,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
             //get the Ms2Identification instance
             Ms2Identification identification = (Ms2Identification) cpsParent.getIdentification();
 
-            LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference() + " on domain model Experiment class");
+            LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
 
             //load the fasta file
             File fastaDbFile = new File(dataImport.getFastaDb().getFilePath());
@@ -117,9 +129,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
             loadPeptideMatches(identification);
             loadProteinMatches(identification);
 
-            //init the UtilitiesPsmMapper
             IdentificationFile identificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
-            utilitiesPsmMapper.init(identification, cpsParent.getIdentificationParameters(), identificationFile);
 
             //We don't need to iterate over the samples in the .cps file because
             //for the moment, because PeptideShaker .cps files contain only one sample.
@@ -129,49 +139,86 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
             //@todo check if there is a more suitable candidate as accession number
             analyticalRun.setName(cpsParent.getSample().getReference() + ANALYTICAL_RUN_NAME_SEPARATOR + cpsParent.getReplicateNumber());
 
-            //instantiate the spectrum list
-            List<Spectrum> spectra = new ArrayList<>();
-            //iterate over spectrum files
-            for (String spectrumFileName : identification.getSpectrumFiles()) {
-                //iterate over the spectrum identifications
-                for (String psmKey : identification.getSpectrumIdentification(spectrumFileName)) {
-                    //get spectrum by key
-                    MSnSpectrum sourceSpectrum = (MSnSpectrum) spectrumFactory.getSpectrum(psmKey);
+            ArrayList<UrParameter> parameters = new ArrayList<>(1);
+            parameters.add(new PSParameter());
 
-                    //instantiate the Colims spectrum entity
-                    Spectrum targetSpectrum = new Spectrum();
+            //iterate over the protein matches
+            ProteinMatchesIterator proteinMatchesIterator = identification.getProteinMatchesIterator(parameters, true, parameters, true, parameters, null);
+            while (proteinMatchesIterator.hasNext()) {
+                ProteinMatch proteinMatch = proteinMatchesIterator.next();
+                String proteinMatchKey = proteinMatch.getKey();
 
-                    //check if an identification match exists
-                    boolean matchExists = identification.matchExists(psmKey);
-                    if (matchExists) {
-                        SpectrumMatch spectrumMatch = identification.getSpectrumMatch(psmKey);
-                        PSParameter psmProbabilities = new PSParameter();
-                        psmProbabilities = (PSParameter) identification.getSpectrumMatchParameter(spectrumMatch.getKey(), psmProbabilities);
-                        //check if the psm has been validated
-                        if (psmProbabilities.getMatchValidationLevel().isValidated()) {
-                            utilitiesPsmMapper.map(spectrumMatch, targetSpectrum);
-                        } else {
-                            LOGGER.debug("The PSM was not validated for spectrum match " + spectrumMatch.getKey());
+                PSParameter proteinGroupScore = new PSParameter();
+                proteinGroupScore = (PSParameter) (identification.getProteinMatchParameter(proteinMatchKey, proteinGroupScore));
+
+                //only consider non decoy and validated proteins
+                if (!ProteinMatch.isDecoy(proteinMatchKey) && proteinGroupScore.getMatchValidationLevel().isValidated()) {
+                    ProteinGroup proteinGroup = new ProteinGroup();
+
+                    //map the Utilities ProteinMatch instance onto the ProteinGroup instance
+                    utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+
+                    //iterate over the peptide matches
+                    PeptideMatchesIterator peptideMatchesIterator = identification.getPeptideMatchesIterator(proteinMatch.getPeptideMatchesKeys(), parameters, false, parameters, null);
+                    while (peptideMatchesIterator.hasNext()) {
+                        PeptideMatch peptideMatch = peptideMatchesIterator.next();
+                        String peptideMatchKey = peptideMatch.getKey();
+
+                        PSParameter peptideScore = new PSParameter();
+                        peptideScore = (PSParameter) identification.getPeptideMatchParameter(peptideMatchKey, peptideScore);
+
+                        //iterate over the spectrum matches
+                        PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatches(), parameters, true, null);
+                        while (psmIterator.hasNext()) {
+                            SpectrumMatch spectrumMatch = psmIterator.next();
+                            String spectrumMatchKey = spectrumMatch.getKey();
+
+                            PSParameter spectrumScore = new PSParameter();
+                            spectrumScore = (PSParameter) identification.getSpectrumMatchParameter(spectrumMatchKey, spectrumScore);
+
+                            //only consider validated PSMs
+                            if (spectrumScore.getMatchValidationLevel().isValidated()) {
+                                PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+                                //set peptide scores in PeptideHasProteinGroup entity
+                                peptideHasProteinGroup.setPeptideProbability(peptideScore.getPeptideProbabilityScore());
+                                peptideHasProteinGroup.setPeptidePostErrorProbability(peptideScore.getPeptideProbability());
+
+                                //set entity associations between PeptideHasProteinGroup and ProteinGroup entities
+                                peptideHasProteinGroup.setProteinGroup(proteinGroup);
+                                proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+
+                                //map spectrum
+                                Spectrum targetSpectrum = new Spectrum();
+                                //@todo get fragmentation type from PeptideShaker
+                                utilitiesSpectrumMapper.map((MSnSpectrum) spectrumFactory.getSpectrum(spectrumMatchKey), null, targetSpectrum);
+
+                                //map peptide
+                                Peptide targetPeptide = new Peptide();
+                                utilitiesPeptideMapper.map(spectrumMatch, spectrumScore, targetPeptide);
+
+                                //set entity associations between AnalyticalRun and Spectrum entities
+                                analyticalRun.getSpectrums().add(targetSpectrum);
+                                targetSpectrum.setAnalyticalRun(analyticalRun);
+
+                                //set entity associations between Spectrum and Peptide entities
+                                targetSpectrum.getPeptides().add(targetPeptide);
+                                targetPeptide.setSpectrum(targetSpectrum);
+
+                                //set entity associations the IdentificationFile and Peptide entities
+                                targetPeptide.setIdentificationFile(identificationFile);
+
+                                //set entity associations between Peptide and PeptideHasProteinGroup entities
+                                targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                                peptideHasProteinGroup.setPeptide(targetPeptide);
+                            }
                         }
-                    } else {
-                        LOGGER.debug("No PSM was found for spectrum " + psmKey);
                     }
-
-                    //map MSnSpectrum to model Spectrum
-                    //@todo get fragmentation type from PeptideShaker
-                    utilitiesSpectrumMapper.map(sourceSpectrum, null, targetSpectrum);
-                    spectra.add(targetSpectrum);
-                    //set entity associations
-                    targetSpectrum.setAnalyticalRun(analyticalRun);
                 }
             }
 
             analyticalRuns.add(analyticalRun);
-            //set entity associations
-            analyticalRun.setSpectrums(spectra);
 
-            LOGGER.info("Finished mapping PeptideShaker experiment " + dataImport.getCpsParent().getExperiment().getReference() + " on a list of analytical runs");
-
+            LOGGER.info("Finished mapping PeptideShaker experiment " + dataImport.getCpsParent().getExperiment().getReference());
         } catch (IOException | SQLException | ClassNotFoundException | InterruptedException | IllegalArgumentException | MzMLUnmarshallerException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex.getMessage(), ex);

@@ -1,9 +1,11 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.service.ProteinService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
+import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import eu.isas.peptideshaker.myparameters.PSParameter;
@@ -42,23 +44,16 @@ public class UtilitiesProteinMapper {
      *
      * @param proteinMatch      the ProteinMatch instance
      * @param proteinGroupScore the PSParameter instance with the protein (group) scores
-     * @param peptideMatchScore the PSM score
-     * @param targetPeptide     the Colims peptide
+     * @param proteinGroup      the Colims ProteinGroup entity onto the ProteinMatch instance will be mapped
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(final ProteinMatch proteinMatch, PSParameter proteinGroupScore, final MatchScore peptideMatchScore, final Peptide targetPeptide) throws MappingException {
+    public void map(final ProteinMatch proteinMatch, PSParameter proteinGroupScore, ProteinGroup proteinGroup) throws MappingException {
         try {
             /**
              * Iterate over the theoretic protein accessions.
              * If there's more than one, it's a protein group and the main matched protein is the main group protein.
-             * Note that the peptide scores will be the same for all protein group members.
+             * Note that the protein scores will be the same for all protein group members.
              */
-            PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
-            //set the peptide scores
-            peptideHasProteinGroup.setPeptideProbability(peptideMatchScore.getProbability());
-            peptideHasProteinGroup.setPeptidePostErrorProbability(peptideMatchScore.getPostErrorProbability());
-
-            ProteinGroup proteinGroup = new ProteinGroup();
             //set scores
             proteinGroup.setProteinProbability(proteinGroupScore.getProteinProbabilityScore());
             proteinGroup.setProteinPostErrorProbability(proteinGroupScore.getProteinProbability());
@@ -83,17 +78,6 @@ public class UtilitiesProteinMapper {
                 //set entity associations
                 proteinGroupHasProtein.setProteinGroup(proteinGroup);
                 proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
-            }
-            //set entity associations
-            proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-            //set peptide
-            peptideHasProteinGroup.setPeptide(targetPeptide);
-            //set protein group
-            peptideHasProteinGroup.setProteinGroup(proteinGroup);
-            targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-
-            if (targetPeptide.getPeptideHasProteinGroups().isEmpty()) {
-                System.out.println("jjjjjjjjjjjjjjjj");
             }
         } catch (IOException | IllegalArgumentException | InterruptedException ex) {
             LOGGER.error(ex.getMessage(), ex);

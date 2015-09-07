@@ -48,7 +48,7 @@ public class MaxQuantParser {
      * An extra constructor for fun testing times.
      *
      * @param quantFolder File pointer to MaxQuant txt folder
-     * @throws IOException thrown in case of a I/O related problem
+     * @throws IOException          thrown in case of a I/O related problem
      * @throws MappingException
      * @throws UnparseableException
      */
@@ -73,9 +73,9 @@ public class MaxQuantParser {
      * Parse the output folder and populate the parser with various datasets.
      *
      * @param quantFolder File pointer to MaxQuant txt folder
-     * @throws IOException
+     * @throws IOException          thrown in case of an input/output related problem
      * @throws UnparseableException
-     * @throws MappingException
+     * @throws MappingException     thrown in case of a mapping related problem
      */
     public void parseFolder(File quantFolder, FastaDb fastaDb, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
@@ -117,7 +117,7 @@ public class MaxQuantParser {
      *
      * @param fastaDb FASTA file to parse
      * @return String/String map of protein/sequence
-     * @throws IOException If the file is invalid
+     * @throws IOException thrown in case of an input/output related problem
      */
     public Map<String, String> parseFasta(FastaDb fastaDb) throws IOException {
         Map<String, String> parsedFasta = new HashMap<>();
@@ -185,13 +185,13 @@ public class MaxQuantParser {
      *
      * @param peptide A peptide
      * @return Collection of protein groups
-     * @throws NumberFormatException
+     * @throws NumberFormatException thrown in case of a String to numeric format conversion error.
      */
     public List<ProteinGroup> getProteinHitsForIdentification(Peptide peptide) throws NumberFormatException {
         List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.peptideProteins.get(peptide)
-            .stream()
-            .map(proteinGroups::get)
-            .collect(Collectors.toList());
+                .stream()
+                .map(proteinGroups::get)
+                .collect(Collectors.toList());
 
         peptideProteinGroups.removeIf(p -> p == null);
 

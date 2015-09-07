@@ -1,8 +1,10 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.Peptide;
+import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,28 +31,33 @@ public class UtilitiesPeptideMapper {
     /**
      * Map the utilities objects onto the Colims Peptide.
      *
-     * @param sourcePeptide        the Utilities peptide
-     * @param psmMatchScore        the PSM score
-     * @param ptmScores            the PSPtmScores instance
-     * @param identificationCharge the charge
-     * @param targetPeptide        the Colims peptide
+     * @param spectrumMatch the Utilities SpectrumMatch instance
+     * @param spectrumScore the Utilities PSParameter instance with the spectrum scores
+     * @param targetPeptide the Colims Peptide instance
      * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
-    public void map(final com.compomics.util.experiment.biology.Peptide sourcePeptide, final MatchScore psmMatchScore, final PSPtmScores ptmScores, final int identificationCharge, final Peptide targetPeptide) throws ModificationMappingException {
+    public void map(final SpectrumMatch spectrumMatch, final PSParameter spectrumScore, final Peptide targetPeptide) throws ModificationMappingException {
+        PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
+        com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
+
         //set sequence
         targetPeptide.setSequence(sourcePeptide.getSequence());
         //set theoretical mass
         targetPeptide.setTheoreticalMass(sourcePeptide.getMass());
         //set identification charge
-        targetPeptide.setCharge(identificationCharge);
+        targetPeptide.setCharge(peptideAssumption.getIdentificationCharge().value);
         //set psm probability
-        targetPeptide.setPsmProbability(psmMatchScore.getProbability());
+        targetPeptide.setPsmProbability(spectrumScore.getPsmProbabilityScore());
         //set psm posterior error probability
-        targetPeptide.setPsmPostErrorProbability(psmMatchScore.getPostErrorProbability());
+        targetPeptide.setPsmPostErrorProbability(spectrumScore.getPsmProbability());
 
         //check for modifications and modification scores
         if (!sourcePeptide.getModificationMatches().isEmpty()) {
-            utilitiesModificationMapper.map(sourcePeptide.getModificationMatches(), ptmScores, targetPeptide);
+            PSPtmScores modificationScores = null;
+            if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
+                modificationScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());
+            }
+            utilitiesModificationMapper.map(sourcePeptide.getModificationMatches(), modificationScores, targetPeptide);
         }
     }
 

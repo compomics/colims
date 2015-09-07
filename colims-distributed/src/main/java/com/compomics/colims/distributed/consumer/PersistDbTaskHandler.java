@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.DataStorageService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter2;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
@@ -59,7 +59,7 @@ public class PersistDbTaskHandler {
      * The PeptideShaker data importer.
      */
     @Autowired
-    private PeptideShakerImporter2 peptideShakerImporter;
+    private PeptideShakerImporter peptideShakerImporter;
     /**
      * The MaxQuant data importer.
      */

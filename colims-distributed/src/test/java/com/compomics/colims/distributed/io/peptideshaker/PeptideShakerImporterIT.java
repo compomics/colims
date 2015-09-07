@@ -39,7 +39,7 @@ import java.util.List;
 public class PeptideShakerImporterIT {
 
     @Autowired
-    private PeptideShakerImporter2 peptideShakerImporter2;
+    private PeptideShakerImporter peptideShakerImporter;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -84,7 +84,7 @@ public class PeptideShakerImporterIT {
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
 
-        File fastaFile = new ClassPathResource("/home/niels/Desktop/example_dataset/data/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
@@ -92,9 +92,9 @@ public class PeptideShakerImporterIT {
         unpackedPsDataImport.setFastaDb(fastaDb);
 
         //clear resources
-        peptideShakerImporter2.clear();
+        peptideShakerImporter.clear();
 
-        List<AnalyticalRun> analyticalRuns = peptideShakerImporter2.importData(unpackedPsDataImport);
+        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importData(unpackedPsDataImport);
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
@@ -102,7 +102,7 @@ public class PeptideShakerImporterIT {
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
-        Assert.assertEquals(3228, testAnalyticalRun.getSpectrums().size());
+        Assert.assertEquals(2230, testAnalyticalRun.getSpectrums().size());
 
         //search and validation settings
         Assert.assertNotNull(testAnalyticalRun.getSearchAndValidationSettings());
@@ -162,18 +162,5 @@ public class PeptideShakerImporterIT {
 
             analyticalRunService.saveOrUpdate(analyticalRun);
         }
-
-//        //do it again
-//        analyticalRuns = peptideShakerImporter.importInputAndResults(searchAndValidationSettings, null);
-//
-//        for (AnalyticalRun analyticalRun : analyticalRuns) {
-//            analyticalRun.setCreationDate(new Date());
-//            analyticalRun.setModificationDate(new Date());
-//            analyticalRun.setUserName("testing");
-//            analyticalRun.setStartDate(new Date());
-//            analyticalRun.setSample(sample);
-//            analyticalRun.setInstrument(instrumentService.findAll().get(0));
-//            analyticalRunService.saveOrUpdate(analyticalRun);
-//        }
     }
 }

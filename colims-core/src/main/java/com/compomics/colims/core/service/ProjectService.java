@@ -25,7 +25,7 @@ public interface ProjectService extends GenericService<Project, Long> {
     Project findByTitle(String title);
 
     /**
-     * Find all projects and load the according experiments.
+     * Find all projects and load the according experiments and samples.
      *
      * @return the found projects
      */

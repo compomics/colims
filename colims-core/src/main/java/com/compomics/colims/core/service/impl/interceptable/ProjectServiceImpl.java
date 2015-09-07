@@ -64,11 +64,17 @@ public class ProjectServiceImpl implements ProjectService {
 
         //fetch collections
         for (Project project : projects) {
-            Hibernate.initialize(project.getExperiments());
-            for (Experiment experiment : project.getExperiments()) {
-                Hibernate.initialize(experiment.getSamples());
-                for (Sample sample : experiment.getSamples()) {
-                    Hibernate.initialize(sample.getAnalyticalRuns());
+            if (!Hibernate.isInitialized(project.getExperiments())) {
+                Hibernate.initialize(project.getExperiments());
+                for (Experiment experiment : project.getExperiments()) {
+                    if (!Hibernate.isInitialized(experiment.getSamples())) {
+                        Hibernate.initialize(experiment.getSamples());
+                        for (Sample sample : experiment.getSamples()) {
+                            if (!Hibernate.isInitialized(sample.getAnalyticalRuns())) {
+                                Hibernate.initialize(sample.getAnalyticalRuns());
+                            }
+                        }
+                    }
                 }
             }
         }
