@@ -3,9 +3,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import java.util.List;
-
-import com.compomics.colims.repository.SpectrumRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -13,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- *
  * @author Kenneth Verheggen
  */
 @Service("analyticalRunService")
@@ -28,9 +26,6 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
 
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
-
-    @Autowired
-    private SpectrumRepository spectrumRepository;
 
     @Override
     public AnalyticalRun findById(final Long id) {
@@ -78,5 +73,11 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
         } catch (HibernateException hbe) {
             LOGGER.error(hbe, hbe.getCause());
         }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        AnalyticalRun analyticalRunToDelete = analyticalRunRepository.findById(id);
+        delete(analyticalRunToDelete);
     }
 }

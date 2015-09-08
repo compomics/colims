@@ -1,23 +1,12 @@
 package com.compomics.colims.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents a sample entity in the database.
@@ -65,7 +54,8 @@ public class Sample extends AuditableDatabaseEntity {
     /**
      * The list of binary files linked to this sample.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
+    @OneToMany(mappedBy = "sample")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     List<SampleBinaryFile> binaryFiles = new ArrayList<>();
     /**
      * The materials of this sample.
@@ -73,15 +63,16 @@ public class Sample extends AuditableDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "sample_has_material",
             joinColumns = {
-                @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     /**
      * The analytical runs that were performed using this sample.
      */
 //    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "sample")
+    @OneToMany(mappedBy = "sample")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     /**

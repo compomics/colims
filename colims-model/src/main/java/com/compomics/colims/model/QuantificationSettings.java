@@ -1,14 +1,8 @@
 package com.compomics.colims.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * @author Niels Hulstaert
@@ -23,7 +17,8 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      * The quantification files provided by the quantification engine. Multiple files can be linked to one
      * SearchAndValidationSettings instance.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationSettings")
+    @OneToMany(mappedBy = "quantificationSettings")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<QuantificationFile> quantificationFiles = new ArrayList<>();
     /**
      * The analytical run onto which the quantifications were performed.

@@ -67,15 +67,18 @@ public class Peptide extends DatabaseEntity {
     /**
      * The PeptideHasModification instances from the join table between the peptide and modification tables.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
+    @OneToMany(mappedBy = "peptide")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
 //    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
+    @OneToMany(mappedBy = "peptide")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "peptide")
+    @OneToMany(mappedBy = "peptide")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
     /**

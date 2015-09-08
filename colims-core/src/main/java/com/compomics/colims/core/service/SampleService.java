@@ -36,4 +36,11 @@ public interface SampleService extends GenericService<Sample, Long> {
      * @return the most used protocol
      */
     Protocol getMostUsedProtocol();
+
+    /**
+     * Delete the Sample instance by ID.
+     *
+     * @param id the sample ID
+     */
+    void deleteById(Long id);
 }

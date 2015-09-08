@@ -44,4 +44,11 @@ public interface ProjectService extends GenericService<Project, Long> {
      * @param project the Project instance
      */
     void fetchUsers(Project project);
+
+    /**
+     * Delete the Project instance by ID.
+     *
+     * @param id the project ID
+     */
+    void deleteById(Long id);
 }

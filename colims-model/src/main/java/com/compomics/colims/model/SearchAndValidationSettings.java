@@ -1,13 +1,10 @@
 package com.compomics.colims.model;
 
+import org.hibernate.annotations.CascadeType;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * @author Niels Hulstaert
@@ -23,6 +20,7 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      * SearchAndValidationSettings instance.
      */
     @OneToMany(mappedBy = "searchAndValidationSettings")
+    @org.hibernate.annotations.Cascade(CascadeType.ALL)
     private List<IdentificationFile> identificationFiles = new ArrayList<>();
     /**
      * The analytical run onto which the searches were performed.
@@ -35,21 +33,21 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      */
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
     @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchEngine searchEngine;
     /**
      * The FASTA file used for the searches.
      */
     @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
     @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
     /**
      * The search parameters.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
     @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchParameters searchParameters;
 
     public List<IdentificationFile> getIdentificationFiles() {

@@ -1,25 +1,13 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Basic;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "quantification_file")
@@ -54,7 +42,8 @@ public class QuantificationFile extends DatabaseEntity {
     @JoinColumn(name = "l_quant_settings_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationSettings quantificationSettings;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quantificationFile")
+    @OneToMany(mappedBy = "quantificationFile")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Quantification> quantification = new ArrayList<>();
 
     public String getFileName() {

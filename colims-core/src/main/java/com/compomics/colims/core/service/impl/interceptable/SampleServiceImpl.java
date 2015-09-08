@@ -94,4 +94,10 @@ public class SampleServiceImpl implements SampleService {
         }
     }
 
+    @Override
+    public void deleteById(Long id) {
+        Sample sampleToDelete = sampleRepository.findById(id);
+        delete(sampleToDelete);
+    }
+
 }

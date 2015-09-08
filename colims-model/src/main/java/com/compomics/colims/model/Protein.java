@@ -39,7 +39,8 @@ public class Protein extends DatabaseEntity {
     /**
      * The list of protein accessions linked to this protein.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "protein")
+    @OneToMany(mappedBy = "protein")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinAccession> proteinAccessions = new ArrayList<>();
 

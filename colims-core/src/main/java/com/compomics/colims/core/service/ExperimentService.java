@@ -37,4 +37,11 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @param experiment the Experiment instance
      */
     void fetchBinaryFiles(Experiment experiment);
+
+    /**
+     * Delete the Experiment instance by ID.
+     *
+     * @param id the experiment ID
+     */
+    void deleteById(Long id);
 }

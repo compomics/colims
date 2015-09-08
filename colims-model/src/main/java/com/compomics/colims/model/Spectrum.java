@@ -1,8 +1,6 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.FragmentationType;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -86,12 +84,14 @@ public class Spectrum extends DatabaseEntity {
      * The peptides that identify this spectrum.
      */
 //    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
+    @OneToMany(mappedBy = "spectrum")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Peptide> peptides = new ArrayList<>();
     /**
      * The SpectrumFile instances linked to this spectrum.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "spectrum")
+    @OneToMany(mappedBy = "spectrum")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
 
     /**

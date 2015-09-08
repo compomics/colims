@@ -15,4 +15,12 @@ public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long
      * @param analyticalRun the AnalyticalRun instance
      */
     void fetchSpectra(AnalyticalRun analyticalRun);
+
+    /**
+     * Delete the AnalyticalRun instance by ID.
+     *
+     * @param id the analytical run ID
+     */
+    void deleteById(Long id);
+
 }

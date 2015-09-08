@@ -21,13 +21,15 @@ public class SearchParameters extends DatabaseEntity {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam searchType;
     /**
      * The cleavage enzyme.
      */
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam enzyme;
     /**
@@ -88,7 +90,8 @@ public class SearchParameters extends DatabaseEntity {
      * The SearchParametersHasModification instances from the join table between the search parameters and search
      * modifications.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "searchParameters")
+    @OneToMany(mappedBy = "searchParameters")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();

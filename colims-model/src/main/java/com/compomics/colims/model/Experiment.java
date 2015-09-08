@@ -1,22 +1,16 @@
 package com.compomics.colims.model;
 
+import org.hibernate.annotations.*;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents an analytical run entity in the database.
@@ -66,12 +60,14 @@ public class Experiment extends AuditableDatabaseEntity {
      * The experiment samples.
      */
 //    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
+    @OneToMany(mappedBy = "experiment")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     List<Sample> samples = new ArrayList<>();
     /**
      * The experiment attachments. These are stored as lob's in the database.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "experiment")
+    @OneToMany(mappedBy = "experiment")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
 
     public Project getProject() {

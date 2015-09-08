@@ -19,10 +19,10 @@ import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFo
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
 import com.compomics.colims.client.view.ProjectManagementPanel;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
@@ -551,8 +551,8 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, analytical runs) from the database. Shows a confirmation dialog
-     * first. When confirmed, a DeleteDbTask message is sent to the DB task queue.
+     * Delete the database entity (project, experiment, samples) from the database. Shows a confirmation dialog first.
+     * When confirmed, a DeleteDbTask message is sent to the DB task queue.
      *
      * @param entity        the database entity to delete
      * @param dbEntityClass the database entity class

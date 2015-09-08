@@ -55,17 +55,20 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     /**
      * The spectra of this AnalyticalRun instance.
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
+    @OneToMany(mappedBy = "analyticalRun")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Spectrum> spectrums = new ArrayList<>();
     /**
      * The search and validation settings for this run.
      */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
+    @OneToOne(mappedBy = "analyticalRun")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     SearchAndValidationSettings searchAndValidationSettings;
     /**
      * The quantification settings for this run.
      */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "analyticalRun")
+    @OneToOne(mappedBy = "analyticalRun")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     QuantificationSettings quantificationSettings;
 
     public String getName() {

@@ -1,6 +1,10 @@
 package com.compomics.colims.model;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * This class represents the join table between the peptide and protein group tables.
@@ -36,6 +40,7 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
      */
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
     @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private ProteinGroup proteinGroup;
 
     public Double getPeptideProbability() {

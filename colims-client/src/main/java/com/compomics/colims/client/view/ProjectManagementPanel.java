@@ -166,7 +166,6 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
         deleteProjectButton.setText("delete");
         deleteProjectButton.setToolTipText("delete a project");
-        deleteProjectButton.setEnabled(false);
         deleteProjectButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteProjectButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteProjectButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -241,7 +240,6 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
         deleteExperimentButton.setText("delete");
         deleteExperimentButton.setToolTipText("delete an experiment");
-        deleteExperimentButton.setEnabled(false);
         deleteExperimentButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteExperimentButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteExperimentButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -316,7 +314,6 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
         deleteSampleButton.setText("delete");
         deleteSampleButton.setToolTipText("delete a sample");
-        deleteSampleButton.setEnabled(false);
         deleteSampleButton.setMaximumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteSampleButton.setPreferredSize(new java.awt.Dimension(80, 25));

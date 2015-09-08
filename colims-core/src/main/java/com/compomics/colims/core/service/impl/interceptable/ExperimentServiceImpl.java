@@ -90,4 +90,10 @@ public class ExperimentServiceImpl implements ExperimentService {
             LOGGER.error(hbe, hbe.getCause());
         }
     }
+
+    @Override
+    public void deleteById(Long id) {
+        Experiment experimentToDelete = experimentRepository.findById(id);
+        delete(experimentToDelete);
+    }
 }

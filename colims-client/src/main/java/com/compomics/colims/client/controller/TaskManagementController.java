@@ -44,8 +44,8 @@ public class TaskManagementController implements Controllable {
 
     private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
-    private static final String STARTED_MESSAGE = "starting storage of task ";
-    private static final String FINISHED_MESSAGE = "finished storage of task ";
+    private static final String STARTED_MESSAGE = "started processing task ";
+    private static final String FINISHED_MESSAGE = "finished processing task ";
 
     //model
     @Value("${distributed.queue.dbtask}")
