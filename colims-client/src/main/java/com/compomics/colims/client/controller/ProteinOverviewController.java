@@ -141,7 +141,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME).setPreferredWidth(50);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
 
-        proteinOverviewPanel.getProteinExportFileChooser().setApproveButtonText("Save");
+        proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
         //  Listeners
 
@@ -307,7 +307,9 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getExportProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (proteinOverviewPanel.getProteinExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
                     EventList<Protein> exportProteins = new BasicEventList<>();
@@ -315,7 +317,37 @@ public class ProteinOverviewController implements Controllable {
                     exportModel.setPerPage(0);
                     GlazedLists.replaceAll(exportProteins, exportModel.getRows(selectedAnalyticalRun), false);
 
-                    exportTable(proteinOverviewPanel.getProteinExportFileChooser().getSelectedFile(), exportModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+
+        proteinOverviewPanel.getExportPeptides().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel);
+
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+
+        proteinOverviewPanel.getExportPSMs().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
 
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
