@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Iain on 23/06/2015.
  */
-public class ProteinTableFormat implements AdvancedTableFormat<Protein> {
+public class ProteinGroupTableFormat implements AdvancedTableFormat<Protein> {
 
     private static final String[] columnNames = {"ID", "Accession", "Sequence"};
 

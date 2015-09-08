@@ -2,7 +2,7 @@ package com.compomics.colims.client.model;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
@@ -12,14 +12,14 @@ import java.util.List;
 /**
  * Created by Iain on 19/06/2015.
  */
-public class ProteinTableModel extends PagingTableModel {
+public class ProteinGroupTableModel extends PagingTableModel {
 
     /**
      * The ProteinService instance.
      */
     private final ProteinService proteinService;
 
-    public ProteinTableModel(EventList source, TableFormat tableFormat) {
+    public ProteinGroupTableModel(EventList source, TableFormat tableFormat) {
         super(source, tableFormat);
         proteinService = ApplicationContextProvider.getInstance().getBean("proteinService");
     }
@@ -27,11 +27,11 @@ public class ProteinTableModel extends PagingTableModel {
     @Override
     public String getColumnDbName(int column) {
         switch (column) {
-            case ProteinTableFormat.ID:
+            case ProteinGroupTableFormat.ID:
                 return "protein.id";
-            case ProteinTableFormat.SEQUENCE:
+            case ProteinGroupTableFormat.SEQUENCE:
                 return "protein.protein_sequence";
-            case ProteinTableFormat.ACCESSION:
+            case ProteinGroupTableFormat.ACCESSION:
                 return "protein_accession.accession";
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);

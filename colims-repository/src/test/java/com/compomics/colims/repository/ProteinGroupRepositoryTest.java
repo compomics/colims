@@ -28,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ProteinRepositoryTest {
 
     @Autowired
-    private ProteinRepository proteinRepository;
+    private ProteinGroupRepository proteinRepository;
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
 
@@ -43,12 +43,12 @@ public class ProteinRepositoryTest {
     public void testGetPagedProteinsForRunTest() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List<Protein> proteins = proteinRepository.getPagedProteinsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
+        List<Protein> proteins = proteinRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
 
         assertThat(proteins.size(), not(0));
         assertThat(proteins.get(0).getId(), is(1L));
 
-        proteins = proteinRepository.getPagedProteinsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
+        proteins = proteinRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
 
         assertThat(proteins.size(), is(0));
     }
