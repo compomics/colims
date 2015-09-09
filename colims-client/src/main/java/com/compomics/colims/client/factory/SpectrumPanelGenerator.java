@@ -1,13 +1,30 @@
 package com.compomics.colims.client.factory;
 
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
+import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
 import com.compomics.colims.core.logic.IonLadderMassesCalculator;
+import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.UnknownAAException;
+import com.compomics.util.experiment.identification.PeptideAssumption;
+import com.compomics.util.experiment.identification.SearchParameters;
+import com.compomics.util.experiment.identification.SpectrumAnnotator;
+import com.compomics.util.experiment.identification.matches.IonMatch;
+import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import com.compomics.util.experiment.identification.spectrum_annotators.PeptideSpectrumAnnotator;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.gui.interfaces.SpectrumAnnotation;
-import com.compomics.util.gui.spectrum.DefaultSpectrumAnnotation;
-import com.compomics.util.gui.spectrum.SpectrumPanel;
+import com.compomics.util.gui.spectrum.*;
+import com.compomics.util.preferences.AnnotationPreferences;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
+import com.compomics.util.preferences.SpecificAnnotationPreferences;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.primitives.Doubles;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -32,6 +49,115 @@ public class SpectrumPanelGenerator {
      */
     @Autowired
     private IonLadderMassesCalculator ionLadderCalculator;
+
+    @Autowired
+    private SpectrumService spectrumService;
+    @Autowired
+    private PeptideService peptideService;
+    @Autowired
+    private ColimsSpectrumMapper colimsSpectrumMapper;
+    @Autowired
+    private PsmMapper psmMapper;
+
+//    public SpectrumPanel furnishPanel(Spectrum spectrum) {
+//        AnnotationPreferences annotationPreferences = new AnnotationPreferences();
+//        UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+//        SearchParameters searchParameters = new SearchParameters();
+//        MSnSpectrum mSnSpectrum = new MSnSpectrum();
+//
+//        spectrumService.fetchSpectrumFiles(spectrum);
+//
+//        try {
+//            colimsSpectrumMapper.map(spectrum, mSnSpectrum);
+//
+//            Collection<Peak> peaks = mSnSpectrum.getPeakList();
+//
+//            if (peaks != null && !peaks.isEmpty()) {
+//                SpectrumPanel spectrumPanel = new SpectrumPanel(
+//                    mSnSpectrum.getMzValuesAsArray(),
+//                    mSnSpectrum.getIntensityValuesAsArray(),
+//                    mSnSpectrum.getPrecursor().getMz(),
+//                    mSnSpectrum.getPrecursor().getPossibleChargesAsString(),
+//                    "",
+//                    40,
+//                    false, false, false,
+//                    2,
+//                    false
+//                );
+//
+//                spectrumPanel.setDeltaMassWindow(annotationPreferences.getFragmentIonAccuracy());
+//                spectrumPanel.setBorder(null);
+//                spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
+//                spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
+//                spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
+//                spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
+//
+//                List<com.compomics.colims.model.Peptide> peptides = peptideService.getPeptidesForSpectrum(spectrum);
+//
+//                if (!peptides.isEmpty()) {
+//                    SpectrumMatch spectrumMatch = new SpectrumMatch();
+//                    psmMapper.map(spectrum, spectrumMatch, peptides.get(0));
+//
+//                    PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
+//
+//                    SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
+//                        mSnSpectrum.getSpectrumKey(),
+//                        peptideAssumption,
+//                        new SequenceMatchingPreferences(),
+//                        new SequenceMatchingPreferences()
+//                    );
+//
+//                    PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
+//
+//                    ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
+//                        annotationPreferences,
+//                        specificAnnotationPreferences,
+//                        mSnSpectrum,
+//                        peptideAssumption.getPeptide()
+//                    );
+//
+//                    spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
+//                    spectrumPanel.showAnnotatedPeaksOnly(!annotationPreferences.showAllPeaks());
+//                    spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
+//
+//                    spectrumPanel.addAutomaticDeNovoSequencing(
+//                        peptideAssumption.getPeptide(),
+//                        annotations,
+//                        searchParameters.getIonSearched1(),
+//                        searchParameters.getIonSearched2(),
+//                        annotationPreferences.getDeNovoCharge(),
+//                        annotationPreferences.showForwardIonDeNovoTags(),
+//                        annotationPreferences.showRewindIonDeNovoTags(),
+//                        false
+//                    );
+//
+//                    spectrumPopupDialog.getSpectrumJPanel().removeAll();
+//                    spectrumPopupDialog.getSpectrumJPanel().add(spectrumPanel);
+//                    spectrumPopupDialog.getSpectrumJPanel().revalidate();
+//                    spectrumPopupDialog.getSpectrumJPanel().repaint();
+//
+//                    SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
+//                        getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
+//                        annotations,
+//                        true,
+//                        searchParameters.getModificationProfile(),
+//                        searchParameters.getIonSearched1(),
+//                        searchParameters.getIonSearched2()
+//                    );
+//
+//                    spectrumPopupDialog.getSecondarySpectrumPlotsJPanel().removeAll();
+//                    spectrumPopupDialog.getSecondarySpectrumPlotsJPanel().add(sequenceFragmentationPanel);
+//                    spectrumPopupDialog.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(annotations, mSnSpectrum, 0.75));
+//
+//                    MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, mSnSpectrum, annotationPreferences.getFragmentIonAccuracy(), false);
+//
+//                    spectrumPopupDialog.getSecondarySpectrumPlotsJPanel().add(massErrorPlot);
+//                }
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error(e.getCause(), e);
+//        }
+//    }
 
     /**
      * Return a SpectrumPanel for a given PSM.

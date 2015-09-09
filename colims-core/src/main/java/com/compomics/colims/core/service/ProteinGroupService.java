@@ -1,4 +1,4 @@
-package com.compomics.colims.repository;
+package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
@@ -6,11 +6,15 @@ import com.compomics.colims.model.ProteinGroup;
 import java.util.List;
 
 /**
- * This interface provides repository methods for the ProteinGroup class.
- *
- * @author Niels Hulstaert
+ * Created by Iain on 08/09/2015.
  */
-public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, Long> {
+public interface ProteinGroupService extends GenericService<ProteinGroup, Long> {
+    /**
+     * Get all proteins for a given analytical run in suitable manner for a paged table.
+     *
+     * @param analyticalRun The run
+     * @return A list of proteins
+     */
     List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
 
     /**

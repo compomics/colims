@@ -7,12 +7,13 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
-import com.compomics.colims.client.model.ProteinTableModel;
+import com.compomics.colims.client.model.ProteinGroupTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.core.service.PeptideService;
@@ -21,11 +22,13 @@ import com.compomics.colims.model.*;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
+import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
@@ -33,6 +36,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +51,9 @@ import java.util.stream.Collectors;
 @Component("proteinOverviewController")
 public class ProteinOverviewController implements Controllable {
 
-    private ProteinTableModel proteinTableModel;
+    private static final Logger LOGGER = Logger.getLogger(ProteinOverviewController.class);
+
+    private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
     private ProteinPanelPsmTableModel psmTableModel;
     private final EventList<Protein> proteins = new BasicEventList<>();
@@ -96,8 +104,8 @@ public class ProteinOverviewController implements Controllable {
         // init proteins table
         SortedList<Protein> sortedProteins = new SortedList<>(proteins, null);
 
-        proteinTableModel = new ProteinTableModel(sortedProteins, new ProteinTableFormat());
-        proteinOverviewPanel.getProteinsTable().setModel(proteinTableModel);
+        proteinGroupTableModel = new ProteinGroupTableModel(sortedProteins, new ProteinGroupTableFormat());
+        proteinOverviewPanel.getProteinsTable().setModel(proteinGroupTableModel);
         proteinSelectionModel = new DefaultEventSelectionModel<>(sortedProteins);
         proteinSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinSelectionModel);
@@ -120,9 +128,9 @@ public class ProteinOverviewController implements Controllable {
         spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
 
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setPreferredWidth(40);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMinWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(40);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
@@ -133,6 +141,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME).setPreferredWidth(50);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(50);
 
+        proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
+
         //  Listeners
 
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
@@ -141,7 +151,7 @@ public class ProteinOverviewController implements Controllable {
             if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
                 selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
 
-                proteinTableModel.reset(selectedAnalyticalRun);
+                proteinGroupTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
 
                 spectrumIdsForRun = spectrumService.getSpectraIdsForRun(selectedAnalyticalRun);
@@ -149,7 +159,7 @@ public class ProteinOverviewController implements Controllable {
                 // Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
                     proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
-                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
+                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
                 ));
 
                 minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
@@ -214,8 +224,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
-                proteinTableModel.setPage(0);
+                proteinGroupTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
+                proteinGroupTableModel.setPage(0);
 
                 updateProteinTable();
             }
@@ -224,7 +234,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getFirstPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(0);
+                proteinGroupTableModel.setPage(0);
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(true);
@@ -237,13 +247,13 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPrevPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getPage() - 1);
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(true);
                 proteinOverviewPanel.getLastPageProteins().setEnabled(true);
 
-                if (proteinTableModel.getPage() == 0) {
+                if (proteinGroupTableModel.getPage() == 0) {
                     proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
                     proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
                 }
@@ -253,13 +263,13 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getNextPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getPage() + 1);
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
                 updateProteinTable();
 
                 proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
                 proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
 
-                if (proteinTableModel.isMaxPage()) {
+                if (proteinGroupTableModel.isMaxPage()) {
                     proteinOverviewPanel.getNextPageProteins().setEnabled(false);
                     proteinOverviewPanel.getLastPageProteins().setEnabled(false);
                 }
@@ -269,7 +279,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getLastPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getMaxPage());
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(false);
@@ -287,9 +297,59 @@ public class ProteinOverviewController implements Controllable {
                 String filterText = proteinOverviewPanel.getFilterProteins().getText();
 
                 if (filterText.matches("^[a-zA-Z0-9]*$")) {
-                    proteinTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
+                    proteinGroupTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
 
                     updateProteinTable();
+                }
+            }
+        });
+
+        proteinOverviewPanel.getExportProteins().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    EventList<Protein> exportProteins = new BasicEventList<>();
+                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteins, null), new ProteinGroupTableFormat());
+                    exportModel.setPerPage(0);
+                    GlazedLists.replaceAll(exportProteins, exportModel.getRows(selectedAnalyticalRun), false);
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+
+        proteinOverviewPanel.getExportPeptides().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel);
+
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+
+        proteinOverviewPanel.getExportPSMs().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
+
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
+
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
             }
         });
@@ -349,11 +409,62 @@ public class ProteinOverviewController implements Controllable {
      */
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
-            GlazedLists.replaceAll(proteins, proteinTableModel.getRows(selectedAnalyticalRun), false);
-            proteinOverviewPanel.getPageLabelProteins().setText(proteinTableModel.getPageIndicator());
+            GlazedLists.replaceAll(proteins, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
+            proteinOverviewPanel.getPageLabelProteins().setText(proteinGroupTableModel.getPageIndicator());
         } else {
             GlazedLists.replaceAll(proteins, new ArrayList<>(), false);
             proteinOverviewPanel.getPageLabelProteins().setText("");
+        }
+    }
+
+    /**
+     * Save the contents of a data table to a tab delimited file
+     *
+     * @param filename      File to be saved as [filename].tsv
+     * @param tableModel    A table model to retrieve data from
+     * @param <T>           Class extending TableModel
+     */
+    private <T extends TableModel> void exportTable(File filename, T tableModel) {
+        try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
+            int columnCount = tableModel.getColumnCount();
+            int rowCount = tableModel.getRowCount();
+            StringBuilder line = new StringBuilder();
+
+            // write column headers
+            for (int i = 0; i < columnCount; ++i) {
+                if (i > 0) {
+                    line.append("\t");
+                }
+
+                line.append(tableModel.getColumnName(i));
+            }
+
+            fileWriter.write(line.append("\n").toString());
+
+            // write rows
+            for (int i = 0; i < rowCount; ++i) {
+                line = new StringBuilder();
+
+                for (int j = 0; j < columnCount; ++j) {
+                    if (j > 0) {
+                        line.append("\t");
+                    }
+
+                    line.append(tableModel.getValueAt(i, j));
+
+                    if (j == columnCount - 1 && i < rowCount - 1) {
+                        line.append("\n");
+                    }
+                }
+
+                fileWriter.write(line.toString());
+            }
+
+            //  show dialog
+            JOptionPane.showMessageDialog(proteinOverviewPanel, "Data exported to " + filename + ".tsv");
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            eventBus.post(new MessageEvent("Export error", "Exporting tabular data failed: "  + System.lineSeparator() + System.lineSeparator() + e.getMessage(), JOptionPane.ERROR_MESSAGE));
         }
     }
 
@@ -365,50 +476,50 @@ public class ProteinOverviewController implements Controllable {
         int labelWidth = 55;
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
-                .setCellRenderer(
-                        new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                                minimumRetentionTime,
-                                maximumRetentionTime,
-                                50d,
-                                sparklineColor,
-                                sparklineColor
-                        )
-                );
+            .setCellRenderer(
+                new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+                    minimumRetentionTime,
+                    maximumRetentionTime,
+                    50d,
+                    sparklineColor,
+                    sparklineColor
+                )
+            );
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(PsmTableFormat.RETENTION_TIME)
-                .getCellRenderer())
-                .showNumberAndChart(true, labelWidth);
+            .getColumnModel()
+            .getColumn(PsmTableFormat.RETENTION_TIME)
+            .getCellRenderer())
+            .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(PsmTableFormat.RETENTION_TIME)
-                .getCellRenderer())
-                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+            .getColumnModel()
+            .getColumn(PsmTableFormat.RETENTION_TIME)
+            .getCellRenderer())
+            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE)
-                .setCellRenderer(
-                        new JSparklinesIntervalChartTableCellRenderer(
-                                PlotOrientation.HORIZONTAL,
-                                minimumCharge,
-                                maximumCharge,
-                                50d,
-                                sparklineColor,
-                                sparklineColor
-                        )
-                );
+            .setCellRenderer(
+                new JSparklinesIntervalChartTableCellRenderer(
+                    PlotOrientation.HORIZONTAL,
+                    minimumCharge,
+                    maximumCharge,
+                    50d,
+                    sparklineColor,
+                    sparklineColor
+                )
+            );
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
-                .getCellRenderer())
-                .showNumberAndChart(true, labelWidth);
+            .getColumnModel()
+            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
+            .getCellRenderer())
+            .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
-                .getCellRenderer())
-                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+            .getColumnModel()
+            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
+            .getCellRenderer())
+            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 }

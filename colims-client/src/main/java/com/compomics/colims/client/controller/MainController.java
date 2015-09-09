@@ -213,7 +213,6 @@ public class MainController implements Controllable, ActionListener {
                 super.keyPressed(e);
 
                 if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-                    System.exit(0);
                     userLoginDialog.getLoginButton().doClick();
                 }
             }

@@ -109,6 +109,13 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     }
 
     /**
+     * Set the number of rows displayed per page
+     *
+     * @param perPage Page length
+     */
+    public void setPerPage(int perPage) { this.perPage = perPage; }
+
+    /**
      * Update filter text.
      *
      * @param filter Filter string

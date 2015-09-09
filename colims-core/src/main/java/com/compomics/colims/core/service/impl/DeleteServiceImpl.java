@@ -20,6 +20,6 @@ public class DeleteServiceImpl implements DeleteService {
      * @param analyticalRun the AnalyticalRun instance to delete
      */
     private void deleteAnalyticalRun(AnalyticalRun analyticalRun) {
-        
+
     }
 }

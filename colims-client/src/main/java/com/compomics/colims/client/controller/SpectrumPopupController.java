@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * Controller for spectrum panel pop-up window
- * <p/>
+ *
  * Created by Iain on 28/07/2015.
  */
 @Component
