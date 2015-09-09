@@ -7,7 +7,7 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.PeptideShakerImport;
-import com.compomics.colims.core.service.DataStorageService;
+import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
@@ -77,7 +77,7 @@ public class PersistDbTaskHandler {
     private SampleService sampleService;
 
     @Autowired
-    private DataStorageService dataStorageService;
+    private PersistService persistService;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
@@ -164,7 +164,7 @@ public class PersistDbTaskHandler {
     }
 
     private void store(List<AnalyticalRun> analyticalRuns, PersistDbTask persistDbTask, Sample sample, String userName) {
-        dataStorageService.store(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
+        persistService.store(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }

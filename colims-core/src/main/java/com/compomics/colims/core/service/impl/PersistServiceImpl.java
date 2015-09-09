@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.DataStorageService;
+import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import com.compomics.colims.repository.ProteinGroupRepository;
@@ -23,9 +23,9 @@ import java.util.Set;
  *
  * @author Niels Hulstaert
  */
-@Service("dataStorageService")
+@Service("persistService")
 @Transactional
-public class DataStorageServiceImpl implements DataStorageService {
+public class PersistServiceImpl implements PersistService {
 
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
@@ -56,6 +56,7 @@ public class DataStorageServiceImpl implements DataStorageService {
 
             Set<ProteinGroup> proteinGroups = new HashSet<>();
             //collect all unique ProteinGroup instances
+            //@todo to this smarter, whitout having to iterate over everything
             for (Spectrum spectrum : analyticalRun.getSpectrums()) {
                 for (Peptide peptide : spectrum.getPeptides()) {
                     for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {

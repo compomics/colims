@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This interface provides service methods for storing an analytical run.
+ * This interface provides service methods for storing one or more analytical runs.
  *
  * @author Niels Hulstaert
  */
-public interface DataStorageService {
+public interface PersistService {
 
     /**
      * Store the AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings.
