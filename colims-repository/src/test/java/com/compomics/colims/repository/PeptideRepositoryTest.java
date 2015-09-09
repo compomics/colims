@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class PeptideRepositoryTest {
     @Autowired
     ProteinRepository proteinRepository;
 
+    @Ignore
     @Test
     public void testGetPeptidesForProtein() throws Exception {
         Protein protein = proteinRepository.findById(4L);
@@ -41,6 +43,7 @@ public class PeptideRepositoryTest {
         assertThat(peptides.size(), not(0));
     }
 
+    @Ignore
     @Test
     public void testGetPeptidesFromSequence() {
         String sequence = "ABCDEFGH";

@@ -519,7 +519,6 @@
                             </includes>
                             <excludes>
                                 <exclude>**/*IT.class</exclude>
-                                <exclude>**/PeptideShakerImporterTest.class</exclude>
                             </excludes>
                             <argLine>${argLine}</argLine>
                         </configuration>

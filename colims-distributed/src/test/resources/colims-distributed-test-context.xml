@@ -12,20 +12,20 @@
         <property name="password" value="root"/>
     </bean>
 
-    <!--  Embedded ActiveMQ Broker -->
-    <amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">
-        <amq:managementContext>
-            <amq:managementContext createConnector="true"/>
-        </amq:managementContext>
-        <amq:transportConnectors>
-            <amq:transportConnector uri="tcp://localhost:0"/>
-        </amq:transportConnectors>
-    </amq:broker>
+    <!--&lt;!&ndash;  Embedded ActiveMQ Broker &ndash;&gt;-->
+    <!--<amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">-->
+        <!--<amq:managementContext>-->
+            <!--<amq:managementContext createConnector="true"/>-->
+        <!--</amq:managementContext>-->
+        <!--<amq:transportConnectors>-->
+            <!--<amq:transportConnector uri="tcp://localhost:0"/>-->
+        <!--</amq:transportConnectors>-->
+    <!--</amq:broker>-->
 
-    <!-- ActiveMQ connection factory -->
-    <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">
-        <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
-    </bean>
+    <!--&lt;!&ndash; ActiveMQ connection factory &ndash;&gt;-->
+    <!--<bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">-->
+        <!--<property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>-->
+    <!--</bean>-->
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="colimsDataSource"/>

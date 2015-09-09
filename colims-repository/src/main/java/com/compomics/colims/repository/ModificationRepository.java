@@ -1,6 +1,9 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Modification;
+
+import java.util.List;
 
 /**
  * This interface provides repository methods for the Modification class.
@@ -35,5 +38,13 @@ public interface ModificationRepository extends GenericRepository<Modification, 
      * @return the found modification
      */
     Modification findByAlternativeAccession(String alternativeAccession);
+
+    /**
+     * Get the modification IDs for the given analytical run.
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     * @return the list of protein IDs
+     */
+    List<Long> getModificationIdsForRun(AnalyticalRun analyticalRun);
 
 }

@@ -99,6 +99,8 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (3, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
 
+--insert test peptide has modifications
+INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id) VALUES (1, 1, 1);
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');

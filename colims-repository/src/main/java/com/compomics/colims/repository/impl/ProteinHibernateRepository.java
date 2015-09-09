@@ -2,17 +2,12 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinRepository;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,11 +15,29 @@ import java.util.List;
  */
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
+
+    public static final String BASE_QUERY = "SELECT DISTINCT protein.id FROM protein"
+            + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_id = protein.id"
+            + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id"
+            + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
+            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
+            + " WHERE sp.l_analytical_run_id = %1$d";
+
     @Override
     public Protein findBySequence(String sequence) {
         Criteria criteria = createCriteria(Restrictions.eq("sequence", sequence));
         criteria.setCacheable(true);
         return (Protein) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Long> getProteinIdsForRun(AnalyticalRun analyticalRun) {
+        List<Long> proteinIds = getCurrentSession()
+                .createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId()))
+                .addScalar("protein.id", LongType.INSTANCE)
+                .list();
+
+        return proteinIds;
     }
 
 //    @Override

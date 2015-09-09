@@ -1,5 +1,7 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Modification;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.Modification;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
@@ -17,6 +19,8 @@ public class ModificationRepositoryTest {
 
     @Autowired
     private ModificationRepository modificationRepository;
+    @Autowired
+    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testFindByName() {
@@ -61,5 +65,14 @@ public class ModificationRepositoryTest {
         Assert.assertNotNull(modification);
         //check the ID
         Assert.assertNotNull(modification.getId());
+    }
+
+    @Test
+    public void testGetModificationIdsForRunTest() {
+        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+
+        List<Long> modificationIds = modificationRepository.getModificationIdsForRun(analyticalRun);
+
+        Assert.assertEquals(1, modificationIds.size());
     }
 }

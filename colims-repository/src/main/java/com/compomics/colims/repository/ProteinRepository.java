@@ -20,6 +20,14 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      */
     Protein findBySequence(String sequence);
 
+    /**
+     * Get the protein IDs for the given analytical run.
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     * @return the list of protein IDs
+     */
+    List<Long> getProteinIdsForRun(AnalyticalRun analyticalRun);
+
 //    /**
 //     * Find a protein with hibernate search by the sequence.
 //     *
