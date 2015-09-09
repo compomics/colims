@@ -1,24 +1,28 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.util.LinkedAliasToEntityMapResultTransformer;
 import com.compomics.colims.client.view.ManualQueryPanel;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.eventbus.EventBus;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.GenericJDBCException;
+import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Davy Maddelein
  */
-
 @Component("manualQueryPanelController")
 public class ManualQueryPanelController implements Controllable {
 
@@ -26,7 +30,7 @@ public class ManualQueryPanelController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private MainController mainController;
+    private MainController colimsController;
     @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
@@ -44,26 +48,39 @@ public class ManualQueryPanelController implements Controllable {
         manualQueryPanel = new ManualQueryPanel();
 
 
-        manualQueryPanel.getExecuteQueryButton().addActionListener(new ActionListener() {
+        manualQueryPanel.getExecuteQueryButton().addActionListener(e -> {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            String query = manualQueryPanel.getQueryInputArea().getText();
 
-                String query = manualQueryPanel.getQueryInputArea().getText();
+            if (permissionToExecute(query)) {
 
-                if (permissionToExecute(query)) {
+                //create and setup the return for the entered query
+                SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(query);
+                sqlQuery.setResultTransformer(LinkedAliasToEntityMapResultTransformer.INSTANCE());
+                try {
+                    List<LinkedHashMap<String, Object>> resultList = sqlQuery.list();
 
-                    SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(query);
-                    List<Object[]> resultList = sqlQuery.list();
+                    //fill table
                     if (resultList.size() > 0) {
-                        DefaultTableModel model = new DefaultTableModel(sqlQuery.getReturnAliases(), resultList.size());
-                        for (Object[] returned : resultList) {
-                            model.addRow(returned);
+                        DefaultTableModel model = new DefaultTableModel();
+                        resultList.get(0).keySet().forEach(model::addColumn);
+                        Iterator<LinkedHashMap<String, Object>> iter = resultList.iterator();
+
+                        while (iter.hasNext()) {
+                            model.addRow(iter.next().values().toArray());
+                            //remove to lighten memory load
+                            iter.remove();
                         }
+
                         manualQueryPanel.getResultTable().setModel(model);
                     } else {
-                        mainController.showPermissionErrorDialog("Your user doesn't have rights to execute this query");
+                       eventBus.post(new MessageEvent("permission problem","Your user doesn't have rights to execute this query", JOptionPane.ERROR_MESSAGE));
                     }
+                } catch (GenericJDBCException executionException) {
+                    eventBus.post(new MessageEvent("permission problem","cannot execute any commands that are not selects", JOptionPane.ERROR_MESSAGE));
+
+                } catch (SQLGrammarException grammarException){
+                    eventBus.post(new MessageEvent("syntax problem","there was a problem with your query: " + query, JOptionPane.ERROR_MESSAGE));
                 }
             }
         });
@@ -80,10 +97,6 @@ public class ManualQueryPanelController implements Controllable {
     }
 
     private boolean permissionToExecute(String query) {
-        query = query.toUpperCase(Locale.UK);
-        return authenticationBean.getDefaultPermissions().get(DefaultPermission.READ)
-                || query.contains("DELETE") && authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)
-                || (query.contains("UPDATE") && authenticationBean.getDefaultPermissions().get(DefaultPermission.UPDATE))
-                || (query.contains("INSERT") && authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE));
+        return authenticationBean.getDefaultPermissions().get(DefaultPermission.READ);
     }
 }

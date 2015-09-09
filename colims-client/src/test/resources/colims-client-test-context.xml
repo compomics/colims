@@ -1,33 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:amq="http://activemq.apache.org/schema/core"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-       http://activemq.apache.org/schema/core 
-       http://activemq.apache.org/schema/core/activemq-core.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
     <bean id="splashScreen" class="com.compomics.colims.client.SplashScreenStub"/>
-
-    <!--  Embedded ActiveMQ Broker -->
-    <!--<amq:broker id="broker" useJmx="true" persistent="false" brokerName="${distributed.broker.name}">-->
-        <!--<amq:managementContext>-->
-            <!--<amq:managementContext createConnector="true"/>-->
-        <!--</amq:managementContext>-->
-        <!--<amq:transportConnectors>-->
-            <!--<amq:transportConnector uri="tcp://localhost:0"/>-->
-        <!--</amq:transportConnectors>-->
-    <!--</amq:broker>-->
-
-    <!--&lt;!&ndash; ActiveMQ connection factory &ndash;&gt;-->
-    <!--<bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" depends-on="broker">-->
-        <!--<property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>-->
-    <!--</bean>-->
-
-    <!-- Client connector for jmx -->
-    <!--<bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"-->
-          <!--p:serviceUrl="${distributed.jmx.service.url}" depends-on="broker"/>-->
 
     <import resource="classpath:colims-core-context.xml"/>
 
