@@ -4,6 +4,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 
@@ -17,18 +18,18 @@ public class ProteinGroupTableModel extends PagingTableModel {
     /**
      * The ProteinService instance.
      */
-    private final ProteinService proteinService;
+    private final ProteinGroupService proteinGroupService;
 
     public ProteinGroupTableModel(EventList source, TableFormat tableFormat) {
         super(source, tableFormat);
-        proteinService = ApplicationContextProvider.getInstance().getBean("proteinService");
+        proteinGroupService = ApplicationContextProvider.getInstance().getBean("proteinGroupService");
     }
 
     @Override
     public String getColumnDbName(int column) {
         switch (column) {
             case ProteinGroupTableFormat.ID:
-                return "protein.id";
+                return "protein_group.id";
             case ProteinGroupTableFormat.SEQUENCE:
                 return "protein.protein_sequence";
             case ProteinGroupTableFormat.ACCESSION:
@@ -45,16 +46,16 @@ public class ProteinGroupTableModel extends PagingTableModel {
      * @return List of Spectrum objects
      */
     public List getRows(AnalyticalRun analyticalRun) {
-        rowCount = proteinService.getProteinCountForRun(analyticalRun, filter);
+        rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return proteinService.getPagedProteinsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
     }
 
     public void reset(final AnalyticalRun analyticalRun) {
-        super.reset(analyticalRun == null ? 0 : proteinService.getProteinCountForRun(analyticalRun, filter));
+        super.reset(analyticalRun == null ? 0 : proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
     }
 }

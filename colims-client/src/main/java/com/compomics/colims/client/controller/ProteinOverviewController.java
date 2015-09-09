@@ -10,10 +10,10 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
-import com.compomics.colims.client.model.ProteinTableModel;
+import com.compomics.colims.client.model.ProteinGroupTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinTableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.core.service.PeptideService;
@@ -53,7 +53,7 @@ public class ProteinOverviewController implements Controllable {
 
     private static final Logger LOGGER = Logger.getLogger(ProteinOverviewController.class);
 
-    private ProteinTableModel proteinTableModel;
+    private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
     private ProteinPanelPsmTableModel psmTableModel;
     private final EventList<Protein> proteins = new BasicEventList<>();
@@ -104,8 +104,8 @@ public class ProteinOverviewController implements Controllable {
         // init proteins table
         SortedList<Protein> sortedProteins = new SortedList<>(proteins, null);
 
-        proteinTableModel = new ProteinTableModel(sortedProteins, new ProteinTableFormat());
-        proteinOverviewPanel.getProteinsTable().setModel(proteinTableModel);
+        proteinGroupTableModel = new ProteinGroupTableModel(sortedProteins, new ProteinGroupTableFormat());
+        proteinOverviewPanel.getProteinsTable().setModel(proteinGroupTableModel);
         proteinSelectionModel = new DefaultEventSelectionModel<>(sortedProteins);
         proteinSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinSelectionModel);
@@ -128,9 +128,9 @@ public class ProteinOverviewController implements Controllable {
         spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
 
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setPreferredWidth(40);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMaxWidth(40);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinTableFormat.ID).setMinWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(40);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(40);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(40);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(40);
@@ -151,7 +151,7 @@ public class ProteinOverviewController implements Controllable {
             if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
                 selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
 
-                proteinTableModel.reset(selectedAnalyticalRun);
+                proteinGroupTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
 
                 spectrumIdsForRun = spectrumService.getSpectraIdsForRun(selectedAnalyticalRun);
@@ -159,7 +159,7 @@ public class ProteinOverviewController implements Controllable {
                 // Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
                     proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
-                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinTableModel.getPerPage() + 1
+                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
                 ));
 
                 minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
@@ -224,8 +224,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
-                proteinTableModel.setPage(0);
+                proteinGroupTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
+                proteinGroupTableModel.setPage(0);
 
                 updateProteinTable();
             }
@@ -234,7 +234,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getFirstPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(0);
+                proteinGroupTableModel.setPage(0);
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(true);
@@ -247,13 +247,13 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPrevPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getPage() - 1);
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(true);
                 proteinOverviewPanel.getLastPageProteins().setEnabled(true);
 
-                if (proteinTableModel.getPage() == 0) {
+                if (proteinGroupTableModel.getPage() == 0) {
                     proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
                     proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
                 }
@@ -263,13 +263,13 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getNextPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getPage() + 1);
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
                 updateProteinTable();
 
                 proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
                 proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
 
-                if (proteinTableModel.isMaxPage()) {
+                if (proteinGroupTableModel.isMaxPage()) {
                     proteinOverviewPanel.getNextPageProteins().setEnabled(false);
                     proteinOverviewPanel.getLastPageProteins().setEnabled(false);
                 }
@@ -279,7 +279,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getLastPageProteins().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinTableModel.setPage(proteinTableModel.getMaxPage());
+                proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
                 updateProteinTable();
 
                 proteinOverviewPanel.getNextPageProteins().setEnabled(false);
@@ -297,7 +297,7 @@ public class ProteinOverviewController implements Controllable {
                 String filterText = proteinOverviewPanel.getFilterProteins().getText();
 
                 if (filterText.matches("^[a-zA-Z0-9]*$")) {
-                    proteinTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
+                    proteinGroupTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
 
                     updateProteinTable();
                 }
@@ -313,7 +313,7 @@ public class ProteinOverviewController implements Controllable {
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
                     EventList<Protein> exportProteins = new BasicEventList<>();
-                    ProteinTableModel exportModel = new ProteinTableModel(new SortedList<>(exportProteins, null), new ProteinTableFormat());
+                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteins, null), new ProteinGroupTableFormat());
                     exportModel.setPerPage(0);
                     GlazedLists.replaceAll(exportProteins, exportModel.getRows(selectedAnalyticalRun), false);
 
@@ -409,8 +409,8 @@ public class ProteinOverviewController implements Controllable {
      */
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
-            GlazedLists.replaceAll(proteins, proteinTableModel.getRows(selectedAnalyticalRun), false);
-            proteinOverviewPanel.getPageLabelProteins().setText(proteinTableModel.getPageIndicator());
+            GlazedLists.replaceAll(proteins, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
+            proteinOverviewPanel.getPageLabelProteins().setText(proteinGroupTableModel.getPageIndicator());
         } else {
             GlazedLists.replaceAll(proteins, new ArrayList<>(), false);
             proteinOverviewPanel.getPageLabelProteins().setText("");

@@ -35,6 +35,8 @@ public class DatabaseLoginDialog extends javax.swing.JDialog {
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
+
+        this.getRootPane().setDefaultButton(loginButton);
     }
 
     public JButton getCloseButton() {

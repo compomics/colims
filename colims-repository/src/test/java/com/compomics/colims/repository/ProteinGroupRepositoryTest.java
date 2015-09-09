@@ -2,7 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
-import org.junit.Assert;
+import com.compomics.colims.model.ProteinGroup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +25,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class ProteinRepositoryTest {
+public class ProteinGroupRepositoryTest {
 
     @Autowired
-    private ProteinGroupRepository proteinRepository;
+    private ProteinGroupRepository proteinGroupRepository;
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
-
-    @Test
-    public void testFindBySequence() {
-        Protein foundProtein = proteinRepository.findBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
-        Assert.assertNotNull(foundProtein);
-        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
-    }
 
     @Test
     public void testGetPagedProteinsForRunTest() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List<Protein> proteins = proteinRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
+        List<ProteinGroup> proteins = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
 
         assertThat(proteins.size(), not(0));
         assertThat(proteins.get(0).getId(), is(1L));
 
-        proteins = proteinRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
+        proteins = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
 
         assertThat(proteins.size(), is(0));
     }
@@ -57,16 +50,16 @@ public class ProteinRepositoryTest {
     public void testGetProteinCountForRun() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        assertThat(proteinRepository.getProteinCountForRun(analyticalRun, ""), not(0));
-        assertThat(proteinRepository.getProteinCountForRun(analyticalRun, "NOTAPROTEIN"), is(0));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, ""), not(0));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "NOTAPROTEIN"), is(0));
     }
 
 //    @Test
 //    public void testHibernateSearchFindBySequence() {
 //        //(re)build the lucene indexes
-//        proteinRepository.rebuildIndex();
+//        proteinGroupRepository.rebuildIndex();
 //        
-//        Protein foundProtein = proteinRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
+//        Protein foundProtein = proteinGroupRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
 //        Assert.assertNotNull(foundProtein);
 //        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());
 //    }

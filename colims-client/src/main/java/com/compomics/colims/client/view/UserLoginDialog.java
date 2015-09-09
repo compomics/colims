@@ -23,6 +23,8 @@ public class UserLoginDialog extends javax.swing.JDialog {
         initComponents();
         
         this.getContentPane().setBackground(Color.WHITE);
+
+        this.getRootPane().setDefaultButton(loginButton);
     }
     
     public JButton getLoginButton() {

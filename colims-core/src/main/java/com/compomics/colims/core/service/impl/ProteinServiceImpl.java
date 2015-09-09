@@ -63,16 +63,6 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public List<Protein> getPagedProteinsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
-        return proteinRepository.getPagedProteinsForRun(analyticalRun, start, length, orderBy, direction, filter);
-    }
-
-    @Override
-    public int getProteinCountForRun(AnalyticalRun analyticalRun, String filter) {
-        return proteinRepository.getProteinCountForRun(analyticalRun, filter);
-    }
-
-    @Override
     public void fetchAccessions(Protein protein) {
         try {
             protein.getProteinAccessions().size();
