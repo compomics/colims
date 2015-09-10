@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    public static final String BASE_QUERY = "SELECT DISTINCT protein.id FROM protein"
+    public static final String PROTEIN_IDS_QUERY = "SELECT DISTINCT protein.id FROM protein"
             + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_id = protein.id"
             + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id"
             + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
@@ -33,7 +33,7 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     @Override
     public List<Long> getProteinIdsForRun(AnalyticalRun analyticalRun) {
         List<Long> proteinIds = getCurrentSession()
-                .createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId()))
+                .createSQLQuery(String.format(PROTEIN_IDS_QUERY, analyticalRun.getId()))
                 .addScalar("protein.id", LongType.INSTANCE)
                 .list();
 

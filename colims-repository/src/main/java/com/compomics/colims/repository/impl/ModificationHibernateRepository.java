@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("modificationRepository")
 public class ModificationHibernateRepository extends GenericHibernateRepository<Modification, Long> implements ModificationRepository {
 
-    public static final String BASE_QUERY = "SELECT DISTINCT modification.id FROM modification"
+    public static final String MODIFICATION_IDS_QUERY = "SELECT DISTINCT modification.id FROM modification"
             + " LEFT JOIN peptide_has_modification p_has_mod ON p_has_mod.l_modification_id = modification.id"
             + " LEFT JOIN peptide pep ON pep.id = p_has_mod.l_peptide_id"
             + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
@@ -52,7 +52,7 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
     @Override
     public List<Long> getModificationIdsForRun(AnalyticalRun analyticalRun) {
         List<Long> modificationIds = getCurrentSession()
-                .createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId()))
+                .createSQLQuery(String.format(MODIFICATION_IDS_QUERY, analyticalRun.getId()))
                 .addScalar("modification.id", LongType.INSTANCE)
                 .list();
 

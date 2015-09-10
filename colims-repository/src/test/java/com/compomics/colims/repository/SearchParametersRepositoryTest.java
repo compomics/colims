@@ -1,10 +1,10 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchCvParam;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -26,6 +27,8 @@ public class SearchParametersRepositoryTest {
 
     @Autowired
     private SearchParametersRepository searchParametersRepository;
+    @Autowired
+    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testFindByExample() {
@@ -49,6 +52,15 @@ public class SearchParametersRepositoryTest {
         Assert.assertNotNull(searchSettingses);
         Assert.assertFalse(searchSettingses.isEmpty());
         Assert.assertEquals(1, searchSettingses.size());
+    }
+
+    @Test
+    public void testGetSearchParametersIdsForRunTest() {
+        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+
+        List<Long> searchParametersIds = searchParametersRepository.getSearchParameterIdsForRun(analyticalRun);
+
+        Assert.assertEquals(1, searchParametersIds.size());
     }
 
 }
