@@ -4,6 +4,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.repository.ModificationRepository;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
@@ -57,5 +58,13 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
                 .list();
 
         return modificationIds;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Query query = getCurrentSession().createQuery("delete from Modification where id = :ID");
+        query.setParameter("ID", id);
+
+        int result = query.executeUpdate();
     }
 }

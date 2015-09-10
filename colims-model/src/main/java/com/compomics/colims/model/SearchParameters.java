@@ -91,7 +91,7 @@ public class SearchParameters extends DatabaseEntity {
      * modifications.
      */
     @OneToMany(mappedBy = "searchParameters")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
@@ -105,7 +105,7 @@ public class SearchParameters extends DatabaseEntity {
                     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "l_other_search_cv_param_id", referencedColumnName = "id")})
-    private List<ProtocolCvParam> additionalCvParams = new ArrayList<>();
+    private List<SearchCvParam> additionalCvParams = new ArrayList<>();
 
     public SearchCvParam getSearchType() {
         return searchType;
@@ -211,11 +211,11 @@ public class SearchParameters extends DatabaseEntity {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
-    public List<ProtocolCvParam> getAdditionalCvParams() {
+    public List<SearchCvParam> getAdditionalCvParams() {
         return additionalCvParams;
     }
 
-    public void setAdditionalCvParams(List<ProtocolCvParam> additionalCvParams) {
+    public void setAdditionalCvParams(List<SearchCvParam> additionalCvParams) {
         this.additionalCvParams = additionalCvParams;
     }
 

@@ -72,7 +72,6 @@ public class Sample extends AuditableDatabaseEntity {
      */
 //    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "sample")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
     /**

@@ -47,4 +47,10 @@ public interface ModificationRepository extends GenericRepository<Modification, 
      */
     List<Long> getModificationIdsForRun(AnalyticalRun analyticalRun);
 
+    /**
+     * Delete the modification by ID.
+     *
+     * @param id the primary key
+     */
+    void deleteById(Long id);
 }
