@@ -44,16 +44,6 @@ public class MaxQuantSpectrumParserTest {
         //assertThat(result.get(0).asMgf(), containsString("TITLE=" + result.get(0).getSpectrumTitle()));
     }
 
-    @Ignore
-    @Test
-    public void testParseFragmentations() throws IOException, UnparseableException {
-//        Map<Integer, FragmentationType> fragmentations = maxQuantSpectrumParser.parseFragmentations(MaxQuantTestSuite.msmsFile);
-//        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());
-//
-//        assertThat(fragmentations.size(), is(rawFile.size() - 1));
-//        assertThat(rawFile.get(1), containsString(fragmentations.get(0).name()));
-    }
-
     @Test
     public void testParsePeakList() {
         String peaks = "y1;y2;y3";

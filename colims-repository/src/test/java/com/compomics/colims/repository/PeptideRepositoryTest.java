@@ -30,10 +30,9 @@ public class PeptideRepositoryTest {
     @Autowired
     ProteinRepository proteinRepository;
 
-    @Ignore
     @Test
     public void testGetPeptidesForProtein() throws Exception {
-        Protein protein = proteinRepository.findById(4L);
+        Protein protein = proteinRepository.findById(1L);
 
         List<Long> spectrumIds = new ArrayList<>();
         spectrumIds.add(1L);
@@ -43,10 +42,9 @@ public class PeptideRepositoryTest {
         assertThat(peptides.size(), not(0));
     }
 
-    @Ignore
     @Test
     public void testGetPeptidesFromSequence() {
-        String sequence = "ABCDEFGH";
+        String sequence = "LENNART";
         List<Long> ids = new ArrayList<>();
         ids.add(1L);
 
