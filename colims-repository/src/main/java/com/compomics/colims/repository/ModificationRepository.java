@@ -42,10 +42,10 @@ public interface ModificationRepository extends GenericRepository<Modification, 
     /**
      * Get the modification IDs for the given analytical run.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein IDs
      */
-    List<Long> getModificationIdsForRun(AnalyticalRun analyticalRun);
+    List<Long> getConstraintLessModificationIdsForRuns(List<Long> analyticalRunIds);
 
     /**
      * Delete the modification by ID.

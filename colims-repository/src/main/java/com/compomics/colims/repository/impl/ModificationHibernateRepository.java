@@ -1,10 +1,10 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.repository.ModificationRepository;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
@@ -17,11 +17,23 @@ import java.util.List;
 @Repository("modificationRepository")
 public class ModificationHibernateRepository extends GenericHibernateRepository<Modification, Long> implements ModificationRepository {
 
-    public static final String MODIFICATION_IDS_QUERY = "SELECT DISTINCT modification.id FROM modification"
-            + " LEFT JOIN peptide_has_modification p_has_mod ON p_has_mod.l_modification_id = modification.id"
-            + " LEFT JOIN peptide pep ON pep.id = p_has_mod.l_peptide_id"
-            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
-            + " WHERE sp.l_analytical_run_id = %1$d";
+    public static final String MODIFICATION_IDS_QUERY = new StringBuilder()
+            .append("SELECT ")
+            .append("DISTINCT modification.id ")
+            .append("FROM modification ")
+            .append("LEFT JOIN peptide_has_modification ON peptide_has_modification.l_modification_id = modification.id ")
+            .append("AND peptide_has_modification.id NOT IN ")
+            .append("( ")
+            .append("   SELECT ")
+            .append("   pep_has_mod.id ")
+            .append("   FROM peptide_has_modification pep_has_mod ")
+            .append("   JOIN peptide pep ON pep.id = pep_has_mod.l_peptide_id ")
+            .append("   JOIN spectrum sp ON sp.id = pep.l_spectrum_id ")
+            .append("   WHERE sp.l_analytical_run_id IN (:ids) ")
+            .append(") ")
+            .append("WHERE peptide_has_modification.l_modification_id IS NULL ")
+            .append("; ")
+            .toString();
 
     @Override
     public Modification findByName(final String name) {
@@ -51,13 +63,12 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public List<Long> getModificationIdsForRun(AnalyticalRun analyticalRun) {
-        List<Long> modificationIds = getCurrentSession()
-                .createSQLQuery(String.format(MODIFICATION_IDS_QUERY, analyticalRun.getId()))
-                .addScalar("modification.id", LongType.INSTANCE)
-                .list();
+    public List<Long> getConstraintLessModificationIdsForRuns(List<Long> analyticalRunIds) {
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(MODIFICATION_IDS_QUERY);
+        sqlQuery.setParameterList("ids", analyticalRunIds);
+        sqlQuery.addScalar("modification.id", LongType.INSTANCE);
 
-        return modificationIds;
+        return sqlQuery.list();
     }
 
     @Override

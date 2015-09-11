@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,10 +69,11 @@ public class ModificationRepositoryTest {
     }
 
     @Test
-    public void testGetModificationIdsForRun() {
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+    public void testGetConstraintLessModificationIdsForRuns() {
+        List<Long> runIds = new ArrayList<>();
+        runIds.add(1L);
 
-        List<Long> modificationIds = modificationRepository.getModificationIdsForRun(analyticalRun);
+        List<Long> modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
 
         Assert.assertEquals(1, modificationIds.size());
     }

@@ -25,7 +25,7 @@ public class ProteinRepositoryTest {
     private ProteinRepository proteinRepository;
 
     @Test
-    public void testGetProteinIdsForRunTest() {
+    public void testGetConstraintLessProteinIdsForRunsTest() {
         List<Long> runIds = new ArrayList<>();
         runIds.add(1L);
 
