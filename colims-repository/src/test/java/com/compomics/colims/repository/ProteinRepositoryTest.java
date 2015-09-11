@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,16 +23,18 @@ public class ProteinRepositoryTest {
 
     @Autowired
     private ProteinRepository proteinRepository;
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testGetProteinIdsForRunTest() {
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+        List<Long> runIds = new ArrayList<>();
+        runIds.add(1L);
 
-        List<Long> proteinIds = proteinRepository.getProteinIdsForRun(analyticalRun);
+        List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
 
-        Assert.assertEquals(4, proteinIds.size());
+        //5 ProteinGroupHasProtein entries, 4 linked to 1 run.
+        //The last 4 are linked to 4 proteins but one of the proteins is also linked to the other ProteinGroupHasProtein entry
+        //so only 3 protein IDs should be returned.
+        Assert.assertEquals(3, proteinIds.size());
     }
 
 //    @Test

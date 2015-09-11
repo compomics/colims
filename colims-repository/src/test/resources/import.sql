@@ -116,13 +116,14 @@ INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (4, 'PROT_ACC
 INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (5, 'PROT_ACC_4', 4);
 
 -- insert test protein groups
-INSERT INTO protein_group (id) VALUES (1), (2);
+INSERT INTO protein_group (id) VALUES (1), (2), (3);
 
 -- insert test protein group has proteins
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (5, 4, 3, 'PROT_ACC_4', TRUE);
 
 -- insert test peptide has protein groups
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);

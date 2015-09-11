@@ -44,7 +44,10 @@ public class DeleteServiceImpl implements DeleteService {
             deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
         }
         //delete the analytical runs
+        int count = 1;
         for (AnalyticalRun analyticalRun : analyticalRuns) {
+            System.out.println("delete run " + count);
+            count++;
             deleteAnalyticalRun(analyticalRun);
         }
     }
@@ -120,11 +123,12 @@ public class DeleteServiceImpl implements DeleteService {
      */
     private void deleteAnalyticalRun(AnalyticalRun analyticalRun) {
         //get the IDs of the proteins linked to the run
-        List<Long> proteinIds = proteinRepository.getProteinIdsForRun(analyticalRun);
+        List<Long> proteinIds = new ArrayList<>();
+        System.out.println("protein IDs: " + proteinIds.size());
         //get the IDs of the modifications linked to this run
         List<Long> modificationIds = modificationRepository.getModificationIdsForRun(analyticalRun);
         //get the IDs of the search parameters linked to this run
-        List<Long> searchParametersIds = searchParametersRepository.getSearchParameterIdsForRun(analyticalRun);
+//        List<Long> searchParametersIds = searchParametersRepository.getSearchParameterIdsForRun(analyticalRun);
 
         //cascade delete the run
         analyticalRunRepository.delete(analyticalRun);
@@ -138,6 +142,7 @@ public class DeleteServiceImpl implements DeleteService {
                 proteinRepository.delete(protein);
             } catch (ConstraintViolationException e) {
                 //do nothing
+                System.out.println("----------------------------------------------------");
             }
         }
         //iterate over the modification IDs and try to delete them
@@ -149,15 +154,15 @@ public class DeleteServiceImpl implements DeleteService {
                 //do nothing
             }
         }
-        //iterate over the search parameter IDs and try to delete them
-        for (Long searchParameterId : searchParametersIds) {
-            SearchParameters searchParameters = searchParametersRepository.findById(searchParameterId);
-            try {
-                searchParametersRepository.delete(searchParameters);
-            } catch (ConstraintViolationException e) {
-                //do nothing
-            }
-        }
+//        //iterate over the search parameter IDs and try to delete them
+//        for (Long searchParameterId : searchParametersIds) {
+//            SearchParameters searchParameters = searchParametersRepository.findById(searchParameterId);
+//            try {
+//                searchParametersRepository.delete(searchParameters);
+//            } catch (ConstraintViolationException e) {
+//                //do nothing
+//            }
+//        }
 
     }
 }

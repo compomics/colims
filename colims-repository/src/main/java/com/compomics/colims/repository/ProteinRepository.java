@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 
 import java.util.List;
@@ -21,12 +20,12 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
     Protein findBySequence(String sequence);
 
     /**
-     * Get the protein IDs for the given analytical run.
+     * Get the IDs of the proteins that are only related to the given runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein IDs
      */
-    List<Long> getProteinIdsForRun(AnalyticalRun analyticalRun);
+    List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds);
 
 //    /**
 //     * Find a protein with hibernate search by the sequence.

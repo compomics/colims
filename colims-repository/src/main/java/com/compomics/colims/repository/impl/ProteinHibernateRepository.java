@@ -1,9 +1,9 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
@@ -16,12 +16,24 @@ import java.util.List;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    public static final String PROTEIN_IDS_QUERY = "SELECT DISTINCT protein.id FROM protein"
-            + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_id = protein.id"
-            + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id"
-            + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
-            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
-            + " WHERE sp.l_analytical_run_id = %1$d";
+    public static final String PROTEIN_IDS_QUERY = new StringBuilder()
+            .append("SELECT ")
+            .append("DISTINCT protein.id ")
+            .append("from protein ")
+            .append("LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id ")
+            .append("AND protein_group_has_protein.id NOT IN ")
+            .append("( ")
+            .append("   SELECT ")
+            .append("   DISTINCT pg_has_p.id ")
+            .append("   FROM protein_group_has_protein pg_has_p ")
+            .append("   JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id ")
+            .append("   JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id ")
+            .append("   JOIN spectrum sp ON sp.id = pep.l_spectrum_id ")
+            .append("   WHERE sp.l_analytical_run_id IN (:ids) ")
+            .append(") ")
+            .append("WHERE protein_group_has_protein.l_protein_id IS NULL ")
+            .append("; ")
+            .toString();
 
     @Override
     public Protein findBySequence(String sequence) {
@@ -31,13 +43,12 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     }
 
     @Override
-    public List<Long> getProteinIdsForRun(AnalyticalRun analyticalRun) {
-        List<Long> proteinIds = getCurrentSession()
-                .createSQLQuery(String.format(PROTEIN_IDS_QUERY, analyticalRun.getId()))
-                .addScalar("protein.id", LongType.INSTANCE)
-                .list();
+    public List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds) {
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_IDS_QUERY);
+        sqlQuery.setParameterList("ids", analyticalRunIds);
+        sqlQuery.addScalar("protein.id", LongType.INSTANCE);
 
-        return proteinIds;
+        return sqlQuery.list();
     }
 
 //    @Override
