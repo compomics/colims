@@ -4,9 +4,9 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.repository.SearchParametersRepository;
+import org.hibernate.SQLQuery;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
@@ -18,18 +18,28 @@ import java.util.List;
 @Repository("searchParameterRepository")
 public class SearchParameterHibernateRepository extends GenericHibernateRepository<SearchParameters, Long> implements SearchParametersRepository {
 
-    public static final String SEARCH_PARAMETERS_IDS_QUERY = "SELECT DISTINCT search_parameters.id FROM search_parameters"
-            + " LEFT JOIN search_and_validation_settings search_and_val_settings ON search_and_val_settings.l_search_parameters_id = search_parameters.id"
-            + " WHERE search_and_val_settings.l_analytical_run_id = %1$d";
+    public static final String SEARCH_PARAMETERS_IDS_QUERY = new StringBuilder()
+            .append("SELECT ")
+            .append("DISTINCT search_parameters.id ")
+            .append("FROM search_parameters ")
+            .append("LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id = search_parameters.id ")
+            .append("AND search_and_validation_settings.id NOT IN ")
+            .append("( ")
+            .append("   SELECT ")
+            .append("   s_and_v_s.id ")
+            .append("   FROM search_and_validation_settings s_and_v_s ")
+            .append("   WHERE s_and_v_s.l_analytical_run_id IN (:ids) ")
+            .append(") ")
+            .append("WHERE search_and_validation_settings.l_search_parameters_id IS NULL ")
+            .append("; ")
+            .toString();
 
     @Override
-    public List<Long> getSearchParameterIdsForRun(AnalyticalRun analyticalRun) {
+    public List<Long> getConstraintLessSearchParameterIdsForRuns(List<Long> analyticalRunIds) {
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(SEARCH_PARAMETERS_IDS_QUERY);
+        sqlQuery.setParameterList("ids", analyticalRunIds);
+        sqlQuery.addScalar("search_parameters.id", LongType.INSTANCE);
 
-        List<Long> searchParametersIds = getCurrentSession()
-                .createSQLQuery(String.format(SEARCH_PARAMETERS_IDS_QUERY, analyticalRun.getId()))
-                .addScalar("search_parameters.id", LongType.INSTANCE)
-                .list();
-
-        return searchParametersIds;
+        return sqlQuery.list();
     }
 }

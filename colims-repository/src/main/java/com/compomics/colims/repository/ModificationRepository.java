@@ -40,7 +40,7 @@ public interface ModificationRepository extends GenericRepository<Modification, 
     Modification findByAlternativeAccession(String alternativeAccession);
 
     /**
-     * Get the modification IDs for the given analytical run.
+     * Get the IDs of the modifications that are only related to the given runs.
      *
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein IDs

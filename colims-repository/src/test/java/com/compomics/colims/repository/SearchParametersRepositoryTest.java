@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,9 +57,10 @@ public class SearchParametersRepositoryTest {
 
     @Test
     public void testGetSearchParametersIdsForRunTest() {
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+        List<Long> runIds = new ArrayList<>();
+        runIds.add(1L);
 
-        List<Long> searchParametersIds = searchParametersRepository.getSearchParameterIdsForRun(analyticalRun);
+        List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
 
         Assert.assertEquals(1, searchParametersIds.size());
     }

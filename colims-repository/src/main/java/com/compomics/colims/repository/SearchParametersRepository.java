@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchParameters;
 
 import java.util.List;
@@ -17,11 +16,11 @@ import java.util.List;
 public interface SearchParametersRepository extends GenericRepository<SearchParameters, Long> {
 
     /**
-     * Get the search parameters IDs for the given analytical run.
+     * Get the IDs of the search parameters that are only related to the given runs..
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of analytical run IDs
      * @return the list of search parameters IDs
      */
-    List<Long> getSearchParameterIdsForRun(AnalyticalRun analyticalRun);
+    List<Long> getConstraintLessSearchParameterIdsForRuns(List<Long> analyticalRunIds);
 
 }
