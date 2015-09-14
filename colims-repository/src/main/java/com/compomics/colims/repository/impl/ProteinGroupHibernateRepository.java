@@ -2,7 +2,9 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
@@ -56,5 +58,16 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     public int getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
         return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", "protein_group.id"))
                 .list().size();
+    }
+
+    @Override
+    public String getMainProteinSequence(ProteinGroup proteinGroup) {
+        return getCurrentSession()
+            .createCriteria(ProteinGroupHasProtein.class, "proteinGroupHasProtein")
+            .createAlias("proteinGroupHasProtein.protein", "protein")
+            .add(Restrictions.eq("proteinGroup", proteinGroup))
+            .add(Restrictions.eq("isMainGroupProtein", true))
+            .setProjection(Projections.property("protein.sequence"))
+            .uniqueResult().toString();
     }
 }

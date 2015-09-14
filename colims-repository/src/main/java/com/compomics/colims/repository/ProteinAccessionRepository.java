@@ -1,6 +1,8 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.ProteinAccession;
+import com.compomics.colims.model.ProteinGroup;
+
 import java.util.List;
 
 /**
@@ -17,4 +19,6 @@ public interface ProteinAccessionRepository extends GenericRepository<ProteinAcc
      * @return the found protein accessions
      */
     List<ProteinAccession> findByAccession(String accession);
+
+    List<ProteinAccession> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
 }

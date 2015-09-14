@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 
 import java.util.List;
@@ -11,6 +12,16 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, Long> {
+    /**
+     * Fetch a paged list of protein groups associated with a given analytical run
+     * @param analyticalRun The analytical run
+     * @param start         Start point in result list
+     * @param length        Length of result page
+     * @param orderBy       Column to order results by
+     * @param direction     Ordering direction
+     * @param filter        Filter text (an empty string matches all results)
+     * @return List of protein groups
+     */
     List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
 
     /**
@@ -21,4 +32,12 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @return the number of proteins
      */
     int getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
+
+    /**
+     * Get the sequence of the main group protein
+     *
+     * @param proteinGroup The protein group
+     * @return The sequence
+     */
+    String getMainProteinSequence(ProteinGroup proteinGroup);
 }

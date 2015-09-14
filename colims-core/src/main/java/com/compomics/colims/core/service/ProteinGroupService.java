@@ -25,4 +25,12 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * @return the number of proteins
      */
     int getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
+
+    /**
+     * Get the sequence of the main group protein
+     *
+     * @param proteinGroup Group of proteins
+     * @return Sequence of protein
+     */
+    String getMainProteinSequence(ProteinGroup proteinGroup);
 }
