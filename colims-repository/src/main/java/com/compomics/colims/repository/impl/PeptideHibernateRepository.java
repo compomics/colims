@@ -62,20 +62,6 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
-        // decent temporary solution
-        List stuff = getCurrentSession()
-            .createSQLQuery("SELECT protein_accession  FROM peptide" +
-                " LEFT OUTER JOIN peptide_has_protein_group ON peptide.id = peptide_has_protein_group.l_peptide_id" +
-                " LEFT OUTER JOIN protein_group_has_protein ON peptide_has_protein_group.l_protein_group_id = protein_group_has_protein.l_protein_group_id" +
-                " WHERE peptide.id = " + peptide.getId() +
-                " AND protein_accession IS NOT NULL")
-            .list();
-
-        return stuff;
-    }
-
-    @Override
     public List<Peptide> getPeptidesForSpectrum(Spectrum spectrum) {
         return createCriteria()
             .add(Restrictions.eq("spectrum", spectrum))

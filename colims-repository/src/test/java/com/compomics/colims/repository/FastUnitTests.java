@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
         ModificationRepositoryTest.class,
         PeptideRepositoryTest.class,
         ProjectRepositoryTest.class,
+        ProteinAccessionRepositoryTest.class,
         ProteinGroupRepositoryTest.class,
         ProteinRepositoryTest.class,
         SearchEngineRepositoryTest.class,

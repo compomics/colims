@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
 /**
@@ -28,6 +29,8 @@ public class PeptideRepositoryTest {
     PeptideRepository peptideRepository;
     @Autowired
     ProteinGroupRepository proteinGroupRepository;
+    @Autowired
+    SpectrumRepository spectrumRepository;
 
     @Test
     public void testGetPeptidesForProteinGroup() throws Exception {
@@ -38,7 +41,7 @@ public class PeptideRepositoryTest {
 
         List<Peptide> peptides = peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
 
-        assertThat(peptides.size(), not(0));
+        assertThat(peptides.size(), greaterThan(0));
     }
 
     @Test
@@ -49,7 +52,7 @@ public class PeptideRepositoryTest {
 
         List peptides = peptideRepository.getPeptidesFromSequence(sequence, ids);
 
-        assertThat(peptides.size(), not(0));
+        assertThat(peptides.size(), greaterThan(0));
     }
 
     @Test
@@ -60,15 +63,15 @@ public class PeptideRepositoryTest {
 
         List<PeptideHasModification> peptideHasModifications = peptideRepository.getModificationsForMultiplePeptides(peptides);
 
-        assertThat(peptideHasModifications.size(), not(0));
+        assertThat(peptideHasModifications.size(), greaterThan(0));
     }
 
     @Test
-    public void testGetProteinAccessionsForPeptide() {
-        Peptide peptide = peptideRepository.findById(1L);
+    public void testGetPeptidesForSpectrum() {
+        Spectrum spectrum = spectrumRepository.findById(1L);
 
-        List<String> proteinAccessions = peptideRepository.getProteinAccessionsForPeptide(peptide);
+        List<Peptide> peptides = peptideRepository.getPeptidesForSpectrum(spectrum);
 
-        assertThat(proteinAccessions.size(), not(0));
+        assertThat(peptides.size(), greaterThan(0));
     }
 }

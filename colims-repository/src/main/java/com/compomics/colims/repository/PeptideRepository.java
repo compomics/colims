@@ -37,14 +37,6 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
     List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
 
     /**
-     * Get all protein accessions associated with a peptide
-     *
-     * @param peptide Peptide to find accessions for
-     * @return A list of accessions
-     */
-    List<String> getProteinAccessionsForPeptide(Peptide peptide);
-
-    /**
      * Get all peptides associated with a spectrum
      *
      * @param spectrum Spectrum to search peptides with

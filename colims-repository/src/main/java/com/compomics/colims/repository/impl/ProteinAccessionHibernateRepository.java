@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.ProteinGroup;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
@@ -46,4 +47,17 @@ public class ProteinAccessionHibernateRepository extends GenericHibernateReposit
         return proteinAccessions;
     }
 
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        // decent temporary solution
+        List stuff = getCurrentSession()
+            .createSQLQuery("SELECT protein_accession  FROM peptide" +
+                " LEFT OUTER JOIN peptide_has_protein_group ON peptide.id = peptide_has_protein_group.l_peptide_id" +
+                " LEFT OUTER JOIN protein_group_has_protein ON peptide_has_protein_group.l_protein_group_id = protein_group_has_protein.l_protein_group_id" +
+                " WHERE peptide.id = " + peptide.getId() +
+                " AND protein_accession IS NOT NULL")
+            .list();
+
+        return stuff;
+    }
 }

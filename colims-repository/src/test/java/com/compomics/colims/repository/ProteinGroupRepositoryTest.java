@@ -47,11 +47,18 @@ public class ProteinGroupRepositoryTest {
     }
 
     @Test
-    public void testGetProteinCountForRun() {
+    public void testGetProteinGroupCountForRun() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
         assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, ""), not(0));
         assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "NOTAPROTEIN"), is(0));
+    }
+
+    @Test
+    public void testGetMainProteinSequence() {
+        ProteinGroup proteinGroup = proteinGroupRepository.findById(1L);
+
+        assertThat(proteinGroupRepository.getMainProteinSequence(proteinGroup), is("AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA"));
     }
 
 //    @Test
