@@ -5,11 +5,11 @@ import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
@@ -102,7 +102,7 @@ public class PersistDbTaskHandler {
             //map the task
             List<AnalyticalRun> analyticalRuns = mapDataImport(persistDbTask);
 
-            store(analyticalRuns, persistDbTask, sample, userName);
+            persist(analyticalRuns, persistDbTask, sample, userName);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -163,8 +163,8 @@ public class PersistDbTaskHandler {
         return analyticalRuns;
     }
 
-    private void store(List<AnalyticalRun> analyticalRuns, PersistDbTask persistDbTask, Sample sample, String userName) {
-        persistService.store(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
+    private void persist(List<AnalyticalRun> analyticalRuns, PersistDbTask persistDbTask, Sample sample, String userName) {
+        persistService.persist(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
     }
 
 }

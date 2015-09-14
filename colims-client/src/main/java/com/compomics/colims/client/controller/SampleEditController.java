@@ -327,13 +327,15 @@ public class SampleEditController implements Controllable {
                 if (selectedAnalyticalRuns.size() == 1) {
                     boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
                     if (deleteConfirmation) {
+                        AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
+
                         //remove from overview table and clear selection
-                        analyticalRuns.remove(selectedAnalyticalRuns.get(0));
+                        analyticalRuns.remove(selectedAnalyticalRun);
                         analyticalRunsSelectionModel.clearSelection();
-                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRuns.get(0)));
+                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun));
 
                         //remove analytical run from the selected sample and update the table
-                        sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRuns.get(0));
+                        sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
                         sampleEditDialog.getAnalyticalRunsTable().updateUI();
                     }
                 } else {

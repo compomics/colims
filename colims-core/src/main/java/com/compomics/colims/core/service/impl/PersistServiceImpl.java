@@ -33,7 +33,7 @@ public class PersistServiceImpl implements PersistService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public void store(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate) {
+    public void persist(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate) {
 
         for (AnalyticalRun analyticalRun : analyticalRuns) {
             Date auditDate = new Date();

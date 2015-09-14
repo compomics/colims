@@ -15,7 +15,7 @@ import java.util.List;
 public interface PersistService {
 
     /**
-     * Store the AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings.
+     * Persist the AnalyticalRuns, SearchAndValidationSettings and QuantificationSettings.
      *
      * @param analyticalRuns the list of runs to store
      * @param sample         the sample the runs will be added to
@@ -23,6 +23,6 @@ public interface PersistService {
      * @param userName       the user name
      * @param startDate      the start date of the runs
      */
-    void store(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate);
+    void persist(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate);
 
 }

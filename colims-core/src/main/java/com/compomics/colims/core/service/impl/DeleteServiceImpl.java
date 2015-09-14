@@ -44,11 +44,12 @@ public class DeleteServiceImpl implements DeleteService {
             deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
         }
 
-        //collect the IDs of the constraint less proteins, modifications
+        //collect the IDs of the constraint less proteins, modifications and search parameters
         //that can be deleted after the deletion of the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
         List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
         List<Long> modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
+        List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
 
         //delete the analytical runs
         analyticalRuns.forEach(analyticalRunRepository::delete);
@@ -62,6 +63,11 @@ public class DeleteServiceImpl implements DeleteService {
         for (Long modificationId : modificationIds) {
             Modification modificationToDelete = modificationRepository.findById(modificationId);
             modificationRepository.delete(modificationToDelete);
+        }
+        //delete the search parameters
+        for (Long searchParametersId : searchParametersIds) {
+            SearchParameters searchParametersToDelete = searchParametersRepository.findById(searchParametersId);
+            searchParametersRepository.delete(searchParametersToDelete);
         }
     }
 

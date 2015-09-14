@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity
 //@Indexed
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Protein extends DatabaseEntity {
 
     private static final long serialVersionUID = -8217759222711303528L;
