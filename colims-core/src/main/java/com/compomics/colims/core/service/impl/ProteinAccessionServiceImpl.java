@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinAccessionService;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinAccessionRepository;
@@ -22,6 +23,11 @@ public class ProteinAccessionServiceImpl implements ProteinAccessionService {
     @Override
     public List<ProteinAccession> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
         return proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroup);
+    }
+
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        return proteinAccessionRepository.getProteinAccessionsForPeptide(peptide);
     }
 
     @Override

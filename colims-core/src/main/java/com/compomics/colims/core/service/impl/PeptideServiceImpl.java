@@ -91,11 +91,6 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
-        return peptideRepository.getProteinAccessionsForPeptide(peptide);
-    }
-
-    @Override
     public List<Peptide> getPeptidesForSpectrum(Spectrum spectrum) {
         return peptideRepository.getPeptidesForSpectrum(spectrum);
     }

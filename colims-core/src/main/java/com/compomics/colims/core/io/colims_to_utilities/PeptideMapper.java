@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
@@ -22,6 +23,8 @@ public class PeptideMapper {
     private ColimsModificationMapper colimsModMapper;
     @Autowired
     private PeptideService peptideService;
+    @Autowired
+    private ProteinAccessionService proteinAccessionService;
     private static final Logger LOGGER = Logger.getLogger(PeptideMapper.class);
 
     public void map(Peptide sourcePeptide, PeptideMatch targetPeptideMatch) {
@@ -35,7 +38,7 @@ public class PeptideMapper {
         colimsModMapper.map(sourcePeptide, modificationMatches);
 
         com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
-        assumedPeptide.setParentProteins((ArrayList) peptideService.getProteinAccessionsForPeptide(sourcePeptide));
+        assumedPeptide.setParentProteins((ArrayList) proteinAccessionService.getProteinAccessionsForPeptide(sourcePeptide));
 
         targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }

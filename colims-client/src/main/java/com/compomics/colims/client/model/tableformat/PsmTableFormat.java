@@ -4,6 +4,7 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.google.common.base.Joiner;
@@ -16,7 +17,7 @@ import java.util.Comparator;
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     private SpectrumService spectrumService;
-    private PeptideService peptideService;
+    private ProteinAccessionService proteinAccessionService;
 
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
@@ -32,7 +33,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
 
     public PsmTableFormat() {
         this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
-        this.peptideService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(PeptideService.class);
+        this.proteinAccessionService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinAccessionService.class);
     }
 
     @Override
@@ -112,6 +113,6 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
      */
     private String getProteinAccessions(Peptide peptide) {
         Joiner joiner = Joiner.on(", ");
-        return joiner.join(peptideService.getProteinAccessionsForPeptide(peptide));
+        return joiner.join(proteinAccessionService.getProteinAccessionsForPeptide(peptide));
     }
 }

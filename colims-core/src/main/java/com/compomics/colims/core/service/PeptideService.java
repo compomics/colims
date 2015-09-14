@@ -46,14 +46,6 @@ public interface PeptideService extends GenericService<Peptide, Long> {
     List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides);
 
     /**
-     * Get all protein accessions associated with a peptide
-     *
-     * @param peptide Peptide to find accessions for
-     * @return A list of accessions
-     */
-    List<String> getProteinAccessionsForPeptide(Peptide peptide);
-
-    /**
      * Get peptides linked to spectrum
      *
      * @param spectrum Spectrum with which to search peptides
