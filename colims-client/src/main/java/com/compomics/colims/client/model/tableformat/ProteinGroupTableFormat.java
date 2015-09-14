@@ -18,11 +18,13 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
     private ProteinAccessionService proteinAccessionService;
     private ProteinGroupService proteinGroupService;
 
-    private static final String[] columnNames = {"ID", "Accessions", "Sequence"};
+    private static final String[] columnNames = {"ID", "Accessions", "Probability", "Post-Error Probability", "Main Protein Sequence"};
 
     public static final int ID = 0;
     public static final int ACCESSION = 1;
-    public static final int SEQUENCE = 2;
+    public static final int PROBABILITY = 2;
+    public static final int PEP = 3;
+    public static final int SEQUENCE = 4;
 
     public ProteinGroupTableFormat() {
         this.proteinAccessionService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinAccessionService.class);
@@ -36,6 +38,10 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                 return Long.class;
             case ACCESSION:
                 return String.class;
+            case PROBABILITY:
+                return Double.class;
+            case PEP:
+                return Double.class;
             case SEQUENCE:
                 return String.class;
             default:
@@ -68,6 +74,10 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                     .stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(", "));
+            case PROBABILITY:
+                return proteinGroup.getProteinProbability();
+            case PEP:
+                return proteinGroup.getProteinPostErrorProbability();
             case SEQUENCE:
                 return proteinGroupService.getMainProteinSequence(proteinGroup);
             default:

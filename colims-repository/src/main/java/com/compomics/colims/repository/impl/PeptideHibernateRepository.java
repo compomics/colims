@@ -21,7 +21,7 @@ import java.util.List;
 public class PeptideHibernateRepository extends GenericHibernateRepository<Peptide, Long> implements PeptideRepository {
 
     @Override
-    public List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
+    public List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds) {
         List<Peptide> peptides = new ArrayList<>();
         Joiner joiner = Joiner.on(",");
 
@@ -30,7 +30,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
             + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id = protein_group.id"
             + " LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_group_id = protein_group.id"
             + " WHERE l_spectrum_id IN (" + joiner.join(spectrumIds) + ")"
-            + " AND protein_group_has_protein.l_protein_id = " + protein.getId();
+            + " AND protein_group_has_protein.l_protein_group_id = " + proteinGroup.getId();
 
         List idList = getCurrentSession()
             .createSQLQuery(query)

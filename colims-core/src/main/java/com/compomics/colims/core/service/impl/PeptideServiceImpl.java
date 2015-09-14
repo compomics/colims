@@ -76,8 +76,8 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
-        return peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+    public List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds) {
+        return peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
     }
 
     @Override

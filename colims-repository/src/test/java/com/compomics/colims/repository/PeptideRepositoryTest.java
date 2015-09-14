@@ -1,7 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.*;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +27,16 @@ public class PeptideRepositoryTest {
     @Autowired
     PeptideRepository peptideRepository;
     @Autowired
-    ProteinRepository proteinRepository;
+    ProteinGroupRepository proteinGroupRepository;
 
     @Test
-    public void testGetPeptidesForProtein() throws Exception {
-        Protein protein = proteinRepository.findById(1L);
+    public void testGetPeptidesForProteinGroup() throws Exception {
+        ProteinGroup proteinGroup = proteinGroupRepository.findById(1L);
 
         List<Long> spectrumIds = new ArrayList<>();
         spectrumIds.add(1L);
 
-        List<Peptide> peptides = peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+        List<Peptide> peptides = peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
 
         assertThat(peptides.size(), not(0));
     }

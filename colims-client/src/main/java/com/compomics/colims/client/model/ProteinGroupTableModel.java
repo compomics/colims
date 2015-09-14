@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 
 import java.util.List;
@@ -34,6 +33,10 @@ public class ProteinGroupTableModel extends PagingTableModel {
                 return "protein.protein_sequence";
             case ProteinGroupTableFormat.ACCESSION:
                 return "protein_accession.accession";
+            case ProteinGroupTableFormat.PEP:
+                return "protein_group.protein_post_error_prob";
+            case ProteinGroupTableFormat.PROBABILITY:
+                return "protein_group.protein_prob";
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

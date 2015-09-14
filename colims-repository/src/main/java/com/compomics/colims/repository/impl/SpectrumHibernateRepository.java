@@ -1,17 +1,14 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
-
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.repository.SpectrumRepository;
 import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
-
-import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.repository.SpectrumRepository;
-import org.hibernate.criterion.Projections;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
