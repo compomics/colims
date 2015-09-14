@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -68,22 +69,25 @@ public class ProteinOverviewController implements Controllable {
     private double maximumRetentionTime;
     private double minimumCharge;
     private double maximumCharge;
-    //view
+    // view
     private ProteinOverviewPanel proteinOverviewPanel;
 
-    //parent controller
+    // parent controller
     @Autowired
     private MainController mainController;
-    //child controller
+    // child controller
     @Autowired
     private SpectrumPopupController spectrumPopupController;
-    //services
+    // services
     @Autowired
     private EventBus eventBus;
     @Autowired
     private PeptideService peptideService;
     @Autowired
     private SpectrumService spectrumService;
+
+    // column filters
+    private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
 
     @Override
     public void init() {
@@ -338,7 +342,10 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel);
+                    Map<Integer, Pattern> columnFilter = new HashMap<>();
+                    columnFilter.put(0, HTML_TAGS);
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel, columnFilter);
 
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
@@ -431,6 +438,18 @@ public class ProteinOverviewController implements Controllable {
      * @param <T>           Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
+        exportTable(filename, tableModel, new HashMap<>());
+    }
+
+    /**
+     * Save the contents of a data table to a tab delimited file
+     *
+     * @param filename      File to be saved as [filename].tsv
+     * @param tableModel    A table model to retrieve data from
+     * @param columnFilters Patterns to match and filter values
+     * @param <T>           Class extending TableModel
+     */
+    private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
             int columnCount = tableModel.getColumnCount();
             int rowCount = tableModel.getRowCount();
@@ -456,7 +475,11 @@ public class ProteinOverviewController implements Controllable {
                         line.append("\t");
                     }
 
-                    line.append(tableModel.getValueAt(i, j));
+                    if (columnFilters.get(j) == null) {
+                        line.append(tableModel.getValueAt(i, j));
+                    } else {
+                        line.append(columnFilters.get(j).matcher(tableModel.getValueAt(i, j).toString()).replaceAll(""));
+                    }
 
                     if (j == columnCount - 1 && i < rowCount - 1) {
                         line.append("\n");
