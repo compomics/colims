@@ -12,11 +12,11 @@ import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
+import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.*;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
-import com.compomics.colims.core.io.colims_to_utilities.PsmMapper;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
@@ -111,9 +111,9 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
-    private PsmMapper psmMapper;
-    @Autowired
     private EventBus eventBus;
+    @Autowired
+    private SpectrumPanelGenerator spectrumPanelGenerator;
 
     /**
      * Get the view of this controller.
@@ -472,137 +472,13 @@ public class ProjectOverviewController implements Controllable {
     public void updateSpectrum() {
         Spectrum selectedSpectrum = getSelectedSpectrum();
 
-        if (getSelectedSpectrum() != null) {
+        if (selectedSpectrum != null) {
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
-            AnnotationPreferences annotationPreferences = projectOverviewPanel.getAnnotationPreferences();
+            spectrumPanelGenerator.init(selectedSpectrum);
+            spectrumPanelGenerator.decorateSpectrumPanel(projectOverviewPanel.getSpectrumJPanel());
+            spectrumPanelGenerator.decorateSecondaryPanel(projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
 
-            try {
-                MSnSpectrum spectrum = new MSnSpectrum();
-
-                spectrumService.fetchSpectrumFiles(selectedSpectrum);
-
-                //map the colims spectrum to utilities MSnSpectrum
-                colimsSpectrumMapper.map(selectedSpectrum, spectrum);
-
-                Collection<Peak> peaks = spectrum.getPeakList();
-
-                if (peaks != null && !peaks.isEmpty()) {
-                    // add the data to the spectrum panel
-                    Precursor precursor = spectrum.getPrecursor();
-
-                    SpectrumPanel spectrumPanel = new SpectrumPanel(
-                            spectrum.getMzValuesAsArray(), spectrum.getIntensityValuesAsArray(),
-                            precursor.getMz(),
-                            spectrum.getPrecursor().getPossibleChargesAsString(),
-                            //spectrumMatch.getBestAssumption().getIdentificationCharge().toString(), // @TODO: re-add me!
-                            "", 40, false, false, false, 2, false);
-                    //spectrumPanel.setKnownMassDeltas(peptideShakerGUI.getCurrentMassDeltas()); // @TODO: re-add me!
-                    spectrumPanel.setDeltaMassWindow(annotationPreferences.getFragmentIonAccuracy());
-                    spectrumPanel.setBorder(null);
-                    spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
-                    spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
-                    spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
-                    spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
-
-                    //only do this for spectra that have a psm
-                    List<Peptide> peptides = peptideService.getPeptidesForSpectrum(selectedSpectrum);
-
-                    if (peptides.isEmpty()) {
-                        SpectrumMatch spectrumMatch = new SpectrumMatch();//peptideShakerGUI.getIdentification().getSpectrumMatch(spectrumKey); // @TODO: get the spectrum match
-                        psmMapper.map(selectedSpectrum, spectrumMatch, peptides.get(0));
-
-                        PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
-                        int identificationCharge = peptideAssumption.getIdentificationCharge().value;
-
-                        // @TODO: re-add the line below
-                        //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
-
-                        SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
-                                spectrum.getSpectrumKey(),
-                                peptideAssumption,
-                                new SequenceMatchingPreferences(),
-                                new SequenceMatchingPreferences());
-                        ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(
-                                annotationPreferences,
-                                specificAnnotationPreferences,
-                                spectrum,
-                                peptideAssumption.getPeptide());
-                        spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
-                        //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
-
-//                            if (!currentSpectrumKey.equalsIgnoreCase(spectrumKey)) {
-//                                if (annotationPreferences.useAutomaticAnnotation()) {
-//                                    annotationPreferences.setNeutralLossesSequenceDependant(true);
-//                                }
-//                            }
-                        //projectOverviewPanel.updateAnnotationMenus(identificationCharge, peptideAssumption.getPeptide());
-
-                        //currentSpectrumKey = spectrumKey; // @TODO: re-add me
-                        // show all or just the annotated peaks
-                        spectrumPanel.showAnnotatedPeaksOnly(!annotationPreferences.showAllPeaks());
-                        spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
-
-                        int forwardIon = projectOverviewPanel.getSearchParameters().getIonSearched1();
-                        int rewindIon = projectOverviewPanel.getSearchParameters().getIonSearched2();
-
-                        // add de novo sequencing
-                        spectrumPanel.addAutomaticDeNovoSequencing(peptideAssumption.getPeptide(), annotations,
-                                forwardIon, rewindIon, annotationPreferences.getDeNovoCharge(),
-                                annotationPreferences.showForwardIonDeNovoTags(),
-                                annotationPreferences.showRewindIonDeNovoTags(), false);
-
-                        // add the spectrum panel to the frame
-                        projectOverviewPanel.getSpectrumJPanel().removeAll();
-                        projectOverviewPanel.getSpectrumJPanel().add(spectrumPanel);
-                        projectOverviewPanel.getSpectrumJPanel().revalidate();
-                        projectOverviewPanel.getSpectrumJPanel().repaint();
-
-                        // create the sequence fragment ion view
-                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().removeAll();
-                        SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-                                projectOverviewPanel.getTaggedPeptideSequence(
-                                        peptideAssumption.getPeptide(),
-                                        false, false, false),
-                                annotations, true, projectOverviewPanel.getSearchParameters().getModificationProfile(), forwardIon, rewindIon);
-                        sequenceFragmentationPanel.setMinimumSize(new Dimension(sequenceFragmentationPanel.getPreferredSize().width, sequenceFragmentationPanel.getHeight()));
-                        sequenceFragmentationPanel.setOpaque(true);
-                        sequenceFragmentationPanel.setBackground(Color.WHITE);
-                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(sequenceFragmentationPanel);
-
-                        // create the intensity histograms
-                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(annotations, spectrum, INTENSITY_LEVEL));
-
-                        // create the miniature mass error plot
-                        //@todo is annotationPreferences.getFragmentIonAccuracy() the correct mass tolerance
-                        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, spectrum, annotationPreferences.getFragmentIonAccuracy(), false);
-
-                        //if (massErrorPlot.getNumberOfDataPointsInPlot() > 0) {
-                        projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(massErrorPlot);
-                        //}
-
-                        //else only add the spectrum panel without annotations
-                    } else {
-                        // add the spectrum panel to the frame
-                        projectOverviewPanel.getSpectrumJPanel().removeAll();
-                        projectOverviewPanel.getSpectrumJPanel().add(spectrumPanel);
-                        projectOverviewPanel.getSpectrumJPanel().revalidate();
-                        projectOverviewPanel.getSpectrumJPanel().repaint();
-                    }
-
-                    // update the UI
-                    projectOverviewPanel.getSecondarySpectrumPlotsJPanel().revalidate();
-                    projectOverviewPanel.getSecondarySpectrumPlotsJPanel().repaint();
-
-                    // update the panel border title
-                    //updateSpectrumPanelBorderTitle(currentSpectrum);
-                    // @TODO: re-add later
-                    projectOverviewPanel.getSpectrumMainPanel().revalidate();
-                    projectOverviewPanel.getSpectrumMainPanel().repaint();
-                }
-            } catch (Exception e) {
-                LOGGER.error(e.getCause(), e);
-            }
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         } else {
             clearSpectrum();
