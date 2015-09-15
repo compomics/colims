@@ -3,7 +3,6 @@ package com.compomics.colims.client.model.tableformat;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
