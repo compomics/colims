@@ -1,14 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant;
 
-import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectrumParser;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.model.*;
-import com.compomics.colims.repository.AuthenticationBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +9,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertThat;
+
 /**
- * the actual max quant integration test, to be renamed when the parser gets extracted.
+ * MaxQuant integration test
  *
- * @author Davy
+ * @author Iain
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
@@ -34,67 +28,28 @@ public class MaxQuantIT {
     private static final String maxQuantVersion = "1.5.2.8";
     private static final String fastaFilePath = "data/maxquant_" + maxQuantVersion + "/uniprot-taxonomy%3A10090.fasta";
     private static final String maxQuantTextFolderPath = "data/maxquant_" + maxQuantVersion;
-    @Autowired
-    private MaxQuantParser maxQuantParser;
-    @Autowired
-    private MaxQuantSpectrumParser maxQuantSpectrumParser;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AuthenticationBean authenticationBean;
-    @Autowired
-    private AnalyticalRunService analyticalRunService;
-    @Autowired
-    private SampleService sampleService;
-    @Autowired
-    private InstrumentService instrumentService;
 
+    @Autowired
+    MaxQuantImporter maxQuantImporter;
+
+    /**
+     * Test of map method, of class MaxQuantImporter.
+     */
     @Test
-    public void runStorage() throws IOException, UnparseableException, MappingException, SQLException, ClassNotFoundException {
+    public void testMap() throws Exception {
         FastaDb maxQuantTestFastaDb = new FastaDb();
         ClassPathResource fastaResource = new ClassPathResource(fastaFilePath);
         maxQuantTestFastaDb.setName(fastaResource.getFilename());
         maxQuantTestFastaDb.setFileName(fastaResource.getFilename());
         maxQuantTestFastaDb.setFilePath(fastaResource.getFile().getPath());
 
-        maxQuantParser.parseFolder(new ClassPathResource(maxQuantTextFolderPath).getFile(), maxQuantTestFastaDb);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), maxQuantTestFastaDb);
+        List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);
 
-        User user = userService.findByName("admin");
-        userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
-
-        List<AnalyticalRun> colimsRuns = new ArrayList<>(maxQuantParser.getRuns().size());
-        for (AnalyticalRun aRun : maxQuantParser.getRuns()) {
-            List<Spectrum> mappedSpectra = new ArrayList<>(aRun.getSpectrums().size());
-
-            for (Spectrum aSpectrum : aRun.getSpectrums()) {
-                mappedSpectra.add(aSpectrum);
-                //only get best hit
-                Peptide identification = maxQuantParser.getIdentificationForSpectrum(aSpectrum);
-
-                aSpectrum.getPeptides().add(identification);
-            }
-            aRun.setSpectrums(mappedSpectra);
-
-            colimsRuns.add(aRun);
-        }
-
-        //get sample from db
-        Sample sample = sampleService.findAll().get(0);
-
-        for (AnalyticalRun analyticalRun : colimsRuns) {
-            Date auditDate = new Date();
-
-            analyticalRun.setCreationDate(auditDate);
-            analyticalRun.setModificationDate(auditDate);
-            analyticalRun.setUserName("testing");
-            analyticalRun.setStartDate(auditDate);
-            analyticalRun.setSample(sample);
-            analyticalRun.setInstrument(instrumentService.findAll().get(0));
-
-            analyticalRunService.saveOrUpdate(analyticalRun);
-        }
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getSpectrums().size(), greaterThan(0));
+        assertThat(result.get(0).getSearchAndValidationSettings().getFastaDb(), is(maxQuantTestFastaDb));
+        assertThat(result.get(0).getQuantificationSettings(), notNullValue());
         // TODO: more assertions
     }
-
 }
