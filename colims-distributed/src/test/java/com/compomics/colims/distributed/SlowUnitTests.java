@@ -1,7 +1,7 @@
 package com.compomics.colims.distributed;
 
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapperTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationProfileMapperTest;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapperTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -13,6 +13,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         UtilitiesModificationMapperTest.class,
-        UtilitiesModificationProfileMapperTest.class})
+        UtilitiesPtmSettingsMapperTest.class})
 public class SlowUnitTests {
 }

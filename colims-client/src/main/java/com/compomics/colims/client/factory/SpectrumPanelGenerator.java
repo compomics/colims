@@ -6,30 +6,18 @@ import com.compomics.colims.core.logic.IonLadderMassesCalculator;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.UnknownAAException;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.experiment.identification.SpectrumAnnotator;
-import com.compomics.util.experiment.identification.matches.IonMatch;
-import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import com.compomics.util.experiment.identification.spectrum_annotators.PeptideSpectrumAnnotator;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.gui.interfaces.SpectrumAnnotation;
-import com.compomics.util.gui.spectrum.*;
-import com.compomics.util.preferences.AnnotationPreferences;
-import com.compomics.util.preferences.SequenceMatchingPreferences;
-import com.compomics.util.preferences.SpecificAnnotationPreferences;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
+import com.compomics.util.gui.spectrum.DefaultSpectrumAnnotation;
+import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.google.common.primitives.Doubles;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class generates a SpectrumPanel for a PSM.

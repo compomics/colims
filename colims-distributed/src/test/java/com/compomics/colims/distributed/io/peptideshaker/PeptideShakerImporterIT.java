@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -55,11 +54,6 @@ public class PeptideShakerImporterIT {
 
     @Before
     public void setup() throws IOException, XmlPullParserException {
-        //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        PTMFactory.getInstance().clearFactory();
-        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
-
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
         authenticationBean.setCurrentUser(adminUser);

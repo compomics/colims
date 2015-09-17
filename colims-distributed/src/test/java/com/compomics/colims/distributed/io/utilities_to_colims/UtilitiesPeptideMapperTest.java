@@ -1,13 +1,11 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MatchScore;
 import com.compomics.colims.model.Peptide;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SpectrumIdentificationAssumption;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import com.compomics.util.experiment.massspectrometry.Charge;
-import eu.isas.peptideshaker.myparameters.PSParameter;
+import eu.isas.peptideshaker.parameters.PSParameter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

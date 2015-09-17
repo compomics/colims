@@ -3,11 +3,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
@@ -18,6 +13,10 @@ import org.apache.xml.xml_soap.MapItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -34,10 +33,8 @@ public class OlsServiceImpl implements OlsService {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
 
     /**
-     * Modifications cache to prevent unnecessary webservice lookups. This map
-     * can contains instances of {@link
-     * com.compomics.colims.model.Modification} and
-     * {@link com.compomics.colims.model.SearchModification}.
+     * Modifications cache to prevent unnecessary webservice lookups. This map can contains instances of {@link
+     * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}.
      */
     private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
     /**
@@ -209,12 +206,11 @@ public class OlsServiceImpl implements OlsService {
     }
 
     /**
-     * Copy (the instance fields of) the modification from one subclass of
-     * AbstractModification to another.
+     * Copy (the instance fields of) the modification from one subclass of AbstractModification to another.
      *
-     * @param clazz the subclass of AbstractModification
+     * @param clazz     the subclass of AbstractModification
      * @param modToCopy the modification to copy
-     * @param <T> the AbstractModification subclass
+     * @param <T>       the AbstractModification subclass
      * @return the copied modification
      */
     private <T extends AbstractModification> T copyModification(Class<T> clazz, AbstractModification modToCopy) {

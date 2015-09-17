@@ -3,25 +3,18 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.SearchParametersHasModification;
-import com.compomics.util.experiment.biology.AminoAcidPattern;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.preferences.ModificationProfile;
-import com.compomics.util.pride.PtmToPrideMap;
+import com.compomics.util.experiment.biology.*;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -29,15 +22,13 @@ import java.io.IOException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
-public class UtilitiesModificationProfileMapperTest {
+public class UtilitiesPtmSettingsMapperTest {
 
-    @Autowired
-    private PtmCvTermMapper ptmCvTermMapper;
     @Autowired
     private OlsService olsService;
     @Autowired
-    private UtilitiesModificationProfileMapper utilitiesModificationProfileMapper;
-    private ModificationProfile modificationProfile;
+    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    private PtmSettings ptmSettings;
 
     /**
      * Load the search parameters with the modifications.
@@ -48,50 +39,34 @@ public class UtilitiesModificationProfileMapperTest {
      */
     @Before
     public void loadSearchParameters() throws IOException, XmlPullParserException {
-        //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        PTMFactory.getInstance().clearFactory();
-        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
+        PTM ptm1 = PTMFactory.getInstance().getPTM("Carbamidomethylation of C");
+        PTM ptm2 = PTMFactory.getInstance().getPTM("Oxidation of M");
+        PTM ptm3 = PTMFactory.getInstance().getPTM("Phosphorylation of S");
+        PTM ptm4 = PTMFactory.getInstance().getPTM("Phosphorylation of T");
+        PTM ptm5 = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
+        PTM ptm6 = PTMFactory.getInstance().getPTM("Acetylation of protein N-term");
+        PTM ptm7 = PTMFactory.getInstance().getPTM("Pyrolidone from carbamidomethylated C");
+        PTM ptm8 = PTMFactory.getInstance().getPTM("Pyrolidone from E");
+        PTM ptm9 = PTMFactory.getInstance().getPTM("Pyrolidone from Q");
 
-        PTM ptm1 = PTMFactory.getInstance().getPTM("carbamidomethyl c");
-        PTM ptm2 = PTMFactory.getInstance().getPTM("oxidation of m");
-        PTM ptm3 = PTMFactory.getInstance().getPTM("phosphorylation of s");
-        PTM ptm4 = PTMFactory.getInstance().getPTM("phosphorylation of t");
-        PTM ptm5 = PTMFactory.getInstance().getPTM("phosphorylation of y");
-        PTM ptm6 = PTMFactory.getInstance().getPTM("acetylation of protein n-term");
-        PTM ptm7 = PTMFactory.getInstance().getPTM("pyro-cmc");
-        PTM ptm8 = PTMFactory.getInstance().getPTM("pyro-glu from n-term e");
-        PTM ptm9 = PTMFactory.getInstance().getPTM("pyro-glu from n-term q");
+        ptmSettings = new PtmSettings();
+        ptmSettings.addFixedModification(ptm1);
 
-        modificationProfile = new ModificationProfile();
-        modificationProfile.addFixedModification(ptm1);
-
-        modificationProfile.addVariableModification(ptm2);
-        modificationProfile.addVariableModification(ptm3);
-        modificationProfile.addVariableModification(ptm4);
-        modificationProfile.addVariableModification(ptm5);
-        modificationProfile.addVariableModification(ptm6);
-        modificationProfile.addVariableModification(ptm7);
-        modificationProfile.addVariableModification(ptm8);
-        modificationProfile.addVariableModification(ptm9);
-
-        SearchParameters utilitiesSearchParameters = new SearchParameters();
-
-        try {
-            //reset PtmToPrideMap for consistent testing
-            ptmCvTermMapper.setPtmToPrideMap(new PtmToPrideMap());
-            //update mapper with the SearchParameters
-            ptmCvTermMapper.updatePtmToPrideMap(utilitiesSearchParameters);
-        } catch (FileNotFoundException | ClassNotFoundException ex) {
-            Assert.fail();
-        }
+        ptmSettings.addVariableModification(ptm2);
+        ptmSettings.addVariableModification(ptm3);
+        ptmSettings.addVariableModification(ptm4);
+        ptmSettings.addVariableModification(ptm5);
+        ptmSettings.addVariableModification(ptm6);
+        ptmSettings.addVariableModification(ptm7);
+        ptmSettings.addVariableModification(ptm8);
+        ptmSettings.addVariableModification(ptm9);
     }
 
     /**
      * Clear the modifications cache.
      */
     @After
-    public void clearCache(){
+    public void clearCache() {
         olsService.getModificationsCache().clear();
     }
 
@@ -105,7 +80,7 @@ public class UtilitiesModificationProfileMapperTest {
     public void testMapModificationProfile1() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
-        utilitiesModificationProfileMapper.map(modificationProfile, searchParameters);
+        utilitiesPtmSettingsMapper.map(ptmSettings, searchParameters);
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(9, searchParameters.getSearchParametersHasModifications().size());
@@ -132,12 +107,19 @@ public class UtilitiesModificationProfileMapperTest {
     public void testMapModificationProfile2() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
+        AtomChain atomChain = new AtomChain(true);
+        atomChain.append(new AtomImpl(Atom.C, 0), 8);
+        atomChain.append(new AtomImpl(Atom.C, 1), 4);
+        atomChain.append(new AtomImpl(Atom.H, 0), 20);
+        atomChain.append(new AtomImpl(Atom.N, 0), 1);
+        atomChain.append(new AtomImpl(Atom.N, 1), 1);
+        atomChain.append(new AtomImpl(Atom.O, 0), 2);
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("AKL");
-        PTM unknownPtm = new PTM(0, "L-proline removal", "proline", 52.1, aminoAcidPattern);
-        ModificationProfile modificationProfile_2 = new ModificationProfile();
-        modificationProfile_2.addVariableModification(unknownPtm);
+        PTM unknownPtm = new PTM(PTM.MODAA, "nonexisting", "non", atomChain, null, aminoAcidPattern);
+        PtmSettings ptmSettings_2 = new PtmSettings();
+        ptmSettings_2.addVariableModification(unknownPtm);
 
-        utilitiesModificationProfileMapper.map(modificationProfile_2, searchParameters);
+        utilitiesPtmSettingsMapper.map(ptmSettings_2, searchParameters);
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());
@@ -159,12 +141,19 @@ public class UtilitiesModificationProfileMapperTest {
     public void testMapModificationProfile3() throws MappingException {
         com.compomics.colims.model.SearchParameters searchParameters = new com.compomics.colims.model.SearchParameters();
 
+        AtomChain atomChain = new AtomChain(true);
+        atomChain.append(new AtomImpl(Atom.C, 0), 8);
+        atomChain.append(new AtomImpl(Atom.C, 1), 4);
+        atomChain.append(new AtomImpl(Atom.H, 0), 20);
+        atomChain.append(new AtomImpl(Atom.N, 0), 1);
+        atomChain.append(new AtomImpl(Atom.N, 1), 1);
+        atomChain.append(new AtomImpl(Atom.O, 0), 2);
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("AKL");
-        PTM unknownPtm = new PTM(0, "nonexisting", "non", 52.1, aminoAcidPattern);
-        ModificationProfile modificationProfile_3 = new ModificationProfile();
-        modificationProfile_3.addVariableModification(unknownPtm);
+        PTM unknownPtm = new PTM(PTM.MODAA, "nonexisting", "non", atomChain, null, aminoAcidPattern);
+        PtmSettings ptmSettings_3 = new PtmSettings();
+        ptmSettings_3.addVariableModification(unknownPtm);
 
-        utilitiesModificationProfileMapper.map(modificationProfile_3, searchParameters);
+        utilitiesPtmSettingsMapper.map(ptmSettings_3, searchParameters);
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());

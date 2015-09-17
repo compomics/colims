@@ -3,9 +3,9 @@ package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,6 @@ import com.compomics.colims.core.authorization.AuthorizationInterceptorTest;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapperTest;
 import com.compomics.colims.core.io.mzidentml.MzIdentMLExporterTest;
 import com.compomics.colims.core.io.mzml.MzMLParserTest;
-import com.compomics.colims.core.io.unimod.UnimodMarshallerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -16,7 +15,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AuthorizationInterceptorTest.class,
         ColimsSpectrumMapperTest.class,
-        UnimodMarshallerTest.class,
         MzMLParserTest.class,
         MzIdentMLExporterTest.class,
 })

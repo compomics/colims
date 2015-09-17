@@ -2,10 +2,10 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.Peptide;
-import com.compomics.util.experiment.identification.PeptideAssumption;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import eu.isas.peptideshaker.myparameters.PSParameter;
-import eu.isas.peptideshaker.myparameters.PSPtmScores;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
+import eu.isas.peptideshaker.parameters.PSParameter;
+import eu.isas.peptideshaker.parameters.PSPtmScores;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -21,11 +21,13 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import com.compomics.util.experiment.identification.spectrum_annotators.PeptideSpectrumAnnotator;
+import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.SpecificAnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.SpectrumAnnotator;
+import com.compomics.util.experiment.identification.spectrum_annotation.spectrum_annotators.PeptideSpectrumAnnotator;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
@@ -33,9 +35,7 @@ import com.compomics.util.gui.spectrum.IntensityHistogram;
 import com.compomics.util.gui.spectrum.MassErrorPlot;
 import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
-import com.compomics.util.preferences.AnnotationPreferences;
 import com.compomics.util.preferences.SequenceMatchingPreferences;
-import com.compomics.util.preferences.SpecificAnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -475,7 +475,7 @@ public class ProjectOverviewController implements Controllable {
         if (getSelectedSpectrum() != null) {
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
-            AnnotationPreferences annotationPreferences = projectOverviewPanel.getAnnotationPreferences();
+            AnnotationSettings annotationSettings = projectOverviewPanel.getAnnotationSettings();
 
             try {
                 MSnSpectrum spectrum = new MSnSpectrum();
@@ -498,7 +498,7 @@ public class ProjectOverviewController implements Controllable {
                             //spectrumMatch.getBestAssumption().getIdentificationCharge().toString(), // @TODO: re-add me!
                             "", 40, false, false, false, 2, false);
                     //spectrumPanel.setKnownMassDeltas(peptideShakerGUI.getCurrentMassDeltas()); // @TODO: re-add me!
-                    spectrumPanel.setDeltaMassWindow(annotationPreferences.getFragmentIonAccuracy());
+                    spectrumPanel.setDeltaMassWindow(annotationSettings.getFragmentIonAccuracy());
                     spectrumPanel.setBorder(null);
                     spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
                     spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
@@ -516,41 +516,41 @@ public class ProjectOverviewController implements Controllable {
                         int identificationCharge = peptideAssumption.getIdentificationCharge().value;
 
                         // @TODO: re-add the line below
-                        //annotationPreferences.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
+                        //annotationSettings.setCurrentSettings(peptideAssumption, !currentSpectrumKey.equalsIgnoreCase(spectrumKey), PeptideShaker.MATCHING_TYPE, peptideShakerGUI.getSearchParameters().getFragmentIonAccuracy());
 
-                        SpecificAnnotationPreferences specificAnnotationPreferences = annotationPreferences.getSpecificAnnotationPreferences(
+                        SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
                                 spectrum.getSpectrumKey(),
                                 peptideAssumption,
                                 new SequenceMatchingPreferences(),
                                 new SequenceMatchingPreferences());
                         ArrayList<IonMatch> annotations = spectrumAnnotator.getSpectrumAnnotation(
-                                annotationPreferences,
-                                specificAnnotationPreferences,
+                                annotationSettings,
+                                specificAnnotationSettings,
                                 spectrum,
                                 peptideAssumption.getPeptide());
                         spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
                         //spectrumPanel.rescale(lowerMzZoomRange, upperMzZoomRange);
 
 //                            if (!currentSpectrumKey.equalsIgnoreCase(spectrumKey)) {
-//                                if (annotationPreferences.useAutomaticAnnotation()) {
-//                                    annotationPreferences.setNeutralLossesSequenceDependant(true);
+//                                if (annotationSettings.useAutomaticAnnotation()) {
+//                                    annotationSettings.setNeutralLossesSequenceDependant(true);
 //                                }
 //                            }
                         //projectOverviewPanel.updateAnnotationMenus(identificationCharge, peptideAssumption.getPeptide());
 
                         //currentSpectrumKey = spectrumKey; // @TODO: re-add me
                         // show all or just the annotated peaks
-                        spectrumPanel.showAnnotatedPeaksOnly(!annotationPreferences.showAllPeaks());
-                        spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationPreferences.yAxisZoomExcludesBackgroundPeaks());
+                        spectrumPanel.showAnnotatedPeaksOnly(!annotationSettings.showAllPeaks());
+                        spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationSettings.yAxisZoomExcludesBackgroundPeaks());
 
                         int forwardIon = projectOverviewPanel.getSearchParameters().getIonSearched1();
                         int rewindIon = projectOverviewPanel.getSearchParameters().getIonSearched2();
 
                         // add de novo sequencing
                         spectrumPanel.addAutomaticDeNovoSequencing(peptideAssumption.getPeptide(), annotations,
-                                forwardIon, rewindIon, annotationPreferences.getDeNovoCharge(),
-                                annotationPreferences.showForwardIonDeNovoTags(),
-                                annotationPreferences.showRewindIonDeNovoTags(), false);
+                                forwardIon, rewindIon, annotationSettings.getDeNovoCharge(),
+                                annotationSettings.showForwardIonDeNovoTags(),
+                                annotationSettings.showRewindIonDeNovoTags(), false);
 
                         // add the spectrum panel to the frame
                         projectOverviewPanel.getSpectrumJPanel().removeAll();
@@ -564,7 +564,7 @@ public class ProjectOverviewController implements Controllable {
                                 projectOverviewPanel.getTaggedPeptideSequence(
                                         peptideAssumption.getPeptide(),
                                         false, false, false),
-                                annotations, true, projectOverviewPanel.getSearchParameters().getModificationProfile(), forwardIon, rewindIon);
+                                annotations, true, projectOverviewPanel.getSearchParameters().getPtmSettings(), forwardIon, rewindIon);
                         sequenceFragmentationPanel.setMinimumSize(new Dimension(sequenceFragmentationPanel.getPreferredSize().width, sequenceFragmentationPanel.getHeight()));
                         sequenceFragmentationPanel.setOpaque(true);
                         sequenceFragmentationPanel.setBackground(Color.WHITE);
@@ -574,8 +574,8 @@ public class ProjectOverviewController implements Controllable {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(new IntensityHistogram(annotations, spectrum, INTENSITY_LEVEL));
 
                         // create the miniature mass error plot
-                        //@todo is annotationPreferences.getFragmentIonAccuracy() the correct mass tolerance
-                        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, spectrum, annotationPreferences.getFragmentIonAccuracy(), false);
+                        //@todo is annotationSettings.getFragmentIonAccuracy() the correct mass tolerance
+                        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, spectrum, annotationSettings.getFragmentIonAccuracy(), false);
 
                         //if (massErrorPlot.getNumberOfDataPointsInPlot() > 0) {
                         projectOverviewPanel.getSecondarySpectrumPlotsJPanel().add(massErrorPlot);

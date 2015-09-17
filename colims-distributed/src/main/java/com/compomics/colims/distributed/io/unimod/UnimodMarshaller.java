@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.unimod;
+package com.compomics.colims.distributed.io.unimod;
 
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.SearchModification;

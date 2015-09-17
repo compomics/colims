@@ -23,25 +23,24 @@ public class UtilitiesSearchParametersMapperTest {
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
 
     /**
-     * Test the mapping of Utilities SearchParameters to Colims
-     * SearchParameters.
+     * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
      */
     @Test
     public void testMapSearchParameters() {
         //create SearchParameters
-        com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.SearchParameters();
+        com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
         Enzyme enzyme = new Enzyme(1, "trypsin", "A", "A", "A", "A");
         utilitiesSearchParameters.setEnzyme(enzyme);
 
         utilitiesSearchParameters.setnMissedCleavages(2);
 
-        utilitiesSearchParameters.setPrecursorAccuracyType(com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType.DA);
+        utilitiesSearchParameters.setPrecursorAccuracyType(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.MassAccuracyType.DA);
         utilitiesSearchParameters.setPrecursorAccuracy(0.5);
         Charge charge = new Charge(Charge.PLUS, 1);
         utilitiesSearchParameters.setMinChargeSearched(charge);
         utilitiesSearchParameters.setMaxChargeSearched(charge);
 
-        utilitiesSearchParameters.setFragmentAccuracyType(com.compomics.util.experiment.identification.SearchParameters.MassAccuracyType.DA);
+        utilitiesSearchParameters.setFragmentAccuracyType(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.MassAccuracyType.DA);
         utilitiesSearchParameters.setFragmentIonAccuracy(0.5);
 
         utilitiesSearchParameters.setIonSearched1("a");

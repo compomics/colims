@@ -1,39 +1,33 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import com.compomics.colims.core.service.OlsService;
-import com.compomics.util.experiment.biology.PTMFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.ModificationService;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.identification.SearchParameters;
+import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.preferences.ModificationProfile;
 import com.compomics.util.pride.CvTerm;
-import com.compomics.util.pride.PtmToPrideMap;
-import eu.isas.peptideshaker.myparameters.PSPtmScores;
+import eu.isas.peptideshaker.parameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
-
-import org.junit.Before;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.xmlpull.v1.XmlPullParserException;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author Niels Hulstaert
@@ -42,8 +36,6 @@ import org.xmlpull.v1.XmlPullParserException;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class UtilitiesModificationMapperTest {
 
-    @Autowired
-    private PtmCvTermMapper ptmCvTermMapper;
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
@@ -65,49 +57,32 @@ public class UtilitiesModificationMapperTest {
      */
     @Before
     public void loadSearchParameters() throws IOException, XmlPullParserException {
-        //load mods from test resources instead of user folder
-        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
-        PTMFactory.getInstance().clearFactory();
-        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
-
         //get PTMs from PTMFactory
-        oxidation = PTMFactory.getInstance().getPTM("oxidation of m");
-        phosphorylation = PTMFactory.getInstance().getPTM("phosphorylation of y");
+        oxidation = PTMFactory.getInstance().getPTM("Oxidation of M");
+        phosphorylation = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 
         searchParameters = new SearchParameters();
 
-        ModificationProfile modificationProfile = new ModificationProfile();
-        modificationProfile.addFixedModification(oxidation);
-        modificationProfile.addFixedModification(phosphorylation);
+        PtmSettings ptmSettings = new PtmSettings();
+        ptmSettings.addFixedModification(oxidation);
+        ptmSettings.addFixedModification(phosphorylation);
 
-        searchParameters.setModificationProfile(modificationProfile);
-
-        try {
-            //reset PtmToPrideMap for consistent testing
-            ptmCvTermMapper.setPtmToPrideMap(new PtmToPrideMap());
-            //update mapper with the SearchParameters
-            ptmCvTermMapper.updatePtmToPrideMap(searchParameters);
-        } catch (FileNotFoundException | ClassNotFoundException ex) {
-            Assert.fail();
-        }
-
-        //add the non utilities PTM to the ptmCvTermMapper
-//        ptmCvTermMapper.addCvTerm(nonUtilitiesPtmName, nonUtilitiesPtm);
+        searchParameters.setPtmSettings(ptmSettings);
     }
 
     /**
      * Clear the modifications cache.
      */
     @After
-    public void clearCache(){
+    public void clearCache() {
+        utilitiesModificationMapper.clear();
         olsService.getModificationsCache().clear();
     }
 
     /**
-     * Test the mapping for a peptide with 3 modifications, none of them are
-     * present in the db.
+     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
      *
      * @throws MappingException
      */
@@ -197,8 +172,7 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 modification, which is present in
-     * the db.
+     * Test the mapping for a peptide with 1 modification, which is present in the db.
      *
      * @throws MappingException
      * @throws IOException
@@ -248,9 +222,8 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 UNIMOD modification. The
-     * modification is not found in the db, the PtmToPrideMap or the ols
-     * service. It should be found in the UNIMOD modifications.
+     * Test the mapping for a peptide with 1 UNIMOD modification. The modification is not found in the db, the
+     * PtmToPrideMap or the ols service. It should be found in the UNIMOD modifications.
      *
      * @throws MappingException
      * @throws IOException
@@ -286,9 +259,8 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The
-     * modification is not found in the db, the PtmToPrideMap or the ols
-     * service.
+     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
+     * PtmToPrideMap or the ols service.
      *
      * @throws MappingException
      * @throws IOException

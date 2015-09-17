@@ -1,4 +1,4 @@
-package com.compomics.colims.core.io.unimod;
+package com.compomics.colims.distributed.io.unimod;
 
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
+@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-context.xml"})
 public class UnimodMarshallerTest {
 
     private static final String MOD_NAME = "DTT_C";

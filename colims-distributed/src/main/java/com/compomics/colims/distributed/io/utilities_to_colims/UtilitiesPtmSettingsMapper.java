@@ -3,11 +3,13 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchModificationService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.SearchModification;
+import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.preferences.ModificationProfile;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.pride.CvTerm;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +19,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class maps the Compomics Utilities modification related classes to
- * Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
 @SuppressWarnings("ConstantConditions")
-@Component("utilitiesModificationProfileMapper")
-public class UtilitiesModificationProfileMapper {
+@Component("utilitiesPtmSettingsMapper")
+public class UtilitiesPtmSettingsMapper {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationProfileMapper.class);
+    private static final Logger LOGGER = Logger.getLogger(UtilitiesPtmSettingsMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
-    /**
-     * The Utilities PTM to CV term mapper.
-     */
-    @Autowired
-    private PtmCvTermMapper ptmCvTermMapper;
     /**
      * The modification service instance.
      */
@@ -47,33 +43,30 @@ public class UtilitiesModificationProfileMapper {
     @Autowired
     private OlsService olsService;
     /**
-     * The map of cached modifications (key: modification name, value: the
-     * search modification).
+     * The map of cached modifications (key: modification name, value: the search modification).
      */
     private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification profile to the Colims search parameters.
-     * The Utilities PTMs are matched first onto CV terms from PSI-MOD.
+     * Map the utilities modification profile to the Colims search parameters. The Utilities PTMs are matched first onto
+     * CV terms from PSI-MOD.
      *
-     * @param modificationProfile the Utilities modification profile with the
-     * modifications used for the searches.
+     * @param ptmSettings      the Utilities modification profile with the modifications used for the searches.
      * @param searchParameters the Colims search parameters
-     * @throws ModificationMappingException thrown in case of a modification
-     * mapping problem
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
-    public void map(final ModificationProfile modificationProfile, final SearchParameters searchParameters) throws ModificationMappingException {
+    public void map(final PtmSettings ptmSettings, final SearchParameters searchParameters) throws ModificationMappingException {
         //iterate over fixed modifications
-        for (String modificationName : modificationProfile.getAllModifications()) {
-            //try to find a mapped CV term
-            CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationName);
+        for (String modificationName : ptmSettings.getAllModifications()) {
+            //try to find the CV term in the PTMFactory
+            CvTerm cvTerm = PTMFactory.getInstance().getPTM(modificationName).getCvTerm();
 
             SearchModification searchModification;
             if (cvTerm != null) {
                 searchModification = mapCvTerm(cvTerm);
             } else {
                 //make use of the PTM in the backed up PTMs map because it contains the mass of the modification
-                searchModification = mapPtm(modificationProfile.getBackedUpPtmsMap().get(modificationName));
+                searchModification = mapPtm(ptmSettings.getBackedUpPtmsMap().get(modificationName));
             }
 
             //set entity associations if the search modification could be mapped
@@ -81,7 +74,7 @@ public class UtilitiesModificationProfileMapper {
                 SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
                 //set modification type
-                if (modificationProfile.getAllNotFixedModifications().contains(modificationName)) {
+                if (ptmSettings.getAllNotFixedModifications().contains(modificationName)) {
                     searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 } else {
                     searchParametersHasModification.setModificationType(ModificationType.FIXED);
@@ -105,11 +98,12 @@ public class UtilitiesModificationProfileMapper {
      */
     public void clear() {
         cachedSearchModifications.clear();
+        //clear the cache from the OlsService as well
+        olsService.getModificationsCache().clear();
     }
 
     /**
-     * Map the given CvTerm utilities object to a SearchModification instance.
-     * Return null if no mapping was possible.
+     * Map the given CvTerm utilities object to a SearchModification instance. Return null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
      * @return the Colims SearchModification entity
@@ -171,8 +165,7 @@ public class UtilitiesModificationProfileMapper {
     }
 
     /**
-     * Map the given PTM to a SearchModification instance. Return null if no
-     * mapping was possible.
+     * Map the given PTM to a SearchModification instance. Return null if no mapping was possible.
      *
      * @param ptm the PTM instance
      * @return the Colims SearchModification instance

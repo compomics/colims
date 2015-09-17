@@ -39,7 +39,7 @@ public interface PeptideShakerIO {
      * @throws java.sql.SQLException  thrown in case of a database access error
      * @throws InterruptedException   thrown in case a thread is interrupted
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException;
 
     /**
      * Unpack the given PeptideShakerImport instance: unpack the PeptideShaker .cps file and return an

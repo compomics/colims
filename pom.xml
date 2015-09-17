@@ -311,7 +311,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>3.49.19</version>
+                <version>4.0.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-math</artifactId>
@@ -350,7 +350,7 @@
             <dependency>
                 <groupId>eu.isas.peptideshaker</groupId>
                 <artifactId>PeptideShaker</artifactId>
-                <version>0.40.2</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.jmzml</groupId>

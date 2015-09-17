@@ -9,7 +9,6 @@ import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrum
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.MsExperiment;
-import com.compomics.util.experiment.identification.SequenceFactory;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
@@ -17,10 +16,11 @@ import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.identification.matches_iterators.PeptideMatchesIterator;
 import com.compomics.util.experiment.identification.matches_iterators.ProteinMatchesIterator;
 import com.compomics.util.experiment.identification.matches_iterators.PsmIterator;
+import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.compomics.util.experiment.personalization.UrParameter;
-import eu.isas.peptideshaker.myparameters.PSParameter;
+import eu.isas.peptideshaker.parameters.PSParameter;
 import eu.isas.peptideshaker.utils.CpsParent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,7 +168,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
                         peptideScore = (PSParameter) identification.getPeptideMatchParameter(peptideMatchKey, peptideScore);
 
                         //iterate over the spectrum matches
-                        PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatches(), parameters, true, null);
+                        PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatchesKeys(), parameters, true, null);
                         while (psmIterator.hasNext()) {
                             SpectrumMatch spectrumMatch = psmIterator.next();
                             String spectrumMatchKey = spectrumMatch.getKey();

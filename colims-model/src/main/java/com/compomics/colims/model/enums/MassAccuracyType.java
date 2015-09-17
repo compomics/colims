@@ -1,6 +1,6 @@
 package com.compomics.colims.model.enums;
 
-import com.compomics.util.experiment.identification.SearchParameters;
+import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 
 /**
  * This enum contains the different mass accuracy types.

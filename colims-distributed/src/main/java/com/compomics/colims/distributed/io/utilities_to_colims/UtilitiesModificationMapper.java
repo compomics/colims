@@ -1,9 +1,9 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
-import com.compomics.colims.core.io.unimod.UnimodMarshaller;
 import com.compomics.colims.core.service.ModificationService;
 import com.compomics.colims.core.service.OlsService;
+import com.compomics.colims.distributed.io.unimod.UnimodMarshaller;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
@@ -12,7 +12,7 @@ import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.pride.CvTerm;
-import eu.isas.peptideshaker.myparameters.PSPtmScores;
+import eu.isas.peptideshaker.parameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class maps the Compomics Utilities modification related classes to
- * Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
@@ -37,11 +36,7 @@ public class UtilitiesModificationMapper {
      */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
-    /**
-     * The Utilities PTM to CV term mapper.
-     */
-    @Autowired
-    private PtmCvTermMapper ptmCvTermMapper;
+
     /**
      * The modification service instance.
      */
@@ -58,26 +53,24 @@ public class UtilitiesModificationMapper {
     @Autowired
     private UnimodMarshaller unimodMarshaller;
     /**
-     * The map of cached modifications (key: modification name, value: the
-     * modification).
+     * The map of cached modifications (key: modification name, value: the modification).
      */
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification matches to the Colims peptide. The
-     * Utilities PTMs are matched first onto CV terms from PSI-MOD.
+     * Map the utilities modification matches to the Colims peptide. The Utilities PTMs are matched first onto CV terms
+     * from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
-     * @param ptmScores the PeptideShaker PTM scores
-     * @param targetPeptide the Colims target peptide
-     * @throws ModificationMappingException thrown in case of a modification
-     * mapping problem
+     * @param ptmScores           the PeptideShaker PTM scores
+     * @param targetPeptide       the Colims target peptide
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         //iterate over modification matches
         for (ModificationMatch modificationMatch : modificationMatches) {
-            //try to find a mapped CV term
-            CvTerm cvTerm = ptmCvTermMapper.getCvTerm(modificationMatch.getTheoreticPtm());
+            //get the CvTerm from the PTMFactory
+            CvTerm cvTerm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm()).getCvTerm();
 
             Modification modification;
             if (cvTerm != null) {
@@ -149,11 +142,12 @@ public class UtilitiesModificationMapper {
      */
     public void clear() {
         cachedModifications.clear();
+        //clear the cached modifications of the OlsService as well
+        olsService.getModificationsCache().clear();
     }
 
     /**
-     * Map the given CvTerm Utilities object to a Modification instance. Return
-     * null if no mapping was possible.
+     * Map the given CvTerm Utilities object to a Modification instance. Return null if no mapping was possible.
      *
      * @param cvTerm the Utilities CvTerm
      * @return the Colims Modification entity
@@ -228,10 +222,9 @@ public class UtilitiesModificationMapper {
     }
 
     /**
-     * Map the given ModificationMatch object to a Modification instance. Return
-     * null if no mapping was possible.
+     * Map the given ModificationMatch object to a Modification instance. Return null if no mapping was possible.
      *
-     * @param modificationMatch the utilities ModificationMatch
+     * @param theoreticPTM the PTM name
      * @return the Colims Modification instance
      */
     public Modification mapModificationMatch(final String theoreticPTM) throws ModificationMappingException {

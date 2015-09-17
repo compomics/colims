@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
  * @author Niels Hulstaert
  */
 @Component("utilitiesSearchParametersMapper")
-public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.SearchParameters, SearchParameters> {
+public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.identification_parameters.SearchParameters, SearchParameters> {
 
     /**
      * Logger instance.
@@ -57,7 +57,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * @param searchParameters          the Colims search parameters
      */
     @Override
-    public void map(final com.compomics.util.experiment.identification.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
+    public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
