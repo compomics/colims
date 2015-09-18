@@ -1,10 +1,15 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.ProteinGroup;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.repository.ProteinAccessionRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 
@@ -20,6 +25,39 @@ public class ProteinAccessionHibernateRepository extends GenericHibernateReposit
         Criteria criteria = createCriteria(Restrictions.eq("accession", accession));
         criteria.setCacheable(true);
         return criteria.list();
-    }    
-        
+    }
+
+    @Override
+    public List<ProteinAccession> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
+        List<ProteinAccession> proteinAccessions = new ArrayList<>();
+
+        String query = "SELECT DISTINCT protein_accession.id FROM protein_accession"
+            + " LEFT JOIN protein_group_has_protein ON protein_accession.l_protein_id = protein_group_has_protein.l_protein_id"
+            + " WHERE protein_group_has_protein.l_protein_group_id = " + proteinGroup.getId();
+
+        List<Long> idList = getCurrentSession()
+            .createSQLQuery(query)
+            .addScalar("protein_accession.id", LongType.INSTANCE)
+            .list();
+
+        if (idList.size() > 0) {
+            proteinAccessions = createCriteria().add(Restrictions.in("id", idList)).list();
+        }
+
+        return proteinAccessions;
+    }
+
+    @Override
+    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
+        // decent temporary solution
+        List stuff = getCurrentSession()
+            .createSQLQuery("SELECT protein_accession  FROM peptide" +
+                " LEFT OUTER JOIN peptide_has_protein_group ON peptide.id = peptide_has_protein_group.l_peptide_id" +
+                " LEFT OUTER JOIN protein_group_has_protein ON peptide_has_protein_group.l_protein_group_id = protein_group_has_protein.l_protein_group_id" +
+                " WHERE peptide.id = " + peptide.getId() +
+                " AND protein_accession IS NOT NULL")
+            .list();
+
+        return stuff;
+    }
 }

@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-context.xml"})
+@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class UnimodMarshallerTest {
 
     private static final String MOD_NAME = "DTT_C";

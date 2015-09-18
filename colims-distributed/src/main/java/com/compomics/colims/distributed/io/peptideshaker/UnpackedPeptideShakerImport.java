@@ -25,10 +25,6 @@ public class UnpackedPeptideShakerImport extends DataImport {
      */
     private File unpackedDirectory;
     /**
-     * The directory of the db contained in the PeptideShaker .cps archive.
-     */
-    private File dbDirectory;
-    /**
      * The list of MGF files.
      */
     private List<File> mgfFiles;
@@ -42,13 +38,11 @@ public class UnpackedPeptideShakerImport extends DataImport {
      *
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
      * @param unpackedDirectory       the directory where the .cps file is unzipped
-     * @param dbDirectory             the database directory
      * @param cpsParent               the CpsParent instance
      */
-    public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final File dbDirectory, final CpsParent cpsParent) {
+    public UnpackedPeptideShakerImport(final File peptideShakerCpsArchive, final File unpackedDirectory, final CpsParent cpsParent) {
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.unpackedDirectory = unpackedDirectory;
-        this.dbDirectory = dbDirectory;
         this.cpsParent = cpsParent;
     }
 
@@ -66,14 +60,6 @@ public class UnpackedPeptideShakerImport extends DataImport {
 
     public void setUnpackedDirectory(File unpackedDirectory) {
         this.unpackedDirectory = unpackedDirectory;
-    }
-
-    public File getDbDirectory() {
-        return dbDirectory;
-    }
-
-    public void setDbDirectory(File dbDirectory) {
-        this.dbDirectory = dbDirectory;
     }
 
     public List<File> getMgfFiles() {

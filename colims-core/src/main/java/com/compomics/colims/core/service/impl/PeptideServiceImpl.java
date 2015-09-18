@@ -76,8 +76,8 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<Peptide> getPeptidesForProtein(Protein protein, List<Long> spectrumIds) {
-        return peptideRepository.getPeptidesForProtein(protein, spectrumIds);
+    public List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds) {
+        return peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
     }
 
     @Override
@@ -88,11 +88,6 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides) {
         return peptideRepository.getModificationsForMultiplePeptides(peptides);
-    }
-
-    @Override
-    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
-        return peptideRepository.getProteinAccessionsForPeptide(peptide);
     }
 
     @Override

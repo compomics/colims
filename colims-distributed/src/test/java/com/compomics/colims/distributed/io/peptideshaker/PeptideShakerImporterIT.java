@@ -7,7 +7,6 @@ import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
-import com.compomics.util.experiment.biology.PTMFactory;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,13 +71,13 @@ public class PeptideShakerImporterIT {
     @Test
     public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cps").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
         //set mgf files and fasta file
         List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819_sample.mgf").getFile());
+        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
         unpackedPsDataImport.setMgfFiles(mgfFiles);
 
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-january-2015_concatenated_target_decoy.fasta").getFile();
+        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-august-2015_concatenated_target_decoy.fasta").getFile();
         FastaDb fastaDb = new FastaDb();
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
@@ -92,11 +91,11 @@ public class PeptideShakerImporterIT {
 
         //analytical run
         AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
-        Assert.assertTrue(testAnalyticalRun.getStorageLocation().contains("colims_test_ps_file.cps"));
+        Assert.assertTrue(testAnalyticalRun.getStorageLocation().contains("colims_test_ps_file.cpsx"));
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
         Assert.assertNotNull(testAnalyticalRun.getSpectrums());
-        Assert.assertEquals(2230, testAnalyticalRun.getSpectrums().size());
+        Assert.assertEquals(5329, testAnalyticalRun.getSpectrums().size());
 
         //search and validation settings
         Assert.assertNotNull(testAnalyticalRun.getSearchAndValidationSettings());

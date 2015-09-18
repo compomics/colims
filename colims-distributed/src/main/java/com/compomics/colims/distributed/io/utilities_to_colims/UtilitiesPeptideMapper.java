@@ -52,7 +52,7 @@ public class UtilitiesPeptideMapper {
         targetPeptide.setPsmPostErrorProbability(spectrumScore.getPsmProbability());
 
         //check for modifications and modification scores
-        if (!sourcePeptide.getModificationMatches().isEmpty()) {
+        if (sourcePeptide.getModificationMatches() != null && !sourcePeptide.getModificationMatches().isEmpty()) {
             PSPtmScores modificationScores = null;
             if (spectrumMatch.getUrParam(new PSPtmScores()) != null) {
                 modificationScores = (PSPtmScores) spectrumMatch.getUrParam(new PSPtmScores());

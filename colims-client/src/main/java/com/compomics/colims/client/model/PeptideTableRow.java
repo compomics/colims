@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of a row in the Peptides table Created by Iain on 08/07/2015.
+ * Representation of a row in the Peptides table
+ * Created by Iain on 08/07/2015.
  */
 public class PeptideTableRow {
 
