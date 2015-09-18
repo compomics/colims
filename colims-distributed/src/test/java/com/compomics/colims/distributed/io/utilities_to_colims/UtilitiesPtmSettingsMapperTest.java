@@ -39,6 +39,8 @@ public class UtilitiesPtmSettingsMapperTest {
      */
     @Before
     public void loadSearchParameters() throws IOException, XmlPullParserException {
+        PTMFactory ptmFactory = PTMFactory.getInstance();
+
         PTM ptm1 = PTMFactory.getInstance().getPTM("Carbamidomethylation of C");
         PTM ptm2 = PTMFactory.getInstance().getPTM("Oxidation of M");
         PTM ptm3 = PTMFactory.getInstance().getPTM("Phosphorylation of S");
@@ -114,7 +116,7 @@ public class UtilitiesPtmSettingsMapperTest {
         atomChain.append(new AtomImpl(Atom.N, 0), 1);
         atomChain.append(new AtomImpl(Atom.N, 1), 1);
         atomChain.append(new AtomImpl(Atom.O, 0), 2);
-        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("AKL");
+        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern("K");
         PTM unknownPtm = new PTM(PTM.MODAA, "nonexisting", "non", atomChain, null, aminoAcidPattern);
         PtmSettings ptmSettings_2 = new PtmSettings();
         ptmSettings_2.addVariableModification(unknownPtm);
@@ -124,6 +126,7 @@ public class UtilitiesPtmSettingsMapperTest {
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());
         for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+            Assert.assertEquals("K", searchParametersHasModification.getResidues());
             Assert.assertNotNull(searchParametersHasModification.getSearchModification());
             Assert.assertNotNull(searchParametersHasModification.getSearchParameters());
             Assert.assertNotNull(searchParametersHasModification.getModificationType());
@@ -158,6 +161,7 @@ public class UtilitiesPtmSettingsMapperTest {
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());
         for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+            Assert.assertEquals("AKL", searchParametersHasModification.getResidues());
             Assert.assertNotNull(searchParametersHasModification.getSearchModification());
             Assert.assertNotNull(searchParametersHasModification.getSearchParameters());
             Assert.assertNotNull(searchParametersHasModification.getModificationType());

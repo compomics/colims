@@ -1,9 +1,13 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.biology.Enzyme;
+import com.compomics.util.experiment.biology.PTM;
+import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +30,7 @@ public class UtilitiesSearchParametersMapperTest {
      * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
      */
     @Test
-    public void testMapSearchParameters() {
+    public void testMapSearchParameters() throws ModificationMappingException {
         //create SearchParameters
         com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
         Enzyme enzyme = new Enzyme(1, "trypsin", "A", "A", "A", "A");
@@ -45,6 +49,30 @@ public class UtilitiesSearchParametersMapperTest {
 
         utilitiesSearchParameters.setIonSearched1("a");
         utilitiesSearchParameters.setIonSearched2("b");
+
+        PTM ptm1 = PTMFactory.getInstance().getPTM("Carbamidomethylation of C");
+        PTM ptm2 = PTMFactory.getInstance().getPTM("Oxidation of M");
+        PTM ptm3 = PTMFactory.getInstance().getPTM("Phosphorylation of S");
+        PTM ptm4 = PTMFactory.getInstance().getPTM("Phosphorylation of T");
+        PTM ptm5 = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
+        PTM ptm6 = PTMFactory.getInstance().getPTM("Acetylation of protein N-term");
+        PTM ptm7 = PTMFactory.getInstance().getPTM("Pyrolidone from carbamidomethylated C");
+        PTM ptm8 = PTMFactory.getInstance().getPTM("Pyrolidone from E");
+        PTM ptm9 = PTMFactory.getInstance().getPTM("Pyrolidone from Q");
+
+        PtmSettings ptmSettings = new PtmSettings();
+        ptmSettings.addFixedModification(ptm1);
+
+        ptmSettings.addVariableModification(ptm2);
+        ptmSettings.addVariableModification(ptm3);
+        ptmSettings.addVariableModification(ptm4);
+        ptmSettings.addVariableModification(ptm5);
+        ptmSettings.addVariableModification(ptm6);
+        ptmSettings.addVariableModification(ptm7);
+        ptmSettings.addVariableModification(ptm8);
+        ptmSettings.addVariableModification(ptm9);
+
+        utilitiesSearchParameters.setPtmSettings(ptmSettings);
 
         SearchParameters searchParameters = new SearchParameters();
 
@@ -80,5 +108,8 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertEquals(PeptideFragmentIon.A_ION, searchParameters.getFirstSearchedIonType().intValue());
         Assert.assertNotNull(searchParameters.getSecondSearchedIonType());
         Assert.assertEquals(PeptideFragmentIon.B_ION, searchParameters.getSecondSearchedIonType().intValue());
+
+        Assert.assertNotNull(searchParameters.getSearchParametersHasModifications());
+        Assert.assertEquals(9, searchParameters.getSearchParametersHasModifications().size());
     }
 }

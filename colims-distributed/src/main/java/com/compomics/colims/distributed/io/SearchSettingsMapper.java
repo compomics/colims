@@ -1,7 +1,9 @@
 package com.compomics.colims.distributed.io;
 
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.BinaryFileType;
@@ -22,10 +24,15 @@ import java.util.List;
 public class SearchSettingsMapper {
 
     /**
-     * The Utilities to Search parameters mapper.
+     * The Utilities search parameters to Colims search parameters mapper.
      */
     @Autowired
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
+    /**
+     * The Utilities PtmSettings to Colims search modification parameters mapper.
+     */
+    @Autowired
+    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
     /**
      *
      */
@@ -44,7 +51,7 @@ public class SearchSettingsMapper {
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException thrown in case of an I/O related exception
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
@@ -58,7 +65,11 @@ public class SearchSettingsMapper {
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
         //set entity associations
         searchAndValidationSettings.setSearchParameterSettings(searchParameters);
-//        searchParameterSettings.getSearchAndValidationSettingses().add(searchAndValidationSettings);
+
+        /**
+         * Search modifications
+         */
+        utilitiesPtmSettingsMapper.map(utilitiesSearchParameters.getPtmSettings(), searchParameters);
 
         /**
          * SearchEngine
@@ -66,14 +77,12 @@ public class SearchSettingsMapper {
         SearchEngine searchEngine = searchAndValidationSettingsService.getSearchEngine(searchEngineType, version);
         //set entity associations
         searchAndValidationSettings.setSearchEngine(searchEngine);
-//        searchEngine.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * FastaDb
          */
         //set entity associations
         searchAndValidationSettings.setFastaDb(fastaDb);
-//        fastaDb.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         /**
          * IdentificationFile(s)

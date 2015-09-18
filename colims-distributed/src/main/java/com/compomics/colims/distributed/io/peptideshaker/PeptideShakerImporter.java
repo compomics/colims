@@ -2,6 +2,7 @@ package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.distributed.io.SearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
@@ -235,7 +236,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
      * @return the mapped search and validation settings
      * @throws IOException thrown in case of an I/O related problem
      */
-    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun) throws IOException {
+    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings;
 
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();

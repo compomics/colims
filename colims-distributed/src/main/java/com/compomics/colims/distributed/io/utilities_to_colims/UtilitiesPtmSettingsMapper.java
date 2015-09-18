@@ -7,6 +7,7 @@ import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.model.enums.ModificationType;
+import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
@@ -32,6 +33,7 @@ public class UtilitiesPtmSettingsMapper {
      */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesPtmSettingsMapper.class);
     private static final String UNKNOWN_UTILITIES_PTM = "unknown";
+
     /**
      * The modification service instance.
      */
@@ -58,15 +60,16 @@ public class UtilitiesPtmSettingsMapper {
     public void map(final PtmSettings ptmSettings, final SearchParameters searchParameters) throws ModificationMappingException {
         //iterate over fixed modifications
         for (String modificationName : ptmSettings.getAllModifications()) {
-            //try to find the CV term in the PTMFactory
-            CvTerm cvTerm = PTMFactory.getInstance().getPTM(modificationName).getCvTerm();
+            //try to find the PTM and CvTerm in the backed up PTMs
+            PTM ptm = ptmSettings.getBackedUpPtmsMap().get(modificationName);
+            CvTerm cvTerm = ptm.getCvTerm();
 
             SearchModification searchModification;
             if (cvTerm != null) {
                 searchModification = mapCvTerm(cvTerm);
             } else {
-                //make use of the PTM in the backed up PTMs map because it contains the mass of the modification
-                searchModification = mapPtm(ptmSettings.getBackedUpPtmsMap().get(modificationName));
+                //use the PTM instance from the backed up PTMs
+                searchModification = mapPtm(ptm);
             }
 
             //set entity associations if the search modification could be mapped
@@ -78,6 +81,12 @@ public class UtilitiesPtmSettingsMapper {
                     searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 } else {
                     searchParametersHasModification.setModificationType(ModificationType.FIXED);
+                }
+
+                //set residues
+                AminoAcidPattern aminoAcidPattern = ptm.getPattern();
+                if (aminoAcidPattern != null) {
+                    searchParametersHasModification.setResidues(aminoAcidPattern.asSequence());
                 }
 
                 //set entity associations
@@ -111,7 +120,7 @@ public class UtilitiesPtmSettingsMapper {
     private SearchModification mapCvTerm(final CvTerm cvTerm) {
         SearchModification searchModification;
 
-        //look for the search modification in the newModifications map
+        //look for the search modification in the cached modifications map
         searchModification = cachedSearchModifications.get(cvTerm.getAccession());
 
         if (searchModification == null) {

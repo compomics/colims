@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.model.SearchCvParam;
@@ -40,6 +41,11 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      */
     private SearchCvParam defaultSearchType = null;
     /**
+     * The Utilities PTM settings mapper.
+     */
+    @Autowired
+    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    /**
      * The TypedCvParam class service.
      */
     @Autowired
@@ -57,7 +63,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * @param searchParameters          the Colims search parameters
      */
     @Override
-    public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
+    public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
@@ -86,6 +92,9 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         searchParameters.setFirstSearchedIonType(utilitiesSearchParameters.getIonSearched1());
         //fragment ion type 2
         searchParameters.setSecondSearchedIonType(utilitiesSearchParameters.getIonSearched2());
+
+        //map the PTM settings
+        utilitiesPtmSettingsMapper.map(utilitiesSearchParameters.getPtmSettings(), searchParameters);
     }
 
     /**
