@@ -8,13 +8,11 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.PeptideExportModel;
 import com.compomics.colims.client.model.PeptideTableRow;
 import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.model.ProteinGroupTableModel;
-import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
-import com.compomics.colims.client.model.tableformat.PsmTableFormat;
+import com.compomics.colims.client.model.tableformat.*;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
@@ -345,7 +343,13 @@ public class ProteinOverviewController implements Controllable {
                     Map<Integer, Pattern> columnFilter = new HashMap<>();
                     columnFilter.put(0, HTML_TAGS);
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel, columnFilter);
+                    // need a new model... or table format?
+                    // could potentially lose the filtering if its only on this model
+                    // hmm
+                    PeptideExportModel exportModel = new PeptideExportModel();
+                    exportModel.setPeptides(sortedPeptides);
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }

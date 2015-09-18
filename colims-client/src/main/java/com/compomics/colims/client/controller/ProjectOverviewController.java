@@ -21,21 +21,6 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.util.experiment.identification.PeptideAssumption;
-import com.compomics.util.experiment.identification.SpectrumAnnotator;
-import com.compomics.util.experiment.identification.matches.IonMatch;
-import com.compomics.util.experiment.identification.matches.SpectrumMatch;
-import com.compomics.util.experiment.identification.spectrum_annotators.PeptideSpectrumAnnotator;
-import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
-import com.compomics.util.experiment.massspectrometry.Peak;
-import com.compomics.util.experiment.massspectrometry.Precursor;
-import com.compomics.util.gui.spectrum.IntensityHistogram;
-import com.compomics.util.gui.spectrum.MassErrorPlot;
-import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
-import com.compomics.util.gui.spectrum.SpectrumPanel;
-import com.compomics.util.preferences.AnnotationPreferences;
-import com.compomics.util.preferences.SequenceMatchingPreferences;
-import com.compomics.util.preferences.SpecificAnnotationPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -53,8 +38,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * The project overview view controller.
@@ -69,8 +52,6 @@ public class ProjectOverviewController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(ProjectOverviewController.class);
 
-    private static final double INTENSITY_LEVEL = 0.75;
-    //model
     private AdvancedTableModel<Project> projectsTableModel;
     private DefaultEventSelectionModel<Project> projectsSelectionModel;
     private final EventList<Experiment> experiments = new BasicEventList<>();
@@ -85,10 +66,7 @@ public class ProjectOverviewController implements Controllable {
     private final EventList<Spectrum> spectra = new BasicEventList<>();
     private PsmTableModel psmsTableModel;
     private DefaultEventSelectionModel<Spectrum> psmsSelectionModel;
-    /**
-     * The spectrum annotator.
-     */
-    private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
+
     /**
      * The utilities user preferences.
      */
@@ -106,10 +84,6 @@ public class ProjectOverviewController implements Controllable {
     //services
     @Autowired
     private SpectrumService spectrumService;
-    @Autowired
-    private PeptideService peptideService;
-    @Autowired
-    private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -291,7 +265,6 @@ public class ProjectOverviewController implements Controllable {
 
         psmsSelectionModel.addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
-                //update the spectrum panel
                 updateSpectrum();
             }
         });

@@ -119,7 +119,7 @@ public class SpectrumPanelGenerator {
 
         Collection<Peak> peaks = mSnSpectrum.getPeakList();
 
-        if (peaks != null && !peaks.isEmpty()) {
+        if (!peaks.isEmpty()) {
             SpectrumPanel spectrumPanel = new SpectrumPanel(
                 mSnSpectrum.getMzValuesAsArray(),
                 mSnSpectrum.getIntensityValuesAsArray(),
