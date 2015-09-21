@@ -67,11 +67,6 @@ public class SearchSettingsMapper {
         searchAndValidationSettings.setSearchParameterSettings(searchParameters);
 
         /**
-         * Search modifications
-         */
-        utilitiesPtmSettingsMapper.map(utilitiesSearchParameters.getPtmSettings(), searchParameters);
-
-        /**
          * SearchEngine
          */
         SearchEngine searchEngine = searchAndValidationSettingsService.getSearchEngine(searchEngineType, version);

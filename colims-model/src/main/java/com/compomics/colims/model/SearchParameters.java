@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class SearchParameters extends DatabaseEntity {
      * modifications.
      */
     @OneToMany(mappedBy = "searchParameters")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
+    @org.hibernate.annotations.Cascade(CascadeType.ALL)
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();

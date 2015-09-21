@@ -78,12 +78,4 @@ public class ModificationRepositoryTest {
         Assert.assertEquals(1, modificationIds.size());
     }
 
-    @Test
-    public void testDeleteById(){
-        long numberOfModifications = modificationRepository.countAll();
-
-        modificationRepository.deleteById(2L);
-
-        Assert.assertEquals(numberOfModifications - 1, modificationRepository.countAll());
-    }
 }

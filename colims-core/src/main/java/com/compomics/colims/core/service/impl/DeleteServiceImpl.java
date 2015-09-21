@@ -27,6 +27,8 @@ public class DeleteServiceImpl implements DeleteService {
     @Autowired
     private SearchParametersRepository searchParametersRepository;
     @Autowired
+    private SearchModificationRepository searchModificationRepository;
+    @Autowired
     private ProjectRepository projectRepository;
     @Autowired
     private ExperimentRepository experimentRepository;
@@ -44,12 +46,13 @@ public class DeleteServiceImpl implements DeleteService {
             deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
         }
 
-        //collect the IDs of the constraint less proteins, modifications and search parameters
+        //collect the IDs of the constraint less proteins, modifications, search parameters and search parameters
         //that can be deleted after the deletion of the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
         List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
         List<Long> modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
         List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
+        List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
 
         //delete the analytical runs
         analyticalRuns.forEach(analyticalRunRepository::delete);
@@ -68,6 +71,11 @@ public class DeleteServiceImpl implements DeleteService {
         for (Long searchParametersId : searchParametersIds) {
             SearchParameters searchParametersToDelete = searchParametersRepository.findById(searchParametersId);
             searchParametersRepository.delete(searchParametersToDelete);
+        }
+        //delete the search modifications
+        for (Long searchModificationId : searchModificationIds) {
+            SearchModification searchModificationToDelete = searchModificationRepository.findById(searchModificationId);
+            searchModificationRepository.delete(searchModificationToDelete);
         }
     }
 

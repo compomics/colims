@@ -11,8 +11,8 @@ import javax.swing.filechooser.FileFilter;
  */
 public class CpsFileFilter extends FileFilter {
 
-    private static final String CPS_EXTENSION = "cps";
-    private static final String DESCRIPTION = "*.cps";
+    private static final String CPS_EXTENSION = "cpsx";
+    private static final String DESCRIPTION = "*.cpsx";
 
     @Override
     public boolean accept(File file) {

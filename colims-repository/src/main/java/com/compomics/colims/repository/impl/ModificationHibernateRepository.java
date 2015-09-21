@@ -71,11 +71,4 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
         return sqlQuery.list();
     }
 
-    @Override
-    public void deleteById(Long id) {
-        Query query = getCurrentSession().createQuery("delete from Modification where id = :ID");
-        query.setParameter("ID", id);
-
-        int result = query.executeUpdate();
-    }
 }

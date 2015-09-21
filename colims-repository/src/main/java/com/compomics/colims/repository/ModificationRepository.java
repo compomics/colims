@@ -46,11 +46,4 @@ public interface ModificationRepository extends GenericRepository<Modification, 
      * @return the list of protein IDs
      */
     List<Long> getConstraintLessModificationIdsForRuns(List<Long> analyticalRunIds);
-
-    /**
-     * Delete the modification by ID.
-     *
-     * @param id the primary key
-     */
-    void deleteById(Long id);
 }

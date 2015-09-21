@@ -2,6 +2,8 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.SearchModification;
 
+import java.util.List;
+
 /**
  * This interface provides repository methods for the SearchModification class.
  *
@@ -33,5 +35,13 @@ public interface SearchModificationRepository extends GenericRepository<SearchMo
      * @return the found modification
      */
     SearchModification findByAlternativeAccession(String alternativeAccession);
+
+    /**
+     * Get the IDs of the modifications that are only related to the given runs.
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of protein IDs
+     */
+    List<Long> getConstraintLessSearchModificationIdsForRuns(List<Long> analyticalRunIds);
 
 }
