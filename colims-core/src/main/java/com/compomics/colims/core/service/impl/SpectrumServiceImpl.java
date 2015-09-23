@@ -186,6 +186,32 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
+    public void fetchSpectrumFilesAndPeptides(Spectrum spectrum) {
+        boolean addedToSession = false;
+        try {
+            spectrum.getSpectrumFiles().size();
+        } catch (LazyInitializationException e) {
+            //attach the spectrum to the new session
+            spectrumRepository.saveOrUpdate(spectrum);
+            addedToSession = true;
+            if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
+                Hibernate.initialize(spectrum.getSpectrumFiles());
+            }
+        }
+        try {
+            spectrum.getPeptides().size();
+        } catch (LazyInitializationException e) {
+            if (!addedToSession) {
+                //attach the spectrum to the new session
+                spectrumRepository.saveOrUpdate(spectrum);
+            }
+            if (!Hibernate.isInitialized(spectrum.getPeptides())) {
+                Hibernate.initialize(spectrum.getPeptides());
+            }
+        }
+    }
+
+    @Override
     public List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
         return spectrumRepository.getPagedSpectra(analyticalRun, start, length, orderBy, direction, filter);
     }

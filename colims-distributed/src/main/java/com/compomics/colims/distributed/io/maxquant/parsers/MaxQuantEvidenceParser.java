@@ -244,7 +244,7 @@ public class MaxQuantEvidenceParser {
                     if (modificationHeader.contains("n-term") && "1".equals(modificationString)) {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
 
-                        Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
+                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
 
                         //modification.getPeptideHasModifications().add(phModification);
 
@@ -255,7 +255,7 @@ public class MaxQuantEvidenceParser {
                     if (modificationHeader.contains("c-term") && "1".equals(modificationString)) {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1, 100.0, peptide);
 
-                        Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
+                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
                         //modification.getPeptideHasModifications().add(phModification);
 
                         phModification.setModification(modification);
@@ -282,7 +282,7 @@ public class MaxQuantEvidenceParser {
                                 phModification.setModificationType(ModificationType.VARIABLE);
                                 phModification.setPeptide(peptide);
 
-                                Modification modification = utilitiesModificationMapper.mapModificationMatch(modificationHeader);
+                                Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
                                 //modification.getPeptideHasModifications().add(phModification);
 
                                 if (modificationDeltaScores != null) {

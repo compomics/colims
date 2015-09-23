@@ -167,8 +167,8 @@ public class UtilitiesPtmSettingsMapperTest {
             Assert.assertNotNull(searchParametersHasModification.getModificationType());
             Assert.assertNull(searchParametersHasModification.getSearchModification().getId());
             //check the mass
-            Assert.assertEquals(unknownPtm.getMass(), searchParametersHasModification.getSearchModification().getMonoIsotopicMassShift(), 0.01);
-            Assert.assertEquals(unknownPtm.getMass(), searchParametersHasModification.getSearchModification().getAverageMassShift(), 0.01);
+            Assert.assertNull(searchParametersHasModification.getSearchModification().getMonoIsotopicMassShift());
+            Assert.assertNull(searchParametersHasModification.getSearchModification().getAverageMassShift());
         }
     }
 

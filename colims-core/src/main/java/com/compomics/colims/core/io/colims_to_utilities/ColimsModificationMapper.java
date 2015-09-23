@@ -1,32 +1,36 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import java.util.ArrayList;
-
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * @author Kenneth Verheggen
+ * This class maps a collection of Colims PeptideHasModification instances onto a collection of Utilities
+ * ModificationMatch instances.
+ *
+ * @author Niels Hulstaert
  */
 @Component("colimsModificationMapper")
 public class ColimsModificationMapper {
 
+    /**
+     * Logger instance
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsModificationMapper.class);
 
     /**
-     * Map the Colims modification matches onto the Utilities peptide. The Utilities PTMs are matched first onto CV
-     * params from PSI-MOD.
+     * Map the Colims PeptideHasModification instances onto the Utilities ModificationMatch instances.
      *
-     * @param targetPeptide       the Colims target peptide
-     * @param modificationMatches the list of modification matches
+     * @param peptideHasModifications the list of PeptideHasModification instances
+     * @param modificationMatches     the list of modification matches
      */
-    public void map(final Peptide targetPeptide, final ArrayList<ModificationMatch> modificationMatches) {
-        LOGGER.debug("Mapping modifications from " + targetPeptide.getSequence() + " to new modificationMatches");
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+    public void map(final List<PeptideHasModification> peptideHasModifications, final ArrayList<ModificationMatch> modificationMatches) {
+        for (PeptideHasModification peptideHasModification : peptideHasModifications) {
             String theoreticPTM = peptideHasModification.getModification().getAccession();
 
             if (theoreticPTM != null) {

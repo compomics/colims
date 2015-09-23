@@ -3,6 +3,7 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchModificationService;
+import com.compomics.colims.distributed.io.unimod.UnimodMarshaller;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.SearchParametersHasModification;
@@ -45,6 +46,11 @@ public class UtilitiesPtmSettingsMapper {
     @Autowired
     private OlsService olsService;
     /**
+     * Contains the UNIMOD modifications.
+     */
+    @Autowired
+    private UnimodMarshaller unimodMarshaller;
+    /**
      * The map of cached modifications (key: modification name, value: the search modification).
      */
     private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
@@ -58,9 +64,9 @@ public class UtilitiesPtmSettingsMapper {
      * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final PtmSettings ptmSettings, final SearchParameters searchParameters) throws ModificationMappingException {
-        //iterate over fixed modifications
+        //iterate over all modifications
         for (String modificationName : ptmSettings.getAllModifications()) {
-            //try to find the PTM and CvTerm in the backed up PTMs
+            //try to find the PTM and the associated CvTerm in the backed up PTMs
             PTM ptm = ptmSettings.getBackedUpPtmsMap().get(modificationName);
             CvTerm cvTerm = ptm.getCvTerm();
 
@@ -68,13 +74,17 @@ public class UtilitiesPtmSettingsMapper {
             if (cvTerm != null) {
                 searchModification = mapCvTerm(cvTerm);
             } else {
-                //use the PTM instance from the backed up PTMs
-                searchModification = mapPtm(ptm);
+                searchModification = mapByName(modificationName);
             }
 
             //set entity associations if the search modification could be mapped
             if (searchModification != null) {
                 SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
+
+                //set the Utilities name if necessary
+                if (searchModification.getUtilitiesName() == null && PTMFactory.getInstance().containsPTM(modificationName)) {
+                    searchModification.setUtilitiesName(modificationName);
+                }
 
                 //set modification type
                 if (ptmSettings.getAllNotFixedModifications().contains(modificationName)) {
@@ -94,9 +104,6 @@ public class UtilitiesPtmSettingsMapper {
                 searchParametersHasModification.setSearchParameters(searchParameters);
 
                 searchParameters.getSearchParametersHasModifications().add(searchParametersHasModification);
-            } else {
-                LOGGER.error("The search modification" + modificationName + " could not be mapped.");
-                throw new ModificationMappingException("The search modification match " + modificationName + " could not be mapped.");
             }
         }
 
@@ -117,39 +124,38 @@ public class UtilitiesPtmSettingsMapper {
      * @param cvTerm the utilities CvTerm
      * @return the Colims SearchModification entity
      */
-    private SearchModification mapCvTerm(final CvTerm cvTerm) {
+    private SearchModification mapCvTerm(final CvTerm cvTerm) throws ModificationMappingException {
         SearchModification searchModification;
 
-        //look for the search modification in the cached modifications map
+        //look for the search modification in the cached search modifications map
         searchModification = cachedSearchModifications.get(cvTerm.getAccession());
 
         if (searchModification == null) {
             //the search modification was not found in the cachedSearchModifications map
             //look for the search modification in the database by accession
             searchModification = searchModificationService.findByAccession(cvTerm.getAccession());
-            //for UNIMOD mods, look for the alternative accession
-            if (cvTerm.getOntology().equals("UNIMOD") && searchModification == null) {
-                //look for the search modification in the database by alternative accession
-                searchModification = searchModificationService.findByAlternativeAccession(cvTerm.getAccession());
-            }
 
             if (searchModification == null) {
                 //the search modification was not found in the database
                 switch (cvTerm.getOntology()) {
+                    case "UNIMOD":
+                        //look for the search modification in the UNIMOD modifications
+                        searchModification = unimodMarshaller.getModificationByName(SearchModification.class, cvTerm.getName());
+                        if (searchModification == null) {
+                            //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
+                            searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
+                        }
+                        if (searchModification != null) {
+                            //add to cached modifications with the UNIMOD accession as key
+                            cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
+                        }
+                        break;
                     case "PSI-MOD":
                         //look for the search modification in the PSI-MOD ontology by accession
                         searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
                         if (searchModification != null) {
                             //add to cached search modifications with the PSI-MOD accession as key
                             cachedSearchModifications.put(searchModification.getAccession(), searchModification);
-                        }
-                        break;
-                    case "UNIMOD":
-                        //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
-                        searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
-                        if (searchModification != null) {
-                            //add to cached search modifications with the UNIMOD accession as key
-                            cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
                         }
                         break;
                     default:
@@ -170,53 +176,65 @@ public class UtilitiesPtmSettingsMapper {
             }
         }
 
+        if (searchModification == null) {
+            LOGGER.error("The Utilities CvTerm " + cvTerm.getAccession() + " could not be mapped.");
+            throw new ModificationMappingException("The Utilities CvTerm " + cvTerm.getAccession() + " could not be mapped.");
+        }
+
         return searchModification;
     }
 
     /**
-     * Map the given PTM to a SearchModification instance. Return null if no mapping was possible.
+     * Map the given modification name to a SearchModification instance. Return null if no mapping was possible.
      *
-     * @param ptm the PTM instance
+     * @param modificationName the modification name
      * @return the Colims SearchModification instance
      */
-    private SearchModification mapPtm(final PTM ptm) {
+    public SearchModification mapByName(final String modificationName) throws ModificationMappingException {
         SearchModification searchModification;
 
-        //look for the search modification in the newModifications map
-        searchModification = cachedSearchModifications.get(ptm.getName());
+        //look for the search modification in the cached search modifications map
+        searchModification = cachedSearchModifications.get(modificationName);
 
         if (searchModification == null) {
-            //the search modification was not found in the newModifications map
+            //the search modification was not found in the cached search modifications map
             //look for the search modification in the database by name
-            searchModification = searchModificationService.findByName(ptm.getName());
+            searchModification = searchModificationService.findByName(modificationName);
 
             if (searchModification == null) {
-                //the search modification was not found in the database
-                //look for the search modification in the PSI-MOD ontology by exact name
-                searchModification = olsService.findModificationByExactName(SearchModification.class, ptm.getName());
+                //the search modification was not found by name in the database
+                //try to find it in the UNIMOD modifications
+                searchModification = unimodMarshaller.getModificationByName(SearchModification.class, modificationName);
 
                 if (searchModification == null) {
-                    //the search modification was not found by name in the PSI-MOD ontology
-                    //@todo maybe search by mass or not by 'exact' name?
-                    //get the search modification from modification factory
-                    PTM foundPtm = PTMFactory.getInstance().getPTM(ptm.getName());
+                    //the search modification was not found in the UNIMOD ontology
+                    //look for the search modification in the PSI-MOD ontology by exact name
+                    searchModification = olsService.findModificationByExactName(SearchModification.class, modificationName);
 
-                    //check if the PTM is not unknown in the PTMFactory
-                    if (!foundPtm.getName().equals(UNKNOWN_UTILITIES_PTM)) {
-                        LOGGER.warn("The modification match " + ptm.getName() + " could not be found in the PtmFactory.");
+                    if (searchModification == null) {
+                        //the search modification was not found in the PSI-MOD ontology
+                        //look for a matching PTM in the PTMFactory
+                        PTM ptm = PTMFactory.getInstance().getPTM(modificationName);
+
+                        searchModification = new SearchModification(modificationName);
+                        if (ptm.getName().equals(UNKNOWN_UTILITIES_PTM)) {
+                            LOGGER.warn("The modification match " + modificationName + " could not be found in the PTMFactory.");
+                        } else {
+                            searchModification.setMonoIsotopicMassShift(ptm.getMass());
+                            searchModification.setAverageMassShift(ptm.getMass());
+                        }
                     }
-
-                    searchModification = new SearchModification(ptm.getName());
-                    //@todo check if the PTM mass is the average or the monoisotopic mass shift
-                    searchModification.setMonoIsotopicMassShift(ptm.getMass());
-                    searchModification.setAverageMassShift(ptm.getMass());
                 }
             }
             //add to cached search modifications
             cachedSearchModifications.put(searchModification.getName(), searchModification);
         }
 
+        if (searchModification == null) {
+            LOGGER.error("The modification name " + modificationName + " could not be mapped.");
+            throw new ModificationMappingException("The modification name " + modificationName + " could not be mapped.");
+        }
+
         return searchModification;
     }
-
 }

@@ -87,7 +87,7 @@ INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) 
 INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'PSI-MS', 'SEARCH_TYPE');
 
 -- insert test search modifications
-INSERT INTO search_modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'UNIMOD:21', '79.98', '79.966331'), (3, 'fragment neutral loss', 'MS:1001524', null, 1.0, 2.5);
+INSERT INTO search_modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'Oxidation of M', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'Phosphorylation of S', '79.98', '79.966331'), (3, 'fragment neutral loss', 'MS:1001524', null, 1.0, 2.5);
 
 -- insert a test analytical run
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);

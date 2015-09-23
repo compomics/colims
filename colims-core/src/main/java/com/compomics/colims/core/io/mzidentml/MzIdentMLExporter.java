@@ -40,6 +40,9 @@ public class MzIdentMLExporter {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(MzIdentMLExporter.class);
+
+    private static final String PSI_MOD_PREFIX = "MOD";
+    private static final String UNIMOD_PREFIX = "UNIMOD";
     /**
      * The json file that contains the MzIdentML controlled vocabulary terms.
      */
@@ -588,15 +591,13 @@ public class MzIdentMLExporter {
     private <T extends AbstractModification> CvParam modificationToCvParam(T modification) throws IOException {
         CvParam modParam;
 
-        if (modification.getAccession() != null) {
-            modParam = getDataItem("GenericCV.PSI-MS", CvParam.class);
-            modParam.setName(modification.getName());
-            modParam.setAccession(modification.getAccession());
-        } else {
+        if (modification.getAccession().startsWith(UNIMOD_PREFIX)) {
             modParam = getDataItem("GenericCV.UNIMOD", CvParam.class);
-            modParam.setName(modification.getName());
-            modParam.setAccession(modification.getAlternativeAccession());
+        } else {
+            modParam = getDataItem("GenericCV.PSI-MS", CvParam.class);
         }
+        modParam.setName(modification.getName());
+        modParam.setAccession(modification.getAccession());
 
         return modParam;
     }

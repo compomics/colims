@@ -6,6 +6,7 @@ import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,13 +66,13 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     @Override
     public void fetchSpectra(final AnalyticalRun analyticalRun) {
         try {
+            analyticalRun.getSpectrums().size();
+        } catch (LazyInitializationException e) {
             //attach the analytical run to the new session
             analyticalRunRepository.saveOrUpdate(analyticalRun);
             if (!Hibernate.isInitialized(analyticalRun.getSpectrums())) {
                 Hibernate.initialize(analyticalRun.getSpectrums());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 

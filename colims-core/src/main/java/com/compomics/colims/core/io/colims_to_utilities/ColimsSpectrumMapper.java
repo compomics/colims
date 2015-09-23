@@ -1,9 +1,5 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import java.util.ArrayList;
-
-import org.apache.log4j.Logger;
-
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Spectrum;
@@ -12,12 +8,13 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-
-import java.io.IOException;
-import java.util.Map;
-
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -25,7 +22,11 @@ import org.springframework.stereotype.Component;
 @Component("colimsSpectrumMapper")
 public class ColimsSpectrumMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
+
     @Autowired
     private SpectrumService spectrumService;
 

@@ -4,19 +4,17 @@
  */
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
+import com.compomics.colims.core.service.ExperimentService;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.repository.ExperimentRepository;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import com.compomics.colims.core.service.ExperimentService;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.repository.ExperimentRepository;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -29,7 +27,7 @@ public class ExperimentServiceImpl implements ExperimentService {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(ExperimentServiceImpl.class);
-    
+
     @Autowired
     private ExperimentRepository experimentRepository;
 
@@ -81,13 +79,13 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public void fetchBinaryFiles(final Experiment experiment) {
         try {
+            experiment.getBinaryFiles().size();
+        } catch (LazyInitializationException e) {
             //attach the experiment to the new session
             experimentRepository.saveOrUpdate(experiment);
             if (!Hibernate.isInitialized(experiment.getBinaryFiles())) {
                 Hibernate.initialize(experiment.getBinaryFiles());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 

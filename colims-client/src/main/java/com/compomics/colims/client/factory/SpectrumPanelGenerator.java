@@ -1,9 +1,10 @@
 package com.compomics.colims.client.factory;
 
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
-import com.compomics.colims.core.io.colims_to_utilities.PeptideMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -56,7 +57,7 @@ public class SpectrumPanelGenerator {
     @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
-    private PeptideMapper peptideMapper;
+    private ColimsPeptideMapper colimsPeptideMapper;
 
     private PeptideAssumption peptideAssumption;
     private ArrayList<IonMatch> annotations;
@@ -71,14 +72,15 @@ public class SpectrumPanelGenerator {
      * @param spectrum A spectrum
      */
     public void init(Spectrum spectrum) {
-        List<com.compomics.colims.model.Peptide> peptides = peptideService.getPeptidesForSpectrum(spectrum);
-        spectrumService.fetchSpectrumFiles(spectrum);
+        //fetch the spectrum files and peptides associated with this spectrum
+        spectrumService.fetchSpectrumFilesAndPeptides(spectrum);
 
+        List<Peptide> peptides = spectrum.getPeptides();
         if (!peptides.isEmpty()) {
             SpectrumMatch spectrumMatch = new SpectrumMatch();
             PeptideMatch peptideMatch = new PeptideMatch();
 
-            peptideMapper.map(peptides.get(0), peptideMatch);
+//            colimsPeptideMapper.map(peptides.get(0), peptideMatch);
             PeptideAssumption assumption = new PeptideAssumption(peptideMatch.getTheoreticPeptide(),
                     0, 0,
                     new Charge(1, spectrum.getCharge() == null ? 0 : spectrum.getCharge()),

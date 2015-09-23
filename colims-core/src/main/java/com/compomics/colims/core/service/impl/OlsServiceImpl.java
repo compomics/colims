@@ -156,7 +156,6 @@ public class OlsServiceImpl implements OlsService {
                                 T foundModification = findModificationByAccession(clazz, accession);
                                 if (foundModification != null) {
                                     modification = foundModification;
-                                    modification.setAlternativeAccession(unimodAccession);
                                     break outerloop;
                                 }
                             } else {
@@ -170,7 +169,6 @@ public class OlsServiceImpl implements OlsService {
                     T foundModification = findModificationByAccession(clazz, tempAccession);
                     if (foundModification != null) {
                         modification = foundModification;
-                        modification.setAlternativeAccession(unimodAccession);
 
                         //add modification to the cache
                         modificationsCache.put(unimodAccession, modification);
@@ -220,9 +218,6 @@ public class OlsServiceImpl implements OlsService {
             modification = clazz.newInstance();
             modification.setAccession(modToCopy.getAccession());
             modification.setName(modToCopy.getName());
-            if (modToCopy.getAlternativeAccession() != null && !modToCopy.getAlternativeAccession().isEmpty()) {
-                modification.setAlternativeAccession(modToCopy.getAlternativeAccession());
-            }
             if (modToCopy.getMonoIsotopicMassShift() != null) {
                 modification.setMonoIsotopicMassShift(modToCopy.getMonoIsotopicMassShift());
             }

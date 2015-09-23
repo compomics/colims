@@ -1,11 +1,14 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.PeptideRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,13 +68,13 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public void fetchPeptideHasModifications(final Peptide peptide) {
         try {
+            peptide.getPeptideHasModifications().size();
+        } catch (LazyInitializationException e) {
             //attach the peptide to the new session
             peptideRepository.saveOrUpdate(peptide);
             if (!Hibernate.isInitialized(peptide.getPeptideHasModifications())) {
                 Hibernate.initialize(peptide.getPeptideHasModifications());
             }
-        } catch (HibernateException hbe) {
-            LOGGER.error(hbe, hbe.getCause());
         }
     }
 

@@ -22,14 +22,14 @@ public class ColimsPsmMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsPsmMapper.class);
     @Autowired
-    private ColimsPeptideMapper colimsPeptideMapper;
+    private ColimsPeptideMapper2 colimsPeptideMapper2;
 
     public void map(final Spectrum spectrum, final List<SpectrumMatch> targetSpectrumMap) throws MappingException {
         LOGGER.debug("Mapping spectrum from " + spectrum.getTitle() + " to new list of SpectrumMatch objects");
         //get best assumption
         for (Peptide aPeptide : spectrum.getPeptides()) {
             PeptideMatch pepMatch = new PeptideMatch();
-            colimsPeptideMapper.map(aPeptide, pepMatch);
+            colimsPeptideMapper2.map(aPeptide, pepMatch);
             PeptideAssumption assumption = new PeptideAssumption(pepMatch.getTheoreticPeptide(), 0, 0, new Charge(1, spectrum.getCharge()), aPeptide.getPsmProbability());
             SpectrumMatch specMatch = new SpectrumMatch(spectrum.getAccession(), assumption);
             targetSpectrumMap.add(specMatch);

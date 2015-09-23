@@ -1,11 +1,12 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.Mapper;
+import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import com.compomics.util.experiment.identification.matches.ProteinMatch;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,49 +14,53 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 /**
- * @author Kenneth Verheggen
+ * This class maps the Colims Peptide instance onto a Utilities PeptideMatch instance.
+ *
+ * @author Niels Hulstaert
  */
-@Component("colimsPeptideMapper")
-public class ColimsPeptideMapper {
+@Component("colimspeptideMapper")
+public class ColimsPeptideMapper implements Mapper<Peptide, PeptideAssumption> {
 
-    @Autowired
-    private ColimsModificationMapper colimsModMapper;
-    @Autowired
-    private ColimsProteinMapper colimsProteinMapper;
-
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsPeptideMapper.class);
 
-    public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch) throws MappingException {
-        LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
-        //set sequence
-        ArrayList<ProteinMatch> parentProteins = new ArrayList<>();
-        for (PeptideHasProteinGroup peptideHasProteinGroup : sourcePeptide.getPeptideHasProteinGroups()) {
-            colimsProteinMapper.map(peptideHasProteinGroup.getProteinGroup().getMainProtein(), parentProteins);
-        }
+    @Autowired
+    private ColimsModificationMapper colimsModificationMapper;
+    @Autowired
+    private PeptideService peptideService;
+    @Autowired
+    private ProteinAccessionService proteinAccessionService;
 
-        ArrayList<String> parentProteinAccessions = new ArrayList<>();
-        for (ProteinMatch aMatch : parentProteins) {
-            parentProteinAccessions.add(aMatch.getMainMatch());
-        }
-        //TODO : REVERT THE MODIFICATIONMAPPING !!!!
-        ArrayList<ModificationMatch> modifications = new ArrayList<>();
-        colimsModMapper.map(sourcePeptide, modifications);
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modifications);
-        assumedPeptide.setParentProteins(parentProteinAccessions);
-        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
+    @Override
+    public void map(Peptide sourcePeptide, PeptideAssumption peptideAssumption) {
+        //map peptide
+
+
+        //map PTMs
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+
+
+        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
+        assumedPeptide.setParentProteins((ArrayList) proteinAccessionService.getProteinAccessionsForPeptide(sourcePeptide));
+
+//        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
     }
 
-    public void map(final Peptide sourcePeptide, final PeptideMatch targetPeptideMatch, final ProteinMatch parentProteinMatch) {
-        LOGGER.debug("Mapping peptides from " + sourcePeptide.getSequence() + " to new PeptideMatch object");
-        //set sequence
-        ArrayList<String> parentProteinAccessions = new ArrayList<>();
-        parentProteinAccessions.add(parentProteinMatch.getMainMatch());
-        //TODO : REVERT THE MODIFICATIONMAPPING !!!!
-        ArrayList<ModificationMatch> modifications = new ArrayList<>();
-        colimsModMapper.map(sourcePeptide, modifications);
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modifications);
-        assumedPeptide.setParentProteins(parentProteinAccessions);
-        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
-    }
+    /**
+     * Map the Colims Peptide instance onto the Utilities Peptide instance.
+     *
+     * @param sourcePeptide
+     * @return the Utilities Peptide instance
+     */
+    private com.compomics.util.experiment.biology.Peptide mapPeptide(Peptide sourcePeptide){
+        //fetch PeptideHasModifications
+        peptideService.fetchPeptideHasModifications(sourcePeptide);
 
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+        colimsModificationMapper.map(sourcePeptide.getPeptideHasModifications(), modificationMatches);
+
+        return new com.compomics.util.experiment.biology.Peptide();
+    }
 }

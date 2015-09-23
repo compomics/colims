@@ -18,7 +18,7 @@ public class ColimsProteinMapper {
 
     private static final Logger LOGGER = Logger.getLogger(ColimsProteinMapper.class);
     @Autowired
-    private ColimsPeptideMapper colimsPeptideMapper;
+    private ColimsPeptideMapper2 colimsPeptideMapper2;
 
     /**
      * Map the utilities protein related objects to colims proteins and add them

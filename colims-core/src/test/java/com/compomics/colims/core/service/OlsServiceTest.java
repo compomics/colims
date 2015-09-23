@@ -31,7 +31,7 @@ public class OlsServiceTest {
      * Clear the modifications cache.
      */
     @After
-    public void clearCache(){
+    public void clearCache() {
         olsService.getModificationsCache().clear();
     }
 
@@ -96,7 +96,7 @@ public class OlsServiceTest {
     public void testFindModificationByNameAndUnimodAccession_1() {
         Modification modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, "Phospho", "UNIMOD:21");
         Assert.assertNotNull(modification);
-        Assert.assertNotNull(modification.getAlternativeAccession());
+        Assert.assertNotNull(modification.getAccession());
     }
 
     /**
@@ -110,7 +110,7 @@ public class OlsServiceTest {
         //first, try to find a SearchModification instance
         SearchModification searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, "Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(searchModification);
-        Assert.assertNotNull(searchModification.getAlternativeAccession());
+        Assert.assertNotNull(searchModification.getAccession());
 
         //the modification should have been added twice to the cache,
         //one time with the PSI-MOD accession as key and one time with the UNIMOD accession as key.
@@ -118,7 +118,7 @@ public class OlsServiceTest {
 
         Modification modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, "Ammonia-loss", "UNIMOD:385");
         Assert.assertNotNull(modification);
-        Assert.assertNotNull(modification.getAlternativeAccession());
+        Assert.assertNotNull(modification.getAccession());
 
         //the modification should not have been added to the cache
         Assert.assertEquals(cacheSize + 2, olsService.getModificationsCache().size());

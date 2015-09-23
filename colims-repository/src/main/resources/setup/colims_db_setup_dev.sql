@@ -164,10 +164,10 @@
     create table colims.modification (
         id bigint not null auto_increment,
         accession varchar(255),
-        alternative_accession varchar(255),
         average_mass_shift double precision,
         monoisotopic_mass_shift double precision,
         name varchar(255) not null,
+        utilities_name varchar(255),
         primary key (id)
     );
 
@@ -442,10 +442,10 @@
     create table colims.search_modification (
         id bigint not null auto_increment,
         accession varchar(255),
-        alternative_accession varchar(255),
         average_mass_shift double precision,
         monoisotopic_mass_shift double precision,
         name varchar(255) not null,
+        utilities_name varchar(255),
         primary key (id)
     );
 
@@ -839,7 +839,7 @@
     alter table colims.search_parameters_has_other_cv_param
         add constraint FK_sn1i0py7kln7t4t93s7vhlnu3
         foreign key (l_other_search_cv_param_id)
-        references colims.protocol_cv_param (id);
+        references colims.search_cv_param (id);
 
     alter table colims.search_parameters_has_other_cv_param
         add constraint FK_gajty60g05dpw7uoxlie2jrgo

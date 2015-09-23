@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is used to marshall and access the UNIMOD modifications from the unimod.xml file.
@@ -83,8 +84,8 @@ public class UnimodMarshaller {
                 Attribute record = modificationElement.getAttribute("record_id");
 
                 SearchModification searchModification = new SearchModification(title.getValue());
-                //set the alternative accession as this a UNIMOD modification
-                searchModification.setAlternativeAccession(String.format(UNIMOD_ACCESSION, record.getIntValue()));
+                //set the accession
+                searchModification.setAccession(String.format(UNIMOD_ACCESSION, record.getIntValue()));
 
                 //get the mono isotopic and average mass shift
                 Element delta = modificationElement.getChild("delta", NAMESPACE);
@@ -118,9 +119,6 @@ public class UnimodMarshaller {
             modification = clazz.newInstance();
             modification.setAccession(modToCopy.getAccession());
             modification.setName(modToCopy.getName());
-            if (!modToCopy.getAlternativeAccession().isEmpty()) {
-                modification.setAlternativeAccession(modToCopy.getAlternativeAccession());
-            }
             if (modToCopy.getMonoIsotopicMassShift() != null) {
                 modification.setMonoIsotopicMassShift(modToCopy.getMonoIsotopicMassShift());
             }

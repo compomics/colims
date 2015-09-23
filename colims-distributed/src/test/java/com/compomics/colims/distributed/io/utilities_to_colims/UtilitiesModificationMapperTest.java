@@ -253,8 +253,8 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-            Assert.assertNotNull(modification.getAlternativeAccession());
-            Assert.assertNull(modification.getAccession());
+            Assert.assertNotNull(modification.getAccession());
+            Assert.assertTrue(modification.getAccession().startsWith("UNIMOD"));
         }
     }
 

@@ -98,6 +98,13 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
     void fetchSpectrumFiles(Spectrum spectrum);
 
     /**
+     * Fetch the spectrum spectrum files and peptides related to the given spectrum.
+     *
+     * @param spectrum the Spectrum instance
+     */
+    void fetchSpectrumFilesAndPeptides(Spectrum spectrum);
+
+    /**
      * Return a list of spectra according to all these parameters.
      *
      * @param analyticalRun Analytical run with which spectra are associated

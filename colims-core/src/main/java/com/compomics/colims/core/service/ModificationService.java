@@ -10,8 +10,7 @@ import com.compomics.colims.model.Modification;
 public interface ModificationService extends GenericService<Modification, Long> {
 
     /**
-     * Find a modification by the modification name. Returns the first
-     * modification found, null if none were found.
+     * Find a modification by the modification name. Returns the first modification found, null if none were found.
      *
      * @param name the modification name
      * @return the found modification
@@ -19,8 +18,7 @@ public interface ModificationService extends GenericService<Modification, Long> 
     Modification findByName(String name);
 
     /**
-     * Find a modification by the modification accession. Returns null if
-     * nothing was found.
+     * Find a modification by the modification accession. Returns null if nothing was found.
      *
      * @param accession the modification accession
      * @return the found modification
@@ -28,12 +26,16 @@ public interface ModificationService extends GenericService<Modification, Long> 
     Modification findByAccession(String accession);
 
     /**
-     * Find a modification by the modification alternative accession. Returns
-     * the first modification found, null if none were found.
+     * Find a modification by the modification alternative accession. Returns the first modification found, null if none
+     * were found.
      *
      * @param alternativeAccession the modification accession
      * @return the found modification
      */
     Modification findByAlternativeAccession(String alternativeAccession);
 
+    /**
+     * Load all the modifications from the database and add them to the Utilities PTMFactory as user PTMs.
+     */
+    void addAllToPtmFactory();
 }
