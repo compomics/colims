@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Modification;
 
 import java.util.List;
@@ -13,8 +12,7 @@ import java.util.List;
 public interface ModificationRepository extends GenericRepository<Modification, Long> {
 
     /**
-     * Find a modification by the modification name. Returns the first
-     * modification found, null if none were found.
+     * Find a modification by the modification name. Returns the first modification found, null if none were found.
      *
      * @param name the modification name
      * @return the found modification
@@ -22,8 +20,7 @@ public interface ModificationRepository extends GenericRepository<Modification, 
     Modification findByName(String name);
 
     /**
-     * Find a modification by the modification accession. Returns null if
-     * nothing was found.
+     * Find a modification by the modification accession. Returns null if nothing was found.
      *
      * @param accession the modification accession
      * @return the found modification
@@ -31,13 +28,12 @@ public interface ModificationRepository extends GenericRepository<Modification, 
     Modification findByAccession(String accession);
 
     /**
-     * Find a modification by the modification alternative accession. Returns
-     * the first modification found, null if none were found.
+     * Find a modification by the Utilities PTM name. Returns the first modification found, null if none were found.
      *
-     * @param alternativeAccession the modification accession
+     * @param utilitiesPtmName the utilities PTM name
      * @return the found modification
      */
-    Modification findByAlternativeAccession(String alternativeAccession);
+    Modification findByUtilitiesPtmName(String utilitiesPtmName);
 
     /**
      * Get the IDs of the modifications that are only related to the given runs.

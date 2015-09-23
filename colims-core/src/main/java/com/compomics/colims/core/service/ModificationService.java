@@ -26,15 +26,6 @@ public interface ModificationService extends GenericService<Modification, Long> 
     Modification findByAccession(String accession);
 
     /**
-     * Find a modification by the modification alternative accession. Returns the first modification found, null if none
-     * were found.
-     *
-     * @param alternativeAccession the modification accession
-     * @return the found modification
-     */
-    Modification findByAlternativeAccession(String alternativeAccession);
-
-    /**
      * Load all the modifications from the database and add them to the Utilities PTMFactory as user PTMs.
      */
     void addAllToPtmFactory();

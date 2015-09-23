@@ -3,7 +3,6 @@ package com.compomics.colims.repository.impl;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.repository.ModificationRepository;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
@@ -53,8 +52,8 @@ public class ModificationHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public Modification findByAlternativeAccession(String alternativeAccession) {
-        List<Modification> modifications = findByCriteria(Restrictions.eq("alternativeAccession", alternativeAccession));
+    public Modification findByUtilitiesPtmName(String utilitiesPtmName) {
+        List<Modification> modifications = findByCriteria(Restrictions.eq("utilitiesName", utilitiesPtmName));
         if (!modifications.isEmpty()) {
             return modifications.get(0);
         } else {

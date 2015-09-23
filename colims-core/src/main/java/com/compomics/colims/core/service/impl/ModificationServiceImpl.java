@@ -68,11 +68,6 @@ public class ModificationServiceImpl implements ModificationService {
     }
 
     @Override
-    public Modification findByAlternativeAccession(String alternativeAccession) {
-        return modificationRepository.findByAlternativeAccession(alternativeAccession);
-    }
-
-    @Override
     public void addAllToPtmFactory() {
         List<Modification> modifications = modificationRepository.findAll();
         for (Modification modification : modifications) {

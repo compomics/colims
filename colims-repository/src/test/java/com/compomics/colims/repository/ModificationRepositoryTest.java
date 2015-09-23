@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Modification;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,14 +53,14 @@ public class ModificationRepositoryTest {
     }
 
     @Test
-    public void testFindByAlternativeAccession() {
+    public void testFindByUtilitiesPtmName() {
         //try to find a non existing modification
-        Modification modification = modificationRepository.findByAlternativeAccession("nonexisting");
+        Modification modification = modificationRepository.findByUtilitiesPtmName("nonexisting");
 
         Assert.assertNull(modification);
 
         //find an existing modification
-        modification = modificationRepository.findByAlternativeAccession("UNIMOD:35");
+        modification = modificationRepository.findByUtilitiesPtmName("test_utilities_name");
 
         Assert.assertNotNull(modification);
         //check the ID

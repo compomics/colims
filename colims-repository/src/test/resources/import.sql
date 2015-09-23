@@ -59,7 +59,7 @@ INSERT INTO material_cv_param (id, creation_date, modification_date, user_name, 
 INSERT INTO material (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '2');
 
 -- insert test modifications
-INSERT INTO modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', 'UNIMOD:35', '-64.1', '-63.998286'), (2, 'non-existing modification', 'MOD:00894', 'UNIMOD:70', '-87.1', '-89.998286');
+INSERT INTO modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', 'test_utilities_name', '-64.1', '-63.998286'), (2, 'non-existing modification', 'MOD:00894', 'test_utilities_name_2', '-87.1', '-89.998286');
 
 -- insert test proteins
 -- INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
