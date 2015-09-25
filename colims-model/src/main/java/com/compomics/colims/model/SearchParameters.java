@@ -81,9 +81,15 @@ public class SearchParameters extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "upper_charge", nullable = true)
     private Integer upperCharge;
+    /**
+     * The first ion type searched.
+     */
     @Basic(optional = true)
     @Column(name = "search_ion_type_1", nullable = true)
     private Integer firstSearchedIonType;
+    /**
+     * The second ion type searched.
+     */
     @Basic(optional = true)
     @Column(name = "search_ion_type_2", nullable = true)
     private Integer secondSearchedIonType;

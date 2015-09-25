@@ -1,78 +1,84 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.util.experiment.massspectrometry.Charge;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Kenneth Verheggen
+ * This class maps a Colims SearchParameters instance onto a Utilities SearchParameters instance.
+ *
+ * @author Niels Hulstaert
  */
 @Component("colimsSearchParametersMapper")
 @Transactional
-public class ColimsSearchParametersMapper implements Mapper<SearchParameters, com.compomics.util.experiment.identification.identification_parameters.SearchParameters> {
+public class ColimsSearchParametersMapper {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
 
     /**
-     * Map the ColimsSearchParametersSettings to the SearchParameters object.
+     * Map the Colims SearchParameters onto the Utilties SearchParameters. This method only maps the fields necessary to
+     * annotate the spectrum panel.
      *
-     * @param colimsSearchSettings
-     * @param searchParameters
+     * @param colimsSearchParameters the Colims SearchParameters instance
+     * @return the Utilities SearchParameters instance
      */
-    @Override
-    public void map(final SearchParameters colimsSearchSettings, final com.compomics.util.experiment.identification.identification_parameters.SearchParameters searchParameters) {
-//        LOGGER.debug("Mapping ColimsSearchParameterSettings to utilities SearchParameters Object");
-////        searchParameters.setFastaFile(new File(colimsSearchParametersSettings.getFastaDb().getName()));
-//        //TODO FIX THE ENZYME WITH PREDEFINED SET FOR COLIMS?
-//        Enzyme enzyme = new Enzyme(0, colimsSearchParametersSettings.getEnzyme(), "", "", "", "");
-//        searchParameters.setEnzyme(enzyme);
-//        searchParameters.setMaxEValue(colimsSearchParametersSettings.getEvalueCutoff());
-//        searchParameters.setFragmentIonAccuracy(colimsSearchParametersSettings.getFragMassTolerance());
-//
-//        searchParameters.setIonSearched1(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon1Type()));
-//        searchParameters.setIonSearched2(getCorrectLetter(colimsSearchParametersSettings.getFragmentIon2Type()));
-//
-//        searchParameters.setnMissedCleavages(colimsSearchParametersSettings.getNumberOfMissedCleavages());
-//        searchParameters.setPrecursorAccuracy(colimsSearchParametersSettings.getPrecMassTolerance());
-//        searchParameters.setPrecursorAccuracyType(colimsSearchParametersSettings.getPrecMassToleranceUnit());
-//        searchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParametersSettings.getUpperCharge()));
-//        searchParameters.setMinChargeSearched(new Charge(1, colimsSearchParametersSettings.getLowerCharge()));
+    public com.compomics.util.experiment.identification.identification_parameters.SearchParameters mapForSpectrumPanel(final SearchParameters colimsSearchParameters) {
+        com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
 
+        //fragment ion accuracy
+        utilitiesSearchParameters.setFragmentAccuracyType(MassAccuracyType.getByColimsMassAccuracyType(colimsSearchParameters.getFragMassToleranceUnit()));
+        utilitiesSearchParameters.setFragmentIonAccuracy(colimsSearchParameters.getFragMassTolerance());
+
+        //fragment ions searched
+        utilitiesSearchParameters.setIonSearched1(getFragmentIonTypeToString(colimsSearchParameters.getFirstSearchedIonType()));
+        utilitiesSearchParameters.setIonSearched2(getFragmentIonTypeToString(colimsSearchParameters.getSecondSearchedIonType()));
+
+        //precursor accuracy
+        utilitiesSearchParameters.setPrecursorAccuracyType(MassAccuracyType.getByColimsMassAccuracyType(colimsSearchParameters.getPrecMassToleranceUnit()));
+        utilitiesSearchParameters.setPrecursorAccuracy(colimsSearchParameters.getPrecMassTolerance());
+
+        utilitiesSearchParameters.setMinChargeSearched(new Charge(1, colimsSearchParameters.getLowerCharge()));
+        utilitiesSearchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParameters.getUpperCharge()));
+
+        return utilitiesSearchParameters;
     }
 
-//    /**
-//     * Converts a fragmentIonType as int to the corresponding letter (0=a 1=b
-//     * 2=c | 3=x 4=y 5=z)
-//     *
-//     * @param fragmentIonType
-//     */
-//    private String getCorrectLetter(final int fragmentIonType) {
-//        String ionLetter = "a";
-//        switch (fragmentIonType) {
-//            case 0:
-//                ionLetter = "a";
-//                break;
-//            case 1:
-//                ionLetter = "b";
-//                break;
-//            case 2:
-//                ionLetter = "c";
-//                break;
-//            case 3:
-//                ionLetter = "x";
-//                break;
-//            case 4:
-//                ionLetter = "y";
-//                break;
-//            case 5:
-//                ionLetter = "z";
-//                break;
-//            default:
-//                break;
-//        }
-//        return ionLetter;
-//    }
+    /**
+     * Converts a fragmentIonType as int to the corresponding letter (0=a 1=b 2=c | 3=x 4=y 5=z)
+     *
+     * @param fragmentIonType the ion type String represantation
+     */
+    private String getFragmentIonTypeToString(final int fragmentIonType) {
+        String ionLetter;
+        switch (fragmentIonType) {
+            case 0:
+                ionLetter = "a";
+                break;
+            case 1:
+                ionLetter = "b";
+                break;
+            case 2:
+                ionLetter = "c";
+                break;
+            case 3:
+                ionLetter = "x";
+                break;
+            case 4:
+                ionLetter = "y";
+                break;
+            case 5:
+                ionLetter = "z";
+                break;
+            default:
+                throw new IllegalStateException("Should be unreachable.");
+        }
+        return ionLetter;
+    }
 
 }

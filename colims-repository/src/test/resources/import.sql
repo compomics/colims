@@ -79,7 +79,7 @@ INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) 
 INSERT INTO search_parameters (id, l_search_enzyme_cv_id, threshold, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 1, 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4);
 
 -- insert test search modifications
-INSERT INTO search_modification (id, name, accession, alternative_accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'UNIMOD:35', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'UNIMOD:21', '79.98', '79.966331');
+INSERT INTO search_modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'test_utilities_name', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'utilities_name_2', '79.98', '79.966331');
 
 -- insert a test analytical run
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);

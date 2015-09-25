@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
+import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 @Component("colimsModificationMapper")
-public class ColimsModificationMapper {
+public class ColimsModificationMapper implements Mapper<List<PeptideHasModification>, ArrayList<ModificationMatch>> {
 
     /**
      * Logger instance
@@ -27,9 +28,9 @@ public class ColimsModificationMapper {
      * Map the Colims PeptideHasModification instances onto the Utilities ModificationMatch instances.
      *
      * @param peptideHasModifications the list of PeptideHasModification instances
-     * @param modificationMatches     the list of modification matches
+     * @param modificationMatches     the list of ModificationMatch instances
      */
-    public void map(final List<PeptideHasModification> peptideHasModifications, final ArrayList<ModificationMatch> modificationMatches) {
+    public void map(final List<PeptideHasModification> peptideHasModifications, ArrayList<ModificationMatch> modificationMatches) {
         for (PeptideHasModification peptideHasModification : peptideHasModifications) {
             String theoreticPTM = peptideHasModification.getModification().getAccession();
 

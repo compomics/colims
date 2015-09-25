@@ -22,5 +22,4 @@ public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long
      * @param id the analytical run ID
      */
     void deleteById(Long id);
-
 }

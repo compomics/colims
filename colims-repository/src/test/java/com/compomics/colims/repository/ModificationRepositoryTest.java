@@ -19,8 +19,6 @@ public class ModificationRepositoryTest {
 
     @Autowired
     private ModificationRepository modificationRepository;
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testFindByName() {
@@ -76,5 +74,4 @@ public class ModificationRepositoryTest {
 
         Assert.assertEquals(1, modificationIds.size());
     }
-
 }

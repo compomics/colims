@@ -51,8 +51,8 @@ public class SearchModificationHibernateRepository extends GenericHibernateRepos
     }
 
     @Override
-    public SearchModification findByAlternativeAccession(String alternativeAccession) {
-        List<SearchModification> modifications = findByCriteria(Restrictions.eq("alternativeAccession", alternativeAccession));
+    public SearchModification findByUtilitiesPtmName(String utilitiesPtmName) {
+        List<SearchModification> modifications = findByCriteria(Restrictions.eq("utilitiesName", utilitiesPtmName));
         if (!modifications.isEmpty()) {
             return modifications.get(0);
         } else {

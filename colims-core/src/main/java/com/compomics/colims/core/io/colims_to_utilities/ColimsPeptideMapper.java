@@ -1,12 +1,11 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
-import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
 import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
+import com.compomics.util.experiment.massspectrometry.Charge;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
  * @author Niels Hulstaert
  */
 @Component("colimspeptideMapper")
-public class ColimsPeptideMapper implements Mapper<Peptide, PeptideAssumption> {
+public class ColimsPeptideMapper {
 
     /**
      * Logger instance.
@@ -33,19 +32,12 @@ public class ColimsPeptideMapper implements Mapper<Peptide, PeptideAssumption> {
     @Autowired
     private ProteinAccessionService proteinAccessionService;
 
-    @Override
-    public void map(Peptide sourcePeptide, PeptideAssumption peptideAssumption) {
+    public PeptideAssumption map(Peptide sourcePeptide) {
         //map peptide
+        com.compomics.util.experiment.biology.Peptide targetPeptide = mapPeptide(sourcePeptide);
 
-
-        //map PTMs
-        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-
-
-        com.compomics.util.experiment.biology.Peptide assumedPeptide = new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
-        assumedPeptide.setParentProteins((ArrayList) proteinAccessionService.getProteinAccessionsForPeptide(sourcePeptide));
-
-//        targetPeptideMatch.setTheoreticPeptide(assumedPeptide);
+        Charge charge = new Charge(1, sourcePeptide.getCharge());
+        return new PeptideAssumption(targetPeptide, 0, 0, charge, sourcePeptide.getPsmProbability());
     }
 
     /**
@@ -54,13 +46,15 @@ public class ColimsPeptideMapper implements Mapper<Peptide, PeptideAssumption> {
      * @param sourcePeptide
      * @return the Utilities Peptide instance
      */
-    private com.compomics.util.experiment.biology.Peptide mapPeptide(Peptide sourcePeptide){
+    private com.compomics.util.experiment.biology.Peptide mapPeptide(Peptide sourcePeptide) {
         //fetch PeptideHasModifications
         peptideService.fetchPeptideHasModifications(sourcePeptide);
 
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        colimsModificationMapper.map(sourcePeptide.getPeptideHasModifications(), modificationMatches);
+        if (!sourcePeptide.getPeptideHasModifications().isEmpty()) {
+            colimsModificationMapper.map(sourcePeptide.getPeptideHasModifications(), modificationMatches);
+        }
 
-        return new com.compomics.util.experiment.biology.Peptide();
+        return new com.compomics.util.experiment.biology.Peptide(sourcePeptide.getSequence(), modificationMatches);
     }
 }

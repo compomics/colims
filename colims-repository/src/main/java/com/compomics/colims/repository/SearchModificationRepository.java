@@ -12,7 +12,8 @@ import java.util.List;
 public interface SearchModificationRepository extends GenericRepository<SearchModification, Long> {
 
     /**
-     * Find a search modification by the modification name. Returns the first modification found, null if none were found.
+     * Find a search modification by the modification name. Returns the first modification found, null if none were
+     * found.
      *
      * @param name the search modification name
      * @return the found modification
@@ -28,13 +29,13 @@ public interface SearchModificationRepository extends GenericRepository<SearchMo
     SearchModification findByAccession(String accession);
 
     /**
-     * Find a search modification by the modification alternative accession. Returns the first modification found, null if none
+     * Find a search modification by the Utilities PTM name. Returns the first search modification found, null if none
      * were found.
      *
-     * @param alternativeAccession the search modification accession
-     * @return the found modification
+     * @param utilitiesPtmName the utilities PTM name
+     * @return the found search modification
      */
-    SearchModification findByAlternativeAccession(String alternativeAccession);
+    SearchModification findByUtilitiesPtmName(String utilitiesPtmName);
 
     /**
      * Get the IDs of the modifications that are only related to the given runs.

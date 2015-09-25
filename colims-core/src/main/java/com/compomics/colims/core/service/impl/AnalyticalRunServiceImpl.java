@@ -5,7 +5,6 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -26,13 +26,4 @@ public interface SearchModificationService extends GenericService<SearchModifica
      */
     SearchModification findByAccession(String accession);
 
-    /**
-     * Find a search modification by the modification alternative accession. Returns the first modification found, null
-     * if none were found.
-     *
-     * @param alternativeAccession the search modification accession
-     * @return the found modification
-     */
-    SearchModification findByAlternativeAccession(String alternativeAccession);
-
 }

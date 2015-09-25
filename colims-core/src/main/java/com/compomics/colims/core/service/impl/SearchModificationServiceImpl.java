@@ -64,9 +64,4 @@ public class SearchModificationServiceImpl implements SearchModificationService 
         return searchModificationRepository.countAll();
     }
 
-    @Override
-    public SearchModification findByAlternativeAccession(String alternativeAccession) {
-        return searchModificationRepository.findByAlternativeAccession(alternativeAccession);
-    }
-
 }

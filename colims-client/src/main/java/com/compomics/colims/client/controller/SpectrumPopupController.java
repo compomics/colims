@@ -41,9 +41,9 @@ public class SpectrumPopupController implements Controllable {
      * @param spectrum A spectrum to show
      */
     public void updateView(Spectrum spectrum) {
-        spectrumPanelGenerator.init(spectrum);
-        spectrumPanelGenerator.decorateSpectrumPanel(spectrumPopupDialog.getSpectrumJPanel());
-        spectrumPanelGenerator.decorateSecondaryPanel(spectrumPopupDialog.getSecondarySpectrumPlotsJPanel());
+//        spectrumPanelGenerator.init(spectrum);
+//        spectrumPanelGenerator.decorateSpectrumPanel(spectrumPopupDialog.getSpectrumJPanel());
+//        spectrumPanelGenerator.decorateSecondaryPanel(spectrumPopupDialog.getSecondarySpectrumPlotsJPanel());
 
         showView();
     }

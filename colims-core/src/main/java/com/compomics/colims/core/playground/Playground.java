@@ -1,7 +1,9 @@
 package com.compomics.colims.core.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Project;
 import org.springframework.context.ApplicationContext;
 
@@ -44,10 +46,7 @@ public class Playground {
 //        
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
 
-        ProjectService projectService = (ProjectService) applicationContext.getBean("projectService");
-        Project project = projectService.findById(1L);
-        projectService.fetchUsers(project);
-
-        System.out.println("test");
+        AnalyticalRunService analyticalRunService = (AnalyticalRunService) applicationContext.getBean("analyticalRunService");
+        AnalyticalRun analyticalRun = analyticalRunService.findById(1L);
     }
 }

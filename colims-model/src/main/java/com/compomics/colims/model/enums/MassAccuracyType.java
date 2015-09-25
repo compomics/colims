@@ -12,7 +12,7 @@ public enum MassAccuracyType {
     PPM, DA;
 
     /**
-     * Get the MassAccuracyType by the Utilities MassAccuracyType.
+     * Get the Colims MassAccuracyType by the Utilities MassAccuracyType.
      *
      * @param utilitiesMassAccuracyType the Compomics Utilities mass accuracy type
      * @return the mapped MassAccuracyType instance
@@ -28,4 +28,28 @@ public enum MassAccuracyType {
 
         return massAccuracyType;
     }
+
+    /**
+     * Get the Utilities MassAccuracyType by the Colims MassAccuracyType.
+     *
+     * @param colimsMassAccuracyType the Colims mass accuracy type
+     * @return the mapped MassAccuracyType instance
+     */
+    public static SearchParameters.MassAccuracyType getByColimsMassAccuracyType(final MassAccuracyType colimsMassAccuracyType) {
+        SearchParameters.MassAccuracyType utilitiesMassAccuracyType;
+
+        switch (colimsMassAccuracyType) {
+            case DA:
+                utilitiesMassAccuracyType = SearchParameters.MassAccuracyType.DA;
+                break;
+            case PPM:
+                utilitiesMassAccuracyType = SearchParameters.MassAccuracyType.PPM;
+                break;
+            default:
+                throw new IllegalStateException("Should be unreachable.");
+        }
+
+        return utilitiesMassAccuracyType;
+    }
+
 }

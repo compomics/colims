@@ -16,6 +16,7 @@ import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.PsmTableModel;
 import com.compomics.colims.client.model.tableformat.*;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
@@ -38,6 +39,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -268,6 +271,9 @@ public class ProjectOverviewController implements Controllable {
             if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
                 psmsTableModel.reset(selectedAnalyticalRun);
                 updatePsmTable();
+
+                //load search parameters for the given run
+                spectrumPanelGenerator.loadSearchParametersForRun(selectedAnalyticalRun);
             }
 
             mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -459,9 +465,11 @@ public class ProjectOverviewController implements Controllable {
         if (selectedSpectrum != null) {
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
-            spectrumPanelGenerator.init(selectedSpectrum);
-            spectrumPanelGenerator.decorateSpectrumPanel(projectOverviewPanel.getSpectrumJPanel());
-            spectrumPanelGenerator.decorateSecondaryPanel(projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
+            try {
+                spectrumPanelGenerator.addSpectrum(selectedSpectrum, projectOverviewPanel.getSpectrumJPanel(), projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
+            } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
+                e.printStackTrace();
+            }
 
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         } else {

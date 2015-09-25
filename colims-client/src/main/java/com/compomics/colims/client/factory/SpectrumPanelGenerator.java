@@ -1,24 +1,24 @@
 package com.compomics.colims.client.factory;
 
-import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
-import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSearchParametersMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.service.SpectrumService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.compomics.util.experiment.identification.matches.PeptideMatch;
-import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationSettings;
 import com.compomics.util.experiment.identification.spectrum_annotation.SpecificAnnotationSettings;
 import com.compomics.util.experiment.identification.spectrum_annotation.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.spectrum_annotation.spectrum_annotators.PeptideSpectrumAnnotator;
 import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
-import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.gui.spectrum.IntensityHistogram;
@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,74 +55,146 @@ public class SpectrumPanelGenerator {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
-    private PeptideService peptideService;
-    @Autowired
     private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
     private ColimsPeptideMapper colimsPeptideMapper;
+    @Autowired
+    private ColimsSearchParametersMapper colimsSearchParametersMapper;
 
-    private PeptideAssumption peptideAssumption;
-    private ArrayList<IonMatch> annotations;
-    private SearchParameters searchParameters = new SearchParameters();
+    /**
+     * The ID of the current analytical run.
+     */
+    private Long analyticalRunId;
+    private SearchParameters utiltiesSearchParameters;
     private AnnotationSettings annotationSettings = new AnnotationSettings();
-    private MSnSpectrum mSnSpectrum = new MSnSpectrum();
+    UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**
-     * Initialise with the spectrum to display
+     * Load the AnnotationSettings for the given run.
      *
-     * @param spectrum A spectrum
+     * @param analyticalRun the AnalyticalRun instance
      */
-    public void init(Spectrum spectrum) {
+    public void loadSearchParametersForRun(AnalyticalRun analyticalRun) {
+        analyticalRunId = analyticalRun.getId();
+
+        com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
+        utiltiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
+
+        annotationSettings.addIonType(Ion.IonType.PEPTIDE_FRAGMENT_ION);
+        System.out.println("-----");
+    }
+
+    /**
+     * Add the Utilities SpectrumPanel for the given spectrum to the given JPanel.
+     *
+     * @param spectrum                          the Spectrum instance
+     * @param spectrumParentPanel               the parent panel where the spectrum will be added to
+     * @param secondarySpectrumPlotsParentPanel the parent panel were the secondary spectrum plots will be added to
+     */
+    public void addSpectrum(Spectrum spectrum, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
         //fetch the spectrum files and peptides associated with this spectrum
         spectrumService.fetchSpectrumFilesAndPeptides(spectrum);
 
-        List<Peptide> peptides = spectrum.getPeptides();
-        if (!peptides.isEmpty()) {
-            SpectrumMatch spectrumMatch = new SpectrumMatch();
-            PeptideMatch peptideMatch = new PeptideMatch();
+        MSnSpectrum msnSpectrum = new MSnSpectrum();
+        //map the Colims Spectrum instance onto the Utilities MSnSpectrum instance
+        colimsSpectrumMapper.map(spectrum, msnSpectrum);
 
-//            colimsPeptideMapper.map(peptides.get(0), peptideMatch);
-            PeptideAssumption assumption = new PeptideAssumption(peptideMatch.getTheoreticPeptide(),
-                    0, 0,
-                    new Charge(1, spectrum.getCharge() == null ? 0 : spectrum.getCharge()),
-                    peptides.get(0).getPsmProbability()
+        //construct the spectrum panel
+        Collection<Peak> peaks = msnSpectrum.getPeakList();
+
+        spectrumParentPanel.removeAll();
+
+        if (peaks != null && !peaks.isEmpty()) {
+            SpectrumPanel spectrumPanel = new SpectrumPanel(
+                    msnSpectrum.getMzValuesAsArray(),
+                    msnSpectrum.getIntensityValuesAsArray(),
+                    msnSpectrum.getPrecursor().getMz(),
+                    msnSpectrum.getPrecursor().getPossibleChargesAsString(),
+                    "",
+                    40,
+                    false, false, false,
+                    2,
+                    false
             );
 
-            spectrumMatch.setBestPeptideAssumption(assumption);
+            spectrumPanel.setDeltaMassWindow(annotationSettings.getFragmentIonAccuracy());
+            spectrumPanel.setBorder(null);
+            spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
+            spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
+            spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
+            spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
+            spectrumPanel.showAnnotatedPeaksOnly(!annotationSettings.showAllPeaks());
+            spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationSettings.yAxisZoomExcludesBackgroundPeaks());
 
-            peptideAssumption = spectrumMatch.getBestPeptideAssumption();
+            List<Peptide> peptides = spectrum.getPeptides();
+            if (!peptides.isEmpty()) {
+                //map the Colims Peptide instance onto the PeptideAssumption
+                PeptideAssumption peptideAssumption = colimsPeptideMapper.map(peptides.get(0));
 
-            PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
-
-            try {
-                colimsSpectrumMapper.map(spectrum, mSnSpectrum);
+                PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
 
                 SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
-                        mSnSpectrum.getSpectrumKey(),
+                        msnSpectrum.getSpectrumKey(),
                         peptideAssumption,
                         new SequenceMatchingPreferences(),
                         new SequenceMatchingPreferences()
                 );
 
-                annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
+                ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
                         annotationSettings,
                         specificAnnotationSettings,
-                        mSnSpectrum,
+                        msnSpectrum,
                         peptideAssumption.getPeptide()
                 );
-            } catch (Exception e) {
-                LOGGER.error(e.getCause(), e);
+
+                spectrumPanel.addAutomaticDeNovoSequencing(
+                        peptideAssumption.getPeptide(),
+                        annotations,
+                        utiltiesSearchParameters.getIonSearched1(),
+                        utiltiesSearchParameters.getIonSearched2(),
+                        annotationSettings.getDeNovoCharge(),
+                        annotationSettings.showForwardIonDeNovoTags(),
+                        annotationSettings.showRewindIonDeNovoTags(),
+                        false
+                );
+
+                spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
+
+                SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
+                        getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
+                        annotations,
+                        true,
+                        utiltiesSearchParameters.getPtmSettings(),
+                        utiltiesSearchParameters.getIonSearched1(),
+                        utiltiesSearchParameters.getIonSearched2()
+                );
+
+                secondarySpectrumPlotsParentPanel.removeAll();
+                secondarySpectrumPlotsParentPanel.add(sequenceFragmentationPanel);
+                secondarySpectrumPlotsParentPanel.add(new IntensityHistogram(annotations, msnSpectrum, 0.75));
+
+                MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, msnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
+
+                secondarySpectrumPlotsParentPanel.add(massErrorPlot);
+
+                secondarySpectrumPlotsParentPanel.revalidate();
+                secondarySpectrumPlotsParentPanel.repaint();
             }
+            spectrumParentPanel.add(spectrumPanel);
+        } else {
+            spectrumParentPanel.add(new JPanel());
         }
+        spectrumParentPanel.revalidate();
+        spectrumParentPanel.repaint();
     }
 
     /**
-     * Add spectrum panel components
+     * Add spectrum panel components.
      *
-     * @param spectrumJPanel Panel to use for spectrum panel
+     * @param mSnSpectrum the MSnSpectrum instance
      */
-    public void decorateSpectrumPanel(JPanel spectrumJPanel) {
+    public void decorateSpectrumPanel(MSnSpectrum mSnSpectrum) {
         UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
 
         Collection<Peak> peaks = mSnSpectrum.getPeakList();
@@ -144,25 +218,25 @@ public class SpectrumPanelGenerator {
             spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
             spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
             spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
-            spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
+//            spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
             spectrumPanel.showAnnotatedPeaksOnly(!annotationSettings.showAllPeaks());
             spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationSettings.yAxisZoomExcludesBackgroundPeaks());
 
-            spectrumPanel.addAutomaticDeNovoSequencing(
-                    peptideAssumption.getPeptide(),
-                    annotations,
-                    searchParameters.getIonSearched1(),
-                    searchParameters.getIonSearched2(),
-                    annotationSettings.getDeNovoCharge(),
-                    annotationSettings.showForwardIonDeNovoTags(),
-                    annotationSettings.showRewindIonDeNovoTags(),
-                    false
-            );
-
-            spectrumJPanel.removeAll();
-            spectrumJPanel.add(spectrumPanel);
-            spectrumJPanel.revalidate();
-            spectrumJPanel.repaint();
+//            spectrumPanel.addAutomaticDeNovoSequencing(
+//                    peptideAssumption.getPeptide(),
+//                    annotations,
+//                    utiltiesSearchParameters.getIonSearched1(),
+//                    utiltiesSearchParameters.getIonSearched2(),
+//                    annotationSettings.getDeNovoCharge(),
+//                    annotationSettings.showForwardIonDeNovoTags(),
+//                    annotationSettings.showRewindIonDeNovoTags(),
+//                    false
+//            );
+//
+//            spectrumJPanel.removeAll();
+//            spectrumJPanel.add(spectrumPanel);
+//            spectrumJPanel.revalidate();
+//            spectrumJPanel.repaint();
         }
     }
 
@@ -172,25 +246,25 @@ public class SpectrumPanelGenerator {
      * @param secondarySpectrumPlotsJPanel Panel to use for secondary components
      */
     public void decorateSecondaryPanel(JPanel secondarySpectrumPlotsJPanel) {
-        SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-                getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
-                annotations,
-                true,
-                searchParameters.getPtmSettings(),
-                searchParameters.getIonSearched1(),
-                searchParameters.getIonSearched2()
-        );
-
-        secondarySpectrumPlotsJPanel.removeAll();
-        secondarySpectrumPlotsJPanel.add(sequenceFragmentationPanel);
-        secondarySpectrumPlotsJPanel.add(new IntensityHistogram(annotations, mSnSpectrum, 0.75));
-
-        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, mSnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
-
-        secondarySpectrumPlotsJPanel.add(massErrorPlot);
-
-        secondarySpectrumPlotsJPanel.revalidate();
-        secondarySpectrumPlotsJPanel.repaint();
+//        SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
+//                getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
+//                annotations,
+//                true,
+//                utiltiesSearchParameters.getPtmSettings(),
+//                utiltiesSearchParameters.getIonSearched1(),
+//                utiltiesSearchParameters.getIonSearched2()
+//        );
+//
+//        secondarySpectrumPlotsJPanel.removeAll();
+//        secondarySpectrumPlotsJPanel.add(sequenceFragmentationPanel);
+//        secondarySpectrumPlotsJPanel.add(new IntensityHistogram(annotations, mSnSpectrum, 0.75));
+//
+//        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, mSnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
+//
+//        secondarySpectrumPlotsJPanel.add(massErrorPlot);
+//
+//        secondarySpectrumPlotsJPanel.revalidate();
+//        secondarySpectrumPlotsJPanel.repaint();
     }
 
     /**
@@ -241,7 +315,7 @@ public class SpectrumPanelGenerator {
         }
 
         return com.compomics.util.experiment.biology.Peptide.getTaggedModifiedSequence(
-                searchParameters.getPtmSettings(),
+                utiltiesSearchParameters.getPtmSettings(),
                 peptide,
                 confidentLocations,
                 new HashMap<>(),
