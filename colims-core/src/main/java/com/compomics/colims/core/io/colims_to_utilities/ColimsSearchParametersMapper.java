@@ -1,9 +1,12 @@
 package com.compomics.colims.core.io.colims_to_utilities;
 
+import com.compomics.colims.core.service.SearchParametersService;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.massspectrometry.Charge;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,11 @@ public class ColimsSearchParametersMapper {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
+
+    @Autowired
+    private ColimsSearchModificationMapper colimsSearchModificationMapper;
+    @Autowired
+    private SearchParametersService searchParametersService;
 
     /**
      * Map the Colims SearchParameters onto the Utilties SearchParameters. This method only maps the fields necessary to
@@ -45,6 +53,12 @@ public class ColimsSearchParametersMapper {
 
         utilitiesSearchParameters.setMinChargeSearched(new Charge(1, colimsSearchParameters.getLowerCharge()));
         utilitiesSearchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParameters.getUpperCharge()));
+
+        //map search modifications
+        searchParametersService.fetchSearchModifications(colimsSearchParameters);
+
+        PtmSettings ptmSettings = new PtmSettings();
+        colimsSearchModificationMapper.map(colimsSearchParameters.getSearchParametersHasModifications(), ptmSettings);
 
         return utilitiesSearchParameters;
     }

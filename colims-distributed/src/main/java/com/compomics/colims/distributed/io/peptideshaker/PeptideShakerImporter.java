@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The DataImporter class for PeptideShaker projects.
+ * The DataImporter implementation class for PeptideShaker projects.
  *
  * @author Niels Hulstaert
  */
@@ -86,9 +86,6 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     public void clear() throws IOException, SQLException {
         spectrumFactory.clearFactory();
         sequenceFactory.clearFactory();
-        //@todo Check if we need to clear the ObjectsCache because we started using the CpsParent class for accessing the .cps file
-        //objectsCache = new ObjectsCache();
-        //objectsCache.setAutomatedMemoryManagement(true);
         //call clear methods on child mappers
         utilitiesPeptideMapper.clear();
         utilitiesProteinMapper.clear();
@@ -127,8 +124,6 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
             //load the spectrum files, peptide en protein matches
             cpsParent.loadSpectrumFiles(null);
-            loadPeptideMatches(identification);
-            loadProteinMatches(identification);
 
             IdentificationFile identificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
 
@@ -252,82 +247,4 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
         return searchAndValidationSettings;
     }
-
-    /**
-     * Load the spectrum matches from the Ms2Identification.
-     *
-     * @param ms2Identification the Ms2Identification
-     * @param source            the unarchived PeptideShaker project
-     * @throws SQLException           thrown in case of an SQL related problem
-     * @throws IOException            thrown in case of an IO related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws InterruptedException   thrown in case of an interrupted thread problem
-     */
-    private void loadSpectrumMatches(final Ms2Identification ms2Identification, final UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-            loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
-            ms2Identification.loadSpectrumMatches(spectrumFileName, null, false);
-            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null, false);
-        }
-    }
-
-    /**
-     * Load the spectrum matches from the Ms2Identification.
-     *
-     * @param ms2Identification the Ms2Identification
-     * @param source            the unarchived PeptideShaker project
-     * @throws SQLException           thrown in case of an SQL related problem
-     * @throws IOException            thrown in case of an IO related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws InterruptedException   thrown in case of an interrupted thread problem
-     */
-    @Deprecated
-    private void loadSpectrumMatchesOld(final Ms2Identification ms2Identification, final UnpackedPeptideShakerImport source) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        for (String spectrumFileName : ms2Identification.getSpectrumFiles()) {
-            loadSpectraFromMgfFile(source.getMgfFileByName(spectrumFileName));
-            ms2Identification.loadSpectrumMatches(spectrumFileName, null, false);
-            ms2Identification.loadSpectrumMatchParameters(spectrumFileName, new PSParameter(), null, false);
-        }
-    }
-
-    /**
-     * Load spectra from a given mfg file in the Utilities SpectrumFactory.
-     *
-     * @param mgfFile the mgf file
-     * @throws IOException thrown in case of an SQL related problem problem
-     */
-    private void loadSpectraFromMgfFile(final File mgfFile) throws IOException {
-        LOGGER.debug("Start importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
-        spectrumFactory.addSpectra(mgfFile, null);
-        LOGGER.debug("Finish importing spectra from file " + mgfFile.getName() + " into the utilities SpectrumFactory.");
-    }
-
-    /**
-     * Load the peptide matches from the Ms2Identification.
-     *
-     * @param ms2Identification the Ms2Identification
-     * @throws SQLException           thrown in case of an IO related problem
-     * @throws IOException            thrown in case of an SQL related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws InterruptedException   thrown in case of an interrupted thread problem
-     */
-    private void loadPeptideMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        ms2Identification.loadPeptideMatches(null, false);
-        ms2Identification.loadPeptideMatchParameters(new PSParameter(), null, false);
-    }
-
-    /**
-     * Load the protein matches from the Ms2Identification.
-     *
-     * @param ms2Identification the Ms2Identification
-     * @throws SQLException           thrown in case of an IO related problem
-     * @throws IOException            thrown in case of an SQL related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws InterruptedException   thrown in case of an interrupted thread problem
-     */
-    private void loadProteinMatches(final Ms2Identification ms2Identification) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
-        ms2Identification.loadProteinMatches(null, false);
-        ms2Identification.loadProteinMatchParameters(new PSParameter(), null, false);
-    }
-
 }

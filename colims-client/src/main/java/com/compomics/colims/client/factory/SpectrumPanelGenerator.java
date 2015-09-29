@@ -8,7 +8,6 @@ import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -71,18 +70,22 @@ public class SpectrumPanelGenerator {
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**
-     * Load the AnnotationSettings for the given run.
+     * Load the search settings for the given run and map them to the corresponding Utilities objects (SearchParameters,
+     * AnnotationSettings).
      *
      * @param analyticalRun the AnalyticalRun instance
      */
-    public void loadSearchParametersForRun(AnalyticalRun analyticalRun) {
-        analyticalRunId = analyticalRun.getId();
+    public void loadSettingsForRun(AnalyticalRun analyticalRun) {
+        //check if the correct the settings are already loaded
+        if(analyticalRun.getId() != analyticalRunId) {
+            analyticalRunId = analyticalRun.getId();
 
-        com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
-        utiltiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
+            com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
+            utiltiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
 
-        annotationSettings.addIonType(Ion.IonType.PEPTIDE_FRAGMENT_ION);
-        System.out.println("-----");
+            //use the search parameters to set up the annotation settings
+            annotationSettings = new AnnotationSettings(utiltiesSearchParameters);
+        }
     }
 
     /**
@@ -326,4 +329,5 @@ public class SpectrumPanelGenerator {
                 useShortName
         );
     }
+
 }

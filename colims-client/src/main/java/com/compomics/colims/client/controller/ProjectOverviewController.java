@@ -273,7 +273,7 @@ public class ProjectOverviewController implements Controllable {
                 updatePsmTable();
 
                 //load search parameters for the given run
-                spectrumPanelGenerator.loadSearchParametersForRun(selectedAnalyticalRun);
+                spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
             }
 
             mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

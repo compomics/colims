@@ -106,27 +106,6 @@ public class UtilitiesModificationMapper {
                             if (ptmScoring.getProbabilisticSites().contains(modificationIndex)) {
                                 peptideHasModification.setDeltaScore(ptmScoring.getDeltaScore(modificationIndex));
                             }
-
-//                            //@todo ask mark if taking the site with the highest prob is the way to go
-//                            //@todo ask mark if we should use the modificationMatch.getModificationSite
-//                            List<Integer> orderedProbablisticSites = ptmScoring.getOrderedProbabilisticSites();
-//                            if (!orderedProbablisticSites.isEmpty()) {
-//                                Double probabilisticScore = ptmScoring.getProbabilisticScore(orderedProbablisticSites.get(0));
-//                                peptideHasModification.setProbabilityScore(probabilisticScore);
-//                                Set<Integer> locations = ptmScoring.getProbabilisticSites();
-//                                if (!locations.contains(modificationMatch.getModificationSite())) {
-//                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedProbablisticSites.toArray()) + ")");
-//                                }
-//                            }
-//                            List<Integer> orderedDeltaSites = ptmScoring.getOrderedDSites();
-//                            if (!orderedDeltaSites.isEmpty()) {
-//                                Double deltaScore = ptmScoring.getDeltaScore(orderedDeltaSites.get(0));
-//                                peptideHasModification.setDeltaScore(deltaScore);
-//                                Set<Integer> locations = ptmScoring.getDSites();
-//                                if (!locations.contains(modificationMatch.getModificationSite())) {
-//                                    LOGGER.warn("The modification site " + modificationMatch.getModificationSite() + " is not found in the PtmScoring locations (" + Arrays.toString(orderedDeltaSites.toArray()) + ")");
-//                                }
-//                            }
                         }
                     }
                 } else {

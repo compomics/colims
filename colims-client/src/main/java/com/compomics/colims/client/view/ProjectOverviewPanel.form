@@ -9,7 +9,6 @@
             <EtchetBorder/>
           </Border>
         </Property>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -403,7 +402,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="psmPanel" max="32767" attributes="0"/>
-                  <Component id="projectsPanel" pref="200" max="32767" attributes="0"/>
+                  <Component id="projectsPanel" pref="208" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -440,7 +439,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="projectsScrollPane" pref="264" max="32767" attributes="0"/>
+                  <Component id="projectsScrollPane" pref="266" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -457,9 +456,6 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="projectsScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -517,7 +513,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="experimentsScrollPane" pref="264" max="32767" attributes="0"/>
+                  <Component id="experimentsScrollPane" pref="266" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -534,9 +530,6 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="experimentsScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -585,7 +578,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="samplesScrollPane" pref="264" max="32767" attributes="0"/>
+                  <Component id="samplesScrollPane" pref="266" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -602,9 +595,6 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="samplesScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -653,7 +643,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="analyticalRunsScrollPane" pref="264" max="32767" attributes="0"/>
+                  <Component id="analyticalRunsScrollPane" pref="266" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -670,9 +660,6 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="analyticalRunsScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -762,9 +749,6 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="psmScrollPane">
-          <Properties>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
