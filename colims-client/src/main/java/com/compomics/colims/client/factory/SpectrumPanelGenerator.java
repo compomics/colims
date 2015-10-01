@@ -28,6 +28,8 @@ import com.compomics.util.preferences.SequenceMatchingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -39,11 +41,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class adds a spectrum panel to a given JPanel.
+ * This class generates a spectrum panel for a given spectrum.
  *
  * @author Niels Hulstaert
  */
 @Component("spectrumPanelGenerator")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SpectrumPanelGenerator {
 
     /**
@@ -65,9 +68,13 @@ public class SpectrumPanelGenerator {
      */
     private Long analyticalRunId;
     private SearchParameters utiltiesSearchParameters;
-    private AnnotationSettings annotationSettings = new AnnotationSettings();
+    private AnnotationSettings annotationSettings;
     UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
+
+    public SpectrumPanelGenerator() {
+        System.out.println("---------------------");
+    }
 
     /**
      * Load the search settings for the given run and map them to the corresponding Utilities objects (SearchParameters,
@@ -77,7 +84,7 @@ public class SpectrumPanelGenerator {
      */
     public void loadSettingsForRun(AnalyticalRun analyticalRun) {
         //check if the correct the settings are already loaded
-        if(analyticalRun.getId() != analyticalRunId) {
+        if (analyticalRun.getId() != analyticalRunId) {
             analyticalRunId = analyticalRun.getId();
 
             com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
@@ -190,84 +197,6 @@ public class SpectrumPanelGenerator {
         }
         spectrumParentPanel.revalidate();
         spectrumParentPanel.repaint();
-    }
-
-    /**
-     * Add spectrum panel components.
-     *
-     * @param mSnSpectrum the MSnSpectrum instance
-     */
-    public void decorateSpectrumPanel(MSnSpectrum mSnSpectrum) {
-        UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
-
-        Collection<Peak> peaks = mSnSpectrum.getPeakList();
-
-        if (peaks != null && !peaks.isEmpty()) {
-            SpectrumPanel spectrumPanel = new SpectrumPanel(
-                    mSnSpectrum.getMzValuesAsArray(),
-                    mSnSpectrum.getIntensityValuesAsArray(),
-                    mSnSpectrum.getPrecursor().getMz(),
-                    mSnSpectrum.getPrecursor().getPossibleChargesAsString(),
-                    "",
-                    40,
-                    false, false, false,
-                    2,
-                    false
-            );
-
-            spectrumPanel.setDeltaMassWindow(annotationSettings.getFragmentIonAccuracy());
-            spectrumPanel.setBorder(null);
-            spectrumPanel.setDataPointAndLineColor(utilitiesUserPreferences.getSpectrumAnnotatedPeakColor(), 0);
-            spectrumPanel.setPeakWaterMarkColor(utilitiesUserPreferences.getSpectrumBackgroundPeakColor());
-            spectrumPanel.setPeakWidth(utilitiesUserPreferences.getSpectrumAnnotatedPeakWidth());
-            spectrumPanel.setBackgroundPeakWidth(utilitiesUserPreferences.getSpectrumBackgroundPeakWidth());
-//            spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
-            spectrumPanel.showAnnotatedPeaksOnly(!annotationSettings.showAllPeaks());
-            spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationSettings.yAxisZoomExcludesBackgroundPeaks());
-
-//            spectrumPanel.addAutomaticDeNovoSequencing(
-//                    peptideAssumption.getPeptide(),
-//                    annotations,
-//                    utiltiesSearchParameters.getIonSearched1(),
-//                    utiltiesSearchParameters.getIonSearched2(),
-//                    annotationSettings.getDeNovoCharge(),
-//                    annotationSettings.showForwardIonDeNovoTags(),
-//                    annotationSettings.showRewindIonDeNovoTags(),
-//                    false
-//            );
-//
-//            spectrumJPanel.removeAll();
-//            spectrumJPanel.add(spectrumPanel);
-//            spectrumJPanel.revalidate();
-//            spectrumJPanel.repaint();
-        }
-    }
-
-    /**
-     * Add secondary components
-     *
-     * @param secondarySpectrumPlotsJPanel Panel to use for secondary components
-     */
-    public void decorateSecondaryPanel(JPanel secondarySpectrumPlotsJPanel) {
-//        SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-//                getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
-//                annotations,
-//                true,
-//                utiltiesSearchParameters.getPtmSettings(),
-//                utiltiesSearchParameters.getIonSearched1(),
-//                utiltiesSearchParameters.getIonSearched2()
-//        );
-//
-//        secondarySpectrumPlotsJPanel.removeAll();
-//        secondarySpectrumPlotsJPanel.add(sequenceFragmentationPanel);
-//        secondarySpectrumPlotsJPanel.add(new IntensityHistogram(annotations, mSnSpectrum, 0.75));
-//
-//        MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, mSnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
-//
-//        secondarySpectrumPlotsJPanel.add(massErrorPlot);
-//
-//        secondarySpectrumPlotsJPanel.revalidate();
-//        secondarySpectrumPlotsJPanel.repaint();
     }
 
     /**

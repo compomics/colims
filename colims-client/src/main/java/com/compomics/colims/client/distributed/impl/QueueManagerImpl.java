@@ -1,19 +1,9 @@
 package com.compomics.colims.client.distributed.impl;
 
-import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.DbTaskErrorMessageConvertor;
-import com.compomics.colims.core.distributed.model.QueueMessage;
+import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.core.distributed.model.DbTaskError;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import javax.jms.JMSException;
-import javax.jms.Session;
-import javax.management.MBeanServerConnection;
-import javax.management.MBeanServerInvocationHandler;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
+import com.compomics.colims.core.distributed.model.QueueMessage;
 import org.apache.activemq.broker.jmx.BrokerViewMBean;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQObjectMessage;
@@ -24,9 +14,19 @@ import org.springframework.jms.core.BrowserCallback;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.management.MBeanServerConnection;
+import javax.management.MBeanServerInvocationHandler;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 /**
- * This class provides methods for monitoring and managing the distributed
- * module queues and topics.
+ * This class provides methods for monitoring and managing the distributed module queues and topics.
  *
  * @author Niels Hulstaert
  */
@@ -63,8 +63,7 @@ public class QueueManagerImpl implements QueueManager {
      */
     private final DbTaskErrorMessageConvertor storageErrorMessageConvertor = new DbTaskErrorMessageConvertor();
     /**
-     * The queue object name with placeholders for the broker and destination
-     * names.
+     * The queue object name with placeholders for the broker and destination names.
      */
     private final String queueObjectName = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
     /**

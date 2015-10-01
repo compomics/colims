@@ -8,14 +8,19 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.factory.SpectrumPanelGenerator;
+import com.compomics.colims.client.model.PeptideExportModel;
 import com.compomics.colims.client.model.PeptideTableRow;
-import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.model.ProteinGroupTableModel;
+import com.compomics.colims.client.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.model.tableformat.PeptideTableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
 import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
+import com.compomics.colims.client.model.tableformat.ProteinPanelPsmTableFormat;
 import com.compomics.colims.client.model.tableformat.PsmTableFormat;
+import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
+import com.compomics.colims.client.view.SpectrumPopupDialog;
+import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
@@ -39,6 +44,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +58,9 @@ import java.util.stream.Collectors;
 @Component("proteinOverviewController")
 public class ProteinOverviewController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(ProteinOverviewController.class);
 
     private ProteinGroupTableModel proteinGroupTableModel;
@@ -69,32 +78,44 @@ public class ProteinOverviewController implements Controllable {
     private double maximumRetentionTime;
     private double minimumCharge;
     private double maximumCharge;
-    // view
+    //view
     private ProteinOverviewPanel proteinOverviewPanel;
+    //child view
+    private SpectrumPopupDialog spectrumPopupDialog;
 
-    // parent controller
+    //parent controller
     @Autowired
     private MainController mainController;
-    // child controller
-    @Autowired
-    private SpectrumPopupController spectrumPopupController;
-    // services
+    //services
     @Autowired
     private EventBus eventBus;
     @Autowired
     private PeptideService peptideService;
     @Autowired
     private SpectrumService spectrumService;
+    @Autowired
+    private SpectrumPanelGenerator spectrumPanelGenerator;
 
-    // column filters
+    //column filters
     private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
+
+    /**
+     * Get the panel associated with this controller.
+     *
+     * @return the protein overview panel
+     */
+    public ProteinOverviewPanel getProteinOverviewPanel() {
+        return proteinOverviewPanel;
+    }
 
     @Override
     public void init() {
-        eventBus.register(this);
-        proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
 
-        spectrumPopupController.init();
+        eventBus.register(this);
+
+        //init views
+        proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
+        spectrumPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
@@ -105,7 +126,7 @@ public class ProteinOverviewController implements Controllable {
         DefaultTreeModel treeModel = new DefaultTreeModel(projectsNode);
         proteinOverviewPanel.getProjectTree().setModel(treeModel);
 
-        // init proteinGroups table
+        //init proteinGroups table
         SortedList<ProteinGroup> sortedProteinGroups = new SortedList<>(proteinGroups, null);
 
         proteinGroupTableModel = new ProteinGroupTableModel(sortedProteinGroups, new ProteinGroupTableFormat());
@@ -114,7 +135,7 @@ public class ProteinOverviewController implements Controllable {
         proteinGroupSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinGroupSelectionModel);
 
-        // init peptides table
+        //init peptides table
         SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptides, null);
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
@@ -123,7 +144,7 @@ public class ProteinOverviewController implements Controllable {
         peptideSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPeptidesTable().setSelectionModel(peptideSelectionModel);
 
-        // init PSM table
+        //init PSM table
         SortedList<Spectrum> sortedSpectra = new SortedList<>(spectra, null);
 
         psmTableModel = new ProteinPanelPsmTableModel(sortedSpectra, new ProteinPanelPsmTableFormat());
@@ -153,13 +174,15 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
-        //  Listeners
+        //Listeners
 
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
 
             if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
                 selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+
+                spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
 
                 proteinGroupTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
@@ -168,8 +191,8 @@ public class ProteinOverviewController implements Controllable {
 
                 // Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
-                    proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
-                    proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+                        proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
+                        proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
                 ));
 
                 minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
@@ -226,7 +249,7 @@ public class ProteinOverviewController implements Controllable {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getClickCount() == 2 && !spectrumSelectionModel.getSelected().isEmpty()) {
-                    spectrumPopupController.updateView(spectrumSelectionModel.getSelected().get(0));
+                    showSpectrumPopDialog(spectrumSelectionModel.getSelected().get(0));
                 }
             }
         });
@@ -345,7 +368,13 @@ public class ProteinOverviewController implements Controllable {
                     Map<Integer, Pattern> columnFilter = new HashMap<>();
                     columnFilter.put(0, HTML_TAGS);
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), peptideTableModel, columnFilter);
+                    // need a new model... or table format?
+                    // could potentially lose the filtering if its only on this model
+                    // hmm
+                    PeptideExportModel exportModel = new PeptideExportModel();
+                    exportModel.setPeptides(sortedPeptides);
+
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
@@ -370,15 +399,7 @@ public class ProteinOverviewController implements Controllable {
 
     @Override
     public void showView() {
-    }
-
-    /**
-     * Get the panel associated with this controller
-     *
-     * @return Protein overview panel
-     */
-    public ProteinOverviewPanel getProteinOverviewPanel() {
-        return proteinOverviewPanel;
+        //do nothing
     }
 
     /**
@@ -418,7 +439,7 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Update protein table contents and label
+     * Update protein table contents and label.
      */
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
@@ -431,18 +452,38 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Save the contents of a data table to a tab delimited file
+     * Show the given spectrum in the spectrum popup dialog
      *
-     * @param filename      File to be saved as [filename].tsv
-     * @param tableModel    A table model to retrieve data from
-     * @param <T>           Class extending TableModel
+     * @param spectrum the Spectrum instance
+     */
+    private void showSpectrumPopDialog(Spectrum spectrum) {
+        try {
+            JPanel spectrumJPanel = spectrumPopupDialog.getSpectrumJPanel();
+            JPanel secondarySpectrumPlotsJPanel = spectrumPopupDialog.getSecondarySpectrumPlotsJPanel();
+
+            spectrumPanelGenerator.addSpectrum(spectrum, spectrumJPanel, secondarySpectrumPlotsJPanel);
+
+            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumPopupDialog);
+            spectrumPopupDialog.setVisible(true);
+        } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
+            LOGGER.error(e, e.getCause());
+            eventBus.post(new MessageEvent("Spectrum popup dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
+        }
+    }
+
+    /**
+     * Save the contents of a data table to a tab delimited file.
+     *
+     * @param filename   File to be saved as [filename].tsv
+     * @param tableModel A table model to retrieve data from
+     * @param <T>        Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
     }
 
     /**
-     * Save the contents of a data table to a tab delimited file
+     * Save the contents of a data table to a tab delimited file.
      *
      * @param filename      File to be saved as [filename].tsv
      * @param tableModel    A table model to retrieve data from
@@ -493,62 +534,62 @@ public class ProteinOverviewController implements Controllable {
             JOptionPane.showMessageDialog(proteinOverviewPanel, "Data exported to " + filename + ".tsv");
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
-            eventBus.post(new MessageEvent("Export error", "Exporting tabular data failed: "  + System.lineSeparator() + System.lineSeparator() + e.getMessage(), JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("Export error", "Exporting tabular data failed: " + System.lineSeparator() + System.lineSeparator() + e.getMessage(), JOptionPane.ERROR_MESSAGE));
         }
     }
 
     /**
-     * Set sparklines for the PSM table
+     * Set sparklines for the PSM table.
      */
     private void setPsmTableCellRenderers() {
         Color sparklineColor = new UtilitiesUserPreferences().getSparklineColor();
         int labelWidth = 55;
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
-            .setCellRenderer(
-                new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                    minimumRetentionTime,
-                    maximumRetentionTime,
-                    50d,
-                    sparklineColor,
-                    sparklineColor
-                )
-            );
+                .setCellRenderer(
+                        new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+                                minimumRetentionTime,
+                                maximumRetentionTime,
+                                50d,
+                                sparklineColor,
+                                sparklineColor
+                        )
+                );
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.RETENTION_TIME)
-            .getCellRenderer())
-            .showNumberAndChart(true, labelWidth);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.RETENTION_TIME)
-            .getCellRenderer())
-            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE)
-            .setCellRenderer(
-                new JSparklinesIntervalChartTableCellRenderer(
-                    PlotOrientation.HORIZONTAL,
-                    minimumCharge,
-                    maximumCharge,
-                    50d,
-                    sparklineColor,
-                    sparklineColor
-                )
-            );
+                .setCellRenderer(
+                        new JSparklinesIntervalChartTableCellRenderer(
+                                PlotOrientation.HORIZONTAL,
+                                minimumCharge,
+                                maximumCharge,
+                                50d,
+                                sparklineColor,
+                                sparklineColor
+                        )
+                );
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
-            .getCellRenderer())
-            .showNumberAndChart(true, labelWidth);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
+                .getCellRenderer())
+                .showNumberAndChart(true, labelWidth);
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-            .getColumnModel()
-            .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
-            .getCellRenderer())
-            .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
+                .getColumnModel()
+                .getColumn(PsmTableFormat.PRECURSOR_CHARGE)
+                .getCellRenderer())
+                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 }
