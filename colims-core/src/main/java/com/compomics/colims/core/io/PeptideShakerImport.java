@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.model.FastaDb;
 
 import java.io.File;
@@ -24,6 +23,12 @@ public class PeptideShakerImport extends DataImport {
      * The list of mgf files.
      */
     private List<File> mgfFiles;
+
+    /**
+     * No-arg constructor.
+     */
+    public PeptideShakerImport() {
+    }
 
     /**
      * Constructor.

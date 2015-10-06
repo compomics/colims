@@ -236,7 +236,7 @@ public class MainController implements Controllable, ActionListener {
             public void stateChanged(final ChangeEvent e) {
                 if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
                     //check connection to distributed queues
-                    if (queueManager.testConnection()) {
+                    if (queueManager.isReachable()) {
                         taskManagementController.updateMonitoringTables();
 
                         taskManagementController.getTaskManagementPanel().setVisible(true);

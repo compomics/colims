@@ -1,18 +1,21 @@
 package com.compomics.colims.client.distributed.producer;
 
 import com.compomics.colims.core.distributed.model.DbTask;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import java.io.IOException;
+
 /**
- * This class sends DbTask instances to the dbtask queue.
+ * This class sends DbTask instances in JSON format to the dbtask queue.
  *
  * @author Niels Hulstaert
  */
@@ -25,6 +28,10 @@ public class DbTaskProducer {
     private static final Logger LOGGER = Logger.getLogger(DbTaskProducer.class);
 
     /**
+     * Mapper for converting a DbTask object to the matching JSON construct.
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
+    /**
      * The JMS template instance.
      */
     @Autowired
@@ -33,19 +40,21 @@ public class DbTaskProducer {
     /**
      * Send the serialized DbTask to the db task queue.
      *
-     * @param dbTask the DbTask
+     * @param dbTask the DbTask instance
+     * @throws IOException if an I/O related problem occurs
      */
-    public void sendDbTask(final DbTask dbTask) {
+    public void sendDbTask(final DbTask dbTask) throws IOException {
+        //map to JSON construct
+        String jsonDbTask = objectMapper.writeValueAsString(dbTask);
 
         dbTaskProducerTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(final Session session) throws JMSException {
-                //set DbTask instance as message body
-                ObjectMessage dbTaskTaskMessage = session.createObjectMessage(dbTask);
+                TextMessage dbTaskTextMessage = session.createTextMessage(jsonDbTask);
 
-                LOGGER.info("Sending db task of class " + dbTaskTaskMessage.getClass().getSimpleName());
+                LOGGER.info("Sending JSON db task of class " + dbTask.getClass().getSimpleName());
 
-                return dbTaskTaskMessage;
+                return dbTaskTextMessage;
             }
         });
     }

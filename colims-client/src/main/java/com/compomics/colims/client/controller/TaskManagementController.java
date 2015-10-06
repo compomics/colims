@@ -289,13 +289,13 @@ public class TaskManagementController implements Controllable {
      */
     public void updateMonitoringTables() {
         try {
-            List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName);
+            List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName, PersistDbTask.class);
             dbTaskQueueTableModel.setMessages(storageTaskMessages);
 
-            List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName);
+            List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName, CompletedDbTask.class);
             completedDbTaskQueueTableModel.setMessages(storedTaskMessages);
 
-            List<DbTaskError> storageErrorMessages = queueManager.monitorQueue(errorQueueName);
+            List<DbTaskError> storageErrorMessages = queueManager.monitorQueue(errorQueueName, DbTaskError.class);
             dbTaskErrorQueueTableModel.setMessages(storageErrorMessages);
 
             //clear selections

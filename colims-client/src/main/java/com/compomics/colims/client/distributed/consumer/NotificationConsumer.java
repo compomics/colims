@@ -3,13 +3,16 @@ package com.compomics.colims.client.distributed.consumer;
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.core.distributed.model.Notification;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javax.jms.TextMessage;
+import java.io.IOException;
 
 /**
  * This class listens to the notification topic and handles incoming messages.
@@ -25,6 +28,10 @@ public class NotificationConsumer implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(NotificationConsumer.class);
 
     /**
+     * Mapper for converting JSON constructs from the queue to corresponding java objects.
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
+    /**
      * The guava EventBus instance.
      */
     @Autowired
@@ -38,20 +45,20 @@ public class NotificationConsumer implements MessageListener {
     @Override
     public void onMessage(final Message message) {
         try {
-            ActiveMQObjectMessage objectMessage;
-            if (message instanceof ActiveMQObjectMessage) {
-                objectMessage = (ActiveMQObjectMessage) message;
+            TextMessage jsonConstruct;
+            if (message instanceof TextMessage) {
+                jsonConstruct = (TextMessage) message;
             } else {
                 throw new IllegalStateException("The retrieved message is of an incorrect type.");
             }
-            Notification notification = (Notification) objectMessage.getObject();
+            Notification notification = objectMapper.readValue(jsonConstruct.getText(), Notification.class);
 
             LOGGER.info("received notification message");
 
             //set JMS message ID
             //notification.getDbTask().setMessageId(objectMessage.getJMSMessageID());
             eventBus.post(new NotificationEvent(notification));
-        } catch (JMSException e) {
+        } catch (JMSException | IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }

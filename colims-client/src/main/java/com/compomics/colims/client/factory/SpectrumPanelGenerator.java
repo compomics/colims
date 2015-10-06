@@ -72,10 +72,6 @@ public class SpectrumPanelGenerator {
     UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
-    public SpectrumPanelGenerator() {
-        System.out.println("---------------------");
-    }
-
     /**
      * Load the search settings for the given run and map them to the corresponding Utilities objects (SearchParameters,
      * AnnotationSettings).

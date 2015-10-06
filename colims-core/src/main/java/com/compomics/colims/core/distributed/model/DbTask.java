@@ -1,5 +1,10 @@
 package com.compomics.colims.core.distributed.model;
 
+import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+
 import java.util.Objects;
 
 /**
@@ -8,6 +13,13 @@ import java.util.Objects;
  *
  * @author Niels Hulstaert
  */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PersistDbTask.class, name = "persistDbTask"),
+        @JsonSubTypes.Type(value = DeleteDbTask.class, name = "deleteDbTask")})
 public abstract class DbTask extends QueueMessage {
 
     private static final long serialVersionUID = -3571758804390850866L;

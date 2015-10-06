@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 /**
  * This class handles a DeleteDbTask.
  *
@@ -41,7 +43,11 @@ public class DeleteDbTaskHandler {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             //wrap the DeleteDbTask in a DbTaskError and send it to the error queue
-            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), deleteDbTask, e));
+            try {
+                dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), deleteDbTask, e));
+            } catch (IOException e1) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 

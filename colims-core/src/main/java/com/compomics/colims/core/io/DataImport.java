@@ -1,6 +1,8 @@
 package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.FastaDb;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.io.Serializable;
 
@@ -10,6 +12,13 @@ import java.io.Serializable;
  *
  * @author Niels Hulstaert
  */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PeptideShakerImport.class, name = "peptideShakerImport"),
+        @JsonSubTypes.Type(value = MaxQuantImport.class, name = "maxQuantImport")})
 public abstract class DataImport implements Serializable {
 
     private static final long serialVersionUID = 1L;

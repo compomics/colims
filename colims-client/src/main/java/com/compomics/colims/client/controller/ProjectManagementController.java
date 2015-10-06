@@ -15,6 +15,7 @@ import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
+import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.ExperimentManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.ProjectManagementTableFormat;
 import com.compomics.colims.client.model.tableformat.SampleManagementTableFormat;
@@ -38,6 +39,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -552,7 +554,8 @@ public class ProjectManagementController implements Controllable {
 
     /**
      * Delete the database entity (project, experiment, samples) from the database. Shows a confirmation dialog first.
-     * When confirmed, a DeleteDbTask message is sent to the DB task queue.
+     * When confirmed, a DeleteDbTask JSON message is sent to the DB task queue. A message dialog is shown in case the
+     * queue cannot be reached or in case of an IOException thrown by the sendDbTask method.
      *
      * @param entity        the database entity to delete
      * @param dbEntityClass the database entity class
@@ -567,11 +570,15 @@ public class ProjectManagementController implements Controllable {
                     + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
-                if (queueManager.testConnection()) {
+                if (queueManager.isReachable()) {
                     DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), authenticationBean.getCurrentUser().getId());
-                    dbTaskProducer.sendDbTask(deleteDbTask);
-
-                    deleteConfirmation = true;
+                    try {
+                        dbTaskProducer.sendDbTask(deleteDbTask);
+                        deleteConfirmation = true;
+                    } catch (IOException e) {
+                        LOGGER.error(e, e.getCause());
+                        eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
+                    }
                 } else {
                     eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
                 }

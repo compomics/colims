@@ -109,7 +109,11 @@ public class PersistDbTaskHandler {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             //wrap the StorageTask in a StorageError and send it to the error queue
-            dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), persistDbTask, e));
+            try {
+                dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), persistDbTask, e));
+            } catch (IOException e1) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 

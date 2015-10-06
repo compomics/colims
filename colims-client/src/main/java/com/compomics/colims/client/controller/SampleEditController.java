@@ -9,24 +9,25 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
-import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
+import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
-import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
@@ -35,14 +36,6 @@ import com.compomics.colims.repository.AuthenticationBean;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -53,6 +46,15 @@ import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The sample edit view controller.
@@ -289,7 +291,7 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                if(sampleToEdit.getId() != null) {
+                if (sampleToEdit.getId() != null) {
                     //roll back the changes
                     Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
 
@@ -352,8 +354,7 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the sample edit dialog with the selected sample in the sample
-     * overview table.
+     * Update the sample edit dialog with the selected sample in the sample overview table.
      *
      * @param sample the Sample
      */
@@ -389,8 +390,7 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected analytical run in the analytical runs
-     * table.
+     * Get the row index of the selected analytical run in the analytical runs table.
      *
      * @return the selected analytical run index
      */
@@ -430,11 +430,11 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, analytical runs) from
-     * the database. Shows a confirmation dialog first. When confirmed, a
-     * DeleteDbTask message is sent to the DB task queue.
+     * Delete the database entity (project, experiment, analytical runs) from the database. Shows a confirmation dialog
+     * first. When confirmed, a DeleteDbTask message is sent to the DB task queue. A message dialog is shown in case the
+     * queue cannot be reached or in case of an IOException thrown by the sendDbTask method.
      *
-     * @param entity the entity to delete
+     * @param entity        the entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
@@ -447,11 +447,15 @@ public class SampleEditController implements Controllable {
                     + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
-                if (queueManager.testConnection()) {
+                if (queueManager.isReachable()) {
                     DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), authenticationBean.getCurrentUser().getId());
-                    dbTaskProducer.sendDbTask(deleteDbTask);
-
-                    deleteConfirmation = true;
+                    try {
+                        dbTaskProducer.sendDbTask(deleteDbTask);
+                        deleteConfirmation = true;
+                    } catch (IOException e) {
+                        LOGGER.error(e, e.getCause());
+                        eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
+                    }
                 } else {
                     eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
                 }
@@ -490,8 +494,7 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the state (enables/disabled) of the analytical run related
-     * buttons.
+     * Update the state (enables/disabled) of the analytical run related buttons.
      *
      * @param enable the enable the buttons boolean
      */

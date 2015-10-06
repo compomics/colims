@@ -6,8 +6,8 @@ import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.QueueMessage;
 import org.apache.activemq.broker.jmx.BrokerViewMBean;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
-import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.BrowserCallback;
@@ -16,10 +16,12 @@ import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -71,6 +73,10 @@ public class QueueManagerImpl implements QueueManager {
      */
     private final String brokerObjectName = "org.apache.activemq:type=Broker,brokerName=%s";
     /**
+     * Mapper for converting a JSON construct to the matching java object.
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
+    /**
      * The JMS template instance.
      */
     @Autowired
@@ -82,7 +88,7 @@ public class QueueManagerImpl implements QueueManager {
     private MBeanServerConnection clientConnector;
 
     @Override
-    public <T extends QueueMessage> List<T> monitorQueue(final String queueName) {
+    public <T extends QueueMessage> List<T> monitorQueue(final String queueName, final Class<T> clazz) {
 
         return queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
 
@@ -92,11 +98,21 @@ public class QueueManagerImpl implements QueueManager {
                 List<T> queueMessages = new ArrayList<>();
 
                 while (enumeration.hasMoreElements()) {
-                    ActiveMQObjectMessage message = (ActiveMQObjectMessage) enumeration.nextElement();
-                    T messageObject = (T) message.getObject();
-                    messageObject.setMessageId(message.getJMSMessageID());
+                    try {
+                        //get the JSON construct
+                        TextMessage jsonConstruct = (TextMessage) enumeration.nextElement();
+                        //map it to it's corresponding java class
 
-                    queueMessages.add((T) message.getObject());
+                        T mappedInstance = objectMapper.readValue(jsonConstruct.getText(), clazz);
+
+                        mappedInstance.setMessageId(jsonConstruct.getJMSMessageID());
+
+                        queueMessages.add(mappedInstance);
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage(), e);
+                        //@todo what's the best way of wrapping this exception?
+                        throw new JMSException(e.getMessage());
+                    }
                 }
 
                 return queueMessages;
@@ -133,7 +149,7 @@ public class QueueManagerImpl implements QueueManager {
     }
 
     @Override
-    public boolean testConnection() {
+    public boolean isReachable() {
         boolean connectionAchieved = false;
 
         try {

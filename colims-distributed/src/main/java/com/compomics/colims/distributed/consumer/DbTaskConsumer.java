@@ -1,18 +1,21 @@
 package com.compomics.colims.distributed.consumer;
 
-import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.distributed.model.Notification;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.compomics.colims.distributed.producer.NotificationProducer;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javax.jms.TextMessage;
+import java.io.IOException;
 
 /**
  * This class listens to the dbtask queue and handles incoming messages.
@@ -27,6 +30,10 @@ public class DbTaskConsumer implements MessageListener {
      */
     private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
 
+    /**
+     * Mapper for converting JSON constructs from the queue to corresponding java objects.
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
     /**
      * The PersistDbTask handler.
      */
@@ -51,15 +58,16 @@ public class DbTaskConsumer implements MessageListener {
     @Override
     public void onMessage(final Message message) {
         try {
-            ActiveMQObjectMessage objectMessage;
-            if (message instanceof ActiveMQObjectMessage) {
-                objectMessage = (ActiveMQObjectMessage) message;
+            TextMessage jsonConstruct;
+            if (message instanceof TextMessage) {
+                jsonConstruct = (TextMessage) message;
             } else {
                 throw new IllegalStateException("The retrieved message is of an incorrect type.");
             }
-            DbTask dbTask = (DbTask) objectMessage.getObject();
 
-            String jmsMessageID = objectMessage.getJMSMessageID();
+            DbTask dbTask = objectMapper.readValue(jsonConstruct.getText(), DbTask.class);
+
+            String jmsMessageID = jsonConstruct.getJMSMessageID();
             //set JMS message ID for correlation purposes
             dbTask.setMessageId(jmsMessageID);
 
@@ -74,7 +82,7 @@ public class DbTaskConsumer implements MessageListener {
             }
 
             notificationProducer.sendNotification(new Notification(NotificationType.FINISHED, jmsMessageID));
-        } catch (JMSException e) {
+        } catch (IOException | JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }

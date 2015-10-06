@@ -6,13 +6,14 @@ import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
+import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunSetupDialog;
-import com.compomics.colims.core.io.DataImport;
-import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;
+import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
@@ -30,7 +31,6 @@ import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +38,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -231,7 +232,7 @@ public class AnalyticalRunSetupController implements Controllable {
         //check if the user has the rights to add a run
         if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
             //check connection to distributed queues
-            if (queueManager.testConnection()) {
+            if (queueManager.isReachable()) {
                 //reset instrument selection
                 if (!instrumentBindingList.isEmpty()) {
                     analyticalRunSetupDialog.getInstrumentComboBox().setSelectedIndex(0);
@@ -268,6 +269,12 @@ public class AnalyticalRunSetupController implements Controllable {
         instrumentBindingList.addAll(instrumentService.findAll());
     }
 
+    /**
+     * Send a storage task to the queue. A message dialog is shown in case the queue cannot be reached or in case of an
+     * IOException thrown by the sendDbTask method.
+     *
+     * @param dataImport the DataImport instance with the necessary import information
+     */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
         User currentUser = authenticationBean.getCurrentUser();
@@ -277,11 +284,16 @@ public class AnalyticalRunSetupController implements Controllable {
         PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
         PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
-        try {
-            storageTaskProducer.sendDbTask(persistDbTask);
-        } catch (JmsException jmsException) {
-            LOGGER.error(jmsException.getMessage(), jmsException);
-            eventBus.post(new MessageEvent("Connection error", "The storage unit cannot be reached.", JOptionPane.ERROR_MESSAGE));
+        //check connection
+        if (queueManager.isReachable()) {
+            try {
+                storageTaskProducer.sendDbTask(persistDbTask);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e.getCause());
+                eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
+            }
+        } else {
+            eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
         }
     }
 

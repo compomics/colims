@@ -7,7 +7,7 @@ package com.compomics.colims.core.distributed.model.enums;
  */
 public enum PersistType {
 
-    RESPIN("respin"), PEPTIDESHAKER("PeptideShaker"), MAX_QUANT("MaxQuant");
+    PEPTIDESHAKER("PeptideShaker"), MAX_QUANT("MaxQuant");
 
     /**
      * The user friendly name of the persist type.
@@ -28,8 +28,7 @@ public enum PersistType {
     }
 
     /**
-     * Get the PersistType enum by its user friendly name. Return null if no
-     * enum value could be matched.
+     * Get the PersistType enum by its user friendly name. Return null if no enum value could be matched.
      *
      * @param userFriendlyName the user friendly name
      * @return the PersistType enum value

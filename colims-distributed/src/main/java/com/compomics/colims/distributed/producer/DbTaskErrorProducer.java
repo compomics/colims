@@ -1,15 +1,18 @@
 package com.compomics.colims.distributed.producer;
 
 import com.compomics.colims.core.distributed.model.DbTaskError;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import java.io.IOException;
 
 /**
  * This class sends DbTaskError instances to the error queue.
@@ -25,6 +28,10 @@ public class DbTaskErrorProducer {
     private static final Logger LOGGER = Logger.getLogger(DbTaskErrorProducer.class);
 
     /**
+     * Mapper for converting a DbTaskError object to the matching JSON construct.
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
+    /**
      * The JMS template instance.
      */
     @Autowired
@@ -34,18 +41,20 @@ public class DbTaskErrorProducer {
      * Send the serialized DbTaskError to the error queue.
      *
      * @param dbTaskError the DbTaskError
+     * @throws IOException if an I/O related problem occurs
      */
-    public void sendDbTaskError(final DbTaskError dbTaskError) {
+    public void sendDbTaskError(final DbTaskError dbTaskError) throws IOException {
+        //map to JSON construct
+        String jsonDbTaskError = objectMapper.writeValueAsString(dbTaskError);
 
         dbTaskErrorProducerTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(final Session session) throws JMSException {
-                //set DbTaskError instance as message body
-                ObjectMessage dbTaskErrorMessage = session.createObjectMessage(dbTaskError);
+                TextMessage dbTaskErrorTextMessage = session.createTextMessage(jsonDbTaskError);
 
                 LOGGER.info("Sending database task error");
 
-                return dbTaskErrorMessage;
+                return dbTaskErrorTextMessage;
             }
         });
     }

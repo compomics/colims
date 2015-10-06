@@ -1,13 +1,26 @@
 package com.compomics.colims.client.playground;
 
+import com.compomics.colims.core.distributed.model.DbTask;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.PersistMetadata;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
+import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MappingException;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
+import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.Instrument;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -15,44 +28,35 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 public class Playground {
 
     public static void main(String[] args) throws IOException, MappingException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException {
-//        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
-//
-//        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-//        PeptideShakerImporter peptideShakerImportMapper = applicationContext.getBean("peptideShakerImportMapper", PeptideShakerImporter.class);
-//        UserService userService = applicationContext.getBean("userService", UserService.class);
-//        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
-//        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
-//        PtmFactoryWrapper ptmFactoryWrapper = applicationContext.getBean("ptmFactoryWrapper", PtmFactoryWrapper.class);
-//        AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
-//
-//        //load mods from test resources instead of user folder
-//        Resource utilitiesMods = new ClassPathResource("searchGUI_mods.xml");
-//        ptmFactoryWrapper.getPtmFactory().clearFactory();
-//        ptmFactoryWrapper.getPtmFactory().importModifications(utilitiesMods.getFile(), false);
-//
-//        //set admin user in authentication bean
-//        User adminUser = userService.findByName("admin1");
-//        userService.fetchAuthenticationRelations(adminUser);
-//        authenticationBean.setCurrentUser(adminUser);
-//
-//        //import PeptideShaker .cps file
-//        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("test_peptideshaker_project.cps").getFile());
-//        //set mgf files and fasta file
-//        List<File> mgfFiles = new ArrayList<>();
-//        mgfFiles.add(new ClassPathResource("input_spectra.mgf").getFile());
-//        unpackedPsDataImport.setMgfFiles(mgfFiles);
-//        unpackedPsDataImport.setFastaFile(new ClassPathResource("uniprot_sprot_101104_human_concat.fasta").getFile());
-//
-//        List<AnalyticalRun> analyticalRuns = peptideShakerImportMapper.map(unpackedPsDataImport);
-//
-//        //get sample from db
-//        Sample sample = sampleService.findAll().get(0);
-//
-//        //set sample and persist
-//        for (AnalyticalRun analyticalRun : analyticalRuns) {
-//            analyticalRun.setSample(sample);
-//            analyticalRunService.save(analyticalRun);
-//        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        final PersistDbTask persistDbTask = new PersistDbTask();
+        persistDbTask.setDbEntityClass(AnalyticalRun.class);
+        persistDbTask.setMessageId("1234567");
+        persistDbTask.setEnitityId(1L);
+        persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
+        persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
+
+        PersistMetadata persistMetadata = new PersistMetadata();
+        persistMetadata.setDescription("test description");
+        persistMetadata.setStorageType(PersistType.PEPTIDESHAKER);
+        persistMetadata.setInstrument(new Instrument("test instrument"));
+        persistMetadata.setStartDate(new Date());
+        persistDbTask.setPersistMetadata(persistMetadata);
+
+        List<File> mgfFiles = Arrays.asList(new File[]{new File("test1"), new File("test2")});
+        DataImport dataImport = new PeptideShakerImport(new File("testFile"), new FastaDb(), mgfFiles);
+        persistDbTask.setDataImport(dataImport);
+
+        DbTask dbTask = persistDbTask;
+
+        String s = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbTask);
+
+        PersistDbTask persistDbTask1 = objectMapper.readValue(s, PersistDbTask.class);
+
+        System.out.println(s);
+        System.out.println("jjjjjjjjj");
 
     }
 }
