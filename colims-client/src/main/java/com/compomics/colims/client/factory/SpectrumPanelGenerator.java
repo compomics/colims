@@ -66,10 +66,10 @@ public class SpectrumPanelGenerator {
     /**
      * The ID of the current analytical run.
      */
-    private Long analyticalRunId;
+    private Long analyticalRunId = Long.MIN_VALUE;
     private SearchParameters utiltiesSearchParameters;
     private AnnotationSettings annotationSettings;
-    UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+    private UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**

@@ -1,11 +1,11 @@
 package com.compomics.colims.core.distributed.model;
 
 import com.compomics.colims.core.io.DataImport;
+
 import java.util.Objects;
 
 /**
- * This class holds the information necessary for the distributed module for
- * storing data.
+ * This class holds the information necessary for the distributed module for storing data.
  *
  * @author Niels Hulstaert
  */
@@ -23,20 +23,19 @@ public class PersistDbTask extends DbTask {
     private DataImport dataImport;
 
     /**
-     * Constructor.
+     * no-arg Constructor.
      */
     public PersistDbTask() {
-        super();
     }
 
     /**
      * Constructor.
      *
-     * @param dbEntityClass the database entity class
-     * @param enitityId the ID of the entity to persist
-     * @param userId the ID of the user
+     * @param dbEntityClass   the database entity class
+     * @param enitityId       the ID of the entity to persist
+     * @param userId          the ID of the user
      * @param persistMetadata the persist
-     * @param dataImport the DataImport
+     * @param dataImport      the DataImport
      */
     public PersistDbTask(Class dbEntityClass, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
         super(dbEntityClass, enitityId, userId);

@@ -6,11 +6,11 @@
 package com.compomics.colims.core.distributed.model;
 
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
+
 import java.util.Objects;
 
 /**
- * Notification sent from the distributed module to
- * the clients.
+ * Notification sent from the distributed module to the clients.
  *
  * @author Niels Hulstaert
  */
@@ -28,9 +28,15 @@ public class Notification extends QueueMessage {
     private String dbTaskMessageId;
 
     /**
+     * No-arg constructor.
+     */
+    public Notification() {
+    }
+
+    /**
      * Constructor.
      *
-     * @param type the notification type
+     * @param type            the notification type
      * @param dbTaskMessageId the message ID string
      */
     public Notification(NotificationType type, String dbTaskMessageId) {
