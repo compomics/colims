@@ -16,11 +16,10 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 import java.io.IOException;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml" })
+@ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MzTabExporterTest {
 
     @Autowired
