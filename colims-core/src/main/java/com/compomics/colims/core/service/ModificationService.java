@@ -24,9 +24,4 @@ public interface ModificationService extends GenericService<Modification, Long> 
      * @return the found modification
      */
     Modification findByAccession(String accession);
-
-    /**
-     * Load all the modifications from the database and add them to the Utilities PTMFactory as user PTMs.
-     */
-    void addAllToPtmFactory();
 }

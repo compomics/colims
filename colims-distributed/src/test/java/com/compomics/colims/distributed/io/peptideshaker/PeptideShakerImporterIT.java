@@ -1,10 +1,7 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.core.service.SampleService;
-import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AuthenticationBean;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -50,6 +47,8 @@ public class PeptideShakerImporterIT {
     private UserService userService;
     @Autowired
     private InstrumentService instrumentService;
+    @Autowired
+    private FastaDbService fastaDbService;
 
     @Before
     public void setup() throws IOException, XmlPullParserException {
@@ -82,7 +81,12 @@ public class PeptideShakerImporterIT {
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
-        unpackedPsDataImport.setFastaDb(fastaDb);
+
+        //save the fasta db. We don't have it as an insert statement in the import.sql file
+        //as the file path might be different depending on the OS
+        fastaDbService.save(fastaDb);
+
+        unpackedPsDataImport.setFastaDbId(fastaDb.getId());
 
         //clear resources
         peptideShakerImporter.clear();

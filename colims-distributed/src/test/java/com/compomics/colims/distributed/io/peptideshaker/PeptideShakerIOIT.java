@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.util.experiment.MsExperiment;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -26,6 +27,8 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class PeptideShakerIOIT {
 
+    @Autowired
+    private FastaDbService fastaDbService;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
 
@@ -74,10 +77,14 @@ public class PeptideShakerIOIT {
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
 
+        //save the fasta db. We don't have it as an insert statement in the import.sql file
+        //as the file path might be different depending on the OS
+        fastaDbService.save(fastaDb);
+
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
 
-        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDb, mgfFiles);
+        PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDb.getId(), mgfFiles);
         UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport);
 
         Assert.assertNotNull(unpackedPsDataImport);
@@ -89,7 +96,7 @@ public class PeptideShakerIOIT {
         MsExperiment msExperiment = unpackedPsDataImport.getCpsParent().getExperiment();
         Assert.assertNotNull(msExperiment);
 
-        Assert.assertEquals(fastaDb, unpackedPsDataImport.getFastaDb());
+        Assert.assertEquals(fastaDb.getId(), unpackedPsDataImport.getFastaDbId());
         Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
 
         //delete directory

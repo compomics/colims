@@ -43,7 +43,7 @@ public class ColimsPeptideMapper {
     /**
      * Map the Colims Peptide instance onto the Utilities Peptide instance.
      *
-     * @param sourcePeptide
+     * @param sourcePeptide the Colims peptide instance
      * @return the Utilities Peptide instance
      */
     private com.compomics.util.experiment.biology.Peptide mapPeptide(Peptide sourcePeptide) {

@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchCvParam;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.CvParamType;

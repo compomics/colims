@@ -5,18 +5,6 @@
  */
 package com.compomics.colims.core.io.mztab;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,6 +13,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -139,9 +133,9 @@ public class MzTabExporter {
                 break;
         }
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter bw = new BufferedWriter(osw);
-                PrintWriter pw = new PrintWriter(bw)) {
+             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter bw = new BufferedWriter(osw);
+             PrintWriter pw = new PrintWriter(bw)) {
 
             pw.println("under development");
 
@@ -168,8 +162,7 @@ public class MzTabExporter {
     }
 
     /**
-     * This method parses the json root node and returns a list of MzTabParam
-     * instances.
+     * This method parses the json root node and returns a list of MzTabParam instances.
      *
      * @param jsonNode the root JsonNode
      * @return the list of MzTabParam instances
@@ -199,20 +192,18 @@ public class MzTabExporter {
         return mzTabParams;
     }
 
-   /**
-    * Get the protein search engine score line.
-    *
-    * @return
-    */
-   private String getProteinSearchEngineScore(){
-       StringBuilder searchEngineScore = new StringBuilder();
+    /**
+     * Get the protein search engine score line.
+     *
+     * @return the protein search engine score String value
+     */
+    private String getProteinSearchEngineScore() {
+        StringBuilder searchEngineScore = new StringBuilder();
 
-       searchEngineScore.append(METADATA_PREFIX).append(COLUMN_DELIMITER)
-               .append(String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1)).append(COLUMN_DELIMITER);
+        searchEngineScore.append(METADATA_PREFIX).append(COLUMN_DELIMITER)
+                .append(String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1)).append(COLUMN_DELIMITER);
 
-       
-
-       return searchEngineScore.toString();
-   }
+        return searchEngineScore.toString();
+    }
 
 }

@@ -1,10 +1,9 @@
 package com.compomics.colims.core.distributed.model;
 
 import com.compomics.colims.core.distributed.model.enums.PersistType;
-import com.compomics.colims.model.Instrument;
+
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * This class represents the persist meta data of a PersistDbTask.
@@ -28,9 +27,9 @@ public class PersistMetadata implements Serializable {
      */
     private Date startDate;
     /**
-     * The instrument the run is executed on.
+     * The ID of the instrument the run is executed on.
      */
-    private Instrument instrument;
+    private Long instrumentId;
 
     /**
      * Constructor.
@@ -41,24 +40,24 @@ public class PersistMetadata implements Serializable {
     /**
      * Constructor.
      *
-     * @param persistType the PersistType
-     * @param description the description string
-     * @param startDate the start date
-     * @param instrument the instrument
+     * @param persistType  the PersistType
+     * @param description  the description string
+     * @param startDate    the start date
+     * @param instrumentId the instrument ID
      */
-    public PersistMetadata(final PersistType persistType, final String description, final Date startDate, final Instrument instrument) {
+    public PersistMetadata(final PersistType persistType, final String description, final Date startDate, final Long instrumentId) {
         this.persistType = persistType;
         this.description = description;
         this.startDate = startDate != null ? new Date(startDate.getTime()) : null;
-        this.instrument = instrument;
+        this.instrumentId = instrumentId;
     }
 
-    public PersistType getStorageType() {
+    public PersistType getPersistType() {
         return persistType;
     }
 
-    public void setStorageType(PersistType storageType) {
-        this.persistType = storageType;
+    public void setPersistType(PersistType persistType) {
+        this.persistType = persistType;
     }
 
     public String getDescription() {
@@ -77,43 +76,34 @@ public class PersistMetadata implements Serializable {
         this.startDate = startDate != null ? new Date(startDate.getTime()) : null;
     }
 
-    public Instrument getInstrument() {
-        return instrument;
+    public Long getInstrumentId() {
+        return instrumentId;
     }
 
-    public void setInstrument(Instrument instrument) {
-        this.instrument = instrument;
+    public void setInstrumentId(Long instrumentId) {
+        this.instrumentId = instrumentId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PersistMetadata that = (PersistMetadata) o;
+
+        if (persistType != that.persistType) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) return false;
+        return !(instrumentId != null ? !instrumentId.equals(that.instrumentId) : that.instrumentId != null);
+
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.persistType);
-        hash = 73 * hash + Objects.hashCode(this.description);
-        hash = 73 * hash + Objects.hashCode(this.startDate);
-        hash = 73 * hash + Objects.hashCode(this.instrument);
-        return hash;
+        int result = persistType != null ? persistType.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        result = 31 * result + (instrumentId != null ? instrumentId.hashCode() : 0);
+        return result;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final PersistMetadata other = (PersistMetadata) obj;
-        if (this.persistType != other.persistType) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.startDate, other.startDate)) {
-            return false;
-        }
-        return Objects.equals(this.instrument, other.instrument);
-    }
-
 }

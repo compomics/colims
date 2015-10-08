@@ -2,9 +2,7 @@ package com.compomics.colims.core.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Project;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;

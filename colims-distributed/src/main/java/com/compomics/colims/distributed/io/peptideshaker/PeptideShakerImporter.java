@@ -3,6 +3,7 @@ package com.compomics.colims.distributed.io.peptideshaker;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.SearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
@@ -23,6 +24,7 @@ import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.compomics.util.experiment.personalization.UrParameter;
 import eu.isas.peptideshaker.parameters.PSParameter;
 import eu.isas.peptideshaker.utils.CpsParent;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +50,14 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
     private static final String ANALYTICAL_RUN_NAME_SEPARATOR = ":";
     /**
+     * Compomics Utilities spectrum factory.
+     */
+    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    /**
+     * Compomics Utilities sequence factory.
+     */
+    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    /**
      * The utilities to Colims search settings mapper.
      */
     @Autowired
@@ -68,13 +78,10 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
     /**
-     * Compomics Utilities spectrum factory.
+     * The fasta db servicice instance.
      */
-    private final SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
-    /**
-     * Compomics Utilities sequence factory.
-     */
-    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    @Autowired
+    private FastaDbService fastaDbService;
 
     /**
      * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
@@ -107,9 +114,12 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
             //get the MsExperiment instance
             MsExperiment msExperiment = cpsParent.getExperiment();
 
+            //load the fasta file
+            FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbId());
+
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
 
-            SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun);
+            SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb);
 
             LOGGER.info("Finished mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
 
@@ -118,8 +128,8 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
             LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
 
-            //load the fasta file
-            File fastaDbFile = new File(dataImport.getFastaDb().getFilePath());
+            //get the fasta file
+            File fastaDbFile = new File(FilenameUtils.separatorsToSystem(fastaDb.getFilePath()));
             cpsParent.loadFastaFile(fastaDbFile, null);
 
             //load the spectrum files, peptide en protein matches
@@ -228,10 +238,11 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
      *
      * @param unpackedPeptideShakerImport the UnpackedPeptideShakerImport instance
      * @param analyticalRun               the AnalyticalRun instance onto the search settings will be mapped
+     * @param fastaDb                     the FastaDb instance retrieved from the database
      * @return the mapped search and validation settings
      * @throws IOException thrown in case of an I/O related problem
      */
-    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun) throws IOException, ModificationMappingException {
+    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings;
 
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();
@@ -239,7 +250,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
         List<File> identificationFiles = new ArrayList<>();
         identificationFiles.add(unpackedPeptideShakerImport.getPeptideShakerCpsArchive());
-        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, unpackedPeptideShakerImport.getFastaDb(), cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
+        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDb, cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
 
         //set entity associations
         analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);

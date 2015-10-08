@@ -42,7 +42,6 @@ public class UtilitiesModificationMapperTest {
     private ModificationService modificationService;
     @Autowired
     private OlsService olsService;
-    private SearchParameters searchParameters;
     private PTM oxidation;
     private PTM phosphorylation;
     private CvTerm nonUtilitiesPtm;
@@ -63,7 +62,7 @@ public class UtilitiesModificationMapperTest {
         nonUtilitiesPtmName = "L-proline removal";
         nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
 
-        searchParameters = new SearchParameters();
+        SearchParameters searchParameters = new SearchParameters();
 
         PtmSettings ptmSettings = new PtmSettings();
         ptmSettings.addFixedModification(oxidation);
@@ -139,16 +138,20 @@ public class UtilitiesModificationMapperTest {
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
             switch (modification.getName()) {
-                case "monohydroxylated residue":
-                    Assert.assertEquals("monohydroxylated residue", modification.getName());
+                case "Oxidation":
+                    Assert.assertEquals("Oxidation", modification.getName());
+                    Assert.assertEquals("UNIMOD:35", modification.getAccession());
+                    Assert.assertEquals("Oxidation of M", modification.getUtilitiesName());
                     Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                     Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                     Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                     Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                     break;
-                case "phosphorylated residue":
-                    Assert.assertEquals("phosphorylated residue", modification.getName());
+                case "Phospho":
+                    Assert.assertEquals("Phospho", modification.getName());
+                    Assert.assertEquals("UNIMOD:21", modification.getAccession());
+                    Assert.assertEquals("Phosphorylation of Y", modification.getUtilitiesName());
                     Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
                     Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
@@ -157,6 +160,7 @@ public class UtilitiesModificationMapperTest {
                     break;
                 case "L-proline removal":
                     Assert.assertEquals("L-proline removal", modification.getName());
+                    Assert.assertEquals("MOD:01645", modification.getAccession());
                     Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
                     Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
@@ -181,7 +185,7 @@ public class UtilitiesModificationMapperTest {
     public void testMapModification_2() throws MappingException, IOException {
         //create ModificationMatches
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
-        ModificationMatch oxidationMatch = new ModificationMatch("methionine oxidation with neutral loss of 64 Da", false, 7);
+        ModificationMatch oxidationMatch = new ModificationMatch("Trioxidation of C", false, 7);
         modificationMatches.add(oxidationMatch);
 
         //create PSPtmScores
@@ -215,7 +219,8 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNotNull(modification.getId());
-            Modification dbModification = modificationService.findByName("methionine oxidation with neutral loss of 64 Da");
+            Assert.assertEquals("UNIMOD:345", modification.getAccession());
+            Modification dbModification = modificationService.findByName("Trioxidation");
             Assert.assertEquals(dbModification, modification);
         }
 
@@ -253,8 +258,8 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-            Assert.assertNotNull(modification.getAccession());
-            Assert.assertTrue(modification.getAccession().startsWith("UNIMOD"));
+            Assert.assertEquals("UNIMOD:1286", modification.getAccession());
+            Assert.assertNull(modification.getUtilitiesName());
         }
     }
 

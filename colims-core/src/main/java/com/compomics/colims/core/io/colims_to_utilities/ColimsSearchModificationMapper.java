@@ -36,7 +36,7 @@ public class ColimsSearchModificationMapper implements Mapper<List<SearchParamet
             String theoreticPTM = searchParametersHasModification.getSearchModification().getUtilitiesName();
             PTM ptm = PTMFactory.getInstance().getPTM(theoreticPTM);
 
-            if (ptm.equals(PTMFactory.getInstance().unknownPTM)) {
+            if (ptm.equals(PTMFactory.unknownPTM)) {
                 boolean isVariable = searchParametersHasModification.getModificationType().equals(ModificationType.VARIABLE);
                 if (isVariable) {
                     ptmSettings.addVariableModification(ptm);

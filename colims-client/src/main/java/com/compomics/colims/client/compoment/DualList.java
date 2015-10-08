@@ -95,8 +95,7 @@ public class DualList<T> extends javax.swing.JPanel {
      * @return the added items list
      */
     public List<T> getAddedItems() {
-        List<T> addedItems = addedItemBindingList.stream().collect(Collectors.toList());
-        return addedItems;
+        return addedItemBindingList.stream().collect(Collectors.toList());
     }
 
     /**

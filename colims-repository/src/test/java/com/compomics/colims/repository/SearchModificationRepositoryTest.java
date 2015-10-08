@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,7 +1,5 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.model.FastaDb;
-
 import java.io.File;
 import java.util.List;
 
@@ -34,11 +32,11 @@ public class PeptideShakerImport extends DataImport {
      * Constructor.
      *
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
-     * @param fastaDb                 the FastabDb entity
+     * @param fastaDbId                 the FastabDb ID
      * @param mgfFiles                the list of MGF files
      */
-    public PeptideShakerImport(final File peptideShakerCpsArchive, final FastaDb fastaDb, final List<File> mgfFiles) {
-        super(fastaDb);
+    public PeptideShakerImport(final File peptideShakerCpsArchive, final Long fastaDbId, final List<File> mgfFiles) {
+        super(fastaDbId);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfFiles = mgfFiles;
     }
@@ -59,4 +57,25 @@ public class PeptideShakerImport extends DataImport {
         this.mgfFiles = mgfFiles;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PeptideShakerImport that = (PeptideShakerImport) o;
+
+        if (peptideShakerCpsArchive != null ? !peptideShakerCpsArchive.equals(that.peptideShakerCpsArchive) : that.peptideShakerCpsArchive != null)
+            return false;
+        return !(mgfFiles != null ? !mgfFiles.equals(that.mgfFiles) : that.mgfFiles != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (peptideShakerCpsArchive != null ? peptideShakerCpsArchive.hashCode() : 0);
+        result = 31 * result + (mgfFiles != null ? mgfFiles.hashCode() : 0);
+        return result;
+    }
 }

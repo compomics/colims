@@ -7,6 +7,7 @@ import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeade
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.google.common.io.LineReader;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,7 +126,7 @@ public class MaxQuantParser {
         String header = "";
 
         try {
-            LineReader reader = new LineReader(new FileReader(fastaDb.getFilePath()));
+            LineReader reader = new LineReader(new FileReader(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())));
             String line = reader.readLine();
 
             while (line != null) {

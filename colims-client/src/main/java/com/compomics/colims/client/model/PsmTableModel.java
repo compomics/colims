@@ -6,7 +6,6 @@ import com.compomics.colims.client.model.tableformat.PsmTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.repository.SpectrumRepository;
 
 import java.util.List;
 

@@ -7,21 +7,17 @@ import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 /**
  * The PeptideShaker data import view controller.
@@ -36,7 +32,7 @@ public class PeptideShakerDataImportController implements Controllable {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerDataImportController.class);
-    
+
     //model
     private File cpsArchive;
     private FastaDb fastaDb;
@@ -150,8 +146,8 @@ public class PeptideShakerDataImportController implements Controllable {
     }
 
     /**
-     * Validate the user input before unpacking the cps archive. Returns an
-     * empty list if no validation errors were encountered.
+     * Validate the user input before unpacking the cps archive. Returns an empty list if no validation errors were
+     * encountered.
      *
      * @return the list of validation messages
      */
@@ -182,7 +178,7 @@ public class PeptideShakerDataImportController implements Controllable {
             mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        return new PeptideShakerImport(cpsArchive, fastaDb, mgfFiles);
+        return new PeptideShakerImport(cpsArchive, fastaDb.getId(), mgfFiles);
     }
 
 }

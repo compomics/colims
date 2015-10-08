@@ -6,8 +6,6 @@ import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.Instrument;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,13 +48,13 @@ public class DbTaskProducerIT {
 
         PersistMetadata persistMetadata = new PersistMetadata();
         persistMetadata.setDescription("test description");
-        persistMetadata.setStorageType(PersistType.PEPTIDESHAKER);
-        persistMetadata.setInstrument(new Instrument("test instrument"));
+        persistMetadata.setPersistType(PersistType.PEPTIDESHAKER);
+        persistMetadata.setInstrumentId(1L);
         persistMetadata.setStartDate(new Date());
         persistDbTask.setPersistMetadata(persistMetadata);
 
-        List<File> mgfFiles = Arrays.asList(new File[]{new File("test1"), new File("test2")});
-        DataImport dataImport = new PeptideShakerImport(new File("testFile"), new FastaDb(), mgfFiles);
+        List<File> mgfFiles = Arrays.asList(new File("test1"), new File("test2"));
+        DataImport dataImport = new PeptideShakerImport(new File("testFile"), 1L, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 
         List<PersistDbTask> messages = queueManager.monitorQueue(dbTaskQueueName, PersistDbTask.class);

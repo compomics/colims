@@ -1,7 +1,5 @@
 package com.compomics.colims.core.distributed.model;
 
-import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.core.io.PeptideShakerImport;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 

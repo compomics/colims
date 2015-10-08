@@ -1,7 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -59,7 +59,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         UnpackedPeptideShakerImport unpackedPeptideShakerImport = unpackPeptideShakerCpsArchive(peptideShakerDataImport.getPeptideShakerCpsArchive());
 
         //set fast file and MGF files
-        unpackedPeptideShakerImport.setFastaDb(peptideShakerDataImport.getFastaDb());
+        unpackedPeptideShakerImport.setFastaDbId(peptideShakerDataImport.getFastaDbId());
         unpackedPeptideShakerImport.setMgfFiles(peptideShakerDataImport.getMgfFiles());
 
         return unpackedPeptideShakerImport;

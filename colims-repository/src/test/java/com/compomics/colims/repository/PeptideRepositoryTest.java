@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 

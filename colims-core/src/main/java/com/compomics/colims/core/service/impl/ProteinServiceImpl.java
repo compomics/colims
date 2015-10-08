@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinService;
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
 import org.hibernate.Hibernate;

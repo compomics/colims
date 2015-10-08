@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

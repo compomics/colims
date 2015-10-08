@@ -281,7 +281,7 @@ public class AnalyticalRunSetupController implements Controllable {
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
 
-        PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument);
+        PersistMetadata persistMetadata = new PersistMetadata(storageType, storageDescription, startDate, instrument.getId());
         PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, sample.getId(), currentUser.getId(), persistMetadata, dataImport);
 
         //check connection

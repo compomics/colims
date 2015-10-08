@@ -747,7 +747,7 @@ public class MzTabExportController implements Controllable {
                     assayNumbers[index] = assayNumber;
                     index++;
                 }
-                AnalyticalRun analyticalRun = (AnalyticalRun) ((DefaultMutableTreeNode) node).getUserObject();
+                AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
                 analyticalRuns.add(analyticalRun);
                 analyticalRunAssaysRefs.put(analyticalRun, assayNumbers);
             }

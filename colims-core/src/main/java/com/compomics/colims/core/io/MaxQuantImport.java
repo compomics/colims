@@ -1,7 +1,5 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.model.FastaDb;
-
 import java.io.File;
 
 /**
@@ -20,10 +18,10 @@ public class MaxQuantImport extends DataImport {
      * Constructor.
      *
      * @param maxQuantDirectory the MaxQuant files directory
-     * @param fastaDb           the FastaDb instance
+     * @param fastaDbId         the FastaDb ID
      */
-    public MaxQuantImport(final File maxQuantDirectory, final FastaDb fastaDb) {
-        super(fastaDb);
+    public MaxQuantImport(final File maxQuantDirectory, final Long fastaDbId) {
+        super(fastaDbId);
         this.maxQuantDirectory = maxQuantDirectory;
     }
 
@@ -35,4 +33,22 @@ public class MaxQuantImport extends DataImport {
         this.maxQuantDirectory = maxQuantDirectory;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MaxQuantImport that = (MaxQuantImport) o;
+
+        return !(maxQuantDirectory != null ? !maxQuantDirectory.equals(that.maxQuantDirectory) : that.maxQuantDirectory != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (maxQuantDirectory != null ? maxQuantDirectory.hashCode() : 0);
+        return result;
+    }
 }

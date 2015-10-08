@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * This service cascade deletes an entity (Project, Experiment, Sample, AnalyticalRun) from the database.
+ *
  * Created by Niels Hulstaert on 9/09/15.
  */
 @Service("deleteService")

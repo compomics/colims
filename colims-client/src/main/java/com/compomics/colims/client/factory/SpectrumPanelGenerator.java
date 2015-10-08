@@ -80,7 +80,7 @@ public class SpectrumPanelGenerator {
      */
     public void loadSettingsForRun(AnalyticalRun analyticalRun) {
         //check if the correct the settings are already loaded
-        if (analyticalRun.getId() != analyticalRunId) {
+        if (!analyticalRunId.equals(analyticalRun.getId())) {
             analyticalRunId = analyticalRun.getId();
 
             com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();

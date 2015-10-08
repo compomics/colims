@@ -62,5 +62,4 @@ public class NotificationConsumer implements MessageListener {
             LOGGER.error(e.getMessage(), e);
         }
     }
-
 }

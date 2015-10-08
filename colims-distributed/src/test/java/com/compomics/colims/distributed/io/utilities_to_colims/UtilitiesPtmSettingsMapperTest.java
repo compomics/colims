@@ -41,15 +41,15 @@ public class UtilitiesPtmSettingsMapperTest {
     public void loadSearchParameters() throws IOException, XmlPullParserException {
         PTMFactory ptmFactory = PTMFactory.getInstance();
 
-        PTM ptm1 = PTMFactory.getInstance().getPTM("Carbamidomethylation of C");
-        PTM ptm2 = PTMFactory.getInstance().getPTM("Oxidation of M");
-        PTM ptm3 = PTMFactory.getInstance().getPTM("Phosphorylation of S");
-        PTM ptm4 = PTMFactory.getInstance().getPTM("Phosphorylation of T");
-        PTM ptm5 = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
-        PTM ptm6 = PTMFactory.getInstance().getPTM("Acetylation of protein N-term");
-        PTM ptm7 = PTMFactory.getInstance().getPTM("Pyrolidone from carbamidomethylated C");
-        PTM ptm8 = PTMFactory.getInstance().getPTM("Pyrolidone from E");
-        PTM ptm9 = PTMFactory.getInstance().getPTM("Pyrolidone from Q");
+        PTM ptm1 = ptmFactory.getPTM("Carbamidomethylation of C");
+        PTM ptm2 = ptmFactory.getPTM("Oxidation of M");
+        PTM ptm3 = ptmFactory.getPTM("Phosphorylation of S");
+        PTM ptm4 = ptmFactory.getPTM("Phosphorylation of T");
+        PTM ptm5 = ptmFactory.getPTM("Phosphorylation of Y");
+        PTM ptm6 = ptmFactory.getPTM("Acetylation of protein N-term");
+        PTM ptm7 = ptmFactory.getPTM("Pyrolidone from carbamidomethylated C");
+        PTM ptm8 = ptmFactory.getPTM("Pyrolidone from E");
+        PTM ptm9 = ptmFactory.getPTM("Pyrolidone from Q");
 
         ptmSettings = new PtmSettings();
         ptmSettings.addFixedModification(ptm1);

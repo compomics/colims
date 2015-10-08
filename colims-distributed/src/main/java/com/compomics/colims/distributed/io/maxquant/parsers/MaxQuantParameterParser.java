@@ -73,20 +73,20 @@ public class MaxQuantParameterParser {
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[] {
-        MaxQuantSummaryHeaders.ENZYME,
-        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-        MaxQuantSummaryHeaders.MULTIPLICITY,
-        MaxQuantSummaryHeaders.PROTEASE,
-        MaxQuantSummaryHeaders.RAW_FILE
+    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
+            MaxQuantSummaryHeaders.ENZYME,
+            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+            MaxQuantSummaryHeaders.MULTIPLICITY,
+            MaxQuantSummaryHeaders.PROTEASE,
+            MaxQuantSummaryHeaders.RAW_FILE
     };
 
     /**
-     * Parse parameters for experiment
+     * Parse parameters for experiment.
      *
      * @param quantFolder Experiment data folder
-     * @param fastaDb FASTA used in experiment
-     * @param storeFiles Whether data files should be stored with experiment
+     * @param fastaDb     FASTA used in experiment
+     * @param storeFiles  Whether data files should be stored with experiment
      * @throws IOException
      */
     public void parse(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
@@ -104,11 +104,11 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Parse common search and validation settings for an experiment
+     * Parse common search and validation settings for an experiment.
      *
      * @param maxQuantFolder Experiment data folder
-     * @param fastaDb FASTA used in experiment
-     * @param storeFiles Whether data files should be stored with experiment
+     * @param fastaDb        FASTA used in experiment
+     * @param storeFiles     Whether data files should be stored with experiment
      * @return A SearchAndValidationSettings object
      * @throws IOException
      */
@@ -164,7 +164,7 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Parse a parameters file
+     * Parse a parameters file.
      *
      * @param parameterFile File to be parsed
      * @return Key-value list of file data
@@ -194,9 +194,9 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Parse the search and validation settings for a given data set
+     * Parse the search and validation settings for a given data set.
      *
-     * @param quantFolder Data folder for max quant run
+     * @param quantFolder                 Data folder for max quant run
      * @param searchAndValidationSettings An initial SearchAndValidationSettings object to decorate per run
      * @return Settings indexed by run file name
      * @throws IOException
@@ -217,8 +217,8 @@ public class MaxQuantParameterParser {
             if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
                 // apparently protease was old column name
                 String enzymeName = row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName()) == null
-                    ? row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName())
-                    : row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName());
+                        ? row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName())
+                        : row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName());
 
                 if (!enzymeName.isEmpty()) {
                     // TODO: separate this into utility (not utilities) class
@@ -249,7 +249,7 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Deep copy a SearchAndValidationSettings object
+     * Deep copy a SearchAndValidationSettings object.
      *
      * @param oldSettings Settings to clone
      * @return Cloned object
@@ -267,7 +267,7 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Get the multiplicity for this experiment
+     * Get the multiplicity for this experiment.
      *
      * @return Parsed multiplicity value
      */
@@ -285,7 +285,7 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Get the version of MaxQuant used
+     * Get the version of MaxQuant used.
      *
      * @return Version number string
      */

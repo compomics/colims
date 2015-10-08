@@ -1,6 +1,5 @@
 package com.compomics.colims.core.io;
 
-import com.compomics.colims.model.FastaDb;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
@@ -24,9 +23,9 @@ public abstract class DataImport implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The fasta DB entity.
+     * The fasta DB ID.
      */
-    protected FastaDb fastaDb;
+    protected Long fastaDbId;
 
     /**
      * No-arg constructor.
@@ -37,18 +36,33 @@ public abstract class DataImport implements Serializable {
     /**
      * Constructor.
      *
-     * @param fastaDb the FastaDb entity
+     * @param fastaDbId the FastaDb ID
      */
-    public DataImport(final FastaDb fastaDb) {
-        this.fastaDb = fastaDb;
+    public DataImport(final Long fastaDbId) {
+        this.fastaDbId = fastaDbId;
     }
 
-    public FastaDb getFastaDb() {
-        return fastaDb;
+    public Long getFastaDbId() {
+        return fastaDbId;
     }
 
-    public void setFastaDb(final FastaDb fastaDb) {
-        this.fastaDb = fastaDb;
+    public void setFastaDbId(Long fastaDbId) {
+        this.fastaDbId = fastaDbId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataImport that = (DataImport) o;
+
+        return !(fastaDbId != null ? !fastaDbId.equals(that.fastaDbId) : that.fastaDbId != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return fastaDbId != null ? fastaDbId.hashCode() : 0;
+    }
 }

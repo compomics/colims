@@ -6,6 +6,7 @@ import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
@@ -16,6 +17,7 @@ import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerIm
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
@@ -75,7 +77,14 @@ public class PersistDbTaskHandler {
      */
     @Autowired
     private SampleService sampleService;
-
+    /**
+     * The instrument entity service.
+     */
+    @Autowired
+    private InstrumentService instrumentService;
+    /**
+     * The persist service
+     */
     @Autowired
     private PersistService persistService;
 
@@ -93,6 +102,12 @@ public class PersistDbTaskHandler {
                 throw new IllegalArgumentException("The sample entity with ID " + persistDbTask.getEnitityId() + " was not found in the database.");
             }
 
+            //get the instrument
+            Instrument instrument = instrumentService.findById(persistDbTask.getPersistMetadata().getInstrumentId());
+            if (instrument == null) {
+                throw new IllegalArgumentException("The instrument with ID " + persistDbTask.getPersistMetadata().getInstrumentId() + " was not found in the database.");
+            }
+
             //get the user name for auditing
             String userName = userService.findUserNameById(persistDbTask.getUserId());
             if (userName == null) {
@@ -102,7 +117,7 @@ public class PersistDbTaskHandler {
             //map the task
             List<AnalyticalRun> analyticalRuns = mapDataImport(persistDbTask);
 
-            persist(analyticalRuns, persistDbTask, sample, userName);
+            persistService.persist(analyticalRuns, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -133,7 +148,7 @@ public class PersistDbTaskHandler {
     private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
         List<AnalyticalRun> analyticalRuns = null;
 
-        switch (persistDbTask.getPersistMetadata().getStorageType()) {
+        switch (persistDbTask.getPersistMetadata().getPersistType()) {
             case PEPTIDESHAKER:
                 //unpack .cps archive
                 UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
@@ -166,9 +181,4 @@ public class PersistDbTaskHandler {
 
         return analyticalRuns;
     }
-
-    private void persist(List<AnalyticalRun> analyticalRuns, PersistDbTask persistDbTask, Sample sample, String userName) {
-        persistService.persist(analyticalRuns, sample, persistDbTask.getPersistMetadata().getInstrument(), userName, persistDbTask.getPersistMetadata().getStartDate());
-    }
-
 }

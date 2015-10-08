@@ -1,7 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 
 import java.util.List;

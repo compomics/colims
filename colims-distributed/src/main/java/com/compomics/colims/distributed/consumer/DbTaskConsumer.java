@@ -74,7 +74,7 @@ public class DbTaskConsumer implements MessageListener {
             notificationProducer.sendNotification(new Notification(NotificationType.STARTED, jmsMessageID));
 
             if (dbTask instanceof PersistDbTask) {
-                LOGGER.info("Received persist db task message of type " + ((PersistDbTask) dbTask).getPersistMetadata().getStorageType().userFriendlyName());
+                LOGGER.info("Received persist db task message of type " + ((PersistDbTask) dbTask).getPersistMetadata().getPersistType().userFriendlyName());
                 persistDbTaskHandler.handlePersistDbTask((PersistDbTask) dbTask);
             } else if (dbTask instanceof DeleteDbTask) {
                 LOGGER.info("Received delete db task message of type " + dbTask.getDbEntityClass());

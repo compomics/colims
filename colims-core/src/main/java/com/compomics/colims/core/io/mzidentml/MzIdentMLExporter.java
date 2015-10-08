@@ -351,16 +351,19 @@ public class MzIdentMLExporter {
         fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
-        if (searchParameters.getFragMassToleranceUnit().equals("DA")) {
-            fragmentMinus.setUnitName("dalton");
-            fragmentMinus.setUnitAccession("UO:0000221");
-            fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
-
-            fragmentPlus.setUnitName("dalton");
-            fragmentPlus.setUnitAccession("UO:0000221");
-            fragmentPlus.setUnitCv(getDataItem("CvList.UO", Cv.class));
-        } else {
-            // TODO: what other mass tolerance units are possible?
+        switch (searchParameters.getFragMassToleranceUnit()) {
+            case DA:
+                fragmentMinus.setUnitName("dalton");
+                fragmentMinus.setUnitAccession("UO:0000221");
+                fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+                break;
+            case PPM:
+                fragmentMinus.setUnitName("parts per million");
+                fragmentMinus.setUnitAccession("UO:0000169");
+                fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+                break;
+            default:
+                break;
         }
 
         spectrumProtocol.setFragmentTolerance(new Tolerance());

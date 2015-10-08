@@ -3,6 +3,7 @@ package com.compomics.colims.distributed.io.maxquant;
 import com.compomics.colims.core.io.DataImporter;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
@@ -42,6 +43,11 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     private MaxQuantParser maxQuantParser;
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
+    /**
+     * The fasta db entity service.
+     */
+    @Autowired
+    private FastaDbService fastaDbService;
 
     @Override
     public void clear() {
@@ -56,8 +62,9 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
         try {
             maxQuantParser.clear();
 
-            parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), false);
-            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), maxQuantImport.getFastaDb(), parameterParser.getMultiplicity());
+            FastaDb fastaDb = fastaDbService.findById(maxQuantImport.getFastaDbId());
+            parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDb, false);
+            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDb, parameterParser.getMultiplicity());
 
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());

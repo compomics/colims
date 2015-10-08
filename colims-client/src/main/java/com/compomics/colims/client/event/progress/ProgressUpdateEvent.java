@@ -5,8 +5,6 @@
  */
 package com.compomics.colims.client.event.progress;
 
-import java.awt.Component;
-
 /**
  * Event thrown when a progress dialog should update.
  *

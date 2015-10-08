@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 
 import java.util.Comparator;

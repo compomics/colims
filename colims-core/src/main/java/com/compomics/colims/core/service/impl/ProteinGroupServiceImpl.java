@@ -2,7 +2,6 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
