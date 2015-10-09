@@ -6,16 +6,59 @@ import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
 
 /**
+ * This class represents a paged table model with sort and filter capabilities.
+ * <p/>
  * Created by Iain on 19/06/2015.
  */
 public abstract class PagingTableModel extends DefaultEventTableModel {
 
-    int page;
-    int perPage;
-    int rowCount;
-    String sortColumn;
-    String sortDirection;
-    String filter;
+    public enum SortDirection {
+        ASCENDING("asc"), DESCENDING("desc");
+
+        /**
+         * The enum query value that is used for constructing the database query.
+         */
+        private String queryValue;
+
+        SortDirection(String queryValue) {
+            this.queryValue = queryValue;
+        }
+
+        /**
+         * Get the enum query value;
+         *
+         * @return the enum quey value
+         */
+        public String queryValue() {
+            return queryValue;
+        }
+
+    }
+
+    /**
+     * The current page.
+     */
+    protected int page;
+    /**
+     * The number of rows per page (page length).
+     */
+    protected int perPage;
+    /**
+     * The total number of rows to populate the table with.
+     */
+    protected int rowCount;
+    /**
+     * The name of the column that will be sorted on.
+     */
+    protected String sortColumn;
+    /**
+     * The direction in which the sort column has to be sorted.
+     */
+    protected SortDirection sortDirection;
+    /**
+     * The filter value.
+     */
+    protected String filter;
 
     public PagingTableModel(EventList source, TableFormat tableFormat) {
         super(source, tableFormat);
@@ -25,13 +68,13 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * Reset the table to default values, either empty or with data.
      *
-     * @param rows Number of rows to populate table with
+     * @param rows number of rows to populate the table with
      */
     public void reset(int rows) {
         page = 0;
         perPage = 20;
         sortColumn = getColumnDbName(0);
-        sortDirection = "asc";
+        sortDirection = SortDirection.ASCENDING;
         filter = "";
         rowCount = rows;
     }
@@ -40,31 +83,31 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      * Get the database column name from the table column.
      *
      * @param column Column index
-     * @return Database column name
+     * @return database column name
      */
     public abstract String getColumnDbName(final int column);
 
     /**
      * Update the sort column or reverse direction if same column specified.
      *
-     * @param index Column index
+     * @param index column index
      */
     public void updateSort(int index) {
         // TODO: further reduce this
         String column = getColumnDbName(index);
 
         if (column.equals(sortColumn)) {
-            sortDirection = sortDirection.equals("asc") ? "desc" : "asc";
+            sortDirection = sortDirection == SortDirection.ASCENDING ? SortDirection.DESCENDING : SortDirection.ASCENDING;
         } else {
             sortColumn = column;
-            sortDirection = "asc";
+            sortDirection = SortDirection.ASCENDING;
         }
     }
 
     /**
      * Whether the current page is the last page.
      *
-     * @return Yay or nay
+     * @return yay or nay
      */
     public boolean isMaxPage() {
         return page == getMaxPage();
@@ -73,7 +116,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * Calculate the highest page in the current data set.
      *
-     * @return Highest page number
+     * @return highest page number
      */
     public int getMaxPage() {
         return (int) Math.floor(rowCount / perPage);
@@ -82,7 +125,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * Get current page.
      *
-     * @return Current page
+     * @return current page
      */
     public int getPage() {
         return page;
@@ -91,7 +134,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * Set the current page (within acceptable range).
      *
-     * @param page Page number
+     * @param page the page number
      */
     public void setPage(int page) {
         if (page <= getMaxPage() && page >= 0) {
@@ -100,25 +143,27 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Get the number of rows displayed per page
+     * Get the number of rows displayed per page.
      *
-     * @return That value
+     * @return the number of rows displayed per page
      */
     public int getPerPage() {
         return perPage;
     }
 
     /**
-     * Set the number of rows displayed per page
+     * Set the number of rows displayed per page.
      *
-     * @param perPage Page length
+     * @param perPage the page length
      */
-    public void setPerPage(int perPage) { this.perPage = perPage; }
+    public void setPerPage(int perPage) {
+        this.perPage = perPage;
+    }
 
     /**
      * Update filter text.
      *
-     * @param filter Filter string
+     * @param filter the filter string
      */
     public void setFilter(final String filter) {
         this.filter = filter;

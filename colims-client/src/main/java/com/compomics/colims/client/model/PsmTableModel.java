@@ -46,7 +46,7 @@ public class PsmTableModel extends PagingTableModel {
             page = getMaxPage();
         }
 
-        return spectrumService.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+        return spectrumService.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection.queryValue(), filter);
     }
 
     /**

@@ -4,11 +4,13 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 @Repository("proteinGroupRepository")
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
 
-    public static final String BASE_QUERY = "SELECT DISTINCT protein_group.id, MAX(%3$s) FROM protein_group"
+    private static final String PAGED_QUERY = "SELECT DISTINCT protein_group.id, MAX(%3$s) FROM protein_group"
             + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id"
             + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id"
             + " LEFT JOIN protein ON protein.id = pg_has_p.l_protein_id"
@@ -29,6 +31,41 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             + " OR pg_has_p.protein_accession LIKE '%2$s')"
             + " AND sp.l_analytical_run_id = %1$d"
             + " GROUP BY protein_group.id";
+
+    private static final String PAGED_QUERY_NO_FILTER = "SELECT DISTINCT protein_group.id, MAX(%3$s) FROM protein_group"
+            + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id"
+            + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id"
+            + " LEFT JOIN protein ON protein.id = pg_has_p.l_protein_id"
+            + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
+            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
+            + " WHERE sp.l_analytical_run_id = %1$d"
+            + " GROUP BY protein_group.id";
+
+    private static final String PROTEIN_GROUP_COUNT_QUERY = "SELECT COUNT(*) FROM ( "
+            + "SELECT DISTINCT protein_group.id FROM protein_group "
+            + "JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id "
+            + "JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id "
+            + "JOIN protein ON protein.id = pg_has_p.l_protein_id "
+            + "JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
+            + "JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
+            + "WHERE (protein.protein_sequence LIKE :filter "
+            + "OR pg_has_p.protein_accession LIKE :filter) "
+            + "AND sp.l_analytical_run_id = :runId "
+            + ") "
+            + "as subQuery"
+            + ";";
+
+    private static final String PROTEIN_GROUP_COUNT_QUERY_NO_FILTER = "SELECT COUNT(*) FROM ( "
+            + "SELECT "
+            + "DISTINCT protein_group.id "
+            + "FROM protein_group "
+            + "JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id "
+            + "JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
+            + "JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
+            + "WHERE sp.l_analytical_run_id = :runId "
+            + ") "
+            + "as subQuery"
+            + ";";
 
     @Override
     public List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
@@ -41,7 +78,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         }
 
         final List idList = getCurrentSession()
-                .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
+                .createSQLQuery(String.format(PAGED_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
                 .addScalar("protein_group.id", LongType.INSTANCE)
                 .list();
 
@@ -56,18 +93,26 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
 
     @Override
     public int getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
-        return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", "protein_group.id"))
-                .list().size();
+        if (!filter.isEmpty()) {
+            SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_GROUP_COUNT_QUERY);
+            sqlQuery.setLong("runId", analyticalRun.getId());
+            sqlQuery.setString("filter", "%" + filter + "%");
+            return ((BigInteger) sqlQuery.uniqueResult()).intValue();
+        } else {
+            SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_GROUP_COUNT_QUERY_NO_FILTER);
+            sqlQuery.setLong("runId", analyticalRun.getId());
+            return ((BigInteger) sqlQuery.uniqueResult()).intValue();
+        }
     }
 
     @Override
     public String getMainProteinSequence(ProteinGroup proteinGroup) {
         return getCurrentSession()
-            .createCriteria(ProteinGroupHasProtein.class, "proteinGroupHasProtein")
-            .createAlias("proteinGroupHasProtein.protein", "protein")
-            .add(Restrictions.eq("proteinGroup", proteinGroup))
-            .add(Restrictions.eq("isMainGroupProtein", true))
-            .setProjection(Projections.property("protein.sequence"))
-            .uniqueResult().toString();
+                .createCriteria(ProteinGroupHasProtein.class, "proteinGroupHasProtein")
+                .createAlias("proteinGroupHasProtein.protein", "protein")
+                .add(Restrictions.eq("proteinGroup", proteinGroup))
+                .add(Restrictions.eq("isMainGroupProtein", true))
+                .setProjection(Projections.property("protein.sequence"))
+                .uniqueResult().toString();
     }
 }

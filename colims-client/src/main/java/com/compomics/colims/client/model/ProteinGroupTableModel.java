@@ -6,16 +6,19 @@ import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.ProteinGroup;
 
 import java.util.List;
 
 /**
+ * This class represents the paged protein group table model.
+ * <p/>
  * Created by Iain on 19/06/2015.
  */
 public class ProteinGroupTableModel extends PagingTableModel {
 
     /**
-     * The ProteinService instance.
+     * The ProteinGroupService instance.
      */
     private final ProteinGroupService proteinGroupService;
 
@@ -43,21 +46,26 @@ public class ProteinGroupTableModel extends PagingTableModel {
     }
 
     /**
-     * Updates the row count and returns a list of spectra for the given search parameters.
+     * Updates the row count and returns a list of protein groups for the given search criteria.
      *
-     * @param analyticalRun The run from which spectra are queried
-     * @return List of Spectrum objects
+     * @param analyticalRun the run where the protein groups are associated with
+     * @return the list of ProteinGroup instances
      */
-    public List getRows(AnalyticalRun analyticalRun) {
+    public List<ProteinGroup> getRows(AnalyticalRun analyticalRun) {
         rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection.queryValue(), filter);
     }
 
+    /**
+     * Reset the table model with the protein groups associated with the specified analytical run.
+     *
+     * @param analyticalRun the run where the protein groups are associated with
+     */
     public void reset(final AnalyticalRun analyticalRun) {
         super.reset(analyticalRun == null ? 0 : proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
     }

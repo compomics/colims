@@ -16,24 +16,21 @@ import java.util.List;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    public static final String PROTEIN_IDS_QUERY = new StringBuilder()
-            .append("SELECT ")
-            .append("DISTINCT protein.id ")
-            .append("from protein ")
-            .append("LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id ")
-            .append("AND protein_group_has_protein.id NOT IN ")
-            .append("( ")
-            .append("   SELECT ")
-            .append("   DISTINCT pg_has_p.id ")
-            .append("   FROM protein_group_has_protein pg_has_p ")
-            .append("   JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id ")
-            .append("   JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id ")
-            .append("   JOIN spectrum sp ON sp.id = pep.l_spectrum_id ")
-            .append("   WHERE sp.l_analytical_run_id IN (:ids) ")
-            .append(") ")
-            .append("WHERE protein_group_has_protein.l_protein_id IS NULL ")
-            .append("; ")
-            .toString();
+    public static final String PROTEIN_IDS_QUERY = "SELECT "
+            + "DISTINCT protein.id "
+            + "from protein "
+            + "LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id "
+            + "AND protein_group_has_protein.id NOT IN "
+            + "( "
+            + "   SELECT "
+            + "   DISTINCT pg_has_p.id "
+            + "   FROM protein_group_has_protein pg_has_p "
+            + "   JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id "
+            + "   JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
+            + "   JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
+            + "   WHERE sp.l_analytical_run_id IN (:ids) "
+            + ") "
+            + "WHERE protein_group_has_protein.l_protein_id IS NULL " + "; ";
 
     @Override
     public Protein findBySequence(String sequence) {

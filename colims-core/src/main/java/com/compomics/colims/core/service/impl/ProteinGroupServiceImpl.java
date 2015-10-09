@@ -16,6 +16,7 @@ import java.util.List;
 @Service("proteinGroupService")
 @Transactional
 public class ProteinGroupServiceImpl implements ProteinGroupService {
+
     @Autowired
     ProteinGroupRepository proteinGroupRepository;
 
@@ -36,36 +37,36 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
 
     @Override
     public ProteinGroup findById(Long aLong) {
-        return null;
+        return proteinGroupRepository.findById(aLong);
     }
 
     @Override
     public List<ProteinGroup> findAll() {
-        return null;
+        return proteinGroupRepository.findAll();
     }
 
     @Override
     public void save(ProteinGroup entity) {
-
+        proteinGroupRepository.save(entity);
     }
 
     @Override
     public void update(ProteinGroup entity) {
-
+        proteinGroupRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(ProteinGroup entity) {
-
+        proteinGroupRepository.saveOrUpdate(entity);
     }
 
     @Override
     public void delete(ProteinGroup entity) {
-
+        proteinGroupRepository.delete(entity);
     }
 
     @Override
     public long countAll() {
-        return 0;
+        return proteinGroupRepository.countAll();
     }
 }

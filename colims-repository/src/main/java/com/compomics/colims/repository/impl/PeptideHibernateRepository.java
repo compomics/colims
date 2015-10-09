@@ -27,7 +27,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
 
         String query = "SELECT DISTINCT peptide.id FROM peptide"
             + " LEFT JOIN peptide_has_protein_group ON peptide_has_protein_group.l_peptide_id = peptide.id"
-            + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id = protein_group.id"
+            + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id"
             + " LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_group_id = protein_group.id"
             + " WHERE l_spectrum_id IN (" + joiner.join(spectrumIds) + ")"
             + " AND protein_group_has_protein.l_protein_group_id = " + proteinGroup.getId();

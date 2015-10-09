@@ -6,31 +6,39 @@ import com.compomics.colims.model.ProteinGroup;
 import java.util.List;
 
 /**
+ * This interface provides service methods for the ProteinGroup class.
+ * <p/>
  * Created by Iain on 08/09/2015.
  */
 public interface ProteinGroupService extends GenericService<ProteinGroup, Long> {
+
     /**
-     * Get all proteins for a given analytical run in suitable manner for a paged table.
+     * Fetch a paged list of protein groups associated with a given analytical run.
      *
-     * @param analyticalRun The run
-     * @return A list of proteins
+     * @param analyticalRun the analytical run
+     * @param start         start point in result list
+     * @param length        length of result page
+     * @param orderBy       column to order results by
+     * @param direction     the ordering direction
+     * @param filter        the filter text (an empty string matches all results)
+     * @return the list of protein groups
      */
     List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
 
     /**
-     * Count the number of proteins related to a given analytical run, including optional filter term.
+     * Count the number of proteins groups related to a given analytical run, including optional filter term.
      *
-     * @param analyticalRun Run of interest
-     * @param filter        Filter string
-     * @return the number of proteins
+     * @param analyticalRun the run of interest
+     * @param filter        the filter string
+     * @return the number of protein groups
      */
     int getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
     /**
-     * Get the sequence of the main group protein
+     * Get the sequence of the main group protein of the given protein group.
      *
-     * @param proteinGroup Group of proteins
-     * @return Sequence of protein
+     * @param proteinGroup the specified protein group
+     * @return the main protein group sequence
      */
     String getMainProteinSequence(ProteinGroup proteinGroup);
 }

@@ -175,7 +175,6 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
         //Listeners
-
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
 
@@ -345,7 +344,7 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    EventList<Protein> exportProteins = new BasicEventList<>();
+                    EventList<ProteinGroup> exportProteins = new BasicEventList<>();
                     ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteins, null), new ProteinGroupTableFormat());
                     exportModel.setPerPage(0);
                     GlazedLists.replaceAll(exportProteins, exportModel.getRows(selectedAnalyticalRun), false);
