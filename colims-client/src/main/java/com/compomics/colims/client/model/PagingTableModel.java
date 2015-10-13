@@ -46,7 +46,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * The total number of rows to populate the table with.
      */
-    protected int rowCount;
+    protected long rowCount;
     /**
      * The name of the column that will be sorted on.
      */
@@ -70,7 +70,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      *
      * @param rows number of rows to populate the table with
      */
-    public void reset(int rows) {
+    public void reset(long rows) {
         page = 0;
         perPage = 20;
         sortColumn = getColumnDbName(0);
@@ -93,7 +93,7 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      * @param index column index
      */
     public void updateSort(int index) {
-        // TODO: further reduce this
+        //TODO: further reduce this
         String column = getColumnDbName(index);
 
         if (column.equals(sortColumn)) {

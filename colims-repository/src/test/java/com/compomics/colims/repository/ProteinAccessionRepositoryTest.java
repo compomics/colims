@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 public class ProteinAccessionRepositoryTest {
+
     @Autowired
     ProteinAccessionRepository proteinAccessionRepository;
     @Autowired
@@ -39,14 +40,14 @@ public class ProteinAccessionRepositoryTest {
 
     @Test
     public void testGetAccessionsForProteinGroup() throws Exception {
-        List<ProteinAccession> proteinAccessions = proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
+        List<String> proteinAccessions = proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
 
         assertThat(proteinAccessions.size(), greaterThan(0));
     }
 
     @Test
     public void testGetProteinAccessionsForPeptide() {
-        Peptide peptide = peptideRepository.findById(1L);
+        Peptide peptide = peptideRepository.findById(3L);
 
         List<String> proteinAccessions = proteinAccessionRepository.getProteinAccessionsForPeptide(peptide);
 

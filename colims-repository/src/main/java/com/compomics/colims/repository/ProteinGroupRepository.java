@@ -16,9 +16,9 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * Fetch a paged list of protein groups associated with a given analytical run.
      *
      * @param analyticalRun the analytical run
-     * @param start         start point in result list
-     * @param length        length of result page
-     * @param orderBy       column to order results by
+     * @param start         the start point in result list
+     * @param length        the length of the result page
+     * @param orderBy       the column to order results by
      * @param direction     the ordering direction
      * @param filter        the filter text (an empty string matches all results)
      * @return the list of protein groups
@@ -32,7 +32,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param filter        the filter string
      * @return the number of protein groups
      */
-    int getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
+    long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
     /**
      * Get the sequence of the main group protein of the given protein group.

@@ -11,20 +11,32 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 /**
+ * This class represents the format of ProteinGroup instances shown in the protein group table.
+ * <p/>
  * Created by Iain on 23/06/2015.
  */
 public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup> {
-    private ProteinAccessionService proteinAccessionService;
-    private ProteinGroupService proteinGroupService;
 
     private static final String[] columnNames = {"ID", "Accessions", "Probability", "Post-Error Probability", "Main Protein Sequence"};
-
     public static final int ID = 0;
     public static final int ACCESSION = 1;
     public static final int PROBABILITY = 2;
     public static final int PEP = 3;
     public static final int SEQUENCE = 4;
 
+    /**
+     * The ProteinAccessionService instance.
+     */
+    private ProteinAccessionService proteinAccessionService;
+    /**
+     * The ProteinGroupService instance.
+     */
+    private ProteinGroupService proteinGroupService;
+
+    /**
+     * No-arg constructor. The service beans are retrieved from the application context and assigned to the
+     * corresponding class fields.
+     */
     public ProteinGroupTableFormat() {
         this.proteinAccessionService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinAccessionService.class);
         this.proteinGroupService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinGroupService.class);
@@ -70,9 +82,9 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                 return proteinGroup.getId();
             case ACCESSION:
                 return proteinAccessionService.getAccessionsForProteinGroup(proteinGroup)
-                    .stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", "));
+                        .stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
             case PROBABILITY:
                 return proteinGroup.getProteinProbability();
             case PEP:

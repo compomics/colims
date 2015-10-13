@@ -22,6 +22,12 @@ public class ProteinGroupTableModel extends PagingTableModel {
      */
     private final ProteinGroupService proteinGroupService;
 
+    /**
+     * Constructor.
+     *
+     * @param source      the EventList that holds the table data
+     * @param tableFormat the TableFormat instance of the table
+     */
     public ProteinGroupTableModel(EventList source, TableFormat tableFormat) {
         super(source, tableFormat);
         proteinGroupService = ApplicationContextProvider.getInstance().getBean("proteinGroupService");

@@ -1,40 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE hibernate-mapping PUBLIC 
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<!--<hibernate-mapping>    
-    <query name="User.findGroupsByUserId">
-        SELECT userGroup
-        FROM 
-        User user
-        left join user.userHasGroups userHasGroup
-        left join userHasGroup.group userGroup
-        left join fetch userGroup.groupHasRoles groupHasRole
-        left join groupHasRole.role userRole
-        where user.id = :userId
-    </query>
-</hibernate-mapping>-->
-
-<hibernate-mapping>    
-    <query name="User.getUserIdsWithMostOwnedProjects">
-        select
-        u.id
-        from project p, user u
-        where p.l_owner_user_id = u.id
-        group by u.id having count(u.id) =
-        (
-        select
-        max(projects_owned)
-        from
-        (
-        select
-        u.id user_id, count(u.id) projects_owned
-        from project p, user u
-        where p.l_owner_user_id = u.id
-        group by u.id
-        )
-        as sub_1
-        )                  
+<hibernate-mapping>
+    <query name="User.findById">
+        FROM
+        User u
+        WHERE u.id = :userId
     </query>
 </hibernate-mapping>

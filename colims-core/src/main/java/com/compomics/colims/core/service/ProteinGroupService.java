@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * @param filter        the filter string
      * @return the number of protein groups
      */
-    int getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
+    long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
     /**
      * Get the sequence of the main group protein of the given protein group.

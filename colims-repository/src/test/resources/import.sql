@@ -132,3 +132,4 @@ INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_pr
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.1, 0.9, 2, 2);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.1, 0.9, 3, 1);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.1, 0.9, 3, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (5, 0.1, 0.9, 3, 3);

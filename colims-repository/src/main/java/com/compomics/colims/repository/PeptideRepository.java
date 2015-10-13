@@ -14,9 +14,9 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
     /**
      * Return data about all peptides relating to a given protein. Uses a
      * list of spectra to ensure results relate to the current run.
-     * @param proteinGroup  A protein
-     * @param spectrumIds   List of spectrum ids to restrict results
-     * @return List of PeptideHasProteinGroup objects
+     * @param proteinGroup  the protein group
+     * @param spectrumIds   the list of spectrum ids to restrict results
+     * @return the list of PeptideHasProteinGroup objects
      */
     List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds);
 

@@ -34,22 +34,26 @@ public class ProteinGroupRepositoryTest {
     public void testGetPagedProteinsForRunTest() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List<ProteinGroup> proteins = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
+        List<ProteinGroup> proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 1, 20, "protein.id", "asc", "");
 
-        assertThat(proteins.size(), not(0));
-        assertThat(proteins.get(0).getId(), is(1L));
+        assertThat(proteinGroups.size(), not(0));
+        assertThat(proteinGroups.get(0).getId(), is(1L));
 
-        proteins = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
+        proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
 
-        assertThat(proteins.size(), is(0));
+        assertThat(proteinGroups.size(), is(0));
     }
 
     @Test
     public void testGetProteinGroupCountForRun() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, ""), not(0));
-        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "NOTAPROTEIN"), is(0));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, ""), not(0L));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "ACC_11"), not(0L));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "LENNART"), not(0L));
+
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "AC_11"), is(0L));
+        assertThat(proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "NOTAPROTEIN"), is(0L));
     }
 
     @Test

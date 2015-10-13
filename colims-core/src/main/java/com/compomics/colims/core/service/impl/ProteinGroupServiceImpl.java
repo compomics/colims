@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
-    public int getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
+    public long getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
         return proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, filter);
     }
 

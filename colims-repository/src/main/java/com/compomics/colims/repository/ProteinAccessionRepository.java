@@ -22,18 +22,18 @@ public interface ProteinAccessionRepository extends GenericRepository<ProteinAcc
     List<ProteinAccession> findByAccession(String accession);
 
     /**
-     * Get accessions for all proteins in a given protein group
+     * Get all accession strings associated with the specified group of proteins.
      *
-     * @param proteinGroup  Protein group in question
-     * @return List of accessions
+     * @param proteinGroup the protein group
+     * @return the list of protein accession strings
      */
-    List<ProteinAccession> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
+    List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
 
     /**
-     * Get all protein accessions associated with a peptide
+     * Get all protein accession strings associated with a given peptide.
      *
-     * @param peptide Peptide to find accessions for
-     * @return A list of accessions
+     * @param peptide the peptide to find accessions for
+     * @return the list of accession strings
      */
     List<String> getProteinAccessionsForPeptide(Peptide peptide);
 }

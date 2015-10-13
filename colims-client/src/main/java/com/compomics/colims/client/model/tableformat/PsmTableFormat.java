@@ -15,9 +15,6 @@ import java.util.Comparator;
  * @author Niels Hulstaert
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
-    private SpectrumService spectrumService;
-    private ProteinAccessionService proteinAccessionService;
-
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
 
@@ -29,6 +26,9 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     public static final int PEPTIDE_SEQUENCE = 5;
     public static final int PSM_CONFIDENCE = 6;
     public static final int PROTEIN_ACCESSIONS = 7;
+
+    private SpectrumService spectrumService;
+    private ProteinAccessionService proteinAccessionService;
 
     public PsmTableFormat() {
         this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);

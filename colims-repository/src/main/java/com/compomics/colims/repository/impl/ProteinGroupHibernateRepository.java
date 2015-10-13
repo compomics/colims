@@ -4,13 +4,12 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
-import org.hibernate.SQLQuery;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,34 +40,21 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             + " WHERE sp.l_analytical_run_id = %1$d"
             + " GROUP BY protein_group.id";
 
-    private static final String PROTEIN_GROUP_COUNT_QUERY = "SELECT COUNT(*) FROM ( "
-            + "SELECT DISTINCT protein_group.id FROM protein_group "
-            + "JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id "
-            + "JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id "
-            + "JOIN protein ON protein.id = pg_has_p.l_protein_id "
-            + "JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
-            + "JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
-            + "WHERE (protein.protein_sequence LIKE :filter "
-            + "OR pg_has_p.protein_accession LIKE :filter) "
-            + "AND sp.l_analytical_run_id = :runId "
-            + ") "
-            + "as subQuery"
-            + ";";
-
-    private static final String PROTEIN_GROUP_COUNT_QUERY_NO_FILTER = "SELECT COUNT(*) FROM ( "
-            + "SELECT "
-            + "DISTINCT protein_group.id "
-            + "FROM protein_group "
-            + "JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id "
-            + "JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
-            + "JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
-            + "WHERE sp.l_analytical_run_id = :runId "
-            + ") "
-            + "as subQuery"
-            + ";";
-
     @Override
     public List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+        List<ProteinGroup> proteinGroups = new ArrayList<>();
+
+        Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getPagedProteinGroupsForRunNoFilter");
+        namedQuery.setLong("analyticalRunId", analyticalRun.getId());
+        namedQuery.setMaxResults(length);
+        namedQuery.setFirstResult(start);
+
+        proteinGroups = namedQuery.list();
+
+        return proteinGroups;
+    }
+
+    public List<ProteinGroup> getPagedProteinGroupsForRunOld(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
         List<ProteinGroup> proteins = new ArrayList<>();
 
         String extraParams = " ORDER BY MAX(%3$s) %4$s, protein_group.id";
@@ -92,16 +78,16 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public int getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
+    public long getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
         if (!filter.isEmpty()) {
-            SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_GROUP_COUNT_QUERY);
-            sqlQuery.setLong("runId", analyticalRun.getId());
-            sqlQuery.setString("filter", "%" + filter + "%");
-            return ((BigInteger) sqlQuery.uniqueResult()).intValue();
+            Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupCountForRun");
+            namedQuery.setLong("analyticalRunId", analyticalRun.getId());
+            namedQuery.setString("filter", "%" + filter + "%");
+            return (long) namedQuery.uniqueResult();
         } else {
-            SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_GROUP_COUNT_QUERY_NO_FILTER);
-            sqlQuery.setLong("runId", analyticalRun.getId());
-            return ((BigInteger) sqlQuery.uniqueResult()).intValue();
+            Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupCountForRunNoFilter");
+            namedQuery.setLong("analyticalRunId", analyticalRun.getId());
+            return (long) namedQuery.uniqueResult();
         }
     }
 

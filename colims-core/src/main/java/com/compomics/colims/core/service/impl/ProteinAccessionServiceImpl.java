@@ -17,11 +17,12 @@ import java.util.List;
 @Service("proteinAccessionService")
 @Transactional
 public class ProteinAccessionServiceImpl implements ProteinAccessionService {
+
     @Autowired
     ProteinAccessionRepository proteinAccessionRepository;
 
     @Override
-    public List<ProteinAccession> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
+    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
         return proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroup);
     }
 
@@ -42,26 +43,26 @@ public class ProteinAccessionServiceImpl implements ProteinAccessionService {
 
     @Override
     public void save(ProteinAccession entity) {
-
+        proteinAccessionRepository.save(entity);
     }
 
     @Override
     public void update(ProteinAccession entity) {
-
+        proteinAccessionRepository.update(entity);
     }
 
     @Override
     public void saveOrUpdate(ProteinAccession entity) {
-
+        proteinAccessionRepository.saveOrUpdate(entity);
     }
 
     @Override
     public void delete(ProteinAccession entity) {
-
+        proteinAccessionRepository.delete(entity);
     }
 
     @Override
     public long countAll() {
-        return 0;
+        return proteinAccessionRepository.countAll();
     }
 }

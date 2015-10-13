@@ -16,12 +16,12 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     /**
      * Return a list of spectra according to all these parameters.
      *
-     * @param analyticalRun Analytical run with which spectra are associated
-     * @param start         Start point in results (SQL OFFSET)
-     * @param length        Length of result list (SQL LIMIT)
-     * @param orderBy       Column to order by (SQL ORDER BY [column]
-     * @param direction     Ordering direction (SQL ORDER BY [dir])
-     * @param filter        Filter string (SQL LIKE %[filter]%)
+     * @param analyticalRun the analytical run with which spectra are associated
+     * @param start         the start point in results (SQL OFFSET)
+     * @param length        the length of result list (SQL LIMIT)
+     * @param orderBy       the column to order by (SQL ORDER BY [column]
+     * @param direction     the ordering direction (SQL ORDER BY [dir])
+     * @param filter        the filter string (SQL LIKE %[filter]%)
      * @return List of spectra
      */
     List getPagedSpectra(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter);
@@ -29,9 +29,9 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     /**
      * Count the spectra for a given run with optional filtering.
      *
-     * @param analyticalRun Analytical run instance
-     * @param orderBy       Ordering parameter
-     * @param filter        Filter string (or empty string)
+     * @param analyticalRun the analytical run instance
+     * @param orderBy       the ordering parameter
+     * @param filter        the filter string (or empty string)
      * @return Row count
      */
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
@@ -39,8 +39,8 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     /**
      * Returns a list of spectrum ids associated with a given run.
      *
-     * @param analyticalRun The analytical run
-     * @return List of IDs
+     * @param analyticalRun the analytical run
+     * @return the list of IDs
      */
     List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
 

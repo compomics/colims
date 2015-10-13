@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <sql-query name="ProteinAccession.getAccessionsForProteinGroup">
+        SELECT DISTINCT p_a.accession
+        FROM protein_accession p_a
+        JOIN protein_group_has_protein p_g_h_p
+        ON p_a.l_protein_id = p_g_h_p.l_protein_id
+        WHERE p_g_h_p.l_protein_group_id = :proteinGroupId
+    </sql-query>
+
+    <sql-query name="ProteinAccession.getAccessionsForPeptide">
+        SELECT
+        p_g_h_p.protein_accession
+        FROM peptide_has_protein_group p_h_p_g
+        JOIN protein_group_has_protein p_g_h_p ON p_h_p_g.l_protein_group_id = p_g_h_p.l_protein_group_id
+        WHERE p_h_p_g.l_peptide_id = :peptideId
+    </sql-query>
+</hibernate-mapping>
