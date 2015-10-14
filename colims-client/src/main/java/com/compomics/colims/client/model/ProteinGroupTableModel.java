@@ -7,6 +7,7 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ProteinGroupTableModel extends PagingTableModel {
      * @param analyticalRun the run where the protein groups are associated with
      * @return the list of ProteinGroup instances
      */
-    public List<ProteinGroup> getRows(AnalyticalRun analyticalRun) {
+    public List<ProteinGroupForRun> getRows(AnalyticalRun analyticalRun) {
         rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter);
 
         if (rowCount < page * perPage) {

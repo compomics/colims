@@ -4,6 +4,7 @@ package com.compomics.colims.client.model;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
+import com.compomics.colims.repository.hibernate.SortDirection;
 
 /**
  * This class represents a paged table model with sort and filter capabilities.
@@ -11,29 +12,6 @@ import ca.odell.glazedlists.swing.DefaultEventTableModel;
  * Created by Iain on 19/06/2015.
  */
 public abstract class PagingTableModel extends DefaultEventTableModel {
-
-    public enum SortDirection {
-        ASCENDING("asc"), DESCENDING("desc");
-
-        /**
-         * The enum query value that is used for constructing the database query.
-         */
-        private String queryValue;
-
-        SortDirection(String queryValue) {
-            this.queryValue = queryValue;
-        }
-
-        /**
-         * Get the enum query value;
-         *
-         * @return the enum quey value
-         */
-        public String queryValue() {
-            return queryValue;
-        }
-
-    }
 
     /**
      * The current page.

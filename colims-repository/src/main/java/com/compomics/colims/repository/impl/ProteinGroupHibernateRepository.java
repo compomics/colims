@@ -4,9 +4,14 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
@@ -41,17 +46,43 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             + " GROUP BY protein_group.id";
 
     @Override
-    public List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
-        List<ProteinGroup> proteinGroups = new ArrayList<>();
+    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
-        Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getPagedProteinGroupsForRunNoFilter");
-        namedQuery.setLong("analyticalRunId", analyticalRun.getId());
-        namedQuery.setMaxResults(length);
-        namedQuery.setFirstResult(start);
+        //joins
+        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
+        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
+        criteria.createAlias("peptide.spectrum", "spectrum");
+        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
+        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
 
-        proteinGroups = namedQuery.list();
+        //restrictions
+        criteria.add(Restrictions.eq("spectrum.analyticalRun.id", analyticalRun.getId()));
+//        criteria.add(Restrictions.eq("proteinGroupHasProtein.isMainGroupProtein", true));
 
-        return proteinGroups;
+        //projections
+        ProjectionList projectionList = Projections.projectionList();
+        projectionList.add(Projections.groupProperty("id").as("proteinGroupId"));
+        projectionList.add(Projections.count("spectrum.id").as("spectrumCount"));
+        projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideCount"));
+        projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
+//        projectionList.add(Projections.("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
+//        projectionList.add(Projections.count("protein.").as("mainAccession"));
+        criteria.setProjection(projectionList);
+
+        //paging
+        criteria.setFirstResult(start);
+        criteria.setMaxResults(length);
+
+        //transform results into ProteinGroupForRun instances
+//        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupForRun.class));
+
+        //order
+        criteria.addOrder(Order.asc("distinctPeptideCount"));
+
+        List list = criteria.list();
+
+        return list;
     }
 
     public List<ProteinGroup> getPagedProteinGroupsForRunOld(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {

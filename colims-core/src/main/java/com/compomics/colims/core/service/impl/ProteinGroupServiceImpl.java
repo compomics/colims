@@ -4,6 +4,7 @@ import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
         return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, start, length, orderBy, direction, filter);
     }
 

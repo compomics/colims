@@ -5,14 +5,13 @@
 
 <hibernate-mapping>
     <query name="ProteinGroup.getPagedProteinGroupsForRunNoFilter">
-        select distinct proteinGroup
+        select proteinGroup, count(distinct peptide.sequence), count(peptide)
         from ProteinGroup proteinGroup
         join proteinGroup.peptideHasProteinGroups as peptideHasProteinGroup
         join peptideHasProteinGroup.peptide as peptide
         join peptide.spectrum as spectrum
         where spectrum.analyticalRun.id = :analyticalRunId
         group by proteinGroup
-        order by proteinGroup.id
     </query>
 
     <query name="ProteinGroup.getPagedProteinGroupsForRun">

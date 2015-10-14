@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param filter        the filter text (an empty string matches all results)
      * @return the list of protein groups
      */
-    List<ProteinGroup> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
+    List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
 
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
