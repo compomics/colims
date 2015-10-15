@@ -125,11 +125,10 @@ INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, pro
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
-INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (5, 4, 3, 'PROT_ACC_4', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (5, 4, 3, 'PROT_ACC_5', TRUE);
 
 -- insert test peptide has protein groups
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.1, 0.9, 2, 2);
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.1, 0.9, 3, 1);
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (5, 0.1, 0.9, 3, 2);
-INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (6, 0.1, 0.9, 3, 3);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.1, 0.9, 2, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.1, 0.9, 3, 1);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.1, 0.9, 3, 2);

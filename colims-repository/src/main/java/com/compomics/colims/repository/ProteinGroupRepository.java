@@ -15,7 +15,7 @@ import java.util.List;
 public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, Long> {
 
     /**
-     * Fetch a paged list of protein groups associated with a given analytical run.
+     * Fetch a paged list of ProteinGroupForRun instances associated with a given analytical run.
      *
      * @param analyticalRun the analytical run
      * @param start         the start point in result list

@@ -24,7 +24,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      * The analytical run onto which the quantifications were performed.
      */
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
-    @ManyToOne
+    @OneToOne
     private AnalyticalRun analyticalRun;
     /**
      * The quantification engine used for the searches.

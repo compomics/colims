@@ -24,26 +24,6 @@ import java.util.List;
 @Repository("proteinGroupRepository")
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
 
-    private static final String PAGED_QUERY = "SELECT DISTINCT protein_group.id, MAX(%3$s) FROM protein_group"
-            + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id"
-            + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id"
-            + " LEFT JOIN protein ON protein.id = pg_has_p.l_protein_id"
-            + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
-            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
-            + " WHERE (protein.protein_sequence LIKE '%2$s'"
-            + " OR pg_has_p.protein_accession LIKE '%2$s')"
-            + " AND sp.l_analytical_run_id = %1$d"
-            + " GROUP BY protein_group.id";
-
-    private static final String PAGED_QUERY_NO_FILTER = "SELECT DISTINCT protein_group.id, MAX(%3$s) FROM protein_group"
-            + " LEFT JOIN protein_group_has_protein pg_has_p ON pg_has_p.l_protein_group_id = protein_group.id"
-            + " LEFT JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = protein_group.id"
-            + " LEFT JOIN protein ON protein.id = pg_has_p.l_protein_id"
-            + " LEFT JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id"
-            + " LEFT JOIN spectrum sp ON sp.id = pep.l_spectrum_id"
-            + " WHERE sp.l_analytical_run_id = %1$d"
-            + " GROUP BY protein_group.id";
-
     @Override
     public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
