@@ -1,6 +1,8 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.Spectrum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Iain on 14/07/2015.
@@ -30,18 +32,6 @@ public class PeptideRepositoryTest {
     ProteinGroupRepository proteinGroupRepository;
     @Autowired
     SpectrumRepository spectrumRepository;
-
-    @Test
-    public void testGetPeptidesForProteinGroup() throws Exception {
-        ProteinGroup proteinGroup = proteinGroupRepository.findById(1L);
-
-        List<Long> spectrumIds = new ArrayList<>();
-        spectrumIds.add(1L);
-
-        List<Peptide> peptides = peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
-
-        assertThat(peptides.size(), greaterThan(0));
-    }
 
     @Test
     public void testGetPeptidesFromSequence() {
@@ -73,4 +63,5 @@ public class PeptideRepositoryTest {
 
         assertThat(peptides.size(), greaterThan(0));
     }
+
 }

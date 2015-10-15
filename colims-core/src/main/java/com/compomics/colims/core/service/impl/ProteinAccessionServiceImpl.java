@@ -22,16 +22,6 @@ public class ProteinAccessionServiceImpl implements ProteinAccessionService {
     ProteinAccessionRepository proteinAccessionRepository;
 
     @Override
-    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
-        return proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroup);
-    }
-
-    @Override
-    public List<String> getProteinAccessionsForPeptide(Peptide peptide) {
-        return proteinAccessionRepository.getProteinAccessionsForPeptide(peptide);
-    }
-
-    @Override
     public ProteinAccession findById(Long aLong) {
         return null;
     }

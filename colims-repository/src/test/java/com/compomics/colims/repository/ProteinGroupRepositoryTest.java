@@ -2,7 +2,9 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * @author Niels Hulstaert
@@ -35,12 +38,12 @@ public class ProteinGroupRepositoryTest {
     public void testGetPagedProteinsForRunTest() {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
-        List<ProteinGroupForRun> proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "");
+        List<ProteinGroupForRun> proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "");
 
         assertThat(proteinGroups.size(), not(0));
 //        assertThat(proteinGroups.get(0).getId(), is(1L));
 
-        proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "protein.id", "asc", "NOTAPROTEIN");
+        proteinGroups = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "NOTAPROTEIN");
 
         assertThat(proteinGroups.size(), is(0));
     }
@@ -62,6 +65,20 @@ public class ProteinGroupRepositoryTest {
         ProteinGroup proteinGroup = proteinGroupRepository.findById(1L);
 
         assertThat(proteinGroupRepository.getMainProteinSequence(proteinGroup), is("AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA"));
+    }
+
+    @Test
+    public void testFindByIdAndFetchAssociations(){
+        ProteinGroup proteinGroup = proteinGroupRepository.findByIdAndFetchAssociations(1L);
+
+        System.out.println("test");
+    }
+
+    @Test
+    public void testGetAccessionsForProteinGroup() throws Exception {
+        List<String> proteinAccessions = proteinGroupRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
+
+        Assert.assertThat(proteinAccessions.size(), greaterThan(0));
     }
 
 //    @Test

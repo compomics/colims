@@ -12,15 +12,6 @@ import java.util.List;
 public interface PeptideRepository extends GenericRepository<Peptide, Long> {
 
     /**
-     * Return data about all peptides relating to a given protein. Uses a
-     * list of spectra to ensure results relate to the current run.
-     * @param proteinGroup  the protein group
-     * @param spectrumIds   the list of spectrum ids to restrict results
-     * @return the list of PeptideHasProteinGroup objects
-     */
-    List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds);
-
-    /**
      * Get a list of Peptide objects matching the given sequence, limiting
      * results to the given list of spectrum ids
      * @param sequence Peptide sequence

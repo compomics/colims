@@ -38,15 +38,17 @@ public class ProteinGroupTableModel extends PagingTableModel {
     public String getColumnDbName(int column) {
         switch (column) {
             case ProteinGroupTableFormat.ID:
-                return "protein_group.id";
+                return "id";
             case ProteinGroupTableFormat.SEQUENCE:
-                return "protein.protein_sequence";
+                return "mainSequence";
             case ProteinGroupTableFormat.ACCESSION:
-                return "protein_accession.accession";
-            case ProteinGroupTableFormat.PEP:
-                return "protein_group.protein_post_error_prob";
-            case ProteinGroupTableFormat.PROBABILITY:
-                return "protein_group.protein_prob";
+                return "mainAccession";
+            case ProteinGroupTableFormat.NUMBER_OF_PEPTIDES:
+                return "distinctPeptideCount";
+            case ProteinGroupTableFormat.NUMBER_OF_SPECTRA:
+                return "spectrumCount";
+            case ProteinGroupTableFormat.CONFIDENCE:
+                return "proteinPostErrorProbability";
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -65,7 +67,7 @@ public class ProteinGroupTableModel extends PagingTableModel {
             page = getMaxPage();
         }
 
-        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection.queryValue(), filter);
+        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
     }
 
     /**

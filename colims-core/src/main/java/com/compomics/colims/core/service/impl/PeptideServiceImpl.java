@@ -3,7 +3,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.PeptideRepository;
 import org.apache.log4j.Logger;
@@ -76,11 +75,6 @@ public class PeptideServiceImpl implements PeptideService {
                 Hibernate.initialize(peptide.getPeptideHasModifications());
             }
         }
-    }
-
-    @Override
-    public List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds) {
-        return peptideRepository.getPeptidesForProteinGroup(proteinGroup, spectrumIds);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.Spectrum;
 
 import java.util.List;
 
@@ -17,16 +19,6 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @param peptide the peptide entity
      */
     void fetchPeptideHasModifications(Peptide peptide);
-
-    /**
-     * Return data about all peptides relating to a given protein. Uses a list of spectra to ensure results relate to
-     * the current run.
-     *
-     * @param proteinGroup  the protein group
-     * @param spectrumIds   the list of spectrum ids to restrict results
-     * @return the list of PeptideHasProteinGroup objects
-     */
-    List<Peptide> getPeptidesForProteinGroup(ProteinGroup proteinGroup, List<Long> spectrumIds);
 
     /**
      * Get a list of Peptide objects matching the given sequence, limiting results to the given list of spectrum ids

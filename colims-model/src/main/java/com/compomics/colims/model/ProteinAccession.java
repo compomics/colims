@@ -25,7 +25,7 @@ public class ProteinAccession extends DatabaseEntity {
      * The Protein instance linked to this accession.
      */
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private Protein protein;
 

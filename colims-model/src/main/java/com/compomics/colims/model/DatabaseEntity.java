@@ -31,6 +31,21 @@ public abstract class DatabaseEntity implements Serializable {
     @Column(name = "id", nullable = false)
     protected Long id;
 
+    /**
+     * No-arg constructor.
+     */
+    public DatabaseEntity() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id the entity
+     */
+    protected DatabaseEntity(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

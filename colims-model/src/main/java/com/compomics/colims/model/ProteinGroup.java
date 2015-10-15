@@ -46,6 +46,19 @@ public class ProteinGroup extends DatabaseEntity {
     public ProteinGroup() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param id the entity ID
+     * @param proteinProbability the protein probability score
+     * @param proteinPostErrorProbability the protein posterior error probability score
+     */
+    public ProteinGroup(Long id, Double proteinProbability, Double proteinPostErrorProbability) {
+        super(id);
+        this.proteinProbability = proteinProbability;
+        this.proteinPostErrorProbability = proteinPostErrorProbability;
+    }
+
     public Double getProteinProbability() {
         return proteinProbability;
     }

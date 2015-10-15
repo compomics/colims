@@ -13,8 +13,6 @@ import java.util.List;
  */
 @Table(name = "spectrum")
 @Entity
-//@Cacheable
-//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Spectrum extends DatabaseEntity {
 
     private static final long serialVersionUID = -6581466869218920103L;
@@ -78,7 +76,7 @@ public class Spectrum extends DatabaseEntity {
      * The analytical run that produced this spectrum.
      */
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private AnalyticalRun analyticalRun;
     /**
      * The peptides that identify this spectrum.

@@ -1,22 +1,21 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             + " GROUP BY protein_group.id";
 
     @Override
-    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
+    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -55,19 +54,21 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.createAlias("peptide.spectrum", "spectrum");
         criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
         criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+        criteria.createAlias("protein.proteinAccessions", "proteinAccession");
 
         //restrictions
         criteria.add(Restrictions.eq("spectrum.analyticalRun.id", analyticalRun.getId()));
-//        criteria.add(Restrictions.eq("proteinGroupHasProtein.isMainGroupProtein", true));
+        criteria.add(Restrictions.eq("proteinGroupHasProtein.isMainGroupProtein", true));
 
         //projections
         ProjectionList projectionList = Projections.projectionList();
-        projectionList.add(Projections.groupProperty("id").as("proteinGroupId"));
+        projectionList.add(Projections.groupProperty("id").as("id"));
         projectionList.add(Projections.count("spectrum.id").as("spectrumCount"));
         projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideCount"));
+        projectionList.add(Projections.property("proteinGroup.proteinProbability").as("proteinProbability"));
+        projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
         projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
-//        projectionList.add(Projections.("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
-//        projectionList.add(Projections.count("protein.").as("mainAccession"));
+        projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
         criteria.setProjection(projectionList);
 
         //paging
@@ -75,61 +76,86 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.setMaxResults(length);
 
         //transform results into ProteinGroupForRun instances
-//        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupForRun.class));
+        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupForRun.class));
 
         //order
-        criteria.addOrder(Order.asc("distinctPeptideCount"));
-
-        List list = criteria.list();
-
-        return list;
-    }
-
-    public List<ProteinGroup> getPagedProteinGroupsForRunOld(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
-        List<ProteinGroup> proteins = new ArrayList<>();
-
-        String extraParams = " ORDER BY MAX(%3$s) %4$s, protein_group.id";
-
-        if (length > 0) {
-            extraParams += " LIMIT %5$d  OFFSET %6$d";
+        if (!orderBy.isEmpty()) {
+            if (sortDirection.equals(SortDirection.ASCENDING)) {
+                criteria.addOrder(Order.asc(orderBy));
+            } else {
+                criteria.addOrder(Order.desc(orderBy));
+            }
         }
 
-        final List idList = getCurrentSession()
-                .createSQLQuery(String.format(PAGED_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
-                .addScalar("protein_group.id", LongType.INSTANCE)
-                .list();
-
-        if (idList.size() > 0) {
-            proteins = createCriteria().add(Restrictions.in("id", idList)).list();
-
-            Collections.sort(proteins, (s1, s2) -> Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId())));
+        //filter
+        if (!filter.isEmpty()) {
+            //filter restrictions
+            filter = "%" + filter + "%";
+            criteria.add(Restrictions.or(Restrictions.ilike("protein.sequence", filter), Restrictions.ilike("proteinGroupHasProtein.proteinAccession", filter)));
         }
 
-        return proteins;
+        return criteria.list();
     }
 
     @Override
     public long getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
+
+        //joins
+        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
+        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
+        criteria.createAlias("peptide.spectrum", "spectrum");
+
+        //restrictions
+        criteria.add(Restrictions.eq("spectrum.analyticalRun.id", analyticalRun.getId()));
+
+        //projections
+        criteria.setProjection(Projections.countDistinct("id"));
+
+        //filter
         if (!filter.isEmpty()) {
-            Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupCountForRun");
-            namedQuery.setLong("analyticalRunId", analyticalRun.getId());
-            namedQuery.setString("filter", "%" + filter + "%");
-            return (long) namedQuery.uniqueResult();
-        } else {
-            Query namedQuery = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupCountForRunNoFilter");
-            namedQuery.setLong("analyticalRunId", analyticalRun.getId());
-            return (long) namedQuery.uniqueResult();
+            //joins
+            criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
+            criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+
+            //filter restrictions
+            filter = "%" + filter + "%";
+            criteria.add(Restrictions.or(Restrictions.ilike("protein.sequence", filter), Restrictions.ilike("proteinGroupHasProtein.proteinAccession", filter)));
         }
+
+        return (long) criteria.uniqueResult();
     }
 
     @Override
     public String getMainProteinSequence(ProteinGroup proteinGroup) {
-        return getCurrentSession()
+        return (String) getCurrentSession()
                 .createCriteria(ProteinGroupHasProtein.class, "proteinGroupHasProtein")
                 .createAlias("proteinGroupHasProtein.protein", "protein")
                 .add(Restrictions.eq("proteinGroup", proteinGroup))
                 .add(Restrictions.eq("isMainGroupProtein", true))
                 .setProjection(Projections.property("protein.sequence"))
-                .uniqueResult().toString();
+                .uniqueResult();
+    }
+
+    @Override
+    public ProteinGroup findByIdAndFetchAssociations(Long id) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class);
+        criteria.setFetchMode("peptideHasProteinGroups", FetchMode.JOIN);
+        criteria.add(Restrictions.eq("id", id));
+
+        return (ProteinGroup) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroupHasProtein.class);
+
+        //restriction
+        criteria.add(Restrictions.eq("proteinGroup.id", proteinGroup.getId()));
+
+        //projection
+        criteria.setProjection(Projections.distinct(Projections.property("proteinAccession")));
+
+        return criteria.list();
     }
 }

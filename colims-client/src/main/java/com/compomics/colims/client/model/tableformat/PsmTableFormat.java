@@ -3,15 +3,15 @@ package com.compomics.colims.client.model.tableformat;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.ProteinAccessionService;
+import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.Spectrum;
 import com.google.common.base.Joiner;
 
 import java.util.Comparator;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
@@ -28,11 +28,11 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     public static final int PROTEIN_ACCESSIONS = 7;
 
     private SpectrumService spectrumService;
-    private ProteinAccessionService proteinAccessionService;
+    private PeptideService peptideService;
 
     public PsmTableFormat() {
         this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
-        this.proteinAccessionService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinAccessionService.class);
+        this.peptideService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(PeptideService.class);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
                 return spectrum.getRetentionTime();
             case PEPTIDE_SEQUENCE:
                 return (peptide != null) ? peptide.getSequence() : NOT_APPLICABLE;
-            case PSM_CONFIDENCE:                
+            case PSM_CONFIDENCE:
                 double confidence = (peptide != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
                 if (confidence <= 0) {
                     confidence = 0;
@@ -112,6 +112,6 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
      */
     private String getProteinAccessions(Peptide peptide) {
         Joiner joiner = Joiner.on(", ");
-        return joiner.join(proteinAccessionService.getProteinAccessionsForPeptide(peptide));
+        return null;
     }
 }

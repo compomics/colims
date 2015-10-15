@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.ProteinAccession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Iain on 14/09/2015.
@@ -34,22 +33,6 @@ public class ProteinAccessionRepositoryTest {
     @Test
     public void testFindByAccession() throws Exception {
         List<ProteinAccession> proteinAccessions = proteinAccessionRepository.findByAccession("PROT_ACC_11");
-
-        assertThat(proteinAccessions.size(), greaterThan(0));
-    }
-
-    @Test
-    public void testGetAccessionsForProteinGroup() throws Exception {
-        List<String> proteinAccessions = proteinAccessionRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
-
-        assertThat(proteinAccessions.size(), greaterThan(0));
-    }
-
-    @Test
-    public void testGetProteinAccessionsForPeptide() {
-        Peptide peptide = peptideRepository.findById(3L);
-
-        List<String> proteinAccessions = proteinAccessionRepository.getProteinAccessionsForPeptide(peptide);
 
         assertThat(proteinAccessions.size(), greaterThan(0));
     }

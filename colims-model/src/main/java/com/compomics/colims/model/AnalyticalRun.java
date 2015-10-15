@@ -38,13 +38,13 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
      * The sample the run belongs to.
      */
     @JoinColumn(name = "l_sample_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Sample sample;
     /**
      * The instrument the run was executed on.
      */
     @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Instrument instrument;
     /**
      * The storage location of the run, for example the file path of the imported data. This is a free text field.

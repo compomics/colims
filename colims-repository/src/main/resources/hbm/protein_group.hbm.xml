@@ -4,31 +4,6 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <query name="ProteinGroup.getPagedProteinGroupsForRunNoFilter">
-        select proteinGroup, count(distinct peptide.sequence), count(peptide)
-        from ProteinGroup proteinGroup
-        join proteinGroup.peptideHasProteinGroups as peptideHasProteinGroup
-        join peptideHasProteinGroup.peptide as peptide
-        join peptide.spectrum as spectrum
-        where spectrum.analyticalRun.id = :analyticalRunId
-        group by proteinGroup
-    </query>
-
-    <query name="ProteinGroup.getPagedProteinGroupsForRun">
-        select distinct proteinGroup
-        from ProteinGroup proteinGroup
-        join proteinGroup.peptideHasProteinGroups as peptideHasProteinGroup
-        join peptideHasProteinGroup.peptide as peptide
-        join peptide.spectrum as spectrum
-        join proteinGroup.proteinGroupHasProteins as proteinGroupHasProtein
-        join proteinGroupHasProtein.protein as protein
-        where spectrum.analyticalRun.id = :analyticalRunId
-        and (protein.sequence like :filter
-        or proteinGroupHasProtein.proteinAccession like :filter)
-        group by proteinGroup
-        order by proteinGroup.id
-    </query>
-
     <query name="ProteinGroup.getProteinGroupCountForRunNoFilter">
         select count(distinct proteinGroup)
         from ProteinGroup proteinGroup

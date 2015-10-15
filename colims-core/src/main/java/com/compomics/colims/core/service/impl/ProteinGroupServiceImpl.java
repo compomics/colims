@@ -4,12 +4,12 @@ import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -23,8 +23,8 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, String direction, String filter) {
-        return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, start, length, orderBy, direction, filter);
+    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+        return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, start, length, orderBy, sortDirection, filter);
     }
 
     @Override
@@ -35,6 +35,11 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public String getMainProteinSequence(ProteinGroup proteinGroup) {
         return proteinGroupRepository.getMainProteinSequence(proteinGroup);
+    }
+
+    @Override
+    public ProteinGroup findByIdAndFetchAssociations(Long id) {
+        return proteinGroupRepository.findByIdAndFetchAssociations(id);
     }
 
     @Override
@@ -70,5 +75,10 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public long countAll() {
         return proteinGroupRepository.countAll();
+    }
+
+    @Override
+    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
+        return proteinGroupRepository.getAccessionsForProteinGroup(proteinGroup);
     }
 }

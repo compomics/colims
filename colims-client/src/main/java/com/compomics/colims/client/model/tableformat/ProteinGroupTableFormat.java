@@ -6,23 +6,24 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 /**
  * This class represents the format of ProteinGroup instances shown in the protein group table.
  * <p/>
  * Created by Iain on 23/06/2015.
  */
-public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup> {
+public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroupForRun> {
 
-    private static final String[] columnNames = {"ID", "Accessions", "Probability", "Post-Error Probability", "Main Protein Sequence"};
+    private static final String[] columnNames = {"ID", "Accession", "Sequence", "# of peptides", "# of spectra", "Confidence"};
     public static final int ID = 0;
     public static final int ACCESSION = 1;
-    public static final int PROBABILITY = 2;
-    public static final int PEP = 3;
-    public static final int SEQUENCE = 4;
+    public static final int SEQUENCE = 2;
+    public static final int NUMBER_OF_PEPTIDES = 3;
+    public static final int NUMBER_OF_SPECTRA = 4;
+    public static final int CONFIDENCE = 5;
 
     /**
      * The ProteinAccessionService instance.
@@ -49,12 +50,14 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                 return Long.class;
             case ACCESSION:
                 return String.class;
-            case PROBABILITY:
-                return Double.class;
-            case PEP:
-                return Double.class;
             case SEQUENCE:
                 return String.class;
+            case NUMBER_OF_PEPTIDES:
+                return Long.class;
+            case NUMBER_OF_SPECTRA:
+                return Long.class;
+            case CONFIDENCE:
+                return Double.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -76,21 +79,20 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
     }
 
     @Override
-    public Object getColumnValue(ProteinGroup proteinGroup, int column) {
+    public Object getColumnValue(ProteinGroupForRun proteinGroupForRun, int column) {
         switch (column) {
             case ID:
-                return proteinGroup.getId();
+                return proteinGroupForRun.getId();
             case ACCESSION:
-                return proteinAccessionService.getAccessionsForProteinGroup(proteinGroup)
-                        .stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(", "));
-            case PROBABILITY:
-                return proteinGroup.getProteinProbability();
-            case PEP:
-                return proteinGroup.getProteinPostErrorProbability();
+                return proteinGroupForRun.getMainAccession();
             case SEQUENCE:
-                return proteinGroupService.getMainProteinSequence(proteinGroup);
+                return proteinGroupForRun.getMainSequence();
+            case NUMBER_OF_PEPTIDES:
+                return proteinGroupForRun.getDistinctPeptideCount();
+            case NUMBER_OF_SPECTRA:
+                return proteinGroupForRun.getSpectrumCount();
+            case CONFIDENCE:
+                return proteinGroupForRun.getProteinConfidence();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
 
 import java.util.List;
@@ -20,11 +21,11 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param start         the start point in result list
      * @param length        the length of the result page
      * @param orderBy       the column to order results by
-     * @param direction     the ordering direction
+     * @param sortDirection the sort direction
      * @param filter        the filter text (an empty string matches all results)
      * @return the list of protein groups
      */
-    List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter);
+    List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
 
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
@@ -42,4 +43,20 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @return the main protein group sequence
      */
     String getMainProteinSequence(ProteinGroup proteinGroup);
+
+    /**
+     * Find the ProteinGroup entity by ID and fetch the associated relations up to the peptide level.
+     *
+     * @param id the protein group ID
+     * @return the ProteinGroup instance
+     */
+    ProteinGroup findByIdAndFetchAssociations(Long id);
+
+    /**
+     * Get all accession strings associated with the specified group of proteins.
+     *
+     * @param proteinGroup the protein group
+     * @return the list of protein accession strings
+     */
+    List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
 }
