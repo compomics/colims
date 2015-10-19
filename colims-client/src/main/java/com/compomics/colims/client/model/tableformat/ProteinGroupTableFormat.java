@@ -5,8 +5,7 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinAccessionService;
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 
 import java.util.Comparator;
 
@@ -15,7 +14,7 @@ import java.util.Comparator;
  * <p/>
  * Created by Iain on 23/06/2015.
  */
-public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroupForRun> {
+public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroupDTO> {
 
     private static final String[] columnNames = {"ID", "Accession", "Sequence", "# of peptides", "# of spectra", "Confidence"};
     public static final int ID = 0;
@@ -79,20 +78,20 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
     }
 
     @Override
-    public Object getColumnValue(ProteinGroupForRun proteinGroupForRun, int column) {
+    public Object getColumnValue(ProteinGroupDTO proteinGroupDTO, int column) {
         switch (column) {
             case ID:
-                return proteinGroupForRun.getId();
+                return proteinGroupDTO.getId();
             case ACCESSION:
-                return proteinGroupForRun.getMainAccession();
+                return proteinGroupDTO.getMainAccession();
             case SEQUENCE:
-                return proteinGroupForRun.getMainSequence();
+                return proteinGroupDTO.getMainSequence();
             case NUMBER_OF_PEPTIDES:
-                return proteinGroupForRun.getDistinctPeptideCount();
+                return proteinGroupDTO.getDistinctPeptideCount();
             case NUMBER_OF_SPECTRA:
-                return proteinGroupForRun.getSpectrumCount();
+                return proteinGroupDTO.getSpectrumCount();
             case CONFIDENCE:
-                return proteinGroupForRun.getProteinConfidence();
+                return proteinGroupDTO.getProteinConfidence();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

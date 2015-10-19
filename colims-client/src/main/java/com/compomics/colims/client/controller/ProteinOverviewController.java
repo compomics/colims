@@ -25,7 +25,8 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
@@ -68,10 +69,10 @@ public class ProteinOverviewController implements Controllable {
     private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
     private ProteinPanelPsmTableModel psmTableModel;
-    private final EventList<ProteinGroupForRun> proteinGroupForRuns = new BasicEventList<>();
+    private final EventList<ProteinGroupDTO> proteinGroupDTOs = new BasicEventList<>();
     private final EventList<PeptideTableRow> peptides = new BasicEventList<>();
     private final EventList<Spectrum> spectra = new BasicEventList<>();
-    private DefaultEventSelectionModel<ProteinGroupForRun> proteinGroupForRunSelectionModel;
+    private DefaultEventSelectionModel<ProteinGroupDTO> proteinGroupDTOSelectionModel;
     private DefaultEventSelectionModel<PeptideTableRow> peptideSelectionModel;
     private DefaultEventSelectionModel<Spectrum> spectrumSelectionModel;
     private AnalyticalRun selectedAnalyticalRun;
@@ -131,13 +132,13 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProjectTree().setModel(treeModel);
 
         //init proteinGroupForRuns table
-        SortedList<ProteinGroupForRun> sortedProteinGroups = new SortedList<>(proteinGroupForRuns, null);
+        SortedList<ProteinGroupDTO> sortedProteinGroups = new SortedList<>(proteinGroupDTOs, null);
 
         proteinGroupTableModel = new ProteinGroupTableModel(sortedProteinGroups, new ProteinGroupTableFormat());
         proteinOverviewPanel.getProteinsTable().setModel(proteinGroupTableModel);
-        proteinGroupForRunSelectionModel = new DefaultEventSelectionModel<>(sortedProteinGroups);
-        proteinGroupForRunSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinGroupForRunSelectionModel);
+        proteinGroupDTOSelectionModel = new DefaultEventSelectionModel<>(sortedProteinGroups);
+        proteinGroupDTOSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinGroupDTOSelectionModel);
 
         //init peptides table
         SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptides, null);
@@ -157,23 +158,21 @@ public class ProteinOverviewController implements Controllable {
         spectrumSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPsmTable().setSelectionModel(spectrumSelectionModel);
 
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(100);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(80);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(100);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(100);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(150);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(150);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(150);
-//        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setPreferredWidth(150);
-//        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMaxWidth(150);
-//        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(150);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setPreferredWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setMaxWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(120);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setPreferredWidth(100);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setMaxWidth(100);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(90);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(90);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setPreferredWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMaxWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setPreferredWidth(80);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMaxWidth(80);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMinWidth(50);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(100);
@@ -224,18 +223,12 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinGroupForRunSelectionModel.addListSelectionListener(lse -> {
+        proteinGroupDTOSelectionModel.addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
-                if (proteinGroupForRunSelectionModel.getSelected().isEmpty()) {
-                    GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
-                } else {
-                    ProteinGroup selectedProteinGroup = proteinGroupForRunSelectionModel.getSelected().get(0).getProteinGroup();
+                if (!proteinGroupDTOSelectionModel.getSelected().isEmpty()) {
+                    ProteinGroupDTO selectedProteinGroupDTO = proteinGroupDTOSelectionModel.getSelected().get(0);
 
-                    if (selectedProteinGroup == null) {
-                        selectedProteinGroup = proteinGroupService.findByIdAndFetchAssociations(proteinGroupForRunSelectionModel.getSelected().get(0).getId());
-                    }
-
-//                    List<Peptide> peptidesForSelectedProteinGroupForRun = peptideService.getPeptidesForProteinGroup(proteinGroupForRunSelectionModel.getSelected().get(0), spectrumIdsForRun);
+                    List<PeptideDTO> peptideDTOByProteinGroupId = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
                     List<PeptideTableRow> peptideTableRows = new ArrayList<>();
                     Map<String, Integer> sequencesRowIndices = new HashMap<>();
@@ -251,10 +244,14 @@ public class ProteinOverviewController implements Controllable {
                     }
 
                     for (PeptideTableRow peptideTableRow : peptideTableRows) {
-                        peptideTableRow.getPeptideHasModifications().addAll(peptideService.getModificationsForMultiplePeptides(peptideTableRow.getPeptides()));
+//                        peptideTableRow.getPeptideHasModifications().addAll(peptideService.getModificationsForMultiplePeptides(peptideTableRow.getPeptides()));
                     }
 
                     GlazedLists.replaceAll(peptides, peptideTableRows, false);
+
+
+                } else {
+                    GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
                 }
             }
         });
@@ -264,7 +261,8 @@ public class ProteinOverviewController implements Controllable {
                 if (peptideSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
                 } else {
-                    List<Peptide> peptides = peptideService.getPeptidesFromSequence(peptideSelectionModel.getSelected().get(0).getSequence(), spectrumIdsForRun);
+                    List<Peptide> peptides = new ArrayList<Peptide>();
+//                    List<Peptide> peptides = peptideService.getPeptidesFromSequence(peptideSelectionModel.getSelected().get(0).getSequence(), spectrumIdsForRun);
                     List<Spectrum> selectedSpectra = peptides.stream().map(Peptide::getSpectrum).collect(Collectors.toList());
 
                     setPsmTableCellRenderers();
@@ -374,10 +372,10 @@ public class ProteinOverviewController implements Controllable {
                 if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    EventList<ProteinGroupForRun> exportProteinGroupForRuns = new BasicEventList<>();
-                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupForRuns, null), new ProteinGroupTableFormat());
+                    EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
+                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat());
                     exportModel.setPerPage(0);
-                    GlazedLists.replaceAll(exportProteinGroupForRuns, exportModel.getRows(selectedAnalyticalRun), false);
+                    GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(selectedAnalyticalRun), false);
 
                     exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
@@ -472,10 +470,10 @@ public class ProteinOverviewController implements Controllable {
      */
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
-            GlazedLists.replaceAll(proteinGroupForRuns, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
+            GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
             proteinOverviewPanel.getPageLabelProteins().setText(proteinGroupTableModel.getPageIndicator());
         } else {
-            GlazedLists.replaceAll(proteinGroupForRuns, new ArrayList<>(), false);
+            GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
             proteinOverviewPanel.getPageLabelProteins().setText("");
         }
     }

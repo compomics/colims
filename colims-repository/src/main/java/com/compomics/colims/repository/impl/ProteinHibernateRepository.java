@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    public static final String PROTEIN_IDS_QUERY = "SELECT "
+    public static final String CONSTRAINT_LESS_IDS_QUERY = "SELECT "
             + "DISTINCT protein.id "
             + "from protein "
             + "LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id "
@@ -41,7 +41,7 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
 
     @Override
     public List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds) {
-        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(PROTEIN_IDS_QUERY);
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(CONSTRAINT_LESS_IDS_QUERY);
         sqlQuery.setParameterList("ids", analyticalRunIds);
         sqlQuery.addScalar("protein.id", LongType.INSTANCE);
 

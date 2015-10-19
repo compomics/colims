@@ -81,7 +81,6 @@ public class Spectrum extends DatabaseEntity {
     /**
      * The peptides that identify this spectrum.
      */
-//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "spectrum")
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Peptide> peptides = new ArrayList<>();

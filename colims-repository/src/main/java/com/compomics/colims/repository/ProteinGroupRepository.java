@@ -1,9 +1,10 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param filter        the filter text (an empty string matches all results)
      * @return the list of protein groups
      */
-    List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
+    List<ProteinGroupDTO> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
 
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
@@ -45,12 +46,21 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
     String getMainProteinSequence(ProteinGroup proteinGroup);
 
     /**
-     * Find the ProteinGroup entity by ID and fetch the associated relations up to the peptide level.
+     * Find the ProteinGroup entity by ID and fetch the associated relations up to the peptide level, including
+     * modifications.
      *
      * @param id the protein group ID
      * @return the ProteinGroup instance
      */
     ProteinGroup findByIdAndFetchAssociations(Long id);
+
+    /**
+     * Get the PeptideHasProteinGroup instances and fetch the Peptide and PeptideHasModification instances.
+     *
+     * @param id the protein group ID
+     * @return the list of PeptideHasProteinGroup instances
+     */
+    List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id);
 
     /**
      * Get all accession strings associated with the specified group of proteins.

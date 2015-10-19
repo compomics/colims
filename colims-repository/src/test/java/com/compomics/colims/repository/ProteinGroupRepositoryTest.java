@@ -4,7 +4,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * @author Niels Hulstaert
@@ -40,59 +39,59 @@ public class ProteinGroupRepositoryTest {
         AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
 
         //test normal usage
-        List<ProteinGroupForRun> proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "");
-        Assert.assertEquals(2, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(1L), proteinGroupForRuns.get(0).getId());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(1).getId());
+        List<ProteinGroupDTO> proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "");
+        Assert.assertEquals(2, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(1L), proteinGroupDTOs.get(0).getId());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(1).getId());
 
         //test descending sort order
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.DESCENDING, "");
-        Assert.assertEquals(2, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(0).getId());
-        Assert.assertEquals(Long.valueOf(1L), proteinGroupForRuns.get(1).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.DESCENDING, "");
+        Assert.assertEquals(2, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(0).getId());
+        Assert.assertEquals(Long.valueOf(1L), proteinGroupDTOs.get(1).getId());
 
         //test paging 1
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 1, "id", SortDirection.ASCENDING, "");
-        Assert.assertEquals(1, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(1L), proteinGroupForRuns.get(0).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 1, "id", SortDirection.ASCENDING, "");
+        Assert.assertEquals(1, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(1L), proteinGroupDTOs.get(0).getId());
 
         //test paging 2
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 1, 20, "id", SortDirection.ASCENDING, "");
-        Assert.assertEquals(1, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(0).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 1, 20, "id", SortDirection.ASCENDING, "");
+        Assert.assertEquals(1, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(0).getId());
 
         //test filter by accession 1
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "ACC_2");
-        Assert.assertEquals(1, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(0).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "ACC_2");
+        Assert.assertEquals(1, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(0).getId());
 
         //test filter by accession 2, same but lower case
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "acc_2");
-        Assert.assertEquals(1, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(0).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "acc_2");
+        Assert.assertEquals(1, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(0).getId());
 
         //test filter by accession 4, filter by non main protein accession, should return nothing
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "ACC_3");
-        Assert.assertTrue(proteinGroupForRuns.isEmpty());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "ACC_3");
+        Assert.assertTrue(proteinGroupDTOs.isEmpty());
 
         //test filter by accession 4, non existing accession, should return nothing
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "AC_3");
-        Assert.assertTrue(proteinGroupForRuns.isEmpty());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "AC_3");
+        Assert.assertTrue(proteinGroupDTOs.isEmpty());
 
         //test filter by sequence 1
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "LENNART");
-        Assert.assertEquals(2, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(1L), proteinGroupForRuns.get(0).getId());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(1).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "LENNART");
+        Assert.assertEquals(2, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(1L), proteinGroupDTOs.get(0).getId());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(1).getId());
 
         //test filter by sequence 2, filter by non main protein sequence, should return nothing
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "AMA");
-        Assert.assertEquals(1, proteinGroupForRuns.size());
-        Assert.assertEquals(Long.valueOf(2L), proteinGroupForRuns.get(0).getId());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "AMA");
+        Assert.assertEquals(1, proteinGroupDTOs.size());
+        Assert.assertEquals(Long.valueOf(2L), proteinGroupDTOs.get(0).getId());
 
         //test filter by sequence 3, non existing accession, should return nothing
-        proteinGroupForRuns = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "NOTAPROTEINSEQUENCE");
-        Assert.assertTrue(proteinGroupForRuns.isEmpty());
+        proteinGroupDTOs = proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, 0, 20, "id", SortDirection.ASCENDING, "NOTAPROTEINSEQUENCE");
+        Assert.assertTrue(proteinGroupDTOs.isEmpty());
     }
 
     @Test
@@ -131,10 +130,18 @@ public class ProteinGroupRepositoryTest {
     }
 
     @Test
-    public void testGetAccessionsForProteinGroup() throws Exception {
+    public void testGetAccessionsForProteinGroup() {
         List<String> proteinAccessions = proteinGroupRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
 
         int size = proteinAccessions.size();
+        Assert.assertThat(size, is(1));
+    }
+
+    @Test
+    public void testGetAccessions() {
+        List<PeptideHasProteinGroup> peptideHasProteinGroups = proteinGroupRepository.getPeptideHasProteinGroups(2L);
+
+        int size = peptideHasProteinGroups.size();
         Assert.assertThat(size, is(1));
     }
 

@@ -31,13 +31,13 @@ public class ProteinGroupHasProtein extends DatabaseEntity {
      * The ProteinGroup instance of this join entity.
      */
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProteinGroup proteinGroup;
     /**
      * The Protein instance of this join entity.
      */
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Protein protein;
 

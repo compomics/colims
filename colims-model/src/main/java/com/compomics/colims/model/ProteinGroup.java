@@ -37,7 +37,6 @@ public class ProteinGroup extends DatabaseEntity {
      */
     @OneToMany(mappedBy = "proteinGroup")
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
-//    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
 
     /**

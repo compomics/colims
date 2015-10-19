@@ -2,9 +2,8 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.PeptideRepository;
+import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -78,17 +77,7 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List getPeptidesFromSequence(String sequence, List<Long> spectrumIds) {
-        return peptideRepository.getPeptidesFromSequence(sequence, spectrumIds);
-    }
-
-    @Override
-    public List<PeptideHasModification> getModificationsForMultiplePeptides(List<Peptide> peptides) {
-        return peptideRepository.getModificationsForMultiplePeptides(peptides);
-    }
-
-    @Override
-    public List<Peptide> getPeptidesForSpectrum(Spectrum spectrum) {
-        return peptideRepository.getPeptidesForSpectrum(spectrum);
+    public List<PeptideDTO> getPeptideDTOByProteinGroupId(Long proteinGroupId) {
+        return peptideRepository.getPeptideDTOByProteinGroupId(proteinGroupId);
     }
 }

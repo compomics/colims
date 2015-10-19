@@ -1,12 +1,12 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.ProteinAccession;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
@@ -25,7 +25,7 @@ import java.util.List;
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
 
     @Override
-    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -56,7 +56,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.setMaxResults(length);
 
         //transform results into ProteinGroupForRun instances
-        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupForRun.class));
+        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
 
         //order
         if (!orderBy.isEmpty()) {
@@ -120,10 +120,36 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     @Override
     public ProteinGroup findByIdAndFetchAssociations(Long id) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class);
+
+        //eager fetch collections
         criteria.setFetchMode("peptideHasProteinGroups", FetchMode.JOIN);
+
+        //restrictions
         criteria.add(Restrictions.eq("id", id));
 
-        return (ProteinGroup) criteria.uniqueResult();
+        ProteinGroup proteinGroup = (ProteinGroup) criteria.uniqueResult();
+
+//        intialize peptide modifications
+//        for(PeptideHasProteinGroup peptideHasProteinGroup : proteinGroup.p){
+//        }
+
+        return proteinGroup;
+    }
+
+    @Override
+    public List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id) {
+        Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
+
+        //eager fetch collections
+        criteria.setFetchMode("peptideHasProteinGroup.peptide", FetchMode.JOIN);
+        criteria.setFetchMode("peptide.peptideHasModifications", FetchMode.JOIN);
+
+        //restrictions
+        criteria.add(Restrictions.eq("proteinGroup.id", id));
+
+        List<PeptideHasProteinGroup> peptideHasProteinGroups = criteria.list();
+
+        return peptideHasProteinGroups;
     }
 
     @Override

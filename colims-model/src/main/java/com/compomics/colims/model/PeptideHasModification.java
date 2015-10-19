@@ -1,18 +1,11 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.ModificationType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
- * This class represents the join table between the peptide and modification
- * tables.
+ * This class represents the join table between the peptide and modification tables.
  *
  * @author Niels Hulstaert
  */
@@ -51,13 +44,13 @@ public class PeptideHasModification extends DatabaseEntity {
      * The Peptide instance where the modification has been identified on.
      */
     @JoinColumn(name = "l_peptide_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Peptide peptide;
     /**
      * The Modification instance.
      */
     @JoinColumn(name = "l_modification_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Modification modification;
 

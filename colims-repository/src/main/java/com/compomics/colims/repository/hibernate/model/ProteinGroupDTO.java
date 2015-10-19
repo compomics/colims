@@ -1,25 +1,47 @@
 package com.compomics.colims.repository.hibernate.model;
 
-import com.compomics.colims.model.ProteinGroup;
-
 /**
+ * This class represents a protein group data transfer object that holds some addititianol information about a protein
+ * group (for a given run).
+ * <p/>
  * Created by Niels Hulstaert on 14/10/15.
  */
-public class ProteinGroupForRun {
+public class ProteinGroupDTO {
 
+    /**
+     * The protein group ID.
+     */
     private Long id;
+    /**
+     * The protein probability score.
+     */
     private Double proteinProbability;
+    /**
+     * The protein posterior error probability score.
+     */
     private Double proteinPostErrorProbability;
+    /**
+     * The accession of the main group protein.
+     */
     private String mainAccession;
+    /**
+     * the sequence of the main group protein.
+     */
     private String mainSequence;
+    /**
+     * The number of distinct peptides (distinct peptide sequence, modifications not taken into account) linked to the
+     * group.
+     */
     private long distinctPeptideCount;
+    /**
+     * The number of spectra related with the protein group.
+     */
     private long spectrumCount;
-    private ProteinGroup proteinGroup;
 
     /**
      * No-arg constructor.
      */
-    public ProteinGroupForRun() {
+    public ProteinGroupDTO() {
     }
 
     public Long getId() {
@@ -76,14 +98,6 @@ public class ProteinGroupForRun {
 
     public void setSpectrumCount(long spectrumCount) {
         this.spectrumCount = spectrumCount;
-    }
-
-    public ProteinGroup getProteinGroup() {
-        return proteinGroup;
-    }
-
-    public void setProteinGroup(ProteinGroup proteinGroup) {
-        this.proteinGroup = proteinGroup;
     }
 
     /**

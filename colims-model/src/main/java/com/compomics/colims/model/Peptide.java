@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.Fetch;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class Peptide extends DatabaseEntity {
      * The IdentificationFile instance that identified this peptide-to-spectrum match.
      */
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private IdentificationFile identificationFile;
     /**
@@ -72,7 +70,6 @@ public class Peptide extends DatabaseEntity {
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
-//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "peptide")
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();

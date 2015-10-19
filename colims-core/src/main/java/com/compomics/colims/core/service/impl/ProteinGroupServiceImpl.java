@@ -2,10 +2,11 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupForRun;
+import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public List<ProteinGroupForRun> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRun, start, length, orderBy, sortDirection, filter);
     }
 
@@ -80,5 +81,10 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
         return proteinGroupRepository.getAccessionsForProteinGroup(proteinGroup);
+    }
+
+    @Override
+    public List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id) {
+        return proteinGroupRepository.getPeptideHasProteinGroups(id);
     }
 }
