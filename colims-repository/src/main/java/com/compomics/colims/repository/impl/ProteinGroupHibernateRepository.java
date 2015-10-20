@@ -1,14 +1,11 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -104,64 +101,5 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         }
 
         return (long) criteria.uniqueResult();
-    }
-
-    @Override
-    public String getMainProteinSequence(ProteinGroup proteinGroup) {
-        return (String) getCurrentSession()
-                .createCriteria(ProteinGroupHasProtein.class, "proteinGroupHasProtein")
-                .createAlias("proteinGroupHasProtein.protein", "protein")
-                .add(Restrictions.eq("proteinGroup", proteinGroup))
-                .add(Restrictions.eq("isMainGroupProtein", true))
-                .setProjection(Projections.property("protein.sequence"))
-                .uniqueResult();
-    }
-
-    @Override
-    public ProteinGroup findByIdAndFetchAssociations(Long id) {
-        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class);
-
-        //eager fetch collections
-        criteria.setFetchMode("peptideHasProteinGroups", FetchMode.JOIN);
-
-        //restrictions
-        criteria.add(Restrictions.eq("id", id));
-
-        ProteinGroup proteinGroup = (ProteinGroup) criteria.uniqueResult();
-
-//        intialize peptide modifications
-//        for(PeptideHasProteinGroup peptideHasProteinGroup : proteinGroup.p){
-//        }
-
-        return proteinGroup;
-    }
-
-    @Override
-    public List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id) {
-        Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
-
-        //eager fetch collections
-        criteria.setFetchMode("peptideHasProteinGroup.peptide", FetchMode.JOIN);
-        criteria.setFetchMode("peptide.peptideHasModifications", FetchMode.JOIN);
-
-        //restrictions
-        criteria.add(Restrictions.eq("proteinGroup.id", id));
-
-        List<PeptideHasProteinGroup> peptideHasProteinGroups = criteria.list();
-
-        return peptideHasProteinGroups;
-    }
-
-    @Override
-    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
-        Criteria criteria = getCurrentSession().createCriteria(ProteinGroupHasProtein.class);
-
-        //restriction
-        criteria.add(Restrictions.eq("proteinGroup.id", proteinGroup.getId()));
-
-        //projection
-        criteria.setProjection(Projections.distinct(Projections.property("proteinAccession")));
-
-        return criteria.list();
     }
 }

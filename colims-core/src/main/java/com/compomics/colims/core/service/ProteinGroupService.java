@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
@@ -36,37 +35,4 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * @return the number of protein groups
      */
     long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
-
-    /**
-     * Get the sequence of the main group protein of the given protein group.
-     *
-     * @param proteinGroup the specified protein group
-     * @return the main protein group sequence
-     */
-    String getMainProteinSequence(ProteinGroup proteinGroup);
-
-    /**
-     * Find the ProteinGroup entity by ID and fetch the associated relations up to the peptide level, including
-     * modifications.
-     *
-     * @param id the protein group ID
-     * @return the ProteinGroup instance
-     */
-    ProteinGroup findByIdAndFetchAssociations(Long id);
-
-    /**
-     * Get the PeptideHasProteinGroup instances and fetch the Peptide and PeptideHasModification instances.
-     *
-     * @param id the protein group ID
-     * @return the list of PeptideHasProteinGroup instances
-     */
-    List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id);
-
-    /**
-     * Get all accession strings associated with the specified group of proteins.
-     *
-     * @param proteinGroup the protein group
-     * @return the list of protein accession strings
-     */
-    List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
 }

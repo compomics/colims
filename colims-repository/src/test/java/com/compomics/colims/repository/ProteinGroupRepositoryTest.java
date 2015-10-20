@@ -1,8 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.junit.Assert;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -112,37 +109,6 @@ public class ProteinGroupRepositoryTest {
 
         proteinGroupCountForRun = proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, "NOTAPROTEIN");
         assertThat(proteinGroupCountForRun, is(0L));
-    }
-
-    @Test
-    public void testGetMainProteinSequence() {
-        ProteinGroup proteinGroup = proteinGroupRepository.findById(1L);
-
-        assertThat(proteinGroupRepository.getMainProteinSequence(proteinGroup), is("AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA"));
-    }
-
-    @Test
-    public void testFindByIdAndFetchAssociations() {
-        ProteinGroup proteinGroup = proteinGroupRepository.findByIdAndFetchAssociations(1L);
-
-        Assert.assertNotNull(proteinGroup);
-        Assert.assertFalse(proteinGroup.getPeptideHasProteinGroups().isEmpty());
-    }
-
-    @Test
-    public void testGetAccessionsForProteinGroup() {
-        List<String> proteinAccessions = proteinGroupRepository.getAccessionsForProteinGroup(proteinGroupRepository.findById(1L));
-
-        int size = proteinAccessions.size();
-        Assert.assertThat(size, is(1));
-    }
-
-    @Test
-    public void testGetAccessions() {
-        List<PeptideHasProteinGroup> peptideHasProteinGroups = proteinGroupRepository.getPeptideHasProteinGroups(2L);
-
-        int size = peptideHasProteinGroups.size();
-        Assert.assertThat(size, is(1));
     }
 
 //    @Test

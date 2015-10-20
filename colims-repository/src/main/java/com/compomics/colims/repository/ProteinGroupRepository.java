@@ -37,36 +37,4 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      */
     long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
-    /**
-     * Get the sequence of the main group protein of the given protein group.
-     *
-     * @param proteinGroup the specified protein group
-     * @return the main protein group sequence
-     */
-    String getMainProteinSequence(ProteinGroup proteinGroup);
-
-    /**
-     * Find the ProteinGroup entity by ID and fetch the associated relations up to the peptide level, including
-     * modifications.
-     *
-     * @param id the protein group ID
-     * @return the ProteinGroup instance
-     */
-    ProteinGroup findByIdAndFetchAssociations(Long id);
-
-    /**
-     * Get the PeptideHasProteinGroup instances and fetch the Peptide and PeptideHasModification instances.
-     *
-     * @param id the protein group ID
-     * @return the list of PeptideHasProteinGroup instances
-     */
-    List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id);
-
-    /**
-     * Get all accession strings associated with the specified group of proteins.
-     *
-     * @param proteinGroup the protein group
-     * @return the list of protein accession strings
-     */
-    List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup);
 }

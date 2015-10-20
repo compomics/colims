@@ -10,10 +10,6 @@ import com.compomics.colims.model.Peptide;
 public class PeptideDTO {
 
     /**
-     * The number of protein groups associated with this peptide.
-     */
-    private int numberOfProteinGroups;
-    /**
      * The peptide probability score.
      */
     private Double peptideProbability;
@@ -25,6 +21,10 @@ public class PeptideDTO {
      * The Peptide enitity instance.
      */
     private Peptide peptide;
+    /**
+     * The number of protein groups associated with this peptide.
+     */
+    private long proteinGroupCount;
 
     /**
      * No-arg constructor.
@@ -56,12 +56,38 @@ public class PeptideDTO {
         this.peptide = peptide;
     }
 
-    public int getNumberOfProteinGroups() {
-        return numberOfProteinGroups;
+    public long getProteinGroupCount() {
+        return proteinGroupCount;
     }
 
-    public void setNumberOfProteinGroups(int numberOfProteinGroups) {
-        this.numberOfProteinGroups = numberOfProteinGroups;
+    public void setProteinGroupCount(long proteinGroupCount) {
+        this.proteinGroupCount = proteinGroupCount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PeptideDTO that = (PeptideDTO) o;
+
+        if (proteinGroupCount != that.proteinGroupCount) return false;
+        if (peptideProbability != null ? !peptideProbability.equals(that.peptideProbability) : that.peptideProbability != null)
+            return false;
+        if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
+            return false;
+        if (!peptide.equals(that.getPeptide()))
+            return false;
+        return peptide.getPeptideHasModifications().equals(that.peptide.getPeptideHasModifications());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = peptideProbability != null ? peptideProbability.hashCode() : 0;
+        result = 31 * result + (peptidePostErrorProbability != null ? peptidePostErrorProbability.hashCode() : 0);
+        result = 31 * result + peptide.hashCode();
+        result = 31 * result + (int) (proteinGroupCount ^ (proteinGroupCount >>> 32));
+        return result;
+    }
 }

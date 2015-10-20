@@ -107,4 +107,32 @@ public class PeptideHasModification extends DatabaseEntity {
     public void setModification(final Modification modification) {
         this.modification = modification;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PeptideHasModification that = (PeptideHasModification) o;
+
+        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (probabilityScore != null ? !probabilityScore.equals(that.probabilityScore) : that.probabilityScore != null)
+            return false;
+        if (deltaScore != null ? !deltaScore.equals(that.deltaScore) : that.deltaScore != null) return false;
+        if (modificationType != that.modificationType) return false;
+        if (!peptide.equals(that.peptide)) return false;
+        return modification.equals(that.modification);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = location != null ? location.hashCode() : 0;
+        result = 31 * result + (probabilityScore != null ? probabilityScore.hashCode() : 0);
+        result = 31 * result + (deltaScore != null ? deltaScore.hashCode() : 0);
+        result = 31 * result + (modificationType != null ? modificationType.hashCode() : 0);
+        result = 31 * result + peptide.hashCode();
+        result = 31 * result + modification.hashCode();
+        return result;
+    }
 }

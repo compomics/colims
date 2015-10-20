@@ -1,52 +1,61 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of a row in the Peptides table
+ * Representation of a row in the peptides for protein group table. One row represents a distinct peptide sequence +
+ * modifications entity for a given protein group.
+ * <p/>
  * Created by Iain on 08/07/2015.
  */
 public class PeptideTableRow {
 
+    /**
+     * The peptide sequence.
+     */
     private String sequence;
+    /**
+     * The peptide annotated sequence.
+     */
     private StringBuilder annotatedSequence;
+    /**
+     * The peptide charge.
+     */
     private int charge;
-    private List<Peptide> peptides = new ArrayList<>();
-    private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
+    /**
+     * The list of PeptideDTO instances related to this peptide instance.
+     */
+    private List<PeptideDTO> peptideDTOs = new ArrayList<>();
 
-    public PeptideTableRow(Peptide peptide) {
-        sequence = peptide.getSequence();
+    public PeptideTableRow(PeptideDTO peptideDTO) {
+        sequence = peptideDTO.getPeptide().getSequence();
         annotatedSequence = new StringBuilder();
-        charge = peptide.getCharge() != null ? peptide.getCharge() : 0;
-        peptides.add(peptide);
+        charge = peptideDTO.getPeptide().getCharge() != null ? peptideDTO.getPeptide().getCharge() : 0;
+        peptideDTOs.add(peptideDTO);
     }
 
-    public void addPeptide(Peptide peptide) {
-        peptides.add(peptide);
+    public void addPeptideDTO(PeptideDTO peptideDTO) {
+        peptideDTOs.add(peptideDTO);
     }
 
     public String getSequence() {
         return sequence;
     }
 
-    public List<PeptideHasModification> getPeptideHasModifications() {
-        return peptideHasModifications;
-    }
-
-    public List<Peptide> getPeptides() {
-        return peptides;
-    }
-
     public long getSpectrumCount() {
-        return peptides.size();
+        return peptideDTOs.size();
     }
 
     public int getCharge() {
         return charge;
+    }
+
+    public List<PeptideHasModification> getPeptideHasModifications() {
+        return peptideDTOs.get(0).getPeptide().getPeptideHasModifications();
     }
 
     /**
@@ -62,7 +71,7 @@ public class PeptideTableRow {
 
             int[] mods = new int[sequence.length()];
 
-            for (PeptideHasModification phMod : peptideHasModifications) {
+            for (PeptideHasModification phMod : peptideDTOs.get(0).getPeptide().getPeptideHasModifications()) {
                 mods[phMod.getLocation()]++;
             }
 

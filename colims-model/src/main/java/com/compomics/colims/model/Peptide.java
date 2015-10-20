@@ -59,7 +59,7 @@ public class Peptide extends DatabaseEntity {
      * The spectrum identified by this peptide.
      */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Spectrum spectrum;
     /**
      * The PeptideHasModification instances from the join table between the peptide and modification tables.

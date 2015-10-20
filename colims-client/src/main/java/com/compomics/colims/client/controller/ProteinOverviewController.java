@@ -227,24 +227,21 @@ public class ProteinOverviewController implements Controllable {
             if (!lse.getValueIsAdjusting()) {
                 if (!proteinGroupDTOSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupDTOSelectionModel.getSelected().get(0);
-
-                    List<PeptideDTO> peptideDTOByProteinGroupId = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
+                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
                     List<PeptideTableRow> peptideTableRows = new ArrayList<>();
                     Map<String, Integer> sequencesRowIndices = new HashMap<>();
-
-                    List<Peptide> peptidesForSelectedProteinGroupForRun = new ArrayList<>();
-                    for (Peptide peptide : peptidesForSelectedProteinGroupForRun) {
-                        if (sequencesRowIndices.containsKey(peptide.getSequence())) {
-                            peptideTableRows.get(sequencesRowIndices.get(peptide.getSequence())).addPeptide(peptide);
+                    for (PeptideDTO peptideDTO : peptideDTOs) {
+                        if (sequencesRowIndices.containsKey(peptideDTO.getPeptide().getSequence())) {
+                            peptideTableRows.get(sequencesRowIndices.get(peptideDTO.getPeptide().getSequence())).addPeptideDTO(peptideDTO);
                         } else {
-                            peptideTableRows.add(new PeptideTableRow(peptide));
-                            sequencesRowIndices.put(peptide.getSequence(), sequencesRowIndices.size());
+                            peptideTableRows.add(new PeptideTableRow(peptideDTO));
+                            sequencesRowIndices.put(peptideDTO.getPeptide().getSequence(), sequencesRowIndices.size());
                         }
                     }
 
                     for (PeptideTableRow peptideTableRow : peptideTableRows) {
-//                        peptideTableRow.getPeptideHasModifications().addAll(peptideService.getModificationsForMultiplePeptides(peptideTableRow.getPeptides()));
+//                        peptideTableRow.getPeptideHasModifications().addAll(peptideService.getModificationsForMultiplePeptides(peptideTableRow.getPeptideDTOs()));
                     }
 
                     GlazedLists.replaceAll(peptides, peptideTableRows, false);
@@ -565,6 +562,19 @@ public class ProteinOverviewController implements Controllable {
         }
     }
 
+    private List<PeptideTableRow> mapPeptideDTOs(List<PeptideDTO> peptideDTOs){
+        Map<PeptideDTO, PeptideTableRow> peptideTableRowMap = new HashMap<>();
+
+        for(PeptideDTO peptideDTO : peptideDTOs){
+            if(peptideTableRowMap.containsKey(peptideDTO)){
+                PeptideTableRow peptideTableRow = peptideTableRowMap.get(peptideDTO);
+                peptideTableRow.addPeptideDTO(peptideDTO);
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Set sparklines for the PSM table.
      */
@@ -619,4 +629,5 @@ public class ProteinOverviewController implements Controllable {
                 .getCellRenderer())
                 .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
+
 }

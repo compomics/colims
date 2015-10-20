@@ -2,7 +2,6 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
@@ -31,16 +30,6 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public long getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
         return proteinGroupRepository.getProteinGroupCountForRun(analyticalRun, filter);
-    }
-
-    @Override
-    public String getMainProteinSequence(ProteinGroup proteinGroup) {
-        return proteinGroupRepository.getMainProteinSequence(proteinGroup);
-    }
-
-    @Override
-    public ProteinGroup findByIdAndFetchAssociations(Long id) {
-        return proteinGroupRepository.findByIdAndFetchAssociations(id);
     }
 
     @Override
@@ -78,13 +67,4 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
         return proteinGroupRepository.countAll();
     }
 
-    @Override
-    public List<String> getAccessionsForProteinGroup(ProteinGroup proteinGroup) {
-        return proteinGroupRepository.getAccessionsForProteinGroup(proteinGroup);
-    }
-
-    @Override
-    public List<PeptideHasProteinGroup> getPeptideHasProteinGroups(Long id) {
-        return proteinGroupRepository.getPeptideHasProteinGroups(id);
-    }
 }

@@ -36,7 +36,7 @@ public class PeptideTableRowTest {
         peptideA.setPeptideHasModifications(peptideHasModifications);
 
         PeptideTableRow peptideTableRow = new PeptideTableRow(peptideA);
-        peptideTableRow.addPeptide(peptideB);
+        peptideTableRow.addPeptideDTO(peptideB);
         peptideTableRow.getPeptideHasModifications().addAll(peptideA.getPeptideHasModifications());
 
         String annotatedSequence = peptideTableRow.getAnnotatedSequence();

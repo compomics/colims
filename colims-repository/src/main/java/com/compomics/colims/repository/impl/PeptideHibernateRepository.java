@@ -5,15 +5,13 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,30 +32,31 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
 
     @Override
     public List<PeptideDTO> getPeptideDTOByProteinGroupId(Long proteinGroupId) {
-        Criteria criteria = getCurrentSession().createCriteria(Peptide.class, "peptide");
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOByProteinGroupId");
+        query.setLong("proteinGroupId", proteinGroupId);
 
-        //joins
-        criteria.createAlias("peptideHasProteinGroups", "peptideHasProteinGroup");
+        List list = query.list();
 
-        //restrictions
-        criteria.add(Restrictions.eq("peptideHasProteinGroup.proteinGroup.id", proteinGroupId));
+        List<PeptideDTO> peptideDTOs = new ArrayList<>(list.size());
+        for (Object object : list) {
+            Object[] objectArray = (Object[]) object;
+            PeptideDTO peptideDTO = new PeptideDTO();
+            peptideDTO.setPeptide((Peptide) objectArray[0]);
+            peptideDTO.setPeptideProbability((Double) objectArray[1]);
+            peptideDTO.setPeptidePostErrorProbability((Double) objectArray[2]);
 
-        //projection
-//        ProjectionList projections = Projections.projectionList();
-//        projections.add(Projections.property("peptideHasProteinGroup.peptideProbability").as("peptideProbability"));
-//        projections.add(Projections.property("peptideHasProteinGroup.peptidePostErrorProbability").as("peptidePostErrorProbability"));
-//        criteria.setProjection(projections);
+            //get the number of protein groups associated with the given peptide
+            //and set it in the PeptideDTO instance
+            Criteria criteria = getCurrentSession().createCriteria(Peptide.class, "peptide");
+            criteria.createAlias("peptide.peptideHasProteinGroups", "peptideHasProteinGroup");
+            criteria.add(Restrictions.eq("id", peptideDTO.getPeptide().getId()));
+            criteria.setProjection(Projections.countDistinct("peptideHasProteinGroup.proteinGroup.id").as("proteinGroupCount"));
+            long proteinGroupCount = (long) criteria.uniqueResult();
+            peptideDTO.setProteinGroupCount(proteinGroupCount);
 
-        //eager fetch collections
-        criteria.setFetchMode("peptideHasProteinGroups", FetchMode.JOIN);
-        criteria.setFetchMode("peptideHasModifications", FetchMode.JOIN);
-        criteria.setFetchMode("peptideHasModifications.modification", FetchMode.JOIN);
+            peptideDTOs.add(peptideDTO);
+        }
 
-        //transform results into ProteinGroupForRun instances
-//        criteria.setResultTransformer(Transformers.aliasToBean(PeptideDTO.class));
-
-        List list = criteria.list();
-
-        return list;
+        return peptideDTOs;
     }
 }
