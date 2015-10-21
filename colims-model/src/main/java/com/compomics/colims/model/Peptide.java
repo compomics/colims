@@ -1,9 +1,10 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.util.CompareUtils;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a peptide entity in the database.
@@ -173,38 +174,28 @@ public class Peptide extends DatabaseEntity {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.sequence);
-        hash = 47 * hash + Objects.hashCode(this.theoreticalMass);
-        hash = 47 * hash + Objects.hashCode(this.charge);
-        hash = 47 * hash + Objects.hashCode(this.psmProbability);
-        hash = 47 * hash + Objects.hashCode(this.psmPostErrorProbability);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Peptide peptide = (Peptide) o;
+
+        if (!sequence.equals(peptide.sequence)) return false;
+        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null)
+            return false;
+        if (charge != null ? !charge.equals(peptide.charge) : peptide.charge != null) return false;
+        if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null)
+            return false;
+        return !(psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Peptide other = (Peptide) obj;
-        if (!Objects.equals(this.sequence, other.sequence)) {
-            return false;
-        }
-        if (!Objects.equals(this.theoreticalMass, other.theoreticalMass)) {
-            return false;
-        }
-        if (!Objects.equals(this.charge, other.charge)) {
-            return false;
-        }
-        if (!Objects.equals(this.psmProbability, other.psmProbability)) {
-            return false;
-        }
-        return Objects.equals(this.psmPostErrorProbability, other.psmPostErrorProbability);
+    public int hashCode() {
+        int result = sequence.hashCode();
+        result = 31 * result + (theoreticalMass != null ? theoreticalMass.hashCode() : 0);
+        result = 31 * result + (charge != null ? charge.hashCode() : 0);
+        result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
+        result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
+        return result;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.ModificationType;
+import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 
@@ -120,7 +121,6 @@ public class PeptideHasModification extends DatabaseEntity {
             return false;
         if (deltaScore != null ? !deltaScore.equals(that.deltaScore) : that.deltaScore != null) return false;
         if (modificationType != that.modificationType) return false;
-        if (!peptide.equals(that.peptide)) return false;
         return modification.equals(that.modification);
 
     }
@@ -131,7 +131,6 @@ public class PeptideHasModification extends DatabaseEntity {
         result = 31 * result + (probabilityScore != null ? probabilityScore.hashCode() : 0);
         result = 31 * result + (deltaScore != null ? deltaScore.hashCode() : 0);
         result = 31 * result + (modificationType != null ? modificationType.hashCode() : 0);
-        result = 31 * result + peptide.hashCode();
         result = 31 * result + modification.hashCode();
         return result;
     }

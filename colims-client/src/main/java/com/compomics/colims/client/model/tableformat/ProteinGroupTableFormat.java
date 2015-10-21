@@ -16,11 +16,11 @@ import java.util.Comparator;
  */
 public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroupDTO> {
 
-    private static final String[] columnNames = {"ID", "Accession", "Sequence", "# of peptides", "# of spectra", "Confidence"};
+    private static final String[] columnNames = {"ID", "Accession", "Sequence", "Distinct peptide seq.", "Spectra", "Confidence"};
     public static final int ID = 0;
     public static final int ACCESSION = 1;
     public static final int SEQUENCE = 2;
-    public static final int NUMBER_OF_PEPTIDES = 3;
+    public static final int NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES = 3;
     public static final int NUMBER_OF_SPECTRA = 4;
     public static final int CONFIDENCE = 5;
 
@@ -51,7 +51,7 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                 return String.class;
             case SEQUENCE:
                 return String.class;
-            case NUMBER_OF_PEPTIDES:
+            case NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES:
                 return Long.class;
             case NUMBER_OF_SPECTRA:
                 return Long.class;
@@ -86,8 +86,8 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
                 return proteinGroupDTO.getMainAccession();
             case SEQUENCE:
                 return proteinGroupDTO.getMainSequence();
-            case NUMBER_OF_PEPTIDES:
-                return proteinGroupDTO.getDistinctPeptideCount();
+            case NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES:
+                return proteinGroupDTO.getDistinctPeptideSequenceCount();
             case NUMBER_OF_SPECTRA:
                 return proteinGroupDTO.getSpectrumCount();
             case CONFIDENCE:

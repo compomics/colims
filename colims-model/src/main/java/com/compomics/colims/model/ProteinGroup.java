@@ -1,8 +1,11 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.util.CompareUtils;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents a protein group entity in the database.
@@ -48,8 +51,8 @@ public class ProteinGroup extends DatabaseEntity {
     /**
      * Constructor.
      *
-     * @param id the entity ID
-     * @param proteinProbability the protein probability score
+     * @param id                          the entity ID
+     * @param proteinProbability          the protein probability score
      * @param proteinPostErrorProbability the protein posterior error probability score
      */
     public ProteinGroup(Long id, Double proteinProbability, Double proteinPostErrorProbability) {
@@ -118,13 +121,27 @@ public class ProteinGroup extends DatabaseEntity {
      * @return the list of protein accession strings
      */
     public List<String> getProteinAccessions() {
-        List<String> proteinAccessions = new ArrayList<>();
-
-        for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroupHasProteins) {
-            proteinAccessions.add(proteinGroupHasProtein.getProteinAccession());
-        }
+        List<String> proteinAccessions = proteinGroupHasProteins.stream().map(ProteinGroupHasProtein::getProteinAccession).collect(Collectors.toList());
 
         return proteinAccessions;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProteinGroup that = (ProteinGroup) o;
+
+        if (proteinProbability != null ? !CompareUtils.equals(proteinProbability, that.proteinProbability) : that.proteinProbability != null)
+            return false;
+        return !(proteinPostErrorProbability != null ? !CompareUtils.equals(proteinPostErrorProbability, that.proteinPostErrorProbability) : that.proteinPostErrorProbability != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = proteinProbability != null ? proteinProbability.hashCode() : 0;
+        result = 31 * result + (proteinPostErrorProbability != null ? proteinPostErrorProbability.hashCode() : 0);
+        return result;
+    }
 }

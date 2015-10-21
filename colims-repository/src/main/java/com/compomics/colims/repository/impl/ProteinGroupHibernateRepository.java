@@ -41,7 +41,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.groupProperty("id").as("id"));
         projectionList.add(Projections.count("spectrum.id").as("spectrumCount"));
-        projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideCount"));
+        projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideSequenceCount"));
         projectionList.add(Projections.property("proteinGroup.proteinProbability").as("proteinProbability"));
         projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
         projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));

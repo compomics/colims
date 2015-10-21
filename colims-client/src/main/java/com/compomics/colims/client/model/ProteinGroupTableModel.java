@@ -42,8 +42,8 @@ public class ProteinGroupTableModel extends PagingTableModel {
                 return "mainSequence";
             case ProteinGroupTableFormat.ACCESSION:
                 return "mainAccession";
-            case ProteinGroupTableFormat.NUMBER_OF_PEPTIDES:
-                return "distinctPeptideCount";
+            case ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES:
+                return "distinctPeptideSequenceCount";
             case ProteinGroupTableFormat.NUMBER_OF_SPECTRA:
                 return "spectrumCount";
             case ProteinGroupTableFormat.CONFIDENCE:

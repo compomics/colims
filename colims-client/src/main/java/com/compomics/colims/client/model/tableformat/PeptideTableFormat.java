@@ -14,18 +14,18 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     private static final String[] columnNames = {"Sequence", "Charge", "Spectra"};
 
     public static final int SEQUENCE = 0;
-    public static final int CHARGE = 1;
-    public static final int SPECTRA = 2;
+    public static final int SPECTRA = 1;
+    public static final int CONFIDENCE = 2;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
             case SEQUENCE:
                 return String.class;
-            case CHARGE:
-                return Integer.class;
             case SPECTRA:
-                return Long.class;
+                return Integer.class;
+            case CONFIDENCE:
+                return Double.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
@@ -47,14 +47,14 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     }
 
     @Override
-    public Object getColumnValue(PeptideTableRow peptide, int column) {
+    public Object getColumnValue(PeptideTableRow peptideTableRow, int column) {
         switch (column) {
             case SEQUENCE:
-                return "<html>" + peptide.getAnnotatedSequence() + "</html>";
-            case CHARGE:
-                return peptide.getCharge();
+                return "<html>" + peptideTableRow.getAnnotatedSequence() + "</html>";
             case SPECTRA:
-                return peptide.getSpectrumCount();
+                return peptideTableRow.getSpectrumCount();
+            case CONFIDENCE:
+                return peptideTableRow.getPeptideConfidence();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

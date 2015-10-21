@@ -1,5 +1,7 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.util.CompareUtils;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -80,9 +82,9 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
 
         PeptideHasProteinGroup that = (PeptideHasProteinGroup) o;
 
-        if (peptideProbability != null ? !peptideProbability.equals(that.peptideProbability) : that.peptideProbability != null)
+        if (peptideProbability != null ? !CompareUtils.equals(peptideProbability, that.peptideProbability) : that.peptideProbability != null)
             return false;
-        if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
+        if (peptidePostErrorProbability != null ? !CompareUtils.equals(peptidePostErrorProbability, that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
             return false;
         if (peptide != null ? !peptide.equals(that.peptide) : that.peptide != null) return false;
         return !(proteinGroup != null ? !proteinGroup.equals(that.proteinGroup) : that.proteinGroup != null);

@@ -76,7 +76,6 @@ public class ProteinOverviewController implements Controllable {
     private DefaultEventSelectionModel<PeptideTableRow> peptideSelectionModel;
     private DefaultEventSelectionModel<Spectrum> spectrumSelectionModel;
     private AnalyticalRun selectedAnalyticalRun;
-    private List<Long> spectrumIdsForRun = new ArrayList<>();
     private double minimumRetentionTime;
     private double maximumRetentionTime;
     private double minimumCharge;
@@ -165,9 +164,9 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(120);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setPreferredWidth(100);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setMaxWidth(100);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_PEPTIDES).setMinWidth(50);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setPreferredWidth(100);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMaxWidth(100);
+        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMinWidth(50);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(90);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(90);
         proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
@@ -208,8 +207,6 @@ public class ProteinOverviewController implements Controllable {
                 proteinGroupTableModel.reset(selectedAnalyticalRun);
                 updateProteinTable();
 
-                spectrumIdsForRun = spectrumService.getSpectraIdsForRun(selectedAnalyticalRun);
-
                 // Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
                         proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
@@ -227,26 +224,17 @@ public class ProteinOverviewController implements Controllable {
             if (!lse.getValueIsAdjusting()) {
                 if (!proteinGroupDTOSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupDTOSelectionModel.getSelected().get(0);
+                    //get the PeptideDTO instances for the selected protein group
                     List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
-                    List<PeptideTableRow> peptideTableRows = new ArrayList<>();
-                    Map<String, Integer> sequencesRowIndices = new HashMap<>();
-                    for (PeptideDTO peptideDTO : peptideDTOs) {
-                        if (sequencesRowIndices.containsKey(peptideDTO.getPeptide().getSequence())) {
-                            peptideTableRows.get(sequencesRowIndices.get(peptideDTO.getPeptide().getSequence())).addPeptideDTO(peptideDTO);
-                        } else {
-                            peptideTableRows.add(new PeptideTableRow(peptideDTO));
-                            sequencesRowIndices.put(peptideDTO.getPeptide().getSequence(), sequencesRowIndices.size());
-                        }
+                    if(selectedProteinGroupDTO.getId().equals(3601L)){
+                        System.out.println("test");
                     }
 
-                    for (PeptideTableRow peptideTableRow : peptideTableRows) {
-//                        peptideTableRow.getPeptideHasModifications().addAll(peptideService.getModificationsForMultiplePeptides(peptideTableRow.getPeptideDTOs()));
-                    }
+                    //map to PeptideTableRow objects
+                    List<PeptideTableRow> peptideTableRows = mapPeptideDTOs(peptideDTOs);
 
                     GlazedLists.replaceAll(peptides, peptideTableRows, false);
-
-
                 } else {
                     GlazedLists.replaceAll(peptides, new ArrayList<>(), false);
                 }
@@ -258,9 +246,8 @@ public class ProteinOverviewController implements Controllable {
                 if (peptideSelectionModel.getSelected().isEmpty()) {
                     GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
                 } else {
-                    List<Peptide> peptides = new ArrayList<Peptide>();
-//                    List<Peptide> peptides = peptideService.getPeptidesFromSequence(peptideSelectionModel.getSelected().get(0).getSequence(), spectrumIdsForRun);
-                    List<Spectrum> selectedSpectra = peptides.stream().map(Peptide::getSpectrum).collect(Collectors.toList());
+                    PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
+                    List<Spectrum> selectedSpectra = selectedPeptideTableRow.getSpectra();
 
                     setPsmTableCellRenderers();
 
@@ -427,7 +414,7 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Build a node tree for a given project consisting of experiments, samples and runs
+     * Build a node tree for a given project consisting of experiments, samples and runs.
      *
      * @param project A project to represent
      * @return A node of nodes
@@ -476,7 +463,7 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Show the given spectrum in the spectrum popup dialog
+     * Show the given spectrum in the spectrum popup dialog.
      *
      * @param spectrum the Spectrum instance
      */
@@ -562,17 +549,26 @@ public class ProteinOverviewController implements Controllable {
         }
     }
 
-    private List<PeptideTableRow> mapPeptideDTOs(List<PeptideDTO> peptideDTOs){
+    /**
+     * Map the list of PeptideDTO instances associated with the given protein group to a list of PeptideTableRow
+     * instances.
+     *
+     * @param peptideDTOs the list of PeptideDTO instances
+     * @return a list of PeptideTableRow instances
+     */
+    private List<PeptideTableRow> mapPeptideDTOs(List<PeptideDTO> peptideDTOs) {
         Map<PeptideDTO, PeptideTableRow> peptideTableRowMap = new HashMap<>();
 
-        for(PeptideDTO peptideDTO : peptideDTOs){
-            if(peptideTableRowMap.containsKey(peptideDTO)){
+        for (PeptideDTO peptideDTO : peptideDTOs) {
+            if (peptideTableRowMap.containsKey(peptideDTO)) {
                 PeptideTableRow peptideTableRow = peptideTableRowMap.get(peptideDTO);
                 peptideTableRow.addPeptideDTO(peptideDTO);
+            } else {
+                peptideTableRowMap.put(peptideDTO, new PeptideTableRow(peptideDTO));
             }
         }
 
-        return null;
+        return new ArrayList<>(peptideTableRowMap.values());
     }
 
     /**

@@ -29,10 +29,10 @@ public class ProteinGroupDTO {
      */
     private String mainSequence;
     /**
-     * The number of distinct peptides (distinct peptide sequence, modifications not taken into account) linked to the
+     * The number of distinct peptides (distinct peptide sequence, modifications not taken into account!) linked to the
      * group.
      */
-    private long distinctPeptideCount;
+    private long distinctPeptideSequenceCount;
     /**
      * The number of spectra related with the protein group.
      */
@@ -84,12 +84,12 @@ public class ProteinGroupDTO {
         this.mainSequence = mainSequence;
     }
 
-    public long getDistinctPeptideCount() {
-        return distinctPeptideCount;
+    public long getDistinctPeptideSequenceCount() {
+        return distinctPeptideSequenceCount;
     }
 
-    public void setDistinctPeptideCount(long distinctPeptideCount) {
-        this.distinctPeptideCount = distinctPeptideCount;
+    public void setDistinctPeptideSequenceCount(long distinctPeptideSequenceCount) {
+        this.distinctPeptideSequenceCount = distinctPeptideSequenceCount;
     }
 
     public long getSpectrumCount() {

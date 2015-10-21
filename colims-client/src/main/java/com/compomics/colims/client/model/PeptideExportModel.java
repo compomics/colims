@@ -40,8 +40,6 @@ public class PeptideExportModel extends AbstractTableModel {
         switch (columnIndex) {
             case 0:
                 return peptideTableRow.getSequence();
-            case 1:
-                return peptideTableRow.getCharge();
             case 2:
                 return peptideTableRow.getSpectrumCount();
             case 3:
