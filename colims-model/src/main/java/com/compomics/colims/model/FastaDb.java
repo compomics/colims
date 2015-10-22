@@ -1,16 +1,11 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a FASTA database in the database.
@@ -74,8 +69,7 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
     /**
-     * The list of search and validation settings that used this FASTA instance
-     * for the search.
+     * The list of search and validation settings that used this FASTA instance for the search.
      */
     @OneToMany(mappedBy = "fastaDb")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
@@ -142,45 +136,6 @@ public class FastaDb extends DatabaseEntity {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.name);
-        hash = 97 * hash + Objects.hashCode(this.fileName);
-        hash = 97 * hash + Objects.hashCode(this.filePath);
-        hash = 97 * hash + Objects.hashCode(this.taxonomyAccession);
-        hash = 97 * hash + Objects.hashCode(this.species);
-        hash = 97 * hash + Objects.hashCode(this.version);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FastaDb other = (FastaDb) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
-        if (!Objects.equals(this.filePath, other.filePath)) {
-            return false;
-        }
-        if (!Objects.equals(this.taxonomyAccession, other.taxonomyAccession)) {
-            return false;
-        }
-        if (!Objects.equals(this.species, other.species)) {
-            return false;
-        }
-        return Objects.equals(this.version, other.version);
     }
 
     @Override

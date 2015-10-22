@@ -8,7 +8,6 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents an user entity in the database.
@@ -185,25 +184,6 @@ public class User extends AuditableDatabaseEntity {
     public boolean checkPassword(String plainPassword) {
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
         return passwordEncryptor.checkPassword(plainPassword, password);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        return Objects.equals(this.name, other.name);
     }
 
     @Override

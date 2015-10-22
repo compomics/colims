@@ -1,9 +1,11 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.comparator.PeptideHasModificationLocationComparator;
 import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -173,29 +175,35 @@ public class Peptide extends DatabaseEntity {
         return sequence.length();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Peptide peptide = (Peptide) o;
-
+    /**
+     * This method checks if the given peptide has the same sequence, scores and modification(s) (on the same
+     * position(s)). Note that charge is not considered in this comparison.
+     *
+     * @param peptide the given Peptide instance
+     * @return true if the peptide has the same modifications
+     */
+    public boolean equalsWithoutCharge(Peptide peptide) {
         if (!sequence.equals(peptide.sequence)) return false;
         if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null)
             return false;
-        if (charge != null ? !charge.equals(peptide.charge) : peptide.charge != null) return false;
         if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null)
             return false;
-        return !(psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = sequence.hashCode();
-        result = 31 * result + (theoreticalMass != null ? theoreticalMass.hashCode() : 0);
-        result = 31 * result + (charge != null ? charge.hashCode() : 0);
-        result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
-        result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
-        return result;
+        if (psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null) {
+            return false;
+        }
+        if (peptideHasModifications.size() != peptide.peptideHasModifications.size()) {
+            return false;
+        }
+        //sort the lists of PeptideHasModification instances
+        PeptideHasModificationLocationComparator locationComparator = new PeptideHasModificationLocationComparator();
+        Collections.sort(peptideHasModifications, locationComparator);
+        Collections.sort(peptide.peptideHasModifications, locationComparator);
+        //compare on location and modification
+        for (int i = 0; i < peptideHasModifications.size(); i++) {
+            if (!peptideHasModifications.get(i).equals(peptide.getPeptideHasModifications().get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

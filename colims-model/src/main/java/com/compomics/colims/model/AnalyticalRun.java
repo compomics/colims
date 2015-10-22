@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents an analytical run entity in the database.
@@ -133,37 +132,6 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     public void setQuantificationSettings(QuantificationSettings quantificationSettings) {
         this.quantificationSettings = quantificationSettings;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.name);
-        hash = 59 * hash + Objects.hashCode(this.startDate);
-        hash = 59 * hash + Objects.hashCode(this.sample);
-        hash = 59 * hash + Objects.hashCode(this.instrument);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AnalyticalRun other = (AnalyticalRun) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.startDate, other.startDate)) {
-            return false;
-        }
-        if (!Objects.equals(this.sample, other.sample)) {
-            return false;
-        }
-        return Objects.equals(this.instrument, other.instrument);
     }
 
     @Override

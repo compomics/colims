@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a sample entity in the database.
@@ -151,41 +150,6 @@ public class Sample extends AuditableDatabaseEntity {
 
     public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
         this.analyticalRuns = analyticalRuns;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 73 * hash + Objects.hashCode(this.name);
-        hash = 73 * hash + Objects.hashCode(this.condition);
-        hash = 73 * hash + Objects.hashCode(this.storageLocation);
-        hash = 73 * hash + Objects.hashCode(this.experiment);
-        hash = 73 * hash + Objects.hashCode(this.protocol);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Sample other = (Sample) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.condition, other.condition)) {
-            return false;
-        }
-        if (!Objects.equals(this.storageLocation, other.storageLocation)) {
-            return false;
-        }
-        if (!Objects.equals(this.experiment, other.experiment)) {
-            return false;
-        }
-        return Objects.equals(this.protocol, other.protocol);
     }
 
     @Override

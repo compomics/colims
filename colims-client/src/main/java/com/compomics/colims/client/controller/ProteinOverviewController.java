@@ -53,7 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by Iain on 19/06/2015.
@@ -227,7 +226,7 @@ public class ProteinOverviewController implements Controllable {
                     //get the PeptideDTO instances for the selected protein group
                     List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
-                    if(selectedProteinGroupDTO.getId().equals(3601L)){
+                    if (selectedProteinGroupDTO.getId().equals(3601L)) {
                         System.out.println("test");
                     }
 

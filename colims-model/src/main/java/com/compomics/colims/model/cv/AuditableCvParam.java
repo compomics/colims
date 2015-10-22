@@ -1,7 +1,7 @@
 package com.compomics.colims.model.cv;
 
 import com.compomics.colims.model.AuditableDatabaseEntity;
-import java.util.Objects;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -56,10 +56,10 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
     /**
      * Constructor.
      *
-     * @param ontology the ontology name
-     * @param label the ontology label
+     * @param ontology  the ontology name
+     * @param label     the ontology label
      * @param accession the CV term accession
-     * @param name the CV term name
+     * @param name      the CV term name
      */
     public AuditableCvParam(final String ontology, final String label, final String accession, final String name) {
         this.ontology = ontology;
@@ -71,11 +71,11 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
     /**
      * Constructor.
      *
-     * @param ontology the ontology name
-     * @param label the ontology label
+     * @param ontology  the ontology name
+     * @param label     the ontology label
      * @param accession the CV term accession
-     * @param name the CV term name
-     * @param value the CV term value
+     * @param name      the CV term name
+     * @param value     the CV term value
      */
     public AuditableCvParam(final String ontology, final String label, final String accession, final String name, final String value) {
         this.ontology = ontology;
@@ -123,41 +123,6 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.ontology);
-        hash = 79 * hash + Objects.hashCode(this.label);
-        hash = 79 * hash + Objects.hashCode(this.accession);
-        hash = 79 * hash + Objects.hashCode(this.name);
-        hash = 79 * hash + Objects.hashCode(this.value);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AuditableCvParam other = (AuditableCvParam) obj;
-        if (!Objects.equals(this.ontology, other.ontology)) {
-            return false;
-        }
-        if (!Objects.equals(this.label, other.label)) {
-            return false;
-        }
-        if (!Objects.equals(this.accession, other.accession)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return Objects.equals(this.value, other.value);
     }
 
     @Override

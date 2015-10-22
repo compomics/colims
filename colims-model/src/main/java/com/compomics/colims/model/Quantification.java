@@ -1,21 +1,12 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.QuantificationWeight;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  * @author Kenneth Verheggen
  */
@@ -68,29 +59,6 @@ public class Quantification extends DatabaseEntity {
 
     public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
         this.quantificationGroups = quantificationGroups;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + (int) (Double.doubleToLongBits(this.intensity) ^ (Double.doubleToLongBits(this.intensity) >>> 32));
-        hash = 71 * hash + Objects.hashCode(this.weight);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Quantification other = (Quantification) obj;
-        if (Double.doubleToLongBits(this.intensity) != Double.doubleToLongBits(other.intensity)) {
-            return false;
-        }
-        return this.weight == other.weight;
     }
 
 }

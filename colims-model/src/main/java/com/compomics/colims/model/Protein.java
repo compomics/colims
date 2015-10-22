@@ -7,7 +7,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a protein entity in the database.
@@ -81,25 +80,6 @@ public class Protein extends DatabaseEntity {
 
     public void setProteinAccessions(List<ProteinAccession> proteinAccessions) {
         this.proteinAccessions = proteinAccessions;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.sequence);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Protein other = (Protein) obj;
-        return Objects.equals(this.sequence, other.sequence);
     }
 
     @Override

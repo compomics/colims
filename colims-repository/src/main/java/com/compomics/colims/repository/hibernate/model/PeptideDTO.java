@@ -3,7 +3,7 @@ package com.compomics.colims.repository.hibernate.model;
 import com.compomics.colims.model.Peptide;
 
 /**
- * This class represents a peptide data transfer object that holds some addititianol information about a peptide.
+ * This class represents a peptide data transfer object that holds some additional information about a peptide.
  * <p/>
  * Created by Niels Hulstaert on 14/10/15.
  */
@@ -18,7 +18,7 @@ public class PeptideDTO {
      */
     private Double peptidePostErrorProbability;
     /**
-     * The Peptide enitity instance.
+     * The Peptide entity instance.
      */
     private Peptide peptide;
     /**
@@ -74,19 +74,16 @@ public class PeptideDTO {
         if (proteinGroupCount != that.proteinGroupCount) return false;
         if (peptideProbability != null ? !peptideProbability.equals(that.peptideProbability) : that.peptideProbability != null)
             return false;
-        if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
+        if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null) {
             return false;
-        if (!peptide.equals(that.getPeptide()))
-            return false;
-        return peptide.getPeptideHasModifications().equals(that.peptide.getPeptideHasModifications());
-
+        }
+        return peptide.equalsWithoutCharge(that.getPeptide());
     }
 
     @Override
     public int hashCode() {
         int result = peptideProbability != null ? peptideProbability.hashCode() : 0;
         result = 31 * result + (peptidePostErrorProbability != null ? peptidePostErrorProbability.hashCode() : 0);
-        result = 31 * result + peptide.hashCode();
         result = 31 * result + (int) (proteinGroupCount ^ (proteinGroupCount >>> 32));
         return result;
     }

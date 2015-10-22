@@ -6,7 +6,6 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a search parameters entity in the database.
@@ -232,73 +231,6 @@ public class SearchParameters extends DatabaseEntity {
 
     public void setSearchParametersHasModifications(List<SearchParametersHasModification> searchParametersHasModifications) {
         this.searchParametersHasModifications = searchParametersHasModifications;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.searchType);
-        hash = 41 * hash + Objects.hashCode(this.enzyme);
-        hash = 41 * hash + Objects.hashCode(this.numberOfMissedCleavages);
-        hash = 41 * hash + Objects.hashCode(this.threshold);
-        hash = 41 * hash + Objects.hashCode(this.precMassTolerance);
-        hash = 41 * hash + Objects.hashCode(this.precMassToleranceUnit);
-        hash = 41 * hash + Objects.hashCode(this.fragMassTolerance);
-        hash = 41 * hash + Objects.hashCode(this.fragMassToleranceUnit);
-        hash = 41 * hash + Objects.hashCode(this.lowerCharge);
-        hash = 41 * hash + Objects.hashCode(this.upperCharge);
-        hash = 41 * hash + Objects.hashCode(this.firstSearchedIonType);
-        hash = 41 * hash + Objects.hashCode(this.secondSearchedIonType);
-        hash = 41 * hash + Objects.hashCode(this.additionalCvParams);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SearchParameters other = (SearchParameters) obj;
-        if (!Objects.equals(this.searchType, other.searchType)) {
-            return false;
-        }
-        if (!Objects.equals(this.enzyme, other.enzyme)) {
-            return false;
-        }
-        if (!Objects.equals(this.numberOfMissedCleavages, other.numberOfMissedCleavages)) {
-            return false;
-        }
-        if (!Objects.equals(this.threshold, other.threshold)) {
-            return false;
-        }
-        if (!Objects.equals(this.precMassTolerance, other.precMassTolerance)) {
-            return false;
-        }
-        if (this.precMassToleranceUnit != other.precMassToleranceUnit) {
-            return false;
-        }
-        if (!Objects.equals(this.fragMassTolerance, other.fragMassTolerance)) {
-            return false;
-        }
-        if (this.fragMassToleranceUnit != other.fragMassToleranceUnit) {
-            return false;
-        }
-        if (!Objects.equals(this.lowerCharge, other.lowerCharge)) {
-            return false;
-        }
-        if (!Objects.equals(this.upperCharge, other.upperCharge)) {
-            return false;
-        }
-        if (!Objects.equals(this.firstSearchedIonType, other.firstSearchedIonType)) {
-            return false;
-        }
-        if (!Objects.equals(this.secondSearchedIonType, other.secondSearchedIonType)) {
-            return false;
-        }
-        return Objects.equals(this.additionalCvParams, other.additionalCvParams);
     }
 
 }

@@ -1,20 +1,10 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * This class represents an identification file entity in the database.
@@ -85,8 +75,8 @@ public class IdentificationFile extends DatabaseEntity {
     /**
      * Constructor.
      *
-     * @param fileName the file name
-     * @param filePath the file path
+     * @param fileName       the file name
+     * @param filePath       the file path
      * @param binaryFileType the file type
      */
     public IdentificationFile(final String fileName, final String filePath, final BinaryFileType binaryFileType) {
@@ -140,33 +130,6 @@ public class IdentificationFile extends DatabaseEntity {
 
     public void setPeptides(List<Peptide> peptides) {
         this.peptides = peptides;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.fileName);
-        hash = 79 * hash + Objects.hashCode(this.filePath);
-        hash = 79 * hash + Objects.hashCode(this.binaryFileType);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final IdentificationFile other = (IdentificationFile) obj;
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
-        if (!Objects.equals(this.filePath, other.filePath)) {
-            return false;
-        }
-        return this.binaryFileType == other.binaryFileType;
     }
 
 }

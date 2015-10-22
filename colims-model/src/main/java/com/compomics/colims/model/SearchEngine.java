@@ -3,17 +3,9 @@ package com.compomics.colims.model;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.SearchEngineType;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * This class represents a search engine entity in the database.
@@ -112,29 +104,6 @@ public class SearchEngine extends CvParam {
 
     public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.searchEngineType);
-        hash = 97 * hash + Objects.hashCode(this.version);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SearchEngine other = (SearchEngine) obj;
-        if (this.searchEngineType != other.searchEngineType) {
-            return false;
-        }
-        return Objects.equals(this.version, other.version);
     }
 
 }

@@ -1,13 +1,13 @@
 package com.compomics.colims.model;
 
-import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * This class represents an institution entity in the database.
@@ -139,45 +139,6 @@ public class Institution extends AuditableDatabaseEntity {
         address[2] = getCountry();
 
         return address;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.name);
-        hash = 29 * hash + Objects.hashCode(this.abbreviation);
-        hash = 29 * hash + Objects.hashCode(this.street);
-        hash = 29 * hash + Objects.hashCode(this.number);
-        hash = 29 * hash + Objects.hashCode(this.city);
-        hash = 29 * hash + Objects.hashCode(this.country);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Institution other = (Institution) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.abbreviation, other.abbreviation)) {
-            return false;
-        }
-        if (!Objects.equals(this.street, other.street)) {
-            return false;
-        }
-        if (!Objects.equals(this.number, other.number)) {
-            return false;
-        }
-        if (!Objects.equals(this.city, other.city)) {
-            return false;
-        }
-        return Objects.equals(this.country, other.country);
     }
 
     @Override

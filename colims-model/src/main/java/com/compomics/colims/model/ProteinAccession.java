@@ -1,7 +1,6 @@
 package com.compomics.colims.model;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * This class represents a protein accession entity in the database. This is a separate entity in the database because a
@@ -58,25 +57,6 @@ public class ProteinAccession extends DatabaseEntity {
 
     public void setProtein(Protein protein) {
         this.protein = protein;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Objects.hashCode(this.accession);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ProteinAccession other = (ProteinAccession) obj;
-        return Objects.equals(this.accession, other.accession);
     }
 
     @Override

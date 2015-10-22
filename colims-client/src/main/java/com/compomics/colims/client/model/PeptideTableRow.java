@@ -1,15 +1,11 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.util.CompareUtils;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,21 +41,15 @@ public class PeptideTableRow {
     }
 
     /**
-     * Add a peptideDTO instance. If the peptideDTOs list already contains a PeptideDTO object, they have to have the
-     * same peptide sequence and modifications. If not, an IllegalArgumentException is thrown.
+     * Add a peptideDTO instance.
      *
      * @param peptideDTO the PeptideDTO instance
-     * @throws IllegalArgumentException thrown in case trying to add an unequal PeptideDTO instance
      */
     public void addPeptideDTO(PeptideDTO peptideDTO) {
         if (peptideDTOs.isEmpty()) {
             peptideDTOs.add(peptideDTO);
         } else {
-            if (equalsWithoutCharge(peptideDTO.getPeptide())) {
-                peptideDTOs.add(peptideDTO);
-            } else {
-                throw new IllegalArgumentException("The PeptideDTO object does not match with the already added ones.");
-            }
+            peptideDTOs.add(peptideDTO);
         }
     }
 
@@ -136,28 +126,5 @@ public class PeptideTableRow {
 
             return annotatedSequence.toString();
         }
-    }
-
-    /**
-     * Check if the given peptide equals the first peptide in the peptideDTOs list, minus the charge.
-     *
-     * @param peptide the Peptide instance
-     * @return true if equal
-     */
-    private boolean equalsWithoutCharge(Peptide peptide) {
-        Peptide firstPeptide = peptideDTOs.get(0).getPeptide();
-
-        if (!firstPeptide.getSequence().equals(peptide.getSequence())) return false;
-        if (firstPeptide.getTheoreticalMass() != null ? !CompareUtils.equals(firstPeptide.getTheoreticalMass(), peptide.getTheoreticalMass()) : peptide.getTheoreticalMass() != null)
-            return false;
-        if (firstPeptide.getPsmProbability() != null ? !CompareUtils.equals(firstPeptide.getPsmProbability(), peptide.getPsmPostErrorProbability()) : peptide.getPsmProbability() != null)
-            return false;
-        if (firstPeptide.getPsmPostErrorProbability() != null ? !CompareUtils.equals(firstPeptide.getPsmPostErrorProbability(), peptide.getPsmPostErrorProbability()) : peptide.getPsmPostErrorProbability() != null) {
-            return false;
-        }
-        //check the PeptideHasModification lists
-        Set<PeptideHasModification> firstSet = new HashSet<>(firstPeptide.getPeptideHasModifications());
-        Set<PeptideHasModification> secondSet = new HashSet<>(peptide.getPeptideHasModifications());
-        return firstSet.equals(secondSet);
     }
 }

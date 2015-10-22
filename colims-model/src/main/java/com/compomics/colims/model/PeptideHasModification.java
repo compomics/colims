@@ -109,29 +109,21 @@ public class PeptideHasModification extends DatabaseEntity {
         this.modification = modification;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PeptideHasModification that = (PeptideHasModification) o;
-
-        if (location != null ? !location.equals(that.location) : that.location != null) return false;
-        if (probabilityScore != null ? !probabilityScore.equals(that.probabilityScore) : that.probabilityScore != null)
+    /**
+     * This method checks of the given PeptideHasModification instance has the same score and modification on the same
+     * location as this one.
+     *
+     * @param peptideHasModification the given PeptideHasModification instance
+     * @return true if it represents the same modification on the same location with the same score
+     */
+    public boolean isEqual(PeptideHasModification peptideHasModification) {
+        if (location != null ? !location.equals(peptideHasModification.location) : peptideHasModification.location != null)
             return false;
-        if (deltaScore != null ? !deltaScore.equals(that.deltaScore) : that.deltaScore != null) return false;
-        if (modificationType != that.modificationType) return false;
-        return modification.equals(that.modification);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = location != null ? location.hashCode() : 0;
-        result = 31 * result + (probabilityScore != null ? probabilityScore.hashCode() : 0);
-        result = 31 * result + (deltaScore != null ? deltaScore.hashCode() : 0);
-        result = 31 * result + (modificationType != null ? modificationType.hashCode() : 0);
-        result = 31 * result + modification.hashCode();
-        return result;
+        if (probabilityScore != null ? !CompareUtils.equals(probabilityScore, peptideHasModification.probabilityScore) : peptideHasModification.probabilityScore != null)
+            return false;
+        if (deltaScore != null ? !CompareUtils.equals(deltaScore, peptideHasModification.deltaScore) : peptideHasModification.deltaScore != null)
+            return false;
+        if (modificationType != peptideHasModification.modificationType) return false;
+        return modification.equals(peptideHasModification.modification);
     }
 }

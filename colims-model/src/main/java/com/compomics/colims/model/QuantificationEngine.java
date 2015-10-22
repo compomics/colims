@@ -2,20 +2,12 @@ package com.compomics.colims.model;
 
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.QuantificationEngineType;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "quantification_engine")
@@ -60,11 +52,10 @@ public class QuantificationEngine extends CvParam {
     }
 
     /**
-     * Constructor that creates a new instance with all fields of the given
-     * QuantificationEngine and the given version.
+     * Constructor that creates a new instance with all fields of the given QuantificationEngine and the given version.
      *
      * @param quantificationEngine the QuantificationEngine to copy
-     * @param version the quantification engine version
+     * @param version              the quantification engine version
      */
     public QuantificationEngine(final QuantificationEngine quantificationEngine, final String version) {
         this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getOntology(), quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
@@ -93,28 +84,4 @@ public class QuantificationEngine extends CvParam {
     public void setQuantificationSettingses(List<QuantificationSettings> quantificationSettingses) {
         this.quantificationSettingses = quantificationSettingses;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 23 * hash + Objects.hashCode(this.quantificationEngineType);
-        hash = 23 * hash + Objects.hashCode(this.version);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final QuantificationEngine other = (QuantificationEngine) obj;
-        if (this.quantificationEngineType != other.quantificationEngineType) {
-            return false;
-        }
-        return Objects.equals(this.version, other.version);
-    }
-
 }

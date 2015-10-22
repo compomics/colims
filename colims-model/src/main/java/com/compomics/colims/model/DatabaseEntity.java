@@ -1,13 +1,7 @@
 package com.compomics.colims.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
 /**
  * This abstract class is the parent class of all database entity classes.
@@ -20,9 +14,8 @@ public abstract class DatabaseEntity implements Serializable {
     private static final long serialVersionUID = 5095854000948409265L;
 
     /**
-     * The entity ID in the database. This will be set by the persistence
-     * provider for new entities. The GenerationType.IDENTITY means that the
-     * persistence provider must assign primary keys for the entity using a
+     * The entity ID in the database. This will be set by the persistence provider for new entities. The
+     * GenerationType.IDENTITY means that the persistence provider must assign primary keys for the entity using a
      * database identity column.
      */
     @Id
@@ -52,5 +45,21 @@ public abstract class DatabaseEntity implements Serializable {
 
     public void setId(final Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DatabaseEntity that = (DatabaseEntity) o;
+
+        return !(id != null ? !id.equals(that.id) : that.id != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

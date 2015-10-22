@@ -8,7 +8,6 @@ package com.compomics.colims.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import java.util.Objects;
 
 /**
  * Abstract parent class for modification entities.
@@ -116,29 +115,6 @@ public abstract class AbstractModification extends DatabaseEntity {
 
     public void setAverageMassShift(Double averageMassShift) {
         this.averageMassShift = averageMassShift;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.accession);
-        hash = 71 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractModification other = (AbstractModification) obj;
-        if (!Objects.equals(this.accession, other.accession)) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
     }
 
 }

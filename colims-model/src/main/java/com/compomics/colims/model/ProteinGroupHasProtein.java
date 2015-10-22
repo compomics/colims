@@ -72,28 +72,4 @@ public class ProteinGroupHasProtein extends DatabaseEntity {
     public void setProtein(final Protein protein) {
         this.protein = protein;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProteinGroupHasProtein that = (ProteinGroupHasProtein) o;
-
-        if (!isMainGroupProtein.equals(that.isMainGroupProtein)) return false;
-        if (proteinAccession != null ? !proteinAccession.equals(that.proteinAccession) : that.proteinAccession != null)
-            return false;
-        if (!proteinGroup.equals(that.proteinGroup)) return false;
-        return protein.equals(that.protein);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = isMainGroupProtein.hashCode();
-        result = 31 * result + (proteinAccession != null ? proteinAccession.hashCode() : 0);
-        result = 31 * result + proteinGroup.hashCode();
-        result = 31 * result + protein.hashCode();
-        return result;
-    }
 }

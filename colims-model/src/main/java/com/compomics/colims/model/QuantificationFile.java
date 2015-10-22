@@ -5,7 +5,6 @@ import com.compomics.colims.model.enums.BinaryFileType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Niels Hulstaert
@@ -93,32 +92,4 @@ public class QuantificationFile extends DatabaseEntity {
     public void setQuantification(List<Quantification> quantification) {
         this.quantification = quantification;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 47 * hash + Objects.hashCode(this.fileName);
-        hash = 47 * hash + Objects.hashCode(this.filePath);
-        hash = 47 * hash + Objects.hashCode(this.binaryFileType);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final QuantificationFile other = (QuantificationFile) obj;
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
-        if (!Objects.equals(this.filePath, other.filePath)) {
-            return false;
-        }
-        return this.binaryFileType == other.binaryFileType;
-    }
-
 }

@@ -1,16 +1,11 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a permission entity in the database.
@@ -81,29 +76,6 @@ public class Permission extends AuditableDatabaseEntity {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 31 * hash + Objects.hashCode(this.id);
-        hash = 31 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Permission other = (Permission) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
     }
 
     @Override

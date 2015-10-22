@@ -1,24 +1,17 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This class represents a role entity in the database. The table name is
- * "group_role" because "role" is a reserved keyword.
+ * This class represents a role entity in the database. The table name is "group_role" because "role" is a reserved
+ * keyword.
  *
  * @author Niels Hulstaert
  */
@@ -55,9 +48,9 @@ public class Role extends AuditableDatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "role_has_permission",
             joinColumns = {
-        @JoinColumn(name = "l_role_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_role_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-        @JoinColumn(name = "l_permission_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_permission_id", referencedColumnName = "id")})
     private List<Permission> permissions = new ArrayList<>();
 
     /**
@@ -105,29 +98,6 @@ public class Role extends AuditableDatabaseEntity {
 
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + Objects.hashCode(this.id);
-        hash = 83 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Role other = (Role) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
     }
 
     @Override

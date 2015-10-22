@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a protocol entity in the database.
@@ -152,49 +151,6 @@ public class Protocol extends AuditableDatabaseEntity {
 
     public void setOtherCvParams(List<ProtocolCvParam> otherCvTerms) {
         this.otherCvParams = otherCvTerms;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.name);
-        hash = 37 * hash + Objects.hashCode(this.reduction);
-        hash = 37 * hash + Objects.hashCode(this.enzyme);
-        hash = 37 * hash + Objects.hashCode(this.cellBased);
-        hash = 37 * hash + Objects.hashCode(this.samples);
-        hash = 37 * hash + Objects.hashCode(this.chemicalLabels);
-        hash = 37 * hash + Objects.hashCode(this.otherCvParams);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Protocol other = (Protocol) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.reduction, other.reduction)) {
-            return false;
-        }
-        if (!Objects.equals(this.enzyme, other.enzyme)) {
-            return false;
-        }
-        if (!Objects.equals(this.cellBased, other.cellBased)) {
-            return false;
-        }
-        if (!Objects.equals(this.samples, other.samples)) {
-            return false;
-        }
-        if (!Objects.equals(this.chemicalLabels, other.chemicalLabels)) {
-            return false;
-        }
-        return Objects.equals(this.otherCvParams, other.otherCvParams);
     }
 
     @Override

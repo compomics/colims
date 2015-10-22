@@ -1,24 +1,18 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.BinaryFileType;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
+
+import javax.persistence.*;
 
 /**
- * This parent class of all entity attachments (project, experiment, ...). The
- * attachment is stored as a binary lob in the database and has a file name and
- * a type.
+ * This parent class of all entity attachments (project, experiment, ...). The attachment is stored as a binary lob in
+ * the database and has a file name and a type.
  *
  * @author Niels Hulstaert
  */
 @MappedSuperclass
 public class BinaryFile extends AuditableDatabaseEntity {
-    
+
     private static final long serialVersionUID = -5581612780987474005L;
 
     /**
@@ -84,29 +78,6 @@ public class BinaryFile extends AuditableDatabaseEntity {
     @Override
     public String toString() {
         return fileName + " (" + binaryFileType + ")";
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.fileName);
-        hash = 41 * hash + Objects.hashCode(this.binaryFileType);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final BinaryFile other = (BinaryFile) obj;
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
-        return this.binaryFileType == other.binaryFileType;
     }
 
 }

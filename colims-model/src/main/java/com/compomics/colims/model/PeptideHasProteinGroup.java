@@ -1,10 +1,6 @@
 package com.compomics.colims.model;
 
-import com.compomics.colims.model.util.CompareUtils;
-
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * This class represents the join table between the peptide and protein group tables.
@@ -73,30 +69,5 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
 
     public void setProteinGroup(ProteinGroup proteinGroup) {
         this.proteinGroup = proteinGroup;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PeptideHasProteinGroup that = (PeptideHasProteinGroup) o;
-
-        if (peptideProbability != null ? !CompareUtils.equals(peptideProbability, that.peptideProbability) : that.peptideProbability != null)
-            return false;
-        if (peptidePostErrorProbability != null ? !CompareUtils.equals(peptidePostErrorProbability, that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null)
-            return false;
-        if (peptide != null ? !peptide.equals(that.peptide) : that.peptide != null) return false;
-        return !(proteinGroup != null ? !proteinGroup.equals(that.proteinGroup) : that.proteinGroup != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = peptideProbability != null ? peptideProbability.hashCode() : 0;
-        result = 31 * result + (peptidePostErrorProbability != null ? peptidePostErrorProbability.hashCode() : 0);
-        result = 31 * result + (peptide != null ? peptide.hashCode() : 0);
-        result = 31 * result + (proteinGroup != null ? proteinGroup.hashCode() : 0);
-        return result;
     }
 }

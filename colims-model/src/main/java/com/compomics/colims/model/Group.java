@@ -1,25 +1,17 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This class represents a group entity in the database. The table name is
- * "user_group" because "group" is a reserved keyword.
+ * This class represents a group entity in the database. The table name is "user_group" because "group" is a reserved
+ * keyword.
  *
  * @author Niels Hulstaert
  */
@@ -56,9 +48,9 @@ public class Group extends AuditableDatabaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "group_has_role",
             joinColumns = {
-                @JoinColumn(name = "l_group_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_group_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_role_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
     /**
@@ -106,29 +98,6 @@ public class Group extends AuditableDatabaseEntity {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.id);
-        hash = 17 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Group other = (Group) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
     }
 
     @Override

@@ -10,7 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents an instrument entity in the database.
@@ -132,41 +131,6 @@ public class Instrument extends AuditableDatabaseEntity {
 
     public void setAnalyzers(List<InstrumentCvParam> analyzers) {
         this.analyzers = analyzers;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.name);
-        hash = 67 * hash + Objects.hashCode(this.type);
-        hash = 67 * hash + Objects.hashCode(this.source);
-        hash = 67 * hash + Objects.hashCode(this.detector);
-        hash = 67 * hash + Objects.hashCode(this.analyzers);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Instrument other = (Instrument) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.type, other.type)) {
-            return false;
-        }
-        if (!Objects.equals(this.source, other.source)) {
-            return false;
-        }
-        if (!Objects.equals(this.detector, other.detector)) {
-            return false;
-        }
-        return Objects.equals(this.analyzers, other.analyzers);
     }
 
     @Override
