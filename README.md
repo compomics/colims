@@ -17,7 +17,7 @@ The [CompOmics](http://www.compomics.com) LIMS system, designed as the next-gene
 
 ## Downloads
 
-Download Colims 1.3.2-SNAPSHOT [here](http://genesis.ugent.be/colims/colims-1.3.2-SNAPSHOT.7z). Download the linux version of ActiveMQ [here](http://genesis.ugent.be/colims/apache-activemq-5.9.0.tar.gz).
+Download Colims 1.3.2-SNAPSHOT [here](http://genesis.ugent.be/colims/colims-1.3.2-SNAPSHOT.7z). Download the linux version of ActiveMQ [here](http://genesis.ugent.be/colims/apache-activemq-5.9.0.tar.gz) .
 
 [Go to top of page](#colims)
 
