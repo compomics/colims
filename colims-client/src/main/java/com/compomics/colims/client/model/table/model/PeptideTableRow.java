@@ -1,7 +1,7 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Representation of a row in the peptides for protein group table. One row represents a distinct peptide sequence +
+ * Representation of a row in the peptides for the protein group table. One row represents a distinct peptide sequence +
  * modifications entity for a given protein group.
  * <p/>
  * Created by Iain on 08/07/2015.
@@ -20,6 +20,10 @@ public class PeptideTableRow {
      * The peptide sequence.
      */
     private final String sequence;
+    /**
+     * The main group protein sequence.
+     */
+    private final String proteinSequence;
     /**
      * The peptide annotated sequence.
      */
@@ -33,11 +37,31 @@ public class PeptideTableRow {
      * Constructor.
      *
      * @param peptideDTO the PeptideDTO instance
+     * @param proteinSequence the main group protein sequence
      */
-    public PeptideTableRow(PeptideDTO peptideDTO) {
-        sequence = peptideDTO.getPeptide().getSequence();
-        annotatedSequence = new StringBuilder();
+    public PeptideTableRow(PeptideDTO peptideDTO, String proteinSequence) {
+        this.sequence = peptideDTO.getPeptide().getSequence();
+        this.proteinSequence = proteinSequence;
         peptideDTOs.add(peptideDTO);
+        annotatedSequence = new StringBuilder();
+    }
+
+    /**
+     * Get the peptide sequence
+     *
+     * @return the peptide sequence String
+     */
+    public String getSequence() {
+        return sequence;
+    }
+
+    /**
+     * Get the main group protein sequence.
+     *
+     * @return the protein sequence String
+     */
+    public String getProteinSequence() {
+        return proteinSequence;
     }
 
     /**
@@ -53,10 +77,11 @@ public class PeptideTableRow {
         }
     }
 
-    public String getSequence() {
-        return sequence;
-    }
-
+    /**
+     * Get the number of spectra associated with this row.
+     *
+     * @return the number of spectra
+     */
     public long getSpectrumCount() {
         return peptideDTOs.size();
     }
@@ -76,15 +101,24 @@ public class PeptideTableRow {
     }
 
     /**
-     * Get the list of spectra.
+     * Get the number of protein groups linked to this peptide row.
      *
-     * @return the list of spectra
+     * @return
      */
-    public List<Spectrum> getSpectra() {
-        List<Spectrum> spectra = new ArrayList<>(peptideDTOs.size());
-        spectra.addAll(peptideDTOs.stream().map(peptideDTO -> peptideDTO.getPeptide().getSpectrum()).collect(Collectors.toList()));
+    public long getProteinGroupCount() {
+        return peptideDTOs.get(0).getProteinGroupCount();
+    }
 
-        return spectra;
+    /**
+     * Get the list of peptides for this row.
+     *
+     * @return the list of peptides
+     */
+    public List<Peptide> getPeptides() {
+        List<Peptide> peptides = new ArrayList<>(peptideDTOs.size());
+        peptides.addAll(peptideDTOs.stream().map(PeptideDTO::getPeptide).collect(Collectors.toList()));
+
+        return peptides;
     }
 
     /**

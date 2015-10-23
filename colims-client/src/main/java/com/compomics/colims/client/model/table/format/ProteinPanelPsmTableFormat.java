@@ -1,20 +1,18 @@
-package com.compomics.colims.client.model.tableformat;
+package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
-import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.SpectrumService;
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 
 import java.util.Comparator;
 
 /**
- * Spectrum table format for the protein panel
- *
+ * Spectrum table format for the protein panel.
+ * <p/>
  * Created by Iain on 27/07/2015.
  */
-public class ProteinPanelPsmTableFormat extends PsmTableFormat {
-    private SpectrumService spectrumService;
+public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> {
 
     private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Confidence"};
 
@@ -24,10 +22,6 @@ public class ProteinPanelPsmTableFormat extends PsmTableFormat {
     public static final int PRECURSOR_INTENSITY = 3;
     public static final int RETENTION_TIME = 4;
     public static final int PSM_CONFIDENCE = 5;
-
-    public ProteinPanelPsmTableFormat() {
-        spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
-    }
 
     @Override
     public Class getColumnClass(int column) {
@@ -65,8 +59,8 @@ public class ProteinPanelPsmTableFormat extends PsmTableFormat {
     }
 
     @Override
-    public Object getColumnValue(Spectrum spectrum, int column) {
-        Peptide peptide = spectrumService.getRepresentativePeptide(spectrum);
+    public Object getColumnValue(Peptide peptide, int column) {
+        Spectrum spectrum = peptide.getSpectrum();
 
         switch (column) {
             case SPECTRUM_ID:

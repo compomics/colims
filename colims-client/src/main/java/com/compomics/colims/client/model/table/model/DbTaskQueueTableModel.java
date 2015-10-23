@@ -1,9 +1,8 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.DbTask;
-import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,11 +14,11 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Niels Hulstaert
  */
-public class DbTaskErrorQueueTableModel extends AbstractTableModel {
+public class DbTaskQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
-    private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "error"};
+    private final String[] columnNames = {"index", "ID", "type", "submitted on", "description", "user"};
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     public static final int QUEUE_INDEX = 0;
@@ -28,43 +27,34 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
     public static final int SUBMITTED_INDEX = 3;
     public static final int DESCRIPTION_INDEX = 4;
     public static final int USER_INDEX = 5;
-    public static final int ERROR_INDEX = 6;
-    private List<DbTaskError> messages;
+    private List<PersistDbTask> messages;
     private UserService userService;
 
-    public DbTaskErrorQueueTableModel() {
+    public DbTaskQueueTableModel() {
         messages = new ArrayList<>();
         userService = ApplicationContextProvider.getInstance().getBean("userService");
     }
 
-    public DbTaskErrorQueueTableModel(List<DbTaskError> messages) {
+    public DbTaskQueueTableModel(List<PersistDbTask> messages) {
         this.messages = messages;
     }
 
-    public List<DbTaskError> getMessages() {
+    public List<PersistDbTask> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<DbTaskError> messages) {
+    public void setMessages(List<PersistDbTask> messages) {
         this.messages = messages;
         this.fireTableDataChanged();
     }
 
     /**
-     * Remove the storage error with the given index.
+     * Remove the storage task with the given index.
      *
-     * @param index the index of the storage error that needs to be removed.
+     * @param index the index of the storage task that needs to be removed.
      */
     public void remove(int index) {
         messages.remove(index);
-        this.fireTableDataChanged();
-    }
-
-    /**
-     * Remove all messages.
-     */
-    public void removeAll() {
-        messages.clear();
         this.fireTableDataChanged();
     }
 
@@ -85,8 +75,7 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        DbTaskError dbTaskError = messages.get(rowIndex);
-        DbTask dbTask = dbTaskError.getDbTask();
+        DbTask dbTask = messages.get(rowIndex);
 
         switch (columnIndex) {
             case QUEUE_INDEX:
@@ -109,11 +98,8 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
                 }
             case USER_INDEX:
                 return userService.findUserNameById(dbTask.getUserId());
-            case ERROR_INDEX:
-                return dbTaskError.getCause().getClass().getSimpleName();
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }
-
     }
 }

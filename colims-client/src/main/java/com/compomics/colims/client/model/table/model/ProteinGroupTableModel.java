@@ -1,8 +1,8 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
-import com.compomics.colims.client.model.tableformat.ProteinGroupTableFormat;
+import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;

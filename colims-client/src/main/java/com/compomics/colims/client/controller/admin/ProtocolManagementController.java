@@ -9,7 +9,7 @@ import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
-import com.compomics.colims.client.model.TypedCvParamTableModel;
+import com.compomics.colims.client.model.table.model.TypedCvParamTableModel;
 import com.compomics.colims.client.renderer.TypedCvParamSummaryCellRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.protocol.ProtocolEditDialog;

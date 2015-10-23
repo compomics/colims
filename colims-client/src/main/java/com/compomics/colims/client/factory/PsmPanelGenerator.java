@@ -41,18 +41,18 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class generates a spectrum panel for a given spectrum.
+ * This class generates a spectrum panel for a given PSM.
  *
  * @author Niels Hulstaert
  */
-@Component("spectrumPanelGenerator")
+@Component("psmPanelGenerator")
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SpectrumPanelGenerator {
+public class PsmPanelGenerator {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
+    private static final Logger LOGGER = Logger.getLogger(PsmPanelGenerator.class);
 
     @Autowired
     private SpectrumService spectrumService;
@@ -67,7 +67,7 @@ public class SpectrumPanelGenerator {
      * The ID of the current analytical run.
      */
     private Long analyticalRunId = Long.MIN_VALUE;
-    private SearchParameters utiltiesSearchParameters;
+    private SearchParameters utilitiesSearchParameters;
     private AnnotationSettings annotationSettings;
     private UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
@@ -84,23 +84,25 @@ public class SpectrumPanelGenerator {
             analyticalRunId = analyticalRun.getId();
 
             com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
-            utiltiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
+            utilitiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
 
             //use the search parameters to set up the annotation settings
-            annotationSettings = new AnnotationSettings(utiltiesSearchParameters);
+            annotationSettings = new AnnotationSettings(utilitiesSearchParameters);
         }
     }
 
     /**
-     * Add the Utilities SpectrumPanel for the given spectrum to the given JPanel.
+     * Add the Utilities SpectrumPanel for the given PSM to the given JPanel.
      *
-     * @param spectrum                          the Spectrum instance
+     * @param peptide                           the Peptide instance
      * @param spectrumParentPanel               the parent panel where the spectrum will be added to
      * @param secondarySpectrumPlotsParentPanel the parent panel were the secondary spectrum plots will be added to
      */
-    public void addSpectrum(Spectrum spectrum, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
-        //fetch the spectrum files and peptides associated with this spectrum
-        spectrumService.fetchSpectrumFilesAndPeptides(spectrum);
+    public void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
+        Spectrum spectrum = peptide.getSpectrum();
+
+        //fetch the spectrum files associated with this spectrum
+        spectrumService.fetchSpectrumFiles(spectrum);
 
         MSnSpectrum msnSpectrum = new MSnSpectrum();
         //map the Colims Spectrum instance onto the Utilities MSnSpectrum instance
@@ -157,8 +159,8 @@ public class SpectrumPanelGenerator {
                 spectrumPanel.addAutomaticDeNovoSequencing(
                         peptideAssumption.getPeptide(),
                         annotations,
-                        utiltiesSearchParameters.getIonSearched1(),
-                        utiltiesSearchParameters.getIonSearched2(),
+                        utilitiesSearchParameters.getIonSearched1(),
+                        utilitiesSearchParameters.getIonSearched2(),
                         annotationSettings.getDeNovoCharge(),
                         annotationSettings.showForwardIonDeNovoTags(),
                         annotationSettings.showRewindIonDeNovoTags(),
@@ -171,9 +173,9 @@ public class SpectrumPanelGenerator {
                         getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
                         annotations,
                         true,
-                        utiltiesSearchParameters.getPtmSettings(),
-                        utiltiesSearchParameters.getIonSearched1(),
-                        utiltiesSearchParameters.getIonSearched2()
+                        utilitiesSearchParameters.getPtmSettings(),
+                        utilitiesSearchParameters.getIonSearched1(),
+                        utilitiesSearchParameters.getIonSearched2()
                 );
 
                 secondarySpectrumPlotsParentPanel.removeAll();
@@ -243,7 +245,7 @@ public class SpectrumPanelGenerator {
         }
 
         return com.compomics.util.experiment.biology.Peptide.getTaggedModifiedSequence(
-                utiltiesSearchParameters.getPtmSettings(),
+                utilitiesSearchParameters.getPtmSettings(),
                 peptide,
                 confidentLocations,
                 new HashMap<>(),

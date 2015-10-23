@@ -31,17 +31,16 @@ public class SequenceUtils {
      *
      * @param proteinSequence the protein sequence
      * @param peptideSequence the peptide sequence
-     * @return the PeptidePosition instance
+     * @return the list of PeptidePosition instance
      * @throws IllegalStateException error thrown if the peptide sequence could not be found in the protein sequence
      */
     public static List<PeptidePosition> getPeptidePositions(String proteinSequence, String peptideSequence) {
         List<PeptidePosition> peptidePositions = new ArrayList<>();
 
-        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(peptideSequence);
-        ArrayList<Integer> peptideStarts = aminoAcidPattern.getIndexes(proteinSequence, sequenceMatchingPreferences);
+        List<Integer> peptideStartIndexes = getPeptideStartIndexes(proteinSequence, peptideSequence);
 
-        if (!peptideStarts.isEmpty()) {
-            for (Integer peptideStart : peptideStarts) {
+        if (!peptideStartIndexes.isEmpty()) {
+            for (Integer peptideStart : peptideStartIndexes) {
                 PeptidePosition peptidePosition = new PeptidePosition();
 
                 //get start and end position
@@ -64,6 +63,20 @@ public class SequenceUtils {
         }
 
         return peptidePositions;
+    }
+
+    /**
+     * Get the peptide start indexes in the given protein sequence.
+     *
+     * @param proteinSequence the protein sequence
+     * @param peptideSequence the peptide sequence
+     * @return the list of peptide start indexes
+     */
+    public static List<Integer> getPeptideStartIndexes(String proteinSequence, String peptideSequence) {
+        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(peptideSequence);
+        ArrayList<Integer> peptideStarts = aminoAcidPattern.getIndexes(proteinSequence, sequenceMatchingPreferences);
+
+        return peptideStarts;
     }
 
     /**

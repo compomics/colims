@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model.tableformat;
+package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
@@ -10,14 +10,16 @@ import java.util.Comparator;
  *
  * @author Niels Hulstaert
  */
-public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
+public class ProjectManagementTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] COLUMN_NAMES = {"Id", "Title", "Label", "# exp"};
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Label", "Owner", "Created", "# experiments"};    
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
     public static final int LABEL = 2;
-    public static final int NUMBER_OF_EXPERIMENTS = 3;
+    public static final int OWNER = 3;
+    public static final int CREATED = 4;
+    public static final int NUMBER_OF_EXPERIMENTS = 5;
 
     @Override
     public Class getColumnClass(final int column) {
@@ -27,6 +29,10 @@ public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
             case TITLE:
                 return String.class;
             case LABEL:
+                return String.class;
+            case OWNER:
+                return String.class;
+            case CREATED:
                 return String.class;
             case NUMBER_OF_EXPERIMENTS:
                 return Integer.class;
@@ -59,6 +65,10 @@ public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
                 return project.getTitle();
             case LABEL:
                 return project.getLabel();
+            case OWNER:
+                return project.getOwner().getName();
+            case CREATED:
+                return DATE_FORMAT.format(project.getCreationDate());    
             case NUMBER_OF_EXPERIMENTS:
                 return project.getExperiments().size();
             default:

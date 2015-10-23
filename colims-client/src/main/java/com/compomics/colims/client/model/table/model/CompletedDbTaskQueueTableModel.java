@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.UserService;

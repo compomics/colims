@@ -1,8 +1,8 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
-import com.compomics.colims.client.model.tableformat.PsmTableFormat;
+import com.compomics.colims.client.model.table.format.PsmTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;

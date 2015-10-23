@@ -766,7 +766,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
      * Updates the spectrum annotation. Used when the user updates the annotation accuracy.
      */
     public void updateSpectrum() {
-        projectOverviewController.updateSpectrum();
+        projectOverviewController.updatePsm();
     }
 
     /**

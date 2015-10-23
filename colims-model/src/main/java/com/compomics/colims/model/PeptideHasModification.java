@@ -1,7 +1,6 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 
@@ -110,18 +109,14 @@ public class PeptideHasModification extends DatabaseEntity {
     }
 
     /**
-     * This method checks of the given PeptideHasModification instance has the same score and modification on the same
-     * location as this one.
+     * This method checks of the given PeptideHasModification instance has the same modification on the same location as
+     * this one.
      *
      * @param peptideHasModification the given PeptideHasModification instance
-     * @return true if it represents the same modification on the same location with the same score
+     * @return true if it represents the same modification on the same location
      */
-    public boolean isEqual(PeptideHasModification peptideHasModification) {
+    public boolean hasSameModification(PeptideHasModification peptideHasModification) {
         if (location != null ? !location.equals(peptideHasModification.location) : peptideHasModification.location != null)
-            return false;
-        if (probabilityScore != null ? !CompareUtils.equals(probabilityScore, peptideHasModification.probabilityScore) : peptideHasModification.probabilityScore != null)
-            return false;
-        if (deltaScore != null ? !CompareUtils.equals(deltaScore, peptideHasModification.deltaScore) : peptideHasModification.deltaScore != null)
             return false;
         if (modificationType != peptideHasModification.modificationType) return false;
         return modification.equals(peptideHasModification.modification);

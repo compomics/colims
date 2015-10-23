@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.ModificationType;
@@ -9,13 +9,18 @@ import java.util.List;
 
 /**
  * A model to define the data to be exported for the PeptideTableRow object
- *
+ * <p/>
  * Created by Iain on 17/09/2015.
  */
 public class PeptideExportModel extends AbstractTableModel {
+
     private static final String[] columnNames = {"Sequence", "Charge", "Spectra", "Fixed Modifications", "Variable Modifications"};
 
     private List<PeptideTableRow> peptideTableRows = new ArrayList<>();
+
+    public void setPeptideTableRows(List<PeptideTableRow> peptideTableRows) {
+        this.peptideTableRows = peptideTableRows;
+    }
 
     @Override
     public int getRowCount() {
@@ -47,8 +52,8 @@ public class PeptideExportModel extends AbstractTableModel {
                 for (PeptideHasModification peptideHasModification : peptideTableRow.getPeptideHasModifications()) {
                     if (peptideHasModification.getModificationType() == (columnIndex == 3 ? ModificationType.FIXED : ModificationType.VARIABLE)) {
                         modifications += (modifications.length() > 0 ? ", " : "")
-                            + "(" + peptideHasModification.getModification().getName()
-                            + ", " + peptideHasModification.getLocation() + ")";
+                                + "(" + peptideHasModification.getModification().getName()
+                                + ", " + peptideHasModification.getLocation() + ")";
                     }
                 }
 
@@ -56,9 +61,5 @@ public class PeptideExportModel extends AbstractTableModel {
             default:
                 throw new IllegalArgumentException("Unexpected column number " + columnIndex);
         }
-    }
-
-    public void setPeptides(List<PeptideTableRow> peptideTableRows) {
-        this.peptideTableRows = peptideTableRows;
     }
 }

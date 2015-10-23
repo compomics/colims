@@ -77,7 +77,7 @@ public class PeptideDTO {
         if (peptidePostErrorProbability != null ? !peptidePostErrorProbability.equals(that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null) {
             return false;
         }
-        return peptide.equalsWithoutCharge(that.getPeptide());
+        return peptide.representsSamePeptide(that.getPeptide());
     }
 
     @Override

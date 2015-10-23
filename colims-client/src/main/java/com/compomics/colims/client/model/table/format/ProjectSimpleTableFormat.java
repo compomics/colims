@@ -1,8 +1,8 @@
-package com.compomics.colims.client.model.tableformat;
+package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.Project;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
@@ -10,25 +10,25 @@ import java.util.Comparator;
  *
  * @author Niels Hulstaert
  */
-public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experiment> {
+public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String[] COLUMN_NAMES = {"Id", "Title", "Number", "# samp"};
-    public static final int EXPERIMENT_ID = 0;
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Label", "# exp"};
+    public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;
-    public static final int NUMBER = 2;
-    public static final int NUMBER_OF_SAMPLES = 3;
+    public static final int LABEL = 2;
+    public static final int NUMBER_OF_EXPERIMENTS = 3;
 
     @Override
     public Class getColumnClass(final int column) {
         switch (column) {
-            case EXPERIMENT_ID:
+            case PROJECT_ID:
                 return Long.class;
             case TITLE:
                 return String.class;
-            case NUMBER:
-                return Long.class;
-            case NUMBER_OF_SAMPLES:
+            case LABEL:
+                return String.class;
+            case NUMBER_OF_EXPERIMENTS:
                 return Integer.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
@@ -51,16 +51,16 @@ public class ExperimentSimpleTableFormat implements AdvancedTableFormat<Experime
     }
 
     @Override
-    public Object getColumnValue(final Experiment experiment, final int column) {
+    public Object getColumnValue(final Project project, final int column) {
         switch (column) {
-            case EXPERIMENT_ID:
-                return experiment.getId();
+            case PROJECT_ID:
+                return project.getId();
             case TITLE:
-                return experiment.getTitle();
-            case NUMBER:
-                return experiment.getNumber();
-            case NUMBER_OF_SAMPLES:
-                return experiment.getSamples().size();
+                return project.getTitle();
+            case LABEL:
+                return project.getLabel();
+            case NUMBER_OF_EXPERIMENTS:
+                return project.getExperiments().size();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }

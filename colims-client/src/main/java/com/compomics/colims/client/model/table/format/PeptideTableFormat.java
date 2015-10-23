@@ -1,27 +1,38 @@
-package com.compomics.colims.client.model.tableformat;
+package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.client.model.PeptideTableRow;
+import com.compomics.colims.client.model.table.model.PeptideTableRow;
+import com.compomics.colims.core.util.SequenceUtils;
+import no.uib.jsparklines.data.StartIndexes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Iain on 23/06/2015.
  */
 public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> {
 
-    private static final String[] columnNames = {"Sequence", "Charge", "Spectra"};
+    private static final String[] columnNames = {"Sequence", "PI", "Start", "Spectra", "Confidence"};
 
     public static final int SEQUENCE = 0;
-    public static final int SPECTRA = 1;
-    public static final int CONFIDENCE = 2;
+    public static final int PROTEIN_INFERENCE = 1;
+    public static final int START = 2;
+    public static final int SPECTRA = 3;
+    public static final int CONFIDENCE = 4;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
             case SEQUENCE:
                 return String.class;
+            case PROTEIN_INFERENCE:
+                return Long.class;
+            case START:
+                return StartIndexes.class;
             case SPECTRA:
                 return Integer.class;
             case CONFIDENCE:
@@ -51,6 +62,12 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
         switch (column) {
             case SEQUENCE:
                 return "<html>" + peptideTableRow.getAnnotatedSequence() + "</html>";
+            case PROTEIN_INFERENCE:
+                return peptideTableRow.getProteinGroupCount();
+            case START:
+                ArrayList<Integer> indexes = (ArrayList<Integer>) SequenceUtils.getPeptideStartIndexes(peptideTableRow.getProteinSequence(), peptideTableRow.getSequence());
+                Collections.sort(indexes);
+                return new StartIndexes(indexes);
             case SPECTRA:
                 return peptideTableRow.getSpectrumCount();
             case CONFIDENCE:

@@ -1,5 +1,6 @@
 package com.compomics.colims.client.model;
 
+import com.compomics.colims.client.model.table.model.PeptideTableRow;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
@@ -7,9 +8,6 @@ import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -82,7 +80,7 @@ public class PeptideTableRowTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testAddPeptideDTOMismatch() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1);
+        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
         peptideTableRow.addPeptideDTO(peptideDTO2);
     }
 
@@ -92,22 +90,22 @@ public class PeptideTableRowTest {
      */
     @Test
     public void testAddPeptideDTO() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1);
+        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
         peptideTableRow.addPeptideDTO(peptideDTO3);
 
         Assert.assertEquals(2, peptideTableRow.getSpectrumCount());
     }
 
     /**
-     * Test the annotated sequence of a PeptideDTO instance that holds a peptide with a modification.
+     * Test the annotated sequence of a PeptideDTO instance that holds a peptide with 2 modifications.
      */
     @Test
     public void testGetAnnotatedSequence() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1);
+        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
 
         String annotatedSequence = peptideTableRow.getAnnotatedSequence();
 
-        assertThat(annotatedSequence.length(), is(peptideDTO1.getPeptide().getSequence().length() + 7));
+        assertThat(annotatedSequence.length(), is(peptideDTO1.getPeptide().getSequence().length() + 14));
         assertThat(annotatedSequence, containsString("<b>"));
         assertThat(annotatedSequence, is(peptideTableRow.getAnnotatedSequence()));
     }

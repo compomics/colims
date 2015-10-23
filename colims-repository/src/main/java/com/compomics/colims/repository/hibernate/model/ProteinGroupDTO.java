@@ -1,7 +1,7 @@
 package com.compomics.colims.repository.hibernate.model;
 
 /**
- * This class represents a protein group data transfer object that holds some addititianol information about a protein
+ * This class represents a protein group data transfer object that holds some additional information about a protein
  * group (for a given run).
  * <p/>
  * Created by Niels Hulstaert on 14/10/15.

@@ -1,18 +1,16 @@
-package com.compomics.colims.client.model.tableformat;
+package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Sample;
-import java.text.SimpleDateFormat;
+
 import java.util.Comparator;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] COLUMN_NAMES = {"Id", "Name", "# runs"};
     public static final int SAMPLE_ID = 0;
     public static final int NAME = 1;
@@ -53,7 +51,7 @@ public class SampleSimpleTableFormat implements AdvancedTableFormat<Sample> {
             case SAMPLE_ID:
                 return sample.getId();
             case NAME:
-                return sample.getName();       
+                return sample.getName();
             case NUMBER_OF_RUNS:
                 return sample.getAnalyticalRuns().size();
             default:

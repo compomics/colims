@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 
 import ca.odell.glazedlists.EventList;

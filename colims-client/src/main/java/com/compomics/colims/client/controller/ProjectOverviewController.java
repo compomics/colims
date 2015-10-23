@@ -12,9 +12,9 @@ import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
-import com.compomics.colims.client.factory.SpectrumPanelGenerator;
-import com.compomics.colims.client.model.PsmTableModel;
-import com.compomics.colims.client.model.tableformat.*;
+import com.compomics.colims.client.factory.PsmPanelGenerator;
+import com.compomics.colims.client.model.table.format.*;
+import com.compomics.colims.client.model.table.model.PsmTableModel;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
@@ -69,9 +69,9 @@ public class ProjectOverviewController implements Controllable {
     private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
-    private final EventList<Spectrum> spectra = new BasicEventList<>();
-    private PsmTableModel psmsTableModel;
-    private DefaultEventSelectionModel<Spectrum> psmsSelectionModel;
+    private final EventList<Peptide> psms = new BasicEventList<>();
+    private PsmTableModel psmTableModel;
+    private DefaultEventSelectionModel<Peptide> psmSelectionModel;
     /**
      * The spectrum annotator.
      */
@@ -100,7 +100,7 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private SpectrumPanelGenerator spectrumPanelGenerator;
+    private PsmPanelGenerator psmPanelGenerator;
 
     /**
      * Get the view of this controller.
@@ -207,12 +207,12 @@ public class ProjectOverviewController implements Controllable {
                 projectOverviewPanel.getAnalyticalRunsTable(), sortedAnalyticalRuns, TableComparatorChooser.SINGLE_COLUMN);
 
         //init sample spectra table
-        SortedList<Spectrum> sortedPsms = new SortedList<>(spectra, null);
-        psmsTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
-        projectOverviewPanel.getPsmTable().setModel(psmsTableModel);
-        psmsSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
-        psmsSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        projectOverviewPanel.getPsmTable().setSelectionModel(psmsSelectionModel);
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, null);
+        psmTableModel = new PsmTableModel(sortedPsms, new PsmTableFormat());
+        projectOverviewPanel.getPsmTable().setModel(psmTableModel);
+        psmSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
+        psmSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        projectOverviewPanel.getPsmTable().setSelectionModel(psmSelectionModel);
 
         //set column widths
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.SPECTRUM_ID).setPreferredWidth(35);
@@ -269,28 +269,28 @@ public class ProjectOverviewController implements Controllable {
             AnalyticalRun selectedAnalyticalRun = getSelectedAnalyticalRun();
 
             if (!lse.getValueIsAdjusting() && selectedAnalyticalRun != null) {
-                psmsTableModel.reset(selectedAnalyticalRun);
+                psmTableModel.reset(selectedAnalyticalRun);
                 updatePsmTable();
 
                 //load search parameters for the given run
-                spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
+                psmPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
             }
 
             mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         });
 
-        psmsSelectionModel.addListSelectionListener(lse -> {
+        psmSelectionModel.addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
                 //update the spectrum panel
-                updateSpectrum();
+                updatePsm();
             }
         });
 
         projectOverviewPanel.getPsmTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                psmsTableModel.updateSort(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
-                psmsTableModel.setPage(0);
+                psmTableModel.updateSort(projectOverviewPanel.getPsmTable().columnAtPoint(e.getPoint()));
+                psmTableModel.setPage(0);
 
                 updatePsmTable();
             }
@@ -299,13 +299,13 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getNextPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                psmsTableModel.setPage(psmsTableModel.getPage() + 1);
+                psmTableModel.setPage(psmTableModel.getPage() + 1);
                 updatePsmTable();
 
                 projectOverviewPanel.getPrevPageSpectra().setEnabled(true);
                 projectOverviewPanel.getFirstPageSpectra().setEnabled(true);
 
-                if (psmsTableModel.isMaxPage()) {
+                if (psmTableModel.isMaxPage()) {
                     projectOverviewPanel.getNextPageSpectra().setEnabled(false);
                     projectOverviewPanel.getLastPageSpectra().setEnabled(false);
                 }
@@ -315,13 +315,13 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getPrevPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                psmsTableModel.setPage(psmsTableModel.getPage() - 1);
+                psmTableModel.setPage(psmTableModel.getPage() - 1);
                 updatePsmTable();
 
                 projectOverviewPanel.getNextPageSpectra().setEnabled(true);
                 projectOverviewPanel.getLastPageSpectra().setEnabled(true);
 
-                if (psmsTableModel.getPage() == 0) {
+                if (psmTableModel.getPage() == 0) {
                     projectOverviewPanel.getPrevPageSpectra().setEnabled(false);
                     projectOverviewPanel.getFirstPageSpectra().setEnabled(false);
                 }
@@ -331,7 +331,7 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getFirstPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                psmsTableModel.setPage(0);
+                psmTableModel.setPage(0);
                 updatePsmTable();
 
                 projectOverviewPanel.getNextPageSpectra().setEnabled(true);
@@ -344,7 +344,7 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getLastPageSpectra().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                psmsTableModel.setPage(psmsTableModel.getMaxPage());
+                psmTableModel.setPage(psmTableModel.getMaxPage());
                 updatePsmTable();
 
                 projectOverviewPanel.getNextPageSpectra().setEnabled(false);
@@ -366,7 +366,7 @@ public class ProjectOverviewController implements Controllable {
                 String filterText = projectOverviewPanel.getFilterSpectra().getText();
 
                 if (filterText.matches("^[a-zA-Z0-9]*$")) {
-                    psmsTableModel.setFilter(projectOverviewPanel.getFilterSpectra().getText());
+                    psmTableModel.setFilter(projectOverviewPanel.getFilterSpectra().getText());
 
                     updatePsmTable();
                 }
@@ -387,10 +387,10 @@ public class ProjectOverviewController implements Controllable {
 
         if (selectedAnalyticalRun != null) {
             setPsmTableCellRenderers();
-            GlazedLists.replaceAll(spectra, psmsTableModel.getRows(selectedAnalyticalRun), false);
-            projectOverviewPanel.getPageLabelSpectra().setText(psmsTableModel.getPageIndicator());
+            GlazedLists.replaceAll(psms, psmTableModel.getRows(selectedAnalyticalRun), false);
+            projectOverviewPanel.getPageLabelSpectra().setText(psmTableModel.getPageIndicator());
         } else {
-            GlazedLists.replaceAll(spectra, new ArrayList<>(), false);
+            GlazedLists.replaceAll(psms, new ArrayList<>(), false);
             projectOverviewPanel.getPageLabelSpectra().setText("");
         }
     }
@@ -459,14 +459,14 @@ public class ProjectOverviewController implements Controllable {
     /**
      * Update the spectrum to the currently selected PSM.
      */
-    public void updateSpectrum() {
-        Spectrum selectedSpectrum = getSelectedSpectrum();
+    public void updatePsm() {
+        Peptide selectedPsm = getSelectedPsm();
 
-        if (selectedSpectrum != null) {
+        if (selectedPsm != null) {
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
             try {
-                spectrumPanelGenerator.addSpectrum(selectedSpectrum, projectOverviewPanel.getSpectrumJPanel(), projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
+                psmPanelGenerator.addPsm(selectedPsm, projectOverviewPanel.getSpectrumJPanel(), projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
             } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
                 e.printStackTrace();
             }
@@ -607,14 +607,14 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Get the selected spectrum from the psm table.
+     * Get the selected PSM from the psm table.
      *
      * @return the selected spectrum, null if no psm is selected
      */
-    private Spectrum getSelectedSpectrum() {
-        Spectrum selectedPsm = null;
+    private Peptide getSelectedPsm() {
+        Peptide selectedPsm = null;
 
-        EventList<Spectrum> selectedPsms = psmsSelectionModel.getSelected();
+        EventList<Peptide> selectedPsms = psmSelectionModel.getSelected();
         if (!selectedPsms.isEmpty()) {
             selectedPsm = selectedPsms.get(0);
         }

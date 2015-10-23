@@ -5,7 +5,7 @@ import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.TypedCvParamTableModel2;
+import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;

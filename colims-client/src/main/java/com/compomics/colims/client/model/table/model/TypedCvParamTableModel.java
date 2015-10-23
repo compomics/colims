@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import java.util.ArrayList;

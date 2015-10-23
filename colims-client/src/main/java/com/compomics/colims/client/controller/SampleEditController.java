@@ -19,7 +19,7 @@ import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
-import com.compomics.colims.client.model.tableformat.AnalyticalRunManagementTableFormat;
+import com.compomics.colims.client.model.table.format.AnalyticalRunManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
