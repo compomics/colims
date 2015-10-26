@@ -9,7 +9,6 @@ import no.uib.jsparklines.data.StartIndexes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by Iain on 23/06/2015.
@@ -21,7 +20,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     public static final int SEQUENCE = 0;
     public static final int PROTEIN_INFERENCE = 1;
     public static final int START = 2;
-    public static final int SPECTRA = 3;
+    public static final int NUMBER_OF_SPECTRA = 3;
     public static final int CONFIDENCE = 4;
 
     @Override
@@ -33,7 +32,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
                 return Long.class;
             case START:
                 return StartIndexes.class;
-            case SPECTRA:
+            case NUMBER_OF_SPECTRA:
                 return Integer.class;
             case CONFIDENCE:
                 return Double.class;
@@ -68,7 +67,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
                 ArrayList<Integer> indexes = (ArrayList<Integer>) SequenceUtils.getPeptideStartIndexes(peptideTableRow.getProteinSequence(), peptideTableRow.getSequence());
                 Collections.sort(indexes);
                 return new StartIndexes(indexes);
-            case SPECTRA:
+            case NUMBER_OF_SPECTRA:
                 return peptideTableRow.getSpectrumCount();
             case CONFIDENCE:
                 return peptideTableRow.getPeptideConfidence();

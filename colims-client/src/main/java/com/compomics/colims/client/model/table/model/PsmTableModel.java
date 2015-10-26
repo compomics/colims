@@ -24,29 +24,28 @@ public class PsmTableModel extends PagingTableModel {
     /**
      * Constructor time.
      *
-     * @param source Something for the parent
+     * @param source      Something for the parent
      * @param tableFormat Something for the parent
      */
     public PsmTableModel(final EventList source, final TableFormat tableFormat) {
-        super(source, tableFormat);
+        super(source, tableFormat, 20, PsmTableFormat.SPECTRUM_ID);
         spectrumService = ApplicationContextProvider.getInstance().getBean("spectrumService");
     }
 
     /**
-     * Updates the row count and returns a list of spectra for the given search
-     * parameters.
+     * Updates the row count and returns a list of spectra for the given search parameters.
      *
      * @param analyticalRun The run from which spectra are queried
      * @return List of Spectrum objects
      */
     public List getRows(final AnalyticalRun analyticalRun) {
-        rowCount = spectrumService.getSpectraCountForRun(analyticalRun, sortColumn, filter);
+        rowCount = spectrumService.getSpectraCountForRun(analyticalRun, getColumnDbName(sortColumnIndex), filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return spectrumService.getPagedSpectra(analyticalRun, page * perPage, perPage, sortColumn, sortDirection.queryValue(), filter);
+        return spectrumService.getPagedSpectra(analyticalRun, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection.queryValue(), filter);
     }
 
     /**
@@ -55,7 +54,11 @@ public class PsmTableModel extends PagingTableModel {
      * @param analyticalRun An optional run to obtain spectra from
      */
     public void reset(final AnalyticalRun analyticalRun) {
-        super.reset(analyticalRun == null ? 0 : spectrumService.getSpectraCountForRun(analyticalRun, sortColumn, filter));
+        if (analyticalRun == null) {
+            super.reset();
+        } else {
+            super.reset(spectrumService.getSpectraCountForRun(analyticalRun, getColumnDbName(sortColumnIndex), filter));
+        }
     }
 
     /**

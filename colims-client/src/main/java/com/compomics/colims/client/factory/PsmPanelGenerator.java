@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class generates a spectrum panel for a given PSM.
+ * This class generates a spectrum panel for a PSM (Peptide-to-spectrum match).
  *
  * @author Niels Hulstaert
  */
@@ -111,6 +111,7 @@ public class PsmPanelGenerator {
         //construct the spectrum panel
         Collection<Peak> peaks = msnSpectrum.getPeakList();
 
+        //remove existing components
         spectrumParentPanel.removeAll();
 
         if (peaks != null && !peaks.isEmpty()) {

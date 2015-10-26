@@ -25,11 +25,13 @@ public class ProteinGroupTableModel extends PagingTableModel {
     /**
      * Constructor.
      *
-     * @param source      the EventList that holds the table data
-     * @param tableFormat the TableFormat instance of the table
+     * @param source                 the EventList that holds the table data
+     * @param tableFormat            the TableFormat instance of the table
+     * @param perPage                the number of rows per page
+     * @param defaultSortColumnIndex the default sort column
      */
-    public ProteinGroupTableModel(EventList source, TableFormat tableFormat) {
-        super(source, tableFormat);
+    public ProteinGroupTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {
+        super(source, tableFormat, perPage, defaultSortColumnIndex);
         proteinGroupService = ApplicationContextProvider.getInstance().getBean("proteinGroupService");
     }
 
@@ -66,7 +68,7 @@ public class ProteinGroupTableModel extends PagingTableModel {
             page = getMaxPage();
         }
 
-        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, sortColumn, sortDirection, filter);
+        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection, filter);
     }
 
     /**
@@ -75,6 +77,10 @@ public class ProteinGroupTableModel extends PagingTableModel {
      * @param analyticalRun the run where the protein groups are associated with
      */
     public void reset(final AnalyticalRun analyticalRun) {
-        super.reset(analyticalRun == null ? 0 : proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
+        if (analyticalRun == null) {
+            super.reset();
+        } else {
+            super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
+        }
     }
 }

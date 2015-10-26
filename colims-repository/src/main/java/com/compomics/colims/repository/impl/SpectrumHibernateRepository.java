@@ -5,6 +5,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
@@ -26,15 +27,15 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
      * Query string for paging method, alter at your peril.
      */
     private static final String BASE_QUERY = "SELECT DISTINCT spectrum.id, MAX(%3$s) FROM spectrum"
-        + " LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id"
-        + " LEFT JOIN peptide_has_protein_group ON peptide_has_protein_group.l_peptide_id = peptide.id"
-        + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id = protein_group.id"
-        + " LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_group_id = protein_group.id"
-        + " WHERE (spectrum.id LIKE '%2$s'"
-        + " OR peptide.peptide_sequence LIKE '%2$s'"
-        + " OR protein_group_has_protein.protein_accession LIKE '%2$s')"
-        + " AND spectrum.l_analytical_run_id = %1$d"
-        + " GROUP BY spectrum.id ";
+            + " LEFT JOIN peptide ON peptide.l_spectrum_id = spectrum.id"
+            + " LEFT JOIN peptide_has_protein_group ON peptide_has_protein_group.l_peptide_id = peptide.id"
+            + " LEFT JOIN protein_group ON protein_group.id = peptide_has_protein_group.l_protein_group_id = protein_group.id"
+            + " LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_group_id = protein_group.id"
+            + " WHERE (spectrum.id LIKE '%2$s'"
+            + " OR peptide.peptide_sequence LIKE '%2$s'"
+            + " OR protein_group_has_protein.protein_accession LIKE '%2$s')"
+            + " AND spectrum.l_analytical_run_id = %1$d"
+            + " GROUP BY spectrum.id ";
 
     @Override
     public List getPagedSpectra(final AnalyticalRun analyticalRun, final int start, final int length, final String orderBy, final String direction, final String filter) {
@@ -45,9 +46,9 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
                 + "OFFSET %6$d";
 
         final List idList = getCurrentSession()
-            .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
-            .addScalar("spectrum.id", LongType.INSTANCE)
-            .list();
+                .createSQLQuery(String.format(BASE_QUERY + extraParams, analyticalRun.getId(), "%" + filter + "%", orderBy, direction, length, start))
+                .addScalar("spectrum.id", LongType.INSTANCE)
+                .list();
 
         if (idList.size() > 0) {
             spectra = createCriteria().add(Restrictions.in("id", idList)).list();
@@ -63,14 +64,6 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     public int getSpectraCountForRun(final AnalyticalRun analyticalRun, final String orderBy, final String filter) {
         return getCurrentSession().createSQLQuery(String.format(BASE_QUERY, analyticalRun.getId(), "%" + filter + "%", orderBy))
                 .list().size();
-    }
-
-    @Override
-    public List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun) {
-        return createCriteria()
-            .add(Restrictions.eq("analyticalRun", analyticalRun))
-            .setProjection(Projections.property("id"))
-            .list();
     }
 
     @Override
@@ -146,7 +139,25 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     @Override
     public Peptide getRepresentativePeptide(final Spectrum spectrum) {
         return (Peptide) getCurrentSession().createCriteria(Peptide.class)
-            .add(Restrictions.eq("spectrum", spectrum))
-            .uniqueResult();
+                .add(Restrictions.eq("spectrum", spectrum))
+                .uniqueResult();
+    }
+
+    @Override
+    public Object[] getSpectraProjections(AnalyticalRun analyticalRun) {
+        Criteria criteria = getCurrentSession().createCriteria(Spectrum.class);
+
+        criteria.add(Restrictions.eq("analyticalRun.id", analyticalRun.getId()));
+
+        ProjectionList projectionList = Projections.projectionList();
+        projectionList.add(Projections.min("retentionTime"));
+        projectionList.add(Projections.max("retentionTime"));
+        projectionList.add(Projections.min("mzRatio"));
+        projectionList.add(Projections.max("mzRatio"));
+        projectionList.add(Projections.min("charge"));
+        projectionList.add(Projections.max("charge"));
+        criteria.setProjection(projectionList);
+
+        return (Object[]) criteria.uniqueResult();
     }
 }

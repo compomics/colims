@@ -2,9 +2,6 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.ProteinAccessionService;
-import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 
 import java.util.Comparator;
@@ -23,24 +20,6 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
     public static final int NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES = 3;
     public static final int NUMBER_OF_SPECTRA = 4;
     public static final int CONFIDENCE = 5;
-
-    /**
-     * The ProteinAccessionService instance.
-     */
-    private ProteinAccessionService proteinAccessionService;
-    /**
-     * The ProteinGroupService instance.
-     */
-    private ProteinGroupService proteinGroupService;
-
-    /**
-     * No-arg constructor. The service beans are retrieved from the application context and assigned to the
-     * corresponding class fields.
-     */
-    public ProteinGroupTableFormat() {
-        this.proteinAccessionService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinAccessionService.class);
-        this.proteinGroupService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(ProteinGroupService.class);
-    }
 
     @Override
     public Class getColumnClass(int column) {

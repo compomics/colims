@@ -26,9 +26,13 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      */
     protected long rowCount;
     /**
-     * The name of the column that will be sorted on.
+     * The index of the default sorting column.
      */
-    protected String sortColumn;
+    protected int defaultSortColumnIndex;
+    /**
+     * The index of the column that will be sorted on.
+     */
+    protected int sortColumnIndex;
     /**
      * The direction in which the sort column has to be sorted.
      */
@@ -38,23 +42,40 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      */
     protected String filter;
 
-    public PagingTableModel(EventList source, TableFormat tableFormat) {
+    /**
+     * Constructor.
+     *
+     * @param source                 the source event list
+     * @param tableFormat            the table format
+     * @param perPage                the number of rows per page
+     * @param defaultSortColumnIndex the default sort column
+     */
+    public PagingTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {
         super(source, tableFormat);
+        this.perPage = perPage;
+        this.defaultSortColumnIndex = defaultSortColumnIndex;
+        sortColumnIndex = defaultSortColumnIndex;
         reset(0);
     }
 
     /**
-     * Reset the table to default values, either empty or with data.
-     *
-     * @param rows number of rows to populate the table with
+     * Reset the table to default values.
      */
-    public void reset(long rows) {
+    public void reset() {
+        sortColumnIndex = defaultSortColumnIndex;
+        reset(0);
+    }
+
+    /**
+     * Reset the table to default values, for the given row count.
+     *
+     * @param rowCount number of rows to populate the table with
+     */
+    public void reset(long rowCount) {
+        this.rowCount = rowCount;
         page = 0;
-        perPage = 20;
-        sortColumn = getColumnDbName(0);
         sortDirection = SortDirection.ASCENDING;
         filter = "";
-        rowCount = rows;
     }
 
     /**
@@ -68,16 +89,13 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     /**
      * Update the sort column or reverse direction if same column specified.
      *
-     * @param index column index
+     * @param sortColumnIndex the sort column index
      */
-    public void updateSort(int index) {
-        //TODO: further reduce this
-        String column = getColumnDbName(index);
-
-        if (column.equals(sortColumn)) {
+    public void updateSort(int sortColumnIndex) {
+        if (this.sortColumnIndex == sortColumnIndex) {
             sortDirection = sortDirection == SortDirection.ASCENDING ? SortDirection.DESCENDING : SortDirection.ASCENDING;
         } else {
-            sortColumn = column;
+            this.sortColumnIndex = sortColumnIndex;
             sortDirection = SortDirection.ASCENDING;
         }
     }

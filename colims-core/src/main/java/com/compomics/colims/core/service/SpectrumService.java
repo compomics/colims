@@ -17,15 +17,6 @@ import java.util.Map;
 public interface SpectrumService extends GenericService<Spectrum, Long> {
 
     /**
-     * Get the spectrum peaks as a map (key: mz ratio, value: intensity) by the spectrum id.
-     *
-     * @param spectrumId the spectrum id
-     * @return the peak map
-     * @throws java.io.IOException the IOException
-     */
-    Map<Double, Double> getSpectrumPeaks(Long spectrumId) throws IOException;
-
-    /**
      * Get the spectrum peaks as a map (key: mz ratio, value: intensity) from the SpectrumFile.
      *
      * @param spectrumFile the SpectrumFile
@@ -91,18 +82,20 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
 
     /**
+     * Get the spectra projections for the given run (Min and max retention time values, min en max M/Z values, min and
+     * max charge values).
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     * @return the spectra projection values for the given run
+     */
+    Object[] getSpectraProjections(final AnalyticalRun analyticalRun);
+
+    /**
      * Fetch the spectrum spectrumFiles.
      *
      * @param spectrum the Spectrum instance
      */
     void fetchSpectrumFiles(Spectrum spectrum);
-
-    /**
-     * Fetch the spectrum spectrum files and peptides related to the given spectrum.
-     *
-     * @param spectrum the Spectrum instance
-     */
-    void fetchSpectrumFilesAndPeptides(Spectrum spectrum);
 
     /**
      * Return a list of spectra according to all these parameters.
@@ -126,14 +119,6 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * @return Row count
      */
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
-
-    /**
-     * Returns a list of spectrum ids associated with a given run.
-     *
-     * @param analyticalRun The analytical run
-     * @return List of IDs
-     */
-    List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
 
     Peptide getRepresentativePeptide(final Spectrum spectrum);
 }

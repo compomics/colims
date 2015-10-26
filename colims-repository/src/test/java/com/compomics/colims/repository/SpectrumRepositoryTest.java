@@ -3,6 +3,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,13 +24,12 @@ import java.util.List;
 @TransactionConfiguration(defaultRollback = true)
 public class SpectrumRepositoryTest extends TestCase {
 
+    private AnalyticalRun analyticalRun;
+
     @Autowired
     AnalyticalRunRepository analyticalRunRepository;
-
     @Autowired
     SpectrumRepository spectrumRepository;
-
-    private AnalyticalRun analyticalRun;
 
     @Before
     @Override
@@ -48,7 +48,7 @@ public class SpectrumRepositoryTest extends TestCase {
     public void testSorting() {
         List<Spectrum> spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "retention_time", "desc", "");
 
-        assertTrue(spectrumList.get(0).getRetentionTime() <= analyticalRun.getSpectrums().get(0).getRetentionTime());
+        assertTrue(spectrumList.get(1).getRetentionTime() <= analyticalRun.getSpectrums().get(0).getRetentionTime());
     }
 
     @Test
@@ -56,5 +56,18 @@ public class SpectrumRepositoryTest extends TestCase {
         int count = spectrumRepository.getSpectraCountForRun(analyticalRun, "spectrum.id", "");
 
         assertTrue(count > 0);
+    }
+
+    @Test
+    public void testGetSpectraProjections() {
+        Object[] spectraProjections = spectrumRepository.getSpectraProjections(analyticalRun);
+
+        Assert.assertEquals(6, spectraProjections.length);
+        Assert.assertEquals(24.3, (Double) spectraProjections[0], 0.01);
+        Assert.assertEquals(26.0, (Double) spectraProjections[1], 0.01);
+        Assert.assertEquals(555.3, (Double) spectraProjections[2], 0.01);
+        Assert.assertEquals(1300.1, (Double) spectraProjections[3], 0.01);
+        Assert.assertEquals(1, spectraProjections[4]);
+        Assert.assertEquals(3, spectraProjections[5]);
     }
 }

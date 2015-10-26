@@ -37,14 +37,6 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     int getSpectraCountForRun(AnalyticalRun analyticalRun, String orderBy, String filter);
 
     /**
-     * Returns a list of spectrum ids associated with a given run.
-     *
-     * @param analyticalRun the analytical run
-     * @return the list of IDs
-     */
-    List<Long> getSpectraIdsForRun(AnalyticalRun analyticalRun);
-
-    /**
      * Count the spectra associated to the given analytical run.
      *
      * @param analyticalRun the AnalyticalRun instance
@@ -101,4 +93,13 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
 
     Peptide getRepresentativePeptide(final Spectrum spectrum);
+
+    /**
+     * Get the spectra projections for the given run (Min and max retention time values, min en max M/Z values, min and
+     * max charge values).
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     * @return the spectra projection values for the given run
+     */
+    Object[] getSpectraProjections(final AnalyticalRun analyticalRun);
 }
