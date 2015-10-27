@@ -3,7 +3,9 @@ package com.compomics.colims.client.model.table.model;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.util.Util;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +27,6 @@ public class PeptideTableRow {
      */
     private final String proteinSequence;
     /**
-     * The peptide annotated sequence.
-     */
-    private StringBuilder annotatedSequence;
-    /**
      * The list of PeptideDTO instances related to this peptide instance.
      */
     private final List<PeptideDTO> peptideDTOs = new ArrayList<>();
@@ -36,14 +34,13 @@ public class PeptideTableRow {
     /**
      * Constructor.
      *
-     * @param peptideDTO the PeptideDTO instance
+     * @param peptideDTO      the PeptideDTO instance
      * @param proteinSequence the main group protein sequence
      */
     public PeptideTableRow(PeptideDTO peptideDTO, String proteinSequence) {
         this.sequence = peptideDTO.getPeptide().getSequence();
         this.proteinSequence = proteinSequence;
         peptideDTOs.add(peptideDTO);
-        annotatedSequence = new StringBuilder();
     }
 
     /**
@@ -131,34 +128,4 @@ public class PeptideTableRow {
         return peptideDTOs.get(0).getPeptide().getPeptideHasModifications();
     }
 
-    /**
-     * Get or create an annotated sequence for the peptide.
-     *
-     * @return Annotated string
-     */
-    public String getAnnotatedSequence() {
-        if (annotatedSequence.length() > 0) {
-            return annotatedSequence.toString();
-        } else {
-            annotatedSequence = new StringBuilder();
-
-            int[] mods = new int[sequence.length()];
-
-            for (PeptideHasModification phMod : peptideDTOs.get(0).getPeptide().getPeptideHasModifications()) {
-                mods[phMod.getLocation()]++;
-            }
-
-            for (int i = 0; i < sequence.length(); ++i) {
-                if (mods[i] > 0) {
-                    annotatedSequence.append("<b>")
-                            .append(sequence.charAt(i))
-                            .append("</b>");
-                } else {
-                    annotatedSequence.append(sequence.charAt(i));
-                }
-            }
-
-            return annotatedSequence.toString();
-        }
-    }
 }

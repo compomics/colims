@@ -3,7 +3,13 @@ package com.compomics.colims.client.model.table.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.util.experiment.biology.ions.PrecursorIon;
+import com.compomics.util.experiment.identification.matches.IonMatch;
+import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.experiment.massspectrometry.Peak;
 
 import java.util.Comparator;
 
@@ -14,30 +20,42 @@ import java.util.Comparator;
  */
 public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> {
 
-    private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Mass Error", "Confidence"};
+    private static final String[] columnNames = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Confidence"};
 
     public static final int SPECTRUM_ID = 0;
-    public static final int CHARGE = 1;
-    public static final int PRECURSOR_MZRATIO = 2;
-    public static final int MASS_ERROR = 3;
-    public static final int PSM_CONFIDENCE = 4;
+    public static final int SEQUENCE = 1;
+    public static final int PRECURSOR_CHARGE = 2;
+    public static final int PRECURSOR_MZRATIO = 3;
+    public static final int PRECURSOR_MASS_ERROR = 4;
+    public static final int PSM_CONFIDENCE = 5;
+
+    /**
+     * The search parameters of the given run. They hold the mass error accuracy type.
+     */
+    private SearchParameters searchParameters;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
             case SPECTRUM_ID:
                 return Long.class;
-            case CHARGE:
+            case SEQUENCE:
+                return Long.class;
+            case PRECURSOR_CHARGE:
                 return Integer.class;
             case PRECURSOR_MZRATIO:
                 return Double.class;
-            case MASS_ERROR:
+            case PRECURSOR_MASS_ERROR:
                 return Double.class;
             case PSM_CONFIDENCE:
                 return Double.class;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);
         }
+    }
+
+    public void setSearchParameters(SearchParameters searchParameters) {
+        this.searchParameters = searchParameters;
     }
 
     @Override
@@ -58,16 +76,22 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
     @Override
     public Object getColumnValue(Peptide peptide, int column) {
         Spectrum spectrum = peptide.getSpectrum();
+        int charge = peptide.getCharge() != null ? peptide.getCharge() : spectrum.getCharge();
 
         switch (column) {
             case SPECTRUM_ID:
                 return spectrum.getId();
-            case CHARGE:
-                return peptide.getCharge() != null ? peptide.getCharge() : spectrum.getCharge();
+            case SEQUENCE:
+                return peptide.getSequence();
+            case PRECURSOR_CHARGE:
+                return charge;
             case PRECURSOR_MZRATIO:
                 return spectrum.getMzRatio();
-            case MASS_ERROR:
-                return spectrum.getRetentionTime();
+            case PRECURSOR_MASS_ERROR:
+                int sign = charge > 0 ? Charge.PLUS : Charge.MINUS;
+                IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), new Charge(sign, charge));
+                boolean isPpm = searchParameters.getPrecMassToleranceUnit() == MassAccuracyType.PPM;
+                return Math.abs(ionMatch.getError(isPpm, true));
             case PSM_CONFIDENCE:
                 double confidence = (peptide != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
                 if (confidence <= 0) {

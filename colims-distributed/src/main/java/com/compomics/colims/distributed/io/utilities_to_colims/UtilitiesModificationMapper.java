@@ -74,9 +74,13 @@ public class UtilitiesModificationMapper {
 
             Modification modification;
             if (cvTerm != null) {
-                modification = mapCvTerm(cvTerm);
+                modification = mapByCvTerm(cvTerm);
             } else {
                 modification = mapByName(modificationMatch.getTheoreticPtm());
+            }
+
+            if(!ptmScores.getAmbiguouslyLocalizedPtms().isEmpty()){
+                System.out.println("test");
             }
 
             //set entity associations if modification could be mapped
@@ -137,7 +141,7 @@ public class UtilitiesModificationMapper {
      * @param cvTerm the Utilities CvTerm instance
      * @return the Colims Modification entity
      */
-    private Modification mapCvTerm(final CvTerm cvTerm) throws ModificationMappingException {
+    private Modification mapByCvTerm(final CvTerm cvTerm) throws ModificationMappingException {
         Modification modification;
 
         //look for the modification in the cached modifications map

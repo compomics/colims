@@ -3,6 +3,7 @@ package com.compomics.colims.client.model.table.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.client.model.table.model.PeptideTableRow;
+import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.core.util.SequenceUtils;
 import no.uib.jsparklines.data.StartIndexes;
 
@@ -60,7 +61,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     public Object getColumnValue(PeptideTableRow peptideTableRow, int column) {
         switch (column) {
             case SEQUENCE:
-                return "<html>" + peptideTableRow.getAnnotatedSequence() + "</html>";
+                return "<html>" + PeptideSequenceRenderer.getAnnotatedPeptideSequence(peptideTableRow.getSequence(), peptideTableRow.getPeptideHasModifications()) + "</html>";
             case PROTEIN_INFERENCE:
                 return peptideTableRow.getProteinGroupCount();
             case START:
