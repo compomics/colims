@@ -119,6 +119,7 @@ public class UtilitiesModificationMapperTest {
 
         //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
 
         utilitiesModificationMapper.map(modificationMatches, ptmScores, targetPeptide);
 
@@ -199,6 +200,7 @@ public class UtilitiesModificationMapperTest {
 
         //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
 
         utilitiesModificationMapper.map(modificationMatches, ptmScores, targetPeptide);
 
@@ -242,6 +244,7 @@ public class UtilitiesModificationMapperTest {
 
         //create new Colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
 
         utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
 
@@ -264,8 +267,7 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
-     * PtmToPrideMap or the ols service.
+     * Test the mapping for a peptide with a N-terminal notification. The location should be 0.
      *
      * @throws MappingException
      * @throws IOException
@@ -274,11 +276,87 @@ public class UtilitiesModificationMapperTest {
     public void testMapModification_4() throws MappingException, IOException {
         //create ModificationMatches
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+        ModificationMatch modificationMatch = new ModificationMatch("Acetylation of protein N-term", true, 1);
+        modificationMatches.add(modificationMatch);
+
+        //create new colims entity peptide
+        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
+
+        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+
+        //check modification mapping
+        Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
+        //the modifications are not present in the db, so the IDs should be null
+        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+            //check for null values
+            Assert.assertNotNull(peptideHasModification.getModification());
+            Assert.assertNotNull(peptideHasModification.getModificationType());
+            Assert.assertNotNull(peptideHasModification.getLocation());
+            Assert.assertNotNull(peptideHasModification.getPeptide());
+
+            Assert.assertEquals(0, peptideHasModification.getLocation().intValue());
+
+            Modification modification = peptideHasModification.getModification();
+            Assert.assertNull(modification.getId());
+        }
+    }
+
+    /**
+     * Test the mapping for a peptide with a C-terminal notification. The location should be 0.
+     *
+     * @throws MappingException
+     * @throws IOException
+     */
+    @Test
+    public void testMapModification_5() throws MappingException, IOException {
+        //create ModificationMatches
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
+        ModificationMatch modificationMatch = new ModificationMatch("Amidation of the peptide C-term", true, 7);
+        modificationMatches.add(modificationMatch);
+
+        //create new colims entity peptide
+        com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
+
+        utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
+
+        //check modification mapping
+        Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
+        Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
+        //the modifications are not present in the db, so the IDs should be null
+        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+            //check for null values
+            Assert.assertNotNull(peptideHasModification.getModification());
+            Assert.assertNotNull(peptideHasModification.getModificationType());
+            Assert.assertNotNull(peptideHasModification.getLocation());
+            Assert.assertNotNull(peptideHasModification.getPeptide());
+
+            Assert.assertEquals(8, peptideHasModification.getLocation().intValue());
+
+            Modification modification = peptideHasModification.getModification();
+            Assert.assertNull(modification.getId());
+        }
+    }
+
+    /**
+     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
+     * PtmToPrideMap or the ols service.
+     *
+     * @throws MappingException
+     * @throws IOException
+     */
+    @Test
+    public void testMapModification_6() throws MappingException, IOException {
+        //create ModificationMatches
+        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         ModificationMatch modificationMatch = new ModificationMatch("nonsense modification", true, 7);
         modificationMatches.add(modificationMatch);
 
         //create new colims entity peptide
         com.compomics.colims.model.Peptide targetPeptide = new Peptide();
+        targetPeptide.setSequence("LENNART");
 
         utilitiesModificationMapper.map(modificationMatches, null, targetPeptide);
 

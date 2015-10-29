@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.FragmentationType;
+import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -191,5 +192,41 @@ public class Spectrum extends DatabaseEntity {
 
     public void setSpectrumFiles(List<SpectrumFile> spectrumFiles) {
         this.spectrumFiles = spectrumFiles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Spectrum spectrum = (Spectrum) o;
+
+        if (!accession.equals(spectrum.accession)) return false;
+        if (title != null ? !title.equals(spectrum.title) : spectrum.title != null) return false;
+        if (scanNumber != null ? !scanNumber.equals(spectrum.scanNumber) : spectrum.scanNumber != null) return false;
+        if (mzRatio != null ? !CompareUtils.equals(mzRatio, spectrum.mzRatio) : spectrum.mzRatio != null) return false;
+        if (charge != null ? !charge.equals(spectrum.charge) : spectrum.charge != null) return false;
+        if (scanTime != null ? !CompareUtils.equals(scanTime, spectrum.scanTime) : spectrum.scanTime != null)
+            return false;
+        if (intensity != null ? !CompareUtils.equals(intensity, spectrum.intensity) : spectrum.intensity != null)
+            return false;
+        if (retentionTime != null ? !CompareUtils.equals(retentionTime, spectrum.retentionTime) : spectrum.retentionTime != null)
+            return false;
+        return fragmentationType == spectrum.fragmentationType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accession.hashCode();
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (scanNumber != null ? scanNumber.hashCode() : 0);
+        result = 31 * result + (mzRatio != null ? mzRatio.hashCode() : 0);
+        result = 31 * result + (charge != null ? charge.hashCode() : 0);
+        result = 31 * result + (scanTime != null ? scanTime.hashCode() : 0);
+        result = 31 * result + (intensity != null ? intensity.hashCode() : 0);
+        result = 31 * result + (retentionTime != null ? retentionTime.hashCode() : 0);
+        result = 31 * result + (fragmentationType != null ? fragmentationType.hashCode() : 0);
+        return result;
     }
 }

@@ -16,7 +16,8 @@ public class PeptideHasModification extends DatabaseEntity {
     private static final long serialVersionUID = 3283350956279991057L;
 
     /**
-     * The location of the modification on the peptide sequence. 1 is the first amino acid.
+     * The location of the modification on the peptide sequence. 0 is an N-terminal modification, sequence length + 1 is
+     * a C-terminal modification.
      */
     @Basic(optional = true)
     @Column(name = "location")

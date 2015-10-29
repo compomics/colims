@@ -18,6 +18,7 @@ import java.util.List;
 public class AnalyticalRun extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = 8278042140876711715L;
+
     /**
      * The run name.
      */
@@ -139,4 +140,22 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AnalyticalRun that = (AnalyticalRun) o;
+
+        if (!name.equals(that.name)) return false;
+        return !(startDate != null ? !startDate.equals(that.startDate) : that.startDate != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        return result;
+    }
 }

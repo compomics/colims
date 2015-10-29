@@ -164,8 +164,8 @@ public class TaskManagementController implements Controllable {
                     if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                         DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
 
-                        if (storageError.getCause().getMessage() != null) {
-                            taskManagementPanel.getErrorDetailTextArea().setText(storageError.getCause().getMessage());
+                        if (storageError.getErrorDescription() != null) {
+                            taskManagementPanel.getErrorDetailTextArea().setText(storageError.getErrorDescription());
                         } else {
                             taskManagementPanel.getErrorDetailTextArea().setText(ERROR_DETAIL_NOT_AVAILABLE);
                         }

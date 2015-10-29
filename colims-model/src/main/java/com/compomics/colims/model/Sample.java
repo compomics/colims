@@ -41,7 +41,7 @@ public class Sample extends AuditableDatabaseEntity {
     /**
      * The experiment the sample belongs to.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
     private Experiment experiment;
     /**
@@ -150,6 +150,27 @@ public class Sample extends AuditableDatabaseEntity {
 
     public void setAnalyticalRuns(List<AnalyticalRun> analyticalRuns) {
         this.analyticalRuns = analyticalRuns;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sample sample = (Sample) o;
+
+        if (!name.equals(sample.name)) return false;
+        if (condition != null ? !condition.equals(sample.condition) : sample.condition != null) return false;
+        return !(storageLocation != null ? !storageLocation.equals(sample.storageLocation) : sample.storageLocation != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + (condition != null ? condition.hashCode() : 0);
+        result = 31 * result + (storageLocation != null ? storageLocation.hashCode() : 0);
+        return result;
     }
 
     @Override

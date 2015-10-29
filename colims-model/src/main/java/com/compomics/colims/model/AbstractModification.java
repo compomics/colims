@@ -117,4 +117,24 @@ public abstract class AbstractModification extends DatabaseEntity {
         this.averageMassShift = averageMassShift;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractModification that = (AbstractModification) o;
+
+        if (accession != null ? !accession.equals(that.accession) : that.accession != null) return false;
+        if (!name.equals(that.name)) return false;
+        return !(utilitiesName != null ? !utilitiesName.equals(that.utilitiesName) : that.utilitiesName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accession != null ? accession.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (utilitiesName != null ? utilitiesName.hashCode() : 0);
+        return result;
+    }
 }

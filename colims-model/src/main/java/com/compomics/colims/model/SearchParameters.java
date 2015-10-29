@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.util.CompareUtils;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
@@ -233,4 +234,46 @@ public class SearchParameters extends DatabaseEntity {
         this.searchParametersHasModifications = searchParametersHasModifications;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchParameters that = (SearchParameters) o;
+
+        if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
+        if (enzyme != null ? !enzyme.equals(that.enzyme) : that.enzyme != null) return false;
+        if (numberOfMissedCleavages != null ? !numberOfMissedCleavages.equals(that.numberOfMissedCleavages) : that.numberOfMissedCleavages != null)
+            return false;
+        if (threshold != null ? !CompareUtils.equals(threshold, that.threshold) : that.threshold != null) return false;
+        if (precMassTolerance != null ? !CompareUtils.equals(precMassTolerance, that.precMassTolerance) : that.precMassTolerance != null)
+            return false;
+        if (precMassToleranceUnit != that.precMassToleranceUnit) return false;
+        if (fragMassTolerance != null ? !CompareUtils.equals(fragMassTolerance, that.fragMassTolerance) : that.fragMassTolerance != null)
+            return false;
+        if (fragMassToleranceUnit != that.fragMassToleranceUnit) return false;
+        if (lowerCharge != null ? !lowerCharge.equals(that.lowerCharge) : that.lowerCharge != null) return false;
+        if (upperCharge != null ? !upperCharge.equals(that.upperCharge) : that.upperCharge != null) return false;
+        if (firstSearchedIonType != null ? !firstSearchedIonType.equals(that.firstSearchedIonType) : that.firstSearchedIonType != null)
+            return false;
+        return !(secondSearchedIonType != null ? !secondSearchedIonType.equals(that.secondSearchedIonType) : that.secondSearchedIonType != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = searchType != null ? searchType.hashCode() : 0;
+        result = 31 * result + (enzyme != null ? enzyme.hashCode() : 0);
+        result = 31 * result + (numberOfMissedCleavages != null ? numberOfMissedCleavages.hashCode() : 0);
+        result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
+        result = 31 * result + (precMassTolerance != null ? precMassTolerance.hashCode() : 0);
+        result = 31 * result + (precMassToleranceUnit != null ? precMassToleranceUnit.hashCode() : 0);
+        result = 31 * result + (fragMassTolerance != null ? fragMassTolerance.hashCode() : 0);
+        result = 31 * result + (fragMassToleranceUnit != null ? fragMassToleranceUnit.hashCode() : 0);
+        result = 31 * result + (lowerCharge != null ? lowerCharge.hashCode() : 0);
+        result = 31 * result + (upperCharge != null ? upperCharge.hashCode() : 0);
+        result = 31 * result + (firstSearchedIonType != null ? firstSearchedIonType.hashCode() : 0);
+        result = 31 * result + (secondSearchedIonType != null ? secondSearchedIonType.hashCode() : 0);
+        return result;
+    }
 }

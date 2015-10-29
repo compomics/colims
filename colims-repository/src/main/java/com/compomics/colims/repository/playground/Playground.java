@@ -3,10 +3,9 @@ package com.compomics.colims.repository.playground;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class Playground {

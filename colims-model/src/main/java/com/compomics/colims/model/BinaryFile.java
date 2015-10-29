@@ -29,7 +29,7 @@ public class BinaryFile extends AuditableDatabaseEntity {
     @Column(name = "file_type", nullable = false)
     protected BinaryFileType binaryFileType;
     /**
-     * The content as a binary array. The is stored in the database as a LOB.
+     * The content as a binary array. This is stored in the database as a LOB.
      */
     @Basic(optional = false)
     @Lob
@@ -80,4 +80,22 @@ public class BinaryFile extends AuditableDatabaseEntity {
         return fileName + " (" + binaryFileType + ")";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BinaryFile that = (BinaryFile) o;
+
+        if (!fileName.equals(that.fileName)) return false;
+        return binaryFileType == that.binaryFileType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fileName.hashCode();
+        result = 31 * result + binaryFileType.hashCode();
+        return result;
+    }
 }

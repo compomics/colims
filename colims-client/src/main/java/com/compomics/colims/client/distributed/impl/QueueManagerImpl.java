@@ -103,6 +103,7 @@ public class QueueManagerImpl implements QueueManager {
                         TextMessage jsonConstruct = (TextMessage) enumeration.nextElement();
                         //map it to it's corresponding java class
 
+                        String text = jsonConstruct.getText();
                         T mappedInstance = objectMapper.readValue(jsonConstruct.getText(), clazz);
 
                         mappedInstance.setMessageId(jsonConstruct.getJMSMessageID());

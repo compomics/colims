@@ -143,4 +143,31 @@ public class FastaDb extends DatabaseEntity {
         return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FastaDb fastaDb = (FastaDb) o;
+
+        if (!name.equals(fastaDb.name)) return false;
+        if (!fileName.equals(fastaDb.fileName)) return false;
+        if (!filePath.equals(fastaDb.filePath)) return false;
+        if (taxonomyAccession != null ? !taxonomyAccession.equals(fastaDb.taxonomyAccession) : fastaDb.taxonomyAccession != null)
+            return false;
+        if (species != null ? !species.equals(fastaDb.species) : fastaDb.species != null) return false;
+        return !(version != null ? !version.equals(fastaDb.version) : fastaDb.version != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + fileName.hashCode();
+        result = 31 * result + filePath.hashCode();
+        result = 31 * result + (taxonomyAccession != null ? taxonomyAccession.hashCode() : 0);
+        result = 31 * result + (species != null ? species.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }

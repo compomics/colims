@@ -119,6 +119,27 @@ public class Project extends AuditableDatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        if (!title.equals(project.title)) return false;
+        if (!label.equals(project.label)) return false;
+        return !(description != null ? !description.equals(project.description) : project.description != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title.hashCode();
+        result = 31 * result + label.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return title;
     }

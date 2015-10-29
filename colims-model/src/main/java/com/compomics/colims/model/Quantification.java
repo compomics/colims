@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.QuantificationWeight;
+import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -61,4 +62,22 @@ public class Quantification extends DatabaseEntity {
         this.quantificationGroups = quantificationGroups;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Quantification that = (Quantification) o;
+
+        if (!CompareUtils.equals(intensity, that.intensity)) return false;
+        return weight == that.weight;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = intensity.hashCode();
+        result = 31 * result + weight.hashCode();
+        return result;
+    }
 }

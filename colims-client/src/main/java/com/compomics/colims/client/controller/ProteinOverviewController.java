@@ -16,6 +16,7 @@ import com.compomics.colims.client.model.table.model.PeptideExportModel;
 import com.compomics.colims.client.model.table.model.PeptideTableRow;
 import com.compomics.colims.client.model.table.model.ProteinGroupTableModel;
 import com.compomics.colims.client.model.table.model.ProteinPanelPsmTableModel;
+import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.client.view.SpectrumPopupDialog;
@@ -41,10 +42,7 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -141,19 +139,19 @@ public class ProteinOverviewController implements Controllable {
         SortedList<ProteinGroupDTO> sortedProteinGroups = new SortedList<>(proteinGroupDTOs, null);
 
         proteinGroupTableModel = new ProteinGroupTableModel(sortedProteinGroups, new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
-        proteinOverviewPanel.getProteinsTable().setModel(proteinGroupTableModel);
+        proteinOverviewPanel.getProteinGroupTable().setModel(proteinGroupTableModel);
         proteinGroupSelectionModel = new DefaultEventSelectionModel<>(sortedProteinGroups);
         proteinGroupSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        proteinOverviewPanel.getProteinsTable().setSelectionModel(proteinGroupSelectionModel);
+        proteinOverviewPanel.getProteinGroupTable().setSelectionModel(proteinGroupSelectionModel);
 
         //init peptide table
         SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, null);
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
-        proteinOverviewPanel.getPeptidesTable().setModel(peptideTableModel);
+        proteinOverviewPanel.getPeptideTable().setModel(peptideTableModel);
         peptideSelectionModel = new DefaultEventSelectionModel<>(sortedPeptides);
         peptideSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        proteinOverviewPanel.getPeptidesTable().setSelectionModel(peptideSelectionModel);
+        proteinOverviewPanel.getPeptideTable().setSelectionModel(peptideSelectionModel);
 
         //init PSM table
         SortedList<Peptide> sortedPsms = new SortedList<>(psms, null);
@@ -164,34 +162,34 @@ public class ProteinOverviewController implements Controllable {
         psmSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPsmTable().setSelectionModel(psmSelectionModel);
 
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(70);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(150);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(120);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(150);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setPreferredWidth(145);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMaxWidth(200);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(60);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(100);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setPreferredWidth(80);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMaxWidth(100);
-        proteinOverviewPanel.getProteinsTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(70);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(120);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setPreferredWidth(145);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMaxWidth(200);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(60);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(100);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setPreferredWidth(80);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMaxWidth(100);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.CONFIDENCE).setMinWidth(50);
 
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.SEQUENCE).setPreferredWidth(150);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setPreferredWidth(50);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setMaxWidth(50);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setMinWidth(20);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.START).setPreferredWidth(150);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(60);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(100);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setPreferredWidth(80);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMaxWidth(100);
-        proteinOverviewPanel.getPeptidesTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMinWidth(50);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.SEQUENCE).setPreferredWidth(150);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setPreferredWidth(50);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setMaxWidth(50);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.PROTEIN_INFERENCE).setMinWidth(20);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.START).setPreferredWidth(150);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(60);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(100);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.NUMBER_OF_SPECTRA).setMinWidth(50);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setPreferredWidth(80);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMaxWidth(100);
+        proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMinWidth(50);
 
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(100);
@@ -236,9 +234,9 @@ public class ProteinOverviewController implements Controllable {
                 updateProteinTable();
 
                 // Set scrollpane to match row count (TODO: doesn't work!)
-                proteinOverviewPanel.getProteinsScrollPane().setPreferredSize(new Dimension(
-                        proteinOverviewPanel.getProteinsTable().getPreferredSize().width,
-                        proteinOverviewPanel.getProteinsTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+                proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
+                        proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
+                        proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
                 ));
 
                 minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
@@ -282,6 +280,39 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
+        proteinOverviewPanel.getPeptideTable().addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent evt) {
+                int rowIndex = proteinOverviewPanel.getPeptideTable().rowAtPoint(evt.getPoint());
+                int columnIndex = proteinOverviewPanel.getPeptideTable().columnAtPoint(evt.getPoint());
+
+                if (rowIndex != -1 && columnIndex != -1 && proteinOverviewPanel.getPeptideTable().getValueAt(rowIndex, columnIndex) != null) {
+                    if (columnIndex == PeptideTableFormat.SEQUENCE) {
+                        proteinOverviewPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+                        String sequence = (String) proteinOverviewPanel.getPeptideTable().getValueAt(rowIndex, columnIndex);
+
+                        if (sequence.contains("<span") || sequence.contains("_")) {
+                            try {
+                                PeptideTableRow selectedPeptideTableRow = (PeptideTableRow) peptideTableModel.getElementAt(rowIndex);
+                                String tooltip = PeptideSequenceRenderer.getModificationsHtmlToolTip(selectedPeptideTableRow.getSequence(), selectedPeptideTableRow.getPeptideHasModifications());
+                                proteinOverviewPanel.getPeptideTable().setToolTipText(tooltip);
+                            } catch (Exception e) {
+                                LOGGER.error(e.getMessage(), e);
+                            }
+                        } else {
+                            proteinOverviewPanel.getPeptideTable().setToolTipText(null);
+                        }
+                    } else {
+                        proteinOverviewPanel.getPeptideTable().setToolTipText(null);
+                    }
+                } else {
+                    proteinOverviewPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                    proteinOverviewPanel.getPeptideTable().setToolTipText(null);
+                }
+            }
+        });
+
         proteinOverviewPanel.getPsmTable().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -291,90 +322,90 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinOverviewPanel.getProteinsTable().getTableHeader().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getProteinGroupTable().getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                proteinGroupTableModel.updateSort(proteinOverviewPanel.getProteinsTable().columnAtPoint(e.getPoint()));
+                proteinGroupTableModel.updateSort(proteinOverviewPanel.getProteinGroupTable().columnAtPoint(e.getPoint()));
                 proteinGroupTableModel.setPage(0);
 
                 updateProteinTable();
             }
         });
 
-        proteinOverviewPanel.getFirstPageProteins().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getFirstProteinGroupPageButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinGroupTableModel.setPage(0);
                 updateProteinTable();
 
-                proteinOverviewPanel.getNextPageProteins().setEnabled(true);
-                proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
-                proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
-                proteinOverviewPanel.getLastPageProteins().setEnabled(true);
+                proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
+                proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
+                proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(false);
+                proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
             }
         });
 
-        proteinOverviewPanel.getPrevPageProteins().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getPrevProteinGroupPageButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
                 updateProteinTable();
 
-                proteinOverviewPanel.getNextPageProteins().setEnabled(true);
-                proteinOverviewPanel.getLastPageProteins().setEnabled(true);
+                proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
+                proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
 
                 if (proteinGroupTableModel.getPage() == 0) {
-                    proteinOverviewPanel.getPrevPageProteins().setEnabled(false);
-                    proteinOverviewPanel.getFirstPageProteins().setEnabled(false);
+                    proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
+                    proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(false);
                 }
             }
         });
 
-        proteinOverviewPanel.getNextPageProteins().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getNextProteinGroupPageButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
                 updateProteinTable();
 
-                proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
-                proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
+                proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
+                proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
 
                 if (proteinGroupTableModel.isMaxPage()) {
-                    proteinOverviewPanel.getNextPageProteins().setEnabled(false);
-                    proteinOverviewPanel.getLastPageProteins().setEnabled(false);
+                    proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
+                    proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
                 }
             }
         });
 
-        proteinOverviewPanel.getLastPageProteins().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getLastProteinGroupPageButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
                 updateProteinTable();
 
-                proteinOverviewPanel.getNextPageProteins().setEnabled(false);
-                proteinOverviewPanel.getPrevPageProteins().setEnabled(true);
-                proteinOverviewPanel.getFirstPageProteins().setEnabled(true);
-                proteinOverviewPanel.getLastPageProteins().setEnabled(false);
+                proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
+                proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
+                proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
+                proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
             }
         });
 
-        proteinOverviewPanel.getFilterProteins().addKeyListener(new KeyAdapter() {
+        proteinOverviewPanel.getProteinGroupFilterTextField().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
 
-                String filterText = proteinOverviewPanel.getFilterProteins().getText();
+                String filterText = proteinOverviewPanel.getProteinGroupFilterTextField().getText();
 
                 if (filterText.matches("^[a-zA-Z0-9]*$")) {
-                    proteinGroupTableModel.setFilter(proteinOverviewPanel.getFilterProteins().getText());
+                    proteinGroupTableModel.setFilter(proteinOverviewPanel.getProteinGroupFilterTextField().getText());
 
                     updateProteinTable();
                 }
             }
         });
 
-        proteinOverviewPanel.getExportProteins().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getExportProteinGroupsButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
@@ -394,7 +425,7 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinOverviewPanel.getExportPeptides().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getExportPeptidesButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
@@ -418,7 +449,7 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinOverviewPanel.getExportPSMs().addMouseListener(new MouseAdapter() {
+        proteinOverviewPanel.getExportPsmsButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
@@ -481,10 +512,10 @@ public class ProteinOverviewController implements Controllable {
     private void updateProteinTable() {
         if (selectedAnalyticalRun != null) {
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
-            proteinOverviewPanel.getPageLabelProteins().setText(proteinGroupTableModel.getPageIndicator());
+            proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
         } else {
             GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
-            proteinOverviewPanel.getPageLabelProteins().setText("");
+            proteinOverviewPanel.getProteinGroupPageLabel().setText("");
         }
     }
 
@@ -603,20 +634,20 @@ public class ProteinOverviewController implements Controllable {
     private void setPeptideTableCellRenderers() {
         String mainSequence = proteinGroupSelectionModel.getSelected().get(0).getMainSequence();
 
-        proteinOverviewPanel.getPeptidesTable()
+        proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
                         PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
                         ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
 
-        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptidesTable()
+        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .getCellRenderer())
                 .showReferenceLine(true, 0.02, Color.BLACK);
 
-        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptidesTable()
+        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .getCellRenderer())

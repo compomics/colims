@@ -122,6 +122,31 @@ public class Material extends AuditableDatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Material material = (Material) o;
+
+        if (!name.equals(material.name)) return false;
+        if (!species.equals(material.species)) return false;
+        if (tissue != null ? !tissue.equals(material.tissue) : material.tissue != null) return false;
+        if (cellType != null ? !cellType.equals(material.cellType) : material.cellType != null) return false;
+        return !(compartment != null ? !compartment.equals(material.compartment) : material.compartment != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + species.hashCode();
+        result = 31 * result + (tissue != null ? tissue.hashCode() : 0);
+        result = 31 * result + (cellType != null ? cellType.hashCode() : 0);
+        result = 31 * result + (compartment != null ? compartment.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

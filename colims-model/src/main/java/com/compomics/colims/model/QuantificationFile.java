@@ -92,4 +92,25 @@ public class QuantificationFile extends DatabaseEntity {
     public void setQuantification(List<Quantification> quantification) {
         this.quantification = quantification;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QuantificationFile that = (QuantificationFile) o;
+
+        if (!fileName.equals(that.fileName)) return false;
+        if (filePath != null ? !filePath.equals(that.filePath) : that.filePath != null) return false;
+        return binaryFileType == that.binaryFileType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fileName.hashCode();
+        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+        result = 31 * result + (binaryFileType != null ? binaryFileType.hashCode() : 0);
+        return result;
+    }
 }

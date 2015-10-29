@@ -134,6 +134,31 @@ public class Instrument extends AuditableDatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Instrument that = (Instrument) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!type.equals(that.type)) return false;
+        if (!source.equals(that.source)) return false;
+        if (!detector.equals(that.detector)) return false;
+        return analyzers.equals(that.analyzers);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + source.hashCode();
+        result = 31 * result + detector.hashCode();
+        result = 31 * result + analyzers.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return name + " [" + type.getName() + "]";
     }

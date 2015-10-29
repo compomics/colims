@@ -61,7 +61,7 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
     public Object getColumnValue(PeptideTableRow peptideTableRow, int column) {
         switch (column) {
             case SEQUENCE:
-                return "<html>" + PeptideSequenceRenderer.getAnnotatedPeptideSequence(peptideTableRow.getSequence(), peptideTableRow.getPeptideHasModifications()) + "</html>";
+                return PeptideSequenceRenderer.getAnnotatedHtmlSequence(peptideTableRow.getSequence(), peptideTableRow.getPeptideHasModifications());
             case PROTEIN_INFERENCE:
                 return peptideTableRow.getProteinGroupCount();
             case START:

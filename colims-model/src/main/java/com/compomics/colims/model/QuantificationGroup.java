@@ -10,7 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "quantification_group")
@@ -40,6 +39,6 @@ public class QuantificationGroup extends DatabaseEntity {
 
     public void setQuantification(Quantification quantification) {
         this.quantification = quantification;
-    }            
+    }
 
 }

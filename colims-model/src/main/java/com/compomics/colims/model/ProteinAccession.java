@@ -60,6 +60,22 @@ public class ProteinAccession extends DatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProteinAccession that = (ProteinAccession) o;
+
+        return accession.equals(that.accession);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return accession.hashCode();
+    }
+
+    @Override
     public String toString() {
         return accession;
     }

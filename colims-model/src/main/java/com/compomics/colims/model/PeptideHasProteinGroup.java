@@ -70,4 +70,5 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
     public void setProteinGroup(ProteinGroup proteinGroup) {
         this.proteinGroup = proteinGroup;
     }
+
 }

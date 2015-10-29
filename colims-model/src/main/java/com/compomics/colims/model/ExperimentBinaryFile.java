@@ -45,5 +45,4 @@ public class ExperimentBinaryFile extends BinaryFile {
     public void setExperiment(final Experiment experiment) {
         this.experiment = experiment;
     }
-
 }

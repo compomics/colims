@@ -201,4 +201,31 @@ public class Peptide extends DatabaseEntity {
         }
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Peptide peptide = (Peptide) o;
+
+        if (!sequence.equals(peptide.sequence)) return false;
+        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null)
+            return false;
+        if (charge != null ? !charge.equals(peptide.charge) : peptide.charge != null) return false;
+        if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null)
+            return false;
+        return !(psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sequence.hashCode();
+        result = 31 * result + (theoreticalMass != null ? theoreticalMass.hashCode() : 0);
+        result = 31 * result + (charge != null ? charge.hashCode() : 0);
+        result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
+        result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
+        return result;
+    }
 }

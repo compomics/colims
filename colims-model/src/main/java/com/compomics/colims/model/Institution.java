@@ -142,6 +142,35 @@ public class Institution extends AuditableDatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Institution that = (Institution) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!abbreviation.equals(that.abbreviation)) return false;
+        if (!street.equals(that.street)) return false;
+        if (!number.equals(that.number)) return false;
+        if (!city.equals(that.city)) return false;
+        if (postalCode != null ? !postalCode.equals(that.postalCode) : that.postalCode != null) return false;
+        return !(country != null ? !country.equals(that.country) : that.country != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + abbreviation.hashCode();
+        result = 31 * result + street.hashCode();
+        result = 31 * result + number.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + (postalCode != null ? postalCode.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return name + " (" + abbreviation + ")";
     }

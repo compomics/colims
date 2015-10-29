@@ -106,4 +106,22 @@ public class SearchEngine extends CvParam {
         this.searchAndValidationSettingses = searchAndValidationSettingses;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchEngine that = (SearchEngine) o;
+
+        if (searchEngineType != that.searchEngineType) return false;
+        return !(version != null ? !version.equals(that.version) : that.version != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = searchEngineType.hashCode();
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }

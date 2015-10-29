@@ -35,7 +35,6 @@ public class UtilitiesModificationMapper {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesModificationMapper.class);
-    private static final String UNKNOWN_UTILITIES_PTM = "unknown";
 
     /**
      * The modification service instance.
@@ -79,10 +78,6 @@ public class UtilitiesModificationMapper {
                 modification = mapByName(modificationMatch.getTheoreticPtm());
             }
 
-            if(!ptmScores.getAmbiguouslyLocalizedPtms().isEmpty()){
-                System.out.println("test");
-            }
-
             //set entity associations if modification could be mapped
             if (modification != null) {
                 PeptideHasModification peptideHasModification = new PeptideHasModification();
@@ -93,9 +88,28 @@ public class UtilitiesModificationMapper {
                 }
 
                 //set location in the PeptideHasModification join entity
-                //subtract one because the modification site in the ModificationMatch class starts from 1
                 int modificationIndex = modificationMatch.getModificationSite();
-                peptideHasModification.setLocation(modificationIndex - 1);
+
+                //check for N-terminal modification
+                if(modificationIndex == 1){
+                    PTM ptm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
+                    if(!ptm.equals(PTMFactory.unknownPTM)){
+                        if(ptm.isNTerm()){
+                            modificationIndex = 0;
+                        }
+                    }
+                }
+                //check for C-terminal modification
+                if(modificationIndex == targetPeptide.getLength()){
+                    PTM ptm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
+                    if(!ptm.equals(PTMFactory.unknownPTM)){
+                        if(ptm.isCTerm()){
+                            modificationIndex = targetPeptide.getLength() + 1;
+                        }
+                    }
+                }
+
+                peptideHasModification.setLocation(modificationIndex);
 
                 //set modification type
                 if (modificationMatch.isVariable()) {
@@ -235,7 +249,7 @@ public class UtilitiesModificationMapper {
                         PTM ptm = PTMFactory.getInstance().getPTM(modificationName);
 
                         modification = new Modification(modificationName);
-                        if (ptm.getName().equals(UNKNOWN_UTILITIES_PTM)) {
+                        if (ptm.equals(PTMFactory.unknownPTM)) {
                             LOGGER.warn("The modification match " + modificationName + " could not be found in the PTMFactory.");
                         } else {
                             modification.setMonoIsotopicMassShift(ptm.getMass());

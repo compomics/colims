@@ -1,25 +1,25 @@
 package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.service.UserService;
+
+import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class DbTaskErrorQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
-    private final String[] columnNames = {"index", "ID","type", "submitted on", "description", "user", "error"};
+    private final String[] columnNames = {"index", "ID", "type", "submitted on", "description", "user", "error"};
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     public static final int QUEUE_INDEX = 0;
@@ -110,7 +110,7 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
             case USER_INDEX:
                 return userService.findUserNameById(dbTask.getUserId());
             case ERROR_INDEX:
-                return dbTaskError.getCause().getClass().getSimpleName();
+                return dbTaskError.getErrorClassSimpleName();
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }

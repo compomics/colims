@@ -83,6 +83,22 @@ public class Protein extends DatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Protein protein = (Protein) o;
+
+        return sequence.equals(protein.sequence);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return sequence.hashCode();
+    }
+
+    @Override
     public String toString() {
         return sequence;
     }

@@ -1,29 +1,28 @@
 package com.compomics.colims.repository;
 
 
+import com.compomics.colims.model.InstrumentCvParam;
+import com.compomics.colims.model.ProtocolCvParam;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.InstrumentCvParam;
-import com.compomics.colims.model.ProtocolCvParam;
-import com.compomics.colims.model.enums.CvParamType;
 import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
-@TransactionConfiguration(defaultRollback = true)
+@Rollback
 public class AuditableTypedCvParamRepositoryTest {
 
     @Autowired
