@@ -25,8 +25,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -121,260 +119,219 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getExportDirectoryChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         //add action listeners
-        mzTabExportDialog.getProceedButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
-                switch (currentCardName) {
-                    case FIRST_PANEL:
-                        List<String> firstPanelValidationMessages = validateFirstPanel();
-                        if (firstPanelValidationMessages.isEmpty()) {
-                            mzTabExport.setMzTabType(getSelectedMzTabType());
-                            mzTabExport.setMzTabMode(getSelectedMzTabMode());
-                            mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
+        mzTabExportDialog.getProceedButton().addActionListener(e -> {
+            String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
+            switch (currentCardName) {
+                case FIRST_PANEL:
+                    List<String> firstPanelValidationMessages = validateFirstPanel();
+                    if (firstPanelValidationMessages.isEmpty()) {
+                        mzTabExport.setMzTabType(getSelectedMzTabType());
+                        mzTabExport.setMzTabMode(getSelectedMzTabMode());
+                        mzTabExport.setDescription(mzTabExportDialog.getDescriptionTextArea().getText());
 
-                            //check if the number of assays has changed and if necessary, update the second panel
-                            int numberOfAssays = assaysToCVListModel.getSize() + getNumberOfAssaysInTree();
-                            if (numberOfAssays != (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue()) {
-                                //update assay list models
-                                assaysToCVListModel.clear();
-                                assaysToRunsListModel.clear();
-                                for (int i = 1; i <= (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue(); i++) {
-                                    assaysToCVListModel.add(i - 1, ASSAY + i);
-                                    assaysToRunsListModel.add(i - 1, ASSAY + i);
-                                }
-                                //update trees and expand
-                                removeAllAssaysFromTree(studyVariableTreeModel, studyVariableRootNode, 1);
-                                expandTree(mzTabExportDialog.getStudyVariableTree());
-                                removeAllAssaysFromTree(analyticalRunTreeModel, analyticalRunRootNode, 2);
-                                expandTree(mzTabExportDialog.getAnalyticalRunTree());
+                        //check if the number of assays has changed and if necessary, update the second panel
+                        int numberOfAssays = assaysToCVListModel.getSize() + getNumberOfAssaysInTree();
+                        if (numberOfAssays != (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue()) {
+                            //update assay list models
+                            assaysToCVListModel.clear();
+                            assaysToRunsListModel.clear();
+                            for (int i = 1; i <= (int) mzTabExportDialog.getNumberOfAssaysSpinner().getValue(); i++) {
+                                assaysToCVListModel.add(i - 1, ASSAY + i);
+                                assaysToRunsListModel.add(i - 1, ASSAY + i);
                             }
-
-                            getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", firstPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        break;
-                    case SECOND_PANEL:
-                        List<String> secondPanelValidationMessages = validateSecondPanel();
-                        if (secondPanelValidationMessages.isEmpty()) {
-                            updateStudyVariablesAssaysRefs();
-                            getCardLayout().show(mzTabExportDialog.getTopPanel(), THIRD_PANEL);
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", secondPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        break;
-                    case THIRD_PANEL:
-                        updateAnalyticalRunsToExport();
-                        List<String> thirdPanelValidationMessages = validateThirdPanel();
-                        if (thirdPanelValidationMessages.isEmpty()) {
-                            getCardLayout().show(mzTabExportDialog.getTopPanel(), LAST_PANEL);
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", thirdPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        mzTabExportDialog.getBackButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
-                switch (currentCardName) {
-                    case SECOND_PANEL:
-                        getCardLayout().show(mzTabExportDialog.getTopPanel(), FIRST_PANEL);
-                        break;
-                    default:
-                        getCardLayout().previous(mzTabExportDialog.getTopPanel());
-                        break;
-                }
-                onCardSwitch();
-            }
-        });
-
-        mzTabExportDialog.getFinishButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                List<String> lastPanelValidationMessages = validateLastPanel();
-                if (lastPanelValidationMessages.isEmpty()) {
-                    mzTabExport.setFileName(mzTabExportDialog.getFileNameTextField().getText());
-                    mzTabExport.setExportDirectory(mzTabExportDialog.getExportDirectoryChooser().getSelectedFile());
-                    MzTabExporterWorker mzTabExporterWorker = new MzTabExporterWorker();
-                    ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
-                    eventBus.post(progressStartEvent);
-                    mzTabExporterWorker.execute();
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", lastPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        mzTabExportDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                mzTabExportDialog.dispose();
-            }
-        });
-
-        mzTabExportDialog.getAddStudyVariableButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {
-                    DefaultMutableTreeNode studyVariable = new DefaultMutableTreeNode(mzTabExportDialog.getStudyVariableTextField().getText());
-                    studyVariableTreeModel.insertNodeInto(studyVariable, studyVariableRootNode, studyVariableTreeModel.getChildCount(studyVariableRootNode));
-
-                    //expand tree with invisible root node trick
-                    mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariableRootNode.getPath()));
-
-                    //reset text field
-                    mzTabExportDialog.getStudyVariableTextField().setText("");
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Study variable addition", "Please provide a non-empty study variable description.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        mzTabExportDialog.getDeleteStudyVariableButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
-                //check if one or more study variables have been selected
-                if (areOneOrMoreNodesSelected(mzTabExportDialog.getStudyVariableTree(), 1)) {
-                    for (TreePath treePath : selectionModel.getSelectionPaths()) {
-                        //check for assays linked to the study variable to remove
-                        DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                        Enumeration<DefaultMutableTreeNode> assays = studyVariable.children();
-                        while (assays.hasMoreElements()) {
-                            DefaultMutableTreeNode assay = assays.nextElement();
-                            //add to assay list model
-                            assaysToCVListModel.addElement((String) assay.getUserObject());
+                            //update trees and expand
+                            removeAllAssaysFromTree(studyVariableTreeModel, studyVariableRootNode, 1);
+                            expandTree(mzTabExportDialog.getStudyVariableTree());
+                            removeAllAssaysFromTree(analyticalRunTreeModel, analyticalRunRootNode, 2);
+                            expandTree(mzTabExportDialog.getAnalyticalRunTree());
                         }
 
-                        studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), SECOND_PANEL);
+                        onCardSwitch();
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Validation failure", firstPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
                     }
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Study variable(s) removal", "Please select one or more study variables to delete.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        mzTabExportDialog.getAddAssaysToSVButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<String> selectedValuesList = mzTabExportDialog.getAssaysToCVList().getSelectedValuesList();
-                if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getStudyVariableTree(), 1)) {
-                    DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) mzTabExportDialog.getStudyVariableTree().getSelectionPaths()[0].getLastPathComponent();
-                    for (String assay : selectedValuesList) {
-                        //remove from assay list
-                        assaysToCVListModel.removeElement(assay);
-
-                        //add to tree and expand node
-                        DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(assay);
-                        studyVariableTreeModel.insertNodeInto(assayTreeNode, studyVariable, studyVariableTreeModel.getChildCount(studyVariable));
-
-                        mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariable.getPath()));
+                    break;
+                case SECOND_PANEL:
+                    List<String> secondPanelValidationMessages = validateSecondPanel();
+                    if (secondPanelValidationMessages.isEmpty()) {
+                        updateStudyVariablesAssaysRefs();
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), THIRD_PANEL);
+                        onCardSwitch();
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Validation failure", secondPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
                     }
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and a study variable to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
+                    break;
+                case THIRD_PANEL:
+                    updateAnalyticalRunsToExport();
+                    List<String> thirdPanelValidationMessages = validateThirdPanel();
+                    if (thirdPanelValidationMessages.isEmpty()) {
+                        getCardLayout().show(mzTabExportDialog.getTopPanel(), LAST_PANEL);
+                        onCardSwitch();
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Validation failure", thirdPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
+                    }
+                    break;
+                default:
+                    break;
             }
         });
 
-        mzTabExportDialog.getRemoveAssaysToSVButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getBackButton().addActionListener(e -> {
+            String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
+            switch (currentCardName) {
+                case SECOND_PANEL:
+                    getCardLayout().show(mzTabExportDialog.getTopPanel(), FIRST_PANEL);
+                    break;
+                default:
+                    getCardLayout().previous(mzTabExportDialog.getTopPanel());
+                    break;
+            }
+            onCardSwitch();
+        });
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
-                //check if one or more assays have been selected
-                if (areOneOrMoreNodesSelected(mzTabExportDialog.getStudyVariableTree(), 2)) {
-                    for (TreePath treePath : selectionModel.getSelectionPaths()) {
-                        DefaultMutableTreeNode assay = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+        mzTabExportDialog.getFinishButton().addActionListener(e -> {
+            List<String> lastPanelValidationMessages = validateLastPanel();
+            if (lastPanelValidationMessages.isEmpty()) {
+                mzTabExport.setFileName(mzTabExportDialog.getFileNameTextField().getText());
+                mzTabExport.setExportDirectory(mzTabExportDialog.getExportDirectoryChooser().getSelectedFile());
+                MzTabExporterWorker mzTabExporterWorker = new MzTabExporterWorker();
+                ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
+                eventBus.post(progressStartEvent);
+                mzTabExporterWorker.execute();
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", lastPanelValidationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
 
+        mzTabExportDialog.getCancelButton().addActionListener(e -> mzTabExportDialog.dispose());
+
+        mzTabExportDialog.getAddStudyVariableButton().addActionListener(e -> {
+            if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {
+                DefaultMutableTreeNode studyVariable = new DefaultMutableTreeNode(mzTabExportDialog.getStudyVariableTextField().getText());
+                studyVariableTreeModel.insertNodeInto(studyVariable, studyVariableRootNode, studyVariableTreeModel.getChildCount(studyVariableRootNode));
+
+                //expand tree with invisible root node trick
+                mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariableRootNode.getPath()));
+
+                //reset text field
+                mzTabExportDialog.getStudyVariableTextField().setText("");
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Study variable addition", "Please provide a non-empty study variable description.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        mzTabExportDialog.getDeleteStudyVariableButton().addActionListener(e -> {
+            TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
+            //check if one or more study variables have been selected
+            if (areOneOrMoreNodesSelected(mzTabExportDialog.getStudyVariableTree(), 1)) {
+                for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                    //check for assays linked to the study variable to remove
+                    DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                    Enumeration<DefaultMutableTreeNode> assays = studyVariable.children();
+                    while (assays.hasMoreElements()) {
+                        DefaultMutableTreeNode assay = assays.nextElement();
                         //add to assay list model
                         assaysToCVListModel.addElement((String) assay.getUserObject());
-
-                        studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
                     }
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Assay(s) removal", "Please select one or more assays to remove.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+
+                    studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
                 }
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Study variable(s) removal", "Please select one or more study variables to delete.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        mzTabExportDialog.getAddAssaysToRunsButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getAddAssaysToSVButton().addActionListener(e -> {
+            List<String> selectedValuesList = mzTabExportDialog.getAssaysToCVList().getSelectedValuesList();
+            if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getStudyVariableTree(), 1)) {
+                DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) mzTabExportDialog.getStudyVariableTree().getSelectionPaths()[0].getLastPathComponent();
+                for (String assay : selectedValuesList) {
+                    //remove from assay list
+                    assaysToCVListModel.removeElement(assay);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<String> selectedValuesList = mzTabExportDialog.getAssaysToRunsList().getSelectedValuesList();
-                if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getAnalyticalRunTree(), 2)) {
-                    DefaultMutableTreeNode analyticalRun = (DefaultMutableTreeNode) mzTabExportDialog.getAnalyticalRunTree().getSelectionPaths()[0].getLastPathComponent();
-                    for (String assay : selectedValuesList) {
-                        //remove from assay list
-                        assaysToRunsListModel.removeElement(assay);
+                    //add to tree and expand node
+                    DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(assay);
+                    studyVariableTreeModel.insertNodeInto(assayTreeNode, studyVariable, studyVariableTreeModel.getChildCount(studyVariable));
 
-                        //add to tree and expand node
-                        DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(assay);
-                        analyticalRunTreeModel.insertNodeInto(assayTreeNode, analyticalRun, analyticalRunTreeModel.getChildCount(analyticalRun));
-
-                        mzTabExportDialog.getAnalyticalRunTree().expandPath(new TreePath(analyticalRun.getPath()));
-                    }
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and an analytical run to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariable.getPath()));
                 }
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and a study variable to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        mzTabExportDialog.getRemoveAssaysToRunsButton().addActionListener(new ActionListener() {
+        mzTabExportDialog.getRemoveAssaysToSVButton().addActionListener(e -> {
+            TreeSelectionModel selectionModel = mzTabExportDialog.getStudyVariableTree().getSelectionModel();
+            //check if one or more assays have been selected
+            if (areOneOrMoreNodesSelected(mzTabExportDialog.getStudyVariableTree(), 2)) {
+                for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                    DefaultMutableTreeNode assay = (DefaultMutableTreeNode) treePath.getLastPathComponent();
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TreeSelectionModel selectionModel = mzTabExportDialog.getAnalyticalRunTree().getSelectionModel();
-                //check if one or more assays have been selected
-                if (areOneOrMoreNodesSelected(mzTabExportDialog.getAnalyticalRunTree(), 3)) {
-                    for (TreePath treePath : selectionModel.getSelectionPaths()) {
-                        DefaultMutableTreeNode assay = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                    //add to assay list model
+                    assaysToCVListModel.addElement((String) assay.getUserObject());
 
-                        //add to assay list model
-                        assaysToRunsListModel.addElement((String) assay.getUserObject());
-
-                        analyticalRunTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
-                    }
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Assay(s) removal", "Please select one or more assays to remove.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    studyVariableTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
                 }
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Assay(s) removal", "Please select one or more assays to remove.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        mzTabExportDialog.getExportDirectoryBrowseButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //in response to the button click, show open dialog
-                int returnVal = mzTabExportDialog.getExportDirectoryChooser().showOpenDialog(mzTabExportDialog);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File exportDirectory = mzTabExportDialog.getExportDirectoryChooser().getSelectedFile();
+        mzTabExportDialog.getAddAssaysToRunsButton().addActionListener(e -> {
+            List<String> selectedValuesList = mzTabExportDialog.getAssaysToRunsList().getSelectedValuesList();
+            if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getAnalyticalRunTree(), 2)) {
+                DefaultMutableTreeNode analyticalRun = (DefaultMutableTreeNode) mzTabExportDialog.getAnalyticalRunTree().getSelectionPaths()[0].getLastPathComponent();
+                for (String assay : selectedValuesList) {
+                    //remove from assay list
+                    assaysToRunsListModel.removeElement(assay);
 
-                    //show directory path in textfield
-                    mzTabExportDialog.getExportDirectoryTextField().setText(exportDirectory.getAbsolutePath());
+                    //add to tree and expand node
+                    DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(assay);
+                    analyticalRunTreeModel.insertNodeInto(assayTreeNode, analyticalRun, analyticalRunTreeModel.getChildCount(analyticalRun));
+
+                    mzTabExportDialog.getAnalyticalRunTree().expandPath(new TreePath(analyticalRun.getPath()));
                 }
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and an analytical run to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        mzTabExportDialog.getRemoveAssaysToRunsButton().addActionListener(e -> {
+            TreeSelectionModel selectionModel = mzTabExportDialog.getAnalyticalRunTree().getSelectionModel();
+            //check if one or more assays have been selected
+            if (areOneOrMoreNodesSelected(mzTabExportDialog.getAnalyticalRunTree(), 3)) {
+                for (TreePath treePath : selectionModel.getSelectionPaths()) {
+                    DefaultMutableTreeNode assay = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+
+                    //add to assay list model
+                    assaysToRunsListModel.addElement((String) assay.getUserObject());
+
+                    analyticalRunTreeModel.removeNodeFromParent((DefaultMutableTreeNode) treePath.getLastPathComponent());
+                }
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Assay(s) removal", "Please select one or more assays to remove.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        mzTabExportDialog.getExportDirectoryBrowseButton().addActionListener(e -> {
+            //in response to the button click, show open dialog
+            int returnVal = mzTabExportDialog.getExportDirectoryChooser().showOpenDialog(mzTabExportDialog);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File exportDirectory = mzTabExportDialog.getExportDirectoryChooser().getSelectedFile();
+
+                //show directory path in textfield
+                mzTabExportDialog.getExportDirectoryTextField().setText(exportDirectory.getAbsolutePath());
             }
         });
     }

@@ -2,6 +2,7 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.Spectrum;
@@ -40,7 +41,7 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
             case SPECTRUM_ID:
                 return Long.class;
             case SEQUENCE:
-                return Long.class;
+                return String.class;
             case PRECURSOR_CHARGE:
                 return Integer.class;
             case PRECURSOR_MZRATIO:
@@ -82,7 +83,7 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
             case SPECTRUM_ID:
                 return spectrum.getId();
             case SEQUENCE:
-                return peptide.getSequence();
+                return PeptideSequenceRenderer.getAnnotatedHtmlSequence(peptide.getSequence(), peptide.getPeptideHasModifications());
             case PRECURSOR_CHARGE:
                 return charge;
             case PRECURSOR_MZRATIO:

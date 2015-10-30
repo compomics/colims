@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,31 +61,24 @@ public class PeptideShakerDataImportController implements Controllable {
         //set cps file filter
         peptideShakerDataImportPanel.getCpsFileChooser().setFileFilter(new CpsFileFilter());
 
-        peptideShakerDataImportPanel.getSelectCpsButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //in response to the button click, show open dialog
-                int returnVal = peptideShakerDataImportPanel.getCpsFileChooser().showOpenDialog(peptideShakerDataImportPanel);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    cpsArchive = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile();
+        peptideShakerDataImportPanel.getSelectCpsButton().addActionListener(e -> {
+            //in response to the button click, show open dialog
+            int returnVal = peptideShakerDataImportPanel.getCpsFileChooser().showOpenDialog(peptideShakerDataImportPanel);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                cpsArchive = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile();
 
-                    //show cps file name in label
-                    peptideShakerDataImportPanel.getCpsTextField().setText(cpsArchive.getAbsolutePath());
-                }
+                //show cps file name in label
+                peptideShakerDataImportPanel.getCpsTextField().setText(cpsArchive.getAbsolutePath());
             }
         });
 
-        peptideShakerDataImportPanel.getSelectFastaButton().addActionListener(new ActionListener() {
+        peptideShakerDataImportPanel.getSelectFastaButton().addActionListener(e -> {
+            fastaDbManagementController.showView();
 
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                fastaDbManagementController.showView();
+            fastaDb = fastaDbManagementController.getFastaDb();
 
-                fastaDb = fastaDbManagementController.getFastaDb();
-
-                if (fastaDb != null) {
-                    peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
-                }
+            if (fastaDb != null) {
+                peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
             }
         });
 
@@ -112,27 +103,20 @@ public class PeptideShakerDataImportController implements Controllable {
         //set mgf file filter
         peptideShakerDataImportPanel.getMgfFileChooser().setFileFilter(new MgfFileFilter());
 
-        peptideShakerDataImportPanel.getAddMgfButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //in response to the button click, show open dialog
-                int returnVal = peptideShakerDataImportPanel.getMgfFileChooser().showOpenDialog(peptideShakerDataImportPanel);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    for (int i = 0; i < peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles().length; i++) {
-                        mgfFileListModel.add(i, peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i]);
-                    }
+        peptideShakerDataImportPanel.getAddMgfButton().addActionListener(e -> {
+            //in response to the button click, show open dialog
+            int returnVal = peptideShakerDataImportPanel.getMgfFileChooser().showOpenDialog(peptideShakerDataImportPanel);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                for (int i = 0; i < peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles().length; i++) {
+                    mgfFileListModel.add(i, peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i]);
                 }
             }
         });
 
-        peptideShakerDataImportPanel.getRemoveMgfButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                int[] selectedIndices = peptideShakerDataImportPanel.getMgfFileList().getSelectedIndices();
-                for (int selectedIndex : selectedIndices) {
-                    mgfFileListModel.remove(selectedIndex);
-                }
+        peptideShakerDataImportPanel.getRemoveMgfButton().addActionListener(e -> {
+            int[] selectedIndices = peptideShakerDataImportPanel.getMgfFileList().getSelectedIndices();
+            for (int selectedIndex : selectedIndices) {
+                mgfFileListModel.remove(selectedIndex);
             }
         });
     }

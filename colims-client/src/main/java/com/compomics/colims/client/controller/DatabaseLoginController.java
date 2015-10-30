@@ -72,27 +72,21 @@ public class DatabaseLoginController implements Controllable {
 
         databaseLoginDialog.getDbPasswordTextField().requestFocus();
 
-        databaseLoginDialog.getLoginButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                dbUrl = databaseLoginDialog.getDbUrlTextField().getText();
-                dbUserName = databaseLoginDialog.getDbUserNameTextField().getText();
-                dbPassword = databaseLoginDialog.getDbPasswordTextField().getPassword();
+        databaseLoginDialog.getLoginButton().addActionListener(e -> {
+            dbUrl = databaseLoginDialog.getDbUrlTextField().getText();
+            dbUserName = databaseLoginDialog.getDbUserNameTextField().getText();
+            dbPassword = databaseLoginDialog.getDbPasswordTextField().getPassword();
 
-                if (!dbUrl.isEmpty() && !dbUserName.isEmpty() && dbPassword.length != 0) {
-                    onLogin();
-                } else {
-                    JOptionPane.showMessageDialog(databaseLoginDialog, "Please provide a database url, user name and password.", "database login validation", JOptionPane.WARNING_MESSAGE);
-                }
+            if (!dbUrl.isEmpty() && !dbUserName.isEmpty() && dbPassword.length != 0) {
+                onLogin();
+            } else {
+                JOptionPane.showMessageDialog(databaseLoginDialog, "Please provide a database url, user name and password.", "database login validation", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        databaseLoginDialog.getCloseButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                databaseLoginDialog.dispose();
-                System.exit(0);
-            }
+        databaseLoginDialog.getCloseButton().addActionListener(e -> {
+            databaseLoginDialog.dispose();
+            System.exit(0);
         });
 
         databaseLoginDialog.addWindowListener(new WindowAdapter() {

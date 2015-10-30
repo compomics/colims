@@ -7,6 +7,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.factory.PsmPanelGenerator;
 import com.compomics.colims.client.model.table.format.PeptideTableFormat;
@@ -15,14 +16,12 @@ import com.compomics.colims.client.model.table.format.ProteinPanelPsmTableFormat
 import com.compomics.colims.client.model.table.model.PeptideExportModel;
 import com.compomics.colims.client.model.table.model.PeptideTableRow;
 import com.compomics.colims.client.model.table.model.ProteinGroupTableModel;
-import com.compomics.colims.client.model.table.model.ProteinPanelPsmTableModel;
 import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
 import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
@@ -66,7 +65,7 @@ public class ProteinOverviewController implements Controllable {
 
     private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
-    private ProteinPanelPsmTableModel psmTableModel;
+    private AdvancedTableModel psmTableModel;
     private final EventList<ProteinGroupDTO> proteinGroupDTOs = new BasicEventList<>();
     private final EventList<PeptideTableRow> peptideTableRows = new BasicEventList<>();
     private final EventList<Peptide> psms = new BasicEventList<>();
@@ -100,8 +99,6 @@ public class ProteinOverviewController implements Controllable {
     private PeptideService peptideService;
     @Autowired
     private SpectrumService spectrumService;
-    @Autowired
-    private ProteinGroupService proteinGroupService;
     @Autowired
     private PsmPanelGenerator psmPanelGenerator;
 
@@ -145,7 +142,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().setSelectionModel(proteinGroupSelectionModel);
 
         //init peptide table
-        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, null);
+        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
         proteinOverviewPanel.getPeptideTable().setModel(peptideTableModel);
@@ -153,15 +150,24 @@ public class ProteinOverviewController implements Controllable {
         peptideSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPeptideTable().setSelectionModel(peptideSelectionModel);
 
-        //init PSM table
-        SortedList<Peptide> sortedPsms = new SortedList<>(psms, null);
+        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
+        TableComparatorChooser peptideTableSorter = TableComparatorChooser.install(
+                proteinOverviewPanel.getPeptideTable(), sortedPeptides, TableComparatorChooser.SINGLE_COLUMN);
 
-        psmTableModel = new ProteinPanelPsmTableModel(sortedPsms, psmTableFormat);
+        //init PSM table
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, (o1, o2) -> o2.getPsmPostErrorProbability().compareTo(o1.getPsmPostErrorProbability()));
+
+        psmTableModel = GlazedListsSwing.eventTableModel(sortedPsms, psmTableFormat);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);
         psmSelectionModel = new DefaultEventSelectionModel<>(sortedPsms);
         psmSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         proteinOverviewPanel.getPsmTable().setSelectionModel(psmSelectionModel);
 
+        //use MULTIPLE_COLUMN_MOUSE to allow sorting by multiple columns
+        TableComparatorChooser psmTableSorter = TableComparatorChooser.install(
+                proteinOverviewPanel.getPsmTable(), sortedPsms, TableComparatorChooser.SINGLE_COLUMN);
+
+        //set column width of the different tables
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(70);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(150);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
@@ -250,6 +256,11 @@ public class ProteinOverviewController implements Controllable {
             if (!lse.getValueIsAdjusting()) {
                 if (!proteinGroupSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
+
+                    if (selectedProteinGroupDTO.getMainAccession().equals("Q00839")) {
+                        System.out.println("test");
+                    }
+
                     //get the PeptideDTO instances for the selected protein group
                     List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
@@ -295,7 +306,7 @@ public class ProteinOverviewController implements Controllable {
                         if (sequence.contains("<span") || sequence.contains("_")) {
                             try {
                                 PeptideTableRow selectedPeptideTableRow = (PeptideTableRow) peptideTableModel.getElementAt(rowIndex);
-                                String tooltip = PeptideSequenceRenderer.getModificationsHtmlToolTip(selectedPeptideTableRow.getSequence(), selectedPeptideTableRow.getPeptideHasModifications());
+                                String tooltip = PeptideSequenceRenderer.getModificationsHtmlToolTip(selectedPeptideTableRow.getSequence(), selectedPeptideTableRow.getPeptideHasModifications(), false);
                                 proteinOverviewPanel.getPeptideTable().setToolTipText(tooltip);
                             } catch (Exception e) {
                                 LOGGER.error(e.getMessage(), e);
@@ -309,6 +320,39 @@ public class ProteinOverviewController implements Controllable {
                 } else {
                     proteinOverviewPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
                     proteinOverviewPanel.getPeptideTable().setToolTipText(null);
+                }
+            }
+        });
+
+        proteinOverviewPanel.getPsmTable().addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent evt) {
+                int rowIndex = proteinOverviewPanel.getPsmTable().rowAtPoint(evt.getPoint());
+                int columnIndex = proteinOverviewPanel.getPsmTable().columnAtPoint(evt.getPoint());
+
+                if (rowIndex != -1 && columnIndex != -1 && proteinOverviewPanel.getPsmTable().getValueAt(rowIndex, columnIndex) != null) {
+                    if (columnIndex == ProteinPanelPsmTableFormat.SEQUENCE) {
+                        proteinOverviewPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+                        String sequence = (String) proteinOverviewPanel.getPsmTable().getValueAt(rowIndex, columnIndex);
+
+                        if (sequence.contains("<span") || sequence.contains("_")) {
+                            try {
+                                Peptide selectedPeptide = (Peptide) psmTableModel.getElementAt(rowIndex);
+                                String tooltip = PeptideSequenceRenderer.getModificationsHtmlToolTip(selectedPeptide.getSequence(), selectedPeptide.getPeptideHasModifications(), true);
+                                proteinOverviewPanel.getPsmTable().setToolTipText(tooltip);
+                            } catch (Exception e) {
+                                LOGGER.error(e.getMessage(), e);
+                            }
+                        } else {
+                            proteinOverviewPanel.getPsmTable().setToolTipText(null);
+                        }
+                    } else {
+                        proteinOverviewPanel.getPsmTable().setToolTipText(null);
+                    }
+                } else {
+                    proteinOverviewPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                    proteinOverviewPanel.getPsmTable().setToolTipText(null);
                 }
             }
         });
@@ -332,62 +376,50 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinOverviewPanel.getFirstProteinGroupPageButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinGroupTableModel.setPage(0);
-                updateProteinTable();
+        proteinOverviewPanel.getFirstProteinGroupPageButton().addActionListener(e -> {
+            proteinGroupTableModel.setPage(0);
+            updateProteinTable();
 
-                proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
+            proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(false);
+            proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
+        });
+
+        proteinOverviewPanel.getPrevProteinGroupPageButton().addActionListener(e -> {
+            proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
+            updateProteinTable();
+
+            proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
+
+            if (proteinGroupTableModel.getPage() == 0) {
                 proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
                 proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(false);
-                proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
             }
         });
 
-        proteinOverviewPanel.getPrevProteinGroupPageButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
-                updateProteinTable();
+        proteinOverviewPanel.getNextProteinGroupPageButton().addActionListener(e -> {
+            proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
+            updateProteinTable();
 
-                proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
-                proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
 
-                if (proteinGroupTableModel.getPage() == 0) {
-                    proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
-                    proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(false);
-                }
-            }
-        });
-
-        proteinOverviewPanel.getNextProteinGroupPageButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
-                updateProteinTable();
-
-                proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
-                proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
-
-                if (proteinGroupTableModel.isMaxPage()) {
-                    proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
-                    proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
-                }
-            }
-        });
-
-        proteinOverviewPanel.getLastProteinGroupPageButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
-                updateProteinTable();
-
+            if (proteinGroupTableModel.isMaxPage()) {
                 proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
-                proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
-                proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
                 proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
             }
+        });
+
+        proteinOverviewPanel.getLastProteinGroupPageButton().addActionListener(e -> {
+            proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
+            updateProteinTable();
+
+            proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
+            proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
+            proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
         });
 
         proteinOverviewPanel.getProteinGroupFilterTextField().addKeyListener(new KeyAdapter() {
@@ -405,62 +437,53 @@ public class ProteinOverviewController implements Controllable {
             }
         });
 
-        proteinOverviewPanel.getExportProteinGroupsButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
+        proteinOverviewPanel.getExportProteinGroupsButton().addActionListener(e -> {
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
 
-                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
-                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
-                    exportModel.setPerPage(0);
-                    GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(selectedAnalyticalRun), false);
+                EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
+                ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
+                exportModel.setPerPage(0);
+                GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(selectedAnalyticalRun), false);
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                }
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
-        proteinOverviewPanel.getExportPeptidesButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
+        proteinOverviewPanel.getExportPeptidesButton().addActionListener(e -> {
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
 
-                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    Map<Integer, Pattern> columnFilter = new HashMap<>();
-                    columnFilter.put(0, HTML_TAGS);
+                Map<Integer, Pattern> columnFilter = new HashMap<>();
+                columnFilter.put(0, HTML_TAGS);
 
-                    // need a new model... or table format?
-                    // could potentially lose the filtering if its only on this model
-                    // hmm
-                    PeptideExportModel exportModel = new PeptideExportModel();
-                    exportModel.setPeptideTableRows(sortedPeptides);
+                // need a new model... or table format?
+                // could potentially lose the filtering if its only on this model
+                // hmm
+                PeptideExportModel exportModel = new PeptideExportModel();
+                exportModel.setPeptideTableRows(sortedPeptides);
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                }
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
-        proteinOverviewPanel.getExportPsmsButton().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
+        proteinOverviewPanel.getExportPsmsButton().addActionListener(e -> {
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
 
-                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
+                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
 
-                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                }
+                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
     }
@@ -610,7 +633,7 @@ public class ProteinOverviewController implements Controllable {
      * Map the list of PeptideDTO instances associated with the given protein group to a list of PeptideTableRow
      * instances.
      *
-     * @param peptideDTOs the list of PeptideDTO instances
+     * @param peptideDTOs the set of PeptideDTO instances
      * @return a list of PeptideTableRow instances
      */
     private List<PeptideTableRow> mapPeptideDTOs(List<PeptideDTO> peptideDTOs) {

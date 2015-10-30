@@ -209,173 +209,134 @@ public class ProjectManagementController implements Controllable {
         projectManagementPanel.getAddRunMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
 
-        projectsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Project selectedProject = getSelectedProject();
-                    if (selectedProject != null) {
-                        //fill project experiments table
-                        GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
-                    } else {
-                        GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
-                    }
-                }
-            }
-        });
-
-        projectManagementPanel.getAddProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                projectEditController.updateView(createDefaultProject());
-            }
-        });
-
-        projectManagementPanel.getEditProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        projectsSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
                 Project selectedProject = getSelectedProject();
                 if (selectedProject != null) {
-                    projectEditController.updateView(selectedProject);
+                    //fill project experiments table
+                    GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
                 } else {
-                    eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
                 }
             }
         });
 
-        projectManagementPanel.getDeleteProjectButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Project projectToDelete = getSelectedProject();
+        projectManagementPanel.getAddProjectButton().addActionListener(e -> projectEditController.updateView(createDefaultProject()));
 
-                if (projectToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(projectToDelete, Project.class);
-                    if (deleteConfirmation) {
-                        //remove from overview table and clear selection
-                        mainController.getProjects().remove(projectToDelete);
-                        projectsSelectionModel.clearSelection();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
+        projectManagementPanel.getEditProjectButton().addActionListener(e -> {
+            Project selectedProject = getSelectedProject();
+            if (selectedProject != null) {
+                projectEditController.updateView(selectedProject);
+            } else {
+                eventBus.post(new MessageEvent("Project selection", "Please select a project to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        experimentsSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    Experiment selectedExperiment = getSelectedExperiment();
-                    if (selectedExperiment != null) {
-                        //fill samples table
-                        GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
-                    } else {
-                        GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
-                    }
+        projectManagementPanel.getDeleteProjectButton().addActionListener(e -> {
+            Project projectToDelete = getSelectedProject();
+
+            if (projectToDelete != null) {
+                boolean deleteConfirmation = deleteEntity(projectToDelete, Project.class);
+                if (deleteConfirmation) {
+                    //remove from overview table and clear selection
+                    mainController.getProjects().remove(projectToDelete);
+                    projectsSelectionModel.clearSelection();
                 }
+            } else {
+                eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        projectManagementPanel.getAddExperimentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (getSelectedProject() != null) {
-                    experimentEditController.updateView(createDefaultExperiment());
-                } else {
-                    eventBus.post(new MessageEvent("Experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        projectManagementPanel.getEditExperimentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        experimentsSelectionModel.addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
                 Experiment selectedExperiment = getSelectedExperiment();
                 if (selectedExperiment != null) {
-                    experimentEditController.updateView(selectedExperiment);
+                    //fill samples table
+                    GlazedLists.replaceAll(samples, selectedExperiment.getSamples(), false);
                 } else {
-                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    GlazedLists.replaceAll(samples, new ArrayList<Sample>(), false);
                 }
             }
         });
 
-        projectManagementPanel.getDeleteExperimentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Experiment experimentToDelete = getSelectedExperiment();
-
-                if (experimentToDelete != null) {
-                    //send DeleteDbTask to DbTask queue
-                    boolean deleteConfirmation = deleteEntity(experimentToDelete, Experiment.class);
-                    if (deleteConfirmation) {
-                        //remove from overview table and clear selection
-                        experiments.remove(experimentToDelete);
-                        experimentsSelectionModel.clearSelection();
-                        eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete));
-
-                        //remove experiment from the selected project and update the table
-                        getSelectedProject().getExperiments().remove(experimentToDelete);
-                        projectManagementPanel.getProjectsTable().updateUI();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
+        projectManagementPanel.getAddExperimentButton().addActionListener(e -> {
+            if (getSelectedProject() != null) {
+                experimentEditController.updateView(createDefaultExperiment());
+            } else {
+                eventBus.post(new MessageEvent("Experiment addition", "Please select a project to add an experiment to.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        projectManagementPanel.getAddSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (getSelectedExperiment() != null) {
-                    sampleEditController.updateView(createDefaultSample());
-                } else {
-                    eventBus.post(new MessageEvent("Sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
-                }
+        projectManagementPanel.getEditExperimentButton().addActionListener(e -> {
+            Experiment selectedExperiment = getSelectedExperiment();
+            if (selectedExperiment != null) {
+                experimentEditController.updateView(selectedExperiment);
+            } else {
+                eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        projectManagementPanel.getEditSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
-                    sampleEditController.updateView(selectedSample);
-                } else {
-                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
+        projectManagementPanel.getDeleteExperimentButton().addActionListener(e -> {
+            Experiment experimentToDelete = getSelectedExperiment();
+
+            if (experimentToDelete != null) {
+                //send DeleteDbTask to DbTask queue
+                boolean deleteConfirmation = deleteEntity(experimentToDelete, Experiment.class);
+                if (deleteConfirmation) {
+                    //remove from overview table and clear selection
+                    experiments.remove(experimentToDelete);
+                    experimentsSelectionModel.clearSelection();
+                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete));
+
+                    //remove experiment from the selected project and update the table
+                    getSelectedProject().getExperiments().remove(experimentToDelete);
+                    projectManagementPanel.getProjectsTable().updateUI();
                 }
+            } else {
+                eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        projectManagementPanel.getDeleteSampleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Sample sampleToDelete = getSelectedSample();
-
-                if (sampleToDelete != null) {
-                    boolean deleteConfirmation = deleteEntity(sampleToDelete, Sample.class);
-                    if (deleteConfirmation) {
-                        //remove from overview table and clear selection
-                        samples.remove(sampleToDelete);
-                        samplesSelectionModel.clearSelection();
-                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
-
-                        //remove sample from the selected experiment and update the table
-                        getSelectedExperiment().getSamples().remove(sampleToDelete);
-                        projectManagementPanel.getExperimentsTable().updateUI();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
+        projectManagementPanel.getAddSampleButton().addActionListener(e -> {
+            if (getSelectedExperiment() != null) {
+                sampleEditController.updateView(createDefaultSample());
+            } else {
+                eventBus.post(new MessageEvent("Sample addition", "Please select an experiment to add a sample to.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        projectManagementPanel.getOtherSampleActionsButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JButton button = projectManagementPanel.getOtherSampleActionsButton();
-                projectManagementPanel.getSamplePopupMenu().show(button, button.getBounds().x, button.getBounds().y + button.getBounds().height);
+        projectManagementPanel.getEditSampleButton().addActionListener(e -> {
+            Sample selectedSample = getSelectedSample();
+            if (selectedSample != null) {
+                sampleEditController.updateView(selectedSample);
+            } else {
+                eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
+        });
+
+        projectManagementPanel.getDeleteSampleButton().addActionListener(e -> {
+            Sample sampleToDelete = getSelectedSample();
+
+            if (sampleToDelete != null) {
+                boolean deleteConfirmation = deleteEntity(sampleToDelete, Sample.class);
+                if (deleteConfirmation) {
+                    //remove from overview table and clear selection
+                    samples.remove(sampleToDelete);
+                    samplesSelectionModel.clearSelection();
+                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
+
+                    //remove sample from the selected experiment and update the table
+                    getSelectedExperiment().getSamples().remove(sampleToDelete);
+                    projectManagementPanel.getExperimentsTable().updateUI();
+                }
+            } else {
+                eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        projectManagementPanel.getOtherSampleActionsButton().addActionListener(e -> {
+            JButton button = projectManagementPanel.getOtherSampleActionsButton();
+            projectManagementPanel.getSamplePopupMenu().show(button, button.getBounds().x, button.getBounds().y + button.getBounds().height);
         });
 
     }

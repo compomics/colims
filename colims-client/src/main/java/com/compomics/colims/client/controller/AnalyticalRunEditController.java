@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -90,37 +88,29 @@ public class AnalyticalRunEditController implements Controllable {
 
         bindingGroup.bind();
 
-        analyticalRunEditDialog.getUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update analyticalRunToEdit with dialog input
-                updateAnalyticalRunToEdit();
+        analyticalRunEditDialog.getUpdateButton().addActionListener(e -> {
+            //update analyticalRunToEdit with dialog input
+            updateAnalyticalRunToEdit();
 
-                //validate analytical run
-                List<String> validationMessages = GuiUtils.validateEntity(analyticalRunToEdit);
+            //validate analytical run
+            List<String> validationMessages = GuiUtils.validateEntity(analyticalRunToEdit);
 
-                if (validationMessages.isEmpty()) {
-                    analyticalRunService.update(analyticalRunToEdit);
-                    int index = sampleEditController.getSelectedAnalyticalRunIndex();
+            if (validationMessages.isEmpty()) {
+                analyticalRunService.update(analyticalRunToEdit);
+                int index = sampleEditController.getSelectedAnalyticalRunIndex();
 
-                    MessageEvent messageEvent = new MessageEvent("Analytical run store confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
+                MessageEvent messageEvent = new MessageEvent("Analytical run store confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
 
-                    //refresh selection in analytical list in sample edit dialog
-                    sampleEditController.setSelectedAnalyticalRun(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
+                //refresh selection in analytical list in sample edit dialog
+                sampleEditController.setSelectedAnalyticalRun(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        analyticalRunEditDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                analyticalRunEditDialog.dispose();
-            }
-        });
+        analyticalRunEditDialog.getCancelButton().addActionListener(e -> analyticalRunEditDialog.dispose());
     }
 
     @Override

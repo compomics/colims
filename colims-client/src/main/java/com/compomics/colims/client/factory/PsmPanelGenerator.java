@@ -38,7 +38,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * This class generates a spectrum panel for a PSM (Peptide-to-spectrum match).
@@ -136,60 +135,58 @@ public class PsmPanelGenerator {
             spectrumPanel.showAnnotatedPeaksOnly(!annotationSettings.showAllPeaks());
             spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationSettings.yAxisZoomExcludesBackgroundPeaks());
 
-            List<Peptide> peptides = spectrum.getPeptides();
-            if (!peptides.isEmpty()) {
-                //map the Colims Peptide instance onto the PeptideAssumption
-                PeptideAssumption peptideAssumption = colimsPeptideMapper.map(peptides.get(0));
+            //map the Colims Peptide instance onto the PeptideAssumption
+            PeptideAssumption peptideAssumption = colimsPeptideMapper.map(peptide);
 
-                PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
+            PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
 
-                SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
-                        msnSpectrum.getSpectrumKey(),
-                        peptideAssumption,
-                        new SequenceMatchingPreferences(),
-                        new SequenceMatchingPreferences()
-                );
+            SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
+                    msnSpectrum.getSpectrumKey(),
+                    peptideAssumption,
+                    new SequenceMatchingPreferences(),
+                    new SequenceMatchingPreferences()
+            );
 
-                ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
-                        annotationSettings,
-                        specificAnnotationSettings,
-                        msnSpectrum,
-                        peptideAssumption.getPeptide()
-                );
+            ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
+                    annotationSettings,
+                    specificAnnotationSettings,
+                    msnSpectrum,
+                    peptideAssumption.getPeptide()
+            );
 
-                spectrumPanel.addAutomaticDeNovoSequencing(
-                        peptideAssumption.getPeptide(),
-                        annotations,
-                        utilitiesSearchParameters.getIonSearched1(),
-                        utilitiesSearchParameters.getIonSearched2(),
-                        annotationSettings.getDeNovoCharge(),
-                        annotationSettings.showForwardIonDeNovoTags(),
-                        annotationSettings.showRewindIonDeNovoTags(),
-                        false
-                );
+            spectrumPanel.addAutomaticDeNovoSequencing(
+                    peptideAssumption.getPeptide(),
+                    annotations,
+                    utilitiesSearchParameters.getIonSearched1(),
+                    utilitiesSearchParameters.getIonSearched2(),
+                    annotationSettings.getDeNovoCharge(),
+                    annotationSettings.showForwardIonDeNovoTags(),
+                    annotationSettings.showRewindIonDeNovoTags(),
+                    false
+            );
 
-                spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
+            spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
 
-                SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
-                        getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
-                        annotations,
-                        true,
-                        utilitiesSearchParameters.getPtmSettings(),
-                        utilitiesSearchParameters.getIonSearched1(),
-                        utilitiesSearchParameters.getIonSearched2()
-                );
+            SequenceFragmentationPanel sequenceFragmentationPanel = new SequenceFragmentationPanel(
+                    getTaggedPeptideSequence(peptideAssumption.getPeptide(), false, false, false),
+                    annotations,
+                    true,
+                    utilitiesSearchParameters.getPtmSettings(),
+                    utilitiesSearchParameters.getIonSearched1(),
+                    utilitiesSearchParameters.getIonSearched2()
+            );
 
-                secondarySpectrumPlotsParentPanel.removeAll();
-                secondarySpectrumPlotsParentPanel.add(sequenceFragmentationPanel);
-                secondarySpectrumPlotsParentPanel.add(new IntensityHistogram(annotations, msnSpectrum, 0.75));
+            secondarySpectrumPlotsParentPanel.removeAll();
+            secondarySpectrumPlotsParentPanel.add(sequenceFragmentationPanel);
+            secondarySpectrumPlotsParentPanel.add(new IntensityHistogram(annotations, msnSpectrum, 0.75));
 
-                MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, msnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
+            MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, msnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
 
-                secondarySpectrumPlotsParentPanel.add(massErrorPlot);
+            secondarySpectrumPlotsParentPanel.add(massErrorPlot);
 
-                secondarySpectrumPlotsParentPanel.revalidate();
-                secondarySpectrumPlotsParentPanel.repaint();
-            }
+            secondarySpectrumPlotsParentPanel.revalidate();
+            secondarySpectrumPlotsParentPanel.repaint();
+
             spectrumParentPanel.add(spectrumPanel);
         } else {
             spectrumParentPanel.add(new JPanel());

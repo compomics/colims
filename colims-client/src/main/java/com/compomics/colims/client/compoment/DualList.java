@@ -7,8 +7,6 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -77,11 +75,7 @@ public class DualList<T> extends javax.swing.JPanel {
 
         availableItemBindingList.clear();
         //check for added items in the available items list
-        for (T availableItem : availableItems) {
-            if (!addedItems.contains(availableItem)) {
-                availableItemBindingList.add(availableItem);
-            }
-        }
+        availableItemBindingList.addAll(availableItems.stream().filter(availableItem -> !addedItems.contains(availableItem)).collect(Collectors.toList()));
 
         addedItemBindingList.clear();
         addedItemBindingList.addAll(addedItems);
@@ -131,55 +125,49 @@ public class DualList<T> extends javax.swing.JPanel {
         bindingGroup.bind();
 
         //add action listeners
-        addItemButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                List<T> oldAddedItems = getAddedItems();
+        addItemButton.addActionListener(ae -> {
+            List<T> oldAddedItems = getAddedItems();
 
-                List<T> selectedItems = availableItemList.getSelectedValuesList();
-                if (!selectedItems.isEmpty()) {
-                    for (T selectedItem : selectedItems) {
-                        //add to addedItemBindingList
-                        addedItemBindingList.add(selectedItem);
-                        //remove from availableItemBindingList
-                        availableItemBindingList.remove(selectedItem);
-                    }
-                    //sort
-                    sort(addedItemBindingList);
-
-                    //check button states
-                    checkButtonStates();
-
-                    List<T> newAddedItems = getAddedItems();
-                    //notify listeners
-                    DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
+            List<T> selectedItems = availableItemList.getSelectedValuesList();
+            if (!selectedItems.isEmpty()) {
+                for (T selectedItem : selectedItems) {
+                    //add to addedItemBindingList
+                    addedItemBindingList.add(selectedItem);
+                    //remove from availableItemBindingList
+                    availableItemBindingList.remove(selectedItem);
                 }
+                //sort
+                sort(addedItemBindingList);
+
+                //check button states
+                checkButtonStates();
+
+                List<T> newAddedItems = getAddedItems();
+                //notify listeners
+                DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
             }
         });
 
-        removeItemButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                List<T> oldAddedItems = getAddedItems();
+        removeItemButton.addActionListener(ae -> {
+            List<T> oldAddedItems = getAddedItems();
 
-                List<T> selectedItems = addedItemList.getSelectedValuesList();
-                if (!selectedItems.isEmpty()) {
-                    for (T selectedItem : selectedItems) {
-                        //add to availableItemBindingList and sort
-                        availableItemBindingList.add(selectedItem);
-                        //remove from addedItemBindingList
-                        addedItemBindingList.remove(selectedItem);
-                    }
-                    //sort
-                    sort(availableItemBindingList);
-
-                    //check button states
-                    checkButtonStates();
-
-                    List<T> newAddedItems = getAddedItems();
-                    //notify listeners
-                    DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
+            List<T> selectedItems = addedItemList.getSelectedValuesList();
+            if (!selectedItems.isEmpty()) {
+                for (T selectedItem : selectedItems) {
+                    //add to availableItemBindingList and sort
+                    availableItemBindingList.add(selectedItem);
+                    //remove from addedItemBindingList
+                    addedItemBindingList.remove(selectedItem);
                 }
+                //sort
+                sort(availableItemBindingList);
+
+                //check button states
+                checkButtonStates();
+
+                List<T> newAddedItems = getAddedItems();
+                //notify listeners
+                DualList.this.firePropertyChange(CHANGED, oldAddedItems, newAddedItems);
             }
         });
     }

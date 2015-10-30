@@ -83,147 +83,123 @@ public class CvParamManagementController implements Controllable, OLSInputable {
         cvParamManagementDialog.getCvParamTable().setModel(typeCvParamTableModel2);
 
         //add listeners
-        cvParamManagementDialog.getCvParamTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting()) {
-                    int selectedRow = cvParamManagementDialog.getCvParamTable().getSelectedRow();
-                    if (selectedRow != -1 && !typeCvParamTableModel2.getCvParams().isEmpty()) {
-                        AuditableTypedCvParam selectedCvParam = typeCvParamTableModel2.getCvParams().get(selectedRow);
+        cvParamManagementDialog.getCvParamTable().getSelectionModel().addListSelectionListener(lse -> {
+            if (!lse.getValueIsAdjusting()) {
+                int selectedRow = cvParamManagementDialog.getCvParamTable().getSelectedRow();
+                if (selectedRow != -1 && !typeCvParamTableModel2.getCvParams().isEmpty()) {
+                    AuditableTypedCvParam selectedCvParam = typeCvParamTableModel2.getCvParams().get(selectedRow);
 
-                        //check if the CV param has an ID.
-                        //If so, change the save button text and the info state label.
-                        if (selectedCvParam.getId() != null) {
-                            cvParamManagementDialog.getSaveOrUpdateButton().setText("update");
-                            cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
-                        } else {
-                            cvParamManagementDialog.getSaveOrUpdateButton().setText("save");
-                            cvParamManagementDialog.getCvParamStateInfoLabel().setText("This CV param hasn't been stored in the database.");
-                        }
-
-                        //set details fields
-                        cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getOntology());
-                        cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
-                        cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
-                        cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
-
-                        //reset definition text area
-                        cvParamManagementDialog.getDefinitionTextArea().setText("");
-                        //get param definition from ols service
-                        org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
-                        if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
-                            for (MapItem mapItem : termMetadata.getItem()) {
-                                //look for definition item
-                                if (mapItem.getKey().equals("definition") && mapItem.getValue() != null) {
-                                    cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
-                                }
-                            }
-                        }
-                    } else {
-                        clearCvParamDetailFields();
-                    }
-                }
-            }
-        });
-
-        cvParamManagementDialog.getAddCvParamButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                showOlsDialog(true);
-            }
-        });
-
-        cvParamManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
-                    AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
-                    //validate CV param
-                    List<String> validationMessages = GuiUtils.validateEntity(selectedCvParam);
-                    //check for a new CV param if the accession already exists in the db
-                    if (selectedCvParam.getId() == null && isExistingCvParamAccession(selectedCvParam)) {
-                        validationMessages.add(selectedCvParam.getAccession() + " already exists in the database.");
-                    }
-                    if (validationMessages.isEmpty()) {
-                        if (selectedCvParam.getId() != null) {
-                            cvParamService.update(selectedCvParam);
-                        } else {
-                            cvParamService.save(selectedCvParam);
-                        }
+                    //check if the CV param has an ID.
+                    //If so, change the save button text and the info state label.
+                    if (selectedCvParam.getId() != null) {
                         cvParamManagementDialog.getSaveOrUpdateButton().setText("update");
                         cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
-
-                        MessageEvent messageEvent = new MessageEvent("CV param store confirmation", "CV param " + selectedCvParam.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                        eventBus.post(messageEvent);
-
-                        eventBus.post(new CvParamChangeEvent());
                     } else {
-                        MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                        eventBus.post(messageEvent);
+                        cvParamManagementDialog.getSaveOrUpdateButton().setText("save");
+                        cvParamManagementDialog.getCvParamStateInfoLabel().setText("This CV param hasn't been stored in the database.");
                     }
-                } else {
-                    eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to save.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
 
-        cvParamManagementDialog.getDeleteCvParamButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
+                    //set details fields
+                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getOntology());
+                    cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
+                    cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
+                    cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
 
-                if (selectedIndex != -1) {
-                    AuditableTypedCvParam cvparamToDelete = getSelectedCvParam();
-                //check if instrument type has an id.
-                    //If so, try to delete the permission from the db.
-                    if (cvparamToDelete.getId() != null) {
-                        try {
-                            cvParamService.delete(cvparamToDelete);
-
-                            typeCvParamTableModel2.removeCvParam(selectedIndex);
-                            cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
-
-                            eventBus.post(new CvParamChangeEvent());
-                        } catch (DataIntegrityViolationException dive) {
-                        //check if the CV param can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvparamToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
+                    //reset definition text area
+                    cvParamManagementDialog.getDefinitionTextArea().setText("");
+                    //get param definition from ols service
+                    org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
+                    if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
+                        for (MapItem mapItem : termMetadata.getItem()) {
+                            //look for definition item
+                            if (mapItem.getKey().equals("definition") && mapItem.getValue() != null) {
+                                cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
                             }
                         }
-                    } else {
-                        typeCvParamTableModel2.removeCvParam(selectedIndex);
-                        cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
                     }
                 } else {
-                    eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    clearCvParamDetailFields();
                 }
             }
         });
 
-        cvParamManagementDialog.getEditUsingOlsCvParamButton().addActionListener(new ActionListener() {
+        cvParamManagementDialog.getAddCvParamButton().addActionListener(e -> showOlsDialog(true));
 
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
-                    showOlsDialog(false);
+        cvParamManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
+                AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
+                //validate CV param
+                List<String> validationMessages = GuiUtils.validateEntity(selectedCvParam);
+                //check for a new CV param if the accession already exists in the db
+                if (selectedCvParam.getId() == null && isExistingCvParamAccession(selectedCvParam)) {
+                    validationMessages.add(selectedCvParam.getAccession() + " already exists in the database.");
+                }
+                if (validationMessages.isEmpty()) {
+                    if (selectedCvParam.getId() != null) {
+                        cvParamService.update(selectedCvParam);
+                    } else {
+                        cvParamService.save(selectedCvParam);
+                    }
+                    cvParamManagementDialog.getSaveOrUpdateButton().setText("update");
+                    cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
+
+                    MessageEvent messageEvent = new MessageEvent("CV param store confirmation", "CV param " + selectedCvParam.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    eventBus.post(messageEvent);
+
+                    eventBus.post(new CvParamChangeEvent());
                 } else {
-                    eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
                 }
+            } else {
+                eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to save.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        cvParamManagementDialog.getCancelButton().addActionListener(new ActionListener() {
+        cvParamManagementDialog.getDeleteCvParamButton().addActionListener(e -> {
+            int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
 
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                cvParamManagementDialog.dispose();
+            if (selectedIndex != -1) {
+                AuditableTypedCvParam cvparamToDelete = getSelectedCvParam();
+            //check if instrument type has an id.
+                //If so, try to delete the permission from the db.
+                if (cvparamToDelete.getId() != null) {
+                    try {
+                        cvParamService.delete(cvparamToDelete);
+
+                        typeCvParamTableModel2.removeCvParam(selectedIndex);
+                        cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
+
+                        eventBus.post(new CvParamChangeEvent());
+                    } catch (DataIntegrityViolationException dive) {
+                    //check if the CV param can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvparamToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    typeCvParamTableModel2.removeCvParam(selectedIndex);
+                    cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
+                }
+            } else {
+                eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
+
+        cvParamManagementDialog.getEditUsingOlsCvParamButton().addActionListener(e -> {
+            if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
+                showOlsDialog(false);
+            } else {
+                eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to edit.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        cvParamManagementDialog.getCancelButton().addActionListener(e -> cvParamManagementDialog.dispose());
     }
 
     @Override
@@ -252,7 +228,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
 
     @Override
     public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
-        //check wether a CV param has to be added or updated
+        //check whether a CV param has to be added or updated
         if (field.equals(ADD_CV_PARAM)) {
             AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyLong, ontologyShort, accession, selectedValue);
 

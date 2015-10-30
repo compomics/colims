@@ -89,135 +89,110 @@ public class ExperimentEditController implements Controllable {
         experimentBinaryFileDialog.getBinaryFileManagementPanel().init(ExperimentBinaryFile.class);
 
         //add action listeners
-        experimentEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                List<String> validationMessages = new ArrayList<>();
+        experimentEditDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            List<String> validationMessages = new ArrayList<>();
 
-                //update experimentToEdit with dialog input, catch NumberFormatException for experiment number
-                try {
-                    updateExperimentToEdit();
-                } catch (NumberFormatException nfe) {
-                    validationMessages.add("The experiment number must be a number.");
-                }
-
-                //validate experiment
-                validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
-                //check for a new experiment if the experiment title already exists in the db
-                if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
-                    validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another experiment title.");
-                }
-                if (validationMessages.isEmpty()) {
-                    int index;
-                    EntityChangeEvent.Type type;
-
-                    if (experimentToEdit.getId() != null) {
-                        experimentService.update(experimentToEdit);
-
-                        index = projectManagementController.getSelectedExperimentIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
-                    } else {
-                        //set project
-                        experimentToEdit.setProject(projectManagementController.getSelectedProject());
-
-                        experimentService.save(experimentToEdit);
-
-                        index = projectManagementController.getExperimentsSize() - 1;
-                        type = EntityChangeEvent.Type.CREATED;
-
-                        //add experiment to overview table
-                        projectManagementController.addExperiment(experimentToEdit);
-
-                        experimentEditDialog.getSaveOrUpdateButton().setText("update");
-                    }
-                    ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
-                    eventBus.post(experimentChangeEvent);
-
-                    MessageEvent messageEvent = new MessageEvent("Experiment store confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in experiment table
-                    projectManagementController.setSelectedExperiment(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
+            //update experimentToEdit with dialog input, catch NumberFormatException for experiment number
+            try {
+                updateExperimentToEdit();
+            } catch (NumberFormatException nfe) {
+                validationMessages.add("The experiment number must be a number.");
             }
-        });
 
-        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                ExperimentBinaryFile binaryFileToAdd = (ExperimentBinaryFile) evt.getNewValue();
-
-                //set experiment in binary file
-                binaryFileToAdd.setExperiment(experimentToEdit);
-
-                //save binary file
-                binaryFileService.save(binaryFileToAdd);
-
-                experimentToEdit.getBinaryFiles().add(binaryFileToAdd);
-                experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+            //validate experiment
+            validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
+            //check for a new experiment if the experiment title already exists in the db
+            if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
+                validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another experiment title.");
             }
-        });
+            if (validationMessages.isEmpty()) {
+                int index;
+                EntityChangeEvent.Type type;
 
-        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
-
-                if (experimentToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
-                    experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
-                }
-
-                //remove binary file
-                binaryFileService.delete(binaryFileToRemove);
-
-                experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
-            }
-        });
-
-        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
-
-                //update binary file
-                binaryFileService.update(binaryFileToUpdate);
-
-                experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
-            }
-        });
-
-        experimentBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                experimentBinaryFileDialog.dispose();
-            }
-        });
-
-        experimentEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
                 if (experimentToEdit.getId() != null) {
-                    experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
+                    experimentService.update(experimentToEdit);
 
-                    GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentBinaryFileDialog);
-                    experimentBinaryFileDialog.setVisible(true);
+                    index = projectManagementController.getSelectedExperimentIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Experiment attachments", "Please save the experiment first before adding attachments.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    //set project
+                    experimentToEdit.setProject(projectManagementController.getSelectedProject());
+
+                    experimentService.save(experimentToEdit);
+
+                    index = projectManagementController.getExperimentsSize() - 1;
+                    type = EntityChangeEvent.Type.CREATED;
+
+                    //add experiment to overview table
+                    projectManagementController.addExperiment(experimentToEdit);
+
+                    experimentEditDialog.getSaveOrUpdateButton().setText("update");
                 }
+                ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
+                eventBus.post(experimentChangeEvent);
+
+                MessageEvent messageEvent = new MessageEvent("Experiment store confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in experiment table
+                projectManagementController.setSelectedExperiment(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        experimentEditDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                experimentEditDialog.dispose();
+        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, evt -> {
+            ExperimentBinaryFile binaryFileToAdd = (ExperimentBinaryFile) evt.getNewValue();
+
+            //set experiment in binary file
+            binaryFileToAdd.setExperiment(experimentToEdit);
+
+            //save binary file
+            binaryFileService.save(binaryFileToAdd);
+
+            experimentToEdit.getBinaryFiles().add(binaryFileToAdd);
+            experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
+            ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
+
+            if (experimentToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
+                experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
+            }
+
+            //remove binary file
+            binaryFileService.delete(binaryFileToRemove);
+
+            experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, evt -> {
+            ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
+
+            //update binary file
+            binaryFileService.update(binaryFileToUpdate);
+
+            experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        experimentBinaryFileDialog.getCancelButton().addActionListener(e -> experimentBinaryFileDialog.dispose());
+
+        experimentEditDialog.getAttachmentsEditButton().addActionListener(e -> {
+            if (experimentToEdit.getId() != null) {
+                experimentBinaryFileDialog.getBinaryFileManagementPanel().populateList(experimentToEdit.getBinaryFiles());
+
+                GuiUtils.centerDialogOnComponent(experimentEditDialog, experimentBinaryFileDialog);
+                experimentBinaryFileDialog.setVisible(true);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Experiment attachments", "Please save the experiment first before adding attachments.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
+
+        experimentEditDialog.getCancelButton().addActionListener(e -> experimentEditDialog.dispose());
 
     }
 

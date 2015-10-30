@@ -144,7 +144,7 @@ public class UtilitiesModificationMapperTest {
                     Assert.assertEquals("UNIMOD:35", modification.getAccession());
                     Assert.assertEquals("Oxidation of M", modification.getUtilitiesName());
                     Assert.assertEquals(oxidation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
-                    Assert.assertEquals(oxidationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(oxidationMatch.getModificationSite(), (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                     Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
                     Assert.assertEquals(oxidationScore, peptideHasModification.getDeltaScore(), 0.001);
@@ -154,7 +154,7 @@ public class UtilitiesModificationMapperTest {
                     Assert.assertEquals("UNIMOD:21", modification.getAccession());
                     Assert.assertEquals("Phosphorylation of Y", modification.getUtilitiesName());
                     Assert.assertEquals(phosphorylation.getMass(), peptideHasModification.getModification().getMonoIsotopicMassShift(), 0.001);
-                    Assert.assertEquals(phosphorylationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(phosphorylationMatch.getModificationSite(), (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                     Assert.assertEquals(phosphorylationScore, peptideHasModification.getProbabilityScore(), 0.001);
                     Assert.assertEquals(phosphorylationScore, peptideHasModification.getDeltaScore(), 0.001);
@@ -163,7 +163,7 @@ public class UtilitiesModificationMapperTest {
                     Assert.assertEquals("L-proline removal", modification.getName());
                     Assert.assertEquals("MOD:01645", modification.getAccession());
                     Assert.assertEquals(Double.parseDouble(nonUtilitiesPtm.getValue()), modification.getMonoIsotopicMassShift(), 0.001);
-                    Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite() - 1, (int) peptideHasModification.getLocation());
+                    Assert.assertEquals(nonUtilitiesModificationMatch.getModificationSite(), (int) peptideHasModification.getLocation());
                     Assert.assertEquals(ModificationType.VARIABLE, peptideHasModification.getModificationType());
                     Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getProbabilityScore(), 0.001);
                     Assert.assertEquals(nonUtilitiesPtmScore, peptideHasModification.getDeltaScore(), 0.001);

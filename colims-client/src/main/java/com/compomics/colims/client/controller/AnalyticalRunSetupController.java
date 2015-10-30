@@ -36,8 +36,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -137,94 +135,80 @@ public class AnalyticalRunSetupController implements Controllable {
         bindingGroup.bind();
 
         //add action listeners
-        analyticalRunSetupDialog.getProceedButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-                switch (currentCardName) {
-                    case METADATA_SELECTION_CARD:
-                        instrument = getSelectedInstrument();
-                        Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
-                        if (instrument != null && startDate != null) {
-                            storageType = getSelectedStorageType();
-                            switch (storageType) {
-                                case PEPTIDESHAKER:
-                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
-                                    break;
-                                case MAX_QUANT:
-                                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            onCardSwitch();
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        analyticalRunSetupDialog.getBackButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-                switch (currentCardName) {
-                    case PS_DATA_IMPORT_CARD:
-                    case MAX_QUANT_DATA_IMPORT_CARD:
-                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), METADATA_SELECTION_CARD);
-                        break;
-                    default:
-                        getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
-                        break;
-                }
-                onCardSwitch();
-            }
-        });
-
-        analyticalRunSetupDialog.getFinishButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
-                switch (currentCardName) {
-                    case PS_DATA_IMPORT_CARD:
-                        List<String> psValidationMessages = peptideShakerDataImportController.validate();
-                        if (psValidationMessages.isEmpty()) {
-                            sendStorageTask(peptideShakerDataImportController.getDataImport());
-                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
+        analyticalRunSetupDialog.getProceedButton().addActionListener(e -> {
+            String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+            switch (currentCardName) {
+                case METADATA_SELECTION_CARD:
+                    instrument = getSelectedInstrument();
+                    Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
+                    if (instrument != null && startDate != null) {
+                        storageType = getSelectedStorageType();
+                        switch (storageType) {
+                            case PEPTIDESHAKER:
+                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), PS_DATA_IMPORT_CARD);
+                                break;
+                            case MAX_QUANT:
+                                getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), MAX_QUANT_DATA_IMPORT_CARD);
+                                break;
+                            default:
+                                break;
                         }
                         onCardSwitch();
-                        break;
-                    case MAX_QUANT_DATA_IMPORT_CARD:
-                        List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
-                        if (maxQuantValidationMessages.isEmpty()) {
-                            sendStorageTask(maxQuantDataImportController.getDataImport());
-                            getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
-                        } else {
-                            MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
-                            eventBus.post(messageEvent);
-                        }
-                        onCardSwitch();
-                        break;
-                    default:
-                        break;
-                }
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Instrument/start date selection", "Please select an instrument and a start date.", JOptionPane.INFORMATION_MESSAGE);
+                        eventBus.post(messageEvent);
+                    }
+                    break;
+                default:
+                    break;
             }
         });
 
-        analyticalRunSetupDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                analyticalRunSetupDialog.dispose();
+        analyticalRunSetupDialog.getBackButton().addActionListener(e -> {
+            String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+            switch (currentCardName) {
+                case PS_DATA_IMPORT_CARD:
+                case MAX_QUANT_DATA_IMPORT_CARD:
+                    getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), METADATA_SELECTION_CARD);
+                    break;
+                default:
+                    getCardLayout().previous(analyticalRunSetupDialog.getTopPanel());
+                    break;
+            }
+            onCardSwitch();
+        });
+
+        analyticalRunSetupDialog.getFinishButton().addActionListener(e -> {
+            String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunSetupDialog.getTopPanel());
+            switch (currentCardName) {
+                case PS_DATA_IMPORT_CARD:
+                    List<String> psValidationMessages = peptideShakerDataImportController.validate();
+                    if (psValidationMessages.isEmpty()) {
+                        sendStorageTask(peptideShakerDataImportController.getDataImport());
+                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Validation failure", psValidationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
+                    }
+                    onCardSwitch();
+                    break;
+                case MAX_QUANT_DATA_IMPORT_CARD:
+                    List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
+                    if (maxQuantValidationMessages.isEmpty()) {
+                        sendStorageTask(maxQuantDataImportController.getDataImport());
+                        getCardLayout().show(analyticalRunSetupDialog.getTopPanel(), CONFIRMATION_CARD);
+                    } else {
+                        MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
+                        eventBus.post(messageEvent);
+                    }
+                    onCardSwitch();
+                    break;
+                default:
+                    break;
             }
         });
+
+        analyticalRunSetupDialog.getCancelButton().addActionListener(e -> analyticalRunSetupDialog.dispose());
     }
 
     @Override

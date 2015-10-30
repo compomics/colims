@@ -36,12 +36,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -134,108 +128,91 @@ public class ProtocolManagementController implements Controllable {
         bindingGroup.addBinding(protocolListBinding);
 
         //add action listeners
-        protocolManagementDialog.getProtocolList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
-                    if (selectedIndex != -1 && protocolBindingList.get(selectedIndex) != null) {
-                        Protocol selectedProtocol = protocolBindingList.get(selectedIndex);
+        protocolManagementDialog.getProtocolList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                if (selectedIndex != -1 && protocolBindingList.get(selectedIndex) != null) {
+                    Protocol selectedProtocol = protocolBindingList.get(selectedIndex);
 
-                        //init CvParamModel
-                        List<AuditableTypedCvParam> cvParams = new ArrayList<>();
-                        if (selectedProtocol.getReduction() != null) {
-                            cvParams.add(selectedProtocol.getReduction());
-                        }
-                        if (selectedProtocol.getEnzyme() != null) {
-                            cvParams.add(selectedProtocol.getEnzyme());
-                        }
-                        if (selectedProtocol.getCellBased() != null) {
-                            cvParams.add(selectedProtocol.getCellBased());
-                        }
-                        for (ProtocolCvParam chemicalLabeling : selectedProtocol.getChemicalLabels()) {
-                            cvParams.add(chemicalLabeling);
-                        }
-                        for (ProtocolCvParam otherCvParam : selectedProtocol.getOtherCvParams()) {
-                            cvParams.add(otherCvParam);
-                        }
-                        TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
-                        protocolManagementDialog.getProtocolDetailsTable().setModel(typedCvParamTableModel);
-                    } else {
-                        //clear detail view
-                        clearProtocolDetailFields();
+                    //init CvParamModel
+                    List<AuditableTypedCvParam> cvParams = new ArrayList<>();
+                    if (selectedProtocol.getReduction() != null) {
+                        cvParams.add(selectedProtocol.getReduction());
                     }
+                    if (selectedProtocol.getEnzyme() != null) {
+                        cvParams.add(selectedProtocol.getEnzyme());
+                    }
+                    if (selectedProtocol.getCellBased() != null) {
+                        cvParams.add(selectedProtocol.getCellBased());
+                    }
+                    for (ProtocolCvParam chemicalLabeling : selectedProtocol.getChemicalLabels()) {
+                        cvParams.add(chemicalLabeling);
+                    }
+                    for (ProtocolCvParam otherCvParam : selectedProtocol.getOtherCvParams()) {
+                        cvParams.add(otherCvParam);
+                    }
+                    TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+                    protocolManagementDialog.getProtocolDetailsTable().setModel(typedCvParamTableModel);
+                } else {
+                    //clear detail view
+                    clearProtocolDetailFields();
                 }
             }
         });
 
-        protocolManagementDialog.getAddProtocolButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                updateProtocolEditDialog(createDefaultProtocol());
+        protocolManagementDialog.getAddProtocolButton().addActionListener(e -> {
+            updateProtocolEditDialog(createDefaultProtocol());
 
+            //show dialog
+            GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
+            protocolEditDialog.setVisible(true);
+        });
+
+        protocolManagementDialog.getDeleteProtocolButton().addActionListener(e -> {
+            if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
+                Protocol protocolToDelete = getSelectedProtocol();
+                //check if the protocol is already has an id.
+                //If so, delete the protocol from the db.
+                if (protocolToDelete.getId() != null) {
+                    try {
+                        protocolService.delete(protocolToDelete);
+
+                        protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
+                        protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
+
+                        eventBus.post(new ProtocolChangeEvent(EntityChangeEvent.Type.DELETED));
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the protocol can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("protocol", protocolToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
+                    protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
+                }
+            } else {
+                eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to delete.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        protocolManagementDialog.getEditProtocolButton().addActionListener(e -> {
+            if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
+                updateProtocolEditDialog(getSelectedProtocol());
                 //show dialog
                 GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
                 protocolEditDialog.setVisible(true);
+            } else {
+                eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        protocolManagementDialog.getDeleteProtocolButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
-                    Protocol protocolToDelete = getSelectedProtocol();
-                    //check if the protocol is already has an id.
-                    //If so, delete the protocol from the db.
-                    if (protocolToDelete.getId() != null) {
-                        try {
-                            protocolService.delete(protocolToDelete);
-
-                            protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
-                            protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
-
-                            eventBus.post(new ProtocolChangeEvent(EntityChangeEvent.Type.DELETED));
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the protocol can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("protocol", protocolToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
-                        }
-                    } else {
-                        protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
-                        protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        protocolManagementDialog.getEditProtocolButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
-                    updateProtocolEditDialog(getSelectedProtocol());
-                    //show dialog
-                    GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
-                    protocolEditDialog.setVisible(true);
-                } else {
-                    eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                protocolManagementDialog.dispose();
-            }
-        });
+        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(e -> protocolManagementDialog.dispose());
 
     }
 
@@ -258,163 +235,148 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<ProtocolCvParam>());
 
         //add action listeners
-        protocolEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (protocolEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvParamType from summary list
-                        CvParamType selectedCvParamType = (CvParamType) protocolEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                        //load duallist for the selected cvParamType
-                        List<ProtocolCvParam> availableCvParams = cvParamService.findByCvParamByType(ProtocolCvParam.class, selectedCvParamType);
-
-                        List<ProtocolCvParam> addedCvParams;
-                        //@todo for the moment, protocol has only single CV params,
-                        //so this check is not necessary.
-                        if (typedCvParamSummaryListModel.isSingleCvParam(selectedCvParamType)) {
-                            addedCvParams = new ArrayList<>();
-                            ProtocolCvParam protocolCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedCvParamType);
-                            //check for null value
-                            if (protocolCvParam != null) {
-                                addedCvParams.add(protocolCvParam);
-                            }
-                            protocolEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
-                        } else {
-                            addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedCvParamType);
-                            protocolEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
-                        }
-                    } else {
-                        protocolEditDialog.getCvParamDualList().clear();
-                    }
-                }
-            }
-        });
-
-        protocolEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //get selected cvParamType
-                CvParamType selectedCvParamType = (CvParamType) protocolEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                List<ProtocolCvParam> addedItems = (List<ProtocolCvParam>) evt.getNewValue();
-
-                //check for property
-                if (selectedCvParamType.equals(CvParamType.REDUCTION)) {
-                    if (!addedItems.isEmpty()) {
-                        ProtocolCvParam reduction = addedItems.get(0);
-                        protocolToEdit.setReduction(reduction);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, reduction);
-                    } else {
-                        protocolToEdit.setReduction(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, null);
-                    }
-                } else if (selectedCvParamType.equals(CvParamType.ENZYME)) {
-                    if (!addedItems.isEmpty()) {
-                        ProtocolCvParam enzyme = addedItems.get(0);
-                        protocolToEdit.setEnzyme(enzyme);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, enzyme);
-                    } else {
-                        protocolToEdit.setEnzyme(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, null);
-                    }
-                } else if (selectedCvParamType.equals(CvParamType.CELL_BASED)) {
-                    if (!addedItems.isEmpty()) {
-                        ProtocolCvParam cellBased = addedItems.get(0);
-                        protocolToEdit.setCellBased(cellBased);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, cellBased);
-                    } else {
-                        protocolToEdit.setCellBased(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, null);
-                    }
-                } else if (selectedCvParamType.equals(CvParamType.CHEMICAL_LABELING)) {
-                    protocolToEdit.setChemicalLabels(addedItems);
-                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
-                } else if (selectedCvParamType.equals(CvParamType.OTHER)) {
-                    protocolToEdit.setOtherCvParams(addedItems);
-                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
-                }
-
-            }
-        });
-
-        protocolEditDialog.getProtocolSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update with dialog input
-                updateProtocolToEdit();
-
-                //validate protocol
-                List<String> validationMessages = GuiUtils.validateEntity(protocolToEdit);
-                //check for a new protocol if the protocol name already exists in the db
-                if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
-                    validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another protocol name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    int index;
-                    EntityChangeEvent.Type type;
-                    if (protocolToEdit.getId() != null) {
-                        protocolService.update(protocolToEdit);
-                        index = protocolManagementDialog.getProtocolList().getSelectedIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
-                    } else {
-                        protocolService.save(protocolToEdit);
-                        //add protocol to overview list
-                        protocolBindingList.add(protocolToEdit);
-                        index = protocolBindingList.size() - 1;
-                        protocolEditDialog.getProtocolStateInfoLabel().setText("");
-                        type = EntityChangeEvent.Type.CREATED;
-                    }
-                    protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
-
-                    eventBus.post(new ProtocolChangeEvent(type));
-
-                    MessageEvent messageEvent = new MessageEvent("Protocol store confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in protocol list in management overview dialog
-                    protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
-                    protocolManagementDialog.getProtocolList().setSelectedIndex(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        protocolEditDialog.getCancelProtocolEditButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (protocolToEdit.getId() != null) {
-                    //roll back the changes
-                    Protocol rolledBackProtocol = protocolService.findById(protocolToEdit.getId());
-                    int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
-                    protocolBindingList.remove(selectedIndex);
-                    protocolBindingList.add(selectedIndex, rolledBackProtocol);
-                }
-
-                protocolEditDialog.dispose();
-            }
-        });
-
-        protocolEditDialog.getProtocolCvParamsCrudButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //check if a CV param group is selected in the CV param summary list
+        protocolEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (protocolEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
                     //get selected cvParamType from summary list
                     CvParamType selectedCvParamType = (CvParamType) protocolEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedCvParamType);
+                    //load duallist for the selected cvParamType
+                    List<ProtocolCvParam> availableCvParams = cvParamService.findByCvParamByType(ProtocolCvParam.class, selectedCvParamType);
 
-                    //update the CV param list
-                    cvParamManagementController.updateDialog(selectedCvParamType, cvParams);
-
-                    cvParamManagementController.showView();
+                    List<ProtocolCvParam> addedCvParams;
+                    //@todo for the moment, protocol has only single CV params,
+                    //so this check is not necessary.
+                    if (typedCvParamSummaryListModel.isSingleCvParam(selectedCvParamType)) {
+                        addedCvParams = new ArrayList<>();
+                        ProtocolCvParam protocolCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedCvParamType);
+                        //check for null value
+                        if (protocolCvParam != null) {
+                            addedCvParams.add(protocolCvParam);
+                        }
+                        protocolEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
+                    } else {
+                        addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedCvParamType);
+                        protocolEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
+                    }
                 } else {
-                    eventBus.post(new MessageEvent("Protocol CV param type selection", "Please select a protocol CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    protocolEditDialog.getCvParamDualList().clear();
                 }
+            }
+        });
+
+        protocolEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //get selected cvParamType
+            CvParamType selectedCvParamType = (CvParamType) protocolEditDialog.getCvParamSummaryList().getSelectedValue();
+
+            List<ProtocolCvParam> addedItems = (List<ProtocolCvParam>) evt.getNewValue();
+
+            //check for property
+            if (selectedCvParamType.equals(CvParamType.REDUCTION)) {
+                if (!addedItems.isEmpty()) {
+                    ProtocolCvParam reduction = addedItems.get(0);
+                    protocolToEdit.setReduction(reduction);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, reduction);
+                } else {
+                    protocolToEdit.setReduction(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, null);
+                }
+            } else if (selectedCvParamType.equals(CvParamType.ENZYME)) {
+                if (!addedItems.isEmpty()) {
+                    ProtocolCvParam enzyme = addedItems.get(0);
+                    protocolToEdit.setEnzyme(enzyme);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, enzyme);
+                } else {
+                    protocolToEdit.setEnzyme(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, null);
+                }
+            } else if (selectedCvParamType.equals(CvParamType.CELL_BASED)) {
+                if (!addedItems.isEmpty()) {
+                    ProtocolCvParam cellBased = addedItems.get(0);
+                    protocolToEdit.setCellBased(cellBased);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, cellBased);
+                } else {
+                    protocolToEdit.setCellBased(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, null);
+                }
+            } else if (selectedCvParamType.equals(CvParamType.CHEMICAL_LABELING)) {
+                protocolToEdit.setChemicalLabels(addedItems);
+                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
+            } else if (selectedCvParamType.equals(CvParamType.OTHER)) {
+                protocolToEdit.setOtherCvParams(addedItems);
+                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
+            }
+
+        });
+
+        protocolEditDialog.getProtocolSaveOrUpdateButton().addActionListener(e -> {
+            //update with dialog input
+            updateProtocolToEdit();
+
+            //validate protocol
+            List<String> validationMessages = GuiUtils.validateEntity(protocolToEdit);
+            //check for a new protocol if the protocol name already exists in the db
+            if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
+                validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another protocol name.");
+            }
+            if (validationMessages.isEmpty()) {
+                int index;
+                EntityChangeEvent.Type type;
+                if (protocolToEdit.getId() != null) {
+                    protocolService.update(protocolToEdit);
+                    index = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
+                } else {
+                    protocolService.save(protocolToEdit);
+                    //add protocol to overview list
+                    protocolBindingList.add(protocolToEdit);
+                    index = protocolBindingList.size() - 1;
+                    protocolEditDialog.getProtocolStateInfoLabel().setText("");
+                    type = EntityChangeEvent.Type.CREATED;
+                }
+                protocolEditDialog.getProtocolSaveOrUpdateButton().setText("update");
+
+                eventBus.post(new ProtocolChangeEvent(type));
+
+                MessageEvent messageEvent = new MessageEvent("Protocol store confirmation", "Protocol " + protocolToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in protocol list in management overview dialog
+                protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
+                protocolManagementDialog.getProtocolList().setSelectedIndex(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        protocolEditDialog.getCancelProtocolEditButton().addActionListener(e -> {
+            if (protocolToEdit.getId() != null) {
+                //roll back the changes
+                Protocol rolledBackProtocol = protocolService.findById(protocolToEdit.getId());
+                int selectedIndex = protocolManagementDialog.getProtocolList().getSelectedIndex();
+                protocolBindingList.remove(selectedIndex);
+                protocolBindingList.add(selectedIndex, rolledBackProtocol);
+            }
+
+            protocolEditDialog.dispose();
+        });
+
+        protocolEditDialog.getProtocolCvParamsCrudButton().addActionListener(e -> {
+            //check if a CV param group is selected in the CV param summary list
+            if (protocolEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
+                //get selected cvParamType from summary list
+                CvParamType selectedCvParamType = (CvParamType) protocolEditDialog.getCvParamSummaryList().getSelectedValue();
+
+                List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedCvParamType);
+
+                //update the CV param list
+                cvParamManagementController.updateDialog(selectedCvParamType, cvParams);
+
+                cvParamManagementController.showView();
+            } else {
+                eventBus.post(new MessageEvent("Protocol CV param type selection", "Please select a protocol CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
     }

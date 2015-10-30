@@ -13,13 +13,4 @@
         join fetch peptide.spectrum as spectrum
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
     </query>
-
-    <!--<query name="Peptide.getPeptideDTOByProteinGroupId">-->
-        <!--select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability-->
-        <!--from Peptide as peptide-->
-        <!--join peptide.peptideHasProteinGroups as peptideHasProteinGroup-->
-        <!--join fetch peptide.peptideHasModifications as peptideHasModification-->
-        <!--join fetch peptide.spectrum as spectrum-->
-        <!--where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId-->
-    <!--</query>-->
 </hibernate-mapping>

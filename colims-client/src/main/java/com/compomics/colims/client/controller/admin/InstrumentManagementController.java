@@ -37,12 +37,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -138,107 +132,90 @@ public class InstrumentManagementController implements Controllable {
         bindingGroup.addBinding(instrumentListBinding);
 
         //add action listeners
-        instrumentManagementDialog.getInstrumentList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
-                    if (selectedIndex != -1 && instrumentBindingList.get(selectedIndex) != null) {
-                        Instrument selectedInstrument = instrumentBindingList.get(selectedIndex);
+        instrumentManagementDialog.getInstrumentList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                if (selectedIndex != -1 && instrumentBindingList.get(selectedIndex) != null) {
+                    Instrument selectedInstrument = instrumentBindingList.get(selectedIndex);
 
-                        //init CvParamModel
-                        List<AuditableTypedCvParam> cvParams = new ArrayList<>();
-                        if (selectedInstrument.getType() != null) {
-                            cvParams.add(selectedInstrument.getType());
-                        }
-                        if (selectedInstrument.getSource() != null) {
-                            cvParams.add(selectedInstrument.getSource());
-                        }
-                        if (selectedInstrument.getDetector() != null) {
-                            cvParams.add(selectedInstrument.getDetector());
-                        }
-                        for (InstrumentCvParam analyzer : selectedInstrument.getAnalyzers()) {
-                            cvParams.add(analyzer);
-                        }
-                        TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
-                        instrumentManagementDialog.getInstrumentDetailsTable().setModel(typedCvParamTableModel);
-                    } else {
-                        //clear detail view
-                        clearInstrumentDetailFields();
+                    //init CvParamModel
+                    List<AuditableTypedCvParam> cvParams = new ArrayList<>();
+                    if (selectedInstrument.getType() != null) {
+                        cvParams.add(selectedInstrument.getType());
                     }
+                    if (selectedInstrument.getSource() != null) {
+                        cvParams.add(selectedInstrument.getSource());
+                    }
+                    if (selectedInstrument.getDetector() != null) {
+                        cvParams.add(selectedInstrument.getDetector());
+                    }
+                    for (InstrumentCvParam analyzer : selectedInstrument.getAnalyzers()) {
+                        cvParams.add(analyzer);
+                    }
+                    TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+                    instrumentManagementDialog.getInstrumentDetailsTable().setModel(typedCvParamTableModel);
+                } else {
+                    //clear detail view
+                    clearInstrumentDetailFields();
                 }
             }
         });
 
-        instrumentManagementDialog.getAddInstrumentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                updateInstrumentEditDialog(createDefaultInstrument());
+        instrumentManagementDialog.getAddInstrumentButton().addActionListener(e -> {
+            updateInstrumentEditDialog(createDefaultInstrument());
 
-                //show dialog
-                GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
-                instrumentEditDialog.setVisible(true);
-            }
+            //show dialog
+            GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+            instrumentEditDialog.setVisible(true);
         });
 
-        instrumentManagementDialog.getDeleteInstrumentButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
-                    Instrument instrumentToDelete = getSelectedInstrument();
-                    //check if the instrument already has an id.
-                    //If so, delete the instrument from the db.
-                    if (instrumentToDelete.getId() != null) {
-                        try {
-                            instrumentService.delete(instrumentToDelete);
+        instrumentManagementDialog.getDeleteInstrumentButton().addActionListener(e -> {
+            if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                Instrument instrumentToDelete = getSelectedInstrument();
+                //check if the instrument already has an id.
+                //If so, delete the instrument from the db.
+                if (instrumentToDelete.getId() != null) {
+                    try {
+                        instrumentService.delete(instrumentToDelete);
 
-                            instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
-                            instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
-
-                            eventBus.post(new InstrumentChangeEvent(EntityChangeEvent.Type.DELETED));
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the instrument can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("instrument", instrumentToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
-                        }
-                    } else {
                         instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
                         instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+
+                        eventBus.post(new InstrumentChangeEvent(EntityChangeEvent.Type.DELETED));
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the instrument can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("instrument", instrumentToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
+                    instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
                 }
+            } else {
+                eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        instrumentManagementDialog.getEditInstrumentButton().addActionListener(new ActionListener() {
-                                                                                   @Override
-                                                                                   public void actionPerformed(final ActionEvent e) {
-                                                                                       if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
-                                                                                           updateInstrumentEditDialog(getSelectedInstrument());
+        instrumentManagementDialog.getEditInstrumentButton().addActionListener(e -> {
+                    if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                        updateInstrumentEditDialog(getSelectedInstrument());
 
-                                                                                           //show dialog
-                                                                                           GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
-                                                                                           instrumentEditDialog.setVisible(true);
-                                                                                       } else {
-                                                                                           eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
-                                                                                       }
-                                                                                   }
-                                                                               }
+                        //show dialog
+                        GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+                        instrumentEditDialog.setVisible(true);
+                    } else {
+                        eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    }
+                }
         );
 
-        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(new ActionListener() {
-                                                                                               @Override
-                                                                                               public void actionPerformed(final ActionEvent e) {
-                                                                                                   instrumentManagementDialog.dispose();
-                                                                                               }
-                                                                                           }
+        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(e -> instrumentManagementDialog.dispose()
         );
 
     }
@@ -255,159 +232,144 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<InstrumentCvParam>());
 
         //add action listeners
-        instrumentEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvParamType from summary list
-                        CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                        //load duallist for the selected cvParamType
-                        List<InstrumentCvParam> availableCvParams = cvParamService.findByCvParamByType(InstrumentCvParam.class, selectedcvParamType);
-
-                        List<InstrumentCvParam> addedCvParams;
-
-                        if (typedCvParamSummaryListModel.isSingleCvParam(selectedcvParamType)) {
-                            addedCvParams = new ArrayList<>();
-                            InstrumentCvParam instrumentCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedcvParamType);
-                            //check for null value
-                            if (instrumentCvParam != null) {
-                                addedCvParams.add(instrumentCvParam);
-                            }
-                            instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
-                        } else {
-                            addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedcvParamType);
-                            instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
-                        }
-                    } else {
-                        instrumentEditDialog.getCvParamDualList().clear();
-                    }
-                }
-            }
-        });
-
-        instrumentEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //get selected cvParamType
-                CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                List<InstrumentCvParam> addedItems = (List<InstrumentCvParam>) evt.getNewValue();
-
-                //check for property
-                if (selectedcvParamType.equals(CvParamType.TYPE)) {
-                    if (!addedItems.isEmpty()) {
-                        InstrumentCvParam type = addedItems.get(0);
-                        instrumentToEdit.setType(type);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, type);
-                    } else {
-                        instrumentToEdit.setType(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.SOURCE)) {
-                    if (!addedItems.isEmpty()) {
-                        InstrumentCvParam source = addedItems.get(0);
-                        instrumentToEdit.setSource(source);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, source);
-                    } else {
-                        instrumentToEdit.setSource(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.DETECTOR)) {
-                    if (!addedItems.isEmpty()) {
-                        InstrumentCvParam detector = addedItems.get(0);
-                        instrumentToEdit.setDetector(detector);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, detector);
-                    } else {
-                        instrumentToEdit.setDetector(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.ANALYZER)) {
-                    instrumentToEdit.setAnalyzers(addedItems);
-                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.ANALYZER, addedItems);
-                }
-
-            }
-        });
-
-        instrumentEditDialog.getInstrumentSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update with dialog input
-                updateInstrumentToEdit();
-
-                //validate instrument
-                List<String> validationMessages = GuiUtils.validateEntity(instrumentToEdit);
-                //check for a new instrument if the instrument name already exists in the db
-                if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
-                    validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another instrument name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    int index;
-                    EntityChangeEvent.Type type;
-                    if (instrumentToEdit.getId() != null) {
-                        instrumentService.update(instrumentToEdit);
-                        index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
-                    } else {
-                        instrumentService.save(instrumentToEdit);
-                        //add instrument to overview list
-                        instrumentBindingList.add(instrumentToEdit);
-                        index = instrumentBindingList.size() - 1;
-                        instrumentEditDialog.getInstrumentStateInfoLabel().setText("");
-                        type = EntityChangeEvent.Type.CREATED;
-                    }
-                    instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
-
-                    eventBus.post(new InstrumentChangeEvent(type));
-
-                    MessageEvent messageEvent = new MessageEvent("Instrument store confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in instrument list in management overview dialog
-                    instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
-                    instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (instrumentToEdit.getId() != null) {
-                    //roll back the changes
-                    Instrument rolledBackInstrument = instrumentService.findById(instrumentToEdit.getId());
-                    int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
-                    instrumentBindingList.remove(selectedIndex);
-                    instrumentBindingList.add(selectedIndex, rolledBackInstrument);
-                }
-
-                instrumentEditDialog.dispose();
-            }
-        });
-
-        instrumentEditDialog.getInstrumentCvParamsCrudButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //check if a CV param group is selected in the CV param summary list
+        instrumentEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
                     //get selected cvParamType from summary list
                     CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
+                    //load duallist for the selected cvParamType
+                    List<InstrumentCvParam> availableCvParams = cvParamService.findByCvParamByType(InstrumentCvParam.class, selectedcvParamType);
 
-                    //update the CV param list
-                    cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
+                    List<InstrumentCvParam> addedCvParams;
 
-                    cvParamManagementController.showView();
+                    if (typedCvParamSummaryListModel.isSingleCvParam(selectedcvParamType)) {
+                        addedCvParams = new ArrayList<>();
+                        InstrumentCvParam instrumentCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedcvParamType);
+                        //check for null value
+                        if (instrumentCvParam != null) {
+                            addedCvParams.add(instrumentCvParam);
+                        }
+                        instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
+                    } else {
+                        addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedcvParamType);
+                        instrumentEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
+                    }
                 } else {
-                    eventBus.post(new MessageEvent("Instrument CV param type selection", "Please select an instrument CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    instrumentEditDialog.getCvParamDualList().clear();
                 }
+            }
+        });
+
+        instrumentEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //get selected cvParamType
+            CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
+
+            List<InstrumentCvParam> addedItems = (List<InstrumentCvParam>) evt.getNewValue();
+
+            //check for property
+            if (selectedcvParamType.equals(CvParamType.TYPE)) {
+                if (!addedItems.isEmpty()) {
+                    InstrumentCvParam type = addedItems.get(0);
+                    instrumentToEdit.setType(type);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, type);
+                } else {
+                    instrumentToEdit.setType(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.SOURCE)) {
+                if (!addedItems.isEmpty()) {
+                    InstrumentCvParam source = addedItems.get(0);
+                    instrumentToEdit.setSource(source);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, source);
+                } else {
+                    instrumentToEdit.setSource(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.DETECTOR)) {
+                if (!addedItems.isEmpty()) {
+                    InstrumentCvParam detector = addedItems.get(0);
+                    instrumentToEdit.setDetector(detector);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, detector);
+                } else {
+                    instrumentToEdit.setDetector(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.ANALYZER)) {
+                instrumentToEdit.setAnalyzers(addedItems);
+                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.ANALYZER, addedItems);
+            }
+
+        });
+
+        instrumentEditDialog.getInstrumentSaveOrUpdateButton().addActionListener(e -> {
+            //update with dialog input
+            updateInstrumentToEdit();
+
+            //validate instrument
+            List<String> validationMessages = GuiUtils.validateEntity(instrumentToEdit);
+            //check for a new instrument if the instrument name already exists in the db
+            if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
+                validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another instrument name.");
+            }
+            if (validationMessages.isEmpty()) {
+                int index;
+                EntityChangeEvent.Type type;
+                if (instrumentToEdit.getId() != null) {
+                    instrumentService.update(instrumentToEdit);
+                    index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
+                } else {
+                    instrumentService.save(instrumentToEdit);
+                    //add instrument to overview list
+                    instrumentBindingList.add(instrumentToEdit);
+                    index = instrumentBindingList.size() - 1;
+                    instrumentEditDialog.getInstrumentStateInfoLabel().setText("");
+                    type = EntityChangeEvent.Type.CREATED;
+                }
+                instrumentEditDialog.getInstrumentSaveOrUpdateButton().setText("update");
+
+                eventBus.post(new InstrumentChangeEvent(type));
+
+                MessageEvent messageEvent = new MessageEvent("Instrument store confirmation", "Instrument " + instrumentToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in instrument list in management overview dialog
+                instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
+                instrumentManagementDialog.getInstrumentList().setSelectedIndex(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(e -> {
+            if (instrumentToEdit.getId() != null) {
+                //roll back the changes
+                Instrument rolledBackInstrument = instrumentService.findById(instrumentToEdit.getId());
+                int selectedIndex = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
+                instrumentBindingList.remove(selectedIndex);
+                instrumentBindingList.add(selectedIndex, rolledBackInstrument);
+            }
+
+            instrumentEditDialog.dispose();
+        });
+
+        instrumentEditDialog.getInstrumentCvParamsCrudButton().addActionListener(e -> {
+            //check if a CV param group is selected in the CV param summary list
+            if (instrumentEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
+                //get selected cvParamType from summary list
+                CvParamType selectedcvParamType = (CvParamType) instrumentEditDialog.getCvParamSummaryList().getSelectedValue();
+
+                List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
+
+                //update the CV param list
+                cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
+
+                cvParamManagementController.showView();
+            } else {
+                eventBus.post(new MessageEvent("Instrument CV param type selection", "Please select an instrument CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
     }

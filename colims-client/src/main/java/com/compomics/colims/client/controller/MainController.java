@@ -117,19 +117,16 @@ public class MainController implements Controllable, ActionListener {
     @Override
     public void init() {
         //set uncaught exception handler
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(final Thread t, final Throwable e) {
-                LOGGER.error(e.getMessage(), e);
-                //check for permission exceptions
-                if (e instanceof PermissionException) {
-                    showPermissionErrorDialog(e.getMessage());
-                } else if (e instanceof ArrayIndexOutOfBoundsException) {
-                    showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    showUnexpectedErrorDialog(e.getMessage());
-                    System.exit(0);
-                }
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            LOGGER.error(e.getMessage(), e);
+            //check for permission exceptions
+            if (e instanceof PermissionException) {
+                showPermissionErrorDialog(e.getMessage());
+            } else if (e instanceof ArrayIndexOutOfBoundsException) {
+                showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                showUnexpectedErrorDialog(e.getMessage());
+                System.exit(0);
             }
         });
 
@@ -181,23 +178,17 @@ public class MainController implements Controllable, ActionListener {
         mainFrame.getProjectsOverviewMenuItem().addActionListener(this);
         mainFrame.getHelpMenuItem().addActionListener(this);
 
-        userLoginDialog.getLoginButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
-                    onLogin();
-                } else {
-                    showMessageDialog("Login validation fail", "Please provide a user name and password.", JOptionPane.WARNING_MESSAGE);
-                }
+        userLoginDialog.getLoginButton().addActionListener(e -> {
+            if (!userLoginDialog.getUserNameTextField().getText().isEmpty() && userLoginDialog.getUserPasswordTextField().getPassword().length != 0) {
+                onLogin();
+            } else {
+                showMessageDialog("Login validation fail", "Please provide a user name and password.", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        userLoginDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                userLoginDialog.dispose();
-                System.exit(0);
-            }
+        userLoginDialog.getCancelButton().addActionListener(e -> {
+            userLoginDialog.dispose();
+            System.exit(0);
         });
 
         userLoginDialog.addWindowListener(new WindowAdapter() {
@@ -230,19 +221,15 @@ public class MainController implements Controllable, ActionListener {
 //        }
 //        showView();
         //add change listener to tabbed pane
-        mainFrame.getMainTabbedPane().addChangeListener(new ChangeListener() {
+        mainFrame.getMainTabbedPane().addChangeListener(e -> {
+            if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
+                //check connection to distributed queues
+                if (queueManager.isReachable()) {
+                    taskManagementController.updateMonitoringTables();
 
-            @Override
-            public void stateChanged(final ChangeEvent e) {
-                if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
-                    //check connection to distributed queues
-                    if (queueManager.isReachable()) {
-                        taskManagementController.updateMonitoringTables();
-
-                        taskManagementController.getTaskManagementPanel().setVisible(true);
-                    } else {
-                        eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
-                    }
+                    taskManagementController.getTaskManagementPanel().setVisible(true);
+                } else {
+                    eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
                 }
             }
         });

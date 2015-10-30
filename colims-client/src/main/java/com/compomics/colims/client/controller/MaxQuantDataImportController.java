@@ -60,29 +60,23 @@ public class MaxQuantDataImportController implements Controllable {
         //set select directories only
         maxQuantDataImportPanel.getMaxQuantDirectoryChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        maxQuantDataImportPanel.getSelectMaxQuantDirectoryButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //in response to the button click, show open dialog
-                int returnVal = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
+        maxQuantDataImportPanel.getSelectMaxQuantDirectoryButton().addActionListener(e -> {
+            //in response to the button click, show open dialog
+            int returnVal = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
 
-                    //show MaxQuant directory name in label
-                    maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.getAbsolutePath());
-                }
+                //show MaxQuant directory name in label
+                maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.getAbsolutePath());
             }
         });
 
-        maxQuantDataImportPanel.getSelectFastaButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                fastaDbManagementController.showView();
+        maxQuantDataImportPanel.getSelectFastaButton().addActionListener(e -> {
+            fastaDbManagementController.showView();
 
-                fastaDb = fastaDbManagementController.getFastaDb();
+            fastaDb = fastaDbManagementController.getFastaDb();
 
-                maxQuantDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
-            }
+            maxQuantDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
         });
     }
 

@@ -103,6 +103,8 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 --insert test peptide has modifications
 INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (1, 1, 1, 0.3, 0.5);
 INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (2, 4, 1, 0.4, 0.6);
+INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (3, 2, 1, 0.4, 0.6);
+INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (4, 2, 1, 0.4, 0.6);
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');

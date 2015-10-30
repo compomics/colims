@@ -4,8 +4,8 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
@@ -16,31 +16,15 @@ import com.compomics.colims.client.view.admin.material.MaterialEditDialog;
 import com.compomics.colims.client.view.admin.material.MaterialManagementDialog;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.MaterialService;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvParam;
 import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
@@ -50,8 +34,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("materialManagementController")
@@ -121,9 +110,8 @@ public class MaterialManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the MaterialManagementDialog is visible,
-     * clear the selection in the CV param summary list.
+     * Listen to a CV param change event posted by the CvParamManagementController. If the MaterialManagementDialog is
+     * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
      */
@@ -143,105 +131,88 @@ public class MaterialManagementController implements Controllable {
         bindingGroup.addBinding(materialListBinding);
 
         //add action listeners
-        materialManagementDialog.getMaterialList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
-                    if (selectedIndex != -1 && materialBindingList.get(selectedIndex) != null) {
-                        Material selectedMaterial = materialBindingList.get(selectedIndex);
+        materialManagementDialog.getMaterialList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
+                if (selectedIndex != -1 && materialBindingList.get(selectedIndex) != null) {
+                    Material selectedMaterial = materialBindingList.get(selectedIndex);
 
-                        //init CvParamModel
-                        List<AuditableTypedCvParam> cvParams = new ArrayList<>();
-                        if (selectedMaterial.getSpecies() != null) {
-                            cvParams.add(selectedMaterial.getSpecies());
-                        }
-                        if (selectedMaterial.getCellType() != null) {
-                            cvParams.add(selectedMaterial.getCellType());
-                        }
-                        if (selectedMaterial.getTissue() != null) {
-                            cvParams.add(selectedMaterial.getTissue());
-                        }
-                        if (selectedMaterial.getCompartment() != null) {
-                            cvParams.add(selectedMaterial.getCompartment());
-                        }
-                        TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
-                        materialManagementDialog.getMaterialDetailsTable().setModel(typedCvParamTableModel);
-                    } else {
-                        //clear detail view
-                        clearMaterialDetailFields();
+                    //init CvParamModel
+                    List<AuditableTypedCvParam> cvParams = new ArrayList<>();
+                    if (selectedMaterial.getSpecies() != null) {
+                        cvParams.add(selectedMaterial.getSpecies());
                     }
+                    if (selectedMaterial.getCellType() != null) {
+                        cvParams.add(selectedMaterial.getCellType());
+                    }
+                    if (selectedMaterial.getTissue() != null) {
+                        cvParams.add(selectedMaterial.getTissue());
+                    }
+                    if (selectedMaterial.getCompartment() != null) {
+                        cvParams.add(selectedMaterial.getCompartment());
+                    }
+                    TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+                    materialManagementDialog.getMaterialDetailsTable().setModel(typedCvParamTableModel);
+                } else {
+                    //clear detail view
+                    clearMaterialDetailFields();
                 }
             }
         });
 
-        materialManagementDialog.getAddMaterialButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                updateMaterialEditDialog(createDefaultMaterial());
+        materialManagementDialog.getAddMaterialButton().addActionListener(e -> {
+            updateMaterialEditDialog(createDefaultMaterial());
 
+            //show dialog
+            GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
+            materialEditDialog.setVisible(true);
+        });
+
+        materialManagementDialog.getDeleteMaterialButton().addActionListener(e -> {
+            if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
+                Material materialToDelete = getSelectedMaterial();
+                //check if the material is already has an id.
+                //If so, delete the material from the db.
+                if (materialToDelete.getId() != null) {
+                    try {
+                        materialService.delete(materialToDelete);
+
+                        materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
+                        materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
+
+                        eventBus.post(new MaterialChangeEvent(EntityChangeEvent.Type.DELETED));
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the material can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("material", materialToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
+                    materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
+                }
+            } else {
+                eventBus.post(new MessageEvent("Material selection", "Please select a material to delete.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        materialManagementDialog.getEditMaterialButton().addActionListener(e -> {
+            if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
+                updateMaterialEditDialog(getSelectedMaterial());
                 //show dialog
                 GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
                 materialEditDialog.setVisible(true);
+            } else {
+                eventBus.post(new MessageEvent("Material selection", "Please select a material to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        materialManagementDialog.getDeleteMaterialButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
-                    Material materialToDelete = getSelectedMaterial();
-                    //check if the material is already has an id.
-                    //If so, delete the material from the db.
-                    if (materialToDelete.getId() != null) {
-                        try {
-                            materialService.delete(materialToDelete);
-
-                            materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
-                            materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-
-                            eventBus.post(new MaterialChangeEvent(EntityChangeEvent.Type.DELETED));
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the material can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("material", materialToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
-                        }
-                    } else {
-                        materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
-                        materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Material selection", "Please select a material to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        materialManagementDialog.getEditMaterialButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
-                    updateMaterialEditDialog(getSelectedMaterial());
-                    //show dialog
-                    GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
-                    materialEditDialog.setVisible(true);
-                } else {
-                    eventBus.post(new MessageEvent("Material selection", "Please select a material to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                materialManagementDialog.dispose();
-            }
-        });
+        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(e -> materialManagementDialog.dispose());
 
     }
 
@@ -261,166 +232,151 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<MaterialCvParam>());
 
         //add action listeners
-        materialEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (materialEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
-                        //get selected cvParamType from summary list
-                        CvParamType selectedCvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                        //load duallist for the selected cvParamType
-                        List<MaterialCvParam> availableCvParams = cvParamService.findByCvParamByType(MaterialCvParam.class, selectedCvParamType);
-
-                        List<MaterialCvParam> addedCvParams;
-                        //@todo for the moment, material has only single CV params,
-                        //so this check is not necessary.
-                        if (typedCvParamSummaryListModel.isSingleCvParam(selectedCvParamType)) {
-                            addedCvParams = new ArrayList<>();
-                            MaterialCvParam materialCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedCvParamType);
-                            //check for null value
-                            if (materialCvParam != null) {
-                                addedCvParams.add(materialCvParam);
-                            }
-                            materialEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
-                        } else {
-                            addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedCvParamType);
-                            materialEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
-                        }
-                    } else {
-                        materialEditDialog.getCvParamDualList().clear();
-                    }
-                }
-            }
-        });
-
-        materialEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //get selected cvParamType
-                CvParamType selectedcvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
-
-                List<MaterialCvParam> addedItems = (List<MaterialCvParam>) evt.getNewValue();
-
-                //check for property
-                if (selectedcvParamType.equals(CvParamType.SPECIES)) {
-                    if (!addedItems.isEmpty()) {
-                        MaterialCvParam species = addedItems.get(0);
-                        materialToEdit.setSpecies(species);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, species);
-                    } else {
-                        materialToEdit.setSpecies(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.TISSUE)) {
-                    if (!addedItems.isEmpty()) {
-                        MaterialCvParam tissue = addedItems.get(0);
-                        materialToEdit.setTissue(tissue);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, tissue);
-                    } else {
-                        materialToEdit.setTissue(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.CELL_TYPE)) {
-                    if (!addedItems.isEmpty()) {
-                        MaterialCvParam cellType = addedItems.get(0);
-                        materialToEdit.setCellType(cellType);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, cellType);
-                    } else {
-                        materialToEdit.setCellType(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, null);
-                    }
-                } else if (selectedcvParamType.equals(CvParamType.COMPARTMENT)) {
-                    if (!addedItems.isEmpty()) {
-                        MaterialCvParam compartment = addedItems.get(0);
-                        materialToEdit.setCompartment(compartment);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, compartment);
-                    } else {
-                        materialToEdit.setCompartment(null);
-                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, null);
-                    }
-                }
-
-            }
-        });
-
-        materialEditDialog.getMaterialSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update with dialog input
-                updateMaterialToEdit();
-
-                //validate material
-                List<String> validationMessages = GuiUtils.validateEntity(materialToEdit);
-                //check for a new material if the material name already exists in the db
-                if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
-                    validationMessages.add(materialToEdit.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another material name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    int index;
-                    EntityChangeEvent.Type type;
-                    if (materialToEdit.getId() != null) {
-                        materialService.update(materialToEdit);
-                        index = materialManagementDialog.getMaterialList().getSelectedIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
-                    } else {
-                        materialService.save(materialToEdit);
-                        //add instrument to overview list
-                        materialBindingList.add(materialToEdit);
-                        index = materialBindingList.size() - 1;
-                        materialEditDialog.getMaterialStateInfoLabel().setText("");
-                        type = EntityChangeEvent.Type.CREATED;
-                    }
-                    materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
-
-                    eventBus.post(new MaterialChangeEvent(type));
-
-                    MessageEvent messageEvent = new MessageEvent("Material store confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in material list in management overview dialog
-                    materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
-                    materialManagementDialog.getMaterialList().setSelectedIndex(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        materialEditDialog.getCancelMaterialEditButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (materialToEdit.getId() != null) {
-                    //roll back the changes
-                    Material rolledBackMaterial = materialService.findById(materialToEdit.getId());
-                    int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
-                    materialBindingList.remove(selectedIndex);
-                    materialBindingList.add(selectedIndex, rolledBackMaterial);
-                }
-
-                materialEditDialog.dispose();
-            }
-        });
-
-        materialEditDialog.getMaterialCvParamsCrudButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //check if a CV param group is selected in the CV param summary list
+        materialEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (materialEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
                     //get selected cvParamType from summary list
-                    CvParamType selectedcvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
+                    CvParamType selectedCvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
 
-                    List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
+                    //load duallist for the selected cvParamType
+                    List<MaterialCvParam> availableCvParams = cvParamService.findByCvParamByType(MaterialCvParam.class, selectedCvParamType);
 
-                    //update the CV param list
-                    cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
-
-                    cvParamManagementController.showView();
+                    List<MaterialCvParam> addedCvParams;
+                    //@todo for the moment, material has only single CV params,
+                    //so this check is not necessary.
+                    if (typedCvParamSummaryListModel.isSingleCvParam(selectedCvParamType)) {
+                        addedCvParams = new ArrayList<>();
+                        MaterialCvParam materialCvParam = typedCvParamSummaryListModel.getSingleCvParams().get(selectedCvParamType);
+                        //check for null value
+                        if (materialCvParam != null) {
+                            addedCvParams.add(materialCvParam);
+                        }
+                        materialEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams, 1);
+                    } else {
+                        addedCvParams = typedCvParamSummaryListModel.getMultiCvParams().get(selectedCvParamType);
+                        materialEditDialog.getCvParamDualList().populateLists(availableCvParams, addedCvParams);
+                    }
                 } else {
-                    eventBus.post(new MessageEvent("Material CV param type selection", "Please select a material CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
+                    materialEditDialog.getCvParamDualList().clear();
                 }
+            }
+        });
+
+        materialEditDialog.getCvParamDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //get selected cvParamType
+            CvParamType selectedcvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
+
+            List<MaterialCvParam> addedItems = (List<MaterialCvParam>) evt.getNewValue();
+
+            //check for property
+            if (selectedcvParamType.equals(CvParamType.SPECIES)) {
+                if (!addedItems.isEmpty()) {
+                    MaterialCvParam species = addedItems.get(0);
+                    materialToEdit.setSpecies(species);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, species);
+                } else {
+                    materialToEdit.setSpecies(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.TISSUE)) {
+                if (!addedItems.isEmpty()) {
+                    MaterialCvParam tissue = addedItems.get(0);
+                    materialToEdit.setTissue(tissue);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, tissue);
+                } else {
+                    materialToEdit.setTissue(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.CELL_TYPE)) {
+                if (!addedItems.isEmpty()) {
+                    MaterialCvParam cellType = addedItems.get(0);
+                    materialToEdit.setCellType(cellType);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, cellType);
+                } else {
+                    materialToEdit.setCellType(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, null);
+                }
+            } else if (selectedcvParamType.equals(CvParamType.COMPARTMENT)) {
+                if (!addedItems.isEmpty()) {
+                    MaterialCvParam compartment = addedItems.get(0);
+                    materialToEdit.setCompartment(compartment);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, compartment);
+                } else {
+                    materialToEdit.setCompartment(null);
+                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, null);
+                }
+            }
+
+        });
+
+        materialEditDialog.getMaterialSaveOrUpdateButton().addActionListener(e -> {
+            //update with dialog input
+            updateMaterialToEdit();
+
+            //validate material
+            List<String> validationMessages = GuiUtils.validateEntity(materialToEdit);
+            //check for a new material if the material name already exists in the db
+            if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
+                validationMessages.add(materialToEdit.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another material name.");
+            }
+            if (validationMessages.isEmpty()) {
+                int index;
+                EntityChangeEvent.Type type;
+                if (materialToEdit.getId() != null) {
+                    materialService.update(materialToEdit);
+                    index = materialManagementDialog.getMaterialList().getSelectedIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
+                } else {
+                    materialService.save(materialToEdit);
+                    //add instrument to overview list
+                    materialBindingList.add(materialToEdit);
+                    index = materialBindingList.size() - 1;
+                    materialEditDialog.getMaterialStateInfoLabel().setText("");
+                    type = EntityChangeEvent.Type.CREATED;
+                }
+                materialEditDialog.getMaterialSaveOrUpdateButton().setText("update");
+
+                eventBus.post(new MaterialChangeEvent(type));
+
+                MessageEvent messageEvent = new MessageEvent("Material store confirmation", "Material " + materialToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in material list in management overview dialog
+                materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
+                materialManagementDialog.getMaterialList().setSelectedIndex(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        materialEditDialog.getCancelMaterialEditButton().addActionListener(e -> {
+            if (materialToEdit.getId() != null) {
+                //roll back the changes
+                Material rolledBackMaterial = materialService.findById(materialToEdit.getId());
+                int selectedIndex = materialManagementDialog.getMaterialList().getSelectedIndex();
+                materialBindingList.remove(selectedIndex);
+                materialBindingList.add(selectedIndex, rolledBackMaterial);
+            }
+
+            materialEditDialog.dispose();
+        });
+
+        materialEditDialog.getMaterialCvParamsCrudButton().addActionListener(e -> {
+            //check if a CV param group is selected in the CV param summary list
+            if (materialEditDialog.getCvParamSummaryList().getSelectedIndex() != -1) {
+                //get selected cvParamType from summary list
+                CvParamType selectedcvParamType = (CvParamType) materialEditDialog.getCvParamSummaryList().getSelectedValue();
+
+                List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
+
+                //update the CV param list
+                cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
+
+                cvParamManagementController.showView();
+            } else {
+                eventBus.post(new MessageEvent("Material CV param type selection", "Please select a material CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
     }

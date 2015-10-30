@@ -82,7 +82,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         //init binding
         bindingGroup = new BindingGroup();
 
-        fastaDbBindingList = ObservableCollections.observableList(new ArrayList<FastaDb>());
+        fastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
         bindingGroup.addBinding(fastaDbListBinding);
 
@@ -103,13 +103,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         bindingGroup.bind();
 
         //add listeners
-        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                showOlsDialog();
-            }
-        });
+        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> showOlsDialog());
 
         //init fasta file selection
         //disable select multiple files
@@ -117,159 +111,136 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         //set fasta file filter
         fastaDbManagementDialog.getFastaFileChooser().setFileFilter(new FastaFileFilter());
 
-        fastaDbManagementDialog.getBrowseFastaButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //in response to the button click, show open dialog
-                int returnVal = fastaDbManagementDialog.getFastaFileChooser().showOpenDialog(fastaDbManagementDialog);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File fastaFile = fastaDbManagementDialog.getFastaFileChooser().getSelectedFile();
+        fastaDbManagementDialog.getBrowseFastaButton().addActionListener(e -> {
+            //in response to the button click, show open dialog
+            int returnVal = fastaDbManagementDialog.getFastaFileChooser().showOpenDialog(fastaDbManagementDialog);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File fastaFile = fastaDbManagementDialog.getFastaFileChooser().getSelectedFile();
 
-                    //show fasta file name and path in textfields
-                    fastaDbManagementDialog.getFileNameTextField().setText(fastaFile.getName());
-                    fastaDbManagementDialog.getFilePathTextField().setText(fastaFile.getAbsolutePath());
-                }
+                //show fasta file name and path in textfields
+                fastaDbManagementDialog.getFileNameTextField().setText(fastaFile.getName());
+                fastaDbManagementDialog.getFilePathTextField().setText(fastaFile.getAbsolutePath());
             }
         });
 
-        fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
-                        FastaDb fastaDb = getSelectedFastaDb();
-
-                        //enable save and delete button
-                        fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(true);
-                        fastaDbManagementDialog.getDeleteButton().setEnabled(true);
-
-                        //check if the fasta DB has an ID.
-                        //If so, disable the name text field and change the save button label.
-                        if (fastaDb.getId() != null) {
-                            fastaDbManagementDialog.getNameTextField().setEnabled(false);
-                            fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
-                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
-                        } else {
-                            fastaDbManagementDialog.getNameTextField().setEnabled(true);
-                            fastaDbManagementDialog.getSaveOrUpdateButton().setText("save");
-                            fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been stored in the database.");
-                        }
-                    } else {
-                        fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(false);
-                        clearFastaDbDetailFields();
-                    }
-                }
-            }
-        });
-
-        fastaDbManagementDialog.getAddButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                FastaDb newFastaDb = new FastaDb();
-                newFastaDb.setName("name");
-                fastaDbBindingList.add(newFastaDb);
-                fastaDbManagementDialog.getNameTextField().setEnabled(true);
-                fastaDbManagementDialog.getFastaDbList().setSelectedIndex(fastaDbBindingList.size() - 1);
-            }
-        });
-
-        fastaDbManagementDialog.getDeleteButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
-                    FastaDb fastaDbToDelete = getSelectedFastaDb();
+                    FastaDb fastaDb = getSelectedFastaDb();
 
-                    //check if fasta DB has an id.
-                    //If so, try to delete the fasta DB from the db.
-                    if (fastaDbToDelete.getId() != null) {
-                        try {
-                            fastaDbService.delete(fastaDbToDelete);
+                    //enable save and delete button
+                    fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(true);
+                    fastaDbManagementDialog.getDeleteButton().setEnabled(true);
 
-                            fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
-                            fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
-                            //clearInstrumentTypeDetailFields();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the instrument type can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("fasta db", fastaDbToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
-                        }
-                    } else {
-                        fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
-                        fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
-                        clearFastaDbDetailFields();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        fastaDbManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
-                    FastaDb selectedFastaDb = getSelectedFastaDb();
-                    //validate fasta DB
-                    List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
-                    if (validationMessages.isEmpty()) {
-                        if (selectedFastaDb.getId() != null) {
-                            fastaDbService.update(selectedFastaDb);
-                        } else {
-                            fastaDbService.save(selectedFastaDb);
-                            //refresh fasta DB list
-                            fastaDbManagementDialog.getFastaDbList().updateUI();
-                        }
+                    //check if the fasta DB has an ID.
+                    //If so, disable the name text field and change the save button label.
+                    if (fastaDb.getId() != null) {
                         fastaDbManagementDialog.getNameTextField().setEnabled(false);
                         fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
                         fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
-
-                        MessageEvent messageEvent = new MessageEvent("Fasta DB store confirmation", "Fasta DB " + selectedFastaDb.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                        eventBus.post(messageEvent);
                     } else {
-                        MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                        eventBus.post(messageEvent);
+                        fastaDbManagementDialog.getNameTextField().setEnabled(true);
+                        fastaDbManagementDialog.getSaveOrUpdateButton().setText("save");
+                        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been stored in the database.");
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to save or update.", JOptionPane.INFORMATION_MESSAGE));
+                    fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(false);
+                    clearFastaDbDetailFields();
                 }
             }
         });
 
-        fastaDbManagementDialog.getOkButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                FastaDb fastaDb = getSelectedFastaDb();
+        fastaDbManagementDialog.getAddButton().addActionListener(e -> {
+            FastaDb newFastaDb = new FastaDb();
+            newFastaDb.setName("name");
+            fastaDbBindingList.add(newFastaDb);
+            fastaDbManagementDialog.getNameTextField().setEnabled(true);
+            fastaDbManagementDialog.getFastaDbList().setSelectedIndex(fastaDbBindingList.size() - 1);
+        });
 
-                //validate before closing dialog
-                List<String> validationMessages = new ArrayList<>();
-                if (fastaDb == null) {
-                    validationMessages.add("Please select a fasta DB from the list.");
+        fastaDbManagementDialog.getDeleteButton().addActionListener(e -> {
+            if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
+                FastaDb fastaDbToDelete = getSelectedFastaDb();
+
+                //check if fasta DB has an id.
+                //If so, try to delete the fasta DB from the db.
+                if (fastaDbToDelete.getId() != null) {
+                    try {
+                        fastaDbService.delete(fastaDbToDelete);
+
+                        fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
+                        fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
+                        //clearInstrumentTypeDetailFields();
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the instrument type can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("fasta db", fastaDbToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
                 } else {
-                    //validate user input
-                    validationMessages.addAll(validate(fastaDb));
+                    fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
+                    fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
+                    clearFastaDbDetailFields();
                 }
+            } else {
+                eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to delete.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
 
+        fastaDbManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
+                FastaDb selectedFastaDb = getSelectedFastaDb();
+                //validate fasta DB
+                List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
                 if (validationMessages.isEmpty()) {
-                    fastaDbManagementDialog.dispose();
+                    if (selectedFastaDb.getId() != null) {
+                        fastaDbService.update(selectedFastaDb);
+                    } else {
+                        fastaDbService.save(selectedFastaDb);
+                        //refresh fasta DB list
+                        fastaDbManagementDialog.getFastaDbList().updateUI();
+                    }
+                    fastaDbManagementDialog.getNameTextField().setEnabled(false);
+                    fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
+                    fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
+
+                    MessageEvent messageEvent = new MessageEvent("Fasta DB store confirmation", "Fasta DB " + selectedFastaDb.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    eventBus.post(messageEvent);
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
+            } else {
+                eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to save or update.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        fastaDbManagementDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        fastaDbManagementDialog.getOkButton().addActionListener(e -> {
+            FastaDb fastaDb = getSelectedFastaDb();
+
+            //validate before closing dialog
+            List<String> validationMessages = new ArrayList<>();
+            if (fastaDb == null) {
+                validationMessages.add("Please select a fasta DB from the list.");
+            } else {
+                //validate user input
+                validationMessages.addAll(validate(fastaDb));
+            }
+
+            if (validationMessages.isEmpty()) {
                 fastaDbManagementDialog.dispose();
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
+
+        fastaDbManagementDialog.getCancelButton().addActionListener(e -> fastaDbManagementDialog.dispose());
     }
 
     @Override

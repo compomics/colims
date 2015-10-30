@@ -49,10 +49,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.List;
 
@@ -166,183 +162,151 @@ public class SampleEditController implements Controllable {
         bindingGroup.bind();
 
         //add action listeners
-        sampleEditDialog.getMaterialDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                List<Material> addedMaterials = (List<Material>) evt.getNewValue();
+        sampleEditDialog.getMaterialDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            List<Material> addedMaterials = (List<Material>) evt.getNewValue();
 
-                sampleToEdit.setMaterials(addedMaterials);
-            }
+            sampleToEdit.setMaterials(addedMaterials);
         });
 
-        sampleEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update sampleToEdit with dialog input
-                updateSampleToEdit();
+        sampleEditDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            //update sampleToEdit with dialog input
+            updateSampleToEdit();
 
-                //validate sample
-                List<String> validationMessages = GuiUtils.validateEntity(sampleToEdit);
-                if (validationMessages.isEmpty()) {
-                    int index;
-                    EntityChangeEvent.Type type;
+            //validate sample
+            List<String> validationMessages = GuiUtils.validateEntity(sampleToEdit);
+            if (validationMessages.isEmpty()) {
+                int index;
+                EntityChangeEvent.Type type;
 
-                    if (sampleToEdit.getId() != null) {
-                        sampleService.update(sampleToEdit);
-
-                        index = projectManagementController.getSelectedSampleIndex();
-                        type = EntityChangeEvent.Type.UPDATED;
-                    } else {
-                        //set experiment
-                        sampleToEdit.setExperiment(projectManagementController.getSelectedExperiment());
-
-                        sampleService.save(sampleToEdit);
-
-                        index = projectManagementController.getSamplesSize() - 1;
-                        type = EntityChangeEvent.Type.CREATED;
-
-                        //add sample to overview table
-                        projectManagementController.addSample(sampleToEdit);
-
-                        sampleEditDialog.getSaveOrUpdateButton().setText("update");
-                        updateAnalyticalRunButtonsState(true);
-                    }
-                    SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
-                    eventBus.post(sampleChangeEvent);
-
-                    MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in sample table
-                    projectManagementController.setSelectedSample(index);
-                } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
-                }
-            }
-        });
-
-        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                SampleBinaryFile binaryFileToAdd = (SampleBinaryFile) evt.getNewValue();
-
-                //set experiment in binary file
-                binaryFileToAdd.setSample(sampleToEdit);
-
-                //save binary file
-                binaryFileService.save(binaryFileToAdd);
-
-                sampleToEdit.getBinaryFiles().add(binaryFileToAdd);
-                sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
-            }
-        });
-
-        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
-
-                if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
-                    sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
-                }
-
-                //remove binary file
-                binaryFileService.delete(binaryFileToRemove);
-
-                sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
-            }
-        });
-
-        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
-
-                //update binary file
-                binaryFileService.update(binaryFileToUpdate);
-
-                sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
-            }
-        });
-
-        sampleBinaryFileDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                sampleBinaryFileDialog.dispose();
-            }
-        });
-
-        sampleEditDialog.getAttachmentsEditButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
                 if (sampleToEdit.getId() != null) {
-                    sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
+                    sampleService.update(sampleToEdit);
 
-                    GuiUtils.centerDialogOnComponent(sampleEditDialog, sampleBinaryFileDialog);
-                    sampleBinaryFileDialog.setVisible(true);
+                    index = projectManagementController.getSelectedSampleIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Sample attachments", "Please save the sample first before adding attachments.", JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    //set experiment
+                    sampleToEdit.setExperiment(projectManagementController.getSelectedExperiment());
+
+                    sampleService.save(sampleToEdit);
+
+                    index = projectManagementController.getSamplesSize() - 1;
+                    type = EntityChangeEvent.Type.CREATED;
+
+                    //add sample to overview table
+                    projectManagementController.addSample(sampleToEdit);
+
+                    sampleEditDialog.getSaveOrUpdateButton().setText("update");
+                    updateAnalyticalRunButtonsState(true);
                 }
+                SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
+                eventBus.post(sampleChangeEvent);
+
+                MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in sample table
+                projectManagementController.setSelectedSample(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        sampleEditDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (sampleToEdit.getId() != null) {
-                    //roll back the changes
-                    Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
+        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, evt -> {
+            SampleBinaryFile binaryFileToAdd = (SampleBinaryFile) evt.getNewValue();
 
-                    //fetch sample binary files
-                    sampleService.fetchBinaryFiles(rolledBackSample);
-                    //fetch sample materials
-                    sampleService.fetchMaterials(rolledBackSample);
+            //set experiment in binary file
+            binaryFileToAdd.setSample(sampleToEdit);
 
-                    sampleToEdit.setBinaryFiles(rolledBackSample.getBinaryFiles());
-                    sampleToEdit.setMaterials(rolledBackSample.getMaterials());
-                }
+            //save binary file
+            binaryFileService.save(binaryFileToAdd);
 
-                sampleEditDialog.dispose();
+            sampleToEdit.getBinaryFiles().add(binaryFileToAdd);
+            sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
+            SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
+
+            if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
+                sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
+            }
+
+            //remove binary file
+            binaryFileService.delete(binaryFileToRemove);
+
+            sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, evt -> {
+            SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
+
+            //update binary file
+            binaryFileService.update(binaryFileToUpdate);
+
+            sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        sampleBinaryFileDialog.getCancelButton().addActionListener(e -> sampleBinaryFileDialog.dispose());
+
+        sampleEditDialog.getAttachmentsEditButton().addActionListener(e -> {
+            if (sampleToEdit.getId() != null) {
+                sampleBinaryFileDialog.getBinaryFileManagementPanel().populateList(sampleToEdit.getBinaryFiles());
+
+                GuiUtils.centerDialogOnComponent(sampleEditDialog, sampleBinaryFileDialog);
+                sampleBinaryFileDialog.setVisible(true);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Sample attachments", "Please save the sample first before adding attachments.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        sampleEditDialog.getEditAnalyticalRunButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+        sampleEditDialog.getCancelButton().addActionListener(e -> {
+            if (sampleToEdit.getId() != null) {
+                //roll back the changes
+                Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
 
-                if (selectedAnalyticalRuns.size() == 1) {
-                    analyticalRunEditController.updateView(selectedAnalyticalRuns.get(0));
-                } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
-                }
+                //fetch sample binary files
+                sampleService.fetchBinaryFiles(rolledBackSample);
+                //fetch sample materials
+                sampleService.fetchMaterials(rolledBackSample);
+
+                sampleToEdit.setBinaryFiles(rolledBackSample.getBinaryFiles());
+                sampleToEdit.setMaterials(rolledBackSample.getMaterials());
+            }
+
+            sampleEditDialog.dispose();
+        });
+
+        sampleEditDialog.getEditAnalyticalRunButton().addActionListener(e -> {
+            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+
+            if (selectedAnalyticalRuns.size() == 1) {
+                analyticalRunEditController.updateView(selectedAnalyticalRuns.get(0));
+            } else {
+                eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
-        sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+        sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(e -> {
+            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
 
-                if (selectedAnalyticalRuns.size() == 1) {
-                    boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
-                    if (deleteConfirmation) {
-                        AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
+            if (selectedAnalyticalRuns.size() == 1) {
+                boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
+                if (deleteConfirmation) {
+                    AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
 
-                        //remove from overview table and clear selection
-                        analyticalRuns.remove(selectedAnalyticalRun);
-                        analyticalRunsSelectionModel.clearSelection();
-                        eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun));
+                    //remove from overview table and clear selection
+                    analyticalRuns.remove(selectedAnalyticalRun);
+                    analyticalRunsSelectionModel.clearSelection();
+                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun));
 
-                        //remove analytical run from the selected sample and update the table
-                        sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
-                        sampleEditDialog.getAnalyticalRunsTable().updateUI();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
+                    //remove analytical run from the selected sample and update the table
+                    sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
+                    sampleEditDialog.getAnalyticalRunsTable().updateUI();
                 }
+            } else {
+                eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
     }

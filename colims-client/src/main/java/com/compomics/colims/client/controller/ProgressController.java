@@ -56,15 +56,11 @@ public class ProgressController implements Controllable {
 
         GuiUtils.centerDialogOnComponent(progressStartEvent.getParent(), progressDialog);
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    progressDialog.setVisible(true);
-                } catch (IndexOutOfBoundsException e) {
-                    // ignore
-                }
+        new Thread(() -> {
+            try {
+                progressDialog.setVisible(true);
+            } catch (IndexOutOfBoundsException e) {
+                // ignore
             }
         }, "ProgressDialog").start();
     }

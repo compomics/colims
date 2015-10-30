@@ -98,63 +98,52 @@ public class ProjectEditController implements Controllable {
         bindingGroup.bind();
 
         //add action listeners
-        projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                List<User> addedUsers = (List<User>) evt.getNewValue();
+        projectEditDialog.getUserDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            List<User> addedUsers = (List<User>) evt.getNewValue();
 
-                projectToEdit.setUsers(addedUsers);
-            }
+            projectToEdit.setUsers(addedUsers);
         });
 
-        projectEditDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //update projectToEdit with dialog input
-                updateProjectToEdit();
+        projectEditDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            //update projectToEdit with dialog input
+            updateProjectToEdit();
 
-                //validate project
-                List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
-                //check for a new project if the project title already exists in the db
-                if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
-                    validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another project title.");
-                }
-                if (validationMessages.isEmpty()) {
-                    int index;
+            //validate project
+            List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
+            //check for a new project if the project title already exists in the db
+            if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
+                validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another project title.");
+            }
+            if (validationMessages.isEmpty()) {
+                int index;
 
-                    if (projectToEdit.getId() != null) {
-                        projectService.update(projectToEdit);
+                if (projectToEdit.getId() != null) {
+                    projectService.update(projectToEdit);
 
-                        index = projectManagementController.getSelectedProjectIndex();
-                    } else {
-                        projectService.save(projectToEdit);
-
-                        index = projectManagementController.getProjectsSize() - 1;
-
-                        //add project to overview table
-                        projectManagementController.addProject(projectToEdit);
-
-                        projectEditDialog.getSaveOrUpdateButton().setText("update");
-                    }
-                    MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
-
-                    //refresh selection in project list in management overview dialog
-                    projectManagementController.setSelectedProject(index);
+                    index = projectManagementController.getSelectedProjectIndex();
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    projectService.save(projectToEdit);
+
+                    index = projectManagementController.getProjectsSize() - 1;
+
+                    //add project to overview table
+                    projectManagementController.addProject(projectToEdit);
+
+                    projectEditDialog.getSaveOrUpdateButton().setText("update");
                 }
+                MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+
+                //refresh selection in project list in management overview dialog
+                projectManagementController.setSelectedProject(index);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
 
-        projectEditDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                projectEditDialog.dispose();
-            }
-        });
+        projectEditDialog.getCancelButton().addActionListener(e -> projectEditDialog.dispose());
     }
 
     @Override

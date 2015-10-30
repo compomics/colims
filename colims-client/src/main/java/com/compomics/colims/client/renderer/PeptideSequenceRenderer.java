@@ -7,7 +7,6 @@ import com.compomics.util.Util;
 import org.apache.commons.math.util.MathUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,11 +35,11 @@ public class PeptideSequenceRenderer {
     public static String getAnnotatedHtmlSequence(String peptideSequence, List<PeptideHasModification> peptideHasModifications) {
         StringBuilder annotatedSequence = new StringBuilder(HTML_OPEN_TAG);
 
-        Map<Integer, List<PeptideHasModification>> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
+        Map<Integer, PeptideHasModification> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
 
         //check for a possible N-terminal modification
         if (orderedPeptideHasModifications.containsKey(Integer.valueOf(0))) {
-            Modification modification = orderedPeptideHasModifications.get(Integer.valueOf(0)).get(0).getModification();
+            Modification modification = orderedPeptideHasModifications.get(Integer.valueOf(0)).getModification();
             annotatedSequence.append(modification.getName()).append(TERMINAL_MOD_DELIMITER);
         }
         for (int i = 1; i <= peptideSequence.length(); ++i) {
@@ -56,7 +55,7 @@ public class PeptideSequenceRenderer {
         }
         //check for a possible C-terminal modification
         if (orderedPeptideHasModifications.containsKey(Integer.valueOf(peptideSequence.length() + 1))) {
-            Modification modification = orderedPeptideHasModifications.get(peptideSequence.length() + 1).get(0).getModification();
+            Modification modification = orderedPeptideHasModifications.get(peptideSequence.length() + 1).getModification();
             annotatedSequence.append(TERMINAL_MOD_DELIMITER).append(modification.getName());
         }
 
@@ -70,53 +69,60 @@ public class PeptideSequenceRenderer {
      *
      * @param peptideSequence         the peptide sequence
      * @param peptideHasModifications the list of modifications
+     * @param showScore               show the modification score or not
      * @return the annotated peptide sequence
      */
-    public static String getModificationsHtmlToolTip(String peptideSequence, List<PeptideHasModification> peptideHasModifications) {
+    public static String getModificationsHtmlToolTip(String peptideSequence, List<PeptideHasModification> peptideHasModifications, boolean showScore) {
         StringBuilder tooltip = new StringBuilder(HTML_OPEN_TAG);
 
-        Map<Integer, List<PeptideHasModification>> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
-        for (Map.Entry<Integer, List<PeptideHasModification>> entry : orderedPeptideHasModifications.entrySet()) {
+        Map<Integer, PeptideHasModification> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
+        for (Map.Entry<Integer, PeptideHasModification> entry : orderedPeptideHasModifications.entrySet()) {
             if (entry.getKey().intValue() == 0) {
-                tooltip.append(N_TERMINAL_MOD).append(entry.getValue().get(0).getModification().getName())
-                        .append(getModifationScore(entry.getValue().get(0)))
-                        .append(LINE_BREAK);
+                tooltip.append(N_TERMINAL_MOD).append(entry.getValue().getModification().getName());
             } else if (entry.getKey().intValue() <= peptideSequence.length()) {
-                for (PeptideHasModification peptideHasModification : entry.getValue()) {
-                    tooltip.append(entry.getKey())
-                            .append(": ")
-                            .append(entry.getValue().get(0).getModification().getName())
-                            .append(getModifationScore(peptideHasModification));
-                }
+                tooltip.append(entry.getKey())
+                        .append(": ")
+                        .append(entry.getValue().getModification().getName());
             } else {
-                tooltip.append(C_TERMINAL_MOD).append(entry.getValue().get(0).getModification().getName())
-                        .append(getModifationScore(entry.getValue().get(0)))
-                        .append(LINE_BREAK);
+                tooltip.append(C_TERMINAL_MOD).append(entry.getValue().getModification().getName());
             }
-            tooltip.append(HTML_CLOSE_TAG);
+            if (showScore) {
+                tooltip.append(getModificationScore(entry.getValue()));
+            }
+            tooltip.append(LINE_BREAK);
         }
 
-        return tooltip.toString();
+        return tooltip.substring(0, tooltip.lastIndexOf(LINE_BREAK));
     }
 
-    private static Map<Integer, List<PeptideHasModification>> getOrderedPeptideHasModifications(List<PeptideHasModification> peptideHasModifications) {
-        Map<Integer, List<PeptideHasModification>> orderedPeptideHasModifications = new TreeMap<>();
+    /**
+     * This method orders the list of PeptideHasModification instances and returns an sorted map with the modification
+     * locations as keys.
+     *
+     * @param peptideHasModifications the list of PeptideHasModification instances
+     * @return the sorted map
+     */
+    private static TreeMap<Integer, PeptideHasModification> getOrderedPeptideHasModifications(List<PeptideHasModification> peptideHasModifications) {
+        TreeMap<Integer, PeptideHasModification> orderedPeptideHasModifications = new TreeMap<>();
 
         for (PeptideHasModification peptideHasModification : peptideHasModifications) {
-            Integer location = peptideHasModification.getLocation();
-            if (orderedPeptideHasModifications.containsKey(location)) {
-                orderedPeptideHasModifications.get(location).add(peptideHasModification);
-            } else {
-                List<PeptideHasModification> modifications = new ArrayList<>();
-                modifications.add(peptideHasModification);
-                orderedPeptideHasModifications.put(location, modifications);
+            PeptideHasModification previous = orderedPeptideHasModifications.put(peptideHasModification.getLocation(), peptideHasModification);
+            if (previous != null) {
+                throw new IllegalStateException("More than on modification for the same location " + peptideHasModification.getModification());
             }
         }
 
         return orderedPeptideHasModifications;
     }
 
-    private static String getModifationScore(PeptideHasModification peptideHasModification) {
+    /**
+     * Get the modification probability score as a String. If the modification is fixed or no score is available, an
+     * appropriate value is returned.
+     *
+     * @param peptideHasModification the PeptideHasModification instance
+     * @return the modification score String
+     */
+    private static String getModificationScore(PeptideHasModification peptideHasModification) {
         StringBuilder modificationScore = new StringBuilder(" (");
 
         if (peptideHasModification.getModificationType().equals(ModificationType.FIXED)) {
