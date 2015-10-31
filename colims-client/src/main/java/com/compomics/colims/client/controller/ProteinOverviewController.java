@@ -125,9 +125,9 @@ public class ProteinOverviewController implements Controllable {
 
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
-        for (Project project : mainController.getProjects()) {
+        mainController.getProjects().stream().forEach((project) -> {
             projectsNode.add(buildProjectTree(project));
-        }
+        });
 
         DefaultTreeModel treeModel = new DefaultTreeModel(projectsNode);
         proteinOverviewPanel.getProjectTree().setModel(treeModel);
@@ -155,7 +155,7 @@ public class ProteinOverviewController implements Controllable {
                 proteinOverviewPanel.getPeptideTable(), sortedPeptides, TableComparatorChooser.SINGLE_COLUMN);
 
         //init PSM table
-        SortedList<Peptide> sortedPsms = new SortedList<>(psms, (o1, o2) -> o2.getPsmPostErrorProbability().compareTo(o1.getPsmPostErrorProbability()));
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, (o1, o2) -> o1.getPsmPostErrorProbability().compareTo(o2.getPsmPostErrorProbability()));
 
         psmTableModel = GlazedListsSwing.eventTableModel(sortedPsms, psmTableFormat);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);

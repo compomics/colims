@@ -3,9 +3,6 @@ package com.compomics.colims.client.model.table.model;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
-import com.compomics.util.Util;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
