@@ -27,8 +27,6 @@ public class SearchParametersRepositoryTest {
 
     @Autowired
     private SearchParametersRepository searchParametersRepository;
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
 
     @Test
     public void testFindByExample() {
@@ -55,7 +53,7 @@ public class SearchParametersRepositoryTest {
     }
 
     @Test
-    public void testGetSearchParametersIdsForRunTest() {
+    public void testGetConstraintLessSearchParameterIdsForRuns() {
         List<Long> runIds = new ArrayList<>();
         runIds.add(1L);
 

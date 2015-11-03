@@ -6,10 +6,7 @@ import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
@@ -101,5 +98,12 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         }
 
         return (long) criteria.uniqueResult();
+    }
+
+    @Override
+    public Object[] getProteinGroupsProjections(AnalyticalRun analyticalRun) {
+
+
+        return null;
     }
 }

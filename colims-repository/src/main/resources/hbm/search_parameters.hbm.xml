@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <sql-query name="SearchParameters.getConstraintLessSearchParameterIdsForRuns">
+        SELECT
+        DISTINCT search_parameters.id
+        FROM search_parameters
+        LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id =
+        search_parameters.id
+        AND search_and_validation_settings.id NOT IN
+        (
+        SELECT
+        s_and_v_s.id
+        FROM search_and_validation_settings s_and_v_s
+        WHERE s_and_v_s.l_analytical_run_id IN (:ids)
+        )
+        WHERE search_and_validation_settings.l_search_parameters_id IS NULL
+    </sql-query>
+</hibernate-mapping>

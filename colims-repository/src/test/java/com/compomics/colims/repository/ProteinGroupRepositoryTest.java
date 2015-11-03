@@ -111,6 +111,15 @@ public class ProteinGroupRepositoryTest {
         assertThat(proteinGroupCountForRun, is(0L));
     }
 
+    @Test
+    public void testGetProteinGroupsProjections(){
+        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+
+        Object[] proteinGroupsProjections = proteinGroupRepository.getProteinGroupsProjections(analyticalRun);
+
+        System.out.println("------");
+    }
+
 //    @Test
 //    public void testHibernateSearchFindBySequence() {
 //        //(re)build the lucene indexes

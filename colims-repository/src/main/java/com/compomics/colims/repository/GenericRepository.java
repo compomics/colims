@@ -122,12 +122,4 @@ public interface GenericRepository<T, ID extends Serializable> {
      * @param entity the entity to delete
      */
     void delete(final T entity);
-
-    /**
-     * Re-associate the entity with the current session.
-     *
-     * @param entity the entity to re-attach to the session
-     * @param lockOptions the locking details
-     */
-    void lock(final T entity, final LockOptions lockOptions);
 }

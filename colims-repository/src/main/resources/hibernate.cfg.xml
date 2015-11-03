@@ -8,8 +8,12 @@
     <session-factory>
 
         <!-- mapping files containing only queries -->
-        <mapping resource="hbm/user.hbm.xml"/>
         <mapping resource="hbm/peptide.hbm.xml"/>
+        <mapping resource="hbm/protein_group.hbm.xml"/>
+        <mapping resource="hbm/search_parameters.hbm.xml"/>
+        <mapping resource="hbm/search_modification.hbm.xml"/>
+        <mapping resource="hbm/modification.hbm.xml"/>
+        <mapping resource="hbm/protein.hbm.xml"/>
 
     </session-factory>
 

@@ -21,14 +21,15 @@ import java.util.Comparator;
  */
 public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> {
 
-    private static final String[] columnNames = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Confidence"};
+    private static final String[] columnNames = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Retention Time", "Confidence"};
 
     public static final int SPECTRUM_ID = 0;
     public static final int SEQUENCE = 1;
     public static final int PRECURSOR_CHARGE = 2;
     public static final int PRECURSOR_MZRATIO = 3;
     public static final int PRECURSOR_MASS_ERROR = 4;
-    public static final int PSM_CONFIDENCE = 5;
+    public static final int RETENTION_TIME = 5;
+    public static final int PSM_CONFIDENCE = 6;
 
     /**
      * The search parameters of the given run. They hold the mass error accuracy type.
@@ -47,6 +48,8 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
             case PRECURSOR_MZRATIO:
                 return Double.class;
             case PRECURSOR_MASS_ERROR:
+                return Double.class;
+            case RETENTION_TIME:
                 return Double.class;
             case PSM_CONFIDENCE:
                 return Double.class;
@@ -93,8 +96,10 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
                 IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), new Charge(sign, charge));
                 boolean isPpm = searchParameters.getPrecMassToleranceUnit() == MassAccuracyType.PPM;
                 return Math.abs(ionMatch.getError(isPpm, true));
+            case RETENTION_TIME:
+                return spectrum.getRetentionTime();
             case PSM_CONFIDENCE:
-                double confidence = (peptide != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
+                double confidence = (peptide.getPsmPostErrorProbability() != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
                 if (confidence <= 0) {
                     confidence = 0;
                 }

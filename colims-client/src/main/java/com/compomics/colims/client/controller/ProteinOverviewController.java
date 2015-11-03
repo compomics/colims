@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 
 /**
  * Created by Iain on 19/06/2015.
@@ -122,6 +123,8 @@ public class ProteinOverviewController implements Controllable {
         //init views
         proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
         psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
+
+        //disable protein group page buttons
 
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
@@ -213,6 +216,8 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
+//        setProteinGroupTableCellRenderers();
+
         //Listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
@@ -257,10 +262,6 @@ public class ProteinOverviewController implements Controllable {
                 if (!proteinGroupSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
 
-                    if (selectedProteinGroupDTO.getMainAccession().equals("Q00839")) {
-                        System.out.println("test");
-                    }
-
                     //get the PeptideDTO instances for the selected protein group
                     List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
 
@@ -283,8 +284,6 @@ public class ProteinOverviewController implements Controllable {
                 } else {
                     PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
                     List<Peptide> selectedPsms = selectedPeptideTableRow.getPeptides();
-
-                    setPsmTableCellRenderers();
 
                     GlazedLists.replaceAll(psms, selectedPsms, false);
                 }
@@ -652,6 +651,32 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
+     * Set SparkLines for the protein group table.
+     */
+    private void setProteinGroupTableCellRenderers() {
+        String mainSequence = proteinGroupSelectionModel.getSelected().get(0).getMainSequence();
+
+        proteinOverviewPanel.getProteinGroupTable()
+                .getColumnModel()
+                .getColumn(PeptideTableFormat.START)
+                .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
+                        PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
+                        ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
+
+        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
+                .getColumnModel()
+                .getColumn(PeptideTableFormat.START)
+                .getCellRenderer())
+                .showReferenceLine(true, 0.02, Color.BLACK);
+
+        ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
+                .getColumnModel()
+                .getColumn(PeptideTableFormat.START)
+                .getCellRenderer())
+                .showNumberAndChart(true, TableProperties.getLabelWidth() - 10);
+    }
+
+    /**
      * Set SparkLines for the peptide table.
      */
     private void setPeptideTableCellRenderers() {
@@ -713,6 +738,28 @@ public class ProteinOverviewController implements Controllable {
                 .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE)
                 .getCellRenderer())
                 .showNumberAndChart(true, TableProperties.getLabelWidth() - 30);
+
+        proteinOverviewPanel.getPsmTable()
+                .getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
+                .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+                                minimumRetentionTime,
+                                maximumRetentionTime,
+                                maximumRetentionTime / 50,
+                                utilitiesUserPreferences.getSparklineColor(),
+                                utilitiesUserPreferences.getSparklineColor())
+                );
+
+        ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+                .getColumnModel()
+                .getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showNumberAndChart(true, TableProperties.getLabelWidth() + 5);
+
+        ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+                .getColumnModel()
+                .getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
+                .getCellRenderer())
+                .showReferenceLine(true, 0.02, java.awt.Color.BLACK);
     }
 
 }

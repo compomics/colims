@@ -18,25 +18,24 @@ import java.util.List;
 @Repository("searchParameterRepository")
 public class SearchParameterHibernateRepository extends GenericHibernateRepository<SearchParameters, Long> implements SearchParametersRepository {
 
-    public static final String SEARCH_PARAMETERS_IDS_QUERY = new StringBuilder()
-            .append("SELECT ")
-            .append("DISTINCT search_parameters.id ")
-            .append("FROM search_parameters ")
-            .append("LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id = search_parameters.id ")
-            .append("AND search_and_validation_settings.id NOT IN ")
-            .append("( ")
-            .append("   SELECT ")
-            .append("   s_and_v_s.id ")
-            .append("   FROM search_and_validation_settings s_and_v_s ")
-            .append("   WHERE s_and_v_s.l_analytical_run_id IN (:ids) ")
-            .append(") ")
-            .append("WHERE search_and_validation_settings.l_search_parameters_id IS NULL ")
-            .append("; ")
-            .toString();
+    public static final String SEARCH_PARAMETERS_IDS_QUERY =
+            "SELECT "
+            + "DISTINCT search_parameters.id "
+            + "FROM search_parameters "
+            + "LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id = search_parameters.id "
+            + "AND search_and_validation_settings.id NOT IN "
+            + "( "
+            + "   SELECT "
+            + "   s_and_v_s.id "
+            + "   FROM search_and_validation_settings s_and_v_s "
+            + "   WHERE s_and_v_s.l_analytical_run_id IN (:ids) "
+            + ") "
+            + "WHERE search_and_validation_settings.l_search_parameters_id IS NULL "
+            + "; ";
 
     @Override
     public List<Long> getConstraintLessSearchParameterIdsForRuns(List<Long> analyticalRunIds) {
-        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(SEARCH_PARAMETERS_IDS_QUERY);
+        SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("SearchParameters.getConstraintLessSearchParameterIdsForRuns");
         sqlQuery.setParameterList("ids", analyticalRunIds);
         sqlQuery.addScalar("search_parameters.id", LongType.INSTANCE);
 

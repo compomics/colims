@@ -33,6 +33,11 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
+    public Object[] getProteinGroupsProjections(AnalyticalRun analyticalRun) {
+        return new Object[0];
+    }
+
+    @Override
     public ProteinGroup findById(Long aLong) {
         return proteinGroupRepository.findById(aLong);
     }

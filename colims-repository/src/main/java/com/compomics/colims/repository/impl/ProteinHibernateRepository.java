@@ -16,22 +16,6 @@ import java.util.List;
 @Repository("proteinRepository")
 public class ProteinHibernateRepository extends GenericHibernateRepository<Protein, Long> implements ProteinRepository {
 
-    public static final String CONSTRAINT_LESS_IDS_QUERY = "SELECT "
-            + "DISTINCT protein.id "
-            + "from protein "
-            + "LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id "
-            + "AND protein_group_has_protein.id NOT IN "
-            + "( "
-            + "   SELECT "
-            + "   DISTINCT pg_has_p.id "
-            + "   FROM protein_group_has_protein pg_has_p "
-            + "   JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id "
-            + "   JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id "
-            + "   JOIN spectrum sp ON sp.id = pep.l_spectrum_id "
-            + "   WHERE sp.l_analytical_run_id IN (:ids) "
-            + ") "
-            + "WHERE protein_group_has_protein.l_protein_id IS NULL " + "; ";
-
     @Override
     public Protein findBySequence(String sequence) {
         Criteria criteria = createCriteria(Restrictions.eq("sequence", sequence));
@@ -41,7 +25,7 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
 
     @Override
     public List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds) {
-        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(CONSTRAINT_LESS_IDS_QUERY);
+        SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("Protein.getConstraintLessProteinIdsForRuns");
         sqlQuery.setParameterList("ids", analyticalRunIds);
         sqlQuery.addScalar("protein.id", LongType.INSTANCE);
 

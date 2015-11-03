@@ -185,8 +185,4 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
         return (Long) crit.uniqueResult();
     }
 
-    @Override
-    public void lock(final T entity, final LockOptions lockOptions) {
-        getCurrentSession().buildLockRequest(lockOptions).lock(entity);
-    }
 }

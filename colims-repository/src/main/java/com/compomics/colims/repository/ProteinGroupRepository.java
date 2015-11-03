@@ -37,4 +37,13 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      */
     long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
+    /**
+     * Get the protein groups projections for the given run (Min and max number of distinct peptide sequences per protein group, and min en max
+     * number of spectra per protein group).
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     * @return the protein groups projection values for the given run
+     */
+    Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
+
 }
