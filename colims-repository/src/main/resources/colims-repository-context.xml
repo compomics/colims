@@ -24,15 +24,14 @@
         <property name="maxActive" value="${db.max_pool_size}"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="colimsDataSource"/>
-        <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
         <property name="packagesToScan" value="com.compomics.colims.model"/>
-        <!-- Adding Interceptor here -->
-        <!--        <property name="entityInterceptor">
-            <bean class="com.compomics.colims.repository.audit.AuditInterceptor"></bean>
-        </property>-->
-        <property name="hibernateProperties">
+        <property name="mappingResources" value="Queries.hbm.xml"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">${db.dialect}</prop>
                 <prop key="hibernate.connection.autocommit">${db.autocommit}</prop>
@@ -58,8 +57,8 @@
         </property>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
     <!-- repository beans -->

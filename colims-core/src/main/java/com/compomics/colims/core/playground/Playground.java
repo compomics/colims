@@ -2,11 +2,14 @@ package com.compomics.colims.core.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.repository.ProteinRepository;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * @author Niels Hulstaert
@@ -43,8 +46,5 @@ public class Playground {
 //        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
 //        
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
-
-        AnalyticalRunService analyticalRunService = (AnalyticalRunService) applicationContext.getBean("analyticalRunService");
-        AnalyticalRun analyticalRun = analyticalRunService.findById(1L);
     }
 }

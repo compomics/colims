@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <sql-query name="Modification.getConstraintLessModificationIdsForRuns">
+        SELECT
+        DISTINCT modification.id
+        FROM modification
+        LEFT JOIN peptide_has_modification ON peptide_has_modification.l_modification_id = modification.id
+        AND peptide_has_modification.id NOT IN
+        (
+        SELECT
+        pep_has_mod.id
+        FROM peptide_has_modification pep_has_mod
+        JOIN peptide pep ON pep.id = pep_has_mod.l_peptide_id
+        JOIN spectrum sp ON sp.id = pep.l_spectrum_id
+        WHERE sp.l_analytical_run_id IN (:ids)
+        )
+        WHERE peptide_has_modification.l_modification_id IS NULL
+    </sql-query>
+
+    <query name="Peptide.getPeptideDTOByProteinGroupId">
+        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+    </query>
+
+    <sql-query name="Protein.getConstraintLessProteinIdsForRuns">
+        SELECT
+        DISTINCT protein.id
+        from protein
+        LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id
+        AND protein_group_has_protein.id NOT IN
+        (
+        SELECT
+        DISTINCT pg_has_p.id
+        FROM protein_group_has_protein pg_has_p
+        JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id
+        JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id
+        JOIN spectrum sp ON sp.id = pep.l_spectrum_id
+        WHERE sp.l_analytical_run_id IN (:ids)
+        )
+        WHERE protein_group_has_protein.l_protein_id IS NULL
+    </sql-query>
+
+    <query name="ProteinGroup.getProteinGroupsProjections">
+        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+    </query>
+
+    <sql-query name="SearchModification.getConstraintLessSearchModificationIdsForRuns">
+        SELECT
+        DISTINCT search_modification.id
+        FROM search_modification
+        LEFT JOIN search_params_has_modification ON search_params_has_modification.id = search_modification.id
+        AND search_params_has_modification.id NOT IN
+        (
+        SELECT
+        s_p_has_mod.id
+        FROM search_params_has_modification s_p_has_mod
+        JOIN search_parameters s_p ON s_p.id = s_p_has_mod.l_search_parameters_id
+        JOIN search_and_validation_settings s_and_v_s ON s_and_v_s.l_search_parameters_id = s_p.id
+        WHERE s_and_v_s.l_analytical_run_id IN (:ids)
+        )
+        WHERE search_params_has_modification.l_search_modification_id IS NULL
+    </sql-query>
+
+    <sql-query name="SearchParameters.getConstraintLessSearchParameterIdsForRuns">
+        SELECT
+        DISTINCT search_parameters.id
+        FROM search_parameters
+        LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id =
+        search_parameters.id
+        AND search_and_validation_settings.id NOT IN
+        (
+        SELECT
+        s_and_v_s.id
+        FROM search_and_validation_settings s_and_v_s
+        WHERE s_and_v_s.l_analytical_run_id IN (:ids)
+        )
+        WHERE search_and_validation_settings.l_search_parameters_id IS NULL
+    </sql-query>
+</hibernate-mapping>

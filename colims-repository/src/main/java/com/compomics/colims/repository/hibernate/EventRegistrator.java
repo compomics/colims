@@ -1,7 +1,5 @@
 package com.compomics.colims.repository.hibernate;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -9,20 +7,20 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+
 /**
- * This class registers the different custom event listeners to the hibernate
- * EventListenerRegistry.
+ * This class registers the different custom event listeners to the hibernate EventListenerRegistry.
  *
  * @author Niels Hulstaert
  */
 @Component("eventRegistrator")
 public class EventRegistrator {
 
-    /**
-     * The hibernate session factory.
-     */
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory;
     /**
      * The persist event listener.
      */
@@ -44,7 +42,7 @@ public class EventRegistrator {
      */
     @PostConstruct
     public void registerListeners() {
-        final EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory)
+        final EventListenerRegistry registry = ((SessionFactoryImpl) entityManagerFactory.unwrap(SessionFactory.class))
                 .getServiceRegistry().getService(EventListenerRegistry.class);
 
         registry.prependListeners(EventType.PERSIST, persistEventListener);

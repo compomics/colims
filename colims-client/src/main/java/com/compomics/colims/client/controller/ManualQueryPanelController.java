@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 @Component("manualQueryPanelController")
 public class ManualQueryPanelController implements Controllable {
 
-
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -47,15 +46,14 @@ public class ManualQueryPanelController implements Controllable {
         //init view
         manualQueryPanel = new ManualQueryPanel();
 
-
         manualQueryPanel.getExecuteQueryButton().addActionListener(e -> {
 
-            String query = manualQueryPanel.getQueryInputArea().getText();
+            String queryString = manualQueryPanel.getQueryInputArea().getText();
 
-            if (permissionToExecute(query)) {
+            if (permissionToExecute(queryString)) {
 
                 //create and setup the return for the entered query
-                SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(query);
+                SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(queryString);
                 sqlQuery.setResultTransformer(LinkedAliasToEntityMapResultTransformer.INSTANCE());
                 try {
                     List<LinkedHashMap<String, Object>> resultList = sqlQuery.list();
@@ -80,7 +78,7 @@ public class ManualQueryPanelController implements Controllable {
                     eventBus.post(new MessageEvent("permission problem","cannot execute any commands that are not selects", JOptionPane.ERROR_MESSAGE));
 
                 } catch (SQLGrammarException grammarException){
-                    eventBus.post(new MessageEvent("syntax problem","there was a problem with your query: " + query, JOptionPane.ERROR_MESSAGE));
+                    eventBus.post(new MessageEvent("syntax problem","there was a problem with your query: " + queryString, JOptionPane.ERROR_MESSAGE));
                 }
             }
         });
@@ -89,7 +87,7 @@ public class ManualQueryPanelController implements Controllable {
 
     @Override
     public void showView() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //do nothing
     }
 
     public ManualQueryPanel getManualQueryPanel() {

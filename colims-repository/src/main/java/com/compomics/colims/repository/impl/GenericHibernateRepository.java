@@ -1,31 +1,35 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.repository.GenericRepository;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Criteria;
-import org.hibernate.LockOptions;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Projections;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.compomics.colims.repository.GenericRepository;
-
 /**
- *
  * @author Niels Hulstaert
  */
 public class GenericHibernateRepository<T, ID extends Serializable> implements GenericRepository<T, ID> {
 
+    /**
+     * The entity class reference.
+     */
     private final Class<T> entityClass;
-    @Autowired
-    private SessionFactory sessionFactory;
+
+    /**
+     * The JPA entityManagerFactory instance.
+     */
+    @PersistenceContext(name = "myPU")
+    private EntityManager entityManager;
 
     public GenericHibernateRepository() {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -42,8 +46,8 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     /**
-     * Internal method to quickly create a {@link Criteria} for the
-     * {@link com.compomics.colims.model.DatabaseEntity} with optional {@link Criterion}s.
+     * Internal method to quickly create a {@link Criteria} for the {@link com.compomics.colims.model.DatabaseEntity}
+     * with optional {@link Criterion}s.
      *
      * @return the created criteria
      */
@@ -83,13 +87,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public List<T> findByNamedQueryAndNamedParams(final String queryName, final Map<String, ? extends Object> params) {
-        Query namedQuey = getCurrentSession().getNamedQuery(queryName);
+        Query namedQuery = getCurrentSession().getNamedQuery(queryName);
 
         for (final Map.Entry<String, ? extends Object> param : params.entrySet()) {
-            namedQuey.setParameter(param.getKey(), param.getValue());
+            namedQuery.setParameter(param.getKey(), param.getValue());
         }
 
-        return namedQuey.list();
+        return namedQuery.list();
     }
 
     @Override
@@ -128,12 +132,13 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
      * @return the current session
      */
     protected Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
+
+        return entityManager.unwrap(Session.class);
     }
 
     /**
      * Convenience method.
-     * 
+     *
      * @param criterion the Criterion instance
      * @return the found entity
      */
@@ -143,7 +148,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
-     * 
+     *
      * @param criterion the Criterion instance
      * @return the list of found entities
      */
@@ -153,36 +158,36 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     /**
      * Convenience method.
-     * 
+     *
      * @param firstResult the first result
-     * @param maxResults the maximum number of results
-     * @param criterion the Criterion instances
+     * @param maxResults  the maximum number of results
+     * @param criterion   the Criterion instances
      * @return the list of found entities
      */
     protected List<T> findByCriteria(final int firstResult,
-            final int maxResults, final Criterion... criterion) {
-        Criteria crit = createCriteria(criterion);
+                                     final int maxResults, final Criterion... criterion) {
+        Criteria criteria = createCriteria(criterion);
 
         if (firstResult > 0) {
-            crit.setFirstResult(firstResult);
+            criteria.setFirstResult(firstResult);
         }
 
         if (maxResults > 0) {
-            crit.setMaxResults(maxResults);
+            criteria.setMaxResults(maxResults);
         }
 
-        return crit.list();
+        return criteria.list();
     }
 
     /**
      * Convenience method.
-     * 
+     *
      * @param criterion the Criterion instance
      */
     protected long countByCriteria(final Criterion... criterion) {
-        Criteria crit = createCriteria(criterion);
-        crit.setProjection(Projections.rowCount());
-        return (Long) crit.uniqueResult();
+        Criteria criteria = createCriteria(criterion);
+        criteria.setProjection(Projections.rowCount());
+        return (Long) criteria.uniqueResult();
     }
 
 }
