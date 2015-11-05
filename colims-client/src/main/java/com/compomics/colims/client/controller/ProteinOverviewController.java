@@ -121,7 +121,7 @@ public class ProteinOverviewController implements Controllable {
         eventBus.register(this);
 
         //init views
-        proteinOverviewPanel = new ProteinOverviewPanel(mainController.getMainFrame(), this);
+        proteinOverviewPanel = new ProteinOverviewPanel();
         psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
         //disable protein group page buttons

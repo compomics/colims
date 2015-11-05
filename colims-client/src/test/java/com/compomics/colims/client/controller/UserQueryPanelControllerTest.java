@@ -22,19 +22,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Created by Davy Maddelein on 30/07/2015.
  */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-client-context.xml", "classpath:colims-client-test-context.xml"})
 @Rollback
 @Transactional
-public class ManualQueryPanelControllerTest extends TestCase {
+public class UserQueryPanelControllerTest extends TestCase {
 
     @Autowired
     private UserService userService;
     @Autowired
     private AuthenticationBean authenticationBean;
     @Autowired
-    private ManualQueryPanelController manualQueryPanelController;
+    private UserQueryController userQueryPanelController;
     @Autowired
     private EventBus eventBus;
 
@@ -55,20 +54,17 @@ public class ManualQueryPanelControllerTest extends TestCase {
 
         message = "";
 
-        manualQueryPanelController.init();
+        userQueryPanelController.init();
     }
 
     @Test
     public void testInit() throws Exception {
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
-
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getColumnCount(), is(9));
-
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getRowCount(), is(2));
-
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getModel().getValueAt(0, 3), is("admin"));
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getColumnCount(), is(9));
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getRowCount(), is(2));
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getModel().getValueAt(0, 3), is("admin"));
     }
 
     @Test
@@ -77,45 +73,41 @@ public class ManualQueryPanelControllerTest extends TestCase {
         userService.fetchAuthenticationRelations(user);
         authenticationBean.setCurrentUser(user);
 
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getRowCount(), is(2));
 
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getRowCount(), is(2));
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText(
+                "INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) "
+                + "VALUES (10,'2012-06-27 14:42:16','2012-06-27 14:49:46','new_user','admin11@test.com','admin1_first_name','admin1_last_name','new_user','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1)");
 
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText(
-                "INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) " +
-                        "VALUES (10,'2012-06-27 14:42:16','2012-06-27 14:49:46','new_user','admin11@test.com','admin1_first_name','admin1_last_name','new_user','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1)");
-
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
         assertThat(message, is("cannot execute any commands that are not selects"));
     }
 
     @Test
     public void testFaultyQuery() {
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * this is totally not correct syntax");
-
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText("select * this is totally not correct syntax");
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
         assertThat(message, is("there was a problem with your query: select * this is totally not correct syntax"));
     }
 
     @Test
     public void testSQLInjection() {
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText(
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText(
                 "SELECT * FROM colims_user WHERE username = ' '; DELETE FROM experiment WHERE 1 or username = ' '");
 
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getRowCount(), is(0));
-
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getRowCount(), is(0));
         assertThat(message, is("there was a problem with your query: SELECT * FROM colims_user WHERE username = ' '; DELETE FROM experiment WHERE 1 or username = ' '"));
 
-        manualQueryPanelController.getManualQueryPanel().getQueryInputArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText("select * from experiment");
+        userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
-        manualQueryPanelController.getManualQueryPanel().getExecuteQueryButton().doClick();
-
-        assertThat(manualQueryPanelController.getManualQueryPanel().getResultTable().getRowCount(), is(2));
+        assertThat(userQueryPanelController.getUserQueryPanel().getQueryResultTable().getRowCount(), is(2));
     }
 }

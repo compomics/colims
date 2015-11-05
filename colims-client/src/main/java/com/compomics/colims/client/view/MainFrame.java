@@ -35,6 +35,10 @@ public class MainFrame extends javax.swing.JFrame {
         return tasksManagementParentPanel;
     }
 
+    public JPanel getUserQueryParentPanel() {
+        return userQueryParentPanel;
+    }
+
     public JPanel getProteinsParentPanel() { return proteinsParentPanel; }
 
     public JMenuItem getUserManagementMenuItem() {
@@ -97,8 +101,9 @@ public class MainFrame extends javax.swing.JFrame {
         mainTabbedPane = new javax.swing.JTabbedPane();
         projectsManagementParentPanel = new javax.swing.JPanel();
         projectsOverviewParentPanel = new javax.swing.JPanel();
-        tasksManagementParentPanel = new javax.swing.JPanel();
         proteinsParentPanel = new javax.swing.JPanel();
+        userQueryParentPanel = new javax.swing.JPanel();
+        tasksManagementParentPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -131,12 +136,15 @@ public class MainFrame extends javax.swing.JFrame {
         mainTabbedPane.addTab("Overview", projectsOverviewParentPanel);
         projectsOverviewParentPanel.getAccessibleContext().setAccessibleName("");
 
+        proteinsParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Proteins", proteinsParentPanel);
+
+        userQueryParentPanel.setLayout(new java.awt.GridBagLayout());
+        mainTabbedPane.addTab("Queries", userQueryParentPanel);
+
         tasksManagementParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Tasks", tasksManagementParentPanel);
         tasksManagementParentPanel.getAccessibleContext().setAccessibleName("");
-
-        proteinsParentPanel.setLayout(new java.awt.GridBagLayout());
-        mainTabbedPane.addTab("Proteins", proteinsParentPanel);
 
         fileMenu.setText("File");
 
@@ -188,11 +196,11 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane)
+            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane)
+            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
         );
 
         pack();
@@ -216,6 +224,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JPanel tasksManagementParentPanel;
     private javax.swing.JMenuItem userManagementMenuItem;
+    private javax.swing.JPanel userQueryParentPanel;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 }

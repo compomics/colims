@@ -28,7 +28,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     /**
      * The JPA entityManagerFactory instance.
      */
-    @PersistenceContext(name = "myPU")
+    @PersistenceContext
     private EntityManager entityManager;
 
     public GenericHibernateRepository() {
@@ -132,7 +132,6 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
      * @return the current session
      */
     protected Session getCurrentSession() {
-
         return entityManager.unwrap(Session.class);
     }
 

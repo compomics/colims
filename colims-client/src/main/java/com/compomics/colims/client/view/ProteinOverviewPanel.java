@@ -5,8 +5,6 @@
  */
 package com.compomics.colims.client.view;
 
-import com.compomics.colims.client.controller.ProteinOverviewController;
-
 import javax.swing.*;
 
 /**
@@ -16,12 +14,9 @@ import javax.swing.*;
 public class ProteinOverviewPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ProteinOverviewPanel
+     * Creates new form ProteinOverviewPanel.
      */
-    public ProteinOverviewPanel(final JFrame mainFrame, final ProteinOverviewController proteinOverviewController) {
-        this.mainFrame = mainFrame;
-        this.proteinOverviewController = proteinOverviewController;
-
+    public ProteinOverviewPanel() {
         initComponents();
 
         proteinGroupTableScrollPane.getViewport().setOpaque(false);
@@ -88,7 +83,6 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     public JScrollPane getProteinGroupTableScrollPane() {
         return proteinGroupTableScrollPane;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -415,6 +409,4 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     private javax.swing.JPanel treeParentPanel;
     // End of variables declaration//GEN-END:variables
 
-    private JFrame mainFrame;
-    private ProteinOverviewController proteinOverviewController;
 }

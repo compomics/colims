@@ -1,4 +1,4 @@
-package com.compomics.colims.client.util;
+package com.compomics.colims.repository.hibernate;
 
 import org.hibernate.transform.BasicTransformerAdapter;
 

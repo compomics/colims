@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents an user entity in the database.
+ * This class represents a user entity in the database.
  *
  * @author Niels Hulstaert
  */

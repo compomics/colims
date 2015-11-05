@@ -34,8 +34,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -58,7 +56,8 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private AuthenticationBean authenticationBean;
     /**
-     * The project EventList that is used as table model in the project management and overview tabs.
+     * The project EventList that is used as table model in the project
+     * management and overview tabs.
      */
     private final EventList<Project> projects = new BasicEventList<>();
     //views
@@ -70,6 +69,10 @@ public class MainController implements Controllable, ActionListener {
     private ProjectManagementController projectManagementController;
     @Autowired
     private ProjectOverviewController projectOverviewController;
+    @Autowired
+    private ProteinOverviewController proteinOverviewController;
+    @Autowired
+    private UserQueryController userQueryController;
     @Autowired
     private TaskManagementController taskManagementController;
     @Autowired
@@ -84,8 +87,6 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     @Lazy
     private MaterialManagementController materialManagementController;
-    @Autowired
-    private ProteinOverviewController proteinOverviewController;
     //services
     @Autowired
     private UserService userService;
@@ -157,8 +158,9 @@ public class MainController implements Controllable, ActionListener {
         //init child controllers
         projectManagementController.init();
         projectOverviewController.init();
-        taskManagementController.init();
         proteinOverviewController.init();
+        userQueryController.init();
+        taskManagementController.init();
 
         //add panel components
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -168,8 +170,9 @@ public class MainController implements Controllable, ActionListener {
 
         mainFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         mainFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
-        mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
         mainFrame.getProteinsParentPanel().add(proteinOverviewController.getProteinOverviewPanel(), gridBagConstraints);
+        mainFrame.getUserQueryParentPanel().add(userQueryController.getUserQueryPanel(), gridBagConstraints);
+        mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
         //add action listeners
         //add menu item action listener
@@ -203,7 +206,7 @@ public class MainController implements Controllable, ActionListener {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
 
-                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     userLoginDialog.getLoginButton().doClick();
                 }
             }
@@ -280,7 +283,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * In case of a permission error, show permission error dialog with the error message.
+     * In case of a permission error, show permission error dialog with the
+     * error message.
      *
      * @param message the error message
      */
@@ -354,8 +358,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Check the user credentials and init the admin section if necessary. If unsuccessful, show a message dialog and
-     * reset the input fields.
+     * Check the user credentials and init the admin section if necessary. If
+     * unsuccessful, show a message dialog and reset the input fields.
      */
     private void onLogin() {
         //check if a user with given user name and password is found in the db
@@ -385,8 +389,8 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Shows a message dialog.
      *
-     * @param title       the dialog title
-     * @param message     the dialog message
+     * @param title the dialog title
+     * @param message the dialog message
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
@@ -408,7 +412,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Inits the admin section. This method is only called if the user is an admin user.
+     * Inits the admin section. This method is only called if the user is an
+     * admin user.
      */
     private void initAdminSection() {
         //add action listeners
