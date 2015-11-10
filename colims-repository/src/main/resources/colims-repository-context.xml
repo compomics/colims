@@ -25,6 +25,7 @@
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="colimsPersistenceUnit"/>
         <property name="dataSource" ref="colimsDataSource"/>
         <property name="packagesToScan" value="com.compomics.colims.model"/>
         <property name="mappingResources" value="Queries.hbm.xml"/>
@@ -40,8 +41,8 @@
                 <!-- this is required for postgresql -->
                 <prop key="hibernate.default_schema">${db.default_schema}</prop>
                 <!-- Uncommment only if the db schema needs to be created!! This will drop the schema!! -->
-                <!--                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>
-                <prop key="hibernate.hbm2ddl.import_files">import.sql</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.import_files">import.sql</prop>&ndash;&gt;-->
                 <prop key="hibernate.generate_statistics">false</prop>
                 <!--                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
                                 <prop key="hibernate.search.default.indexBase">${hibernate.search.index.directory}</prop>                                      -->

@@ -88,6 +88,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<org.springframework.version>3.2.5.RELEASE</org.springframework.version>-->
         <org.springframework.version>4.2.2.RELEASE</org.springframework.version>
+        <org.hibernate.version>5.0.3.Final</org.hibernate.version>
         <!--<sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>-->
         <!--<sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>-->
     </properties>
@@ -103,11 +104,23 @@
                     <version>2.5.1</version>
                     <inherited>true</inherited>
                     <configuration>
+                        <annotationProcessors>
+                            <annotationProcessor>
+                                org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor
+                            </annotationProcessor>
+                        </annotationProcessors>
                         <source>1.8</source>
                         <target>1.8</target>
                         <showDeprecation>true</showDeprecation>
                         <debug>true</debug>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>5.0.3.Final</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -260,22 +273,22 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.2.2.Final</version>
+                <version>${org.hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.0.3.Final</version>
+                <version>${org.hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
-                <version>5.0.3.Final</version>
+                <version>${org.hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>5.0.3.Final</version>
+                <version>${org.hibernate.version}</version>
             </dependency>
             <!--            <dependency>
                 <groupId>org.hibernate</groupId>
@@ -377,6 +390,11 @@
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>1.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>

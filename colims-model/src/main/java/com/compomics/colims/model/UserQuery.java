@@ -1,38 +1,77 @@
 package com.compomics.colims.model;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.jasypt.util.password.BasicPasswordEncryptor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This class represents a user entity in the database.
+ * This class represents a user query entity in the database.
  *
  * @author Niels Hulstaert
  */
-//@Table(name = "user_query")
-//@Entity
+@Table(name = "user_query")
+@Entity
 public class UserQuery extends AuditableDatabaseEntity {
 
-    private static final long serialVersionUID = -4086933454695081685L;
+    private static final long serialVersionUID = 6364010853576853557L;
 
     /**
      * The query String.
      */
     @Basic(optional = false)
+    @Length(max = 500, message = "Description must be less than {max} characters.")
     @Column(name = "query_string", nullable = false)
     private String queryString;
     /**
      * The first name.
      */
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert a first name.")
-    @Length(min = 3, max = 20, message = "First name must be between {min} and {max} characters.")
-    @Column(name = "first_name", nullable = false)
-    private Integer test;
+    @Basic(optional = true)
+    @Column(name = "usage_count", nullable = true)
+    private Integer usageCount;
+    /**
+     * The user that has executed this query.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "l_user_query_user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+
+    public Integer getUsageCount() {
+        return usageCount;
+    }
+
+    public void setUsageCOunt(Integer usageCOunt) {
+        this.usageCount = usageCount;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserQuery userQuery = (UserQuery) o;
+
+        return queryString.equals(userQuery.queryString);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return queryString.hashCode();
+    }
 }

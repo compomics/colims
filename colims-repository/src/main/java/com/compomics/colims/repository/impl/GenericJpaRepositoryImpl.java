@@ -1,14 +1,16 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.repository.GenericRepository;
+import com.compomics.colims.repository.GenericJpaRepository;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Projections;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * @author Niels Hulstaert
  */
-public class GenericHibernateRepository<T, ID extends Serializable> implements GenericRepository<T, ID> {
+public class GenericJpaRepositoryImpl<T, ID extends Serializable> implements GenericJpaRepository<T, ID> {
 
     /**
      * The entity class reference.
@@ -29,7 +31,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     @PersistenceContext
     private EntityManager entityManager;
 
-    public GenericHibernateRepository() {
+    public GenericJpaRepositoryImpl() {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
@@ -38,19 +40,23 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
      *
      * @param persistentClass the entity class reference
      */
-    public GenericHibernateRepository(final Class<T> persistentClass) {
+    public GenericJpaRepositoryImpl(final Class<T> persistentClass) {
         super();
         this.entityClass = persistentClass;
     }
 
     @Override
     public T findById(final ID id) {
-        return (T) getCurrentSession().get(entityClass, id);
+        return entityManager.find(entityClass, id);
     }
 
     @Override
     public List<T> findAll() {
-        return findByCriteria();
+        CriteriaQuery<T> criteriaQuery = getCriteriaQuery();
+        Root<T> root = criteriaQuery.from(entityClass);
+        CriteriaQuery<T> select = criteriaQuery.select(root);
+
+        return entityManager.createQuery(select).getResultList();
     }
 
     @Override
@@ -60,30 +66,36 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public long countAll() {
-        Criteria criteria = createCriteria();
-        criteria.setProjection(Projections.rowCount());
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(root));
 
-        return (Long) criteria.uniqueResult();
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 
     @Override
-    public void save(final T entity) {
-        getCurrentSession().persist(entity);
+    public void persist(final T entity) {
+        entityManager.persist(entity);
     }
 
     @Override
-    public void update(final T entity) {
-        getCurrentSession().update(entity);
+    public T merge(final T entity) {
+        return entityManager.merge(entity);
     }
 
     @Override
-    public void saveOrUpdate(final T entity) {
-        getCurrentSession().saveOrUpdate(entity);
+    public void remove(final T entity) {
+        entityManager.remove(entity);
     }
 
-    @Override
-    public void delete(final T entity) {
-        getCurrentSession().delete(entity);
+    /**
+     * Get the entity manager.
+     *
+     * @return the class
+     */
+    protected EntityManager getEntityManager() {
+        return entityManager;
     }
 
     /**
@@ -119,46 +131,11 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     /**
-     * Convenience method.
+     * Convenience method for retrieving a type safe CriteriaQuery.
      *
-     * @param criterion the Criterion instance
-     * @return the found entity
+     * @return the CriteriaQuery instance
      */
-    protected T findUniqueByCriteria(final Criterion... criterion) {
-        return (T) createCriteria(criterion).uniqueResult();
+    protected CriteriaQuery<T> getCriteriaQuery() {
+        return entityManager.getCriteriaBuilder().createQuery(entityClass);
     }
-
-    /**
-     * Convenience method.
-     *
-     * @param criterion the Criterion instance
-     * @return the list of found entities
-     */
-    protected List<T> findByCriteria(final Criterion... criterion) {
-        return findByCriteria(-1, -1, criterion);
-    }
-
-    /**
-     * Convenience method.
-     *
-     * @param firstResult the first result
-     * @param maxResults  the maximum number of results
-     * @param criterion   the Criterion instances
-     * @return the list of found entities
-     */
-    protected List<T> findByCriteria(final int firstResult,
-                                     final int maxResults, final Criterion... criterion) {
-        Criteria criteria = createCriteria(criterion);
-
-        if (firstResult > 0) {
-            criteria.setFirstResult(firstResult);
-        }
-
-        if (maxResults > 0) {
-            criteria.setMaxResults(maxResults);
-        }
-
-        return criteria.list();
-    }
-
 }

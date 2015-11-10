@@ -71,6 +71,11 @@ public class User extends AuditableDatabaseEntity {
     @OneToMany(mappedBy = "owner")
     private List<Project> ownedProjects = new ArrayList<>();
     /**
+     * The user queries.
+     */
+    @OneToMany(mappedBy = "user")
+    private List<UserQuery> userQueries = new ArrayList<>();
+    /**
      * The list of projects associated with this user.
      */
     @ManyToMany(mappedBy = "users")
@@ -165,6 +170,14 @@ public class User extends AuditableDatabaseEntity {
 
     public void setOwnedProjects(List<Project> ownedProjects) {
         this.ownedProjects = ownedProjects;
+    }
+
+    public List<UserQuery> getUserQueries() {
+        return userQueries;
+    }
+
+    public void setUserQueries(List<UserQuery> userQueries) {
+        this.userQueries = userQueries;
     }
 
     public List<Project> getProjects() {

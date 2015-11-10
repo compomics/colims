@@ -12,7 +12,7 @@
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="myPU"/>
+        <property name="persistenceUnitName" value="colimsPersistenceUnit"/>
         <property name="dataSource" ref="colimsDataSource"/>
         <property name="packagesToScan" value="com.compomics.colims.model"/>
         <property name="mappingResources" value="Queries.hbm.xml"/>

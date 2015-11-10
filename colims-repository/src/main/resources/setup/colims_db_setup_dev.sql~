@@ -2,7 +2,7 @@
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
-        modification_datQe datetime not null,
+        modification_date datetime not null,
         user_name varchar(255) not null,
         name varchar(100) not null,
         start_date datetime,
