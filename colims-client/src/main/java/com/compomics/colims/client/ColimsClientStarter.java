@@ -1,21 +1,15 @@
 package com.compomics.colims.client;
 
-import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.controller.DatabaseLoginController;
+import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.Painter;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import org.apache.log4j.Logger;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.awt.*;
 
 /**
  * This class starts the client application.
@@ -76,13 +70,9 @@ public final class ColimsClientStarter {
         UIManager.getLookAndFeelDefaults().put("FileChooser.background", Color.WHITE);
         //set background color for JFileChooser instances
         UIManager.getLookAndFeelDefaults().put("FileChooser[Enabled].backgroundPainter",
-                new Painter<JFileChooser>() {
-                    @Override
-                    public void paint(final Graphics2D g, final JFileChooser object, final int width, final int height) {
-                        g.setColor(Color.WHITE);
-                        g.draw(object.getBounds());
-
-                    }
+                (Painter<JFileChooser>) (g, object, width, height) -> {
+                    g.setColor(Color.WHITE);
+                    g.draw(object.getBounds());
                 });
 
         ColimsClientStarter colimsClientStarter = new ColimsClientStarter(new String[]{"colims-client-context.xml"});

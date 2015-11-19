@@ -9,7 +9,7 @@ import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 
 /**
  * This custom event listener listens to update events. For all entities that
@@ -30,7 +30,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
      * The authentication bean with the logged in user and his/her permissions.
      */
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
 
     @Override
     public void onSaveOrUpdate(final SaveOrUpdateEvent event) {
@@ -40,6 +40,8 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
 
         super.onSaveOrUpdate(event);
     }
+
+
 
     /**
      * This method updates the user name, creation and modification date fields
@@ -52,7 +54,7 @@ public class CustomUpdateEventListener extends DefaultUpdateEventListener {
             AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;
 
             //set the user name
-            entity.setUserName(authenticationBean.getCurrentUser().getName());
+            entity.setUserName(userBean.getCurrentUser().getName());
 
             if (entity.getCreationDate() == null) {
                 entity.setCreationDate(new Date());

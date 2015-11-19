@@ -3,7 +3,7 @@ package com.compomics.colims.distributed.io.peptideshaker;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class PeptideShakerImporterIT {
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     @Autowired
     private UserService userService;
     @Autowired
@@ -54,7 +54,7 @@ public class PeptideShakerImporterIT {
     public void setup() throws IOException, XmlPullParserException {
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
-        authenticationBean.setCurrentUser(adminUser);
+        userBean.setCurrentUser(adminUser);
     }
 
     /**

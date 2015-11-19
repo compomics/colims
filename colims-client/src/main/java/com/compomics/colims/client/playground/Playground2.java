@@ -14,6 +14,8 @@ import javax.management.openmbean.OpenDataException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 /**
  * @author Niels Hulstaert
@@ -21,9 +23,18 @@ import java.util.List;
 public class Playground2 {
 
     public static void main(String[] args) throws IOException, MappingException, SQLException, ClassNotFoundException, InterruptedException, IllegalArgumentException, MzMLUnmarshallerException, XmlPullParserException, ArchiveException, JMSException, OpenDataException {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-client-context.xml");
 
-        ModificationService modificationService = applicationContext.getBean("modificationService", ModificationService.class);
-        List<Modification> all = modificationService.findAll();
+        UIDefaults lookAndFeelDefaults = UIManager.getLookAndFeelDefaults();
+        Object get = lookAndFeelDefaults.get("[Selected].background");
+
+        for(Object testing : lookAndFeelDefaults.keySet()){
+            String teString = testing.toString();
+            if(teString.contains("textHighlight")){
+                System.out.println(teString);
+                System.out.println("value: " + lookAndFeelDefaults.get(teString));
+            }
+        }
+
+        System.out.println("test");
     }
 }

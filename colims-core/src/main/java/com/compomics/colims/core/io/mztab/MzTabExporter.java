@@ -5,9 +5,9 @@
  */
 package com.compomics.colims.core.io.mztab;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -171,7 +171,7 @@ public class MzTabExporter {
     private List<MzTabParam> parseJsonNode(JsonNode jsonNode) throws IOException {
         List<MzTabParam> mzTabParams = new ArrayList<>();
 
-        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> entry = fields.next();
 
@@ -180,9 +180,9 @@ public class MzTabExporter {
             JsonNode nameNode = entry.getValue().get("name");
             mzTabParam.setUserFriendlyName(nameNode.get(JSON_NAME).asText());
 
-            Iterator<JsonNode> optionElements = entry.getValue().get("values").getElements();
+            Iterator<JsonNode> optionElements = entry.getValue().get("values").elements();
             while (optionElements.hasNext()) {
-                MzTabParamOption mzTabParamOption = mapper.readValue(optionElements.next(), MzTabParamOption.class);
+                MzTabParamOption mzTabParamOption = mapper.treeToValue(optionElements.next(), MzTabParamOption.class);
                 mzTabParam.addOption(mzTabParamOption);
             }
 

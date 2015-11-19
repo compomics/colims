@@ -2,7 +2,7 @@ package com.compomics.colims.distributed;
 
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -37,18 +37,18 @@ public final class ColimsDistributedStarter {
 
     /**
      * Init the application context and set the default distributed user in the
-     * AuthenticationBean .
+     * UserBean .
      */
     private static void launch() {
         try {
             ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
             UserService userService = applicationContext.getBean("userService", UserService.class);
-            AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
+            UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
 
             //set the default distributed user in the authentication bean
             User distributedUser = userService.findByName("distributed");
             userService.fetchAuthenticationRelations(distributedUser);
-            authenticationBean.setCurrentUser(distributedUser);
+            userBean.setCurrentUser(distributedUser);
         } catch (CannotCreateTransactionException ex) {
             LOGGER.error(ex.getMessage(), ex);
             System.exit(1);

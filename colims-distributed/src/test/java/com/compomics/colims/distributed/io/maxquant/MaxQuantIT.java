@@ -6,7 +6,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,13 +48,13 @@ public class MaxQuantIT {
     @Autowired
     MaxQuantImporter maxQuantImporter;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
 
     @Before
     public void setup() throws IOException, XmlPullParserException {
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
-        authenticationBean.setCurrentUser(adminUser);
+        userBean.setCurrentUser(adminUser);
     }
 
     /**

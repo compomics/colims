@@ -22,7 +22,7 @@ import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -50,14 +50,15 @@ public class MainController implements Controllable, ActionListener {
      */
     private static final Logger LOGGER = Logger.getLogger(MainController.class);
 
+    private final GridBagConstraints gridBagConstraints;
+
     //model
     @Value("${colims-client.version}")
     private String version = "unknown";
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     /**
-     * The project EventList that is used as table model in the project
-     * management and overview tabs.
+     * The project EventList that is used as table model in the project management and overview tabs.
      */
     private final EventList<Project> projects = new BasicEventList<>();
     //views
@@ -96,6 +97,16 @@ public class MainController implements Controllable, ActionListener {
     private EventBus eventBus;
     @Autowired
     private QueueManager queueManager;
+
+    /**
+     * No-arg constructor.
+     */
+    public MainController() {
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+    }
 
     /**
      * Get the main view of this controller.
@@ -159,19 +170,12 @@ public class MainController implements Controllable, ActionListener {
         projectManagementController.init();
         projectOverviewController.init();
         proteinOverviewController.init();
-        userQueryController.init();
         taskManagementController.init();
 
         //add panel components
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.fill = GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-
         mainFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
         mainFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
         mainFrame.getProteinsParentPanel().add(proteinOverviewController.getProteinOverviewPanel(), gridBagConstraints);
-        mainFrame.getUserQueryParentPanel().add(userQueryController.getUserQueryPanel(), gridBagConstraints);
         mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
         //add action listeners
@@ -212,11 +216,11 @@ public class MainController implements Controllable, ActionListener {
             }
         });
 
-        //while developing, set a default user in the AuthenticationBean
+        //while developing, set a default user in the userBean
 //        User currentUser = userService.findByName("admin");
 //        userService.fetchAuthenticationRelations(currentUser);
-//        authenticationBean.setCurrentUser(currentUser);
-//        if (authenticationBean.isAdmin()) {
+//        userBean.setCurrentUser(currentUser);
+//        if (userBean.isAdmin()) {
 //            initAdminSection();
 //        } else {
 //            //disable admin menu
@@ -283,8 +287,7 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * In case of a permission error, show permission error dialog with the
-     * error message.
+     * In case of a permission error, show permission error dialog with the error message.
      *
      * @param message the error message
      */
@@ -358,8 +361,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Check the user credentials and init the admin section if necessary. If
-     * unsuccessful, show a message dialog and reset the input fields.
+     * Check the user credentials and init the admin section if necessary. If unsuccessful, show a message dialog and
+     * reset the input fields.
      */
     private void onLogin() {
         //check if a user with given user name and password is found in the db
@@ -369,11 +372,15 @@ public class MainController implements Controllable, ActionListener {
             LOGGER.info("User " + userLoginDialog.getUserNameTextField().getText() + " successfully logged in.");
             userLoginDialog.dispose();
 
-            //set current user in authentication bean
-            userService.fetchAuthenticationRelations(currentUser);
-            authenticationBean.setCurrentUser(currentUser);
+            //set current user in authentication bean after fetching the authentication relations
+            User user = userService.fetchAuthenticationRelations(currentUser);
+            userBean.setCurrentUser(user);
 
-            if (authenticationBean.isAdmin()) {
+            //init this panel here because it depends on the userBean
+            userQueryController.init();
+            mainFrame.getUserQueryParentPanel().add(userQueryController.getUserQueryPanel(), gridBagConstraints);
+
+            if (userBean.isAdmin()) {
                 initAdminSection();
             } else {
                 //disable admin menu
@@ -389,8 +396,8 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Shows a message dialog.
      *
-     * @param title the dialog title
-     * @param message the dialog message
+     * @param title       the dialog title
+     * @param message     the dialog message
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
@@ -412,8 +419,7 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Inits the admin section. This method is only called if the user is an
-     * admin user.
+     * Inits the admin section. This method is only called if the user is an admin user.
      */
     private void initAdminSection() {
         //add action listeners

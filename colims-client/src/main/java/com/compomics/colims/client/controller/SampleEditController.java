@@ -32,7 +32,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -75,7 +75,7 @@ public class SampleEditController implements Controllable {
     private Sample sampleToEdit;
     private List<Material> materials;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
@@ -406,13 +406,13 @@ public class SampleEditController implements Controllable {
         boolean deleteConfirmation = false;
 
         //check delete permissions
-        if (authenticationBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
+        if (userBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
             int option = JOptionPane.showConfirmDialog(mainController.getMainFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
                     + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
                 if (queueManager.isReachable()) {
-                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), authenticationBean.getCurrentUser().getId());
+                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), userBean.getCurrentUser().getId());
                     try {
                         dbTaskProducer.sendDbTask(deleteDbTask);
                         deleteConfirmation = true;

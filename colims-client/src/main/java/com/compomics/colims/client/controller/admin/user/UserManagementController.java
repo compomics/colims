@@ -17,7 +17,7 @@ import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Institution;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.comparator.GroupNameComparator;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -76,7 +76,7 @@ public class UserManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     //services
     @Autowired
     private UserService userService;
@@ -174,7 +174,7 @@ public class UserManagementController implements Controllable {
 
                         //check if the selected user is the current user.
                         //If so, disable the delete button
-                        if (authenticationBean.getCurrentUser().equals(selectedUser)) {
+                        if (userBean.getCurrentUser().equals(selectedUser)) {
                             userManagementDialog.getDeleteUserButton().setEnabled(false);
                         } else {
                             userManagementDialog.getDeleteUserButton().setEnabled(true);
@@ -218,7 +218,7 @@ public class UserManagementController implements Controllable {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 User newUser = new User("name");
-                newUser.setUserName(authenticationBean.getCurrentUser().getName());
+                newUser.setUserName(userBean.getCurrentUser().getName());
                 userBindingList.add(newUser);
                 userManagementDialog.getUserNameTextField().setEnabled(true);
                 userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);

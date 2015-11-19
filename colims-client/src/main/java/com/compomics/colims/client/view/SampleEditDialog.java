@@ -4,15 +4,13 @@ import com.compomics.colims.client.compoment.DualList;
 
 import javax.swing.*;
 
-import org.jmol.export.dialog.FileChooser;
-
 /**
  *
  * @author Niels Hulstaert
  */
 public class SampleEditDialog extends javax.swing.JDialog {
 
-    private final JFileChooser exportDirectoryChooser = new FileChooser();
+    private final JFileChooser exportDirectoryChooser = new JFileChooser();
 
     /**
      * Dialog constructor.

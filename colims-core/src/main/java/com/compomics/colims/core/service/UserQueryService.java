@@ -1,5 +1,6 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserQuery;
 
 import java.util.LinkedHashMap;
@@ -10,26 +11,24 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public interface UserQueryService extends GenericService<UserQuery, Long> {
+public interface UserQueryService extends GenericJpaService<UserQuery, Long> {
 
     /**
-     * Execute the given user query string and return the query results.
+     * Execute the given user query string and return the query results. Checks if the query was already saved for the
+     * given user; update the usage count if true, persist the query if false.
      *
+     * @param user        the current user
      * @param queryString the user query String
      * @return the query results
      */
-    List<LinkedHashMap<String, Object>> executeQuery(String queryString);
+    List<LinkedHashMap<String, Object>> executeUserQuery(User user, String queryString);
 
     /**
-     * Look in the database if the given query was already stored for the given user. Returns null if nothing was
-     * found.
+     * Get all the queries for the given user. They are sorted on usage count.
      *
      * @param userId the user ID
-     * @param queryString the query String
-     * @return the found UserQuery instance
+     * @return the found UserQuery instances
      */
-    UserQuery findByUserIdAndQueryString(Long userId, String queryString);
-
-    UserQuery merge(UserQuery userQuery);
+    List<UserQuery> findByUserId(Long userId);
 
 }

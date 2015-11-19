@@ -8,8 +8,8 @@ import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.AnalyticalRun;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 

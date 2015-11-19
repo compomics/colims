@@ -4,7 +4,7 @@
     <artifactId>colims-distributed</artifactId>
     <version>1.3.2-SNAPSHOT</version>
     <packaging>jar</packaging>
-  
+
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
@@ -16,9 +16,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <build>
-        
+
         <!-- Copy the resources required during building -->
         <resources>
             <resource>
@@ -40,10 +40,10 @@
                     <exclude>colims-distributed-context.xml</exclude>
                 </excludes>
             </resource>
-        </resources>                
-        
+        </resources>
+
         <plugins>
-             <!-- Resources plugin -->
+            <!-- Resources plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -61,12 +61,12 @@
                             </outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources/config</directory> 
-                                    <filtering>true</filtering>                                   
+                                    <directory>src/main/resources/config</directory>
+                                    <filtering>true</filtering>
                                 </resource>
                             </resources>
                         </configuration>
-                    </execution>                   
+                    </execution>
                     <execution>
                         <id>copy-package-license</id>
                         <phase>process-resources</phase>
@@ -94,7 +94,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Dependency plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -117,7 +117,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Jar plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -129,70 +129,70 @@
                             <mainClass>com.compomics.colims.distributed.ColimsDistributedStarter</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                        </manifest>              
+                        </manifest>
                     </archive>
                     <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}
                     </outputDirectory>
                 </configuration>
             </plugin>
-            
-<!--            <plugin>
-                <groupId>org.apache.activemq.tooling</groupId>
-                <artifactId>activemq-maven-plugin</artifactId>
-                <version>5.9.0</version>
-                <configuration>
-                    <configUri>xbean:file:src/main/resources/conf/activemq.xml</configUri>
-                    <fork>false</fork>
-                    <systemProperties>
-                        <property>
-                            <name>javax.net.ssl.keyStorePassword</name>
-                            <value>password</value>
-                        </property>
-                        <property>
-                            <name>org.apache.activemq.default.directory.prefix</name>
-                            <value>./target/</value>
-                        </property>
-                    </systemProperties>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-spring</artifactId>
-                        <version>5.9.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty-xbean</artifactId>
-                        <version>6.1.25</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.springframework</groupId>
-                                <artifactId>spring</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.eclipse.jetty.aggregate</groupId>
-                        <artifactId>jetty-all-server</artifactId>
-                        <version>7.6.7.v20120910</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-leveldb-store</artifactId>
-                        <version>5.8.0</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>start-activemq</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>preAA-integration-test</phase>
-                    </execution>
-                </executions>
-            </plugin>-->                                             
-            
+
+            <!--            <plugin>
+                            <groupId>org.apache.activemq.tooling</groupId>
+                            <artifactId>activemq-maven-plugin</artifactId>
+                            <version>5.9.0</version>
+                            <configuration>
+                                <configUri>xbean:file:src/main/resources/conf/activemq.xml</configUri>
+                                <fork>false</fork>
+                                <systemProperties>
+                                    <property>
+                                        <name>javax.net.ssl.keyStorePassword</name>
+                                        <value>password</value>
+                                    </property>
+                                    <property>
+                                        <name>org.apache.activemq.default.directory.prefix</name>
+                                        <value>./target/</value>
+                                    </property>
+                                </systemProperties>
+                            </configuration>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.apache.activemq</groupId>
+                                    <artifactId>activemq-spring</artifactId>
+                                    <version>5.9.0</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.mortbay.jetty</groupId>
+                                    <artifactId>jetty-xbean</artifactId>
+                                    <version>6.1.25</version>
+                                    <exclusions>
+                                        <exclusion>
+                                            <groupId>org.springframework</groupId>
+                                            <artifactId>spring</artifactId>
+                                        </exclusion>
+                                    </exclusions>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.eclipse.jetty.aggregate</groupId>
+                                    <artifactId>jetty-all-server</artifactId>
+                                    <version>7.6.7.v20120910</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.apache.activemq</groupId>
+                                    <artifactId>activemq-leveldb-store</artifactId>
+                                    <version>5.8.0</version>
+                                </dependency>
+                            </dependencies>
+                            <executions>
+                                <execution>
+                                    <id>start-activemq</id>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <phase>preAA-integration-test</phase>
+                                </execution>
+                            </executions>
+                        </plugin>-->
+
             <!--             Pack sources on build 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -251,42 +251,176 @@
     </build>
 
     <dependencies>
-        <!-- colims dependencies -->        
+        <!-- colims dependencies -->
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-core</artifactId>
-        </dependency>                                                                                                                 
-        
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-xjc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>psidev.psi.tools</groupId>
+                    <artifactId>xxindex</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- compomics dependencies -->
+        <dependency>
+            <groupId>com.compomics</groupId>
+            <artifactId>utilities</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-xjc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xpp3</groupId>
+                    <artifactId>xpp3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>psidev.psi.tools</groupId>
+                    <artifactId>xxindex</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jgoodies</groupId>
+                    <artifactId>looks</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.isas.peptideshaker</groupId>
+            <artifactId>PeptideShaker</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xpp3</groupId>
+                    <artifactId>xpp3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>psidev.psi.tools</groupId>
+                    <artifactId>xxindex</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jgoodies</groupId>
+                    <artifactId>looks</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
         </dependency>
-        
-        <!-- Active MQ -->                
+
+        <!-- Active MQ -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-spring</artifactId>           
+            <artifactId>activemq-spring</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>3.3.0.Final</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>5.0.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.4c</version>
         </dependency>
     </dependencies>
 </project>

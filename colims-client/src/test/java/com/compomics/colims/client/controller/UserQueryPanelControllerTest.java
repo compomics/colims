@@ -3,7 +3,7 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import junit.framework.TestCase;
@@ -31,7 +31,7 @@ public class UserQueryPanelControllerTest extends TestCase {
     @Autowired
     private UserService userService;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     @Autowired
     private UserQueryController userQueryPanelController;
     @Autowired
@@ -50,7 +50,7 @@ public class UserQueryPanelControllerTest extends TestCase {
 
         User user = userService.findByName("admin");
         userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
+        userBean.setCurrentUser(user);
 
         message = "";
 
@@ -71,7 +71,7 @@ public class UserQueryPanelControllerTest extends TestCase {
     public void testPermissionNotAllowed() {
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
+        userBean.setCurrentUser(user);
 
         userQueryPanelController.getUserQueryPanel().getQueryInputTextArea().setText("select * from experiment");
         userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();

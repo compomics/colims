@@ -19,7 +19,7 @@ import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -88,7 +88,7 @@ public class AnalyticalRunSetupController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
     @Autowired
     private DbTaskProducer storageTaskProducer;
     @Autowired
@@ -214,7 +214,7 @@ public class AnalyticalRunSetupController implements Controllable {
     @Override
     public void showView() {
         //check if the user has the rights to add a run
-        if (authenticationBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
+        if (userBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
             //check connection to distributed queues
             if (queueManager.isReachable()) {
                 //reset instrument selection
@@ -238,7 +238,7 @@ public class AnalyticalRunSetupController implements Controllable {
                 eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
             }
         } else {
-            eventBus.post(new MessageEvent("Authorization problem", "User " + authenticationBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
+            eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
 
@@ -261,7 +261,7 @@ public class AnalyticalRunSetupController implements Controllable {
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunSetupDialog.getStorageDescriptionTextField().getText();
-        User currentUser = authenticationBean.getCurrentUser();
+        User currentUser = userBean.getCurrentUser();
         Date startDate = analyticalRunSetupDialog.getDateTimePicker().getDate();
         Sample sample = projectManagementController.getSelectedSample();
 

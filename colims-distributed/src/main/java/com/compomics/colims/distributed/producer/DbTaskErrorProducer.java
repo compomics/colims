@@ -1,8 +1,8 @@
 package com.compomics.colims.distributed.producer;
 
 import com.compomics.colims.core.distributed.model.DbTaskError;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;

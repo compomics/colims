@@ -6,7 +6,7 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -24,7 +24,7 @@ public class Playground {
         UserService userService = applicationContext.getBean("userService", UserService.class);
 //        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
 //        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);
-        AuthenticationBean authenticationBean = applicationContext.getBean("authenticationBean", AuthenticationBean.class);
+        UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
 //        UtilitiesProteinMapper utilitiesProteinMapper = applicationContext.getBean("utilitiesProteinMapper", UtilitiesProteinMapper.class);
 //        UtilitiesPeptideMapper utilitiesPeptideMapper = applicationContext.getBean("utilitiesPeptideMapper", UtilitiesPeptideMapper.class);
 //        PeptideService peptideService = applicationContext.getBean("peptideService", PeptideService.class);
@@ -40,7 +40,7 @@ public class Playground {
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin1");
         userService.fetchAuthenticationRelations(adminUser);
-        authenticationBean.setCurrentUser(adminUser);
+        userBean.setCurrentUser(adminUser);
 
 
 
@@ -68,7 +68,7 @@ public class Playground {
 //            //set modification and creation date
 //            analyticalRun.setCreationDate(new Date());
 //            analyticalRun.setModificationDate(new Date());
-//            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
+//            analyticalRun.setUserName(userBean.getCurrentUser().getName());
 //            analyticalRun.setSample(sample);
 //            analyticalRunService.saveOrUpdate(analyticalRun);
 //        }
@@ -91,7 +91,7 @@ public class Playground {
 //            //set modification and creation date
 //            analyticalRun.setCreationDate(new Date());
 //            analyticalRun.setModificationDate(new Date());
-//            analyticalRun.setUserName(authenticationBean.getCurrentUser().getName());
+//            analyticalRun.setUserName(userBean.getCurrentUser().getName());
 //            analyticalRun.setSample(sample);
 //            analyticalRunService.saveOrUpdate(analyticalRun);
 //        }
@@ -103,7 +103,7 @@ public class Playground {
 //        //set admin user in authentication bean
 //        User adminUser = userService.findByName("admin1");
 //        userService.fetchAuthenticationRelations(adminUser);
-//        authenticationBean.setCurrentUser(adminUser);
+//        userBean.setCurrentUser(adminUser);
 //
 //        //create ModificationMatches
 //        ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();

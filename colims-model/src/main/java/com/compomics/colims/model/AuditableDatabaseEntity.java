@@ -1,12 +1,10 @@
 package com.compomics.colims.model;
 
+import com.compomics.colims.model.audit.AuditableDatabaseEntityListener;
+
 import java.util.Date;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  * This abstract class is subclassed by all database entities that are
@@ -16,6 +14,7 @@ import javax.persistence.TemporalType;
  * @author Niels Hulstaert
  */
 @MappedSuperclass
+@EntityListeners(AuditableDatabaseEntityListener.class)
 public abstract class AuditableDatabaseEntity extends DatabaseEntity {
 
     private static final long serialVersionUID = -6390297193482831504L;

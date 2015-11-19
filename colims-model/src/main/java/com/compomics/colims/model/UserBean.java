@@ -1,9 +1,5 @@
-package com.compomics.colims.repository;
+package com.compomics.colims.model;
 
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
-import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.model.enums.DefaultPermission;
 import org.springframework.stereotype.Component;
@@ -16,8 +12,8 @@ import java.util.Map;
  *
  * @author Niels Hulstaert
  */
-@Component("authenticationBean")
-public class AuthenticationBean {
+@Component("userBean")
+public class UserBean {
 
     /**
      * The logged in user.
@@ -31,7 +27,7 @@ public class AuthenticationBean {
     /**
      * No-arg constructor.
      */
-    public AuthenticationBean() {
+    public UserBean() {
         //set a default user
         currentUser = new User("N/A");
 

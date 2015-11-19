@@ -6,10 +6,10 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -650,7 +650,7 @@ public class MzIdentMLExporter {
         } else {
             try {
                 for (JsonNode node : listNode) {
-                    data.add(mapper.readValue(node, type));
+                    data.add(mapper.treeToValue(node, type));
                 }
             } catch (IOException e) {
                 LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
@@ -675,7 +675,7 @@ public class MzIdentMLExporter {
         List<T> item = new ArrayList<>();
 
         try {
-            item.add(mapper.readValue(node, type));
+            item.add(mapper.treeToValue(node, type));
         } catch (IOException e) {
             LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
         }

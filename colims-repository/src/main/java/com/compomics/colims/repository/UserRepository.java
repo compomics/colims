@@ -29,4 +29,5 @@ public interface UserRepository extends GenericRepository<User, Long> {
      */
     List<User> findAllOrderedByUserName();
 
+    User merge(User user);
 }

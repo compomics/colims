@@ -96,6 +96,15 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     /**
+     * Get the Class of the entity.
+     *
+     * @return the class
+     */
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    /**
      * Internal method to quickly create a {@link Criteria} for the {@link com.compomics.colims.model.DatabaseEntity}
      * with optional {@link Criterion}s.
      *

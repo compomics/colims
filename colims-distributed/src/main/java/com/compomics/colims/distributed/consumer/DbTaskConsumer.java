@@ -6,8 +6,8 @@ import com.compomics.colims.core.distributed.model.Notification;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.compomics.colims.distributed.producer.NotificationProducer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

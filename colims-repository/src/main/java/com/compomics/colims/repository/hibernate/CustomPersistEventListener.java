@@ -10,7 +10,7 @@ import org.hibernate.event.spi.PersistEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 
 /**
  * This custom event listener listens to persist events. For all entities that
@@ -32,7 +32,7 @@ public class CustomPersistEventListener implements PersistEventListener {
      * The authentication bean with the logged in user and his/her permissions.
      */
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
 
     @Override
     public void onPersist(final PersistEvent event) {
@@ -59,7 +59,7 @@ public class CustomPersistEventListener implements PersistEventListener {
             AuditableDatabaseEntity entity = (AuditableDatabaseEntity) object;
 
             //set the user name
-            entity.setUserName(authenticationBean.getCurrentUser().getName());
+            entity.setUserName(userBean.getCurrentUser().getName());
 
             // set the creation date
             if (entity.getCreationDate() == null) {

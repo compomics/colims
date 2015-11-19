@@ -29,4 +29,8 @@ public class UserHibernateRepository extends GenericHibernateRepository<User, Lo
         return createCriteria().addOrder(Order.asc("name")).list();
     }
 
+    @Override
+    public User merge(User user) {
+        return getEntityManager().merge(user);
+    }
 }

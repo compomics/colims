@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -29,7 +31,29 @@ public class UserQueryRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     public void testFindByUserIdAndQueryString() {
         UserQuery userQuery = userQueryRepository.findByUserIdAndQueryString(1L, "test user query string");
 
-        Assert.assertNull(userQuery);
+        Assert.assertNotNull(userQuery);
+    }
+
+    @Test
+    public void testFindByUserId() {
+        List<UserQuery> userQueries = userQueryRepository.findByUserId(1L);
+
+        Assert.assertFalse(userQueries.isEmpty());
+        Assert.assertEquals(3, userQueries.get(0).getUsageCount().intValue());
+    }
+
+    @Test
+    public void testCountByUserId() {
+        Long userQueryCount = userQueryRepository.countByUserId(1L);
+
+        Assert.assertEquals(2L, userQueryCount.longValue());
+    }
+
+    @Test
+    public void testExecuteUserQuery() {
+        List<LinkedHashMap<String, Object>> results = userQueryRepository.executeUserQuery("select * from colims_user", 300);
+
+        Assert.assertEquals(4, results.size());
     }
 
 }

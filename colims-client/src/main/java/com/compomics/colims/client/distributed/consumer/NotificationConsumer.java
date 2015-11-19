@@ -2,9 +2,9 @@ package com.compomics.colims.client.distributed.consumer;
 
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.core.distributed.model.Notification;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

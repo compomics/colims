@@ -55,9 +55,11 @@ public class UserQueryPanel extends javax.swing.JPanel {
         queryResultTableScrollPane = new javax.swing.JScrollPane();
         queryResultTable = new javax.swing.JTable();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.GridBagLayout());
 
         queryInputParentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Input"));
+        queryInputParentPanel.setOpaque(false);
         queryInputParentPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         queryInputTextArea.setColumns(20);
@@ -102,6 +104,7 @@ public class UserQueryPanel extends javax.swing.JPanel {
         add(queryInputParentPanel, gridBagConstraints);
 
         queryResultParentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Result"));
+        queryResultParentPanel.setOpaque(false);
         queryResultParentPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
         queryResultTable.setModel(new javax.swing.table.DefaultTableModel(

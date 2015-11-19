@@ -3,7 +3,7 @@ package com.compomics.colims.core.authorization;
 
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
-import com.compomics.colims.repository.AuthenticationBean;
+import com.compomics.colims.model.UserBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ public class AuthorizationInterceptorTest {
     @Autowired
     private UserService userService;
     @Autowired
-    private AuthenticationBean authenticationBean;
+    private UserBean userBean;
 
     @Test(expected = PermissionException.class)
     public void testBeforeSaveAdvice() {
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
+        userBean.setCurrentUser(user);
 
         User newUser = new User("testUser");
         newUser.setEmail("test@test");
@@ -45,7 +45,7 @@ public class AuthorizationInterceptorTest {
     public void testBeforeUpdateAdvice() {
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
+        userBean.setCurrentUser(user);
 
         User userToUpdate = userService.findByName("lab1");
         userToUpdate.setEmail("test@test");
@@ -57,7 +57,7 @@ public class AuthorizationInterceptorTest {
     public void testBeforeDeleteAdvice() {
         User user = userService.findByName("collab1");
         userService.fetchAuthenticationRelations(user);
-        authenticationBean.setCurrentUser(user);
+        userBean.setCurrentUser(user);
 
         User userToDelete = userService.findByName("lab1");
 

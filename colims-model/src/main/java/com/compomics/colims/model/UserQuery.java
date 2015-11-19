@@ -47,7 +47,7 @@ public class UserQuery extends AuditableDatabaseEntity {
         return usageCount;
     }
 
-    public void setUsageCOunt(Integer usageCOunt) {
+    public void setUsageCount(Integer usageCount) {
         this.usageCount = usageCount;
     }
 
@@ -57,6 +57,22 @@ public class UserQuery extends AuditableDatabaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    /**
+     * No-arg constructor.
+     */
+    public UserQuery() {
+    }
+
+    /**
+     * Constructor
+     *
+     * @param queryString the user query string
+     */
+    public UserQuery(String queryString) {
+        this.usageCount = 1;
+        this.queryString = queryString;
     }
 
     @Override

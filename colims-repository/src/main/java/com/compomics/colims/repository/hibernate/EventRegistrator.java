@@ -45,10 +45,10 @@ public class EventRegistrator {
         final EventListenerRegistry registry = ((SessionFactoryImpl) entityManagerFactory.unwrap(SessionFactory.class))
                 .getServiceRegistry().getService(EventListenerRegistry.class);
 
-        registry.prependListeners(EventType.PERSIST, persistEventListener);
+//        registry.prependListeners(EventType.PERSIST, persistEventListener);
         //@Todo check if we need to listen to this event
-        registry.prependListeners(EventType.SAVE, saveEventListener);
-        registry.prependListeners(EventType.UPDATE, updateEventListener);
+//        registry.prependListeners(EventType.SAVE, saveEventListener);
+//        registry.prependListeners(EventType.UPDATE, updateEventListener);
 
         //Adding a listener for a SaveOrUpdateEvent results in unwanted behaviour;
         //when fetching children of one-to-many relations, the SaveOrUpdateEvent is triggered.

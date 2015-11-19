@@ -18,44 +18,55 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
         <!-- hibernate dependencies -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-            
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-        </dependency> 
-        
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
         </dependency>
-        
-<!--        <dependency>
+
+        <!--        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
         </dependency>  -->
-        
+
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
-        </dependency>                            
-        
+        </dependency>
+
         <!-- jasypt encryption dependency -->
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt-hibernate4</artifactId>
-            <version>1.9.1</version>
+            <version>1.9.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
@@ -76,19 +87,23 @@
                     <artifactId>swing-layout</artifactId>
                     <groupId>org.swinglabs</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.jmzml</groupId>
+                    <artifactId>jmzml</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-                        
+
     </dependencies>
-    
-    <repositories> 
-        
+
+    <repositories>
+
         <repository>
             <id>Hibernate</id>
             <name>JBoss Hibernate repository</name>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
-        
+
     </repositories>
-    
+
 </project>

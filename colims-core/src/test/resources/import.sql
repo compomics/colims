@@ -5,6 +5,9 @@ INSERT INTO institution (id, creation_date, modification_date, user_name, abbrev
 -- noinspection SqlDialectInspection
 INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin11@test.com','admin1_first_name','admin1_last_name','admin','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1), (2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab1@test.com','lab1_first_name','lab1_last_name','lab1','21HkOuddgSKsFAEunzfJwgeHGus+Ny5a', 1), (3,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab2@test.com','lab2_first_name','lab2_last_name','lab2','5VCdz+RPeCu1dkUfpzNedNA49K5S/TTn', 1), (4,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','collab1@test.com','collab1_first_name','collab1_last_name','collab1','ohgCuzOjoAC5s+k6mzEJqFwFeZsR7TWI',1);
 
+-- insert test user query
+INSERT INTO user_query (id, creation_date, modification_date, user_name, query_string, usage_count, l_user_query_user_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin', 'test user query string', 3, 1), (2,'2011-06-27 14:42:16','2011-06-27 14:49:46','admin', 'test user query string', 1, 1), (3,'2011-06-27 14:42:16','2012-06-27 14:49:46','admin', 'test user query string', 1, 1)
+
 -- insert test groups
 INSERT INTO user_group (id, creation_date, modification_date, user_name, description, name) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin group description','admin'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','lab group description','lab'),(3,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','collaboration 1 group description','collaboration 1');
 

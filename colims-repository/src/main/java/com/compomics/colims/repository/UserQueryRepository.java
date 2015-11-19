@@ -16,17 +16,40 @@ public interface UserQueryRepository extends GenericJpaRepository<UserQuery, Lon
      * Execute the given user query string and return the query results.
      *
      * @param queryString the user query String
+     * @param maxResults the maximum result restriction
      * @return the query results
      */
-    List<LinkedHashMap<String, Object>> executeQuery(String queryString);
+    List<LinkedHashMap<String, Object>> executeUserQuery(String queryString, Integer maxResults);
 
     /**
-     * Look in the database if the given query was already stored for the given user. Returns null if nothing was
-     * found.
+     * Get all the queries for the given user. They are sorted on usage count.
      *
      * @param userId the user ID
+     * @return the found UserQuery instances
+     */
+    List<UserQuery> findByUserId(Long userId);
+
+    /**
+     * Count the number queries for the given user.
+     *
+     * @param userId the user ID
+     * @return the number of user queries
+     */
+    Long countByUserId(Long userId);
+
+    /**
+     * Find a query for a given user. Returns null if nothing was found.
+     *
+     * @param userId      the user ID
      * @param queryString the query String
      * @return the found UserQuery instance
      */
     UserQuery findByUserIdAndQueryString(Long userId, String queryString);
+
+    /**
+     * Remove the least used user query for the given user.
+     *
+     * @param userId the user ID
+     */
+    void removeLeastUsedUserQuery(Long userId);
 }

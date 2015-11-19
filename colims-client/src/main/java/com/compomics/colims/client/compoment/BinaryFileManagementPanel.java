@@ -20,7 +20,6 @@ import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
-import org.jmol.export.dialog.FileChooser;
 
 /**
  * The binary file management view.
@@ -43,8 +42,8 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
      * Keep a reference to the class type for new instance creation.
      */
     private Class<T> type;
-    private final JFileChooser fileChooser = new FileChooser();
-    private final JFileChooser exportDirectoryChooser = new FileChooser();
+    private final JFileChooser fileChooser = new JFileChooser();
+    private final JFileChooser exportDirectoryChooser = new JFileChooser();
     private transient BindingGroup bindingGroup;
     private ObservableList<T> binaryFileBindingList;
     private int previouslySelectedIndex = -1;
