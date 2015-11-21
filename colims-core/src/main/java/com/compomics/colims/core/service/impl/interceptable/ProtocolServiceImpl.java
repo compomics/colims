@@ -30,32 +30,27 @@ public class ProtocolServiceImpl implements ProtocolService {
     }
 
     @Override
-    public void save(final Protocol entity) {
-        protocolRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Protocol entity) {
-        protocolRepository.delete(entity);
-    }
-
-    @Override
     public Protocol findByName(final String name) {
         return protocolRepository.findByName(name);
     }
 
     @Override
-    public void update(final Protocol entity) {
-        protocolRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Protocol entity) {
-        protocolRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public long countAll() {
         return protocolRepository.countAll();
+    }
+
+    @Override
+    public void persist(Protocol entity) {
+        protocolRepository.persist(entity);
+    }
+
+    @Override
+    public Protocol merge(Protocol entity) {
+        return protocolRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Protocol entity) {
+        protocolRepository.remove(entity);
     }
 }

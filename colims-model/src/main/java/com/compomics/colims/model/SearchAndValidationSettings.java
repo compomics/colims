@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.CascadeType;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +17,7 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      * The identification files provided by the search engine. Multiple files can be linked to one
      * SearchAndValidationSettings instance.
      */
-    @OneToMany(mappedBy = "searchAndValidationSettings")
-    @org.hibernate.annotations.Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "searchAndValidationSettings", cascade = javax.persistence.CascadeType.ALL)
     private List<IdentificationFile> identificationFiles = new ArrayList<>();
     /**
      * The analytical run onto which the searches were performed.
@@ -32,22 +29,22 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      * The search engine used for the searches.
      */
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
+    @ManyToOne(cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchEngine searchEngine;
     /**
      * The FASTA file used for the searches.
      */
     @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
+    @ManyToOne(cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
     /**
      * The search parameters.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
+    @ManyToOne(cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchParameters searchParameters;
 
     public List<IdentificationFile> getIdentificationFiles() {

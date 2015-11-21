@@ -27,7 +27,6 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -373,6 +372,16 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
+     * Update a project in the projects table.
+     *
+     * @param index   the project index
+     * @param project the Project instance
+     */
+    public void updateProject(final int index, final Project project) {
+        mainController.getProjects().set(index, project);
+    }
+
+    /**
      * Get the number of projects in the projects table.
      *
      * @return the number of projects
@@ -430,6 +439,16 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
+     * Update an experiment in the experiments table.
+     *
+     * @param index      the experiment index
+     * @param experiment the Experiment instance
+     */
+    public void updateExperiment(final int index, final Experiment experiment) {
+        getSelectedProject().getExperiments().set(index, experiment);
+    }
+
+    /**
      * Get the number of experiments in the experiments table.
      *
      * @return the number of experiments
@@ -484,6 +503,16 @@ public class ProjectManagementController implements Controllable {
         //add the sample to the selected experiment and update the experiments table
         getSelectedExperiment().getSamples().add(sample);
         projectManagementPanel.getProjectsTable().updateUI();
+    }
+
+    /**
+     * Update a sample in the samples table.
+     *
+     * @param index  the sample index
+     * @param sample the Sample instance
+     */
+    public void updateSample(final int index, final Sample sample) {
+        getSelectedExperiment().getSamples().set(index, sample);
     }
 
     /**

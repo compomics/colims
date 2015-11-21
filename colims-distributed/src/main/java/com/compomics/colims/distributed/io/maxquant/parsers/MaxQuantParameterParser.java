@@ -231,7 +231,7 @@ public class MaxQuantParameterParser {
                             enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, enzymeName);
                         }
 
-                        typedCvParamService.save(enzyme);
+                        typedCvParamService.persist(enzyme);
                     }
 
                     runSettings.getSearchParameters().setEnzyme((SearchCvParam) enzyme);

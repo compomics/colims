@@ -31,14 +31,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
@@ -114,131 +108,116 @@ public class RoleManagementController implements Controllable {
             }
         });
 
-        userManagementDialog.getRoleList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
-                        Role selectedRole = getSelectedRole();
-
-                        //enable save and delete button
-                        userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(true);
-                        userManagementDialog.getDeleteRoleButton().setEnabled(true);
-
-                        //check if the role has an ID.
-                        //If so, disable the name text field and change the save button label.
-                        if (selectedRole.getId() != null) {
-                            userManagementDialog.getRoleNameTextField().setEnabled(false);
-                            userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
-                            userManagementDialog.getRoleStateInfoLabel().setText("");
-                        } else {
-                            userManagementDialog.getRoleNameTextField().setEnabled(true);
-                            userManagementDialog.getRoleSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been stored in the database.");
-                        }
-
-                        //populate dual list with permission
-                        userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
-                    } else {
-                        userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
-                    }
-                }
-            }
-        });
-
-        userManagementDialog.getAddRoleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Role newRole = new Role("name");
-                roleBindingList.add(newRole);
-                userManagementDialog.getRoleNameTextField().setEnabled(true);
-                userManagementDialog.getRoleList().setSelectedIndex(roleBindingList.size() - 1);
-            }
-        });
-
-        userManagementDialog.getDeleteRoleButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        userManagementDialog.getRoleList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
-                    Role roleToDelete = getSelectedRole();
-                    //check if role is already has an id.
-                    //If so, delete the role from the db.
-                    if (roleToDelete.getId() != null) {
-                        //check if the role is a default role
-                        if (!roleService.isDefaultRole(roleToDelete)) {
-                            try {
-                                roleService.delete(roleToDelete);
-                                eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
+                    Role selectedRole = getSelectedRole();
 
-                                roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                                resetSelection();
-                            } catch (DataIntegrityViolationException dive) {
-                                //check if the role can be deleted without breaking existing database relations,
-                                //i.e. are there any constraints violations
-                                if (dive.getCause() instanceof ConstraintViolationException) {
-                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
-                                    eventBus.post(dbConstraintMessageEvent);
-                                } else {
-                                    //pass the exception
-                                    throw dive;
-                                }
+                    //enable save and delete button
+                    userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(true);
+                    userManagementDialog.getDeleteRoleButton().setEnabled(true);
+
+                    //check if the role has an ID.
+                    //If so, disable the name text field and change the save button label.
+                    if (selectedRole.getId() != null) {
+                        userManagementDialog.getRoleNameTextField().setEnabled(false);
+                        userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
+                        userManagementDialog.getRoleStateInfoLabel().setText("");
+                    } else {
+                        userManagementDialog.getRoleNameTextField().setEnabled(true);
+                        userManagementDialog.getRoleSaveOrUpdateButton().setText("save");
+                        userManagementDialog.getRoleStateInfoLabel().setText("This role hasn't been stored in the database.");
+                    }
+
+                    //populate dual list with permission
+                    userManagementDialog.getPermissionDualList().populateLists(availablePermissions, selectedRole.getPermissions());
+                } else {
+                    userManagementDialog.getRoleSaveOrUpdateButton().setEnabled(false);
+                }
+            }
+        });
+
+        userManagementDialog.getAddRoleButton().addActionListener(e -> {
+            Role newRole = new Role("name");
+            roleBindingList.add(newRole);
+            userManagementDialog.getRoleNameTextField().setEnabled(true);
+            userManagementDialog.getRoleList().setSelectedIndex(roleBindingList.size() - 1);
+        });
+
+        userManagementDialog.getDeleteRoleButton().addActionListener(e -> {
+            if (userManagementDialog.getRoleList().getSelectedIndex() != -1) {
+                Role roleToDelete = getSelectedRole();
+                //check if role is already has an id.
+                //If so, delete the role from the db.
+                if (roleToDelete.getId() != null) {
+                    //check if the role is a default role
+                    if (!roleService.isDefaultRole(roleToDelete)) {
+                        try {
+                            roleService.remove(roleToDelete);
+                            eventBus.post(new RoleChangeEvent(EntityChangeEvent.Type.DELETED, true, roleToDelete));
+
+                            roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
+                            resetSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the role can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("role", roleToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
                             }
-                        } else {
-                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("role", roleToDelete.getName());
-                            eventBus.post(defaultDbEntryMessageEvent);
                         }
                     } else {
-                        roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
-                        resetSelection();
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("role", roleToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
                     }
-                }
-            }
-        });
-
-        userManagementDialog.getPermissionDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //change permissions of the selected role
-                List<Permission> addedPermissions = (List<Permission>) evt.getNewValue();
-
-                //add permissions to the selected role
-                Role selectedRole = getSelectedRole();
-                selectedRole.setPermissions(addedPermissions);
-
-                areChildrenAffected = true;
-            }
-        });
-
-        userManagementDialog.getRoleSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Role selectedRole = getSelectedRole();
-                //validate role
-                List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
-                //check for a new group if the role name already exists in the db
-                if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
-                    validationMessages.add(selectedRole.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another role name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    if (selectedRole.getId() != null) {
-                        roleService.update(selectedRole);
-                    } else {
-                        roleService.save(selectedRole);
-                    }
-                    userManagementDialog.getRoleNameTextField().setEnabled(false);
-                    userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
-                    userManagementDialog.getRoleStateInfoLabel().setText("");
-
-                    EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
-
-                    MessageEvent messageEvent = new MessageEvent("Role store confirmation", "Role " + selectedRole.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    roleBindingList.remove(userManagementDialog.getRoleList().getSelectedIndex());
+                    resetSelection();
                 }
+            }
+        });
+
+        userManagementDialog.getPermissionDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //change permissions of the selected role
+            List<Permission> addedPermissions = (List<Permission>) evt.getNewValue();
+
+            //add permissions to the selected role
+            Role selectedRole = getSelectedRole();
+            selectedRole.setPermissions(addedPermissions);
+
+            areChildrenAffected = true;
+        });
+
+        userManagementDialog.getRoleSaveOrUpdateButton().addActionListener(e -> {
+            Role selectedRole = getSelectedRole();
+            //validate role
+            List<String> validationMessages = GuiUtils.validateEntity(selectedRole);
+            //check for a new group if the role name already exists in the db
+            if (selectedRole.getId() == null && isExistingRoleName(selectedRole)) {
+                validationMessages.add(selectedRole.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another role name.");
+            }
+            if (validationMessages.isEmpty()) {
+                if (selectedRole.getId() != null) {
+                    selectedRole = roleService.merge(selectedRole);
+                } else {
+                    roleService.persist(selectedRole);
+                }
+                userManagementDialog.getRoleNameTextField().setEnabled(false);
+                userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
+                userManagementDialog.getRoleStateInfoLabel().setText("");
+
+                EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
+                eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
+
+                MessageEvent messageEvent = new MessageEvent("Role store confirmation", "Role " + selectedRole.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
     }

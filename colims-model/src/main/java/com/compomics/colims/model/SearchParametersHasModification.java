@@ -1,17 +1,10 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.ModificationType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Table(name = "search_params_has_modification")
@@ -43,8 +36,8 @@ public class SearchParametersHasModification extends DatabaseEntity {
      * The SearchModification instance of this join entity.
      */
     @JoinColumn(name = "l_search_modification_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchModification searchModification;
 
     /**
@@ -77,7 +70,11 @@ public class SearchParametersHasModification extends DatabaseEntity {
         this.modificationType = modificationType;
     }
 
-    public String getResidues() { return residues; }
+    public String getResidues() {
+        return residues;
+    }
 
-    public void setResidues(String residues) { this.residues = residues; }
+    public void setResidues(String residues) {
+        this.residues = residues;
+    }
 }

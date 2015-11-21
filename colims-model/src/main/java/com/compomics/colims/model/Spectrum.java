@@ -82,14 +82,12 @@ public class Spectrum extends DatabaseEntity {
     /**
      * The peptides that identify this spectrum.
      */
-    @OneToMany(mappedBy = "spectrum")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "spectrum", cascade = CascadeType.ALL)
     private List<Peptide> peptides = new ArrayList<>();
     /**
      * The SpectrumFile instances linked to this spectrum.
      */
-    @OneToMany(mappedBy = "spectrum")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "spectrum", cascade = CascadeType.ALL)
     private List<SpectrumFile> spectrumFiles = new ArrayList<>();
 
     /**

@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * This interface provides generic service methods for finding, saving, updating
- * and deleting entities in the db. The service methods are transactional
- * (defined in the implementation), not the repository methods called in the
+ * This interface provides generic service methods for finding, saving, updating and deleting entities in the db. The
+ * service methods are transactional (defined in the implementation), not the repository methods called in the
  * services.
  *
- * @author Niels Hulstaert
- * @param <T> the entity class
+ * @param <T>  the entity class
  * @param <ID> the ID class
+ * @author Niels Hulstaert
  */
 public interface GenericService<T, ID extends Serializable> {
 
@@ -31,38 +30,32 @@ public interface GenericService<T, ID extends Serializable> {
     List<T> findAll();
 
     /**
-     * Save the entity.
-     *
-     * @param entity the entity to save
-     */
-    void save(final T entity);
-
-    /**
-     * Save the entity.
-     *
-     * @param entity the entity to update
-     */
-    void update(final T entity);
-
-    /**
-     * Save or update the entity. If the entity already exists, update it else
-     * save it.
-     *
-     * @param entity the entity to save or update
-     */
-    void saveOrUpdate(final T entity);
-
-    /**
-     * Delete the entity.
-     *
-     * @param entity the entity to delete
-     */
-    void delete(final T entity);
-
-    /**
      * Count all entities.
      *
      * @return the number of entities
      */
     long countAll();
+
+    /**
+     * Persist an entity.
+     *
+     * @param entity the entity to persist
+     */
+    void persist(final T entity);
+
+    /**
+     * Merge an entity.
+     *
+     * @param entity the entity to merge
+     * @return the merged entity
+     */
+    T merge(final T entity);
+
+    /**
+     * Remove an entity from the database.
+     *
+     * @param entity the entity to remove
+     */
+    void remove(final T entity);
+
 }

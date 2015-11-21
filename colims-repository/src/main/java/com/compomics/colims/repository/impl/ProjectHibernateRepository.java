@@ -4,24 +4,36 @@
  */
 package com.compomics.colims.repository.impl;
 
-import org.springframework.stereotype.Repository;
-
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
-import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Repository("projectRepository")
 public class ProjectHibernateRepository extends GenericHibernateRepository<Project, Long> implements ProjectRepository {
+
+    @Override
+    public Project findByTitle(final String title) {
+        return findUniqueByCriteria(Restrictions.eq("title", title));
+    }
+
+    @Override
+    public List<Project> findAllWithEagerFetching() {
+        Query query = getCurrentSession().getNamedQuery("Project.findAllWithEagerFetching");
+
+        return query.list();
+    }
 
     @Override
     public User getUserWithMostProjectOwns() {
@@ -31,8 +43,11 @@ public class ProjectHibernateRepository extends GenericHibernateRepository<Proje
         projectionList.add(Projections.rowCount(), "projectCountByOwner");
         projectionList.add(Projections.groupProperty("owner"));
 
+        //add order
+        criteria.addOrder(Order.desc("projectCountByOwner"));
+
         //get results
-        List criteriaResults = criteria.setProjection(projectionList).addOrder(Order.desc("projectCountByOwner")).list();
+        List criteriaResults = criteria.setProjection(projectionList).list();
 
         User user = null;
         if (!criteriaResults.isEmpty()) {
@@ -43,7 +58,7 @@ public class ProjectHibernateRepository extends GenericHibernateRepository<Proje
     }
 
     @Override
-    public Project findByTitle(final String title) {
-        return findUniqueByCriteria(Restrictions.eq("title", title));
+    public void saveOrUpdate(Project project) {
+        getCurrentSession().update(project);
     }
 }

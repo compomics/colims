@@ -17,8 +17,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      * The quantification files provided by the quantification engine. Multiple files can be linked to one
      * SearchAndValidationSettings instance.
      */
-    @OneToMany(mappedBy = "quantificationSettings")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "quantificationSettings", cascade = CascadeType.ALL)
     private List<QuantificationFile> quantificationFiles = new ArrayList<>();
     /**
      * The analytical run onto which the quantifications were performed.
@@ -36,8 +35,8 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      * The quantification parameters.
      */
     @JoinColumn(name = "l_quant_param_settings_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private QuantificationParameters quantificationParameterSettings;
 
     public List<QuantificationFile> getQuantificationFiles() {

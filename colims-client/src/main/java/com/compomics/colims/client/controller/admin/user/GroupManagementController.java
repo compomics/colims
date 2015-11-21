@@ -31,14 +31,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
@@ -126,131 +120,116 @@ public class GroupManagementController implements Controllable {
             }
         });
 
-        userManagementDialog.getGroupList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
-                        Group selectedGroup = getSelectedGroup();
-
-                        //enable save and delete button
-                        userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(true);
-                        userManagementDialog.getDeleteGroupButton().setEnabled(true);
-
-                        //check if the group has an ID.
-                        //If so, disable the name text field and change the save button label.
-                        if (selectedGroup.getId() != null) {
-                            userManagementDialog.getGroupNameTextField().setEnabled(false);
-                            userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
-                            userManagementDialog.getGroupStateInfoLabel().setText("");
-                        } else {
-                            userManagementDialog.getGroupNameTextField().setEnabled(true);
-                            userManagementDialog.getGroupSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been stored in the database.");
-                        }
-
-                        //populate dual list with roles
-                        userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
-                    } else {
-                        userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
-                    }
-                }
-            }
-        });
-
-        userManagementDialog.getAddGroupButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Group newGroup = new Group("name");
-                groupBindingList.add(newGroup);
-                userManagementDialog.getGroupNameTextField().setEnabled(true);
-                userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
-            }
-        });
-
-        userManagementDialog.getDeleteGroupButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        userManagementDialog.getGroupList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
-                    Group groupToDelete = getSelectedGroup();
-                    //check if group is already has an id.
-                    //If so, delete the group from the db.
-                    if (groupToDelete.getId() != null) {
-                        //check if the group is a default group
-                        if (!groupService.isDefaultGroup(groupToDelete)) {
-                            try {
-                                groupService.delete(groupToDelete);
-                                eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
+                    Group selectedGroup = getSelectedGroup();
 
-                                groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                                resetSelection();
-                            } catch (DataIntegrityViolationException dive) {
-                                //check if the group can be deleted without breaking existing database relations,
-                                //i.e. are there any constraints violations
-                                if (dive.getCause() instanceof ConstraintViolationException) {
-                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("group", groupToDelete.getName());
-                                    eventBus.post(dbConstraintMessageEvent);
-                                } else {
-                                    //pass the exception
-                                    throw dive;
-                                }
+                    //enable save and delete button
+                    userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(true);
+                    userManagementDialog.getDeleteGroupButton().setEnabled(true);
+
+                    //check if the group has an ID.
+                    //If so, disable the name text field and change the save button label.
+                    if (selectedGroup.getId() != null) {
+                        userManagementDialog.getGroupNameTextField().setEnabled(false);
+                        userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
+                        userManagementDialog.getGroupStateInfoLabel().setText("");
+                    } else {
+                        userManagementDialog.getGroupNameTextField().setEnabled(true);
+                        userManagementDialog.getGroupSaveOrUpdateButton().setText("save");
+                        userManagementDialog.getGroupStateInfoLabel().setText("This group hasn't been stored in the database.");
+                    }
+
+                    //populate dual list with roles
+                    userManagementDialog.getRoleDualList().populateLists(availableRoles, selectedGroup.getRoles());
+                } else {
+                    userManagementDialog.getGroupSaveOrUpdateButton().setEnabled(false);
+                }
+            }
+        });
+
+        userManagementDialog.getAddGroupButton().addActionListener(e -> {
+            Group newGroup = new Group("name");
+            groupBindingList.add(newGroup);
+            userManagementDialog.getGroupNameTextField().setEnabled(true);
+            userManagementDialog.getGroupList().setSelectedIndex(groupBindingList.size() - 1);
+        });
+
+        userManagementDialog.getDeleteGroupButton().addActionListener(e -> {
+            if (userManagementDialog.getGroupList().getSelectedIndex() != -1) {
+                Group groupToDelete = getSelectedGroup();
+                //check if group is already has an id.
+                //If so, delete the group from the db.
+                if (groupToDelete.getId() != null) {
+                    //check if the group is a default group
+                    if (!groupService.isDefaultGroup(groupToDelete)) {
+                        try {
+                            groupService.remove(groupToDelete);
+                            eventBus.post(new GroupChangeEvent(EntityChangeEvent.Type.DELETED, true, groupToDelete));
+
+                            groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
+                            resetSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the group can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("group", groupToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
                             }
-                        } else {
-                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("group", groupToDelete.getName());
-                            eventBus.post(defaultDbEntryMessageEvent);
                         }
                     } else {
-                        groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
-                        resetSelection();
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("group", groupToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
                     }
-                }
-            }
-        });
-
-        userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //change roles of the selected group
-                List<Role> addedRoles = (List<Role>) evt.getNewValue();
-
-                //add roles to the selected group
-                Group selectedGroup = getSelectedGroup();
-                selectedGroup.setRoles(addedRoles);
-
-                areChildrenAffected = true;
-            }
-        });
-
-        userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Group selectedGroup = getSelectedGroup();
-                //validate group
-                List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
-                //check for a new group if the group name already exists in the db
-                if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
-                    validationMessages.add(selectedGroup.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another group name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    if (selectedGroup.getId() != null) {
-                        groupService.update(selectedGroup);
-                    } else {
-                        groupService.save(selectedGroup);
-                    }
-                    userManagementDialog.getGroupNameTextField().setEnabled(false);
-                    userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
-                    userManagementDialog.getGroupStateInfoLabel().setText("");
-
-                    EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
-
-                    MessageEvent messageEvent = new MessageEvent("Group store confirmation", "Group " + selectedGroup.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    groupBindingList.remove(userManagementDialog.getGroupList().getSelectedIndex());
+                    resetSelection();
                 }
+            }
+        });
+
+        userManagementDialog.getRoleDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //change roles of the selected group
+            List<Role> addedRoles = (List<Role>) evt.getNewValue();
+
+            //add roles to the selected group
+            Group selectedGroup = getSelectedGroup();
+            selectedGroup.setRoles(addedRoles);
+
+            areChildrenAffected = true;
+        });
+
+        userManagementDialog.getGroupSaveOrUpdateButton().addActionListener(e -> {
+            Group selectedGroup = getSelectedGroup();
+            //validate group
+            List<String> validationMessages = GuiUtils.validateEntity(selectedGroup);
+            //check for a new group if the group name already exists in the db
+            if (selectedGroup.getId() == null && isExistingGroupName(selectedGroup)) {
+                validationMessages.add(selectedGroup.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another group name.");
+            }
+            if (validationMessages.isEmpty()) {
+                if (selectedGroup.getId() != null) {
+                    selectedGroup = groupService.merge(selectedGroup);
+                } else {
+                    groupService.persist(selectedGroup);
+                }
+                userManagementDialog.getGroupNameTextField().setEnabled(false);
+                userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
+                userManagementDialog.getGroupStateInfoLabel().setText("");
+
+                EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
+                eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
+
+                MessageEvent messageEvent = new MessageEvent("Group store confirmation", "Group " + selectedGroup.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
     }

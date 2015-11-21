@@ -53,8 +53,7 @@ public class Sample extends AuditableDatabaseEntity {
     /**
      * The list of binary files linked to this sample.
      */
-    @OneToMany(mappedBy = "sample")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "sample", cascade = CascadeType.ALL)
     List<SampleBinaryFile> binaryFiles = new ArrayList<>();
     /**
      * The materials of this sample.

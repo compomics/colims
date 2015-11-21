@@ -1,9 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinAccessionService;
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinAccessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,27 +30,23 @@ public class ProteinAccessionServiceImpl implements ProteinAccessionService {
     }
 
     @Override
-    public void save(ProteinAccession entity) {
-        proteinAccessionRepository.save(entity);
-    }
-
-    @Override
-    public void update(ProteinAccession entity) {
-        proteinAccessionRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(ProteinAccession entity) {
-        proteinAccessionRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(ProteinAccession entity) {
-        proteinAccessionRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return proteinAccessionRepository.countAll();
     }
+
+    @Override
+    public void persist(ProteinAccession entity) {
+        proteinAccessionRepository.persist(entity);
+    }
+
+    @Override
+    public ProteinAccession merge(ProteinAccession entity) {
+        return proteinAccessionRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(ProteinAccession entity) {
+        proteinAccessionRepository.remove(entity);
+    }
+
 }

@@ -13,12 +13,6 @@ import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import java.awt.Window;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
 import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
 import org.apache.xml.xml_soap.MapItem;
@@ -28,8 +22,14 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("cvParamManagementController")
@@ -132,9 +132,9 @@ public class CvParamManagementController implements Controllable, OLSInputable {
                 }
                 if (validationMessages.isEmpty()) {
                     if (selectedCvParam.getId() != null) {
-                        cvParamService.update(selectedCvParam);
+                        selectedCvParam = cvParamService.merge(selectedCvParam);
                     } else {
-                        cvParamService.save(selectedCvParam);
+                        cvParamService.persist(selectedCvParam);
                     }
                     cvParamManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
@@ -157,18 +157,18 @@ public class CvParamManagementController implements Controllable, OLSInputable {
 
             if (selectedIndex != -1) {
                 AuditableTypedCvParam cvparamToDelete = getSelectedCvParam();
-            //check if instrument type has an id.
+                //check if instrument type has an id.
                 //If so, try to delete the permission from the db.
                 if (cvparamToDelete.getId() != null) {
                     try {
-                        cvParamService.delete(cvparamToDelete);
+                        cvParamService.remove(cvparamToDelete);
 
                         typeCvParamTableModel2.removeCvParam(selectedIndex);
                         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
 
                         eventBus.post(new CvParamChangeEvent());
                     } catch (DataIntegrityViolationException dive) {
-                    //check if the CV param can be deleted without breaking existing database relations,
+                        //check if the CV param can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
                             DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvparamToDelete.getName());
@@ -211,7 +211,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
      * Update the CV param list and set the current cvParamType.
      *
      * @param cvParamType the cvParamType of the CV params in the list
-     * @param cvParams the list of CV params
+     * @param cvParams    the list of CV params
      */
     public void updateDialog(final CvParamType cvParamType, final List<AuditableTypedCvParam> cvParams) {
         this.cvParamType = cvParamType;
@@ -272,11 +272,11 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     /**
      * Update the given CV param. Only the modified fields are set.
      *
-     * @param cvParam the TypedCvParam
-     * @param ontology the ontology
-     * @param label the label
+     * @param cvParam   the TypedCvParam
+     * @param ontology  the ontology
+     * @param label     the label
      * @param accession the accession
-     * @param name the name
+     * @param name      the name
      */
     private void updateCvParam(final AuditableTypedCvParam cvParam, final String ontology, final String label, final String accession, final String name) {
         if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
@@ -323,8 +323,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Get the selected CV param in the CV param table. Returns null if none was
-     * selected.
+     * Get the selected CV param in the CV param table. Returns null if none was selected.
      *
      * @return the selected CV param
      */

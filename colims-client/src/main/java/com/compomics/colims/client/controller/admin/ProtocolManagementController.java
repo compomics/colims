@@ -175,7 +175,7 @@ public class ProtocolManagementController implements Controllable {
                 //If so, delete the protocol from the db.
                 if (protocolToDelete.getId() != null) {
                     try {
-                        protocolService.delete(protocolToDelete);
+                        protocolService.remove(protocolToDelete);
 
                         protocolBindingList.remove(protocolManagementDialog.getProtocolList().getSelectedIndex());
                         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();
@@ -324,11 +324,11 @@ public class ProtocolManagementController implements Controllable {
                 int index;
                 EntityChangeEvent.Type type;
                 if (protocolToEdit.getId() != null) {
-                    protocolService.update(protocolToEdit);
+                    protocolToEdit = protocolService.merge(protocolToEdit);
                     index = protocolManagementDialog.getProtocolList().getSelectedIndex();
                     type = EntityChangeEvent.Type.UPDATED;
                 } else {
-                    protocolService.save(protocolToEdit);
+                    protocolService.persist(protocolToEdit);
                     //add protocol to overview list
                     protocolBindingList.add(protocolToEdit);
                     index = protocolBindingList.size() - 1;

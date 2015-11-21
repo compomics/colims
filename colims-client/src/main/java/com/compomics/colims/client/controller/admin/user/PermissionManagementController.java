@@ -1,34 +1,20 @@
 package com.compomics.colims.client.controller.admin.user;
 
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
-import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.admin.PermissionChangeEvent;
 import com.compomics.colims.client.event.admin.RoleChangeEvent;
+import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
+import com.compomics.colims.client.event.message.DefaultDbEntryMessageEvent;
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.UserManagementDialog;
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
@@ -38,8 +24,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 @Component("permissionManagementController")
@@ -101,116 +92,104 @@ public class PermissionManagementController implements Controllable {
             }
         });
 
-        userManagementDialog.getPermissionList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
-                        Permission selectedPermission = getSelectedPermission();
-
-                        //enable save and delete button
-                        userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(true);
-                        userManagementDialog.getDeletePermissionButton().setEnabled(true);
-
-                        //check if the permission has an ID.
-                        //If so, disable the name text field and change the save button label.
-                        if (selectedPermission.getId() != null) {
-                            userManagementDialog.getPermissionNameTextField().setEnabled(false);
-                            userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
-                            userManagementDialog.getPermissionStateInfoLabel().setText("");
-                        } else {
-                            userManagementDialog.getPermissionNameTextField().setEnabled(true);
-                            userManagementDialog.getPermissionSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been stored in the database.");
-                        }
-                    } else {
-                        userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
-                    }
-                }
-            }
-        });
-
-        userManagementDialog.getAddPermissionButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Permission newPermission = new Permission("name");
-                permissionBindingList.add(newPermission);
-                userManagementDialog.getPermissionNameTextField().setEnabled(true);
-                userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
-            }
-        });
-
-        userManagementDialog.getDeletePermissionButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        userManagementDialog.getPermissionList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
-                    Permission permissionToDelete = getSelectedPermission();
-                    //check if permission is already has an id.
-                    //If so, delete the permission from the db.
-                    if (permissionToDelete.getId() != null) {
-                        //check if the permission is a default permission
-                        if (!permissionService.isDefaultPermission(permissionToDelete)) {
-                            try {
-                                permissionService.delete(permissionToDelete);
-                                eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
+                    Permission selectedPermission = getSelectedPermission();
 
-                                permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
-                                resetSelection();
-                            } catch (DataIntegrityViolationException dive) {
-                                //check if the permission can be deleted without breaking existing database relations,
-                                //i.e. are there any constraints violations
-                                if (dive.getCause() instanceof ConstraintViolationException) {
-                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("permission", permissionToDelete.getName());
-                                    eventBus.post(dbConstraintMessageEvent);
-                                } else {
-                                    //pass the exception
-                                    throw dive;
-                                }
-                            }
-                        } else {
-                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("permission", permissionToDelete.getName());
-                            eventBus.post(defaultDbEntryMessageEvent);
-                        }
+                    //enable save and delete button
+                    userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(true);
+                    userManagementDialog.getDeletePermissionButton().setEnabled(true);
+
+                    //check if the permission has an ID.
+                    //If so, disable the name text field and change the save button label.
+                    if (selectedPermission.getId() != null) {
+                        userManagementDialog.getPermissionNameTextField().setEnabled(false);
+                        userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
+                        userManagementDialog.getPermissionStateInfoLabel().setText("");
                     } else {
-                        permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
-                        resetSelection();
+                        userManagementDialog.getPermissionNameTextField().setEnabled(true);
+                        userManagementDialog.getPermissionSaveOrUpdateButton().setText("save");
+                        userManagementDialog.getPermissionStateInfoLabel().setText("This permission hasn't been stored in the database.");
                     }
+                } else {
+                    userManagementDialog.getPermissionSaveOrUpdateButton().setEnabled(false);
                 }
             }
         });
 
-        userManagementDialog.getPermissionSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Permission selectedPermission = getSelectedPermission();
-                //validate permission
-                List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
-                //check for a new permission if the permission name already exists in the db
-                if (selectedPermission.getId() == null && isExistingPermissionName(selectedPermission)) {
-                    validationMessages.add(selectedPermission.getName() + " already exists in the database,"
-                            + System.lineSeparator() + "please choose another permission name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    if (selectedPermission.getId() != null) {
-                        permissionService.update(selectedPermission);
+        userManagementDialog.getAddPermissionButton().addActionListener(e -> {
+            Permission newPermission = new Permission("name");
+            permissionBindingList.add(newPermission);
+            userManagementDialog.getPermissionNameTextField().setEnabled(true);
+            userManagementDialog.getPermissionList().setSelectedIndex(permissionBindingList.size() - 1);
+        });
+
+        userManagementDialog.getDeletePermissionButton().addActionListener(e -> {
+            if (userManagementDialog.getPermissionList().getSelectedIndex() != -1) {
+                Permission permissionToDelete = getSelectedPermission();
+                //check if permission is already has an id.
+                //If so, delete the permission from the db.
+                if (permissionToDelete.getId() != null) {
+                    //check if the permission is a default permission
+                    if (!permissionService.isDefaultPermission(permissionToDelete)) {
+                        try {
+                            permissionService.remove(permissionToDelete);
+                            eventBus.post(new PermissionChangeEvent(EntityChangeEvent.Type.DELETED, false, permissionToDelete));
+
+                            permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
+                            resetSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the permission can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("permission", permissionToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
                     } else {
-                        permissionService.save(selectedPermission);
-                        //refresh permission list
-                        userManagementDialog.getPermissionList().updateUI();
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("permission", permissionToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
                     }
-                    userManagementDialog.getPermissionNameTextField().setEnabled(false);
-                    userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
-                    userManagementDialog.getPermissionStateInfoLabel().setText("");
-
-                    EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
-                    eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
-
-                    MessageEvent messageEvent = new MessageEvent("Permission store confirmation", "Permission " + selectedPermission.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    permissionBindingList.remove(userManagementDialog.getPermissionList().getSelectedIndex());
+                    resetSelection();
                 }
+            }
+        });
+
+        userManagementDialog.getPermissionSaveOrUpdateButton().addActionListener(e -> {
+            Permission selectedPermission = getSelectedPermission();
+            //validate permission
+            List<String> validationMessages = GuiUtils.validateEntity(selectedPermission);
+            //check for a new permission if the permission name already exists in the db
+            if (selectedPermission.getId() == null && isExistingPermissionName(selectedPermission)) {
+                validationMessages.add(selectedPermission.getName() + " already exists in the database,"
+                        + System.lineSeparator() + "please choose another permission name.");
+            }
+            if (validationMessages.isEmpty()) {
+                if (selectedPermission.getId() != null) {
+                    selectedPermission = permissionService.merge(selectedPermission);
+                } else {
+                    permissionService.persist(selectedPermission);
+                    //refresh permission list
+                    userManagementDialog.getPermissionList().updateUI();
+                }
+                userManagementDialog.getPermissionNameTextField().setEnabled(false);
+                userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
+                userManagementDialog.getPermissionStateInfoLabel().setText("");
+
+                EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
+                eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
+
+                MessageEvent messageEvent = new MessageEvent("Permission store confirmation", "Permission " + selectedPermission.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
         });
     }
@@ -242,8 +221,7 @@ public class PermissionManagementController implements Controllable {
     }
 
     /**
-     * Check if a permission with the given permission name exists in the
-     * database.
+     * Check if a permission with the given permission name exists in the database.
      *
      * @param permission the selected permission
      * @return does the permission name exist

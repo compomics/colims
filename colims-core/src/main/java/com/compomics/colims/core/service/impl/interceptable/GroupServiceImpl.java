@@ -9,7 +9,6 @@ import com.compomics.colims.model.Group;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.repository.GroupRepository;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +22,6 @@ import java.util.List;
 @Transactional
 public class GroupServiceImpl implements GroupService {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(GroupServiceImpl.class);
-
     @Autowired
     private GroupRepository groupRepository;
 
@@ -39,33 +33,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> findAll() {
         return groupRepository.findAllOrderedByName();
-    }
-
-    @Override
-    public void save(final Group entity) {
-        groupRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Group entity) {
-        //attach the group to the new session
-        groupRepository.saveOrUpdate(entity);
-        //remove entity relations
-        for (User user : entity.getUsers()) {
-            user.getGroups().remove(entity);
-        }
-
-        groupRepository.delete(entity);
-    }
-
-    @Override
-    public void update(final Group entity) {
-        groupRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Group entity) {
-        groupRepository.saveOrUpdate(entity);
     }
 
     @Override
@@ -90,5 +57,27 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public long countAll() {
         return groupRepository.countAll();
+    }
+
+    @Override
+    public void persist(Group entity) {
+        groupRepository.persist(entity);
+    }
+
+    @Override
+    public Group merge(Group entity) {
+        return groupRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Group entity) {
+        //merge the group
+        Group merge = groupRepository.merge(entity);
+        //remove entity relations
+        for (User user : merge.getUsers()) {
+            user.getGroups().remove(merge);
+        }
+
+        groupRepository.remove(merge);
     }
 }

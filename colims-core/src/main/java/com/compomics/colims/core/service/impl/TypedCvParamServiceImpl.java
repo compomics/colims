@@ -2,18 +2,16 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.model.cv.TypedCvParam;
-import java.util.List;
-
+import com.compomics.colims.model.enums.CvParamType;
+import com.compomics.colims.repository.TypedCvParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.repository.TypedCvParamRepository;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("typedCvParamService")
@@ -31,26 +29,6 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
     @Override
     public List<TypedCvParam> findAll() {
         return cvParamRepository.findAll();
-    }
-
-    @Override
-    public void save(TypedCvParam entity) {
-        cvParamRepository.save(entity);
-    }
-
-    @Override
-    public void update(TypedCvParam entity) {
-        cvParamRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(TypedCvParam entity) {
-        cvParamRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(TypedCvParam entity) {
-        cvParamRepository.delete(entity);
     }
 
     @Override
@@ -86,4 +64,18 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
         return cvParamRepository.countAll();
     }
 
+    @Override
+    public void persist(TypedCvParam entity) {
+        cvParamRepository.persist(entity);
+    }
+
+    @Override
+    public TypedCvParam merge(TypedCvParam entity) {
+        return cvParamRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(TypedCvParam entity) {
+        cvParamRepository.remove(entity);
+    }
 }

@@ -8,22 +8,9 @@ import com.compomics.colims.client.view.admin.InstitutionManagementDialog;
 import com.compomics.colims.core.service.InstitutionService;
 import com.compomics.colims.model.Institution;
 import com.google.common.eventbus.EventBus;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
@@ -31,6 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The institution management view controller.
@@ -94,125 +90,110 @@ public class InstitutionManagementController implements Controllable {
         bindingGroup.bind();
 
         //add listeners
-        institutionManagementDialog.getInstitutionList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
-                        Institution institution = getSelectedInstitution();
-
-                        //enable save and delete button
-                        institutionManagementDialog.getSaveOrUpdateButton().setEnabled(true);
-                        institutionManagementDialog.getDeleteButton().setEnabled(true);
-
-                        //check if the fasta DB has an ID.
-                        //If so, change the save button label.
-                        if (institution.getId() != null) {
-                            institutionManagementDialog.getSaveOrUpdateButton().setText("update");
-                            institutionManagementDialog.getInstitutionStateInfoLabel().setText("");
-                        } else {
-                            institutionManagementDialog.getSaveOrUpdateButton().setText("save");
-                            institutionManagementDialog.getInstitutionStateInfoLabel().setText("This institution hasn't been stored in the database.");
-                        }
-                    } else {
-                        institutionManagementDialog.getSaveOrUpdateButton().setEnabled(false);
-                        clearInstitutionDetailFields();
-                    }
-                }
-            }
-        });
-
-        institutionManagementDialog.getAddButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                Institution newInstitution = new Institution();
-                newInstitution.setName("name");
-                institutionBindingList.add(newInstitution);
-                institutionManagementDialog.getInstitutionList().setSelectedIndex(institutionBindingList.size() - 1);
-            }
-        });
-
-        institutionManagementDialog.getDeleteButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        institutionManagementDialog.getInstitutionList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
-                    Institution institutionToDelete = getSelectedInstitution();
+                    Institution institution = getSelectedInstitution();
 
-                    //check if fasta DB has an id.
-                    //If so, try to delete the fasta DB from the db.
-                    if (institutionToDelete.getId() != null) {
-                        try {
-                            institutionService.delete(institutionToDelete);
+                    //enable save and delete button
+                    institutionManagementDialog.getSaveOrUpdateButton().setEnabled(true);
+                    institutionManagementDialog.getDeleteButton().setEnabled(true);
 
-                            institutionBindingList.remove(institutionManagementDialog.getInstitutionList().getSelectedIndex());
-                            institutionManagementDialog.getInstitutionList().getSelectionModel().clearSelection();
-                            //clearInstrumentTypeDetailFields();
-                        } catch (DataIntegrityViolationException dive) {
-                            //check if the instrument type can be deleted without breaking existing database relations,
-                            //i.e. are there any constraints violations
-                            if (dive.getCause() instanceof ConstraintViolationException) {
-                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("institution", institutionToDelete.getName());
-                                eventBus.post(dbConstraintMessageEvent);
-                            } else {
-                                //pass the exception
-                                throw dive;
-                            }
-                        }
-                    } else {
-                        institutionBindingList.remove(institutionManagementDialog.getInstitutionList().getSelectedIndex());
-                        institutionManagementDialog.getInstitutionList().getSelectionModel().clearSelection();
-                        clearInstitutionDetailFields();
-                    }
-                } else {
-                    eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to delete.", JOptionPane.INFORMATION_MESSAGE));
-                }
-            }
-        });
-
-        institutionManagementDialog.getSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
-                    Institution selectedInstitution = getSelectedInstitution();
-                    //validate institution
-                    List<String> validationMessages = validateNumbers(selectedInstitution);
-                    validationMessages.addAll(GuiUtils.validateEntity(selectedInstitution));
-                    if (validationMessages.isEmpty()) {
-                        if (selectedInstitution.getId() != null) {
-                            institutionService.update(selectedInstitution);
-                        } else {
-                            institutionService.save(selectedInstitution);
-                            //refresh fasta DB list
-                            institutionManagementDialog.getInstitutionList().updateUI();
-                        }
+                    //check if the fasta DB has an ID.
+                    //If so, change the save button label.
+                    if (institution.getId() != null) {
                         institutionManagementDialog.getSaveOrUpdateButton().setText("update");
                         institutionManagementDialog.getInstitutionStateInfoLabel().setText("");
-
-                        MessageEvent messageEvent = new MessageEvent("Institution store confirmation", "Institution " + selectedInstitution.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                        eventBus.post(messageEvent);
                     } else {
-                        MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                        eventBus.post(messageEvent);
+                        institutionManagementDialog.getSaveOrUpdateButton().setText("save");
+                        institutionManagementDialog.getInstitutionStateInfoLabel().setText("This institution hasn't been stored in the database.");
                     }
                 } else {
-                    eventBus.post(new MessageEvent("Institution selection", "Please select an institution to save or update.", JOptionPane.INFORMATION_MESSAGE));
+                    institutionManagementDialog.getSaveOrUpdateButton().setEnabled(false);
+                    clearInstitutionDetailFields();
                 }
             }
         });
 
-        institutionManagementDialog.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (getSelectedInstitution() != null && getSelectedInstitution().getId() != null) {
-                    //roll back the changes
-                    Institution rolledBackInstitution = institutionService.findById(getSelectedInstitution().getId());
-                    int selectedIndex = institutionManagementDialog.getInstitutionList().getSelectedIndex();
-                    institutionBindingList.remove(selectedIndex);
-                    institutionBindingList.add(selectedIndex, rolledBackInstitution);
-                }
+        institutionManagementDialog.getAddButton().addActionListener(e -> {
+            Institution newInstitution = new Institution();
+            newInstitution.setName("name");
+            institutionBindingList.add(newInstitution);
+            institutionManagementDialog.getInstitutionList().setSelectedIndex(institutionBindingList.size() - 1);
+        });
 
-                institutionManagementDialog.dispose();
+        institutionManagementDialog.getDeleteButton().addActionListener(e -> {
+            if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
+                Institution institutionToDelete = getSelectedInstitution();
+
+                //check if fasta DB has an id.
+                //If so, try to delete the fasta DB from the db.
+                if (institutionToDelete.getId() != null) {
+                    try {
+                        institutionService.remove(institutionToDelete);
+
+                        institutionBindingList.remove(institutionManagementDialog.getInstitutionList().getSelectedIndex());
+                        institutionManagementDialog.getInstitutionList().getSelectionModel().clearSelection();
+                        //clearInstrumentTypeDetailFields();
+                    } catch (DataIntegrityViolationException dive) {
+                        //check if the instrument type can be deleted without breaking existing database relations,
+                        //i.e. are there any constraints violations
+                        if (dive.getCause() instanceof ConstraintViolationException) {
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("institution", institutionToDelete.getName());
+                            eventBus.post(dbConstraintMessageEvent);
+                        } else {
+                            //pass the exception
+                            throw dive;
+                        }
+                    }
+                } else {
+                    institutionBindingList.remove(institutionManagementDialog.getInstitutionList().getSelectedIndex());
+                    institutionManagementDialog.getInstitutionList().getSelectionModel().clearSelection();
+                    clearInstitutionDetailFields();
+                }
+            } else {
+                eventBus.post(new MessageEvent("Fasta DB selection", "Please select a fasta DB to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
+        });
+
+        institutionManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
+            if (institutionManagementDialog.getInstitutionList().getSelectedIndex() != -1) {
+                Institution selectedInstitution = getSelectedInstitution();
+                //validate institution
+                List<String> validationMessages = validateNumbers(selectedInstitution);
+                validationMessages.addAll(GuiUtils.validateEntity(selectedInstitution));
+                if (validationMessages.isEmpty()) {
+                    if (selectedInstitution.getId() != null) {
+                        selectedInstitution = institutionService.merge(selectedInstitution);
+                    } else {
+                        institutionService.persist(selectedInstitution);
+                        //refresh fasta DB list
+                        institutionManagementDialog.getInstitutionList().updateUI();
+                    }
+                    institutionManagementDialog.getSaveOrUpdateButton().setText("update");
+                    institutionManagementDialog.getInstitutionStateInfoLabel().setText("");
+
+                    MessageEvent messageEvent = new MessageEvent("Institution store confirmation", "Institution " + selectedInstitution.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                    eventBus.post(messageEvent);
+                } else {
+                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
+            } else {
+                eventBus.post(new MessageEvent("Institution selection", "Please select an institution to save or update.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        institutionManagementDialog.getCancelButton().addActionListener(e -> {
+            if (getSelectedInstitution() != null && getSelectedInstitution().getId() != null) {
+                //roll back the changes
+                Institution rolledBackInstitution = institutionService.findById(getSelectedInstitution().getId());
+                int selectedIndex = institutionManagementDialog.getInstitutionList().getSelectedIndex();
+                institutionBindingList.remove(selectedIndex);
+                institutionBindingList.add(selectedIndex, rolledBackInstitution);
+            }
+
+            institutionManagementDialog.dispose();
         });
     }
 

@@ -36,7 +36,7 @@ public class ColimsSearchParametersMapper {
      * @param colimsSearchParameters the Colims SearchParameters instance
      * @return the Utilities SearchParameters instance
      */
-    public com.compomics.util.experiment.identification.identification_parameters.SearchParameters mapForSpectrumPanel(final SearchParameters colimsSearchParameters) {
+    public com.compomics.util.experiment.identification.identification_parameters.SearchParameters mapForSpectrumPanel(SearchParameters colimsSearchParameters) {
         com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
 
         //fragment ion accuracy
@@ -55,7 +55,7 @@ public class ColimsSearchParametersMapper {
         utilitiesSearchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParameters.getUpperCharge()));
 
         //map search modifications
-        searchParametersService.fetchSearchModifications(colimsSearchParameters);
+        colimsSearchParameters = searchParametersService.fetchSearchModifications(colimsSearchParameters);
 
         PtmSettings ptmSettings = new PtmSettings();
         colimsSearchModificationMapper.map(colimsSearchParameters.getSearchParametersHasModifications(), ptmSettings);

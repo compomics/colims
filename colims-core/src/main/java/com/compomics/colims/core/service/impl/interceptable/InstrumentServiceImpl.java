@@ -30,32 +30,27 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public void save(final Instrument entity) {
-        instrumentRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Instrument entity) {
-        instrumentRepository.delete(entity);
-    }
-
-    @Override
     public Instrument findByName(final String name) {
         return instrumentRepository.findByName(name);
     }
 
     @Override
-    public void update(final Instrument entity) {
-        instrumentRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Instrument entity) {
-        instrumentRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public long countAll() {
         return instrumentRepository.countAll();
+    }
+
+    @Override
+    public void persist(Instrument entity) {
+        instrumentRepository.persist(entity);
+    }
+
+    @Override
+    public Instrument merge(Instrument entity) {
+        return instrumentRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Instrument entity) {
+        instrumentRepository.remove(entity);
     }
 }

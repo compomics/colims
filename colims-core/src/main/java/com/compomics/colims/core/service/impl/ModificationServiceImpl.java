@@ -30,26 +30,6 @@ public class ModificationServiceImpl implements ModificationService {
     }
 
     @Override
-    public void save(final Modification entity) {
-        modificationRepository.save(entity);
-    }
-
-    @Override
-    public void update(final Modification entity) {
-        modificationRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Modification entity) {
-        modificationRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final Modification entity) {
-        modificationRepository.delete(entity);
-    }
-
-    @Override
     public Modification findByName(final String name) {
         return modificationRepository.findByName(name);
     }
@@ -62,5 +42,20 @@ public class ModificationServiceImpl implements ModificationService {
     @Override
     public long countAll() {
         return modificationRepository.countAll();
+    }
+
+    @Override
+    public void persist(Modification entity) {
+        modificationRepository.persist(entity);
+    }
+
+    @Override
+    public Modification merge(Modification entity) {
+        return modificationRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Modification entity) {
+        modificationRepository.remove(entity);
     }
 }

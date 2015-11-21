@@ -7,8 +7,6 @@ package com.compomics.colims.core.service.impl.interceptable;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.repository.ExperimentRepository;
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +20,6 @@ import java.util.List;
 @Service("experimentService")
 @Transactional
 public class ExperimentServiceImpl implements ExperimentService {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ExperimentServiceImpl.class);
 
     @Autowired
     private ExperimentRepository experimentRepository;
@@ -42,56 +35,41 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public void save(final Experiment entity) {
-        experimentRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Experiment entity) {
-        experimentRepository.delete(entity);
-    }
-
-    @Override
-    public void update(final Experiment entity) {
-        experimentRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Experiment entity) {
-        experimentRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public long countAll() {
         return experimentRepository.countAll();
     }
 
     @Override
-    public Experiment findByTitle(final String title) {
-        return experimentRepository.findByTitle(title);
+    public void persist(Experiment entity) {
+        experimentRepository.persist(entity);
+    }
+
+    @Override
+    public Experiment merge(Experiment entity) {
+        return experimentRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Experiment entity) {
+        experimentRepository.remove(entity);
     }
 
     @Override
     public Experiment findByProjectIdAndTitle(final Long projectId, final String title) {
-        return experimentRepository.findByTitle(title);
+        return experimentRepository.findByProjectIdAndTitle(projectId, title);
     }
 
     @Override
-    public void fetchBinaryFiles(final Experiment experiment) {
+    public Experiment fetchBinaryFiles(final Experiment experiment) {
         try {
             experiment.getBinaryFiles().size();
+            return experiment;
         } catch (LazyInitializationException e) {
-            //attach the experiment to the new session
-            experimentRepository.saveOrUpdate(experiment);
-            if (!Hibernate.isInitialized(experiment.getBinaryFiles())) {
-                Hibernate.initialize(experiment.getBinaryFiles());
-            }
+            //merge the experiment
+            Experiment merge = experimentRepository.merge(experiment);
+            merge.getBinaryFiles().size();
+            return merge;
         }
     }
 
-    @Override
-    public void deleteById(Long id) {
-        Experiment experimentToDelete = experimentRepository.findById(id);
-        delete(experimentToDelete);
-    }
 }

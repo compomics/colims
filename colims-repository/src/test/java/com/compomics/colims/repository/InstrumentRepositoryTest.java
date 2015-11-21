@@ -81,19 +81,4 @@ public class InstrumentRepositoryTest {
         Assert.assertEquals(CvParamType.ANALYZER, analyzer.getCvParamType());
     }
 
-    @Test
-    public void testCustomUpdateEventListener() {
-        //get creation and modification date
-        Date creationDate = instrument.getCreationDate();
-        Date modificationDate = instrument.getModificationDate();
-
-        //update the instrument and save it
-        instrument.setName("instrument_1_new_name");
-        instrumentRepository.update(instrument);
-
-        //check if the creation date is the same and the modification has been updated
-        Assert.assertEquals(creationDate, instrument.getCreationDate());
-        //@ToDo check why the date doesn't change, possible because the transaction has not been flushed yet.
-        Assert.assertFalse(modificationDate.equals(instrument.getModificationDate()));
-    }
 }

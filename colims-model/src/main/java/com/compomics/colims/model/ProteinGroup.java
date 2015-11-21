@@ -36,8 +36,7 @@ public class ProteinGroup extends DatabaseEntity {
     /**
      * The ProteinGroupHasProtein instances from the join table between the protein group and protein tables.
      */
-    @OneToMany(mappedBy = "proteinGroup")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "proteinGroup", cascade = CascadeType.ALL)
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
 
     /**

@@ -35,11 +35,12 @@ public class PeptideShakerIOIT {
     /**
      * Test the unpacking of a PS .cps file.
      *
-     * @throws IOException            thrown in case of an IO related problem
-     * @throws ArchiveException       thrown in case of an archive related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws java.sql.SQLException  thrown in case of a database access error
-     * @throws InterruptedException   thrown in case a thread is interrupted
+     * @throws IOException thrown in case of an IO related problem
+     * @throws ArchiveException thrown in case of an archive related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a
+     * class by it's string name.
+     * @throws java.sql.SQLException thrown in case of a database access error
+     * @throws InterruptedException thrown in case a thread is interrupted
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
@@ -62,11 +63,12 @@ public class PeptideShakerIOIT {
     /**
      * Test the unpacking of a PeptideShakerImport instance.
      *
-     * @throws IOException            thrown in case of an IO related problem
-     * @throws ArchiveException       thrown in case of an archive related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
-     * @throws java.sql.SQLException  thrown in case of a database access error
-     * @throws InterruptedException   thrown in case a thread is interrupted
+     * @throws IOException thrown in case of an IO related problem
+     * @throws ArchiveException thrown in case of an archive related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a
+     * class by it's string name.
+     * @throws java.sql.SQLException thrown in case of a database access error
+     * @throws InterruptedException thrown in case a thread is interrupted
      */
     @Test
     public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
@@ -79,7 +81,7 @@ public class PeptideShakerIOIT {
 
         //save the fasta db. We don't have it as an insert statement in the import.sql file
         //as the file path might be different depending on the OS
-        fastaDbService.save(fastaDb);
+        fastaDbService.persist(fastaDb);
 
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());

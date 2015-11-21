@@ -45,7 +45,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
 
     @Override
     public T findById(final ID id) {
-        return (T) getCurrentSession().get(entityClass, id);
+        return getCurrentSession().get(entityClass, id);
     }
 
     @Override
@@ -67,32 +67,18 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
     }
 
     @Override
-    public void save(final T entity) {
-        getCurrentSession().persist(entity);
+    public void persist(T entity) {
+        entityManager.persist(entity);
     }
 
     @Override
-    public void update(final T entity) {
-        getCurrentSession().update(entity);
+    public T merge(T entity) {
+        return entityManager.merge(entity);
     }
 
     @Override
-    public void saveOrUpdate(final T entity) {
-        getCurrentSession().saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final T entity) {
-        getCurrentSession().delete(entity);
-    }
-
-    /**
-     * Get the Class of the entity.
-     *
-     * @return the class
-     */
-    protected Class<T> getEntityClass() {
-        return entityClass;
+    public void remove(T entity) {
+        entityManager.remove(entity);
     }
 
     /**

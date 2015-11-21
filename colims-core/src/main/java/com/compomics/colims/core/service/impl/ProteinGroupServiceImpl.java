@@ -48,28 +48,23 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
-    public void save(ProteinGroup entity) {
-        proteinGroupRepository.save(entity);
-    }
-
-    @Override
-    public void update(ProteinGroup entity) {
-        proteinGroupRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(ProteinGroup entity) {
-        proteinGroupRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(ProteinGroup entity) {
-        proteinGroupRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return proteinGroupRepository.countAll();
+    }
+
+    @Override
+    public void persist(ProteinGroup entity) {
+        proteinGroupRepository.persist(entity);
+    }
+
+    @Override
+    public ProteinGroup merge(ProteinGroup entity) {
+        return proteinGroupRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(ProteinGroup entity) {
+        proteinGroupRepository.remove(entity);
     }
 
 }

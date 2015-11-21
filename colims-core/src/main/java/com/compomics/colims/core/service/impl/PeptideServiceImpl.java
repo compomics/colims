@@ -5,7 +5,6 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,40 +38,35 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public void save(final Peptide entity) {
-        peptideRepository.save(entity);
-    }
-
-    @Override
-    public void update(final Peptide entity) {
-        peptideRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Peptide entity) {
-        peptideRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final Peptide entity) {
-        peptideRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return peptideRepository.countAll();
     }
 
     @Override
-    public void fetchPeptideHasModifications(final Peptide peptide) {
+    public void persist(Peptide entity) {
+        peptideRepository.persist(entity);
+    }
+
+    @Override
+    public Peptide merge(Peptide entity) {
+        return peptideRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Peptide entity) {
+        peptideRepository.remove(entity);
+    }
+
+    @Override
+    public Peptide fetchPeptideHasModifications(final Peptide peptide) {
         try {
             peptide.getPeptideHasModifications().size();
+            return peptide;
         } catch (LazyInitializationException e) {
-            //attach the peptide to the new session
-            peptideRepository.saveOrUpdate(peptide);
-            if (!Hibernate.isInitialized(peptide.getPeptideHasModifications())) {
-                Hibernate.initialize(peptide.getPeptideHasModifications());
-            }
+            //merge the peptide
+            Peptide merge = peptideRepository.merge(peptide);
+            merge.getPeptideHasModifications().size();
+            return merge;
         }
     }
 

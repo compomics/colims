@@ -18,15 +18,17 @@ public interface SampleService extends GenericService<Sample, Long> {
      * Fetch the sample binary files.
      *
      * @param sample the Sample entity
+     * @return the sample with fetched binary files
      */
-    void fetchBinaryFiles(Sample sample);
+    Sample fetchBinaryFiles(Sample sample);
 
     /**
      * Fetch the sample materials.
      *
      * @param sample the Sample entity
+     * @return the sample with fetched materials
      */
-    void fetchMaterials(Sample sample);
+    Sample fetchMaterials(Sample sample);
 
     /**
      * Get the most used protocol.
@@ -35,10 +37,4 @@ public interface SampleService extends GenericService<Sample, Long> {
      */
     Protocol getMostUsedProtocol();
 
-    /**
-     * Delete the Sample instance by ID.
-     *
-     * @param id the sample ID
-     */
-    void deleteById(Long id);
 }

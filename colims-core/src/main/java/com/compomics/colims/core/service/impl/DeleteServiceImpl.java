@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * This service cascade deletes an entity (Project, Experiment, Sample, AnalyticalRun) from the database.
- *
+ * <p/>
  * Created by Niels Hulstaert on 9/09/15.
  */
 @Service("deleteService")
@@ -57,27 +57,27 @@ public class DeleteServiceImpl implements DeleteService {
         List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
 
         //delete the analytical runs
-        analyticalRuns.forEach(analyticalRunRepository::delete);
+        analyticalRuns.forEach(analyticalRunRepository::remove);
 
         //delete the proteins
         for (Long proteinId : proteinIds) {
             Protein proteinToDelete = proteinRepository.findById(proteinId);
-            proteinRepository.delete(proteinToDelete);
+            proteinRepository.remove(proteinToDelete);
         }
         //delete the modifications
         for (Long modificationId : modificationIds) {
             Modification modificationToDelete = modificationRepository.findById(modificationId);
-            modificationRepository.delete(modificationToDelete);
+            modificationRepository.remove(modificationToDelete);
         }
         //delete the search parameters
         for (Long searchParametersId : searchParametersIds) {
             SearchParameters searchParametersToDelete = searchParametersRepository.findById(searchParametersId);
-            searchParametersRepository.delete(searchParametersToDelete);
+            searchParametersRepository.remove(searchParametersToDelete);
         }
         //delete the search modifications
         for (Long searchModificationId : searchModificationIds) {
             SearchModification searchModificationToDelete = searchModificationRepository.findById(searchModificationId);
-            searchModificationRepository.delete(searchModificationToDelete);
+            searchModificationRepository.remove(searchModificationToDelete);
         }
     }
 
@@ -91,13 +91,13 @@ public class DeleteServiceImpl implements DeleteService {
         //get the enity from the database
         if (entityClass.equals(Project.class)) {
             Project projectToDelete = projectRepository.findById(entityId);
-            projectRepository.delete(projectToDelete);
+            projectRepository.remove(projectToDelete);
         } else if (entityClass.equals(Experiment.class)) {
             Experiment experimentToDelete = experimentRepository.findById(entityId);
-            experimentRepository.delete(experimentToDelete);
+            experimentRepository.remove(experimentToDelete);
         } else if (entityClass.equals(Sample.class)) {
             Sample sampleToDelete = sampleRepository.findById(entityId);
-            sampleRepository.delete(sampleToDelete);
+            sampleRepository.remove(sampleToDelete);
         } else {
             throw new IllegalArgumentException("Unsupported enity class passed to deleted: " + entityClass.getSimpleName());
         }

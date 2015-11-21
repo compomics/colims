@@ -4,6 +4,33 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
+
+    <query name="Project.findAllWithEagerFetching">
+        select distinct project
+        from Project as project
+        join fetch project.experiments as experiment
+    </query>
+
+    <query name="Peptide.getPeptideDTOByProteinGroupId">
+        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+    </query>
+
+    <query name="ProteinGroup.getProteinGroupsProjections">
+        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+    </query>
+
     <sql-query name="Modification.getConstraintLessModificationIdsForRuns">
         SELECT
         DISTINCT modification.id
@@ -20,16 +47,6 @@
         )
         WHERE peptide_has_modification.l_modification_id IS NULL
     </sql-query>
-
-    <query name="Peptide.getPeptideDTOByProteinGroupId">
-        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
-        from Peptide as peptide
-        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
-        left join fetch peptide.peptideHasModifications as peptideHasModification
-        left join fetch peptideHasModification.modification as modification
-        join fetch peptide.spectrum as spectrum
-        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
-    </query>
 
     <sql-query name="Protein.getConstraintLessProteinIdsForRuns">
         SELECT
@@ -48,16 +65,6 @@
         )
         WHERE protein_group_has_protein.l_protein_id IS NULL
     </sql-query>
-
-    <query name="ProteinGroup.getProteinGroupsProjections">
-        select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
-        from Peptide as peptide
-        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
-        left join fetch peptide.peptideHasModifications as peptideHasModification
-        left join fetch peptideHasModification.modification as modification
-        join fetch peptide.spectrum as spectrum
-        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
-    </query>
 
     <sql-query name="SearchModification.getConstraintLessSearchModificationIdsForRuns">
         SELECT

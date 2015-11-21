@@ -55,8 +55,8 @@ public class Peptide extends DatabaseEntity {
      * The IdentificationFile instance that identified this peptide-to-spectrum match.
      */
     @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+//    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private IdentificationFile identificationFile;
     /**
      * The spectrum identified by this peptide.
@@ -67,17 +67,14 @@ public class Peptide extends DatabaseEntity {
     /**
      * The PeptideHasModification instances from the join table between the peptide and modification tables.
      */
-    @OneToMany(mappedBy = "peptide")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
-    @OneToMany(mappedBy = "peptide")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
-    @OneToMany(mappedBy = "peptide")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
 
     /**

@@ -30,17 +30,11 @@ public interface UserService extends GenericService<User, Long> {
      */
     User findByName(String name);
 
-//    /**
-//     * Fetch the user relations for authentication purposes; groups, roles and permissions.
-//     *
-//     * @param user the given user
-//     */
-//    void fetchAuthenticationRelations(User user);
-
     /**
      * Fetch the user relations for authentication purposes; groups, roles and permissions.
      *
      * @param user the given user
+     * @return the user with the fetched relations
      */
     User fetchAuthenticationRelations(User user);
 
@@ -64,6 +58,7 @@ public interface UserService extends GenericService<User, Long> {
      * Fetch the institution association.
      *
      * @param user the given user
+     * @return the user with the fetched institution
      */
-    void fetchInstitution(User user);
+    User fetchInstitution(User user);
 }

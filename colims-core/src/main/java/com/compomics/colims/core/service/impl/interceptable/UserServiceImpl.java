@@ -8,8 +8,6 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +22,6 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
-
     @Autowired
     private UserRepository userRepository;
 
@@ -38,18 +31,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(final User user) {
-        userRepository.save(user);
-    }
-
-    @Override
     public List<User> findAll() {
         return userRepository.findAllOrderedByUserName();
-    }
-
-    @Override
-    public void delete(final User user) {
-        userRepository.delete(user);
     }
 
     @Override
@@ -70,30 +53,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(final User entity) {
-        //attach the user to the new session
-        //userRepository.saveOrUpdate(entity);
-        userRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final User entity) {
-        userRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public User fetchAuthenticationRelations(final User user) {
         try {
             user.getGroups().size();
             return user;
         } catch (LazyInitializationException e) {
-            //attach the user to the new session
+            //merge the user
             User merge = userRepository.merge(user);
-            int size = merge.getGroups().size();
+            merge.getGroups().size();
             return merge;
-//            if (!Hibernate.isInitialized(merge.getGroups())) {
-//                Hibernate.initialize(merge.getGroups());
-//            }
         }
     }
 
@@ -103,9 +71,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void persist(User entity) {
+        userRepository.persist(entity);
+    }
+
+    @Override
+    public User merge(User entity) {
+        return userRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(User entity) {
+        userRepository.remove(entity);
+    }
+
+    @Override
     public boolean isDefaultUser(final User user) {
         boolean isDefaultUser = false;
-
         for (DefaultUser defaultUser : DefaultUser.values()) {
             if (user.getName().equals(defaultUser.dbEntry())) {
                 isDefaultUser = true;
@@ -129,15 +111,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void fetchInstitution(User user) {
+    public User fetchInstitution(User user) {
         try {
             user.getInstitution().getId();
+            return user;
         } catch (LazyInitializationException e) {
-            //attach the user to the new session
-            userRepository.saveOrUpdate(user);
-            if (!Hibernate.isInitialized(user.getInstitution())) {
-                Hibernate.initialize(user.getInstitution());
-            }
+            //merge the user
+            User merge = userRepository.merge(user);
+            user.getInstitution().getId();
+            return merge;
         }
     }
 
