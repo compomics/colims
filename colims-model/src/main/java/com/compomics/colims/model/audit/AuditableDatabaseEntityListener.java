@@ -12,22 +12,18 @@ import java.util.Date;
 /**
  * Created by Niels Hulstaert on 19/11/15.
  */
-@Component("auditableDatabaseEntityListener")
 public class AuditableDatabaseEntityListener {
-
-    @Autowired
-    private UserBean userBean;
 
     @PrePersist
     public void prePersist(AuditableDatabaseEntity auditableDatabaseEntity) {
         auditableDatabaseEntity.setCreationDate(new Date());
         auditableDatabaseEntity.setModificationDate(new Date());
-        auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        auditableDatabaseEntity.setUserName("blabla");
     }
 
     @PreUpdate
     public void preUpdate(AuditableDatabaseEntity auditableDatabaseEntity) {
         auditableDatabaseEntity.setModificationDate(new Date());
-        auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        auditableDatabaseEntity.setUserName("blabla");
     }
 }
