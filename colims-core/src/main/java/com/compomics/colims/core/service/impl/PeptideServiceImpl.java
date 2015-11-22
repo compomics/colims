@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 import org.apache.log4j.Logger;
@@ -58,15 +59,13 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public Peptide fetchPeptideHasModifications(final Peptide peptide) {
+    public void fetchPeptideHasModifications(final Peptide peptide) {
         try {
             peptide.getPeptideHasModifications().size();
-            return peptide;
         } catch (LazyInitializationException e) {
-            //merge the peptide
-            Peptide merge = peptideRepository.merge(peptide);
-            merge.getPeptideHasModifications().size();
-            return merge;
+            //fetch the PeptideHasModification instance
+            List<PeptideHasModification> peptideHasModifications = peptideRepository.fetchPeptideHasModifications(peptide.getId());
+            peptide.setPeptideHasModifications(peptideHasModifications);
         }
     }
 

@@ -46,4 +46,6 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      */
     Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
 
+    void save(final ProteinGroup proteinGroup);
+
 }

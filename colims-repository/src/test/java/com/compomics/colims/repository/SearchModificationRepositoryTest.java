@@ -9,6 +9,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
@@ -60,5 +63,15 @@ public class SearchModificationRepositoryTest {
         Assert.assertNotNull(searchModification);
         //check the ID
         Assert.assertNotNull(searchModification.getId());
+    }
+
+    @Test
+    public void GetConstraintLessSearchModificationIdsForRuns() {
+        List<Long> runIds = new ArrayList<>();
+        runIds.add(1L);
+
+        List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
+
+        Assert.assertEquals(0, searchModificationIds.size());
     }
 }

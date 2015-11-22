@@ -39,7 +39,7 @@ public class ColimsPeptideMapper {
      */
     private com.compomics.util.experiment.biology.Peptide mapPeptide(Peptide sourcePeptide) {
         //fetch PeptideHasModifications
-        sourcePeptide = peptideService.fetchPeptideHasModifications(sourcePeptide);
+        peptideService.fetchPeptideHasModifications(sourcePeptide);
 
         ArrayList<ModificationMatch> modificationMatches = new ArrayList<>();
         if (!sourcePeptide.getPeptideHasModifications().isEmpty()) {

@@ -85,10 +85,10 @@ INSERT INTO search_parameters (id, l_search_enzyme_cv_id, threshold, search_ion_
 INSERT INTO search_modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'test_utilities_name', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'utilities_name_2', '79.98', '79.966331');
 
 -- insert a test analytical run
-INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
+INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 2', '2012-11-08 16:51:13', 1, 1);
 
 -- insert a search and val settings set of settings
-INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1);
+INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 2, 1, 1, 1);
 
 -- insert a test identification file
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);

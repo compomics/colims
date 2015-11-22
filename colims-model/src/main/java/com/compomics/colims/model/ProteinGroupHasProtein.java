@@ -37,7 +37,7 @@ public class ProteinGroupHasProtein extends DatabaseEntity {
      * The Protein instance of this join entity.
      */
     @JoinColumn(name = "l_protein_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 //    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Protein protein;
 

@@ -102,8 +102,11 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
 
     @Override
     public Object[] getProteinGroupsProjections(AnalyticalRun analyticalRun) {
-
-
         return null;
+    }
+
+    @Override
+    public void save(ProteinGroup proteinGroup) {
+        getCurrentSession().save(proteinGroup);
     }
 }

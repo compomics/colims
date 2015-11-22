@@ -3,7 +3,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
-import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,18 +52,5 @@ public class ProteinServiceImpl implements ProteinService {
     @Override
     public void remove(Protein entity) {
         proteinRepository.remove(entity);
-    }
-
-    @Override
-    public Protein fetchAccessions(Protein protein) {
-        try {
-            protein.getProteinAccessions().size();
-            return protein;
-        } catch (LazyInitializationException e) {
-            //merge the protein
-            Protein merge = proteinRepository.merge(protein);
-            merge.getProteinAccessions().size();
-            return merge;
-        }
     }
 }

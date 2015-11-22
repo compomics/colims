@@ -8,7 +8,7 @@
     <query name="Project.findAllWithEagerFetching">
         select distinct project
         from Project as project
-        join fetch project.experiments as experiment
+        left join fetch project.experiments as experiment
     </query>
 
     <query name="Peptide.getPeptideDTOByProteinGroupId">
@@ -70,17 +70,19 @@
         SELECT
         DISTINCT search_modification.id
         FROM search_modification
-        LEFT JOIN search_params_has_modification ON search_params_has_modification.id = search_modification.id
-        AND search_params_has_modification.id NOT IN
+        LEFT JOIN search_params_has_modification s_p_has_mod ON s_p_has_mod.id = search_modification.id
+        LEFT JOIN search_parameters s_p ON s_p.id = s_p_has_mod.l_search_parameters_id
+        LEFT JOIN search_and_validation_settings s_and_v_s ON s_and_v_s.l_search_parameters_id = s_p.id
+        AND s_p_has_mod.id NOT IN
         (
         SELECT
         s_p_has_mod.id
         FROM search_params_has_modification s_p_has_mod
         JOIN search_parameters s_p ON s_p.id = s_p_has_mod.l_search_parameters_id
         JOIN search_and_validation_settings s_and_v_s ON s_and_v_s.l_search_parameters_id = s_p.id
-        WHERE s_and_v_s.l_analytical_run_id IN (:ids)
+        WHERE s_and_v_s.l_analytical_run_id in (:ids)
         )
-        WHERE search_params_has_modification.l_search_modification_id IS NULL
+        WHERE s_p_has_mod.l_search_modification_id IS NULL;
     </sql-query>
 
     <sql-query name="SearchParameters.getConstraintLessSearchParameterIdsForRuns">

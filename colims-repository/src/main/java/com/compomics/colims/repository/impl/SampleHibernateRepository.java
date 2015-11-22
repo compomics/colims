@@ -52,6 +52,7 @@ public class SampleHibernateRepository extends GenericHibernateRepository<Sample
     public List<Material> fetchMaterials(Long sampleId) {
         Criteria criteria = getCurrentSession().createCriteria(Material.class);
 
+        criteria.createAlias("samples", "sample");
         criteria.add(Restrictions.eq("sample.id", sampleId));
 
         return criteria.list();

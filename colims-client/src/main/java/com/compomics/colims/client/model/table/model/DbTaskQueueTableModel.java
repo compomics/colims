@@ -1,17 +1,17 @@
 package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.service.UserService;
+
+import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 
 /**
- *
  * @author Niels Hulstaert
  */
 public class DbTaskQueueTableModel extends AbstractTableModel {
@@ -27,7 +27,7 @@ public class DbTaskQueueTableModel extends AbstractTableModel {
     public static final int SUBMITTED_INDEX = 3;
     public static final int DESCRIPTION_INDEX = 4;
     public static final int USER_INDEX = 5;
-    private List<PersistDbTask> messages;
+    private List<DbTask> messages;
     private UserService userService;
 
     public DbTaskQueueTableModel() {
@@ -35,15 +35,15 @@ public class DbTaskQueueTableModel extends AbstractTableModel {
         userService = ApplicationContextProvider.getInstance().getBean("userService");
     }
 
-    public DbTaskQueueTableModel(List<PersistDbTask> messages) {
+    public DbTaskQueueTableModel(List<DbTask> messages) {
         this.messages = messages;
     }
 
-    public List<PersistDbTask> getMessages() {
+    public List<DbTask> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<PersistDbTask> messages) {
+    public void setMessages(List<DbTask> messages) {
         this.messages = messages;
         this.fireTableDataChanged();
     }

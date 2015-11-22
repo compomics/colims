@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
 
 import java.util.List;
@@ -19,4 +20,12 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return the list of PeptideDTO objects
      */
     List<PeptideDTO> getPeptideDTOByProteinGroupId(Long proteinGroupId);
+
+    /**
+     * Fetch the PeptideHasModification join entities.
+     *
+     * @param peptideId the peptide ID
+     * @return the list of PeptideHasModification instances
+     */
+    List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId);
 }

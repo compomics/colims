@@ -56,7 +56,7 @@ public class PersistServiceImpl implements PersistService {
 
             Set<ProteinGroup> proteinGroups = new HashSet<>();
             //collect all unique ProteinGroup instances
-            //@todo to this smarter, whitout having to iterate over everything
+            //@todo to this smarter, without having to iterate over everything
             for (Spectrum spectrum : analyticalRun.getSpectrums()) {
                 for (Peptide peptide : spectrum.getPeptides()) {
                     for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {

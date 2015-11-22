@@ -8,26 +8,20 @@ import com.compomics.colims.client.model.table.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.table.model.DbTaskQueueTableModel;
 import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.TaskManagementPanel;
-import com.compomics.colims.core.distributed.model.CompletedDbTask;
-import com.compomics.colims.core.distributed.model.DbTaskError;
-import com.compomics.colims.core.distributed.model.Notification;
-import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.*;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.UncategorizedJmsException;
 import org.springframework.stereotype.Component;
+
+import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The task management view controller.
@@ -131,9 +125,9 @@ public class TaskManagementController implements Controllable {
                         + System.lineSeparator() + "Are you sure?", "Delete task", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     try {
-                        PersistDbTask storageTask = dbTaskQueueTableModel.getMessages().get(selectedRowIndex);
+                        DbTask dbTask = dbTaskQueueTableModel.getMessages().get(selectedRowIndex);
 
-                        queueManager.deleteMessage(storageQueueName, storageTask.getMessageId());
+                        queueManager.deleteMessage(storageQueueName, dbTask.getMessageId());
 
                         updateMonitoringTables();
                     } catch (Exception ex) {
@@ -253,12 +247,11 @@ public class TaskManagementController implements Controllable {
     }
 
     /**
-     * Update the monitoring tables; fetch the messages currently residing on
-     * the queues.
+     * Update the monitoring tables; fetch the messages currently residing on the queues.
      */
     public void updateMonitoringTables() {
         try {
-            List<PersistDbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName, PersistDbTask.class);
+            List<DbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName, DbTask.class);
             dbTaskQueueTableModel.setMessages(storageTaskMessages);
 
             List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName, CompletedDbTask.class);

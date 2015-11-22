@@ -1,6 +1,7 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.model.PeptideDTO;
@@ -63,5 +64,14 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
         }
 
         return peptideDTOs;
+    }
+
+    @Override
+    public List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId) {
+        Criteria criteria = getCurrentSession().createCriteria(PeptideHasModification.class);
+
+        criteria.add(Restrictions.eq("peptide.id", peptideId));
+
+        return criteria.list();
     }
 }

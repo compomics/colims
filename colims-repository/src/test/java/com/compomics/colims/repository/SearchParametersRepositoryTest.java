@@ -59,7 +59,7 @@ public class SearchParametersRepositoryTest {
 
         List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
 
-        Assert.assertEquals(1, searchParametersIds.size());
+        Assert.assertEquals(0, searchParametersIds.size());
     }
 
 }
