@@ -38,5 +38,12 @@ public interface ProjectRepository extends GenericRepository<Project, Long> {
      */
     User getUserWithMostProjectOwns();
 
-    void saveOrUpdate(Project project);
+    /**
+     * Fetch the project users for the given project.
+     *
+     * @param projectId the project ID
+     * @return the list of project users
+     */
+    List<User> fetchUsers(Long projectId);
+
 }

@@ -266,9 +266,7 @@ public class SampleEditController implements Controllable {
                 Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
 
                 //fetch sample binary files
-                rolledBackSample = sampleService.fetchBinaryFiles(rolledBackSample);
-                //fetch sample materials
-                rolledBackSample = sampleService.fetchMaterials(rolledBackSample);
+                sampleService.fetchMaterialsAndBinaryFiles(rolledBackSample);
 
                 sampleToEdit.setBinaryFiles(rolledBackSample.getBinaryFiles());
                 sampleToEdit.setMaterials(rolledBackSample.getMaterials());
@@ -328,9 +326,7 @@ public class SampleEditController implements Controllable {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
             updateAnalyticalRunButtonsState(true);
             //fetch sample binary files
-            sampleService.fetchBinaryFiles(sampleToEdit);
-            //fetch sample materials
-            sampleService.fetchMaterials(sampleToEdit);
+            sampleService.fetchMaterialsAndBinaryFiles(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
             updateAnalyticalRunButtonsState(false);

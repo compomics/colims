@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchParametersService;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.repository.SearchParametersRepository;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,13 @@ public class SearchParametersServiceImpl implements SearchParametersService {
     private SearchParametersRepository searchParametersRepository;
 
     @Override
-    public SearchParameters fetchSearchModifications(SearchParameters searchParameters) {
+    public void fetchSearchModifications(SearchParameters searchParameters) {
         try {
             searchParameters.getSearchParametersHasModifications().size();
-            return searchParameters;
         } catch (LazyInitializationException e) {
-            //merge the search parameters
-            SearchParameters merge = searchParametersRepository.merge(searchParameters);
-            merge.getSearchParametersHasModifications().size();
-            return merge;
+            //fetch the search modifications
+            List<SearchParametersHasModification> searchParametersHasModifications = searchParametersRepository.fetchSearchModifications(searchParameters.getId());
+            searchParameters.setSearchParametersHasModifications(searchParametersHasModifications);
         }
     }
 

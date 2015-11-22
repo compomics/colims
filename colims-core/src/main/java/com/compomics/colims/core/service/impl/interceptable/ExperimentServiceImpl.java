@@ -6,6 +6,7 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.ExperimentRepository;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,15 +61,13 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public Experiment fetchBinaryFiles(final Experiment experiment) {
+    public void fetchBinaryFiles(final Experiment experiment) {
         try {
             experiment.getBinaryFiles().size();
-            return experiment;
         } catch (LazyInitializationException e) {
-            //merge the experiment
-            Experiment merge = experimentRepository.merge(experiment);
-            merge.getBinaryFiles().size();
-            return merge;
+            //fetch the binary files
+            List<ExperimentBinaryFile> binaryFiles = experimentRepository.fetchBinaryFiles(experiment.getId());
+            experiment.setBinaryFiles(binaryFiles);
         }
     }
 

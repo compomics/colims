@@ -53,15 +53,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User fetchAuthenticationRelations(final User user) {
+    public void fetchAuthenticationRelations(final User user) {
         try {
             user.getGroups().size();
-            return user;
         } catch (LazyInitializationException e) {
             //merge the user
             User merge = userRepository.merge(user);
             merge.getGroups().size();
-            return merge;
+            user.setGroups(merge.getGroups());
         }
     }
 
@@ -111,15 +110,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User fetchInstitution(User user) {
+    public void fetchInstitution(User user) {
         try {
             user.getInstitution().getId();
-            return user;
         } catch (LazyInitializationException e) {
             //merge the user
             User merge = userRepository.merge(user);
             user.getInstitution().getId();
-            return merge;
+            user.setInstitution(merge.getInstitution());
         }
     }
 

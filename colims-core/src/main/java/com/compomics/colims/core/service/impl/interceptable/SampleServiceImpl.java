@@ -1,8 +1,10 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.SampleService;
+import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.repository.SampleRepository;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,34 +54,26 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public Sample fetchBinaryFiles(final Sample sample) {
+    public void fetchMaterialsAndBinaryFiles(final Sample sample) {
+        try {
+            sample.getMaterials().size();
+        } catch (LazyInitializationException e) {
+            //fetch the materials
+            List<Material> materials = sampleRepository.fetchMaterials(sample.getId());
+            sample.setMaterials(materials);
+        }
         try {
             sample.getBinaryFiles().size();
-            return sample;
         } catch (LazyInitializationException e) {
-            //merge the sample
-            Sample merge = sampleRepository.merge(sample);
-            sample.getBinaryFiles().size();
-            return merge;
+            //fetch the binary files
+            List<SampleBinaryFile> binaryFiles = sampleRepository.fetchBinaryFiles(sample.getId());
+            sample.setBinaryFiles(binaryFiles);
         }
     }
 
     @Override
     public Protocol getMostUsedProtocol() {
         return sampleRepository.getMostUsedProtocol();
-    }
-
-    @Override
-    public Sample fetchMaterials(final Sample sample) {
-        try {
-            sample.getMaterials().size();
-            return sample;
-        } catch (LazyInitializationException e) {
-            //merge the sample
-            Sample merge = sampleRepository.merge(sample);
-            sample.getMaterials().size();
-            return merge;
-        }
     }
 
 }

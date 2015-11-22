@@ -58,7 +58,12 @@ public class ProjectHibernateRepository extends GenericHibernateRepository<Proje
     }
 
     @Override
-    public void saveOrUpdate(Project project) {
-        getCurrentSession().update(project);
+    public List<User> fetchUsers(Long projectId) {
+        Criteria criteria = getCurrentSession().createCriteria(User.class);
+
+        criteria.createAlias("projects", "project");
+        criteria.add(Restrictions.eq("project.id", projectId));
+
+        return criteria.list();
     }
 }

@@ -81,4 +81,12 @@ public class ProjectRepositoryTest {
         Assert.assertFalse(projects.isEmpty());
         Assert.assertEquals(2, projects.size());
     }
+
+    @Test
+    public void testFetchUsers() {
+        List<User> users = projectRepository.fetchUsers(1L);
+
+        Assert.assertFalse(users.isEmpty());
+        Assert.assertEquals(2, users.size());
+    }
 }

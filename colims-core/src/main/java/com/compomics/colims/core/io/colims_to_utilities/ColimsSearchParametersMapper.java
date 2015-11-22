@@ -55,7 +55,7 @@ public class ColimsSearchParametersMapper {
         utilitiesSearchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParameters.getUpperCharge()));
 
         //map search modifications
-        colimsSearchParameters = searchParametersService.fetchSearchModifications(colimsSearchParameters);
+        searchParametersService.fetchSearchModifications(colimsSearchParameters);
 
         PtmSettings ptmSettings = new PtmSettings();
         colimsSearchModificationMapper.map(colimsSearchParameters.getSearchParametersHasModifications(), ptmSettings);

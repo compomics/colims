@@ -115,13 +115,9 @@ public class ProjectEditController implements Controllable {
                 int index;
 
                 if (projectToEdit.getId() != null) {
-//                    Project merge = projectService.merge(projectToEdit);
-                    projectService.saveOrUpdate(projectToEdit);
+                    projectService.merge(projectToEdit);
 
                     index = projectManagementController.getSelectedProjectIndex();
-
-                    //update the project list
-//                    projectManagementController.updateProject(index, projectToEdit);
                 } else {
                     projectService.persist(projectToEdit);
 
@@ -172,7 +168,7 @@ public class ProjectEditController implements Controllable {
         projectEditDialog.getOwnerComboBox().getModel().setSelectedItem(projectToEdit.getOwner());
         projectEditDialog.getDescriptionTextArea().setText(projectToEdit.getDescription());
         //populate user dual list
-        projectToEdit = projectService.fetchUsers(projectToEdit);
+        projectService.fetchUsers(projectToEdit);
         projectEditDialog.getUserDualList().populateLists(users, projectToEdit.getUsers());
 
         showView();

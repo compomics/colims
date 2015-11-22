@@ -42,10 +42,7 @@ public interface ProjectService extends GenericService<Project, Long> {
      * Fetch the users linked to the given project.
      *
      * @param project the Project instance
-     * @return the project with the fetched users
      */
-    Project fetchUsers(Project project);
-
-    void saveOrUpdate(Project project);
+    void fetchUsers(Project project);
 
 }

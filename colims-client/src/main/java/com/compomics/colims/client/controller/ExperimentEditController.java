@@ -211,7 +211,7 @@ public class ExperimentEditController implements Controllable {
         if (experimentToEdit.getId() != null) {
             experimentEditDialog.getSaveOrUpdateButton().setText("update");
             //fetch experiment binary files
-            experimentToEdit = experimentService.fetchBinaryFiles(experimentToEdit);
+            experimentService.fetchBinaryFiles(experimentToEdit);
         } else {
             experimentEditDialog.getSaveOrUpdateButton().setText("save");
         }

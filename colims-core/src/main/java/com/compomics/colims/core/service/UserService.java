@@ -34,9 +34,8 @@ public interface UserService extends GenericService<User, Long> {
      * Fetch the user relations for authentication purposes; groups, roles and permissions.
      *
      * @param user the given user
-     * @return the user with the fetched relations
      */
-    User fetchAuthenticationRelations(User user);
+    void fetchAuthenticationRelations(User user);
 
     /**
      * Check if the user is a default user.
@@ -58,7 +57,6 @@ public interface UserService extends GenericService<User, Long> {
      * Fetch the institution association.
      *
      * @param user the given user
-     * @return the user with the fetched institution
      */
-    User fetchInstitution(User user);
+    void fetchInstitution(User user);
 }

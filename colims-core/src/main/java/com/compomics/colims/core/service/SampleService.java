@@ -15,20 +15,11 @@ import com.compomics.colims.model.Sample;
 public interface SampleService extends GenericService<Sample, Long> {
 
     /**
-     * Fetch the sample binary files.
+     * Fetch the sample materials and binary files.
      *
      * @param sample the Sample entity
-     * @return the sample with fetched binary files
      */
-    Sample fetchBinaryFiles(Sample sample);
-
-    /**
-     * Fetch the sample materials.
-     *
-     * @param sample the Sample entity
-     * @return the sample with fetched materials
-     */
-    Sample fetchMaterials(Sample sample);
+    void fetchMaterialsAndBinaryFiles(Sample sample);
 
     /**
      * Get the most used protocol.

@@ -1,9 +1,6 @@
 package com.compomics.colims.model;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * This class represents an experiment attachment in the database.
@@ -20,7 +17,7 @@ public class ExperimentBinaryFile extends BinaryFile {
      * The experiment of the attachment.
      */
     @JoinColumn(name = "l_experiment_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Experiment experiment;
 
     /**

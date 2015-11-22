@@ -178,7 +178,7 @@ public class UserManagementController implements Controllable {
                     //set the selected item in the institution combobox
                     if (selectedUser.getInstitution() != null) {
                         //fetch institution association
-                        selectedUser = userService.fetchInstitution(selectedUser);
+                        userService.fetchInstitution(selectedUser);
                         userManagementDialog.getInstitutionComboBox().getModel()
                                 .setSelectedItem(selectedUser.getInstitution());
                     }
@@ -186,7 +186,7 @@ public class UserManagementController implements Controllable {
                     //check if the user is has an ID.
                     //If so, disable the name text field and change the save button label.
                     if (selectedUser.getId() != null) {
-                        selectedUser = userService.fetchAuthenticationRelations(selectedUser);
+                        userService.fetchAuthenticationRelations(selectedUser);
 
                         userManagementDialog.getUserNameTextField().setEnabled(false);
                         userManagementDialog.getUserSaveOrUpdateButton().setText("update");

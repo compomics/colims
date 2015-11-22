@@ -82,20 +82,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project fetchUsers(Project project) {
+    public void fetchUsers(Project project) {
         try {
             project.getUsers().size();
-            return project;
         } catch (LazyInitializationException e) {
-            //merge the project
-            Project merge = projectRepository.merge(project);
-            merge.getUsers().size();
-            return merge;
+            //fetch the users
+            List<User> users = projectRepository.fetchUsers(project.getId());
+            project.setUsers(users);
         }
     }
 
-    @Override
-    public void saveOrUpdate(Project project) {
-        projectRepository.saveOrUpdate(project);
-    }
 }

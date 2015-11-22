@@ -373,8 +373,8 @@ public class MainController implements Controllable, ActionListener {
             userLoginDialog.dispose();
 
             //set current user in authentication bean after fetching the authentication relations
-            User user = userService.fetchAuthenticationRelations(currentUser);
-            userBean.setCurrentUser(user);
+            userService.fetchAuthenticationRelations(currentUser);
+            userBean.setCurrentUser(currentUser);
 
             //init this panel here because it depends on the userBean
             userQueryController.init();

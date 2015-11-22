@@ -27,7 +27,6 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * Fetch the experiment binary files.
      *
      * @param experiment the Experiment instance
-     * @return the experiment with fetched binary files
      */
-    Experiment fetchBinaryFiles(Experiment experiment);
+    void fetchBinaryFiles(Experiment experiment);
 }

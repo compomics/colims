@@ -152,15 +152,13 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
-    public Spectrum fetchSpectrumFiles(Spectrum spectrum) {
+    public void fetchSpectrumFiles(Spectrum spectrum) {
         try {
             spectrum.getSpectrumFiles().size();
-            return spectrum;
         } catch (LazyInitializationException e) {
-            //merge the spectrum
-            Spectrum merge = spectrumRepository.merge(spectrum);
-            merge.getSpectrumFiles().size();
-            return merge;
+            //fetch the spectrum files
+            List<SpectrumFile> spectrumFiles = spectrumRepository.fetchSpectrumFiles(spectrum.getId());
+            spectrum.setSpectrumFiles(spectrumFiles);
         }
     }
 

@@ -13,8 +13,7 @@ public interface SearchParametersService extends GenericService<SearchParameters
      * Fetch the search modifications associated with the search parameters.
      *
      * @param searchParameters the SearchParameters instance
-     * @return the search parameters with fetched search modifications
      */
-    SearchParameters fetchSearchModifications(SearchParameters searchParameters);
+    void fetchSearchModifications(SearchParameters searchParameters);
 
 }

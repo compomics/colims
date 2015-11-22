@@ -5,9 +5,13 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.ExperimentRepository;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -18,5 +22,14 @@ public class ExperimentHibernateRepository extends GenericHibernateRepository<Ex
     @Override
     public Experiment findByProjectIdAndTitle(Long projectId, String title) {
         return findUniqueByCriteria(Restrictions.eq("project.id", projectId), Restrictions.eq("title", title));
+    }
+
+    @Override
+    public List<ExperimentBinaryFile> fetchBinaryFiles(Long experimentId) {
+        Criteria criteria = getCurrentSession().createCriteria(ExperimentBinaryFile.class);
+
+        criteria.add(Restrictions.eq("experiment.id", experimentId));
+
+        return criteria.list();
     }
 }
