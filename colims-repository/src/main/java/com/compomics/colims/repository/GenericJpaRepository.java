@@ -33,6 +33,38 @@ public interface GenericJpaRepository<T, ID extends Serializable> {
      */
     List<T> findAll();
 
+
+    /**
+     * Save an entity. That means insert an entry if the identifier doesn't exist, else throw an exception. If the
+     * primary key is already present in the table, it cannot be inserted.
+     *
+     * @param entity the entity to save
+     */
+    void save(final T entity);
+
+    /**
+     * Update an entity. Update method in the hibernate is used for updating the entity using an identifier. If the
+     * identifier is missing or doesn't exist, throw an exception.
+     *
+     * @param entity the entity to update
+     */
+    void update(final T entity);
+
+    /**
+     * Save or update an entity. This method calls save() or update() based on the operation. If the entity's identifier
+     * exists, it will call the update method else the save method.
+     *
+     * @param entity the entity to update
+     */
+    void saveOrUpdate(final T entity);
+
+    /**
+     * Delete an entity from the database.
+     *
+     * @param entity the entity to delete
+     */
+    void delete(final T entity);
+
     /**
      * Find entities based on an example.
      *

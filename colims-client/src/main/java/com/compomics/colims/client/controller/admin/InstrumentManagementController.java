@@ -176,7 +176,7 @@ public class InstrumentManagementController implements Controllable {
                 //If so, delete the instrument from the db.
                 if (instrumentToDelete.getId() != null) {
                     try {
-                        instrumentService.delete(instrumentToDelete);
+                        instrumentService.remove(instrumentToDelete);
 
                         instrumentBindingList.remove(instrumentManagementDialog.getInstrumentList().getSelectedIndex());
                         instrumentManagementDialog.getInstrumentList().getSelectionModel().clearSelection();
@@ -317,11 +317,11 @@ public class InstrumentManagementController implements Controllable {
                 int index;
                 EntityChangeEvent.Type type;
                 if (instrumentToEdit.getId() != null) {
-                    instrumentService.update(instrumentToEdit);
+                    instrumentToEdit = instrumentService.merge(instrumentToEdit);
                     index = instrumentManagementDialog.getInstrumentList().getSelectedIndex();
                     type = EntityChangeEvent.Type.UPDATED;
                 } else {
-                    instrumentService.save(instrumentToEdit);
+                    instrumentService.persist(instrumentToEdit);
                     //add instrument to overview list
                     instrumentBindingList.add(instrumentToEdit);
                     index = instrumentBindingList.size() - 1;

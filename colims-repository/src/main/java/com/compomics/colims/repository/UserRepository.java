@@ -4,7 +4,9 @@
  */
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.Institution;
 import com.compomics.colims.model.User;
+
 import java.util.List;
 
 /**
@@ -29,5 +31,4 @@ public interface UserRepository extends GenericRepository<User, Long> {
      */
     List<User> findAllOrderedByUserName();
 
-    User merge(User user);
 }

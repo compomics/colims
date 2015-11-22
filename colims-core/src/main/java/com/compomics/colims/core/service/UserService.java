@@ -30,19 +30,12 @@ public interface UserService extends GenericService<User, Long> {
      */
     User findByName(String name);
 
-//    /**
-//     * Fetch the user relations for authentication purposes; groups, roles and permissions.
-//     *
-//     * @param user the given user
-//     */
-//    void fetchAuthenticationRelations(User user);
-
     /**
      * Fetch the user relations for authentication purposes; groups, roles and permissions.
      *
      * @param user the given user
      */
-    User fetchAuthenticationRelations(User user);
+    void fetchAuthenticationRelations(User user);
 
     /**
      * Check if the user is a default user.

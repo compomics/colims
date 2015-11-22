@@ -9,17 +9,4 @@ import com.compomics.colims.model.AnalyticalRun;
  */
 public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {
 
-    /**
-     * Fetch the spectra for the given analytical run.
-     *
-     * @param analyticalRun the AnalyticalRun instance
-     */
-    void fetchSpectra(AnalyticalRun analyticalRun);
-
-    /**
-     * Delete the AnalyticalRun instance by ID.
-     *
-     * @param id the analytical run ID
-     */
-    void deleteById(Long id);
 }

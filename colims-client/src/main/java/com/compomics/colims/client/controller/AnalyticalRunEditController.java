@@ -56,15 +56,6 @@ public class AnalyticalRunEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
-    /**
-     * Get the view of this controller.
-     *
-     * @return the AnalyticalRunEditDialog
-     */
-    public AnalyticalRunEditDialog getAnalyticalRunEditDialog() {
-        return analyticalRunEditDialog;
-    }
-
     @Override
     @PostConstruct
     public void init() {
@@ -96,7 +87,7 @@ public class AnalyticalRunEditController implements Controllable {
             List<String> validationMessages = GuiUtils.validateEntity(analyticalRunToEdit);
 
             if (validationMessages.isEmpty()) {
-                analyticalRunService.update(analyticalRunToEdit);
+                analyticalRunToEdit = analyticalRunService.merge(analyticalRunToEdit);
                 int index = sampleEditController.getSelectedAnalyticalRunIndex();
 
                 MessageEvent messageEvent = new MessageEvent("Analytical run store confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);

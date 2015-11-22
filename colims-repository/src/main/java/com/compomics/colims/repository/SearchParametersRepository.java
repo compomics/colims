@@ -5,6 +5,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 
 import java.util.List;
 
@@ -22,5 +23,13 @@ public interface SearchParametersRepository extends GenericRepository<SearchPara
      * @return the list of search parameters IDs
      */
     List<Long> getConstraintLessSearchParameterIdsForRuns(List<Long> analyticalRunIds);
+
+    /**
+     * Fetch the search modifications associated with the search parameters.
+     *
+     * @param searchParametersId the search parameters ID
+     * @return the associated search modification join entities
+     */
+    List<SearchParametersHasModification> fetchSearchModifications(Long searchParametersId);
 
 }

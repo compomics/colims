@@ -166,7 +166,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                 //If so, try to delete the fasta DB from the db.
                 if (fastaDbToDelete.getId() != null) {
                     try {
-                        fastaDbService.delete(fastaDbToDelete);
+                        fastaDbService.remove(fastaDbToDelete);
 
                         fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
                         fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
@@ -199,9 +199,9 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                 List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
                 if (validationMessages.isEmpty()) {
                     if (selectedFastaDb.getId() != null) {
-                        fastaDbService.update(selectedFastaDb);
+                        selectedFastaDb = fastaDbService.merge(selectedFastaDb);
                     } else {
-                        fastaDbService.save(selectedFastaDb);
+                        fastaDbService.persist(selectedFastaDb);
                         //refresh fasta DB list
                         fastaDbManagementDialog.getFastaDbList().updateUI();
                     }

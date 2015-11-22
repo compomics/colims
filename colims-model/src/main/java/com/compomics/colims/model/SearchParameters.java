@@ -2,7 +2,6 @@ package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.util.CompareUtils;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,15 +21,13 @@ public class SearchParameters extends DatabaseEntity {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam searchType;
     /**
      * The cleavage enzyme.
      */
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam enzyme;
     /**
@@ -97,8 +94,7 @@ public class SearchParameters extends DatabaseEntity {
      * The SearchParametersHasModification instances from the join table between the search parameters and search
      * modifications.
      */
-    @OneToMany(mappedBy = "searchParameters")
-    @org.hibernate.annotations.Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "searchParameters", cascade = CascadeType.ALL)
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();

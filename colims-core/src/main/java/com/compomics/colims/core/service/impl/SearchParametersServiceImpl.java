@@ -2,8 +2,8 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchParametersService;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.repository.SearchParametersRepository;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,9 @@ public class SearchParametersServiceImpl implements SearchParametersService {
         try {
             searchParameters.getSearchParametersHasModifications().size();
         } catch (LazyInitializationException e) {
-            //attach the protein to the new session
-            searchParametersRepository.saveOrUpdate(searchParameters);
-            if (!Hibernate.isInitialized(searchParameters.getSearchParametersHasModifications())) {
-                Hibernate.initialize(searchParameters.getSearchParametersHasModifications());
-            }
+            //fetch the search modifications
+            List<SearchParametersHasModification> searchParametersHasModifications = searchParametersRepository.fetchSearchModifications(searchParameters.getId());
+            searchParameters.setSearchParametersHasModifications(searchParametersHasModifications);
         }
     }
 
@@ -45,27 +43,22 @@ public class SearchParametersServiceImpl implements SearchParametersService {
     }
 
     @Override
-    public void save(SearchParameters entity) {
-        searchParametersRepository.save(entity);
-    }
-
-    @Override
-    public void update(SearchParameters entity) {
-        searchParametersRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(SearchParameters entity) {
-        searchParametersRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(SearchParameters entity) {
-        searchParametersRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return searchParametersRepository.countAll();
+    }
+
+    @Override
+    public void persist(SearchParameters entity) {
+        searchParametersRepository.persist(entity);
+    }
+
+    @Override
+    public SearchParameters merge(SearchParameters entity) {
+        return searchParametersRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(SearchParameters entity) {
+        searchParametersRepository.remove(entity);
     }
 }

@@ -107,7 +107,7 @@ public class ExperimentEditController implements Controllable {
                 EntityChangeEvent.Type type;
 
                 if (experimentToEdit.getId() != null) {
-                    experimentService.update(experimentToEdit);
+                    experimentService.merge(experimentToEdit);
 
                     index = projectManagementController.getSelectedExperimentIndex();
                     type = EntityChangeEvent.Type.UPDATED;
@@ -115,7 +115,7 @@ public class ExperimentEditController implements Controllable {
                     //set project
                     experimentToEdit.setProject(projectManagementController.getSelectedProject());
 
-                    experimentService.save(experimentToEdit);
+                    experimentService.persist(experimentToEdit);
 
                     index = projectManagementController.getExperimentsSize() - 1;
                     type = EntityChangeEvent.Type.CREATED;
@@ -146,7 +146,7 @@ public class ExperimentEditController implements Controllable {
             binaryFileToAdd.setExperiment(experimentToEdit);
 
             //save binary file
-            binaryFileService.save(binaryFileToAdd);
+            binaryFileService.persist(binaryFileToAdd);
 
             experimentToEdit.getBinaryFiles().add(binaryFileToAdd);
             experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -160,7 +160,7 @@ public class ExperimentEditController implements Controllable {
             }
 
             //remove binary file
-            binaryFileService.delete(binaryFileToRemove);
+            binaryFileService.remove(binaryFileToRemove);
 
             experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -169,7 +169,7 @@ public class ExperimentEditController implements Controllable {
             ExperimentBinaryFile binaryFileToUpdate = (ExperimentBinaryFile) evt.getNewValue();
 
             //update binary file
-            binaryFileService.update(binaryFileToUpdate);
+            binaryFileService.merge(binaryFileToUpdate);
 
             experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -200,7 +200,7 @@ public class ExperimentEditController implements Controllable {
 
     /**
      * Update the experiment edit dialog with the selected experiment in the
-     *
+     * <p/>
      * experiment overview table.
      *
      * @param experiment the Experiment instance
@@ -226,8 +226,7 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected experiment in the experiments
-     * table.
+     * Update the instance fields of the selected experiment in the experiments table.
      */
     private void updateExperimentToEdit() {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
@@ -237,8 +236,7 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Check if a experiment with the given experiment title exists in the
-     * database.
+     * Check if a experiment with the given experiment title exists in the database.
      *
      * @param experiment the experiment
      * @return does the experiment title exist

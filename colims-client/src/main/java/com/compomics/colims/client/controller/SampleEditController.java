@@ -32,7 +32,6 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.model.UserBean;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -179,7 +178,7 @@ public class SampleEditController implements Controllable {
                 EntityChangeEvent.Type type;
 
                 if (sampleToEdit.getId() != null) {
-                    sampleService.update(sampleToEdit);
+                    sampleToEdit = sampleService.merge(sampleToEdit);
 
                     index = projectManagementController.getSelectedSampleIndex();
                     type = EntityChangeEvent.Type.UPDATED;
@@ -187,7 +186,7 @@ public class SampleEditController implements Controllable {
                     //set experiment
                     sampleToEdit.setExperiment(projectManagementController.getSelectedExperiment());
 
-                    sampleService.save(sampleToEdit);
+                    sampleService.persist(sampleToEdit);
 
                     index = projectManagementController.getSamplesSize() - 1;
                     type = EntityChangeEvent.Type.CREATED;
@@ -219,7 +218,7 @@ public class SampleEditController implements Controllable {
             binaryFileToAdd.setSample(sampleToEdit);
 
             //save binary file
-            binaryFileService.save(binaryFileToAdd);
+            binaryFileService.persist(binaryFileToAdd);
 
             sampleToEdit.getBinaryFiles().add(binaryFileToAdd);
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
@@ -233,7 +232,7 @@ public class SampleEditController implements Controllable {
             }
 
             //remove binary file
-            binaryFileService.delete(binaryFileToRemove);
+            binaryFileService.remove(binaryFileToRemove);
 
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -242,7 +241,7 @@ public class SampleEditController implements Controllable {
             SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
 
             //update binary file
-            binaryFileService.update(binaryFileToUpdate);
+            binaryFileToUpdate = (SampleBinaryFile) binaryFileService.merge(binaryFileToUpdate);
 
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -267,9 +266,7 @@ public class SampleEditController implements Controllable {
                 Sample rolledBackSample = sampleService.findById(sampleToEdit.getId());
 
                 //fetch sample binary files
-                sampleService.fetchBinaryFiles(rolledBackSample);
-                //fetch sample materials
-                sampleService.fetchMaterials(rolledBackSample);
+                sampleService.fetchMaterialsAndBinaryFiles(rolledBackSample);
 
                 sampleToEdit.setBinaryFiles(rolledBackSample.getBinaryFiles());
                 sampleToEdit.setMaterials(rolledBackSample.getMaterials());
@@ -329,9 +326,7 @@ public class SampleEditController implements Controllable {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
             updateAnalyticalRunButtonsState(true);
             //fetch sample binary files
-            sampleService.fetchBinaryFiles(sampleToEdit);
-            //fetch sample materials
-            sampleService.fetchMaterials(sampleToEdit);
+            sampleService.fetchMaterialsAndBinaryFiles(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
             updateAnalyticalRunButtonsState(false);

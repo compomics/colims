@@ -3,7 +3,6 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.repository.ProteinRepository;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,40 +36,35 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public void save(final Protein entity) {
-        proteinRepository.save(entity);
-    }
-
-    @Override
-    public void update(final Protein entity) {
-        proteinRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Protein entity) {
-        proteinRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final Protein entity) {
-        proteinRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return proteinRepository.countAll();
     }
 
     @Override
-    public void fetchAccessions(Protein protein) {
+    public void persist(Protein entity) {
+        proteinRepository.persist(entity);
+    }
+
+    @Override
+    public Protein merge(Protein entity) {
+        return proteinRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Protein entity) {
+        proteinRepository.remove(entity);
+    }
+
+    @Override
+    public Protein fetchAccessions(Protein protein) {
         try {
             protein.getProteinAccessions().size();
+            return protein;
         } catch (LazyInitializationException e) {
-            //attach the protein to the new session
-            proteinRepository.saveOrUpdate(protein);
-            if (!Hibernate.isInitialized(protein.getProteinAccessions())) {
-                Hibernate.initialize(protein.getProteinAccessions());
-            }
+            //merge the protein
+            Protein merge = proteinRepository.merge(protein);
+            merge.getProteinAccessions().size();
+            return merge;
         }
     }
 }

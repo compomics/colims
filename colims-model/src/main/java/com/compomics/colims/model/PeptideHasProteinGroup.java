@@ -35,8 +35,7 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
      * The ProteinGroup instance of this join entity.
      */
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private ProteinGroup proteinGroup;
 
     public Double getPeptideProbability() {

@@ -60,6 +60,26 @@ public class GenericJpaRepositoryImpl<T, ID extends Serializable> implements Gen
     }
 
     @Override
+    public void save(T entity) {
+        getCurrentSession().save(entity);
+    }
+
+    @Override
+    public void update(T entity) {
+        getCurrentSession().update(entity);
+    }
+
+    @Override
+    public void saveOrUpdate(T entity) {
+        getCurrentSession().saveOrUpdate(entity);
+    }
+
+    @Override
+    public void delete(T entity) {
+        getCurrentSession().delete(entity);
+    }
+
+    @Override
     public List<T> findByExample(final T exampleInstance) {
         return createCriteria(Example.create(exampleInstance)).list();
     }
@@ -75,6 +95,7 @@ public class GenericJpaRepositoryImpl<T, ID extends Serializable> implements Gen
     }
 
     @Override
+
     public void persist(final T entity) {
         entityManager.persist(entity);
     }

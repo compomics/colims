@@ -54,15 +54,12 @@ public class Experiment extends AuditableDatabaseEntity {
     /**
      * The experiment samples.
      */
-//    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "experiment")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
+    @OneToMany(mappedBy = "experiment", cascade = CascadeType.REMOVE)
     List<Sample> samples = new ArrayList<>();
     /**
      * The experiment attachments. These are stored as lob's in the database.
      */
-    @OneToMany(mappedBy = "experiment")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "experiment", cascade = CascadeType.ALL)
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
 
     public Project getProject() {

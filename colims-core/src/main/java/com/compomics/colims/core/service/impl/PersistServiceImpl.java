@@ -66,7 +66,7 @@ public class PersistServiceImpl implements PersistService {
             }
             //and save them
             for (ProteinGroup proteinGroup : proteinGroups) {
-                proteinGroupRepository.save(proteinGroup);
+                proteinGroupRepository.persist(proteinGroup);
             }
 
             analyticalRun.setCreationDate(auditDate);
@@ -75,7 +75,7 @@ public class PersistServiceImpl implements PersistService {
             analyticalRun.setStartDate(startDate);
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrument);
-            analyticalRunRepository.saveOrUpdate(analyticalRun);
+            analyticalRunRepository.merge(analyticalRun);
         }
     }
 

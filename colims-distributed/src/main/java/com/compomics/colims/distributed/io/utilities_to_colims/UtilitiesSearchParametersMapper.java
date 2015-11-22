@@ -119,8 +119,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
                 enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, utilitiesEnzyme.getName());
             }
 
-            //save the newly created enzyme
-            typedCvParamService.save(enzyme);
+            //persist the newly created enzyme
+            typedCvParamService.persist(enzyme);
         }
 
         return enzyme;

@@ -30,26 +30,6 @@ public class SearchModificationServiceImpl implements SearchModificationService 
     }
 
     @Override
-    public void save(final SearchModification entity) {
-        searchModificationRepository.save(entity);
-    }
-
-    @Override
-    public void update(final SearchModification entity) {
-        searchModificationRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final SearchModification entity) {
-        searchModificationRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final SearchModification entity) {
-        searchModificationRepository.delete(entity);
-    }
-
-    @Override
     public SearchModification findByName(final String name) {
         return searchModificationRepository.findByName(name);
     }
@@ -62,6 +42,21 @@ public class SearchModificationServiceImpl implements SearchModificationService 
     @Override
     public long countAll() {
         return searchModificationRepository.countAll();
+    }
+
+    @Override
+    public void persist(SearchModification entity) {
+        searchModificationRepository.persist(entity);
+    }
+
+    @Override
+    public SearchModification merge(SearchModification entity) {
+        return searchModificationRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(SearchModification entity) {
+        searchModificationRepository.remove(entity);
     }
 
 }

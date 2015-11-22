@@ -3,6 +3,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.SpectrumFile;
 
 import java.util.List;
 
@@ -102,4 +103,12 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return the spectra projection values for the given run
      */
     Object[] getSpectraProjections(final AnalyticalRun analyticalRun);
+
+    /**
+     * Fetch the spectrum files for the given spectrum.
+     *
+     * @param spectrumId the spectrum id
+     * @return the associated spectrum files
+     */
+    List<SpectrumFile> fetchSpectrumFiles(Long spectrumId);
 }

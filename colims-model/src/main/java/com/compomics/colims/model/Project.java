@@ -60,8 +60,7 @@ public class Project extends AuditableDatabaseEntity {
     /**
      * The project experiments.
      */
-    @OneToMany(mappedBy = "project")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.REMOVE)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     private List<Experiment> experiments = new ArrayList<>();
 
     /**

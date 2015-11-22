@@ -94,6 +94,7 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * Fetch the spectrum spectrumFiles.
      *
      * @param spectrum the Spectrum instance
+     * @return the spectrum with the fetched spectrum files
      */
     void fetchSpectrumFiles(Spectrum spectrum);
 

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-public interface UserQueryService extends GenericJpaService<UserQuery, Long> {
+public interface UserQueryService extends GenericService<UserQuery, Long> {
 
     /**
      * Execute the given user query string and return the query results. Checks if the query was already saved for the

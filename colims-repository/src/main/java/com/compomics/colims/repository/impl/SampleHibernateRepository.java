@@ -1,23 +1,25 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Material;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
-import org.springframework.stereotype.Repository;
-
+import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.repository.SampleRepository;
-import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
- *
  * @author Kenneth Verheggen
  */
 @Repository("sampleRepository")
 public class SampleHibernateRepository extends GenericHibernateRepository<Sample, Long> implements SampleRepository {
-    
+
     @Override
     public Protocol getMostUsedProtocol() {
         Criteria criteria = createCriteria();
@@ -35,5 +37,23 @@ public class SampleHibernateRepository extends GenericHibernateRepository<Sample
         }
 
         return protocol;
+    }
+
+    @Override
+    public List<SampleBinaryFile> fetchBinaryFiles(Long sampleId) {
+        Criteria criteria = getCurrentSession().createCriteria(SampleBinaryFile.class);
+
+        criteria.add(Restrictions.eq("sample.id", sampleId));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<Material> fetchMaterials(Long sampleId) {
+        Criteria criteria = getCurrentSession().createCriteria(Material.class);
+
+        criteria.add(Restrictions.eq("sample.id", sampleId));
+
+        return criteria.list();
     }
 }

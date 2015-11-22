@@ -25,7 +25,7 @@ public interface ProjectService extends GenericService<Project, Long> {
     Project findByTitle(String title);
 
     /**
-     * Find all projects and load the according experiments and samples.
+     * Find all projects and fetch the associated experiments and samples.
      *
      * @return the found projects
      */
@@ -45,10 +45,4 @@ public interface ProjectService extends GenericService<Project, Long> {
      */
     void fetchUsers(Project project);
 
-    /**
-     * Delete the Project instance by ID.
-     *
-     * @param id the project ID
-     */
-    void deleteById(Long id);
 }

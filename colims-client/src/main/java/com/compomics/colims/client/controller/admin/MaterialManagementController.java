@@ -175,7 +175,7 @@ public class MaterialManagementController implements Controllable {
                 //If so, delete the material from the db.
                 if (materialToDelete.getId() != null) {
                     try {
-                        materialService.delete(materialToDelete);
+                        materialService.remove(materialToDelete);
 
                         materialBindingList.remove(materialManagementDialog.getMaterialList().getSelectedIndex());
                         materialManagementDialog.getMaterialList().getSelectionModel().clearSelection();
@@ -324,11 +324,11 @@ public class MaterialManagementController implements Controllable {
                 int index;
                 EntityChangeEvent.Type type;
                 if (materialToEdit.getId() != null) {
-                    materialService.update(materialToEdit);
+                    materialToEdit = materialService.merge(materialToEdit);
                     index = materialManagementDialog.getMaterialList().getSelectedIndex();
                     type = EntityChangeEvent.Type.UPDATED;
                 } else {
-                    materialService.save(materialToEdit);
+                    materialService.persist(materialToEdit);
                     //add instrument to overview list
                     materialBindingList.add(materialToEdit);
                     index = materialBindingList.size() - 1;

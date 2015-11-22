@@ -3,6 +3,7 @@ package com.compomics.colims.repository.impl;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.ProjectionList;
@@ -159,5 +160,14 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
         criteria.setProjection(projectionList);
 
         return (Object[]) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<SpectrumFile> fetchSpectrumFiles(Long spectrumId) {
+        Criteria criteria = getCurrentSession().createCriteria(SpectrumFile.class);
+
+        criteria.add(Restrictions.eq("spectrum.id", spectrumId));
+
+        return criteria.list();
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * <p/>
  * Created by Niels Hulstaert on 5/11/15.
  */
-public interface UserQueryRepository extends GenericJpaRepository<UserQuery, Long> {
+public interface UserQueryRepository extends GenericRepository<UserQuery, Long> {
 
     /**
      * Execute the given user query string and return the query results.

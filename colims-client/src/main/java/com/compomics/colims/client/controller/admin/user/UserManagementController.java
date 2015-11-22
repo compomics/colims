@@ -16,8 +16,8 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Institution;
 import com.compomics.colims.model.User;
-import com.compomics.colims.model.comparator.GroupNameComparator;
 import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.comparator.GroupNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -35,14 +35,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
@@ -165,171 +159,150 @@ public class UserManagementController implements Controllable {
             }
         });
 
-        userManagementDialog.getUserList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
-                        User selectedUser = getSelectedUser();
-
-                        //check if the selected user is the current user.
-                        //If so, disable the delete button
-                        if (userBean.getCurrentUser().equals(selectedUser)) {
-                            userManagementDialog.getDeleteUserButton().setEnabled(false);
-                        } else {
-                            userManagementDialog.getDeleteUserButton().setEnabled(true);
-                        }
-
-                        //enable save button
-                        userManagementDialog.getUserSaveOrUpdateButton().setEnabled(true);
-
-                        //set the selected item in the institution combobox
-                        if (selectedUser.getInstitution() != null) {
-                            //fetch institution association
-                            userService.fetchInstitution(selectedUser);
-                            userManagementDialog.getInstitutionComboBox().getModel()
-                                    .setSelectedItem(selectedUser.getInstitution());
-                        }
-
-                        //check if the user is has an ID.
-                        //If so, disable the name text field and change the save button label.
-                        if (selectedUser.getId() != null) {
-                            userService.fetchAuthenticationRelations(selectedUser);
-
-                            userManagementDialog.getUserNameTextField().setEnabled(false);
-                            userManagementDialog.getUserSaveOrUpdateButton().setText("update");
-                            userManagementDialog.getUserStateInfoLabel().setText("");
-                        } else {
-                            userManagementDialog.getUserNameTextField().setEnabled(true);
-                            userManagementDialog.getUserSaveOrUpdateButton().setText("save");
-                            userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been stored in the database.");
-                        }
-
-                        //populate dual list with groups
-                        userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
-                    } else {
-                        userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
-                    }
-                }
-            }
-        });
-
-        userManagementDialog.getAddUserButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                User newUser = new User("name");
-                newUser.setUserName(userBean.getCurrentUser().getName());
-                userBindingList.add(newUser);
-                userManagementDialog.getUserNameTextField().setEnabled(true);
-                userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
-            }
-        });
-
-        userManagementDialog.getDeleteUserButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        userManagementDialog.getUserList().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
                 if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
-                    User userToDelete = getSelectedUser();
-                    //check if the user is already has an id.
-                    //If so, delete the user from the db.
-                    if (userToDelete.getId() != null) {
-                        //check if the user is a default user
-                        if (!userService.isDefaultUser(userToDelete)) {
-                            try {
-                                userService.delete(userToDelete);
-                                eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+                    User selectedUser = getSelectedUser();
 
-                                userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                                resetSelection();
-                            } catch (DataIntegrityViolationException dive) {
-                                //check if the user can be deleted without breaking existing database relations,
-                                //i.e. are there any constraints violations
-                                if (dive.getCause() instanceof ConstraintViolationException) {
-                                    DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
-                                    eventBus.post(dbConstraintMessageEvent);
-                                } else {
-                                    //pass the exception
-                                    throw dive;
-                                }
-                            }
-                        } else {
-                            DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
-                            eventBus.post(defaultDbEntryMessageEvent);
-                        }
+                    //check if the selected user is the current user.
+                    //If so, disable the delete button
+                    if (userBean.getCurrentUser().equals(selectedUser)) {
+                        userManagementDialog.getDeleteUserButton().setEnabled(false);
                     } else {
-                        userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
-                        resetSelection();
-                    }
-                }
-            }
-        });
-
-        userManagementDialog.getGroupDualList().addPropertyChangeListener(DualList.CHANGED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                //change groups of the selected user
-                List<Group> addedGroups = (List<Group>) evt.getNewValue();
-
-                //add groups to the selected user
-                User selectedUser = getSelectedUser();
-                selectedUser.setGroups(addedGroups);
-
-                areChildrenAffected = true;
-            }
-        });
-
-        userManagementDialog.getUserSaveOrUpdateButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                User selectedUser = getSelectedUser();
-                //validate user
-                List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
-                //check for a new user if the user name already exists in the db
-                if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
-                    validationMessages.add(selectedUser.getName() + " already exists in the database"
-                            + System.lineSeparator() + "please choose another user name.");
-                }
-                if (validationMessages.isEmpty()) {
-                    Institution selectedInstitution = null;
-                    if (userManagementDialog.getInstitutionComboBox().getSelectedIndex() != -1) {
-                        selectedInstitution = (Institution) userManagementDialog.getInstitutionComboBox().getSelectedItem();
+                        userManagementDialog.getDeleteUserButton().setEnabled(true);
                     }
 
-                    //save or update the user
+                    //enable save button
+                    userManagementDialog.getUserSaveOrUpdateButton().setEnabled(true);
+
+                    //set the selected item in the institution combobox
+                    if (selectedUser.getInstitution() != null) {
+                        //fetch institution association
+                        userService.fetchInstitution(selectedUser);
+                        userManagementDialog.getInstitutionComboBox().getModel()
+                                .setSelectedItem(selectedUser.getInstitution());
+                    }
+
+                    //check if the user is has an ID.
+                    //If so, disable the name text field and change the save button label.
                     if (selectedUser.getId() != null) {
-                        if (selectedInstitution != null && !selectedInstitution.equals(selectedUser.getInstitution())) {
-                            selectedUser.setInstitution(selectedInstitution);
-                        }
-                        userService.update(selectedUser);
+                        userService.fetchAuthenticationRelations(selectedUser);
+
+                        userManagementDialog.getUserNameTextField().setEnabled(false);
+                        userManagementDialog.getUserSaveOrUpdateButton().setText("update");
+                        userManagementDialog.getUserStateInfoLabel().setText("");
                     } else {
-                        if (selectedInstitution != null) {
-                            selectedUser.setInstitution(selectedInstitution);
-                        }
-                        userService.save(selectedUser);
+                        userManagementDialog.getUserNameTextField().setEnabled(true);
+                        userManagementDialog.getUserSaveOrUpdateButton().setText("save");
+                        userManagementDialog.getUserStateInfoLabel().setText("This user hasn't been stored in the database.");
                     }
-                    userManagementDialog.getUserNameTextField().setEnabled(false);
-                    userManagementDialog.getUserSaveOrUpdateButton().setText("update");
-                    userManagementDialog.getUserStateInfoLabel().setText("");
 
-                    UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
-                    eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
-
-                    MessageEvent messageEvent = new MessageEvent("User store confirmation", "User " + selectedUser.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
-                    eventBus.post(messageEvent);
+                    //populate dual list with groups
+                    userManagementDialog.getGroupDualList().populateLists(availableGroups, selectedUser.getGroups());
                 } else {
-                    MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
-                    eventBus.post(messageEvent);
+                    userManagementDialog.getUserSaveOrUpdateButton().setEnabled(false);
                 }
             }
         });
 
-        userManagementDialog.getInstitutionManagementButton().addActionListener(new ActionListener() {
+        userManagementDialog.getAddUserButton().addActionListener(e -> {
+            User newUser = new User("name");
+            newUser.setUserName(userBean.getCurrentUser().getName());
+            userBindingList.add(newUser);
+            userManagementDialog.getUserNameTextField().setEnabled(true);
+            userManagementDialog.getUserList().setSelectedIndex(userBindingList.size() - 1);
+        });
 
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                institutionManagementController.showView();
+        userManagementDialog.getDeleteUserButton().addActionListener(e -> {
+            if (userManagementDialog.getUserList().getSelectedIndex() != -1) {
+                User userToDelete = getSelectedUser();
+                //check if the user is already has an id.
+                //If so, delete the user from the db.
+                if (userToDelete.getId() != null) {
+                    //check if the user is a default user
+                    if (!userService.isDefaultUser(userToDelete)) {
+                        try {
+                            userService.remove(userToDelete);
+                            eventBus.post(new UserChangeEvent(UserChangeEvent.Type.DELETED, true, userToDelete));
+
+                            userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                            resetSelection();
+                        } catch (DataIntegrityViolationException dive) {
+                            //check if the user can be deleted without breaking existing database relations,
+                            //i.e. are there any constraints violations
+                            if (dive.getCause() instanceof ConstraintViolationException) {
+                                DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("user", userToDelete.getName());
+                                eventBus.post(dbConstraintMessageEvent);
+                            } else {
+                                //pass the exception
+                                throw dive;
+                            }
+                        }
+                    } else {
+                        DefaultDbEntryMessageEvent defaultDbEntryMessageEvent = new DefaultDbEntryMessageEvent("user", userToDelete.getName());
+                        eventBus.post(defaultDbEntryMessageEvent);
+                    }
+                } else {
+                    userBindingList.remove(userManagementDialog.getUserList().getSelectedIndex());
+                    resetSelection();
+                }
             }
         });
+
+        userManagementDialog.getGroupDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
+            //change groups of the selected user
+            List<Group> addedGroups = (List<Group>) evt.getNewValue();
+
+            //add groups to the selected user
+            User selectedUser = getSelectedUser();
+            selectedUser.setGroups(addedGroups);
+
+            areChildrenAffected = true;
+        });
+
+        userManagementDialog.getUserSaveOrUpdateButton().addActionListener(e -> {
+            User selectedUser = getSelectedUser();
+            //validate user
+            List<String> validationMessages = GuiUtils.validateEntity(selectedUser);
+            //check for a new user if the user name already exists in the db
+            if (selectedUser.getId() == null && isExistingUserName(selectedUser)) {
+                validationMessages.add(selectedUser.getName() + " already exists in the database"
+                        + System.lineSeparator() + "please choose another user name.");
+            }
+            if (validationMessages.isEmpty()) {
+                Institution selectedInstitution = null;
+                if (userManagementDialog.getInstitutionComboBox().getSelectedIndex() != -1) {
+                    selectedInstitution = (Institution) userManagementDialog.getInstitutionComboBox().getSelectedItem();
+                }
+
+                //save or update the user
+                if (selectedUser.getId() != null) {
+                    if (selectedInstitution != null && !selectedInstitution.equals(selectedUser.getInstitution())) {
+                        selectedUser.setInstitution(selectedInstitution);
+                    }
+                    selectedUser = userService.merge(selectedUser);
+                } else {
+                    if (selectedInstitution != null) {
+                        selectedUser.setInstitution(selectedInstitution);
+                    }
+                    userService.persist(selectedUser);
+                }
+                userManagementDialog.getUserNameTextField().setEnabled(false);
+                userManagementDialog.getUserSaveOrUpdateButton().setText("update");
+                userManagementDialog.getUserStateInfoLabel().setText("");
+
+                UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
+                eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
+
+                MessageEvent messageEvent = new MessageEvent("User store confirmation", "User " + selectedUser.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
+                eventBus.post(messageEvent);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
+        userManagementDialog.getInstitutionManagementButton().addActionListener(e -> institutionManagementController.showView());
     }
 
     @Override

@@ -68,9 +68,9 @@ public class MaxQuantIT {
         maxQuantTestFastaDb.setFileName(fastaResource.getFilename());
         maxQuantTestFastaDb.setFilePath(fastaResource.getFile().getPath());
 
-        //save the fasta db. We don't have it as an insert statement in the import.sql file
+        //persist the fasta db. We don't have it as an insert statement in the import.sql file
         //as the file path might be different depending on the OS
-        fastaDbService.save(maxQuantTestFastaDb);
+        fastaDbService.persist(maxQuantTestFastaDb);
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), maxQuantTestFastaDb.getId());
         List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);

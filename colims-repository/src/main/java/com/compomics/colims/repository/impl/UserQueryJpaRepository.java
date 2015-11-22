@@ -133,4 +133,5 @@ public class UserQueryJpaRepository extends GenericJpaRepositoryImpl<UserQuery, 
             remove(userQuery);
         }
     }
+
 }

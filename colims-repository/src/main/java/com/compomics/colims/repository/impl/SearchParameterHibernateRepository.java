@@ -4,9 +4,13 @@
  */
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.repository.SearchParametersRepository;
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
@@ -18,21 +22,6 @@ import java.util.List;
 @Repository("searchParameterRepository")
 public class SearchParameterHibernateRepository extends GenericHibernateRepository<SearchParameters, Long> implements SearchParametersRepository {
 
-    public static final String SEARCH_PARAMETERS_IDS_QUERY =
-            "SELECT "
-            + "DISTINCT search_parameters.id "
-            + "FROM search_parameters "
-            + "LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id = search_parameters.id "
-            + "AND search_and_validation_settings.id NOT IN "
-            + "( "
-            + "   SELECT "
-            + "   s_and_v_s.id "
-            + "   FROM search_and_validation_settings s_and_v_s "
-            + "   WHERE s_and_v_s.l_analytical_run_id IN (:ids) "
-            + ") "
-            + "WHERE search_and_validation_settings.l_search_parameters_id IS NULL "
-            + "; ";
-
     @Override
     public List<Long> getConstraintLessSearchParameterIdsForRuns(List<Long> analyticalRunIds) {
         SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("SearchParameters.getConstraintLessSearchParameterIdsForRuns");
@@ -40,5 +29,14 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
         sqlQuery.addScalar("search_parameters.id", LongType.INSTANCE);
 
         return sqlQuery.list();
+    }
+
+    @Override
+    public List<SearchParametersHasModification> fetchSearchModifications(Long searchParametersId) {
+        Criteria criteria = getCurrentSession().createCriteria(SearchParametersHasModification.class);
+
+        criteria.add(Restrictions.eq("searchParameter.id", searchParametersId));
+
+        return criteria.list();
     }
 }

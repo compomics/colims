@@ -1,6 +1,5 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
@@ -9,12 +8,11 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
 import com.compomics.colims.repository.SearchParametersRepository;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -29,8 +27,6 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     private SearchEngineRepository searchEngineRepository;
     @Autowired
     private SearchParametersRepository searchParametersRepository;
-    @Autowired
-    private OlsService olsService;
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {
@@ -43,28 +39,23 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     }
 
     @Override
-    public void save(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.save(entity);
-    }
-
-    @Override
-    public void update(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final SearchAndValidationSettings entity) {
-        searchAndValidationSettingsRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return searchAndValidationSettingsRepository.countAll();
+    }
+
+    @Override
+    public void persist(SearchAndValidationSettings entity) {
+        searchAndValidationSettingsRepository.persist(entity);
+    }
+
+    @Override
+    public SearchAndValidationSettings merge(SearchAndValidationSettings entity) {
+        return searchAndValidationSettingsRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(SearchAndValidationSettings entity) {
+        searchAndValidationSettingsRepository.remove(entity);
     }
 
     @Override
@@ -83,7 +74,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
                 searchEngine = new SearchEngine(searchEngineType, version);
             }
 
-            searchEngineRepository.save(searchEngine);
+            searchEngineRepository.persist(searchEngine);
         }
 
         return searchEngine;
@@ -96,8 +87,8 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
         if (!searchParameterses.isEmpty()) {
             return searchParameterses.get(0);
         } else {
-            //save the given instance
-            searchParametersRepository.saveOrUpdate(searchParameters);
+            //persist the given instance
+            searchParametersRepository.persist(searchParameters);
             return searchParameters;
         }
     }

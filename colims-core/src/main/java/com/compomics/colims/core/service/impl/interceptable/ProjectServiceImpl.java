@@ -10,7 +10,6 @@ import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,42 +38,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void save(final Project entity) {
-        projectRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Project entity) {
-        projectRepository.delete(entity);
-    }
-
-    @Override
-    public void update(final Project entity) {
-        projectRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Project entity) {
-        projectRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public List<Project> findAllWithEagerFetching() {
-        List<Project> projects = projectRepository.findAll();
-
-        //fetch collections
+        List<Project> projects = projectRepository.findAllWithEagerFetching();
         for (Project project : projects) {
-            if (!Hibernate.isInitialized(project.getExperiments())) {
-                Hibernate.initialize(project.getExperiments());
-                for (Experiment experiment : project.getExperiments()) {
-                    if (!Hibernate.isInitialized(experiment.getSamples())) {
-                        Hibernate.initialize(experiment.getSamples());
-                        for (Sample sample : experiment.getSamples()) {
-                            if (!Hibernate.isInitialized(sample.getAnalyticalRuns())) {
-                                Hibernate.initialize(sample.getAnalyticalRuns());
-                            }
-                        }
-                    }
+            for (Experiment experiment : project.getExperiments()) {
+                for (Sample sample : experiment.getSamples()) {
+                    sample.getAnalyticalRuns().size();
                 }
             }
         }
@@ -98,21 +67,29 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public void persist(Project entity) {
+        projectRepository.persist(entity);
+    }
+
+    @Override
+    public Project merge(Project entity) {
+        return projectRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Project entity) {
+        projectRepository.remove(entity);
+    }
+
+    @Override
     public void fetchUsers(Project project) {
         try {
             project.getUsers().size();
         } catch (LazyInitializationException e) {
-            //attach the user to the new session
-            projectRepository.saveOrUpdate(project);
-            if (!Hibernate.isInitialized(project.getUsers())) {
-                Hibernate.initialize(project.getUsers());
-            }
+            //fetch the users
+            List<User> users = projectRepository.fetchUsers(project.getId());
+            project.setUsers(users);
         }
     }
 
-    @Override
-    public void deleteById(Long id) {
-        Project projectToDelete = projectRepository.findById(id);
-        delete(projectToDelete);
-    }
 }

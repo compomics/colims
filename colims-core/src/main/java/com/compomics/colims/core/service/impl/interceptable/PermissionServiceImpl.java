@@ -4,18 +4,16 @@
  */
 package com.compomics.colims.core.service.impl.interceptable;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.PermissionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -23,11 +21,6 @@ import com.compomics.colims.repository.PermissionRepository;
 @Service("permissionService")
 @Transactional
 public class PermissionServiceImpl implements PermissionService {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(PermissionServiceImpl.class);
 
     @Autowired
     private PermissionRepository permissionRepository;
@@ -40,35 +33,6 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<Permission> findAll() {
         return permissionRepository.findAllOrderedByName();
-    }
-
-    @Override
-    public void save(final Permission entity) {
-        permissionRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Permission entity) {
-        //attach the permission to the new session
-        permissionRepository.saveOrUpdate(entity);
-        //remove entity relations
-        for (Role role : entity.getRoles()) {
-            role.getPermissions().remove(entity);
-        }
-
-        permissionRepository.delete(entity);
-    }
-
-    @Override
-    public void update(final Permission entity) {
-        //attach the permission to the new session
-        permissionRepository.saveOrUpdate(entity);
-        permissionRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Permission entity) {
-        permissionRepository.saveOrUpdate(entity);
     }
 
     @Override
@@ -93,6 +57,28 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public long countAll() {
         return permissionRepository.countAll();
+    }
+
+    @Override
+    public void persist(Permission entity) {
+        permissionRepository.persist(entity);
+    }
+
+    @Override
+    public Permission merge(Permission entity) {
+        return permissionRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Permission entity) {
+        //merge the permission
+        Permission merge = permissionRepository.merge(entity);
+        //remove entity relations
+        for (Role role : merge.getRoles()) {
+            role.getPermissions().remove(merge);
+        }
+
+        permissionRepository.remove(merge);
     }
 
 }

@@ -84,7 +84,7 @@ public class PeptideShakerImporterIT {
 
         //save the fasta db. We don't have it as an insert statement in the import.sql file
         //as the file path might be different depending on the OS
-        fastaDbService.save(fastaDb);
+        fastaDbService.persist(fastaDb);
 
         unpackedPsDataImport.setFastaDbId(fastaDb.getId());
 
@@ -157,7 +157,7 @@ public class PeptideShakerImporterIT {
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrumentService.findAll().get(0));
 
-            analyticalRunService.saveOrUpdate(analyticalRun);
+            analyticalRunService.merge(analyticalRun);
         }
     }
 }

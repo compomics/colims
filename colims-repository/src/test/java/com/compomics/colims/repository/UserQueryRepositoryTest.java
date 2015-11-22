@@ -1,6 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.UserQuery;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class UserQueryRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     public void testCountByUserId() {
         Long userQueryCount = userQueryRepository.countByUserId(1L);
 
-        Assert.assertEquals(2L, userQueryCount.longValue());
+        Assert.assertEquals(3L, userQueryCount.longValue());
     }
 
     @Test

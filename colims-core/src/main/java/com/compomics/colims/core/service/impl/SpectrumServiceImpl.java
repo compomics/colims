@@ -8,7 +8,6 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,26 +53,6 @@ public class SpectrumServiceImpl implements SpectrumService {
     @Override
     public List<Spectrum> findAll() {
         return spectrumRepository.findAll();
-    }
-
-    @Override
-    public void save(Spectrum entity) {
-        spectrumRepository.save(entity);
-    }
-
-    @Override
-    public void update(Spectrum entity) {
-        spectrumRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(Spectrum entity) {
-        spectrumRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(Spectrum entity) {
-        spectrumRepository.delete(entity);
     }
 
     @Override
@@ -123,6 +102,21 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
+    public void persist(Spectrum entity) {
+        spectrumRepository.persist(entity);
+    }
+
+    @Override
+    public Spectrum merge(Spectrum entity) {
+        return spectrumRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Spectrum entity) {
+        spectrumRepository.remove(entity);
+    }
+
+    @Override
     public Long countSpectraByAnalyticalRun(AnalyticalRun analyticalRun) {
         return spectrumRepository.countSpectraByAnalyticalRun(analyticalRun);
     }
@@ -162,11 +156,9 @@ public class SpectrumServiceImpl implements SpectrumService {
         try {
             spectrum.getSpectrumFiles().size();
         } catch (LazyInitializationException e) {
-            //attach the spectrum to the new session
-            spectrumRepository.saveOrUpdate(spectrum);
-            if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
-                Hibernate.initialize(spectrum.getSpectrumFiles());
-            }
+            //fetch the spectrum files
+            List<SpectrumFile> spectrumFiles = spectrumRepository.fetchSpectrumFiles(spectrum.getId());
+            spectrum.setSpectrumFiles(spectrumFiles);
         }
     }
 

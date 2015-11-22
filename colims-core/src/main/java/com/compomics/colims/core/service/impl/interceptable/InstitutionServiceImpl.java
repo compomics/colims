@@ -2,16 +2,14 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.InstitutionService;
 import com.compomics.colims.model.Institution;
-import java.util.List;
-
+import com.compomics.colims.repository.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.repository.InstitutionRepository;
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("institutionService")
@@ -20,7 +18,7 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Autowired
     private InstitutionRepository institutionRepository;
-    
+
     @Override
     public Institution findById(final Long id) {
         return institutionRepository.findById(id);
@@ -32,28 +30,22 @@ public class InstitutionServiceImpl implements InstitutionService {
     }
 
     @Override
-    public void save(final Institution entity) {
-        institutionRepository.save(entity);
-    }
-
-    @Override
-    public void delete(final Institution entity) {
-        institutionRepository.delete(entity);
-    }
-
-    @Override
-    public void update(final Institution entity) {
-        institutionRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final Institution entity) {
-        institutionRepository.saveOrUpdate(entity);
-    }
-
-    @Override
     public long countAll() {
         return institutionRepository.countAll();
     }
-    
+
+    @Override
+    public void persist(Institution entity) {
+        institutionRepository.persist(entity);
+    }
+
+    @Override
+    public Institution merge(Institution entity) {
+        return institutionRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(Institution entity) {
+        institutionRepository.remove(entity);
+    }
 }

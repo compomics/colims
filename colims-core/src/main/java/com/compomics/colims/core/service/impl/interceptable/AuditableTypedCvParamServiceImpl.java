@@ -2,18 +2,16 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
-import java.util.List;
-
+import com.compomics.colims.model.enums.CvParamType;
+import com.compomics.colims.repository.AuditableTypedCvParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.repository.AuditableTypedCvParamRepository;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Service("auditableTypedCvParamService")
@@ -31,26 +29,6 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
     @Override
     public List<AuditableTypedCvParam> findAll() {
         return cvParamRepository.findAll();
-    }
-
-    @Override
-    public void save(AuditableTypedCvParam entity) {
-        cvParamRepository.save(entity);
-    }
-
-    @Override
-    public void update(AuditableTypedCvParam entity) {
-        cvParamRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(AuditableTypedCvParam entity) {
-        cvParamRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(AuditableTypedCvParam entity) {
-        cvParamRepository.delete(entity);
     }
 
     @Override
@@ -72,8 +50,8 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
     public <T extends AuditableTypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvTermType) {
         List<T> cvTerms = new ArrayList<>();
 
-        for(AuditableTypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvTermType)){
-            if(clazz.isInstance(cvTerm)){
+        for (AuditableTypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvTermType)) {
+            if (clazz.isInstance(cvTerm)) {
                 cvTerms.add((T) cvTerm);
             }
         }
@@ -86,4 +64,18 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
         return cvParamRepository.countAll();
     }
 
+    @Override
+    public void persist(AuditableTypedCvParam entity) {
+        cvParamRepository.persist(entity);
+    }
+
+    @Override
+    public AuditableTypedCvParam merge(AuditableTypedCvParam entity) {
+        return cvParamRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(AuditableTypedCvParam entity) {
+        cvParamRepository.remove(entity);
+    }
 }

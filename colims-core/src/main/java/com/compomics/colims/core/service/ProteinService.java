@@ -22,6 +22,7 @@ public interface ProteinService extends GenericService<Protein, Long> {
      * Fetch the protein accessions.
      *
      * @param protein the given Protein instance
+     * @return the protein with fetched accessions
      */
-    void fetchAccessions(Protein protein);
+    Protein fetchAccessions(Protein protein);
 }

@@ -27,7 +27,6 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

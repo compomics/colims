@@ -8,12 +8,11 @@ import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
 import com.compomics.colims.repository.QuantificationParametersRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -40,28 +39,23 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public void save(final QuantificationSettings entity) {
-        quantificationSettingsRepository.save(entity);
-    }
-
-    @Override
-    public void update(final QuantificationSettings entity) {
-        quantificationSettingsRepository.update(entity);
-    }
-
-    @Override
-    public void saveOrUpdate(final QuantificationSettings entity) {
-        quantificationSettingsRepository.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void delete(final QuantificationSettings entity) {
-        quantificationSettingsRepository.delete(entity);
-    }
-
-    @Override
     public long countAll() {
         return quantificationSettingsRepository.countAll();
+    }
+
+    @Override
+    public void persist(QuantificationSettings entity) {
+        quantificationSettingsRepository.persist(entity);
+    }
+
+    @Override
+    public QuantificationSettings merge(QuantificationSettings entity) {
+        return quantificationSettingsRepository.merge(entity);
+    }
+
+    @Override
+    public void remove(QuantificationSettings entity) {
+        quantificationSettingsRepository.remove(entity);
     }
 
     @Override
@@ -70,7 +64,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
 
         if (quantificationEngine == null) {
             quantificationEngine = new QuantificationEngine(quantificationEngineType, version);
-            quantificationEngineRepository.save(quantificationEngine);
+            quantificationEngineRepository.persist(quantificationEngine);
         }
 
         return quantificationEngine;
@@ -84,7 +78,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
             return quantificationParameterSettingses.get(0);
         } else {
             //save the given instance
-            quantificationParametersRepository.save(quantificationParameterSettings);
+            quantificationParametersRepository.persist(quantificationParameterSettings);
             return quantificationParameterSettings;
         }
     }

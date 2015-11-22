@@ -41,8 +41,7 @@ public class QuantificationFile extends DatabaseEntity {
     @JoinColumn(name = "l_quant_settings_id", referencedColumnName = "id")
     @ManyToOne
     private QuantificationSettings quantificationSettings;
-    @OneToMany(mappedBy = "quantificationFile")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "quantificationFile", cascade = CascadeType.ALL)
     private List<Quantification> quantification = new ArrayList<>();
 
     public String getFileName() {

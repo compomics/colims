@@ -38,7 +38,7 @@ public class AuthorizationInterceptorTest {
         newUser.setLastName("test");
         newUser.setPassword("blablablabla");
 
-        userService.save(newUser);
+        userService.persist(newUser);
     }
 
     @Test(expected = PermissionException.class)
@@ -50,7 +50,7 @@ public class AuthorizationInterceptorTest {
         User userToUpdate = userService.findByName("lab1");
         userToUpdate.setEmail("test@test");
 
-        userService.update(userToUpdate);
+        userService.merge(userToUpdate);
     }
 
     @Test(expected = PermissionException.class)
@@ -61,7 +61,7 @@ public class AuthorizationInterceptorTest {
 
         User userToDelete = userService.findByName("lab1");
 
-        userService.delete(userToDelete);
+        userService.remove(userToDelete);
     }
 
 }
