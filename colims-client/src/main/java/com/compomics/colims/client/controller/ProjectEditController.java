@@ -115,13 +115,13 @@ public class ProjectEditController implements Controllable {
                 int index;
 
                 if (projectToEdit.getId() != null) {
-//                    projectToEdit = projectService.merge(projectToEdit);
+//                    Project merge = projectService.merge(projectToEdit);
                     projectService.saveOrUpdate(projectToEdit);
 
                     index = projectManagementController.getSelectedProjectIndex();
 
                     //update the project list
-                    projectManagementController.updateProject(index, projectToEdit);
+//                    projectManagementController.updateProject(index, projectToEdit);
                 } else {
                     projectService.persist(projectToEdit);
 
