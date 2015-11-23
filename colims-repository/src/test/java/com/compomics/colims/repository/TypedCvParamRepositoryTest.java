@@ -67,7 +67,7 @@ public class TypedCvParamRepositoryTest {
     public void testFindByCvParamType() {
         List<TypedCvParam> cvParams = cvParamRepository.findByCvParamType(CvParamType.SEARCH_PARAM_ENZYME);
         Assert.assertNotNull(cvParams);
-        Assert.assertEquals(1, cvParams.size());
+        Assert.assertEquals(2, cvParams.size());
 
         cvParams = cvParamRepository.findByCvParamType(CvParamType.SEARCH_TYPE);
         Assert.assertNotNull(cvParams);

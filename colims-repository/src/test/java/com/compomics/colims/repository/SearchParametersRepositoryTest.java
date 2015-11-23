@@ -1,9 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.SearchCvParam;
 import com.compomics.colims.model.SearchParameters;
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.enums.MassAccuracyType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,26 +27,14 @@ public class SearchParametersRepositoryTest {
 
     @Test
     public void testFindByExample() {
-        SearchParameters searchParameters = new SearchParameters();
+        SearchParameters searchParametersExample = searchParametersRepository.findById(2L);
 
-        SearchCvParam enzyme = new SearchCvParam(CvParamType.ENZYME, "PSI-MS", "PSI-MS", "MS:1001251", "Trypsin");
-        searchParameters.setEnzyme(enzyme);
-        searchParameters.setNumberOfMissedCleavages(2);
-        searchParameters.setThreshold(50.0);
-        searchParameters.setLowerCharge(2);
-        searchParameters.setUpperCharge(4);
-        searchParameters.setPrecMassToleranceUnit(MassAccuracyType.PPM);
-        searchParameters.setPrecMassTolerance(10.0);
-        searchParameters.setFragMassToleranceUnit(MassAccuracyType.DA);
-        searchParameters.setFragMassTolerance(0.02);
-        searchParameters.setFirstSearchedIonType(1);
-        searchParameters.setSecondSearchedIonType(4);
+        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParametersExample);
 
-        List<SearchParameters> searchSettingses = searchParametersRepository.findByExample(searchParameters);
-
-        Assert.assertNotNull(searchSettingses);
-        Assert.assertFalse(searchSettingses.isEmpty());
-        Assert.assertEquals(1, searchSettingses.size());
+        //only the 1 entry should be returned, the 2 others are slightly different
+        Assert.assertFalse(searchParameterses.isEmpty());
+        Assert.assertEquals(1, searchParameterses.size());
+        Assert.assertEquals(searchParametersExample.getId(), searchParameterses.get(0).getId());
     }
 
     @Test
@@ -59,7 +44,8 @@ public class SearchParametersRepositoryTest {
 
         List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
 
-        Assert.assertEquals(0, searchParametersIds.size());
+        //3 entries: 1 linked to 2 runs, and 2 constraint less ones
+        Assert.assertEquals(2, searchParametersIds.size());
     }
 
 }

@@ -2,7 +2,6 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.Spectrum;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class MaxQuantSpectrumParserTest {
 
         // TODO: better test cases
 
-        assertThat(result.size(), Matchers.lessThan(rawFile.size() - 1));
+        assertThat(result.size(), is(rawFile.size() - 1));
         assertThat(rawFile.get(1), containsString(spectrum.getTitle().split("-")[0]));
         //assertThat(result.get(0).getPeakList().size(), is(19));
         assertThat(spectrum.getRetentionTime(), not(0.0));

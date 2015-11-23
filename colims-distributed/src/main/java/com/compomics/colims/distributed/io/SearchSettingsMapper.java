@@ -3,7 +3,6 @@ package com.compomics.colims.distributed.io;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.BinaryFileType;
@@ -28,11 +27,6 @@ public class SearchSettingsMapper {
      */
     @Autowired
     private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
-    /**
-     * The Utilities PtmSettings to Colims search modification parameters mapper.
-     */
-    @Autowired
-    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
     /**
      *
      */

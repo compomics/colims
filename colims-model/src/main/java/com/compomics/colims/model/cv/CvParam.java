@@ -126,6 +126,29 @@ public abstract class CvParam extends DatabaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CvParam cvParam = (CvParam) o;
+
+        if (!ontology.equals(cvParam.ontology)) return false;
+        if (!label.equals(cvParam.label)) return false;
+        if (!accession.equals(cvParam.accession)) return false;
+        return name.equals(cvParam.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ontology.hashCode();
+        result = 31 * result + label.hashCode();
+        result = 31 * result + accession.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return name + " [" + accession + "]";
     }

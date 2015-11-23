@@ -53,6 +53,11 @@
     <!-- ols soap service client -->
     <jaxws:client id="olsClient"
                   serviceClass="uk.ac.ebi.ontology_lookup.ontologyquery.Query"
-                  address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery"/>
+                  address="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery">
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature"/>
+        </jaxws:features>
+
+    </jaxws:client>
 
 </beans>

@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.repository.SearchParametersRepository;
@@ -14,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,5 +38,33 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
         criteria.add(Restrictions.eq("searchParameter.id", searchParametersId));
 
         return criteria.list();
+    }
+
+    @Override
+    public List<SearchParameters> findByExample(SearchParameters exampleInstance) {
+        List<SearchParameters> searchParameterses = super.findByExample(exampleInstance);
+
+        Iterator<SearchParameters> iterator = searchParameterses.iterator();
+        //do some additional comparisons
+        while (iterator.hasNext()) {
+            SearchParameters searchParameters = iterator.next();
+            //check search type
+            if (!exampleInstance.getEnzyme().equals(searchParameters.getEnzyme())) {
+                iterator.remove();
+                continue;
+            }
+            //check search modifications
+            if (!exampleInstance.getSearchParametersHasModifications().equals(searchParameters.getSearchParametersHasModifications())) {
+                iterator.remove();
+                continue;
+            }
+            //check additional parameters
+            if (!exampleInstance.getAdditionalCvParams().equals(searchParameters.getAdditionalCvParams())) {
+                iterator.remove();
+                continue;
+            }
+        }
+
+        return searchParameterses;
     }
 }

@@ -5,7 +5,10 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.ProteinRepository;
+import org.apache.xml.xml_soap.Map;
+import org.apache.xml.xml_soap.MapItem;
 import org.springframework.context.ApplicationContext;
+import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,14 +35,14 @@ public class Playground {
         //        cpsParentImpl.loadSpectrumFiles(null);
         //        System.out.println("test");
 
-//        Query olsClient = (Query) applicationContext.getBean("olsClient");
-//        Map ontologyNames = olsClient.getOntologyNames();
-//        for (MapItem mapItem : ontologyNames.getItem()) {
-//            if (mapItem.getKey().equals("MS")) {
-//                System.out.println(mapItem.getKey());
-//                System.out.println(mapItem.getValue());
-//            }
-//        }
+        Query olsClient = (Query) applicationContext.getBean("olsClient");
+        Map ontologyNames = olsClient.getOntologyNames();
+        for (MapItem mapItem : ontologyNames.getItem()) {
+            if (mapItem.getKey().equals("MS")) {
+                System.out.println(mapItem.getKey());
+                System.out.println(mapItem.getValue());
+            }
+        }
 //        Map termsByName = olsClient.getTermsByName("oxidation of m", "MOD", false);  
 //        Map termsByExactName = olsClient.getTermsByExactName("methionine oxidation with neutral loss of 64 Da", "MOD");  
 //        Map termXrefs = olsClient.getTermXrefs("MOD:00935", "MOD");
