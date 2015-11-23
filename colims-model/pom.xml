@@ -21,6 +21,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- hibernate dependencies -->
@@ -91,19 +97,24 @@
                     <groupId>uk.ac.ebi.jmzml</groupId>
                     <artifactId>jmzml</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jgoodies</groupId>
+                    <artifactId>looks</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 
     <repositories>
-
         <repository>
             <id>Hibernate</id>
             <name>JBoss Hibernate repository</name>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
-
     </repositories>
 
 </project>

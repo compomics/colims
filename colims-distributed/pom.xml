@@ -257,36 +257,16 @@
             <artifactId>colims-core</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>commons-codec</groupId>
                     <artifactId>commons-codec</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-impl</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-xjc</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>psidev.psi.tools</groupId>
-                    <artifactId>xxindex</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -359,13 +339,17 @@
                     <groupId>com.jgoodies</groupId>
                     <artifactId>looks</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.7.2</version>
+            <version>3.8.11.2</version>
         </dependency>
 
         <dependency>
@@ -421,6 +405,12 @@
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.4c</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.10-b140310.1920</version>
         </dependency>
     </dependencies>
 </project>
