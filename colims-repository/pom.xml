@@ -19,7 +19,6 @@
     </properties>
 
     <dependencies>
-
         <!-- colims dependency -->
         <dependency>
             <groupId>com.compomics.colims</groupId>
@@ -86,11 +85,16 @@
             <artifactId>postgresql</artifactId>
             <version>9.3-1101-jdbc41</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -160,13 +160,25 @@ public class Protocol extends AuditableDatabaseEntity {
 
         Protocol protocol = (Protocol) o;
 
-        return name.equals(protocol.name);
+        if (!name.equals(protocol.name)) return false;
+        if (reduction != null ? !reduction.equals(protocol.reduction) : protocol.reduction != null) return false;
+        if (enzyme != null ? !enzyme.equals(protocol.enzyme) : protocol.enzyme != null) return false;
+        if (cellBased != null ? !cellBased.equals(protocol.cellBased) : protocol.cellBased != null) return false;
+        if (chemicalLabels != null ? !chemicalLabels.equals(protocol.chemicalLabels) : protocol.chemicalLabels != null)
+            return false;
+        return !(otherCvParams != null ? !otherCvParams.equals(protocol.otherCvParams) : protocol.otherCvParams != null);
 
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        int result = name.hashCode();
+        result = 31 * result + (reduction != null ? reduction.hashCode() : 0);
+        result = 31 * result + (enzyme != null ? enzyme.hashCode() : 0);
+        result = 31 * result + (cellBased != null ? cellBased.hashCode() : 0);
+        result = 31 * result + (chemicalLabels != null ? chemicalLabels.hashCode() : 0);
+        result = 31 * result + (otherCvParams != null ? otherCvParams.hashCode() : 0);
+        return result;
     }
 
     @Override

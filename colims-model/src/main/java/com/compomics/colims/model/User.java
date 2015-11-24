@@ -73,7 +73,7 @@ public class User extends AuditableDatabaseEntity {
     /**
      * The user queries.
      */
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserQuery> userQueries = new ArrayList<>();
     /**
      * The list of projects associated with this user.

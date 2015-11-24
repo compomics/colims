@@ -82,7 +82,7 @@ public class UserQueryPanelControllerTest extends TestCase {
 
         userQueryPanelController.getUserQueryPanel().getExecuteQueryButton().doClick();
 
-        assertThat(message, is("cannot execute any commands that are not selects"));
+        assertThat(message, is("Cannot execute any commands that are not selects."));
     }
 
     @Test

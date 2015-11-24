@@ -4,18 +4,15 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Institution;
-import org.hibernate.Criteria;
+import com.compomics.colims.model.User;
+import com.compomics.colims.repository.UserRepository;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.compomics.colims.model.User;
-import com.compomics.colims.repository.UserRepository;
 import java.util.List;
-import org.hibernate.criterion.Order;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Repository("userRepository")

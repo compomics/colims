@@ -68,23 +68,6 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
         this.name = name;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param ontology  the ontology name
-     * @param label     the ontology label
-     * @param accession the CV term accession
-     * @param name      the CV term name
-     * @param value     the CV term value
-     */
-    public AuditableCvParam(final String ontology, final String label, final String accession, final String name, final String value) {
-        this.ontology = ontology;
-        this.label = label;
-        this.accession = accession;
-        this.name = name;
-        this.value = value;
-    }
-
     public String getOntology() {
         return ontology;
     }
@@ -123,6 +106,31 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AuditableCvParam that = (AuditableCvParam) o;
+
+        if (!ontology.equals(that.ontology)) return false;
+        if (!label.equals(that.label)) return false;
+        if (!accession.equals(that.accession)) return false;
+        if (!name.equals(that.name)) return false;
+        return !(value != null ? !value.equals(that.value) : that.value != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ontology.hashCode();
+        result = 31 * result + label.hashCode();
+        result = 31 * result + accession.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 
     @Override

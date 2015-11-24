@@ -81,6 +81,11 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
         entityManager.remove(entity);
     }
 
+    @Override
+    public T getReference(ID id) {
+        return entityManager.getReference(entityClass, id);
+    }
+
     /**
      * Get the Class of the entity.
      *

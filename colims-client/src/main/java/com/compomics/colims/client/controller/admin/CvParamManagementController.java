@@ -57,23 +57,12 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     @Autowired
     private uk.ac.ebi.ontology_lookup.ontologyquery.Query olsClient;
 
-    /**
-     * Get the view of this controller.
-     *
-     * @return the CvParamManagementDialog
-     */
-    public CvParamManagementDialog getCvParamManagementDialog() {
-        return cvParamManagementDialog;
-    }
-
     @Override
     @PostConstruct
     public void init() {
         //init view
         cvParamManagementDialog = new CvParamManagementDialog(mainController.getMainFrame(), true);
 
-        //register to event bus
-        //eventBus.register(this);
         //init and set table model
         typeCvParamTableModel2 = new TypedCvParamTableModel2();
         cvParamManagementDialog.getCvParamTable().setModel(typeCvParamTableModel2);

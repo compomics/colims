@@ -69,21 +69,6 @@ public class MaterialManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
-    /**
-     *
-     */
-    public MaterialManagementController() {
-    }
-
-    /**
-     * Get the main view of this controller.
-     *
-     * @return the MaterialManagementDialog
-     */
-    public MaterialManagementDialog getMaterialManagementOverviewDialog() {
-        return materialManagementDialog;
-    }
-
     @Override
     @PostConstruct
     public void init() {

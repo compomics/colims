@@ -148,11 +148,11 @@ public class Institution extends AuditableDatabaseEntity {
 
         Institution that = (Institution) o;
 
-        if (!name.equals(that.name)) return false;
-        if (!abbreviation.equals(that.abbreviation)) return false;
-        if (!street.equals(that.street)) return false;
-        if (!number.equals(that.number)) return false;
-        if (!city.equals(that.city)) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (abbreviation != null ? !abbreviation.equals(that.abbreviation) : that.abbreviation != null) return false;
+        if (street != null ? !street.equals(that.street) : that.street != null) return false;
+        if (number != null ? !number.equals(that.number) : that.number != null) return false;
+        if (city != null ? !city.equals(that.city) : that.city != null) return false;
         if (postalCode != null ? !postalCode.equals(that.postalCode) : that.postalCode != null) return false;
         return !(country != null ? !country.equals(that.country) : that.country != null);
 
@@ -160,11 +160,11 @@ public class Institution extends AuditableDatabaseEntity {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + abbreviation.hashCode();
-        result = 31 * result + street.hashCode();
-        result = 31 * result + number.hashCode();
-        result = 31 * result + city.hashCode();
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0);
+        result = 31 * result + (street != null ? street.hashCode() : 0);
+        result = 31 * result + (number != null ? number.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (postalCode != null ? postalCode.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;

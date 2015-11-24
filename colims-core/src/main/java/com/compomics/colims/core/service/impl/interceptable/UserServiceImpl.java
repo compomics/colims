@@ -5,6 +5,7 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
@@ -81,7 +82,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void remove(User entity) {
-        userRepository.remove(entity);
+        User merge = userRepository.merge(entity);
+        //remove entity relations
+        for (Project project : merge.getProjects()) {
+            project.getUsers().remove(merge);
+        }
+
+        userRepository.remove(merge);
     }
 
     @Override

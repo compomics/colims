@@ -99,7 +99,7 @@ public class InstitutionManagementController implements Controllable {
                     institutionManagementDialog.getSaveOrUpdateButton().setEnabled(true);
                     institutionManagementDialog.getDeleteButton().setEnabled(true);
 
-                    //check if the fasta DB has an ID.
+                    //check if the institution DB has an ID.
                     //If so, change the save button label.
                     if (institution.getId() != null) {
                         institutionManagementDialog.getSaveOrUpdateButton().setText("update");

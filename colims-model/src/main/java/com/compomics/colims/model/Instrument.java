@@ -141,20 +141,20 @@ public class Instrument extends AuditableDatabaseEntity {
         Instrument that = (Instrument) o;
 
         if (!name.equals(that.name)) return false;
-        if (!type.equals(that.type)) return false;
-        if (!source.equals(that.source)) return false;
-        if (!detector.equals(that.detector)) return false;
-        return analyzers.equals(that.analyzers);
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        if (source != null ? !source.equals(that.source) : that.source != null) return false;
+        if (detector != null ? !detector.equals(that.detector) : that.detector != null) return false;
+        return !(analyzers != null ? !analyzers.equals(that.analyzers) : that.analyzers != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = name.hashCode();
-        result = 31 * result + type.hashCode();
-        result = 31 * result + source.hashCode();
-        result = 31 * result + detector.hashCode();
-        result = 31 * result + analyzers.hashCode();
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (detector != null ? detector.hashCode() : 0);
+        result = 31 * result + (analyzers != null ? analyzers.hashCode() : 0);
         return result;
     }
 

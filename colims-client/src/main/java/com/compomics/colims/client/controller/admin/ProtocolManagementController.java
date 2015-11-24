@@ -69,16 +69,8 @@ public class ProtocolManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
-    /**
-     * Get the view of this controller.
-     *
-     * @return the ProtocolManagementDialog
-     */
-    public ProtocolManagementDialog getProtocolManagementOverviewDialog() {
-        return protocolManagementDialog;
-    }
-
     @Override
+    @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
@@ -94,7 +86,6 @@ public class ProtocolManagementController implements Controllable {
     }
 
     @Override
-    @PostConstruct
     public void showView() {
         //clear selection
         protocolManagementDialog.getProtocolList().getSelectionModel().clearSelection();

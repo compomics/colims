@@ -1,11 +1,8 @@
 package com.compomics.colims.model.cv;
 
 import com.compomics.colims.model.enums.CvParamType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
+
+import javax.persistence.*;
 
 /**
  * Parent class for typed CV parameter entities.
@@ -35,10 +32,10 @@ public abstract class TypedCvParam extends CvParam {
      * Constructor.
      *
      * @param cvParamType the CV parameter type
-     * @param ontology the ontology name
-     * @param label the ontology label
-     * @param accession the CV term accession
-     * @param name the CV term name
+     * @param ontology    the ontology name
+     * @param label       the ontology label
+     * @param accession   the CV term accession
+     * @param name        the CV term name
      */
     public TypedCvParam(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
         super(ontology, label, accession, name);
@@ -49,11 +46,11 @@ public abstract class TypedCvParam extends CvParam {
      * Constructor.
      *
      * @param cvParamType the CV parameter type
-     * @param ontology the ontology name
-     * @param label the ontology label
-     * @param accession the CV term accession
-     * @param name the CV term name
-     * @param value the CV term value
+     * @param ontology    the ontology name
+     * @param label       the ontology label
+     * @param accession   the CV term accession
+     * @param name        the CV term name
+     * @param value       the CV term value
      */
     public TypedCvParam(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name, final String value) {
         super(ontology, label, accession, name, value);

@@ -5,11 +5,11 @@ import com.compomics.colims.model.UserQuery_;
 import com.compomics.colims.model.User_;
 import com.compomics.colims.repository.UserQueryRepository;
 import com.compomics.colims.repository.hibernate.LinkedAliasToEntityMapResultTransformer;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
-import javax.jws.soap.SOAPBinding;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,7 +30,10 @@ public class UserQueryJpaRepository extends GenericJpaRepositoryImpl<UserQuery, 
         //create and setup the return for the entered query
         SQLQuery userQuery = getEntityManager().unwrap(Session.class).createSQLQuery(queryString);
         userQuery.setResultTransformer(LinkedAliasToEntityMapResultTransformer.INSTANCE());
-        userQuery.setMaxResults(maxResults);
+
+        if (StringUtils.containsIgnoreCase(queryString, "select")) {
+            userQuery.setMaxResults(maxResults);
+        }
 
         return userQuery.list();
     }
@@ -129,9 +132,13 @@ public class UserQueryJpaRepository extends GenericJpaRepositoryImpl<UserQuery, 
             //do nothing
         }
 
-        if(userQuery != null){
+        if (userQuery != null) {
             remove(userQuery);
         }
     }
 
+    @Override
+    public UserQuery getReference(Long id) {
+        return getEntityManager().getReference(getEntityClass(), id);
+    }
 }

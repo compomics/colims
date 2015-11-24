@@ -64,10 +64,18 @@ public interface GenericRepository<T, ID extends Serializable> {
     T merge(final T entity);
 
     /**
-     * Remove an entity from the database.
+     * Remove an entity from the database. The passed entity has to in a managed state.
      *
      * @param entity the entity to remove
      */
     void remove(final T entity);
+
+    /**
+     * Get an instance, whose state may be lazily fetched.
+     *
+     * @param id the entity ID
+     * @return the referenced entity
+     */
+    T getReference(ID id);
 
 }

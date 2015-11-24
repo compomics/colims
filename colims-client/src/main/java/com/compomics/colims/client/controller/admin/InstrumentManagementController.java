@@ -70,21 +70,6 @@ public class InstrumentManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
-    /**
-     * No-arg constructor.
-     */
-    public InstrumentManagementController() {
-    }
-
-    /**
-     * Get the view of this controller.
-     *
-     * @return the InstrumentManagementDialog
-     */
-    public InstrumentManagementDialog getInstrumentManagementOverviewDialog() {
-        return instrumentManagementDialog;
-    }
-
     @Override
     @PostConstruct
     public void init() {
