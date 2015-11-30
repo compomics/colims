@@ -39,8 +39,8 @@ public class UserQueryServiceTest {
 
         List<LinkedHashMap<String, Object>> results = userQueryService.executeUserQuery(user, "select * from colims_user");
 
-        List<UserQuery> userQueries = userQueryService.findByUserId(user.getId());
-        Assert.assertEquals(4, userQueries.size());
+        List<String> queries = userQueryService.findQueriesByUserId(user.getId());
+        Assert.assertEquals(4, queries.size());
 
         UserQuery userQuery = userQueryRepository.findByUserIdAndQueryString(1L, "select * from colims_user");
         Assert.assertNotNull(userQuery);
@@ -50,8 +50,8 @@ public class UserQueryServiceTest {
         //execute the query again, usage count should have been increased
         results = userQueryService.executeUserQuery(user, "select * from colims_user");
 
-        userQueries = userQueryService.findByUserId(user.getId());
-        Assert.assertEquals(4, userQueries.size());
+        queries = userQueryService.findQueriesByUserId(user.getId());
+        Assert.assertEquals(4, queries.size());
 
         userQuery = userQueryRepository.findByUserIdAndQueryString(1L, "select * from colims_user");
         Assert.assertNotNull(userQuery);
@@ -61,8 +61,8 @@ public class UserQueryServiceTest {
         //execute another query, max number of stored queries is 4 so the least used one should be removed
         results = userQueryService.executeUserQuery(user, "select * from project");
 
-        userQueries = userQueryService.findByUserId(user.getId());
-        Assert.assertEquals(4, userQueries.size());
+        queries = userQueryService.findQueriesByUserId(user.getId());
+        Assert.assertEquals(4, queries.size());
     }
 
 }

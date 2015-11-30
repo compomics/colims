@@ -40,12 +40,6 @@ public class UserManagementParentController implements Controllable {
     private PermissionManagementController permissionManagementController;
 
     /**
-     * No-arg constructor.
-     */
-    public UserManagementParentController() {
-    }
-
-    /**
      * Get the view of this controller.
      *
      * @return the UserManagementDialog
@@ -61,16 +55,13 @@ public class UserManagementParentController implements Controllable {
         userManagementDialog = new UserManagementDialog(mainController.getMainFrame(), true);
 
         //add action listeners
-        userManagementDialog.getCloseButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                userManagementController.onCancel();
-                groupManagementController.onCancel();
-                roleManagementController.onCancel();
-                permissionManagementController.onCancel();
+        userManagementDialog.getCloseButton().addActionListener(e -> {
+            userManagementController.onCancel();
+            groupManagementController.onCancel();
+            roleManagementController.onCancel();
+            permissionManagementController.onCancel();
 
-                userManagementDialog.dispose();
-            }
+            userManagementDialog.dispose();
         });
     }
 
@@ -80,6 +71,9 @@ public class UserManagementParentController implements Controllable {
         groupManagementController.showView();
         roleManagementController.showView();
         permissionManagementController.showView();
+
+        //reset tab selection
+        userManagementDialog.getUserManagementTabbedPane().setSelectedIndex(0);
 
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), userManagementDialog);
         userManagementDialog.setVisible(true);

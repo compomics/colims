@@ -35,10 +35,10 @@ public class UserQueryRepositoryTest extends AbstractTransactionalJUnit4SpringCo
 
     @Test
     public void testFindByUserId() {
-        List<UserQuery> userQueries = userQueryRepository.findByUserId(1L);
+        List<String> userQueries = userQueryRepository.findQueriesByUserId(1L);
 
         Assert.assertFalse(userQueries.isEmpty());
-        Assert.assertEquals(3, userQueries.get(0).getUsageCount().intValue());
+        Assert.assertEquals("test user query string 1", userQueries.get(0));
     }
 
     @Test

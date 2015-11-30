@@ -2,7 +2,6 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.Material;
-import com.compomics.colims.model.Project;
 import com.compomics.colims.repository.MaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +51,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void remove(Material entity) {
-        materialRepository.remove(entity);
+        //get a reference to the entity
+        Material reference = materialRepository.getReference(entity.getId());
+        materialRepository.remove(reference);
     }
 
 }

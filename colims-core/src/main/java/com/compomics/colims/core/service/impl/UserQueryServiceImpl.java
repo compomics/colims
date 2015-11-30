@@ -57,8 +57,8 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public List<UserQuery> findByUserId(Long userId) {
-        return userQueryRepository.findByUserId(userId);
+    public List<String> findQueriesByUserId(Long userId) {
+        return userQueryRepository.findQueriesByUserId(userId);
     }
 
     @Override

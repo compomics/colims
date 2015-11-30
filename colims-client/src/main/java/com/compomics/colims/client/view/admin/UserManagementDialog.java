@@ -3,14 +3,7 @@ package com.compomics.colims.client.view.admin;
 import com.compomics.colims.client.compoment.DualList;
 import java.awt.Color;
 import java.awt.Frame;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  *
@@ -48,10 +41,6 @@ public class UserManagementDialog extends javax.swing.JDialog {
         return firstNameTextField;
     }
 
-    public JPanel getGroupCrudPanel() {
-        return groupCrudPanel;
-    }
-
     public JTextArea getGroupDescriptionTextArea() {
         return groupDescriptionTextArea;
     }
@@ -82,10 +71,6 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
     public DualList getRoleDualList() {
         return roleDualList;
-    }
-
-    public JPanel getUserCrudPanel() {
-        return userCrudPanel;
     }
 
     public JList getUserList() {
@@ -186,7 +171,11 @@ public class UserManagementDialog extends javax.swing.JDialog {
 
     public JButton getInstitutionManagementButton() {
         return institutionManagementButton;
-    }        
+    }
+
+    public JTabbedPane getUserManagementTabbedPane() {
+        return userManagementTabbedPane;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

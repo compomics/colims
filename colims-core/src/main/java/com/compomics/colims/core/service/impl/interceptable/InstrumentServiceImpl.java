@@ -51,6 +51,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public void remove(Instrument entity) {
-        instrumentRepository.remove(entity);
+        //get a reference to the entity
+        Instrument reference = instrumentRepository.getReference(entity.getId());
+        instrumentRepository.remove(reference);
     }
 }

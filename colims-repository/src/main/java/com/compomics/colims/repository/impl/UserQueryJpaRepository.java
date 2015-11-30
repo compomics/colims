@@ -11,13 +11,16 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Niels Hulstaert on 5/11/15.
@@ -39,11 +42,12 @@ public class UserQueryJpaRepository extends GenericJpaRepositoryImpl<UserQuery, 
     }
 
     @Override
-    public List<UserQuery> findByUserId(Long userId) {
+    public List<String> findQueriesByUserId(Long userId) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<UserQuery> criteriaQuery = criteriaBuilder.createQuery(UserQuery.class);
+        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
         Root<UserQuery> userQueryRoot = criteriaQuery.from(UserQuery.class);
 
+        criteriaQuery.select(criteriaBuilder.tuple(userQueryRoot.get(UserQuery_.queryString)));
         ParameterExpression<Long> userIdParam = criteriaBuilder.parameter(Long.class);
         criteriaQuery.where(
                 criteriaBuilder.equal(userQueryRoot.get(UserQuery_.user).get(User_.id), userIdParam)
@@ -52,10 +56,10 @@ public class UserQueryJpaRepository extends GenericJpaRepositoryImpl<UserQuery, 
         //order by usage count
         criteriaQuery.orderBy(criteriaBuilder.desc(userQueryRoot.get(UserQuery_.usageCount)));
 
-        TypedQuery<UserQuery> query = getEntityManager().createQuery(criteriaQuery);
+        TypedQuery<Tuple> query = getEntityManager().createQuery(criteriaQuery);
         query.setParameter(userIdParam, userId);
 
-        return query.getResultList();
+        return query.getResultList().stream().map(tuple -> (String) tuple.get(0)).collect(Collectors.toList());
     }
 
     @Override

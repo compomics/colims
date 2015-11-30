@@ -61,14 +61,13 @@ public class Sample extends AuditableDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "sample_has_material",
             joinColumns = {
-                    @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
+                @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                    @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
+                @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     /**
      * The analytical runs that were performed using this sample.
      */
-//    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "sample")
     private List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
@@ -153,13 +152,21 @@ public class Sample extends AuditableDatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Sample sample = (Sample) o;
 
-        if (!name.equals(sample.name)) return false;
-        if (condition != null ? !condition.equals(sample.condition) : sample.condition != null) return false;
+        if (!name.equals(sample.name)) {
+            return false;
+        }
+        if (condition != null ? !condition.equals(sample.condition) : sample.condition != null) {
+            return false;
+        }
         return !(storageLocation != null ? !storageLocation.equals(sample.storageLocation) : sample.storageLocation != null);
 
     }

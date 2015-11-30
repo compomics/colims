@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A model to define the data to be exported for the PeptideTableRow object
+ * A model to define the data to be exported for the PeptideTableRow object.
  * <p/>
  * Created by Iain on 17/09/2015.
  */

@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 /**
+ * The swing user interface main controller.
+ *
  * @author Niels Hulstaert
  */
 @Component("mainController")
@@ -227,6 +229,7 @@ public class MainController implements Controllable, ActionListener {
 //            mainFrame.getAdminMenu().setEnabled(false);
 //        }
 //        showView();
+
         //add change listener to tabbed pane
         mainFrame.getMainTabbedPane().addChangeListener(e -> {
             if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
@@ -277,7 +280,7 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Listen to a MesaggeEvent.
+     * Listen to a MessageEvent.
      *
      * @param messageEvent the message event
      */
@@ -419,7 +422,7 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Inits the admin section. This method is only called if the user is an admin user.
+     * Init the admin section. This method is only called if the user is an admin user.
      */
     private void initAdminSection() {
         //add action listeners

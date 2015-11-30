@@ -46,7 +46,9 @@ public class FastaDbServiceImpl implements FastaDbService {
 
     @Override
     public void remove(FastaDb entity) {
-        fastaDbRepository.remove(entity);
+        //get a reference to the entity
+        FastaDb reference = fastaDbRepository.getReference(entity.getId());
+        fastaDbRepository.remove(reference);
     }
 
 }

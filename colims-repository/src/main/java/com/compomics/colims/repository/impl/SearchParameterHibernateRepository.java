@@ -35,7 +35,7 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
     public List<SearchParametersHasModification> fetchSearchModifications(Long searchParametersId) {
         Criteria criteria = getCurrentSession().createCriteria(SearchParametersHasModification.class);
 
-        criteria.add(Restrictions.eq("searchParameter.id", searchParametersId));
+        criteria.add(Restrictions.eq("searchParameters.id", searchParametersId));
 
         return criteria.list();
     }

@@ -102,104 +102,89 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
         bindingGroup.bind();
 
         //add action listeners
-        binaryFileList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedIndex = binaryFileList.getSelectedIndex();
-                    if (selectedIndex != -1) {
-                        //set selected item in combobox
-                        binaryFileTypeComboBox.getModel().setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
-                    }
-
-                    previouslySelectedIndex = selectedIndex;
-                }
-            }
-        });
-
-        binaryFileTypeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        binaryFileList.getSelectionModel().addListSelectionListener((final ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) {
                 int selectedIndex = binaryFileList.getSelectedIndex();
                 if (selectedIndex != -1) {
-                    if (previouslySelectedIndex == selectedIndex) {
-                        T binaryFileToUpdate = binaryFileBindingList.get(selectedIndex);
-                        binaryFileToUpdate.setBinaryFileType((BinaryFileType) binaryFileTypeComboBox.getSelectedItem());
+                    //set selected item in combobox
+                    binaryFileTypeComboBox.getModel().setSelectedItem(binaryFileBindingList.get(selectedIndex).getBinaryFileType());
+                }
 
-                        //update GUI
-                        binaryFileList.updateUI();
+                previouslySelectedIndex = selectedIndex;
+            }
+        });
 
-                        BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
-                    }
+        binaryFileTypeComboBox.addActionListener((final ActionEvent e) -> {
+            int selectedIndex = binaryFileList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                if (previouslySelectedIndex == selectedIndex) {
+                    T binaryFileToUpdate = binaryFileBindingList.get(selectedIndex);
+                    binaryFileToUpdate.setBinaryFileType((BinaryFileType) binaryFileTypeComboBox.getSelectedItem());
+
+                    //update GUI
+                    binaryFileList.updateUI();
+
+                    BinaryFileManagementPanel.this.firePropertyChange(FILE_TYPE_CHANGE, null, binaryFileToUpdate);
                 }
             }
         });
 
-        exportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (binaryFileList.getSelectedIndex() != -1) {
-                    T binaryFileToExport = (T) binaryFileList.getSelectedValue();
-                    //in response to the button click, show open dialog
-                    int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        try {
-                            File exportDirectory = exportDirectoryChooser.getSelectedFile();
-                            if (exportDirectory.isDirectory()) {
-                                exportBinaryFile(exportDirectory, binaryFileToExport);
-                            }
-                        } catch (IOException ex) {
-                            LOGGER.error(ex.getMessage(), ex);
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to export.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                T binaryFileToAdd = null;
-
+        exportButton.addActionListener((final ActionEvent e) -> {
+            if (binaryFileList.getSelectedIndex() != -1) {
+                T binaryFileToExport = (T) binaryFileList.getSelectedValue();
                 //in response to the button click, show open dialog
-                int returnVal = fileChooser.showOpenDialog(BinaryFileManagementPanel.this);
+                int returnVal = exportDirectoryChooser.showOpenDialog(BinaryFileManagementPanel.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        binaryFileToAdd = getBinaryFile(fileChooser.getSelectedFile());
-                    } catch (IOException | InstantiationException | IllegalAccessException ex) {
+                        File exportDirectory = exportDirectoryChooser.getSelectedFile();
+                        if (exportDirectory.isDirectory()) {
+                            exportBinaryFile(exportDirectory, binaryFileToExport);
+                        }
+                    } catch (IOException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                     }
                 }
-                if (binaryFileToAdd != null) {
-                    binaryFileBindingList.add(binaryFileToAdd);
-
-                    //set selected index
-                    binaryFileList.setSelectedIndex(binaryFileBindingList.size() - 1);
-
-                    BinaryFileManagementPanel.this.firePropertyChange(ADD, null, binaryFileToAdd);
-                }
+            } else {
+                JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to export.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (binaryFileList.getSelectedIndex() != -1) {
-                    T binaryFileToRemove = (T) binaryFileList.getSelectedValue();
+        addButton.addActionListener((final ActionEvent e) -> {
+            T binaryFileToAdd = null;
 
-                    binaryFileBindingList.remove(binaryFileToRemove);
-
-                    //set selected index
-                    if (!binaryFileBindingList.isEmpty()) {
-                        binaryFileList.setSelectedIndex(0);
-                    }
-
-                    BinaryFileManagementPanel.this.firePropertyChange(REMOVE, null, binaryFileToRemove);
-                } else {
-                    JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to delete.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
+            //in response to the button click, show open dialog
+            int returnVal = fileChooser.showOpenDialog(BinaryFileManagementPanel.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                try {
+                    binaryFileToAdd = getBinaryFile(fileChooser.getSelectedFile());
+                } catch (IOException | InstantiationException | IllegalAccessException ex) {
+                    LOGGER.error(ex.getMessage(), ex);
                 }
+            }
+            if (binaryFileToAdd != null) {
+                binaryFileBindingList.add(binaryFileToAdd);
+
+                //set selected index
+                binaryFileList.setSelectedIndex(binaryFileBindingList.size() - 1);
+
+                BinaryFileManagementPanel.this.firePropertyChange(ADD, null, binaryFileToAdd);
+            }
+        });
+
+        deleteButton.addActionListener((final ActionEvent e) -> {
+            if (binaryFileList.getSelectedIndex() != -1) {
+                T binaryFileToRemove = (T) binaryFileList.getSelectedValue();
+
+                binaryFileBindingList.remove(binaryFileToRemove);
+
+                //set selected index
+                if (!binaryFileBindingList.isEmpty()) {
+                    binaryFileList.setSelectedIndex(0);
+                }
+
+                BinaryFileManagementPanel.this.firePropertyChange(REMOVE, null, binaryFileToRemove);
+            } else {
+                JOptionPane.showMessageDialog(BinaryFileManagementPanel.this, "Please select an attachment to delete.", "Attachment selection", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }

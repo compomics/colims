@@ -27,8 +27,8 @@ public interface UserQueryService extends GenericService<UserQuery, Long> {
      * Get all the queries for the given user. They are sorted on usage count.
      *
      * @param userId the user ID
-     * @return the found UserQuery instances
+     * @return the found query strings
      */
-    List<UserQuery> findByUserId(Long userId);
+    List<String> findQueriesByUserId(Long userId);
 
 }

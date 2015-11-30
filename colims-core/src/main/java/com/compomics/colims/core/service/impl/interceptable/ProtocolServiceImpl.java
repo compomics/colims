@@ -51,6 +51,8 @@ public class ProtocolServiceImpl implements ProtocolService {
 
     @Override
     public void remove(Protocol entity) {
-        protocolRepository.remove(entity);
+        //get a reference to the entity
+        Protocol reference = protocolRepository.getReference(entity.getId());
+        protocolRepository.remove(reference);
     }
 }

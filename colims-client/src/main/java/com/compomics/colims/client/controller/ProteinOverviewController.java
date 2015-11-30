@@ -125,7 +125,6 @@ public class ProteinOverviewController implements Controllable {
         psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
         //disable protein group page buttons
-
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
         mainController.getProjects().stream().forEach((project) -> {
@@ -217,7 +216,6 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
 //        setProteinGroupTableCellRenderers();
-
         //Listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
@@ -462,9 +460,8 @@ public class ProteinOverviewController implements Controllable {
                 Map<Integer, Pattern> columnFilter = new HashMap<>();
                 columnFilter.put(0, HTML_TAGS);
 
-                // need a new model... or table format?
-                // could potentially lose the filtering if its only on this model
-                // hmm
+                //need a new model... or table format?
+                //could potentially lose the filtering if its only on this model
                 PeptideExportModel exportModel = new PeptideExportModel();
                 exportModel.setPeptideTableRows(sortedPeptides);
 
@@ -493,7 +490,8 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Build a node tree for a given project consisting of experiments, samples and runs.
+     * Build a node tree for a given project consisting of experiments, samples
+     * and runs.
      *
      * @param project A project to represent
      * @return A node of nodes
@@ -564,9 +562,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename   File to be saved as [filename].tsv
+     * @param filename File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T>        Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -575,10 +573,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename      File to be saved as [filename].tsv
-     * @param tableModel    A table model to retrieve data from
+     * @param filename File to be saved as [filename].tsv
+     * @param tableModel A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T>           Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
@@ -591,12 +589,10 @@ public class ProteinOverviewController implements Controllable {
                 if (i > 0) {
                     line.append("\t");
                 }
-
                 line.append(tableModel.getColumnName(i));
             }
 
             fileWriter.write(line.append("\n").toString());
-
             // write rows
             for (int i = 0; i < rowCount; ++i) {
                 line = new StringBuilder();
@@ -616,12 +612,11 @@ public class ProteinOverviewController implements Controllable {
                         line.append("\n");
                     }
                 }
-
                 fileWriter.write(line.toString());
             }
 
-            //  show dialog
-            JOptionPane.showMessageDialog(proteinOverviewPanel, "Data exported to " + filename + ".tsv");
+            //show dialog
+            eventBus.post(new MessageEvent("Export error", "Data exported to " + filename + ".tsv", JOptionPane.INFORMATION_MESSAGE));
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             eventBus.post(new MessageEvent("Export error", "Exporting tabular data failed: " + System.lineSeparator() + System.lineSeparator() + e.getMessage(), JOptionPane.ERROR_MESSAGE));
@@ -629,8 +624,8 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Map the list of PeptideDTO instances associated with the given protein group to a list of PeptideTableRow
-     * instances.
+     * Map the list of PeptideDTO instances associated with the given protein
+     * group to a list of PeptideTableRow instances.
      *
      * @param peptideDTOs the set of PeptideDTO instances
      * @return a list of PeptideTableRow instances
@@ -660,8 +655,8 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
-                        PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
-                        ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
+                                PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
+                                ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
 
         ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()
@@ -686,8 +681,8 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
-                        PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
-                        ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
+                                PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
+                                ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
 
         ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()

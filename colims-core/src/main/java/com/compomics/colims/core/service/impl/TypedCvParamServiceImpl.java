@@ -76,6 +76,8 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
 
     @Override
     public void remove(TypedCvParam entity) {
-        cvParamRepository.remove(entity);
+        //get a reference to the entity
+        TypedCvParam reference = cvParamRepository.getReference(entity.getId());
+        cvParamRepository.remove(reference);
     }
 }
